@@ -290,6 +290,10 @@
       "hasCompletedProjectOnboarding": true,
       "history": [
         {
+          "display": "넣긴했는데 자동으로 저장해주고 복원해달라고 하면 복원해줘요",
+          "pastedContents": {}
+        },
+        {
           "display": "시스템 까지 필요한가요? 그냥 지침에 넣으면 되는것 아닌가?",
           "pastedContents": {}
         },
