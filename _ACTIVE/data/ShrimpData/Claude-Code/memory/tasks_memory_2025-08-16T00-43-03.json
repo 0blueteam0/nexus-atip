@@ -1,0 +1,85 @@
+{
+  "tasks": [
+    {
+      "id": "69d4f4be-b5d3-407c-b614-fddc39b76121",
+      "name": "Auto Tool Finder 시스템 구축",
+      "description": "3회 이상 실패 시 자동으로 MCP 도구를 검색하고 비교 분석하는 시스템 구축",
+      "notes": "GitHub API 활용, npm registry 검색, 자동 설치 스크립트 생성",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-15T23:42:19.000Z",
+      "updatedAt": "2025-08-15T23:44:53.447Z",
+      "relatedFiles": [
+        {
+          "path": "systems/auto-tool-finder.js",
+          "type": "CREATE",
+          "description": "메인 시스템 파일"
+        },
+        {
+          "path": "brain/patterns.json",
+          "type": "TO_MODIFY",
+          "description": "학습 패턴 저장"
+        }
+      ],
+      "implementationGuide": "systems/auto-tool-finder.js 생성, 실패 카운터, MCP 검색 로직, 자동 비교 테이블 생성, 학습 패턴 저장",
+      "verificationCriteria": "3회 실패 시뮬레이션으로 자동 도구 검색 확인",
+      "analysisResult": "3개 핵심 시스템 구축 - Auto Tool Finder, MCP Tools 실제 연결, Dynamic Date System",
+      "summary": "Auto Tool Finder 시스템 구축 완료 - 3회 실패시 자동 MCP 도구 검색, 비교 테이블 생성, 설치 스크립트 자동 생성 기능 구현",
+      "completedAt": "2025-08-15T23:44:53.246Z"
+    },
+    {
+      "id": "e6b39fa9-d0d6-4005-b533-dd7c84a5ad90",
+      "name": "MCP Edit Tools 실제 연결",
+      "description": "mcp-edit-file-lines와 desktop-commander MCP 도구 실제 작동 확인 및 수정",
+      "notes": "oakenai/mcp-edit-file-lines는 npm에 없을 수 있음, 대안 찾기",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-15T23:42:19.000Z",
+      "updatedAt": "2025-08-15T23:58:01.354Z",
+      "relatedFiles": [
+        {
+          "path": ".claude.json",
+          "type": "TO_MODIFY",
+          "description": "MCP 설정 수정"
+        },
+        {
+          "path": "test-mcp-tools.js",
+          "type": "CREATE",
+          "description": "연결 테스트 스크립트"
+        }
+      ],
+      "implementationGuide": "npm 패키지 확인, npx 실행 테스트, .claude.json 설정 수정, 연결 상태 확인",
+      "verificationCriteria": "claude.bat mcp list에서 도구 상태 확인",
+      "analysisResult": "3개 핵심 시스템 구축 - Auto Tool Finder, MCP Tools 실제 연결, Dynamic Date System",
+      "summary": "MCP Edit Tools 연결 완료 - desktop-commander 정상 작동 확인, mcp-edit-file-lines는 npm에 없어 제거, 테스트 스크립트로 연결 상태 검증",
+      "completedAt": "2025-08-15T23:58:01.350Z"
+    },
+    {
+      "id": "8a866a1e-96e6-48cc-8fbe-2a78b6799da5",
+      "name": "Dynamic Date System 구축",
+      "description": "하드코딩된 날짜를 방지하고 항상 정확한 날짜를 사용하는 시스템",
+      "notes": "타임존 고려, 로케일 설정, 자동 포맷팅",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-15T23:42:19.000Z",
+      "updatedAt": "2025-08-16T00:00:21.180Z",
+      "relatedFiles": [
+        {
+          "path": "systems/dynamic-date.js",
+          "type": "CREATE",
+          "description": "날짜 시스템"
+        },
+        {
+          "path": "CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "날짜 섹션 업데이트"
+        }
+      ],
+      "implementationGuide": "systems/dynamic-date.js 생성, 모든 날짜 참조를 동적으로 변경, CLAUDE.md 업데이트",
+      "verificationCriteria": "날짜 함수 호출 시 현재 날짜 정확히 반환",
+      "analysisResult": "3개 핵심 시스템 구축 - Auto Tool Finder, MCP Tools 실제 연결, Dynamic Date System",
+      "summary": "Dynamic Date System 구축 완료 - 하드코딩 방지, 다양한 포맷 지원, CLAUDE.md 자동 업데이트, 영업일 계산 등 완벽한 날짜 관리 시스템 구현",
+      "completedAt": "2025-08-16T00:00:21.177Z"
+    }
+  ]
+}

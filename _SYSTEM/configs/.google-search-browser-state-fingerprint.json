@@ -1,0 +1,70 @@
+{
+  "cookies": [
+    {
+      "name": "SNID",
+      "value": "ABablnfEGbFpU_gC4-MQGJf4mnce4XM8q7q6HC_6sYIA1M3JMHg9mFcpzsXeux0RU0KQSrNr1bkuL4FBVp7qtAtanUSGHdNq4U0",
+      "domain": ".google.com",
+      "path": "/verify",
+      "expires": 1771107510.74355,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AEC",
+      "value": "AVh_V2hUF1XU2jCQVAlbmYfJMC4zkPMvmVASbTefBpnvsqEaw3Rba4NyYvg",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1770848310.639246,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NID",
+      "value": "525=FJXsNLgkuY2RRN27SbZ9-nXZu5KxocLJ5plKNk7-2pMAVMhrhdC3o0s6bnl2oKeIim-E6neX9pGtWmcIUzHpsClvPBexr3Jq9j-3WuUUC2_TRB3SG40_6_pCcmYATeORDYnggC69nS4gStL4HaIAGD3nbuyKs37u02Hs7QfJeGkbCiTYD1eTFwxYVL2Xt9ChLI1j3XsMrCjAdhktuequ85jl4qPvIeylTKDXT9bi2PU5g0c",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1771107510.94264,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.google.com",
+      "localStorage": [
+        {
+          "name": "sb_wiz.zpc.gws-wiz-serp.",
+          "value": "{\"0\":[[\"claude mcp server\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude desktop mac\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude code mcp add\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude code add mcp server\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude desktop remote mcp server\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude desktop mcp server\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"is claude desktop free\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude desktop-linux\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"postgres mcp server\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}],[\"claude desktop config.json\",0,[512,308,468,357,439,650,362,394],{\"zl\":90000}]],\"1\":{\"ag\":{\"a\":{\"90000\":[\"与近期搜索内容相关\",\"\",\"\",7]}},\"av\":\"-1213168401471268792\",\"k\":1,\"q\":\"ob89fw-j679FhtnthK77e8aXn2c\"}}"
+        },
+        {
+          "name": "sb_wiz.sr_di",
+          "value": "GL-0356Cs6e8qQEYs7rIoYrvuYwZGMvGhNzl_-mPUBjEi5Cq8OXJ6jkY06ftjum32qxy"
+        },
+        {
+          "name": "sb_wiz.pq_tm_hp",
+          "value": "1755296312106"
+        },
+        {
+          "name": "sb_wiz.sc_pq",
+          "value": ""
+        },
+        {
+          "name": "sb_wiz.pq",
+          "value": "MCP server JSON editor configuration management claude"
+        }
+      ]
+    }
+  ],
+  "fingerprint": {
+    "deviceName": "Desktop Chrome",
+    "locale": "zh-CN",
+    "timezoneId": "Asia/Shanghai",
+    "colorScheme": "light",
+    "reducedMotion": "no-preference",
+    "forcedColors": "none"
+  },
+  "googleDomain": "www.google.com"
+}

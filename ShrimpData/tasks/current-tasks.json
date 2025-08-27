@@ -1,0 +1,267 @@
+{
+  "project": "K드라이브 Claude Code 통합 프로젝트",
+  "created": "2025-08-15",
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "MCP 서버 설치 및 연동",
+      "status": "completed",
+      "subtasks": [
+        {
+          "id": "001-1",
+          "title": "Shrimp Task Manager 설치",
+          "status": "completed",
+          "note": "cmd C:/ → /c 수정 필요"
+        },
+        {
+          "id": "001-2",
+          "title": "Git MCP Server 설치",
+          "status": "completed"
+        },
+        {
+          "id": "001-3",
+          "title": "Diff TypeScript MCP 설치",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "task-002",
+      "title": "Unified Diff MCP 비교 분석",
+      "status": "in-progress",
+      "subtasks": [
+        {
+          "id": "002-1",
+          "title": "@gorosun/unified-diff-mcp 조사",
+          "status": "pending",
+          "details": "Bun 런타임 기반, HTML/PNG 시각화"
+        },
+        {
+          "id": "002-2",
+          "title": "mcp-server-diff-typescript 조사",
+          "status": "pending",
+          "details": "TypeScript 기반, npm만 필요"
+        },
+        {
+          "id": "002-3",
+          "title": "mcp-server-diff-editor 조사",
+          "status": "pending",
+          "details": "고급 편집기, 패턴 인식"
+        },
+        {
+          "id": "002-4",
+          "title": "비교 테이블 작성",
+          "status": "pending"
+        },
+        {
+          "id": "002-5",
+          "title": "Windows Native 최적 선택",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "task-003",
+      "title": "MCP 자동 발견 시스템 구축",
+      "status": "planned",
+      "subtasks": [
+        {
+          "id": "003-1",
+          "title": "프로젝트 분석 자동화",
+          "status": "planned"
+        },
+        {
+          "id": "003-2",
+          "title": "필요 MCP 자동 감지",
+          "status": "planned"
+        },
+        {
+          "id": "003-3",
+          "title": "자동 설치 스크립트",
+          "status": "planned"
+        },
+        {
+          "id": "003-4",
+          "title": "cmd 인자 자동 수정기",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "task-007",
+      "title": "추천 MCP 서버 설치",
+      "status": "in-progress",
+      "subtasks": [
+        {
+          "id": "007-1",
+          "title": "Kiro Memory MCP 설치",
+          "status": "completed",
+          "details": "멀티 프로젝트 메모리 관리 - uvx 방식으로 성공"
+        },
+        {
+          "id": "007-2",
+          "title": "Firecrawl MCP 설치",
+          "status": "completed",
+          "details": "웹 스크래핑 - 패키지명 수정으로 성공"
+        },
+        {
+          "id": "007-3",
+          "title": "Prisma Postgres MCP 설치",
+          "status": "pending",
+          "details": "DB 백업/마이그레이션"
+        },
+        {
+          "id": "007-4",
+          "title": "REST Client MCP 설치",
+          "status": "pending",
+          "details": "API 테스트용"
+        }
+      ]
+    },
+    {
+      "id": "task-004",
+      "title": "문서화 자동 업데이트 체계",
+      "status": "planned",
+      "subtasks": [
+        {
+          "id": "004-1",
+          "title": "CLAUDE.md 자동 업데이트",
+          "status": "planned"
+        },
+        {
+          "id": "004-2",
+          "title": "MCP-DISCOVERY-SYSTEM.md 유지보수",
+          "status": "planned"
+        },
+        {
+          "id": "004-3",
+          "title": "설치 패턴 학습 및 저장",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "task-005",
+      "title": "NEXUS ATIP V2.0 프로젝트",
+      "status": "planned",
+      "subtasks": [
+        {
+          "id": "005-1",
+          "title": "프로젝트 재개",
+          "status": "planned"
+        },
+        {
+          "id": "005-2",
+          "title": "VSCode Live Server 연동",
+          "status": "planned",
+          "note": "127.0.0.1:5500"
+        },
+        {
+          "id": "005-3",
+          "title": "실시간 UI 개발",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "id": "task-006",
+      "title": "API 키 설정",
+      "status": "pending",
+      "subtasks": [
+        {
+          "id": "006-1",
+          "title": "Context7 API 키",
+          "status": "pending"
+        },
+        {
+          "id": "006-2",
+          "title": "YouTube Data API 키",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "task-008",
+      "title": "mcp-memory-service 컨테이너화",
+      "status": "completed",
+      "subtasks": [
+        {
+          "id": "008-1",
+          "title": "Podman Desktop 설치",
+          "status": "completed",
+          "details": "121MB 다운로드, C드라이브 설치 완료"
+        },
+        {
+          "id": "008-2",
+          "title": "Podman 머신 생성 및 확인",
+          "status": "completed",
+          "details": "podman-adriabluelabs WSL 머신, Podman 5.5.2 작동 확인"
+        },
+        {
+          "id": "008-3",
+          "title": "mcp-memory-service 컨테이너 이미지 준비",
+          "status": "completed",
+          "details": "Dockerfile 확인 완료, WSL K드라이브 마운트 이슈 발견"
+        },
+        {
+          "id": "008-3a",
+          "title": "mcp-memory-service 즉시 실행",
+          "status": "completed", 
+          "details": "docker.io/mcp/memory 이미지 정상 작동 확인 - stdio MCP 서버로 통신 대기"
+        },
+        {
+          "id": "008-4",
+          "title": "K드라이브 볼륨 마운트 설정",
+          "status": "pending",
+          "details": "ChromaDB 데이터를 K드라이브에 저장"
+        },
+        {
+          "id": "008-5",
+          "title": "Claude Code MCP 연동",
+          "status": "completed",
+          "details": "kiro-memory 정상 작동 확인 - SQLite 기반 메모리 시스템 준비 완료"
+        }
+      ]
+    },
+    {
+      "id": "task-009",
+      "title": "메모리 시스템 개선",
+      "status": "completed",
+      "subtasks": [
+        {
+          "id": "009-1",
+          "title": "자동 저장 메커니즘 연구",
+          "status": "completed",
+          "details": "auto-memory-system.js 구현 완료 - Hook 시스템 활성화"
+        },
+        {
+          "id": "009-2",
+          "title": "수동 저장 워크플로우 정립",
+          "status": "completed",
+          "details": "중요 내용 선별적 저장 전략"
+        },
+        {
+          "id": "009-3",
+          "title": "메모리 검색 최적화",
+          "status": "completed",
+          "details": "효율적인 컨텍스트 검색 방법"
+        }
+      ]
+    }
+  ],
+  "chain_of_thought": {
+    "current_focus": "환경 구축 완료 및 문서화",
+    "next_steps": [
+      "메모리 자동 저장 방식 구현",
+      "중요 대화 내용 수동 저장",
+      "K드라이브 WSL 마운트 문제 해결"
+    ],
+    "learned_patterns": [
+      "claude mcp add 시 cmd 인자가 C:/로 잘못 설정됨",
+      "수동으로 .claude.json 수정 필요",
+      "Shrimp Task Manager는 @ 없이 mcp-shrimp-task-manager",
+      "WSL K드라이브 마운트 성공 - /mnt/k/로 접근 가능",
+      "TodoWrite 시스템 리마인더 무시 설정 완료"
+    ]
+  }
+}

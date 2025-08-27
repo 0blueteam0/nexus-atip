@@ -1,0 +1,23 @@
+{
+  "name": "mcp-servers",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@modelcontextprotocol/server-filesystem": "^2025.7.29",
+    "@modelcontextprotocol/server-memory": "^2025.8.4",
+    "mcp-context-manager": "^7.5.0",
+    "mcp-webhook-server": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
+  }
+}

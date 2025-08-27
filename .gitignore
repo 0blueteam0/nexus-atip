@@ -1,0 +1,109 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+.env.local
+.env.*.local
+*.env
+.env.anthropic
+
+# API Keys & Credentials
+*api-key*
+*API_KEY*
+api-keys.txt
+secrets/
+.credentials.json
+set-api-keys.bat
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+out/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+~*
+temp/
+npm-cache/
+.cache/
+AppData/
+.local/
+.config/
+.ssh/
+statsig/
+
+# Archive folders
+ARCHIVE/
+archive/
+old/
+
+# Memory databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.Python
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Lock files (keep package-lock.json)
+yarn.lock
+pnpm-lock.yaml
+
+# Claude specific
+.claude-history/
+.claude-cache/
+memory-archive/
+
+# Personal/sensitive data
+personal/
+private/
+credentials/
+
+# Large files
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.vhdx
+*.exe
+tools/podman/
+tools/nodejs/node.exe
+
+# Media files (optional - remove if needed)
+*.mp4
+*.mov
+*.avi
+*.mkv

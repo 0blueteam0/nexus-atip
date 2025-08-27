@@ -1,0 +1,41 @@
+{
+  "hooks": {
+    "session-start": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/.claude/hooks/clear-history.js && node K:/PortableApps/Claude-Code/hooks/auto-memory-system.js && node K:/PortableApps/Claude-Code/systems/smart-suggest.js && node K:/PortableApps/Claude-Code/systems/mcp-output-minimizer.js",
+      "description": "세션 시작 시 MCP 포맷터 + 이전 컨텍스트 자동 로드 + Smart Suggest"
+    },
+    "context-detection": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/systems/context-monitor.js",
+      "triggers": ["git", "diff", "compare", "search", "youtube", "database"],
+      "description": "작업 컨텍스트 감지 시 도구 자동 추천"
+    },
+    "important-detection": {
+      "enabled": true,
+      "triggers": ["결정", "해결", "성공", "완료", "중요"],
+      "action": "auto-save",
+      "description": "중요 키워드 감지 시 자동 저장"
+    },
+    "periodic-save": {
+      "enabled": true,
+      "interval": "1h",
+      "description": "1시간마다 자동 체크포인트"
+    },
+    "session-end": {
+      "enabled": true,
+      "command": "node -e \"require('./hooks/auto-memory-system.js').saveSessionSummary()\"",
+      "description": "세션 종료 시 전체 요약 저장"
+    }
+  },
+  "memory-config": {
+    "auto-save": true,
+    "compression": true,
+    "max-entries": 1000,
+    "cleanup-days": -1,
+    "storage": {
+      "primary": "kiro-memory",
+      "backup": "K:/PortableApps/Claude-Code/memory-archive"
+    }
+  }
+}

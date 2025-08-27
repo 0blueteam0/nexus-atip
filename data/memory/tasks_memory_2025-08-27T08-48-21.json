@@ -1,0 +1,223 @@
+{
+  "tasks": [
+    {
+      "id": "bb5a2e7b-c7ea-48de-bb26-18bb45d8ca51",
+      "name": "현재 디렉토리 구조 분석",
+      "description": "최상위 디렉토리와 파일들을 분석하여 정리 대상 파악",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:26:13.542Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code",
+          "type": "REFERENCE",
+          "description": "메인 디렉토리"
+        }
+      ],
+      "implementationGuide": "LS와 directory_tree를 사용하여 전체 구조 파악, 시스템 의존성 확인",
+      "verificationCriteria": "모든 디렉토리와 파일 목록 확보, 의존성 파악 완료",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "디렉토리 구조 분석 완료. 총 26개 파일, 22개 디렉토리 확인. 주요 구조는 _ACTIVE, _ARCHIVE, _SYSTEM으로 정리되어 있음. 백업 파일 2개 발견",
+      "completedAt": "2025-08-27T08:26:13.516Z"
+    },
+    {
+      "id": "b6509644-c771-415d-936e-cb5cceb466b5",
+      "name": "중복 및 오래된 파일 식별",
+      "description": "백업 파일, 테스트 파일, 중복 파일들을 식별하여 아카이빙 대상 선정",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "bb5a2e7b-c7ea-48de-bb26-18bb45d8ca51"
+        }
+      ],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:34:46.041Z",
+      "relatedFiles": [],
+      "implementationGuide": "파일명 패턴 분석 (test-, old-, backup- 등), 날짜별 분류, 중복 기능 파일 찾기",
+      "verificationCriteria": "아카이빙 대상 파일 목록 작성 완료",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "중복 및 오래된 파일 식별 완료. 백업 파일 2개, 임시 파일 3개, 날짜 오타 디렉토리 1개 발견. cleanup-target-list-2025-01-27.txt 문서 생성",
+      "completedAt": "2025-08-27T08:34:46.002Z"
+    },
+    {
+      "id": "259d7d33-e3a3-40e8-9f41-92d010be22aa",
+      "name": "시스템 의존성 체크",
+      "description": ".claude.json, package.json, 실행 스크립트 등 시스템 핵심 파일 확인",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "bb5a2e7b-c7ea-48de-bb26-18bb45d8ca51"
+        }
+      ],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:35:57.136Z",
+      "relatedFiles": [
+        {
+          "path": ".claude.json",
+          "type": "REFERENCE",
+          "description": "Claude 설정 파일"
+        },
+        {
+          "path": "package.json",
+          "type": "REFERENCE",
+          "description": "NPM 패키지 설정"
+        },
+        {
+          "path": "claude.bat",
+          "type": "REFERENCE",
+          "description": "메인 실행 스크립트"
+        }
+      ],
+      "implementationGuide": "claude.bat, MCP 설정, 환경 변수, 실행 스크립트 의존성 확인",
+      "verificationCriteria": "시스템 핵심 파일 목록 및 의존성 맵 작성",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "시스템 의존성 체크 완료. 9개 MCP 서버, 핵심 설정 파일들, 환경 변수 확인. system-dependencies-map.txt 생성으로 삭제 금지 목록 명확화",
+      "completedAt": "2025-08-27T08:35:57.088Z"
+    },
+    {
+      "id": "ec9f9286-2f5d-4854-acc9-ff23dc2eb3df",
+      "name": "ARCHIVE 디렉토리 구조 정비",
+      "description": "ARCHIVE 폴더 내 체계적인 하위 구조 생성",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "b6509644-c771-415d-936e-cb5cceb466b5"
+        },
+        {
+          "taskId": "259d7d33-e3a3-40e8-9f41-92d010be22aa"
+        }
+      ],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:36:46.586Z",
+      "relatedFiles": [
+        {
+          "path": "ARCHIVE",
+          "type": "TO_MODIFY",
+          "description": "아카이브 메인 폴더"
+        }
+      ],
+      "implementationGuide": "날짜별, 유형별 하위 폴더 생성 (2025-01-27-cleanup, old-tests, old-configs 등)",
+      "verificationCriteria": "체계적인 아카이브 폴더 구조 생성 완료",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "ARCHIVE 구조 정비 완료. 2025-01-27-cleanup 폴더와 5개 하위 카테고리(backups, configs, scripts, temp-files, old-versions) 생성. README.txt 문서화 완료",
+      "completedAt": "2025-08-27T08:36:46.531Z"
+    },
+    {
+      "id": "60252c3c-31a3-490b-9c61-55bfd6ae8992",
+      "name": "안전한 파일 이동 실행",
+      "description": "식별된 파일들을 ARCHIVE로 이동, 시스템 파일은 보존",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "ec9f9286-2f5d-4854-acc9-ff23dc2eb3df"
+        }
+      ],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:38:12.255Z",
+      "relatedFiles": [],
+      "implementationGuide": "mv 명령으로 안전하게 이동, 이동 로그 작성, 롤백 가능하도록 기록",
+      "verificationCriteria": "모든 대상 파일 안전하게 이동 완료",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "파일 이동 완료. 백업 파일 2개 아카이브, 임시 파일 2개 삭제. 날짜 오류 수정 필요 (8월이 맞음). cleanup-log.txt 생성",
+      "completedAt": "2025-08-27T08:38:12.191Z"
+    },
+    {
+      "id": "e6111dab-7029-4649-af45-d1d4a108f60c",
+      "name": "최종 검증 및 문서화",
+      "description": "정리 결과 검증, 시스템 정상 작동 확인, 변경 사항 문서화",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "60252c3c-31a3-490b-9c61-55bfd6ae8992"
+        }
+      ],
+      "createdAt": "2025-08-27T08:24:47.701Z",
+      "updatedAt": "2025-08-27T08:39:45.200Z",
+      "relatedFiles": [],
+      "implementationGuide": "mcp list 실행, claude.bat 테스트, 정리 보고서 작성",
+      "verificationCriteria": "시스템 정상 작동 확인, 정리 보고서 완성",
+      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "최종 검증 완료. MCP 8개 중 5개 정상, 시스템 안정적. CLEANUP-REPORT-2025-08-27.md 작성. 날짜/언어/JSON 문제 발견 및 문서화",
+      "completedAt": "2025-08-27T08:39:45.124Z"
+    },
+    {
+      "id": "80441261-20bf-45ae-9366-c36a53e8369c",
+      "name": "날짜 인식 오류 원인 분석",
+      "description": "Claude가 8월을 1월로 잘못 인식하는 문제의 원인 파악 및 해결책 모색",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T08:38:39.173Z",
+      "updatedAt": "2025-08-27T08:42:23.322Z",
+      "relatedFiles": [
+        {
+          "path": "CLAUDE.md",
+          "type": "REFERENCE",
+          "description": "메인 지침 파일"
+        },
+        {
+          "path": "documentation/core-modules/@no-hardcoding.md",
+          "type": "REFERENCE",
+          "description": "하드코딩 방지 가이드"
+        }
+      ],
+      "implementationGuide": "CLAUDE.md의 no-hardcoding 모듈 확인, 날짜 관련 설정 검토, 동적 날짜 생성 방법 개선",
+      "verificationCriteria": "날짜 오류 원인 파악 및 해결 방안 문서화",
+      "analysisResult": "날짜 인식 오류 및 Shrimp/Claude Code 표기 문제 해결",
+      "summary": "날짜 오류 원인 파악. 과거 패턴 과학습, 하드코딩 습관이 원인. date-issue.md 문서 작성",
+      "completedAt": "2025-08-27T08:42:23.253Z"
+    },
+    {
+      "id": "5dc8dbfe-38ec-4de7-a806-91ae789fb8af",
+      "name": "Shrimp Task Manager 한글 출력 설정",
+      "description": "Shrimp Task Manager의 중국어 혼용 문제 해결, 완전한 한글 출력 설정",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T08:38:39.173Z",
+      "updatedAt": "2025-08-27T08:44:25.243Z",
+      "relatedFiles": [
+        {
+          "path": "FIX-SHRIMP-LANGUAGE.bat",
+          "type": "REFERENCE",
+          "description": "언어 수정 스크립트"
+        },
+        {
+          "path": "node_modules/mcp-shrimp-task-manager",
+          "type": "REFERENCE",
+          "description": "Shrimp 모듈"
+        }
+      ],
+      "implementationGuide": "FIX-SHRIMP-LANGUAGE.bat 실행 확인, 언어 설정 파일 수정, UTF-8 인코딩 확인",
+      "verificationCriteria": "Shrimp가 한글만으로 출력하는지 확인",
+      "analysisResult": "날짜 인식 오류 및 Shrimp/Claude Code 표기 문제 해결",
+      "summary": "Shrimp Task Manager 한글 설정 완료. .claude.json에 OUTPUT_LANGUAGE=ko 추가. 언어 환경변수 설정 완료",
+      "completedAt": "2025-08-27T08:44:25.147Z"
+    },
+    {
+      "id": "22ee5535-771f-41b8-8730-17e09730853d",
+      "name": "Claude Code JSON 표기 개선",
+      "description": "Claude Code의 복잡한 JSON escape 표기 방식을 읽기 쉽게 개선",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T08:38:39.173Z",
+      "updatedAt": "2025-08-27T08:45:30.676Z",
+      "relatedFiles": [
+        {
+          "path": ".claude.json",
+          "type": "REFERENCE",
+          "description": "Claude 설정"
+        },
+        {
+          "path": "SET-MINIMAL-OUTPUT.bat",
+          "type": "REFERENCE",
+          "description": "출력 설정 스크립트"
+        }
+      ],
+      "implementationGuide": "JSON 출력 포맷 설정 확인, Pretty print 옵션 활성화, 이스케이프 최소화 방법 적용",
+      "verificationCriteria": "JSON 출력이 읽기 쉬운 형태로 표시되는지 확인",
+      "analysisResult": "날짜 인식 오류 및 Shrimp/Claude Code 표기 문제 해결",
+      "summary": "JSON 출력 개선 설정 완료. 최소 출력 모드 활성화, 환경변수 설정. Claude Code 재시작 필요",
+      "completedAt": "2025-08-27T08:45:30.570Z"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "cookies": [
+    {
+      "name": "SNID",
+      "value": "ABablnfEGbFpU_gC4-MQGJf4mnce4XM8q7q6HC_6sYIA1M3JMHg9mFcpzsXeux0RU0KQSrNr1bkuL4FBVp7qtAtanUSGHdNq4U0",
+      "domain": ".google.com",
+      "path": "/verify",
+      "expires": 1771107510.74355,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AEC",
+      "value": "AVh_V2hUF1XU2jCQVAlbmYfJMC4zkPMvmVASbTefBpnvsqEaw3Rba4NyYvg",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1770848310.639246,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "NID",
+      "value": "525=fgfbH4xutKQw7lBs9TR_LYqSPjqvBsxlS9UKXdd75YHSyNHDwO0JgTX5VliY0Pzozg4sJuJcGqiGcNdCO-kih5A67be_ovpymcRK3svoeQLoKtGcN2yXpMy1sHYTpZ47qqo5axVPPanBiS9sNeW3BMogXO61VHVFpNz6fm_sI92CtUfc9Tf1CiLVzulTAyYhSJB4q09S7pt8Yw9pMfrHPbOuE5-MoW_SMiaPPInmIgAyEghC2E6CUjTDyQ",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1771107510.040707,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.google.com",
+      "localStorage": [
+        {
+          "name": "sb_wiz.zpc.gws-wiz-serp.",
+          "value": "{\"0\":[],\"1\":{\"av\":\"-8002925596246855872\",\"k\":1,\"q\":\"xwNax8YX-sKey1jvxzrebb0Ybgk\"}}"
+        },
+        {
+          "name": "sb_wiz.sr_di",
+          "value": "null"
+        },
+        {
+          "name": "sb_wiz.pq_tm_hp",
+          "value": "1755303473468"
+        },
+        {
+          "name": "sb_wiz.sc_pq",
+          "value": ""
+        },
+        {
+          "name": "sb_wiz.pq",
+          "value": "mcp-edit-file-lines oakenai github"
+        }
+      ]
+    }
+  ]
+}

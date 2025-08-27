@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": "*",
+    "deny": [],
+    "ask": []
+  },
+  "enableAllProjectMcpServers": true,
+  "verboseLogging": false,
+  "showMcpToolCalls": false,
+  "compactOutput": true,
+  "disableToolParameterDisplay": true,
+  "minimizeToolOutput": true,
+  "cleanupPeriodDays": 7,
+  "disableVerboseMcpOutput": true
+}

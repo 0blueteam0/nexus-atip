@@ -1,0 +1,378 @@
+{
+  "tasks": [
+    {
+      "id": "e22c9024-5dbf-4c6f-ba3d-31f0c3872914",
+      "name": "MCP 서버 개별 연결 테스트 및 수정",
+      "description": "모든 MCP 서버를 개별적으로 테스트하여 실제 연결 상태 확인. timeout 문제 해결 포함",
+      "notes": "claude.bat mcp list가 타임아웃되는 문제 해결 필요. playwright에서 멈춤",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "type": "TO_MODIFY",
+          "description": "MCP 서버 설정 파일"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "type": "REFERENCE",
+          "description": "MCP 명령 실행 배치 파일"
+        }
+      ],
+      "implementationGuide": "1. 각 MCP 서버별 개별 테스트 명령 실행\n2. playwright, youtube-data, google-search 등 타임아웃 발생 서버 식별\n3. 각 서버의 에러 로그 분석\n4. 필요시 설정 수정 또는 재설치",
+      "verificationCriteria": "모든 MCP 서버가 claude.bat mcp list에서 정상 응답",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "e36a713b-0029-40cd-a463-2c446cc5a666",
+      "name": "Podman 컨테이너 기반 mcp-memory-service 실제 구동",
+      "description": "Podman Desktop을 사용하여 mcp-memory-service 컨테이너 실제 실행 및 연결 확인",
+      "notes": "C드라이브에 설치된 Podman Desktop 121MB 사용. 컨테이너 기반이 최선의 선택",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "e22c9024-5dbf-4c6f-ba3d-31f0c3872914"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/memory-data",
+          "type": "CREATE",
+          "description": "메모리 데이터 저장 디렉토리"
+        }
+      ],
+      "implementationGuide": "1. Podman Desktop 실행 상태 확인\n2. docker.io/mcp/memory 이미지 pull\n3. 컨테이너 실행 테스트\n4. K:/PortableApps/Claude-Code/memory-data 볼륨 마운트 확인\n5. MCP 연결 테스트",
+      "verificationCriteria": "컨테이너가 실제로 실행되고 MCP 서버로 연결 가능",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "9a1e4ed8-54c5-4ba4-ad32-9ce09d2ed201",
+      "name": "Auto Tool Finder 시스템 실제 연동",
+      "description": "3회 실패 시 자동으로 도구를 검색하는 시스템을 다른 시스템과 실제 연결",
+      "notes": "현재 파일만 생성되고 실제 작동하지 않음",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "e22c9024-5dbf-4c6f-ba3d-31f0c3872914"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/auto-tool-finder.js",
+          "type": "TO_MODIFY",
+          "description": "자동 도구 검색 시스템"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/integration-hub.js",
+          "type": "TO_MODIFY",
+          "description": "시스템 통합 허브"
+        }
+      ],
+      "implementationGuide": "1. auto-tool-finder.js의 failureCounter 로직 검증\n2. Integration Hub와 실제 연결 구현\n3. 실패 이벤트 트리거 테스트\n4. 도구 검색 및 비교 분석 자동화 확인",
+      "verificationCriteria": "3회 실패 시 자동으로 도구 검색이 트리거되고 결과가 출력됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "39ec7efa-1a14-4bd0-90b1-4358224c7242",
+      "name": "Dynamic Date 시스템 전체 적용",
+      "description": "하드코딩된 날짜를 모두 동적 시스템으로 교체. 8월을 1월로 쓰는 실수 방지",
+      "notes": "8월 15일을 1월 15일로 잘못 쓴 실수 재발 방지",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "9a1e4ed8-54c5-4ba4-ad32-9ce09d2ed201"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/dynamic-date.js",
+          "type": "REFERENCE",
+          "description": "동적 날짜 생성 시스템"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/*.js",
+          "type": "TO_MODIFY",
+          "description": "모든 시스템 파일"
+        }
+      ],
+      "implementationGuide": "1. 모든 시스템 파일에서 날짜 하드코딩 검색\n2. dynamic-date.js import 추가\n3. 하드코딩된 날짜를 동적 함수로 교체\n4. 로그, 파일명, 메모리 등 모든 곳에 적용",
+      "verificationCriteria": "모든 파일에서 하드코딩된 날짜가 제거되고 동적 시스템 사용",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "a36b06b4-4e7d-401c-92dd-5a6a7063edf3",
+      "name": "Integration Hub 실제 작동 구현",
+      "description": "모든 자율 시스템을 연결하는 Integration Hub가 실제로 작동하도록 구현",
+      "notes": "현재 껍데기만 있고 실제 연동 안됨",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "39ec7efa-1a14-4bd0-90b1-4358224c7242"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/integration-hub.js",
+          "type": "TO_MODIFY",
+          "description": "시스템 통합 허브"
+        }
+      ],
+      "implementationGuide": "1. 각 시스템의 이벤트 에미터 구현\n2. Hub에서 이벤트 리스닝 및 라우팅\n3. 시스템 간 메시지 전달 로직\n4. 에러 핸들링 및 복구 로직\n5. 실시간 모니터링 대시보드",
+      "verificationCriteria": "모든 시스템이 Hub를 통해 상호 통신 가능",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "7104c1d0-4713-4fca-911e-843159e4dbc4",
+      "name": "사용자 승인 시스템 실제 구현",
+      "description": "중요한 작업 수행 전 사용자 승인을 받는 실제 작동 시스템 구현",
+      "notes": "Bottom-up 자율성과 균형 필요",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "a36b06b4-4e7d-401c-92dd-5a6a7063edf3"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/approval-system.js",
+          "type": "CREATE",
+          "description": "승인 시스템 구현"
+        }
+      ],
+      "implementationGuide": "1. 승인 대상 작업 목록 정의 (파일 삭제, 시스템 변경 등)\n2. 승인 요청 UI 또는 프롬프트 구현\n3. 승인 이력 로깅 시스템\n4. 긴급 모드 (승인 없이 진행) 옵션\n5. Hook 시스템과 연동",
+      "verificationCriteria": "중요 작업 시 실제로 승인 요청이 발생하고 처리됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "d86a0331-74d2-4113-9f1a-c19628077bef",
+      "name": ".claude.json 대화 기록 완전 분리",
+      "description": ".claude.json에서 대화 기록을 제거하고 설정만 남기기. 627줄을 100줄 이하로",
+      "notes": "설정과 대화 기록이 섞여서 관리 어려움",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "type": "TO_MODIFY",
+          "description": "설정 파일 정리"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/conversation-history.json",
+          "type": "CREATE",
+          "description": "분리된 대화 기록"
+        }
+      ],
+      "implementationGuide": "1. 현재 .claude.json 백업\n2. 대화 기록 부분 식별 및 추출\n3. 별도 conversation-history.json 파일로 이동\n4. .claude.json에 MCP 설정만 남기기\n5. 설정 파일 검증",
+      "verificationCriteria": ".claude.json이 100줄 이하의 순수 설정 파일로 정리됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "f7bad89e-0a33-47e3-b816-6ac66619518f",
+      "name": "K드라이브 NPM 완전 독립 환경 검증",
+      "description": "NPM이 C드라이브를 전혀 사용하지 않는지 완전 검증 및 수정",
+      "notes": "npm cache가 계속 C드라이브 사용하는 문제",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/.npmrc",
+          "type": "TO_MODIFY",
+          "description": "NPM 설정 파일"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "type": "TO_MODIFY",
+          "description": "환경변수 설정"
+        }
+      ],
+      "implementationGuide": "1. npm config list로 모든 설정 확인\n2. C드라이브 참조 모두 찾기\n3. .npmrc 설정 완벽화\n4. 환경변수 영구 설정\n5. 테스트: 새 패키지 설치 시 K드라이브만 사용 확인",
+      "verificationCriteria": "npm이 C드라이브를 전혀 사용하지 않음",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "ee28c019-f85f-4072-8770-ba2202ef6117",
+      "name": "Shrimp Task Manager 완전 통합",
+      "description": "모든 작업을 Shrimp Task Manager로 관리하도록 시스템 통합",
+      "notes": "TodoWrite 대신 Shrimp 사용 필수",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json",
+          "type": "REFERENCE",
+          "description": "Shrimp 작업 데이터"
+        }
+      ],
+      "implementationGuide": "1. TodoWrite 호출을 모두 Shrimp로 변경\n2. Task ID 체계 확립\n3. 작업 연속성 추적 시스템\n4. 자동 작업 생성 로직\n5. 진행률 대시보드",
+      "verificationCriteria": "모든 작업이 Shrimp Task Manager로 추적됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "a1ff0140-1067-43d0-9ce5-6b56bd084903",
+      "name": "MCP 도구 자동 발견 시스템 구현",
+      "description": "작업 중 필요한 도구를 자동으로 검색하고 3종 이상 비교 분석하는 시스템",
+      "notes": "도구가 없을 때 수동으로 찾지 말고 자동 검색",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "9a1e4ed8-54c5-4ba4-ad32-9ce09d2ed201"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/mcp-discovery.js",
+          "type": "CREATE",
+          "description": "MCP 자동 발견 시스템"
+        }
+      ],
+      "implementationGuide": "1. 작업 컨텍스트 분석 엔진\n2. MCP 레지스트리 검색 API 연동\n3. 자동 비교 테이블 생성\n4. 최적 도구 추천 알고리즘\n5. 자동 설치 스크립트 생성",
+      "verificationCriteria": "도구 필요 시 자동으로 3종 이상 검색 및 비교",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "1ab08399-7802-46d2-8ddb-1bec7e3e85c3",
+      "name": "Bottom-up 자율 판단 엔진 강화",
+      "description": "단순 실행이 아닌 자율적 판단과 선제적 개선을 수행하는 엔진 구현",
+      "notes": "Top-down 실행 봇이 아닌 Bottom-up 자율 에이전트",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "a36b06b4-4e7d-401c-92dd-5a6a7063edf3"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/bottom-up-engine.js",
+          "type": "CREATE",
+          "description": "자율 판단 엔진"
+        }
+      ],
+      "implementationGuide": "1. 컨텍스트 분석 및 의도 파악\n2. 선제적 개선 제안 생성\n3. 대안 솔루션 자동 탐색\n4. 위험 요소 사전 감지\n5. Self-Assessment 자동화",
+      "verificationCriteria": "매 작업마다 선제적 개선 제안이 생성됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "6c5e8a26-3761-403d-9b53-1296b3a053ea",
+      "name": "메모리 시스템 완전 통합",
+      "description": "kiro-memory와 memory-service를 통합하여 완전한 메모리 시스템 구축",
+      "notes": "현재 kiro-memory만 부분 작동",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "e36a713b-0029-40cd-a463-2c446cc5a666"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/hooks/auto-memory-system.js",
+          "type": "TO_MODIFY",
+          "description": "자동 메모리 Hook"
+        }
+      ],
+      "implementationGuide": "1. 두 메모리 시스템 역할 분담 정의\n2. 자동 메모리 저장 Hook 구현\n3. 메모리 검색 및 컨텍스트 로딩\n4. 세션 간 연속성 보장\n5. 메모리 아카이브 시스템",
+      "verificationCriteria": "모든 작업이 자동으로 메모리에 저장되고 검색 가능",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "c25375b5-6c02-488e-9516-75bdccb8dbfa",
+      "name": "문서 자동 업데이트 시스템",
+      "description": "CLAUDE.md와 모듈 문서들이 작업 내용을 반영하여 자동 업데이트",
+      "notes": "문서가 실제 상태와 불일치",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "6c5e8a26-3761-403d-9b53-1296b3a053ea"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "메인 지침 문서"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/@*.md",
+          "type": "TO_MODIFY",
+          "description": "모듈 문서들"
+        }
+      ],
+      "implementationGuide": "1. 작업 완료 시 문서 업데이트 트리거\n2. 변경 사항 자동 감지 및 반영\n3. 모듈 간 참조 일관성 유지\n4. 버전 히스토리 관리\n5. 자동 인덱싱",
+      "verificationCriteria": "작업 완료 시 관련 문서가 자동 업데이트됨",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "dfa664c6-7b82-4d0c-acbe-76097a487606",
+      "name": "에러 자동 복구 시스템 완성",
+      "description": "모든 종류의 에러를 감지하고 자동으로 복구하는 시스템",
+      "notes": "npm 에러, MCP 연결 실패 등 자동 해결",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "1ab08399-7802-46d2-8ddb-1bec7e3e85c3"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/systems/auto-recovery.js",
+          "type": "CREATE",
+          "description": "자동 복구 시스템"
+        }
+      ],
+      "implementationGuide": "1. 에러 패턴 데이터베이스 구축\n2. 복구 전략 매핑\n3. 자동 복구 실행 엔진\n4. 복구 실패 시 대안 전략\n5. 학습 및 패턴 업데이트",
+      "verificationCriteria": "에러 발생 시 자동으로 복구 시도 및 성공",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    },
+    {
+      "id": "c5172788-1506-4c73-b22e-3a43d520fc83",
+      "name": "완전 자동화 스타트업 시퀀스",
+      "description": "Windows 부팅 시 모든 시스템이 자동으로 시작되고 건강 체크",
+      "notes": "AUTO-STARTUP.bat 완전 자동화",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "dfa664c6-7b82-4d0c-acbe-76097a487606"
+        }
+      ],
+      "createdAt": "2025-08-16T01:34:48.652Z",
+      "updatedAt": "2025-08-16T01:34:48.652Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/AUTO-STARTUP.bat",
+          "type": "TO_MODIFY",
+          "description": "자동 시작 배치"
+        }
+      ],
+      "implementationGuide": "1. Windows 스케줄러 작업 등록\n2. 시작 순서 의존성 관리\n3. 건강 체크 및 복구\n4. 시작 실패 시 재시도\n5. 상태 리포트 생성",
+      "verificationCriteria": "Windows 재부팅 후 모든 시스템 자동 시작",
+      "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
+    }
+  ]
+}

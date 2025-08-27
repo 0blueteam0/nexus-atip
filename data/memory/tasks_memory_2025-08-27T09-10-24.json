@@ -1,0 +1,90 @@
+{
+  "tasks": [
+    {
+      "id": "74612c22-c56d-445b-91d8-6018ef03d59d",
+      "name": "데이터 백업 및 검증",
+      "description": "_ACTIVE 폴더의 기존 데이터를 안전하게 백업하고 무결성 검증",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T08:57:38.339Z",
+      "updatedAt": "2025-08-27T09:01:29.864Z",
+      "implementationGuide": "1. _ACTIVE/data/ShrimpData 전체 백업\n2. JSON 파일 유효성 검증\n3. 손상된 데이터 복구",
+      "verificationCriteria": "모든 JSON 파일이 유효하고 백업 완료",
+      "analysisResult": "Shrimp Task Manager 데이터 정합성 복구 및 최적화",
+      "summary": "데이터 백업 완료. 4개 JSON 파일 모두 백업 및 검증 완료. 손상된 current-tasks.json 복구 성공",
+      "completedAt": "2025-08-27T09:01:29.838Z"
+    },
+    {
+      "id": "dd2335c1-6d87-4201-a79b-806caf017930",
+      "name": "ShrimpData 폴더 재구성",
+      "description": "K:/PortableApps/Claude-Code/ShrimpData 메인 위치 생성 및 구조화",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "74612c22-c56d-445b-91d8-6018ef03d59d"
+        }
+      ],
+      "createdAt": "2025-08-27T08:57:38.339Z",
+      "updatedAt": "2025-08-27T09:02:21.919Z",
+      "implementationGuide": "1. 메인 ShrimpData 폴더 생성\n2. 하위 구조 설정 (tasks/, archive/, config/)\n3. 권한 및 접근성 확인",
+      "verificationCriteria": "폴더 구조가 올바르게 생성됨",
+      "analysisResult": "Shrimp Task Manager 데이터 정합성 복구 및 최적화",
+      "summary": "ShrimpData 메인 폴더 및 하위 구조 생성 완료. tasks/, archive/, config/ 3개 디렉토리 정상 생성",
+      "completedAt": "2025-08-27T09:02:21.881Z"
+    },
+    {
+      "id": "5cda58dc-9bab-454b-8766-6dacdb428434",
+      "name": "데이터 마이그레이션",
+      "description": "_ACTIVE에서 메인 위치로 데이터 이동 및 통합",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "dd2335c1-6d87-4201-a79b-806caf017930"
+        }
+      ],
+      "createdAt": "2025-08-27T08:57:38.339Z",
+      "updatedAt": "2025-08-27T09:03:32.853Z",
+      "implementationGuide": "1. current-tasks.json 이동\n2. 프로젝트 파일들 분류 및 이동\n3. 중복 제거 및 최적화",
+      "verificationCriteria": "모든 데이터가 새 위치에서 접근 가능",
+      "analysisResult": "Shrimp Task Manager 데이터 정합성 복구 및 최적화",
+      "summary": "데이터 마이그레이션 완료. current-tasks.json을 tasks/로, 3개 프로젝트 파일을 archive/로 분류 이동",
+      "completedAt": "2025-08-27T09:03:32.807Z"
+    },
+    {
+      "id": "9a220db5-6b08-40e5-b0fb-fce0f81e4da5",
+      "name": "언어 설정 통합",
+      "description": "분산된 언어 설정 파일들을 하나의 통합 설정으로 정리",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "5cda58dc-9bab-454b-8766-6dacdb428434"
+        }
+      ],
+      "createdAt": "2025-08-27T08:57:38.339Z",
+      "updatedAt": "2025-08-27T09:04:49.489Z",
+      "implementationGuide": "1. 모든 shrimp-*-config.json 파일 분석\n2. 통합 설정 파일 생성\n3. 불필요한 패치 파일 정리",
+      "verificationCriteria": "단일 설정 파일로 언어 전환 가능",
+      "analysisResult": "Shrimp Task Manager 데이터 정합성 복구 및 최적화",
+      "summary": "언어 설정 통합 완료. 통합 설정 파일 생성 및 이전 파일들 정리. bilingual 모드 기본 설정",
+      "completedAt": "2025-08-27T09:04:49.433Z"
+    },
+    {
+      "id": "e0b6bd8f-d51f-4abd-8667-0f6b524036de",
+      "name": "Shrimp 연결 테스트",
+      "description": "새 위치에서 Shrimp Task Manager 정상 작동 확인",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "9a220db5-6b08-40e5-b0fb-fce0f81e4da5"
+        }
+      ],
+      "createdAt": "2025-08-27T08:57:38.339Z",
+      "updatedAt": "2025-08-27T09:05:52.180Z",
+      "implementationGuide": "1. mcp list로 연결 확인\n2. 태스크 생성/조회 테스트\n3. 한글/영어 전환 테스트",
+      "verificationCriteria": "모든 Shrimp 기능 정상 작동",
+      "analysisResult": "Shrimp Task Manager 데이터 정합성 복구 및 최적화",
+      "summary": "Shrimp Task Manager 완전 복구 성공. MCP 연결 정상, 태스크 CRUD 작동, 한글/영어 태스크 모두 정상 생성",
+      "completedAt": "2025-08-27T09:05:52.109Z"
+    }
+  ]
+}

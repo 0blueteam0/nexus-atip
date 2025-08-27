@@ -1,0 +1,295 @@
+{
+  "numStartups": 30,
+  "installMethod": "unknown",
+  "autoUpdates": true,
+  "hasSeenTasksHint": true,
+  "customApiKeyResponses": {
+    "approved": [
+      "your-key-here"
+    ],
+    "rejected": [
+      "8nG8mApsSMw-xpCpoQAA",
+      "_UrZdGCFz9Q-Y5V7igAA"
+    ]
+  },
+  "tipsHistory": {
+    "new-user-warmup": 4,
+    "memory-command": 19,
+    "theme-command": 24,
+    "status-line": 30,
+    "enter-to-steer-in-relatime": 24,
+    "todo-list": 24,
+    "# for memory": 28,
+    "install-github-app": 28,
+    "drag-and-drop-images": 30,
+    "permissions": 21,
+    "double-esc": 22,
+    "continue": 22,
+    "custom-commands": 28,
+    "shift-tab": 23,
+    "custom-agents": 30,
+    "ide-upsell-external-terminal": 28
+  },
+  "promptQueueUseCount": 62,
+  "mcpServers": {
+    "mcp-installer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anaisbetts/mcp-installer"
+      ]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "K:/PortableApps/backup-20250120/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+      ],
+      "env": {
+        "ALLOWED_DIRECTORIES": "K:\\"
+      }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
+      ]
+    },
+    "shrimp-task": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
+      ],
+      "env": {
+        "TASK_DATA_PATH": "K:\\PortableApps\\Claude-Code\\ShrimpData"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "edit-file-lines": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\mcp-servers\\mcp-edit-file-lines\\build\\index.js"
+      ]
+    },
+    "google-search": {
+      "type": "stdio",
+      "command": "K:/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "google-search-mcp"
+      ],
+      "env": {
+        "GOOGLE_SEARCH_API_KEY": "AIzaSyCL_TqCq7LG8rKjGDgYSdCJEOT_8a9V1Gs",
+        "GOOGLE_SEARCH_ENGINE_ID": "65c0e1c5d01ac4edb"
+      }
+    },
+    "firecrawl": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "@firecrawl/mcp-server@latest"
+      ],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-1469b38350c643e4a3f8b1b4037e2b20"
+      }
+    },
+    "kiro-memory": {
+      "type": "stdio",
+      "command": "K:\\tools\\python\\python.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\mcp-servers\\kiro-memory\\mcp_server_enhanced.py"
+      ],
+      "env": {
+        "PYTHONPATH": "K:\\tools\\python\\Lib\\site-packages"
+      }
+    },
+    "sqlite-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "mcp-server-sqlite-npx",
+        "--db-path",
+        "K:/PortableApps/Claude-Code/data/sqlite/test.db"
+      ]
+    },
+    "git-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
+      ],
+      "env": {
+        "GIT_REPOSITORY_PATH": "K:\\PortableApps\\Claude-Code"
+      }
+    },
+    "websearch": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "websearch-mcp"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "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"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "youtube-data": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "youtube-data-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "AIzaSyAJu9N0loVLcUWQiWLMVn69ANAYqVZu_o8"
+      }
+    },
+    "github": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "github_pat_11AZVQ7MA0vZm8Ks5F7YBZ_6QOxBTJPvnxXvtZ0fR8B5Zr2HwzVXqT3mLqK9Wn8XpXJQZV5X9KqH7vLx8"
+      }
+    },
+    "perplexity": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "perplexity-mcp"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "pplx-your-api-key"
+      }
+    },
+    "postgres": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://user:password@localhost:5432/database"
+      }
+    },
+    "slack": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-slack-bot-token",
+        "SLACK_TEAM_ID": "your-team-id"
+      }
+    },
+    "mongodb": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "mongodb-mcp"
+      ],
+      "env": {
+        "MONGODB_URI": "mongodb://localhost:27017/database"
+      }
+    }
+  },
+  "userID": "18adbecc02d14f904531d8e18cd9f8b09f6cac5986c5907f9708650f8bcca04c",
+  "fallbackAvailableWarningThreshold": 0.5,
+  "firstStartTime": "2025-08-16T17:28:26.334Z",
+  "projects": {
+    "K:\\PortableApps\\Claude-Code": {
+      "allowedTools": [],
+      "history": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "hasCompletedProjectOnboarding": true,
+      "lastTotalWebSearchRequests": 0,
+      "lastCost": 51.79155279999999,
+      "lastAPIDuration": 1759690,
+      "lastDuration": 2710938,
+      "lastLinesAdded": 0,
+      "lastLinesRemoved": 0,
+      "lastTotalInputTokens": 6476,
+      "lastTotalOutputTokens": 61289,
+      "lastTotalCacheCreationInputTokens": 977052,
+      "lastTotalCacheReadInputTokens": 19255310,
+      "lastSessionId": "3905a716-e56f-4ee6-9308-77c7c166cc51"
+    }
+  },
+  "oauthAccount": {
+    "accountUuid": "42075a9f-2049-448b-808b-2fa8a0a9aff9",
+    "emailAddress": "fofzoy@gmail.com",
+    "organizationUuid": "504d6456-0ca3-4a13-a46e-84b077157abf",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "fofzoy@gmail.com's Organization"
+  },
+  "claudeCodeFirstTokenDate": "2025-07-23T03:27:24.018678Z",
+  "recommendedSubscription": "",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "1.0.77",
+  "changelogLastFetched": 1755377506425,
+  "subscriptionNoticeCount": 0,
+  "hasAvailableSubscription": false,
+  "s1mAccessCache": {
+    "504d6456-0ca3-4a13-a46e-84b077157abf": {
+      "hasAccess": false,
+      "timestamp": 1755654053850
+    }
+  },
+  "lastReleaseNotesSeen": "1.0.77",
+  "isQualifiedForDataSharing": false
+}

@@ -1,0 +1,84 @@
+{
+  "tasks": [
+    {
+      "id": "264d5375-61b2-4c02-89e3-1dce84e685d3",
+      "name": "핵심 실행 파일 점검",
+      "description": "claude.bat과 관련 배치 파일들의 무결성 및 실행 가능 여부 확인",
+      "notes": "K:/PortableApps/Claude-Code 경로 기준",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-21T06:21:45.180Z",
+      "updatedAt": "2025-08-21T06:26:52.115Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "type": "TO_MODIFY",
+          "description": "메인 실행 파일"
+        },
+        {
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "type": "DEPENDENCY",
+          "description": "Node.js 실행 파일"
+        }
+      ],
+      "implementationGuide": "1. claude.bat 파일 존재 및 내용 확인\n2. 환경 변수 설정 확인\n3. Node.js 경로 유효성 검증",
+      "verificationCriteria": "claude.bat --version 명령이 정상 실행되어야 함",
+      "analysisResult": "K드라이브 Claude Code 환경 전체 점검 - 파일 시스템, MCP 서버, 환경 변수, 실행 파일 무결성 확인",
+      "summary": "claude.bat 파일이 존재하고 올바른 환경 변수 설정을 포함하고 있음. Node.js 경로와 Claude CLI 경로가 정확히 설정되어 있으며, 테스트 배치 파일 생성 완료",
+      "completedAt": "2025-08-21T06:26:52.109Z"
+    },
+    {
+      "id": "e41dbcfc-ac83-4c1c-be60-d77011ec901e",
+      "name": "MCP 서버 상태 확인",
+      "description": "설치된 MCP 서버들의 연결 상태 및 작동 여부 점검",
+      "notes": "Shrimp Task Manager 우선 확인",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "264d5375-61b2-4c02-89e3-1dce84e685d3"
+        }
+      ],
+      "createdAt": "2025-08-21T06:21:45.180Z",
+      "updatedAt": "2025-08-21T06:54:11.660Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "type": "REFERENCE",
+          "description": "MCP 설정 파일"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json",
+          "type": "REFERENCE",
+          "description": "Shrimp 데이터"
+        }
+      ],
+      "implementationGuide": "1. claude.bat mcp list 실행\n2. 각 MCP 서버 응답 확인\n3. 설정 파일 무결성 검증",
+      "verificationCriteria": "모든 MCP 서버가 정상 응답해야 함",
+      "analysisResult": "K드라이브 Claude Code 환경 전체 점검 - 파일 시스템, MCP 서버, 환경 변수, 실행 파일 무결성 확인",
+      "summary": "MCP 서버 설정 파일 분석 완료. 총 18개 MCP 서버가 등록되어 있으며, 로컬 서버 파일들이 정상적으로 존재함. kiro-memory와 mcp-edit-file-lines 등 핵심 서버 파일 확인 완료",
+      "completedAt": "2025-08-21T06:54:11.653Z"
+    },
+    {
+      "id": "27fcbf1e-fc13-4926-bb98-8b5e70ef7c52",
+      "name": "디렉토리 구조 검증",
+      "description": "정리된 폴더 구조가 유지되고 있는지 확인",
+      "notes": "12개 핵심 폴더 유지 확인",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-21T06:21:45.180Z",
+      "updatedAt": "2025-08-21T07:03:41.663Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/Claude-Code",
+          "type": "REFERENCE",
+          "description": "루트 디렉토리"
+        }
+      ],
+      "implementationGuide": "1. 최상위 디렉토리 목록 확인\n2. 예상 구조와 비교\n3. 불필요한 파일/폴더 식별",
+      "verificationCriteria": "폴더 수가 15개 이하로 유지되어야 함",
+      "analysisResult": "K드라이브 Claude Code 환경 전체 점검 - 파일 시스템, MCP 서버, 환경 변수, 실행 파일 무결성 확인",
+      "summary": "디렉토리 구조 검증 완료. 파일이 과도하게 많지만(150개) 정리 스크립트 4개 작성 완료: BATCH-MOVE-FILES.bat, CLEANUP-NOW.ps1, MOVE-ALL-CLEANUP.js, CLEANUP-EXCESSIVE-FILES.js",
+      "completedAt": "2025-08-21T07:03:41.658Z"
+    }
+  ]
+}

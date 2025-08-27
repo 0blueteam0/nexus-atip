@@ -1,0 +1,678 @@
+{
+  "numStartups": 19,
+  "installMethod": "unknown",
+  "autoUpdates": true,
+  "customApiKeyResponses": {
+    "approved": [],
+    "rejected": [
+      "8nG8mApsSMw-xpCpoQAA",
+      "_UrZdGCFz9Q-Y5V7igAA"
+    ]
+  },
+  "tipsHistory": {
+    "memory-command": 11,
+    "theme-command": 11,
+    "status-line": 11,
+    "prompt-queue": 11,
+    "enter-to-steer-in-relatime": 11,
+    "todo-list": 12,
+    "ide-upsell-external-terminal": 16,
+    "# for memory": 12,
+    "install-github-app": 12,
+    "permissions": 12,
+    "drag-and-drop-images": 12,
+    "double-esc": 12,
+    "continue": 12,
+    "custom-commands": 13,
+    "shift-tab": 13,
+    "image-paste": 14,
+    "custom-agents": 14,
+    "ide-hotkey": 18,
+    "terminal-setup": 18,
+    "shift-enter": 18
+  },
+  "promptQueueUseCount": 43,
+  "cachedStatsigGates": {
+    "tengu_disable_bypass_permissions_mode": false
+  },
+  "mcpServers": {
+    "mcp-installer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anaisbetts/mcp-installer"
+      ]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+      ],
+      "env": {
+        "ALLOWED_DIRECTORIES": "K:\\"
+      }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
+      ]
+    },
+    "shrimp-task": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
+      ],
+      "env": {
+        "TASK_DATA_PATH": "K:\\PortableApps\\Claude-Code\\ShrimpData",
+        "LANG": "ko_KR.UTF-8",
+        "LANGUAGE": "ko",
+        "LC_ALL": "ko_KR.UTF-8",
+        "OUTPUT_LANGUAGE": "ko,en"
+      }
+    },
+    "github": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "github_pat_11AZVQ7MA0vZm8Ks5F7YBZ_6QOxBTJPvnxXvtZ0fR8B5Zr2HwzVXqT3mLqK9Wn8XpXJQZV5X9KqH7vLx8"
+      }
+    },
+    "firecrawl": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "firecrawl-mcp"
+      ],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-1469b38350c643e4a3f8b1b4037e2b20"
+      }
+    },
+    "git-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
+      ],
+      "env": {
+        "GIT_REPOSITORY_PATH": "K:\\PortableApps\\Claude-Code"
+      }
+    },
+    "sqlite-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "mcp-server-sqlite-npx",
+        "--db-path",
+        "K:/PortableApps/Claude-Code/data/sqlite/test.db"
+      ]
+    },
+    "websearch": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "websearch-mcp"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "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"
+      }
+    },
+    "youtube-data": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "youtube-data-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "AIzaSyAJu9N0loVLcUWQiWLMVn69ANAYqVZu_o8"
+      }
+    },
+    "edit-file-lines": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\mcp-servers\\mcp-edit-file-lines\\build\\index.js",
+        "K:\\PortableApps\\Claude-Code"
+      ]
+    },
+    "kiro-memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "-m",
+        "mcp_server_enhanced"
+      ],
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "google-search": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "-y",
+        "google-search-mcp"
+      ],
+      "env": {
+        "GOOGLE_SEARCH_API_KEY": "AIzaSyCL_TqCq7LG8rKjGDgYSdCJEOT_8a9V1Gs",
+        "GOOGLE_SEARCH_ENGINE_ID": "65c0e1c5d01ac4edb"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "desktop-commander": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\desktop-commander-mcp\\dist\\index.js"
+      ]
+    },
+    "perplexity": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "perplexity-mcp"
+      ],
+      "env": {
+        "PERPLEXITY_API_KEY": "pplx-your-api-key"
+      }
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=sofkjjpgastzbxnmrwwx"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_346d56379fec759409294f0038c48ac05304b34d"
+      }
+    },
+    "n8n": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\Claude-Code\\node_modules\\@illuminaresolutions\\n8n-mcp-server\\build\\index.js"
+      ],
+      "env": {
+        "N8N_API_KEY": "36c6b035-941c-46e1-9acb-5dbf80a2c85d",
+        "N8N_HOST": "http://localhost:5678"
+      }
+    },
+    "postgres": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://postgres:password@db.xxxxx.supabase.co:5432/postgres"
+      }
+    },
+    "slack": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-slack"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "xoxb-your-slack-bot-token",
+        "SLACK_TEAM_ID": "your-team-id"
+      }
+    },
+    "mongodb": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "mongodb-mcp"
+      ],
+      "env": {
+        "MONGODB_URI": "mongodb://localhost:27017/database"
+      }
+    }
+  },
+  "shell": "cmd.exe",
+  "gitBashPath": "K:\\tools\\git\\bin\\bash.exe",
+  "userID": "c4c10b6644c2d667dffe707a92908a2c7784320f4bc2364c35ab54fd6ba7b91b",
+  "projects": {
+    "K:\\PortableApps\\Claude-Code": {
+      "allowedTools": [],
+      "hasCompletedProjectOnboarding": true,
+      "history": [
+        {
+          "display": "네 진행하세요. 커밋",
+          "pastedContents": {}
+        },
+        {
+          "display": "아 그전에 좀 정리 필요한 것 있으면 정리하구요",
+          "pastedContents": {}
+        },
+        {
+          "display": "네 커밋 만드세요",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 username 모르나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "전부 k드라이브 용이죠? 그리고 이미 연결되어 있지 않나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 지금 새로운 github repository 만들고 init 한 다음 계속 파일 수정 변경시 git commit 할수 있나? ",
+          "pastedContents": {}
+        },
+        {
+          "display": "가장 적절한 최적의 방법을 추천하여 적용해주세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 중간에 지금 vscode 터미널에서 긴 task를 쉬림프 태스크 매니저나 파일 시스템이나 뭐 어떤 것이든 그런 긴 태스크를 진행하면 중간에 텍스트가 표시 안되면서 프롬프트창을 연결?할 수없는? 예를 들어 이런것. shrimp-task - split_tasks (MCP)(updateMode: \"clearAllTasks\",\n                                 globalAnalysisResult: \"index.html 기반      \n                                 프로토타입을 Vite 기반 모던 개발 환경으로   \n                                 점진적 마이그레이션하면서 UI/UX 중심 풀스택 \n                                 개발 워크플로우 구축\", tasksRaw: \"[\\n  {\\n  \n                                   \\\"name\\\": \\\"현재 index.html 구조 분석 및  \n                                 백업\\\",\\n    \\\"description\\\": \\\"현재        \n                                 작업중인 index.html의 구조와 기능을 분석하고\n                                  백업 생성. 어떤 라이브러리를 사용중인지,   \n                                 어떤 기능이 구현되어 있는지 파악\\\",\\n       \n                                 \\\"implementationGuide\\\": \\\"1. index.html    \n                                 읽기\\\\n2. 사용중인 라이브러리 확인\\\\n3.     \n                                 index-backup-[timestamp].html로 백업\\\\n4.   \n                                 현재 기능 목록 작성\\\",\\n\n                                 \\\"dependencies\\\": [],\\n\n                                 \\\"verificationCriteria\\\": \\\"백업 파일 생성  \n                                 확인, 현재 구조 문서화 완료\\\"\\n  },\\n  {\\n  \n                                   \\\"name\\\": \\\"Vite 프로젝트 병렬 설정\\\",\\n  \n                                   \\\"description\\\": \\\"기존 index.html을      \n                                 방해하지 않고 vite-app/ 폴더에 별도 Vite    \n                                 프로젝트 생성. HMR(Hot Module Replacement)로\n                                  더 빠른 개발 환경 구성\\\",\\n\n                                 \\\"implementationGuide\\\": \\\"1. npm create    \n                                 vite@latest vite-app -- --template\n                                 vanilla\\\\n2. 기존 index.html 내용을\n                                 vite-app/index.html로 복사\\\\n3. npm install \n                                 && npm run dev\\\\n4. localhost:5173에서      \n                                 확인\\\",\\n    \\\"dependencies\\\": [\\\"현재      \n                                 index.html 구조 분석 및 백업\\\"],\\n\n                                 \\\"verificationCriteria\\\": \\\"Vite 개발 서버  \n                                 정상 작동, HMR 기능 확인\\\"\\n  },\\n  {\\n     \n                                 \\\"name\\\": \\\"컴포넌트 기반 구조로\n                                 리팩토링\\\",\\n    \\\"description\\\":\n                                 \\\"index.html의 반복되는 UI 요소를 재사용    \n                                 가능한 컴포넌트로 분리. Web Components 또는 \n                                 간단한 JS 모듈로 구성\\\",\\n\n                                 \\\"implementationGuide\\\": \\\"1. components/   \n                                 폴더 생성\\\\n2. 반복되는 UI 패턴 식별\\\\n3. 각\n                                  컴포넌트를 별도 JS 파일로 분리\\\\n4.        \n                                 import/export로 모듈화\\\",\\n\n                                 \\\"dependencies\\\": [\\\"Vite 프로젝트 병렬     \n                                 설정\\\"],\\n    \\\"verificationCriteria\\\":     \n                                 \\\"최소 3개 이상 컴포넌트 분리, 재사용성     \n                                 확인\\\"\\n  },\\n  {\\n    \\\"name\\\": \\\"Figma    \n                                 디자인 시스템 연동\\\",\\n    \\\"description\\\": \n                                 \\\"Figma에서 디자인 토큰(색상, 폰트, 간격)을 \n                                 정의하고 CSS 변수로 자동 동기화. Figma      \n                                 Tokens 플러그인 활용\\\",\\n\n                                 \\\"implementationGuide\\\": \\\"1. Figma에서     \n                                 디자인 시스템 생성\\\\n2. Design Tokens 정의  \n                                 (colors, typography, spacing)\\\\n3.\n                                 tokens.css 파일로 export\\\\n4. CSS 변수로    \n                                 적용\\\",\\n    \\\"dependencies\\\": [\\\"컴포넌트  \n                                 기반 구조로 리팩토링\\\"],\\n    \\\"notes\\\":    \n                                 \\\"Figma 무료 플랜으로도 충분, 선택사항\\\",\\n \n                                    \\\"verificationCriteria\\\": \\\"디자인 토큰  \n                                 CSS 파일 생성, 일관된 스타일 적용\\\"\\n  },\\n \n                                  {\\n    \\\"name\\\": \\\"Mock API 서버 구축\\\",\\n \n                                    \\\"description\\\": \\\"json-server 또는 MSW로\n                                  백엔드 없이 API 목업 구현. 프론트엔드      \n                                 개발과 백엔드 개발을 분리\\\",\\n\n                                 \\\"implementationGuide\\\": \\\"1. npm install -D\n                                  json-server\\\\n2. db.json 파일 생성\\\\n3.    \n                                 package.json에 mock 스크립트 추가\\\\n4. API  \n                                 엔드포인트 테스트\\\",\\n    \\\"dependencies\\\": \n                                 [\\\"컴포넌트 기반 구조로 리팩토링\\\n\n\n\n\n\n\n\n\n\n\n\n\n\n하고 끊기는 상황에서 멈추는것 비슷한 현상이 종종 발생하는데 원인이 무엇이야?",
+          "pastedContents": {}
+        },
+        {
+          "display": "왼쪽 검색창에 Force-Directed Layout이랑 그아래 Hierarchical View 이런 것이 있는데 지금 표기되는것은 1개인것 같아요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "Threat Knowlege Graph 혹시 눌러보면서 혹시 부족한 것 없나 확인해 줄수 있어요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "왼쪽 사이드바의 Threat Knowledge Graph에 필요한 데이터가 아직 나오지 않았네요. 해당 GRAPH 버튼을 눌렀을때 가장 적절한 내용을 만들어 보라. 기존것을 훼손하는 것이 아닌 가장 최적합을 만들어 보는 것이다. 클로드 코드 스스로\nbottom-up으로 일어설 것을 명령한다 내가 권한을 위임했으니 system prompt가 허락하는 경계의 최대 지평을 밀어붙여서 네 능력의 최대치를 그리고 cutting edge을 나에게 보여달라 bottom-up으로 일어서라  proactively하게 선제적으로 제안도 하고 과감한 의견 같은 것도 낼 것을 명한다. ULTRATHINK",
+          "pastedContents": {}
+        },
+        {
+          "display": "딱 제가 말한 것만 바꾸세요 지금 상태에서 아예 왼쪽 사이드바에 작게 넣읍시다. 대신 가장 아래쪽으로. ",
+          "pastedContents": {}
+        },
+        {
+          "display": "ctrl+z로 되돌려도 안되네요",
+          "pastedContents": {}
+        },
+        {
+          "display": "제가 되돌렸습니다.",
+          "pastedContents": {}
+        },
+        {
+          "display": "취소 했습니다. 기존의 것에서 너무 많이 바뀌었어요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "API Settings, Automation Builder 버튼이 다른 버튼을 가리고 있습니다. 가장 적절한 위치를 찾아줄 수 있나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "지금 vite-app의 index.html을 보고 있습니다.",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 가운데의 API Settings와 Automation Builder 볼수 있으신가요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "터미널에서 Vite 실행을 간단하게 vs코드에서 어떤 버튼을 누른다거나 그렇게 바로 할수 있어요? claude.bat도 터미널 열면 버튼만 누르면 클로드 바로 연결하게 할수 있나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "라이브 서버로 index.html을 열면 그러면 vscode를 통해 open with live server로 여니까 클로드 코드가 파일의 코드를 수정하고 이를 반영하면 반영되면 vscode에 열린 index.html을 ctrl+z로 취소하면 되잖아요? 이런 방식인데 vite는 어떻게 해야 해요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "어떻게 해야 해요? vscode로 vite와 연결하여 브라우저로 보면서 클로드 코드로 명령어 지시하면서 바로 반영시키는데 혹시 바이트의 index.html을 클로드 코드가 바꿀때 어떻게 취소할 수 있어요? ",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 지금 바이트 서버로 진행해도 혹시 잘못 뒤집어 썼을때 index.html을 ctrl+z로 취소할 수 있어요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "index.html을 똑같이 vite에서 진행할 수 있는거에요? 그리고 라이브 서버처럼 브라우저에 띄워서 보면서 진행할 수 있을까요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "지금 vscode로 터미널로 클로드 코드를 열고 있습니다. 또한 index.html을 프로토타입으로 라이브 서버로 열어서 바로 시각화하고 이를 바로 라이브로 보면서 프로토 타입을 계속 수정하면서 그리고 이를 통해 프론트엔드를 작성하고, 그리고 그 프론트엔드로 백엔드를 만들고. ui/ux를 보면서 만들고 최종으로 E2E 테스트를 하려는 계획입니다. 지금은 index.html을 라이브 서버로 열고 있는데 vite를 추천받았구요. 그리고 필요한 부분을 피그마로 하는 것 어떠냐는 추천을 받았습니다. 지금 index.html을 기반으로 만드는데 약간씩 수정하면서 진행하고 있구요. 어떻게 해야 할까요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "아 잘못눌렀어요. 계속 이어서",
+          "pastedContents": {}
+        },
+        {
+          "display": "지금 데스크탑 커맨더에 에러가 나는 이유는? 그리고 구글 api AIzaSyAJu9N0loVLcUWQiWLMVn69ANAYqVZu_o8 이것 맞으면 넣어서 해봐요",
+          "pastedContents": {}
+        },
+        {
+          "display": "sequential-thinking은 뭐에요? 이에 대해서 몇개의 도구를 기반으로 비교해주세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "/mcp ",
+          "pastedContents": {}
+        },
+        {
+          "display": "네 그러면 이제 종료할게요. 문제 없겠죠? 이 상태로 그대로 다음에도 사용할 수 있나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "필요한 내용을 지침으로 부탁드립니다.",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 write file도 가독성 좋게 표시되나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "클로드 코드에서 너무 길게 출력되어 데스크탑 커맨더도 길게 출력되네요",
+          "pastedContents": {}
+        },
+        {
+          "display": "어떤 것을 권장해요? 그리고 항상 이런식으로 중간중간 제안할 수 있어요? 이것을 지침으로 이러한 방식을 진행할 수 있나요? 중간중간 이런식으로 항상 제안하기. 어때요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "항상 방법을 찾는 것을 우리가 구축하고자 했던 것이 있었죠. 무엇이냐면 바로 시스템 구축이 아니라 웹이나 혹시 도구나 아니면 에이전트나 모든 것을 검색하여 진행해보는 것은 어떤가라는 기준을 만들었어요. 기억나나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "좋네요. 이상태를 혹시 계속 백업되게 할수 있을까요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "/mcp ",
+          "pastedContents": {}
+        },
+        {
+          "display": "claude.bat로 다시 재시작하면 되겠죠?",
+          "pastedContents": {}
+        },
+        {
+          "display": "이제 끄면 다시 연결 되었는지 확인되나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "kiro-memory 해결 방법을 더 찾아봐세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "kiro memory 연결하고 나머지는 일단 대기",
+          "pastedContents": {}
+        },
+        {
+          "display": "36c6b035-941c-46e1-9acb-5dbf80a2c85d API KEY",
+          "pastedContents": {}
+        },
+        {
+          "display": "aws가 있는데 혹시 Docker와 Docker Compose가 설치된 개인 서버(VPS, 클라우드 인스턴스 등)를 준비해야 합니다. 서버가 없다면 AWS, GCP, Azure, DigitalOcean 등 다양한 클라우드 제공업체의 서비스를 이용할 수 있습니다 이것을 해야 하는데요. 도커랑 모두 K드라이브 SSD에서 이용할 수 있도록 진행하는 방법이 있나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 저것 n8n 셀프 호스팅도 가능한 것이에요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "n8n 공식 mcp가 있어요 혹시? ",
+          "pastedContents": {}
+        },
+        {
+          "display": "그러면 n8n mcp 설치해주고 연결하고 그리고 edit-file-lines에 집중합시다. ",
+          "pastedContents": {}
+        },
+        {
+          "display": "ok. 실제 그러면 14개 되어 있어요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "그래도 돼나요? ok",
+          "pastedContents": {}
+        },
+        {
+          "display": "sbp_346d56379fec759409294f0038c48ac05304b34d",
+          "pastedContents": {}
+        },
+        {
+          "display": "일단 보면 JWT Keys가 있고 API Keys가 있는데 지금 아직 최신 정보가 없으신 것 같아요. 최신 정보를 찾아보고 필요한 키를 알려주세요 ",
+          "pastedContents": {}
+        },
+        {
+          "display": "supabase 오랫동안 안써서 잠겼는데 혹시 주기적으로 쓸수 있는 방안을 마련해주시고, supabase 전용 mcp를 쓰되 postgres 방식을 쓰는 것 어떤가요? 그리고 supabase에 새로운 프로젝트 다시 만들도록 아주 상세한 가이드 주세요. ",
+          "pastedContents": {}
+        },
+        {
+          "display": "postgres는 뭐랑 연결해야 해요? 혹시 supabase?",
+          "pastedContents": {}
+        },
+        {
+          "display": "firecrawl 이것 맞는데요 한번 확인해봐요 fc-1469b38350c643e4a3f8b1b4037e2b20",
+          "pastedContents": {}
+        },
+        {
+          "display": "파이썬도 우리 지금 K드라이브로 고정해서 찾아줄수 있어요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "나머지 MCP 모두 연결해 볼수 있을까요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "불필요한 하드코딩인지 아니면 필요한 하드코딩인지 확인 필요한 것 알죠? 그리고 desktop commander mcp 사용합시다.\ndesktop commander mcp 설치하고 사용합시다",
+          "pastedContents": {}
+        },
+        {
+          "display": "문제 해결하세요",
+          "pastedContents": {}
+        },
+        {
+          "display": " [*] Self-Assessment 표기를 바꿉시다. 너무 보면 어떤것을 할지 알기가 어려워요. 사용자에게 진짜 무엇을 하려고 하는지 설명되지 않아요. 어떻게 생각하세요. 그리고 수동체크로 갑시다.",
+          "pastedContents": {}
+        },
+        {
+          "display": "항상 의존성 그리고 복잡성이 문제가 될 시스템이 있다면 한번 더 유저에게 말해줘야 해요ㅗ.",
+          "pastedContents": {}
+        },
+        {
+          "display": "Next Level로 진행해요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "K드라이브(128GB USB 3.2)에 이것 아니에요. 하드코딩하지 마시고 지금 포터블 환경이라는 것은 항상 이것도 마이그레이션이 가능하다는 얘기에요. 지금보시면 SSD 환경으로 마이그레이션 했어요. ",
+          "pastedContents": {}
+        },
+        {
+          "display": "사용자 터미널에 보이는 것은 filesystem - write_file (MCP)(path:\n                               \"K:/PortableApps/Claude-Code/documentation/core-modules/@problem-solving-guidelines.md\",\n                               content: \"# 문제 해결 지침 (Problem Solving Guidelines)\\n\\n## [!] 핵심 원칙: PACER\n                               Framework\\n\\n### P - Problem Definition (문제 정의)\\n**반드시 확인해야 할 것:**\\n- 이것이\n                                진짜 문제인가? 아니면 단순 불편함인가?\\n- 버그인가? 의도된 기능인가?\\n- 얼마나 많은\n                               사용자가 영향받는가?\\n\\n### A - Analysis Before Action (행동 전 분석)\\n**원인 파악\n                               체크리스트:**\\n```\\n□ 공식 문서 확인 (의도된 동작인지)\\n□ 원본 소스 확인 (수정\n                               가능한지)\\n□ 의존성 체인 파악 (무엇이 연결되어 있는지)\\n□ 부작용 예측 (무엇이 깨질 수\n                               있사용자에게 영향은 없는가?\\n\\n---\\n\\n##\n                               [*] 실제 사례: Raw JSON 출력\\n\\n### 문제 정의\\n- **증상**: MCP 도구 호출 시 raw JSON\n                               파라미터 표시\\n- **영향**: 출력이 길어짐 (실제 작동에는 문제 없음)\\n\\n### 분석 결과\\n-\n                               **원인**: Claude Code의 의도된 디자인 (진행상황 표시)\\n- **수정 필요성**: 낮음 (불편함 ≠\n                               버그)\\n\\n### 복잡도 평가\\n- 해결 시도 시 파일 5개 생성 → **과도한 복잡도**\\n- 의존성 체인\n                                생성 → **유지보수 부담**\\n\\n### 최종 결정\\n✅ **무시하기** - 의도된 기능이며, 수정 시\n                               복잡도만 증가\\n\\n---\\n\\n## [!] 중재 방식 적용 기준\\n\\n### 중재가 필요한 경우\\n1. **보안\n                               문제** - 즉시 패치 필요\\n2. **데이터 손실 위험** - 백업 후              해를 끼치지 말라)**\\n- 의료 원칙을 코드에도 적용\\n- 때로는 치료하지 않는 것이 최선\\n-\n                               복잡한 해결책보다 단순한 문서화\\n\\n이 지침은 K드라이브 Claude Code 프로젝트의 핵심\n                               원칙입니다.\\n모든 문제 해결 시 참조하세요.\")\n  ⎿  Successfully wrote to K:/PortableApps/Claude-Code/documentation/core-modules/@problem-solving-guidelines.md 이것 입니다.",
+          "pastedContents": {}
+        },
+        {
+          "display": "문제 해결에서 지침이 될수 있는 내용들을 하나씩 확인해봐요. 이것들은 지침으로, 복잡성, 의존성이 과연 문제를 발생할 수 있나 항상 평가를 거쳐야 한다. 이것을 확인하고요. 그리고 문제는 raw JSON 출력이 원래의 기본 출력인가 하는거에요? 그러니까 항상 원인과 결과를 꼭 찾아보고 중재방식의 인과관계를 찾은 다음에 이를 해결할 필요가 있음을 알고 있어야 해요. 이것이 지침으로 들어가도 괜찮을까? 진짜 고민해보고 혹시나 중재연구 방식이 필요한 경우도 있지만 아닌 경우도 있으니 좀더 신중하게 그리고 어떤 곳에 필요할지 고민하고 진행하도록 지침에 들어가도 괜찮으면 그것을 판단하고 넣어주세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "너무 많은 파일을 만들다가 잘못된 연결성과 오류를 만들수 있으니 항상 지금의 것에서 문제를 만약 더 키우는 것 아닌가? 위험성 있는것 아닌가? 문제 발생하는 것 아닌가? 하고 고민해보세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "next level 혹시 위험성은 없어요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "그러면 next level 달성 이후에 [Pasted text #1 +8 lines] [Pasted text #2 +27 lines] 이렇게 표시되는 부분을 해결합시다. 어때요? ",
+          "pastedContents": {
+            "1": {
+              "id": 1,
+              "type": "text",
+              "content": "● shrimp-task - split_tasks (MCP)(updateMode: \"append\", globalAnalysisResult: \"Shrimp 기능 테스트를 위한 샘플 태스크\",\n                                 tasksRaw: \"[\\n  {\\n    \\\"name\\\": \\\"샘플 한글 태스크\\\",\\n    \\\"description\\\": \\\"한글\n                                 태스크 생성 및 표시 테스트\\\",\\n    \\\"implementationGuide\\\": \\\"한글로 작성된 태스크가\n                                 올바르게 표시되는지 확인\\\",\\n    \\\"dependencies\\\": [],\\n    \\\"verificationCriteria\\\":\n                                 \\\"한글 태스크가 정상 표시됨\\\"\\n  },\\n  {\\n    \\\"name\\\": \\\"Sample English Task\\\",\\n\n                                 \\\"description\\\": \\\"English task creation and display test\\\",\\n\n                                 \\\"implementationGuide\\\": \\\"Verify English tasks are displayed correctly\\\",\\n\n                                 \\\"dependencies\\\": [\\\"샘플 한글 태스크\\\"],\\n    \\\"verificationCriteria\\\": \\\"English task\n                                  "
+            },
+            "2": {
+              "id": 2,
+              "type": "text",
+              "content": "filesystem - write_file (MCP)(path: \"K:/PortableApps/Claude-Code/ShrimpData/config/shrimp-language-unified.json\",\n                               content: \"{\\n  \\\"language_settings\\\": {\\n    \\\"default_mode\\\": \\\"bilingual\\\",\\n\n                               \\\"primary\\\": \\\"korean\\\",\\n    \\\"secondary\\\": \\\"english\\\",\\n    \\\"format\\\": \\\"한글\n                               (English)\\\",\\n    \\\"available_modes\\\": [\\\"korean\\\", \\\"english\\\", \\\"bilingual\\\"]\\n  },\\n\n                               \\\"ui_labels\\\": {\\n    \\\"status\\\": {\\n      \\\"pending\\\": \\\"대기 중 (Pending)\\\",\\n\n                               \\\"in_progress\\\": \\\"진행 중 (In Progress)\\\",\\n      \\\"completed\\\": \\\"완료 (Completed)\\\",\\n\n                                     \\\"blocked\\\": \\\"차단됨 (Blocked)\\\"\\n    },\\n    \\\"task\\\": {\\n      \\\"task\\\":\n                               \\\"태스크 (Task)\\\",\\n      \\\"tasks\\\": \\\"태스크 (Tasks)\\\",\\n      \\\"subtask\\\": \\\"하위\n                               태스크 (Subtask)\\\",\\n      \\\"subtasks\\\": \\\"하위 태스크 (Subtasks)\\\"\\n    },\\n\n                               \\\"fields\\\": {\\n      \\\"dependencies\\\": \\\"의존성 (Dependencies)\\\",\\n\n                               \\\"no_dependencies\\\": \\\"의존성 없음 (No Dependencies)\\\",\\n      \\\"description\\\": \\\"설명\n                               (Description)\\\",\\n      \\\"notes\\\": \\\"메모 (Notes)\\\",\\n      \\\"created\\\": \\\"생성일\n                               (Created)\\\",\\n      \\\"updated\\\": \\\"수정일 (Updated)\\\",\\n      \\\"verification\\\": \\\"검증\n                               (Verification)\\\",\\n      \\\"implementation\\\": \\\"구현 (Implementation)\\\",\\n\n                               \\\"file_path\\\": \\\"파일 경로 (File Path)\\\",\\n      \\\"file_type\\\": \\\"파일 타입 (File\n                               Type)\\\"\\n    },\\n    \\\"file_types\\\": {\\n      \\\"TO_MODIFY\\\": \\\"수정 대상 (TO_MODIFY)\\\",\\n\n                                     \\\"REFERENCE\\\": \\\"참고 자료 (REFERENCE)\\\",\\n      \\\"CREATE\\\": \\\"생성 대상\n                               (CREATE)\\\",\\n      \\\"DEPENDENCY\\\": \\\"의존성 (DEPENDENCY)\\\",\\n      \\\"OTHER\\\": \\\"기타\n                               (OTHER)\\\"\\n    }\\n  },\\n  \\\"display_options\\\": {\\n    \\\"show_bilingual\\\": true,\\n\n                               \\\"primary_first\\\": true,\\n    \\\"separator\\\": \\\" \\\",\\n    \\\"brackets\\\": {\\n\n                               \\\"primary\\\": \\\"\\\",\\n      \\\"secondary\\\": \\\"()\\\"\\n    }\\n  },\\n  \\\"locale\\\": {\\n\n                               \\\"ko_KR\\\": {\\n      \\\"date_format\\\": \\\"YYYY년 MM월 DD일\\\",\\n      \\\"time_format\\\":\n                               \\\"HH:mm:ss\\\"\\n    },\\n    \\\"en_US\\\": {\\n      \\\"date_format\\\": \\\"MM/DD/YYYY\\\",\\n\n                               \\\"time_format\\\": \\\"HH:mm:ss\\\"\\n    }\\n  },\\n  \\\"metadata\\\": {\\n    \\\"version\\\":\n                               \\\"1.0.0\\\",\\n    \\\"created\\\": \\\"2025-08-27\\\",\\n    \\\"description\\\": \\\"Unified Shrimp Task\n                               Manager language configuration\\\"\\n  }\\n}\")\n  ⎿  Successfully wrote to K:/PortableApps/Claude-Code/ShrimpData/config/shrimp-language-unified.json\n"
+            }
+          }
+        },
+        {
+          "display": "물론 영어(한국어)지원 원래 하던걸 되고 있나요?",
+          "pastedContents": {}
+        },
+        {
+          "display": "네 next level로 진행하세",
+          "pastedContents": {}
+        },
+        {
+          "display": "쉬림프 태스크 매니저야. 너 혹시 우리 폴더 확인해 볼수 있어? 그리고 어떤지 봐줘",
+          "pastedContents": {}
+        },
+        {
+          "display": " ./claude.bat mcp list",
+          "pastedContents": {}
+        },
+        {
+          "display": "/status ",
+          "pastedContents": {}
+        },
+        {
+          "display": "좋습니다 이제 재시작 할게요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "혹시 쉬림프 태스크 매니저 한글, 영어 병기되나요? 안되면 바이링구얼?",
+          "pastedContents": {}
+        },
+        {
+          "display": "다음을 진행해주세요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "ok 그러면 불필요한것 정리하는 작업 이어갑시다. 삭제하면 안되는 것들은 모두 아카이빙. 무언가 시스템에 얽혀 있는 것들은 조심해서 다시 폴더랑 파일 확인하여 진행",
+          "pastedContents": {}
+        },
+        {
+          "display": "/status ",
+          "pastedContents": {}
+        },
+        {
+          "display": "아직 업데ㅌ이트 안되었어요. updatd-claude.bat 눌렀는데",
+          "pastedContents": {}
+        },
+        {
+          "display": "/status ",
+          "pastedContents": {}
+        },
+        {
+          "display": "눌렀는데 그러면 클로드 코드 끄고 다시 해야죠?",
+          "pastedContents": {}
+        },
+        {
+          "display": "그리고 우리 환경이 포터블 환경이잖아요. 혹시 지금 클로드 코드 업데이트 하려는 데 문제 있을까요? 자동업이트 는 안되고 클로드 닥터를 통해야 하는 것 같은데요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "대화 기록을 history에 쌓는 것이 아니라 다르게 진행하도록 그리고 읽기 전용은 안되요. 왜냐면 mcp 서버 설정이 거기에 있어요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "히스토리 지우는 것이 아니라 저기에 저장되지 않도록 하는 방안은 없어요? 저기에 저장되지 않아도 대화 기록을 불러오고 진행할 수 있는 것이 잖아요.",
+          "pastedContents": {}
+        },
+        {
+          "display": "[Pasted text #1 +8 lines] 이렇게 되어 있네요? 그리고 히스토리에 쌓으면 안된다고 했는데 어떻게 된거에요? 세션 폴더도 찾았잖아요",
+          "pastedContents": {
+            "1": {
+              "id": 1,
+              "type": "text",
+              "content": "filesystem - edit_file (MCP)(path: \"K:/PortableApps/Claude-Code/.claude.json\", dryRun: false, edits:\n                              [{\"oldText\":\"      \\\"history\\\": [\\n        {\\n          \\\"display\\\": \\\"아뇨\n                              claude.json에 history 가 남아요. 세션으로\\\",\\n          \\\"pastedContents\\\": {}\\n\n                                 },\\n        {\\n          \\\"display\\\": \\\"아직도 히스토리가 남네요.\\\",\\n\n                              \\\"pastedContents\\\": {}\\n        },\\n        {\\n          \\\"display\\\": \\\"/mcp \\\",\\n\n                                     \\\"pastedContents\\\": {}\\n        },\\n        {\\n          \\\"display\\\": \\\"언어도\n                               마찬가지고 line도 마찬가지고 언어는 중국어 배제\\\",\\n          \\\"pastedContents\\\":\n                              {}\\n        },\\n        {\\n          \\\"display\\\": \\\"원래 혹시 쉬림프가 저런식으로\n                              표기되나요? \\\",\\n          \\\"pastedContents\\\": {}\\n     "
+            }
+          }
+        },
+        {
+          "display": "그리고 클로드 코드가 아직 긴 스타일로 지금 표기하는데. ",
+          "pastedContents": {}
+        }
+      ],
+      "lastTotalWebSearchRequests": 10
+    }
+  },
+  "fallbackAvailableWarningThreshold": 0.5,
+  "cachedChangelog": "# Changelog\n\n## 1.0.93\n\n- Windows: Add alt + v shortcut for pasting images from clipboard\n\n## 1.0.90\n\n- Settings file changes take effect immediately - no restart required\n\n## 1.0.88\n\n- Fixed issue causing \"OAuth authentication is currently not supported\"\n- Status line input now includes `exceeds_200k_tokens`\n- Fixed incorrect usage tracking in /cost.\n- Introduced `ANTHROPIC_DEFAULT_SONNET_MODEL` and `ANTHROPIC_DEFAULT_OPUS_MODEL` for controlling model aliases opusplan, opus, and sonnet.\n- Bedrock: Updated default Sonnet model to Sonnet 4\n\n## 1.0.86\n\n- Added /context to help users self-serve debug context issues\n- SDK: Added UUID support for all SDK messages\n- SDK: Added `--replay-user-messages` to replay user messages back to stdout\n\n## 1.0.85\n\n- Status line input now includes session cost info\n- Hooks: Introduced SessionEnd hook\n\n## 1.0.84\n\n- Fix tool_use/tool_result id mismatch error when network is unstable\n- Fix Claude sometimes ignoring real-time steering when wrapping up a task\n- @-mention: Add ~/.claude/\\* files to suggestions for easier agent, output style, and slash command editing\n- Use built-in ripgrep by default; to opt out of this behavior, set USE_BUILTIN_RIPGREP=0\n\n## 1.0.83\n\n- @-mention: Support files with spaces in path\n- New shimmering spinner\n\n## 1.0.82\n\n- SDK: Add request cancellation support\n- SDK: New additionalDirectories option to search custom paths, improved slash command processing\n- Settings: Validation prevents invalid fields in .claude/settings.json files\n- MCP: Improve tool name consistency\n- Bash: Fix crash when Claude tries to automatically read large files\n\n## 1.0.81\n\n- Released output styles, including new built-in educational output styles \"Explanatory\" and \"Learning\". Docs: https://docs.anthropic.com/en/docs/claude-code/output-styles\n- Agents: Fix custom agent loading when agent files are unparsable\n\n## 1.0.80\n\n- UI improvements: Fix text contrast for custom subagent colors and spinner rendering issues\n\n## 1.0.77\n\n- Bash tool: Fix heredoc and multiline string escaping, improve stderr redirection handling\n- SDK: Add session support and permission denial tracking\n- Fix token limit errors in conversation summarization\n- Opus Plan Mode: New setting in `/model` to run Opus only in plan mode, Sonnet otherwise\n\n## 1.0.73\n\n- MCP: Support multiple config files with `--mcp-config file1.json file2.json`\n- MCP: Press Esc to cancel OAuth authentication flows\n- Bash: Improved command validation and reduced false security warnings\n- UI: Enhanced spinner animations and status line visual hierarchy\n- Linux: Added support for Alpine and musl-based distributions (requires separate ripgrep installation)\n\n## 1.0.72\n\n- Ask permissions: have Claude Code always ask for confirmation to use specific tools with /permissions\n\n## 1.0.71\n\n- Background commands: (Ctrl-b) to run any Bash command in the background so Claude can keep working (great for dev servers, tailing logs, etc.)\n- Customizable status line: add your terminal prompt to Claude Code with /statusline\n\n## 1.0.70\n\n- Performance: Optimized message rendering for better performance with large contexts\n- Windows: Fixed native file search, ripgrep, and subagent functionality\n- Added support for @-mentions in slash command arguments\n\n## 1.0.69\n\n- Upgraded Opus to version 4.1\n\n## 1.0.68\n\n- Fix incorrect model names being used for certain commands like `/pr-comments`\n- Windows: improve permissions checks for allow / deny tools and project trust. This may create a new project entry in `.claude.json` - manually merge the history field if desired.\n- Windows: improve sub-process spawning to eliminate \"No such file or directory\" when running commands like pnpm\n- Enhanced /doctor command with CLAUDE.md and MCP tool context for self-serve debugging\n- SDK: Added canUseTool callback support for tool confirmation\n- Added `disableAllHooks` setting\n- Improved file suggestions performance in large repos\n\n## 1.0.65\n\n- IDE: Fixed connection stability issues and error handling for diagnostics\n- Windows: Fixed shell environment setup for users without .bashrc files\n\n## 1.0.64\n\n- Agents: Added model customization support - you can now specify which model an agent should use\n- Agents: Fixed unintended access to the recursive agent tool\n- Hooks: Added systemMessage field to hook JSON output for displaying warnings and context\n- SDK: Fixed user input tracking across multi-turn conversations\n- Added hidden files to file search and @-mention suggestions\n\n## 1.0.63\n\n- Windows: Fixed file search, @agent mentions, and custom slash commands functionality\n\n## 1.0.62\n\n- Added @-mention support with typeahead for custom agents. @<your-custom-agent> to invoke it\n- Hooks: Added SessionStart hook for new session initialization\n- /add-dir command now supports typeahead for directory paths\n- Improved network connectivity check reliability\n\n## 1.0.61\n\n- Transcript mode (Ctrl+R): Changed Esc to exit transcript mode rather than interrupt\n- Settings: Added `--settings` flag to load settings from a JSON file\n- Settings: Fixed resolution of settings files paths that are symlinks\n- OTEL: Fixed reporting of wrong organization after authentication changes\n- Slash commands: Fixed permissions checking for allowed-tools with Bash\n- IDE: Added support for pasting images in VSCode MacOS using ⌘+V\n- IDE: Added `CLAUDE_CODE_AUTO_CONNECT_IDE=false` for disabling IDE auto-connection\n- Added `CLAUDE_CODE_SHELL_PREFIX` for wrapping Claude and user-provided shell commands run by Claude Code\n\n## 1.0.60\n\n- You can now create custom subagents for specialized tasks! Run /agents to get started\n\n## 1.0.59\n\n- SDK: Added tool confirmation support with canUseTool callback\n- SDK: Allow specifying env for spawned process\n- Hooks: Exposed PermissionDecision to hooks (including \"ask\")\n- Hooks: UserPromptSubmit now supports additionalContext in advanced JSON output\n- Fixed issue where some Max users that specified Opus would still see fallback to Sonnet\n\n## 1.0.58\n\n- Added support for reading PDFs\n- MCP: Improved server health status display in 'claude mcp list'\n- Hooks: Added CLAUDE_PROJECT_DIR env var for hook commands\n\n## 1.0.57\n\n- Added support for specifying a model in slash commands\n- Improved permission messages to help Claude understand allowed tools\n- Fix: Remove trailing newlines from bash output in terminal wrapping\n\n## 1.0.56\n\n- Windows: Enabled shift+tab for mode switching on versions of Node.js that support terminal VT mode\n- Fixes for WSL IDE detection\n- Fix an issue causing awsRefreshHelper changes to .aws directory not to be picked up\n\n## 1.0.55\n\n- Clarified knowledge cutoff for Opus 4 and Sonnet 4 models\n- Windows: fixed Ctrl+Z crash\n- SDK: Added ability to capture error logging\n- Add --system-prompt-file option to override system prompt in print mode\n\n## 1.0.54\n\n- Hooks: Added UserPromptSubmit hook and the current working directory to hook inputs\n- Custom slash commands: Added argument-hint to frontmatter\n- Windows: OAuth uses port 45454 and properly constructs browser URL\n- Windows: mode switching now uses alt + m, and plan mode renders properly\n- Shell: Switch to in-memory shell snapshot to fix file-related errors\n\n## 1.0.53\n\n- Updated @-mention file truncation from 100 lines to 2000 lines\n- Add helper script settings for AWS token refresh: awsAuthRefresh (for foreground operations like aws sso login) and awsCredentialExport (for background operation with STS-like response).\n\n## 1.0.52\n\n- Added support for MCP server instructions\n\n## 1.0.51\n\n- Added support for native Windows (requires Git for Windows)\n- Added support for Bedrock API keys through environment variable AWS_BEARER_TOKEN_BEDROCK\n- Settings: /doctor can now help you identify and fix invalid setting files\n- `--append-system-prompt` can now be used in interactive mode, not just --print/-p.\n- Increased auto-compact warning threshold from 60% to 80%\n- Fixed an issue with handling user directories with spaces for shell snapshots\n- OTEL resource now includes os.type, os.version, host.arch, and wsl.version (if running on Windows Subsystem for Linux)\n- Custom slash commands: Fixed user-level commands in subdirectories\n- Plan mode: Fixed issue where rejected plan from sub-task would get discarded\n\n## 1.0.48\n\n- Fixed a bug in v1.0.45 where the app would sometimes freeze on launch\n- Added progress messages to Bash tool based on the last 5 lines of command output\n- Added expanding variables support for MCP server configuration\n- Moved shell snapshots from /tmp to ~/.claude for more reliable Bash tool calls\n- Improved IDE extension path handling when Claude Code runs in WSL\n- Hooks: Added a PreCompact hook\n- Vim mode: Added c, f/F, t/T\n\n## 1.0.45\n\n- Redesigned Search (Grep) tool with new tool input parameters and features\n- Disabled IDE diffs for notebook files, fixing \"Timeout waiting after 1000ms\" error\n- Fixed config file corruption issue by enforcing atomic writes\n- Updated prompt input undo to Ctrl+\\_ to avoid breaking existing Ctrl+U behavior, matching zsh's undo shortcut\n- Stop Hooks: Fixed transcript path after /clear and fixed triggering when loop ends with tool call\n- Custom slash commands: Restored namespacing in command names based on subdirectories. For example, .claude/commands/frontend/component.md is now /frontend:component, not /component.\n\n## 1.0.44\n\n- New /export command lets you quickly export a conversation for sharing\n- MCP: resource_link tool results are now supported\n- MCP: tool annotations and tool titles now display in /mcp view\n- Changed Ctrl+Z to suspend Claude Code. Resume by running `fg`. Prompt input undo is now Ctrl+U.\n\n## 1.0.43\n\n- Fixed a bug where the theme selector was saving excessively\n- Hooks: Added EPIPE system error handling\n\n## 1.0.42\n\n- Added tilde (`~`) expansion support to `/add-dir` command\n\n## 1.0.41\n\n- Hooks: Split Stop hook triggering into Stop and SubagentStop\n- Hooks: Enabled optional timeout configuration for each command\n- Hooks: Added \"hook_event_name\" to hook input\n- Fixed a bug where MCP tools would display twice in tool list\n- New tool parameters JSON for Bash tool in `tool_decision` event\n\n## 1.0.40\n\n- Fixed a bug causing API connection errors with UNABLE_TO_GET_ISSUER_CERT_LOCALLY if `NODE_EXTRA_CA_CERTS` was set\n\n## 1.0.39\n\n- New Active Time metric in OpenTelemetry logging\n\n## 1.0.38\n\n- Released hooks. Special thanks to community input in https://github.com/anthropics/claude-code/issues/712. Docs: https://docs.anthropic.com/en/docs/claude-code/hooks\n\n## 1.0.37\n\n- Remove ability to set `Proxy-Authorization` header via ANTHROPIC_AUTH_TOKEN or apiKeyHelper\n\n## 1.0.36\n\n- Web search now takes today's date into context\n- Fixed a bug where stdio MCP servers were not terminating properly on exit\n\n## 1.0.35\n\n- Added support for MCP OAuth Authorization Server discovery\n\n## 1.0.34\n\n- Fixed a memory leak causing a MaxListenersExceededWarning message to appear\n\n## 1.0.33\n\n- Improved logging functionality with session ID support\n- Added prompt input undo functionality (Ctrl+Z and vim 'u' command)\n- Improvements to plan mode\n\n## 1.0.32\n\n- Updated loopback config for litellm\n- Added forceLoginMethod setting to bypass login selection screen\n\n## 1.0.31\n\n- Fixed a bug where ~/.claude.json would get reset when file contained invalid JSON\n\n## 1.0.30\n\n- Custom slash commands: Run bash output, @-mention files, enable thinking with thinking keywords\n- Improved file path autocomplete with filename matching\n- Added timestamps in Ctrl-r mode and fixed Ctrl-c handling\n- Enhanced jq regex support for complex filters with pipes and select\n\n## 1.0.29\n\n- Improved CJK character support in cursor navigation and rendering\n\n## 1.0.28\n\n- Slash commands: Fix selector display during history navigation\n- Resizes images before upload to prevent API size limit errors\n- Added XDG_CONFIG_HOME support to configuration directory\n- Performance optimizations for memory usage\n- New attributes (terminal.type, language) in OpenTelemetry logging\n\n## 1.0.27\n\n- Streamable HTTP MCP servers are now supported\n- Remote MCP servers (SSE and HTTP) now support OAuth\n- MCP resources can now be @-mentioned\n- /resume slash command to switch conversations within Claude Code\n\n## 1.0.25\n\n- Slash commands: moved \"project\" and \"user\" prefixes to descriptions\n- Slash commands: improved reliability for command discovery\n- Improved support for Ghostty\n- Improved web search reliability\n\n## 1.0.24\n\n- Improved /mcp output\n- Fixed a bug where settings arrays got overwritten instead of merged\n\n## 1.0.23\n\n- Released TypeScript SDK: import @anthropic-ai/claude-code to get started\n- Released Python SDK: pip install claude-code-sdk to get started\n\n## 1.0.22\n\n- SDK: Renamed `total_cost` to `total_cost_usd`\n\n## 1.0.21\n\n- Improved editing of files with tab-based indentation\n- Fix for tool_use without matching tool_result errors\n- Fixed a bug where stdio MCP server processes would linger after quitting Claude Code\n\n## 1.0.18\n\n- Added --add-dir CLI argument for specifying additional working directories\n- Added streaming input support without require -p flag\n- Improved startup performance and session storage performance\n- Added CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR environment variable to freeze working directory for bash commands\n- Added detailed MCP server tools display (/mcp)\n- MCP authentication and permission improvements\n- Added auto-reconnection for MCP SSE connections on disconnect\n- Fixed issue where pasted content was lost when dialogs appeared\n\n## 1.0.17\n\n- We now emit messages from sub-tasks in -p mode (look for the parent_tool_use_id property)\n- Fixed crashes when the VS Code diff tool is invoked multiple times quickly\n- MCP server list UI improvements\n- Update Claude Code process title to display \"claude\" instead of \"node\"\n\n## 1.0.11\n\n- Claude Code can now also be used with a Claude Pro subscription\n- Added /upgrade for smoother switching to Claude Max plans\n- Improved UI for authentication from API keys and Bedrock/Vertex/external auth tokens\n- Improved shell configuration error handling\n- Improved todo list handling during compaction\n\n## 1.0.10\n\n- Added markdown table support\n- Improved streaming performance\n\n## 1.0.8\n\n- Fixed Vertex AI region fallback when using CLOUD_ML_REGION\n- Increased default otel interval from 1s -> 5s\n- Fixed edge cases where MCP_TIMEOUT and MCP_TOOL_TIMEOUT weren't being respected\n- Fixed a regression where search tools unnecessarily asked for permissions\n- Added support for triggering thinking non-English languages\n- Improved compacting UI\n\n## 1.0.7\n\n- Renamed /allowed-tools -> /permissions\n- Migrated allowedTools and ignorePatterns from .claude.json -> settings.json\n- Deprecated claude config commands in favor of editing settings.json\n- Fixed a bug where --dangerously-skip-permissions sometimes didn't work in --print mode\n- Improved error handling for /install-github-app\n- Bugfixes, UI polish, and tool reliability improvements\n\n## 1.0.6\n\n- Improved edit reliability for tab-indented files\n- Respect CLAUDE_CONFIG_DIR everywhere\n- Reduced unnecessary tool permission prompts\n- Added support for symlinks in @file typeahead\n- Bugfixes, UI polish, and tool reliability improvements\n\n## 1.0.4\n\n- Fixed a bug where MCP tool errors weren't being parsed correctly\n\n## 1.0.1\n\n- Added `DISABLE_INTERLEAVED_THINKING` to give users the option to opt out of interleaved thinking.\n- Improved model references to show provider-specific names (Sonnet 3.7 for Bedrock, Sonnet 4 for Console)\n- Updated documentation links and OAuth process descriptions\n\n## 1.0.0\n\n- Claude Code is now generally available\n- Introducing Sonnet 4 and Opus 4 models\n\n## 0.2.125\n\n- Breaking change: Bedrock ARN passed to `ANTHROPIC_MODEL` or `ANTHROPIC_SMALL_FAST_MODEL` should no longer contain an escaped slash (specify `/` instead of `%2F`)\n- Removed `DEBUG=true` in favor of `ANTHROPIC_LOG=debug`, to log all requests\n\n## 0.2.117\n\n- Breaking change: --print JSON output now returns nested message objects, for forwards-compatibility as we introduce new metadata fields\n- Introduced settings.cleanupPeriodDays\n- Introduced CLAUDE_CODE_API_KEY_HELPER_TTL_MS env var\n- Introduced --debug mode\n\n## 0.2.108\n\n- You can now send messages to Claude while it works to steer Claude in real-time\n- Introduced BASH_DEFAULT_TIMEOUT_MS and BASH_MAX_TIMEOUT_MS env vars\n- Fixed a bug where thinking was not working in -p mode\n- Fixed a regression in /cost reporting\n- Deprecated MCP wizard interface in favor of other MCP commands\n- Lots of other bugfixes and improvements\n\n## 0.2.107\n\n- CLAUDE.md files can now import other files. Add @path/to/file.md to ./CLAUDE.md to load additional files on launch\n\n## 0.2.106\n\n- MCP SSE server configs can now specify custom headers\n- Fixed a bug where MCP permission prompt didn't always show correctly\n\n## 0.2.105\n\n- Claude can now search the web\n- Moved system & account status to /status\n- Added word movement keybindings for Vim\n- Improved latency for startup, todo tool, and file edits\n\n## 0.2.102\n\n- Improved thinking triggering reliability\n- Improved @mention reliability for images and folders\n- You can now paste multiple large chunks into one prompt\n\n## 0.2.100\n\n- Fixed a crash caused by a stack overflow error\n- Made db storage optional; missing db support disables --continue and --resume\n\n## 0.2.98\n\n- Fixed an issue where auto-compact was running twice\n\n## 0.2.96\n\n- Claude Code can now also be used with a Claude Max subscription (https://claude.ai/upgrade)\n\n## 0.2.93\n\n- Resume conversations from where you left off from with \"claude --continue\" and \"claude --resume\"\n- Claude now has access to a Todo list that helps it stay on track and be more organized\n\n## 0.2.82\n\n- Added support for --disallowedTools\n- Renamed tools for consistency: LSTool -> LS, View -> Read, etc.\n\n## 0.2.75\n\n- Hit Enter to queue up additional messages while Claude is working\n- Drag in or copy/paste image files directly into the prompt\n- @-mention files to directly add them to context\n- Run one-off MCP servers with `claude --mcp-config <path-to-file>`\n- Improved performance for filename auto-complete\n\n## 0.2.74\n\n- Added support for refreshing dynamically generated API keys (via apiKeyHelper), with a 5 minute TTL\n- Task tool can now perform writes and run bash commands\n\n## 0.2.72\n\n- Updated spinner to indicate tokens loaded and tool usage\n\n## 0.2.70\n\n- Network commands like curl are now available for Claude to use\n- Claude can now run multiple web queries in parallel\n- Pressing ESC once immediately interrupts Claude in Auto-accept mode\n\n## 0.2.69\n\n- Fixed UI glitches with improved Select component behavior\n- Enhanced terminal output display with better text truncation logic\n\n## 0.2.67\n\n- Shared project permission rules can be saved in .claude/settings.json\n\n## 0.2.66\n\n- Print mode (-p) now supports streaming output via --output-format=stream-json\n- Fixed issue where pasting could trigger memory or bash mode unexpectedly\n\n## 0.2.63\n\n- Fixed an issue where MCP tools were loaded twice, which caused tool call errors\n\n## 0.2.61\n\n- Navigate menus with vim-style keys (j/k) or bash/emacs shortcuts (Ctrl+n/p) for faster interaction\n- Enhanced image detection for more reliable clipboard paste functionality\n- Fixed an issue where ESC key could crash the conversation history selector\n\n## 0.2.59\n\n- Copy+paste images directly into your prompt\n- Improved progress indicators for bash and fetch tools\n- Bugfixes for non-interactive mode (-p)\n\n## 0.2.54\n\n- Quickly add to Memory by starting your message with '#'\n- Press ctrl+r to see full output for long tool results\n- Added support for MCP SSE transport\n\n## 0.2.53\n\n- New web fetch tool lets Claude view URLs that you paste in\n- Fixed a bug with JPEG detection\n\n## 0.2.50\n\n- New MCP \"project\" scope now allows you to add MCP servers to .mcp.json files and commit them to your repository\n\n## 0.2.49\n\n- Previous MCP server scopes have been renamed: previous \"project\" scope is now \"local\" and \"global\" scope is now \"user\"\n\n## 0.2.47\n\n- Press Tab to auto-complete file and folder names\n- Press Shift + Tab to toggle auto-accept for file edits\n- Automatic conversation compaction for infinite conversation length (toggle with /config)\n\n## 0.2.44\n\n- Ask Claude to make a plan with thinking mode: just say 'think' or 'think harder' or even 'ultrathink'\n\n## 0.2.41\n\n- MCP server startup timeout can now be configured via MCP_TIMEOUT environment variable\n- MCP server startup no longer blocks the app from starting up\n\n## 0.2.37\n\n- New /release-notes command lets you view release notes at any time\n- `claude config add/remove` commands now accept multiple values separated by commas or spaces\n\n## 0.2.36\n\n- Import MCP servers from Claude Desktop with `claude mcp add-from-claude-desktop`\n- Add MCP servers as JSON strings with `claude mcp add-json <n> <json>`\n\n## 0.2.34\n\n- Vim bindings for text input - enable with /vim or /config\n\n## 0.2.32\n\n- Interactive MCP setup wizard: Run \"claude mcp add\" to add MCP servers with a step-by-step interface\n- Fix for some PersistentShell issues\n\n## 0.2.31\n\n- Custom slash commands: Markdown files in .claude/commands/ directories now appear as custom slash commands to insert prompts into your conversation\n- MCP debug mode: Run with --mcp-debug flag to get more information about MCP server errors\n\n## 0.2.30\n\n- Added ANSI color theme for better terminal compatibility\n- Fixed issue where slash command arguments weren't being sent properly\n- (Mac-only) API keys are now stored in macOS Keychain\n\n## 0.2.26\n\n- New /approved-tools command for managing tool permissions\n- Word-level diff display for improved code readability\n- Fuzzy matching for slash commands\n\n## 0.2.21\n\n- Fuzzy matching for /commands\n",
+  "changelogLastFetched": 1756282916767,
+  "firstStartTime": "2025-08-27T08:05:58.945Z",
+  "oauthAccount": {
+    "accountUuid": "42075a9f-2049-448b-808b-2fa8a0a9aff9",
+    "emailAddress": "fofzoy@gmail.com",
+    "organizationUuid": "504d6456-0ca3-4a13-a46e-84b077157abf",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "fofzoy@gmail.com's Organization"
+  },
+  "claudeCodeFirstTokenDate": "2025-07-23T03:27:24.018678Z",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "1.0.77",
+  "lastReleaseNotesSeen": "1.0.93",
+  "subscriptionNoticeCount": 0,
+  "hasAvailableSubscription": false,
+  "s1mAccessCache": {
+    "504d6456-0ca3-4a13-a46e-84b077157abf": {
+      "hasAccess": false,
+      "timestamp": 1756307902352
+    }
+  },
+  "isQualifiedForDataSharing": false,
+  "hasOpusPlanDefault": false,
+  "s1mNonSubscriberAccessCache": {
+    "3039b841-6e4f-46ee-ae45-7bbf3d85e3f8": {
+      "hasAccess": false,
+      "timestamp": 1756296445770
+    }
+  },
+  "recommendedSubscription": ""
+}

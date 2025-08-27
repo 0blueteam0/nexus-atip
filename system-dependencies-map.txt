@@ -1,0 +1,62 @@
+[*] 시스템 의존성 맵 (System Dependencies Map)
+생성일: 2025-01-27
+================================
+
+## 핵심 실행 파일
+1. claude.bat
+   - Node.js 경로: K:\tools\nodejs
+   - NPM 캐시: %TEMP%\npm-cache
+   - NPM Prefix: K:\tools\nodejs\npm-global
+   - Git 경로: K:\tools\git\bin
+
+## NPM 패키지 의존성
+1. Claude Code 핵심
+   - @anthropic-ai/claude-code: ^1.0.93
+   
+2. MCP 서버들
+   - @anaisbetts/mcp-installer: ^0.5.0
+   - @cyanheads/git-mcp-server: ^2.3.2
+   - @modelcontextprotocol/server-filesystem: ^2025.7.29
+   - @modelcontextprotocol/server-github: ^2025.4.8
+   - @upstash/context7-mcp: ^1.0.14
+   - firecrawl-mcp: ^1.12.0
+   - mcp-ripgrep: ^0.4.0
+   - mcp-server-sqlite-npx: ^0.4.0
+   - mcp-shrimp-task-manager: ^1.0.21
+
+## 설정 파일
+1. .claude.json (31.96 KB)
+   - MCP 서버 설정
+   - 환경 변수
+   - Claude 설정
+
+2. package.json (831 B)
+   - NPM 의존성 정의
+   - 스크립트 정의
+
+3. package-lock.json (176.85 KB)
+   - 의존성 잠금 파일
+
+## 환경 파일
+1. .env (3.20 KB) - 환경 변수
+2. .npmrc (225 B) - NPM 설정
+3. .gitconfig (50 B) - Git 설정
+4. .bashrc (512 B) - Bash 설정
+
+## 디렉토리 의존성
+1. node_modules/ - NPM 패키지들
+2. mcp-servers/ - MCP 서버 실행 파일
+3. systems/ - 자동화 스크립트
+4. documentation/ - 문서
+5. tools/ - 포터블 도구들
+
+## 삭제 금지 목록
+- claude.bat
+- .claude.json  
+- package.json
+- package-lock.json
+- node_modules/
+- mcp-servers/
+- _SYSTEM/
+- documentation/
+- systems/

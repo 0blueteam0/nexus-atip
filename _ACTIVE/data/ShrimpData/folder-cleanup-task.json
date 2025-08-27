@@ -1,0 +1,58 @@
+{
+  "task_id": "task-010",
+  "title": "폴더 구조 대정리 - 31개를 5개로 통합",
+  "status": "in-progress",
+  "created": "2025-01-16",
+  "priority": "critical",
+  "subtasks": [
+    {
+      "id": "010-1",
+      "title": "중복 캐시 폴더 3개 통합",
+      "status": "pending",
+      "details": ".cache, npm-cache, .local → data/cache/"
+    },
+    {
+      "id": "010-2",
+      "title": "메모리 시스템 5개 통합",
+      "status": "pending",
+      "details": "memory-data, memory-archive, mcp-memory-service, brain, ShrimpData → data/memory/"
+    },
+    {
+      "id": "010-3",
+      "title": "임시 폴더 4개 정리",
+      "status": "pending",
+      "details": "tmp, temp, shell-snapshots, statsig → _archive/"
+    },
+    {
+      "id": "010-4",
+      "title": "MCP 폴더 2개 통합",
+      "status": "pending",
+      "details": "mcp-servers, mcp-tools → mcp/"
+    },
+    {
+      "id": "010-5",
+      "title": "문서 폴더 4개 통합",
+      "status": "pending",
+      "details": "docs, comparisons, recommendations, installation-guides → docs/"
+    },
+    {
+      "id": "010-6",
+      "title": "태스크 폴더 3개 통합",
+      "status": "pending",
+      "details": "todos, tasks, projects → data/tasks/"
+    },
+    {
+      "id": "010-7",
+      "title": "불필요 폴더 Archive로",
+      "status": "pending",
+      "details": "AppData, threat-knowledge-graph, .claude-server-commander, bin, .ssh → K:/PortableApps/Claude-Archive/"
+    }
+  ],
+  "analysis": {
+    "current_folders": 31,
+    "target_folders": 5,
+    "reduction": "84%",
+    "complexity_before": "극도로 파편화",
+    "complexity_after": "단순하고 명확"
+  }
+}

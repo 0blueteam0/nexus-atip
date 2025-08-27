@@ -1,0 +1,64 @@
+{
+  "tasks": [
+    {
+      "id": "dd72ff08-9cc6-4ad5-922c-fd4a35c7dda9",
+      "name": "temp 폴더 대청소",
+      "description": "temp 폴더 내 266개의 xml 파일과 모든 임시 파일 정리. 필요한 파일만 백업 후 전체 삭제",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-27T07:36:45.957Z",
+      "updatedAt": "2025-08-27T07:36:45.957Z",
+      "implementationGuide": "1. temp 폴더 백업 생성\n2. 오늘 날짜 파일만 유지\n3. 나머지 모든 파일 ARCHIVE로 이동\n4. 특히 xml_file (1-266).xml 파일들 모두 삭제",
+      "verificationCriteria": "temp 폴더가 깨끗하게 비워졌는지 확인",
+      "analysisResult": "K드라이브 Claude Code 폴더의 자동 정리 시스템 구축 - 폴더 구조 최적화 및 자동 아카이빙"
+    },
+    {
+      "id": "a9b750bd-bed4-474a-baae-fa2a67966383",
+      "name": "ARCHIVE 폴더 구조 재편",
+      "description": "ARCHIVE 폴더 내부를 연도별/월별로 체계적으로 재구성",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-27T07:36:45.957Z",
+      "updatedAt": "2025-08-27T07:36:45.957Z",
+      "implementationGuide": "1. ARCHIVE/2025/08/, ARCHIVE/2025/01/ 등 연도별 구조 생성\n2. cleanup-* 폴더들을 해당 날짜 폴더로 이동\n3. old-* 폴더들을 ARCHIVE/legacy/로 통합\n4. 중복/빈 폴더 제거",
+      "verificationCriteria": "ARCHIVE 폴더가 연도별로 정리되었는지 확인",
+      "analysisResult": "K드라이브 Claude Code 폴더의 자동 정리 시스템 구축 - 폴더 구조 최적화 및 자동 아카이빙"
+    },
+    {
+      "id": "000387bf-50d8-4ca8-88c9-d1e3bf16cace",
+      "name": "npm-cache 정리",
+      "description": "npm-cache 폴더 삭제 또는 정리",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-27T07:36:45.958Z",
+      "updatedAt": "2025-08-27T07:36:45.958Z",
+      "implementationGuide": "1. npm-cache 폴더 전체 삭제\n2. 필요시 npm cache clean --force 실행",
+      "verificationCriteria": "npm-cache 폴더가 삭제되었는지 확인",
+      "analysisResult": "K드라이브 Claude Code 폴더의 자동 정리 시스템 구축 - 폴더 구조 최적화 및 자동 아카이빙"
+    },
+    {
+      "id": "04c7a645-988f-403e-82ca-2e7611756694",
+      "name": "중복 폴더 통합",
+      "description": "data와 ShrimpData 통합, todos 폴더 정리",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-27T07:36:45.958Z",
+      "updatedAt": "2025-08-27T07:36:45.958Z",
+      "implementationGuide": "1. data 폴더를 ShrimpData로 통합\n2. todos 폴더를 ARCHIVE로 이동\n3. 빈 nul 파일 삭제",
+      "verificationCriteria": "중복 폴더가 제거되고 통합되었는지 확인",
+      "analysisResult": "K드라이브 Claude Code 폴더의 자동 정리 시스템 구축 - 폴더 구조 최적화 및 자동 아카이빙"
+    },
+    {
+      "id": "3ee388fc-37c1-4780-88f2-7f9c02bce3d3",
+      "name": "폴더 자동 정리 시스템 구축",
+      "description": "폴더를 자동으로 분류하고 정리하는 스크립트 작성",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2025-08-27T07:36:45.958Z",
+      "updatedAt": "2025-08-27T07:36:45.958Z",
+      "implementationGuide": "1. folder-auto-organizer.bat 작성\n2. 폴더 분류 규칙 정의 (필수/활성/보관/임시/폐기)\n3. 주기적 실행 스케줄 설정",
+      "verificationCriteria": "자동 정리 시스템이 작동하는지 확인",
+      "analysisResult": "K드라이브 Claude Code 폴더의 자동 정리 시스템 구축 - 폴더 구조 최적화 및 자동 아카이빙"
+    }
+  ]
+}
