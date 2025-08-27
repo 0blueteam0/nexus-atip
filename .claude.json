@@ -290,6 +290,10 @@
       "hasCompletedProjectOnboarding": true,
       "history": [
         {
+          "display": "GITHUB에 올라간 API키만 GITHUB에서 찾아서 제거해줄수 있어요?",
+          "pastedContents": {}
+        },
+        {
           "display": "넣긴했는데 자동으로 저장해주고 복원해달라고 하면 복원해줘요",
           "pastedContents": {}
         },

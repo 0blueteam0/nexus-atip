@@ -87,6 +87,10 @@ pnpm-lock.yaml
 memory-archive/
 projects/
 todos/
+.claude-backup/
+.claude/
+_ARCHIVE/
+_ACTIVE/scripts/load-env-keys.bat
 
 # Personal/sensitive data
 personal/
