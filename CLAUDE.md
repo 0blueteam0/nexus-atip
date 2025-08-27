@@ -228,6 +228,19 @@ Claude는 사용자 대화와 상황을 분석하여:
 - Node.js: K:\PortableApps\tools\nodejs\node.exe
 - Python: K:\PortableApps\tools\python\python.exe
 
+### Git 세이브포인트 명령어 (간단)
+```bash
+# 현재 상태 저장
+git add -A && git commit -m "Savepoint: work in progress" && git push
+
+# 최근 커밋 확인
+git log --oneline -5
+
+# 이전 상태로 복원
+git reset --hard HEAD~1  # 바로 이전으로
+git reset --hard [커밋ID]  # 특정 커밋으로
+```
+
 ### Key Commands
 
 ## 🎐 Task Management Preference (CRITICAL)

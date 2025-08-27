@@ -31,7 +31,7 @@
     "terminal-setup": 18,
     "shift-enter": 18
   },
-  "promptQueueUseCount": 43,
+  "promptQueueUseCount": 45,
   "cachedStatsigGates": {
     "tengu_disable_bypass_permissions_mode": false
   },
@@ -289,6 +289,18 @@
       "allowedTools": [],
       "hasCompletedProjectOnboarding": true,
       "history": [
+        {
+          "display": "시스템 까지 필요한가요? 그냥 지침에 넣으면 되는것 아닌가?",
+          "pastedContents": {}
+        },
+        {
+          "display": "자동으로 커밋시킬수 없어요? 세이브 포인트처럼 사용하고 싶은데. 문제 생기면 복원하는 식으로",
+          "pastedContents": {}
+        },
+        {
+          "display": "프라이빗으로 설정해주시고 진행하세요",
+          "pastedContents": {}
+        },
         {
           "display": "네 진행하세요. 커밋",
           "pastedContents": {}

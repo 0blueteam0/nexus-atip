@@ -266,7 +266,9 @@
       "Bash(git log:*)",
       "Bash(git push:*)",
       "Bash(git rm:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git remote add:*)",
+      "mcp__github__create_repository"
     ],
     "deny": [],
     "ask": []

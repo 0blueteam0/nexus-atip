@@ -85,6 +85,8 @@ pnpm-lock.yaml
 .claude-history/
 .claude-cache/
 memory-archive/
+projects/
+todos/
 
 # Personal/sensitive data
 personal/
