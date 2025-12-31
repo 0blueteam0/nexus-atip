@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "description": "ATOS module lazy loading index",
+  "lastUpdated": "2025-12-31",
+  "core": {
+    "description": "Always loaded at bootstrap",
+    "modules": {
+      "load-tracker": {
+        "path": "./load-tracker.js",
+        "size": "172 lines",
+        "critical": true
+      }
+    }
+  },
+  "onDemand": {
+    "description": "Loaded when triggered by keywords or actions",
+    "modules": {
+      "context-analyzer": {
+        "path": "./context-analyzer.js",
+        "triggers": ["분석", "analyze", "intent", "keyword"],
+        "dependencies": ["load-tracker"]
+      },
+      "recommendation-engine": {
+        "path": "./recommendation-engine.js",
+        "triggers": ["추천", "recommend", "suggest"],
+        "dependencies": ["context-analyzer", "load-tracker"]
+      },
+      "auto-discovery": {
+        "path": "./auto-discovery.js",
+        "triggers": ["발견", "discover", "new tool", "새 도구"],
+        "dependencies": ["load-tracker"]
+      },
+      "execution-monitor": {
+        "path": "./execution-monitor.js",
+        "triggers": ["실행", "execute", "track", "monitor"],
+        "dependencies": ["load-tracker"]
+      },
+      "feedback-loop": {
+        "path": "./feedback-loop.js",
+        "triggers": ["학습", "learn", "pattern", "feedback"],
+        "dependencies": ["execution-monitor"]
+      },
+      "fic-manager": {
+        "path": "./fic-manager.js",
+        "triggers": ["압축", "compact", "context"],
+        "dependencies": ["load-tracker"]
+      },
+      "pipeline-manager": {
+        "path": "./pipeline-manager.js",
+        "triggers": ["파이프라인", "pipeline", "stage"],
+        "dependencies": ["fic-manager"]
+      },
+      "self-trigger": {
+        "path": "./self-trigger/index.js",
+        "triggers": ["자동", "self", "auto-trigger"],
+        "dependencies": ["context-analyzer", "load-tracker"]
+      }
+    }
+  },
+  "registry": {
+    "description": "Category-based tool registry",
+    "index": "./registry/tool-index.json",
+    "categories": "./registry/mcp/"
+  }
+}
