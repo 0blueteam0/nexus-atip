@@ -1,0 +1,37 @@
+{
+  "category": "web-crawl",
+  "description": "웹 검색 및 크롤링",
+  "priority": "high",
+  "servers": {
+    "firecrawl": {
+      "priority": "high",
+      "description": "고급 웹 스크래핑 API",
+      "tools": ["firecrawl_scrape", "firecrawl_map", "firecrawl_search", "firecrawl_crawl", "firecrawl_extract"],
+      "triggerKeywords": ["스크래핑", "크롤링", "웹추출", "scrape", "crawl"]
+    },
+    "one-search": {
+      "priority": "high",
+      "description": "통합 웹 검색 및 스크래핑",
+      "tools": ["one_search", "one_scrape", "one_map", "one_extract"],
+      "triggerKeywords": ["검색", "search", "웹검색"]
+    },
+    "websearch": {
+      "priority": "medium",
+      "description": "웹 검색",
+      "tools": ["web_search"],
+      "triggerKeywords": ["검색", "search"]
+    },
+    "crawl4ai-lite": {
+      "priority": "low",
+      "description": "AI 기반 크롤링 (폴백용)",
+      "tools": ["crawl4ai_scrape"],
+      "triggerKeywords": ["크롤링", "AI크롤"]
+    },
+    "deep-research-mcp": {
+      "priority": "medium",
+      "description": "5단계 딥리서치",
+      "tools": ["deep_research", "quick_research", "research_status"],
+      "triggerKeywords": ["딥리서치", "심층조사", "deep research"]
+    }
+  }
+}

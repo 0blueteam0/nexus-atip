@@ -1,0 +1,31 @@
+{
+  "category": "ai-models",
+  "description": "AI 모델 통합",
+  "priority": "medium",
+  "servers": {
+    "hfspace": {
+      "priority": "medium",
+      "description": "Hugging Face Spaces 통합",
+      "tools": ["search-spaces", "FLUX_1-schnell-infer", "available-files"],
+      "triggerKeywords": ["허깅페이스", "HuggingFace", "이미지생성", "FLUX", "AI모델"]
+    },
+    "llm-council": {
+      "priority": "medium",
+      "description": "다중 LLM 협의 시스템",
+      "tools": ["council_ask", "council_quick", "council_config"],
+      "triggerKeywords": ["협의", "council", "다중모델", "의견수렴"]
+    },
+    "e2b": {
+      "priority": "medium",
+      "description": "클라우드 코드 실행",
+      "tools": ["run_code"],
+      "triggerKeywords": ["코드실행", "샌드박스", "e2b"]
+    },
+    "multi-ai-orchestration": {
+      "priority": "medium",
+      "description": "Multi-AI 오케스트레이션",
+      "tools": ["query_gemini", "deliberate", "dispatch_crawl", "generate_image"],
+      "triggerKeywords": ["Gemini", "다중AI", "오케스트레이션"]
+    }
+  }
+}
