@@ -4,10 +4,10 @@
   "planFile": "plans/floofy-sauteeing-alpaca.md",
   "version": "3.0.0",
   "created": "2026-01-19T09:30:00Z",
-  "lastModified": "2026-01-19T09:48:14.129Z",
+  "lastModified": "2026-01-19T09:52:04.706Z",
   "status": "active",
-  "currentPhase": "phase-1",
-  "currentTask": "1.6.2",
+  "currentPhase": "phase-2",
+  "currentTask": "2.3.1",
   "phases": [
     {
       "id": "phase-0",
@@ -84,7 +84,7 @@
     {
       "id": "phase-1",
       "name": "정리 (Cleanup)",
-      "status": "in_progress",
+      "status": "completed",
       "startedAt": "2026-01-19T09:32:56.513Z",
       "estimatedMinutes": 30,
       "tasks": [
@@ -142,34 +142,39 @@
           "status": "completed",
           "completedAt": "2026-01-19T09:48:14.117Z"
         }
-      ]
+      ],
+      "completedAt": "2026-01-19T09:50:59.451Z"
     },
     {
       "id": "phase-2",
       "name": "통합 (Consolidation)",
-      "status": "pending",
-      "startedAt": null,
+      "status": "in_progress",
+      "startedAt": "2026-01-19T09:51:00.095Z",
       "estimatedMinutes": 20,
       "tasks": [
         {
           "id": "2.1.1",
           "title": "firecrawl 버전 확인",
-          "status": "pending"
+          "status": "completed",
+          "completedAt": "2026-01-19T09:52:04.274Z"
         },
         {
           "id": "2.1.2",
           "title": "README.md 문서화",
-          "status": "pending"
+          "status": "completed",
+          "completedAt": "2026-01-19T09:52:04.414Z"
         },
         {
           "id": "2.2.1",
           "title": "설정 파일 역할 문서화",
-          "status": "pending"
+          "status": "completed",
+          "completedAt": "2026-01-19T09:52:04.551Z"
         },
         {
           "id": "2.3.1",
           "title": "core-modules/ 중복 확인",
-          "status": "pending"
+          "status": "completed",
+          "completedAt": "2026-01-19T09:52:04.692Z"
         }
       ]
     },
@@ -253,8 +258,8 @@
   ],
   "metadata": {
     "totalTasks": 35,
-    "completedTasks": 17,
-    "progressPercent": 49,
+    "completedTasks": 21,
+    "progressPercent": 60,
     "estimatedTotalMinutes": 180,
     "actualTotalMinutes": 0
   },

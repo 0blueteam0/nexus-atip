@@ -160,5 +160,50 @@
       "phase": "phase-1",
       "status": "completed"
     }
+  },
+  {
+    "timestamp": "2026-01-19T09:51:00.098Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "phase_update",
+    "details": {
+      "phase": "phase-2",
+      "status": "in_progress"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:52:04.276Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "2.1.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:52:04.416Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "2.1.2",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:52:04.553Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "2.2.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:52:04.695Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "2.3.1",
+      "status": "completed"
+    }
   }
 ]
