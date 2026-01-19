@@ -24,15 +24,27 @@ function parseArgs() {
 }
 
 // Find active plan from progress files
-function findActivePlan() {
+function findActivePlan(includeCompleted = false) {
   const files = fs.readdirSync(PLANS_DIR)
     .filter(f => f.endsWith('-progress.json'));
-  
+
   for (const file of files) {
     const data = JSON.parse(fs.readFileSync(path.join(PLANS_DIR, file), 'utf8'));
     if (data.status === 'active') {
       return data;
     }
+  }
+
+  // If no active plan, return most recent completed plan
+  if (includeCompleted) {
+    let mostRecent = null;
+    for (const file of files) {
+      const data = JSON.parse(fs.readFileSync(path.join(PLANS_DIR, file), 'utf8'));
+      if (!mostRecent || new Date(data.lastModified) > new Date(mostRecent.lastModified)) {
+        mostRecent = data;
+      }
+    }
+    return mostRecent;
   }
   return null;
 }
@@ -83,12 +95,15 @@ function checkAlerts(data) {
 // Main execution
 function main() {
   const args = parseArgs();
-  
-  const data = findActivePlan();
+  const includeCompleted = process.argv.includes('--all');
+
+  const data = findActivePlan(includeCompleted);
   if (!data) {
-    console.log('[*] No active plan found');
+    console.log('[*] No plans found');
     return;
   }
+
+  const isCompleted = data.status === 'completed';
   
   const phaseInfo = getCurrentPhaseInfo(data);
   const alerts = checkAlerts(data);
@@ -109,24 +124,27 @@ function main() {
   console.log('========================================');
   console.log('  Planning System - Session Restore');
   console.log('========================================\n');
-  
-  console.log(`[PLAN] 활성 플랜: ${data.planId}`);
+
+  const statusLabel = isCompleted ? '[COMPLETED]' : '[ACTIVE]';
+  console.log(`[PLAN] ${statusLabel} ${data.planId}`);
   console.log(`[PLAN] 버전: ${data.version}`);
   console.log(`[PLAN] 전체 진행률: ${data.metadata.completedTasks}/${data.metadata.totalTasks} (${data.metadata.progressPercent}%)\n`);
-  
-  if (phaseInfo) {
+
+  if (isCompleted) {
+    console.log('[+] 플랜 완료! 모든 Phase가 성공적으로 완료되었습니다.');
+  } else if (phaseInfo) {
     console.log(`[PHASE] 현재: ${phaseInfo.id} - ${phaseInfo.name}`);
     console.log(`[PHASE] 진행: ${phaseInfo.completedTasks}/${phaseInfo.totalTasks} (${phaseInfo.percent}%)`);
     if (phaseInfo.nextTask) {
       console.log(`[NEXT] 다음 작업: ${phaseInfo.nextTask.id} - ${phaseInfo.nextTask.title}`);
     }
   }
-  
-  if (alerts.length > 0) {
+
+  if (alerts.length > 0 && !isCompleted) {
     console.log('\n--- Alerts ---');
     alerts.forEach(a => console.log(a));
   }
-  
+
   console.log('\n========================================\n');
 }
 
