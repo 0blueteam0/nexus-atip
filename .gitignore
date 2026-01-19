@@ -19,6 +19,7 @@ api-keys.txt
 secrets/
 .credentials.json
 set-api-keys.bat
+runpod/config.json
 
 # Logs
 logs/
@@ -112,4 +113,4 @@ tools/nodejs/node.exe
 *.mp4
 *.mov
 *.avi
-*.mkv
+*.mkvnul

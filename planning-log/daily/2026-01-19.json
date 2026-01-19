@@ -61,5 +61,95 @@
       "phase": "phase-0",
       "status": "completed"
     }
+  },
+  {
+    "timestamp": "2026-01-19T09:32:56.516Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "phase_update",
+    "details": {
+      "phase": "phase-1",
+      "status": "in_progress"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:12.980Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.1.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.138Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.2.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.283Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.2.2",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.417Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.3.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.559Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.3.2",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.704Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.4.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.839Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.5.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:13.982Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.6.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:48:14.119Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "1.6.2",
+      "status": "completed"
+    }
   }
 ]
