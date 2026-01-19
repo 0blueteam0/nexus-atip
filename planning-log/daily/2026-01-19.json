@@ -295,5 +295,68 @@
       "phase": "phase-4",
       "status": "completed"
     }
+  },
+  {
+    "timestamp": "2026-01-19T16:14:40.788Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "phase_update",
+    "details": {
+      "phase": "phase-5",
+      "status": "in_progress"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:25.942Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "5.1.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:26.093Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "5.1.2",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:26.229Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "5.2.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:26.367Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "5.3.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:26.508Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "5.4.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T16:20:34.847Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "phase_update",
+    "details": {
+      "phase": "phase-5",
+      "status": "completed"
+    }
   }
 ]
