@@ -4,10 +4,10 @@
   "planFile": "plans/floofy-sauteeing-alpaca.md",
   "version": "3.0.0",
   "created": "2026-01-19T09:30:00Z",
-  "lastModified": "2026-01-19T09:31:42.698Z",
+  "lastModified": "2026-01-19T09:32:38.796Z",
   "status": "active",
   "currentPhase": "phase-0",
-  "currentTask": "0.4.2",
+  "currentTask": "0.5.1",
   "phases": [
     {
       "id": "phase-0",
@@ -65,16 +65,18 @@
         {
           "id": "0.5.1",
           "title": "훅 확장 (선택)",
-          "status": "pending",
+          "status": "completed",
           "command": "edit .claude-hooks.json",
-          "verifiedBy": "cat .claude-hooks.json"
+          "verifiedBy": "cat .claude-hooks.json",
+          "completedAt": "2026-01-19T09:32:38.783Z"
         },
         {
           "id": "0.7.1",
           "title": "Phase 0 Git 커밋",
-          "status": "pending",
+          "status": "completed",
           "command": "git commit",
-          "verifiedBy": "git log -1"
+          "verifiedBy": "git log -1",
+          "completedAt": "2026-01-19T09:32:35.753Z"
         }
       ]
     },
@@ -241,8 +243,8 @@
   ],
   "metadata": {
     "totalTasks": 35,
-    "completedTasks": 6,
-    "progressPercent": 17,
+    "completedTasks": 8,
+    "progressPercent": 23,
     "estimatedTotalMinutes": 180,
     "actualTotalMinutes": 0
   },

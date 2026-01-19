@@ -34,5 +34,32 @@
       "task": "0.4.2",
       "status": "completed"
     }
+  },
+  {
+    "timestamp": "2026-01-19T09:32:35.756Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "0.7.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:32:38.785Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "task_update",
+    "details": {
+      "task": "0.5.1",
+      "status": "completed"
+    }
+  },
+  {
+    "timestamp": "2026-01-19T09:32:49.293Z",
+    "planId": "floofy-sauteeing-alpaca",
+    "action": "phase_update",
+    "details": {
+      "phase": "phase-0",
+      "status": "completed"
+    }
   }
 ]
