@@ -6,7 +6,7 @@
 ## Quick Stats
 | 항목 | 수량 |
 |------|------|
-| MCP Servers | 40+ |
+| MCP Servers | 36 |
 | Skills | 19 |
 | Commands | 59 (10 core + 30 library + 19 sc) |
 | Rules | 11 (6 active + 5 archived) |
