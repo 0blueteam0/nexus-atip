@@ -49,6 +49,14 @@
       "priority": "medium",
       "description": "ATOS 학습 - 세션 패턴 분석 + 사용 통계 영구 저장 + 지침 진화 트리거"
     },
+    "bidirectional-sync": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/bidirectional-sync.js full",
+      "triggers": ["task-complete", "phase-change", "session-end"],
+      "interval": "5m",
+      "priority": "medium",
+      "description": "Shrimp ↔ Planning ↔ Unified 양방향 동기화 (5분 주기 또는 태스크 완료 시)"
+    },
     "self-trigger": {
       "enabled": true,
       "command": "node K:/PortableApps/Claude-Code/atos/self-trigger/index.js process",

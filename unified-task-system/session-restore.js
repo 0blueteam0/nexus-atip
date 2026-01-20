@@ -43,16 +43,13 @@ function generateSessionId() {
 
 /**
  * 플래닝 시스템 상태 복원
+ * [DEPRECATED] planning-restore 훅에서 처리하므로 중복 호출 제거 (2026-01-20)
+ * 이 함수는 호환성을 위해 유지하되 내부 로직 비활성화
  */
 function restorePlanningState() {
-  try {
-    const output = execSync('node K:/PortableApps/Claude-Code/planning-system/restore.js --all --quiet', { encoding: 'utf8' });
-    if (output.trim()) {
-      console.log('\n' + output.trim());
-    }
-  } catch (e) {
-    // 플랜 없으면 무시 (정상 동작)
-  }
+  // 중복 호출 방지: planning-restore 훅에서 이미 처리됨
+  // 참조: .claude-hooks.json > planning-restore
+  // console.log('[*] Planning restore handled by planning-restore hook');
 }
 
 /**
