@@ -214,8 +214,10 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 
 ## [INV] 시스템 현황 참조
 - **전체 현황**: SYSTEM-INVENTORY.md
-- **활성 플랜**: plans/ACTIVE-PLAN.md
+- **활성 플랜**: plans/ACTIVE-PLAN.md (세션 시작 시 필수 확인)
 - **플래닝 시스템**: planning-system/
+- **상태 복원**: `node planning-system/restore.js --all`
+- **상태 저장**: `node planning-system/checkpoint.js --auto-save`
 
 ---
 

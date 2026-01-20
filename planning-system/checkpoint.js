@@ -18,16 +18,34 @@ const LOG_DIR = path.join(__dirname, '..', 'planning-log');
 // Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
-  const result = { test: false };
-  
+  const result = { test: false, autoSave: false };
+
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--plan') result.plan = args[++i];
     else if (args[i] === '--phase') result.phase = args[++i];
     else if (args[i] === '--task') result.task = args[++i];
     else if (args[i] === '--status') result.status = args[++i];
     else if (args[i] === '--test') result.test = true;
+    else if (args[i] === '--auto-save') result.autoSave = true;
   }
   return result;
+}
+
+// Find active plan from progress files
+function findActivePlan() {
+  if (!fs.existsSync(PLANS_DIR)) return null;
+
+  const files = fs.readdirSync(PLANS_DIR)
+    .filter(f => f.endsWith('-progress.json'));
+
+  for (const file of files) {
+    const filePath = path.join(PLANS_DIR, file);
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (data.status === 'active') {
+      return data;
+    }
+  }
+  return null;
 }
 
 // Load progress file
@@ -140,10 +158,34 @@ function gitCommit(message) {
   }
 }
 
+// Auto-save: find active plan and save its current state
+function autoSave() {
+  const activePlan = findActivePlan();
+  if (!activePlan) {
+    console.log('[*] No active plan to save');
+    return;
+  }
+
+  const planId = activePlan.planId;
+  console.log(`[*] Auto-saving plan: ${planId}`);
+
+  // Update lastModified timestamp
+  activePlan.lastModified = new Date().toISOString();
+  saveProgress(planId, activePlan);
+
+  // Update ACTIVE-PLAN.md
+  updateActivePlan(activePlan);
+
+  // Log to daily file
+  logDaily(planId, 'auto_save', { timestamp: activePlan.lastModified });
+
+  console.log(`[+] Auto-save complete: ${planId}`);
+}
+
 // Main execution
 function main() {
   const args = parseArgs();
-  
+
   // Test mode
   if (args.test) {
     console.log('[*] Checkpoint test mode');
@@ -152,7 +194,13 @@ function main() {
     console.log('[+] Log dir:', LOG_DIR);
     return;
   }
-  
+
+  // Auto-save mode (session-end hook)
+  if (args.autoSave) {
+    autoSave();
+    return;
+  }
+
   if (!args.plan) {
     console.error('[-] Error: --plan is required');
     process.exit(1);

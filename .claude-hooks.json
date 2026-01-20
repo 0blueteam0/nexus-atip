@@ -1,31 +1,101 @@
 {
   "hooks": {
+    "docker-check": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/systems/docker-checker.js",
+      "triggers": ["session-start"],
+      "priority": "highest",
+      "description": "세션 시작 시 Docker 및 Self-hosted MCP 컨테이너 자동 시작 (firecrawl, searxng-crawl4ai)"
+    },
     "session-start": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/.claude/hooks/clear-history.js && node K:/PortableApps/Claude-Code/hooks/auto-memory-system.js && node K:/PortableApps/Claude-Code/systems/smart-suggest.js && node K:/PortableApps/Claude-Code/systems/mcp-output-minimizer.js",
-      "description": "세션 시작 시 MCP 포맷터 + 이전 컨텍스트 자동 로드 + Smart Suggest"
+      "command": "node K:/PortableApps/Claude-Code/unified-task-system/session-restore.js",
+      "triggers": ["session-start"],
+      "priority": "high",
+      "description": "세션 시작 시 후속조치 및 이전 작업 상태 복원 (Unified Task System)"
+    },
+    "atos-init": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/index.js init",
+      "triggers": ["session-start"],
+      "priority": "high",
+      "description": "ATOS 초기화 - 도구 레지스트리 로드 + Auto-Discovery 스캔 + 초기 추천 생성"
+    },
+    "planning-restore": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/planning-system/restore.js --all",
+      "triggers": ["session-start"],
+      "priority": "high",
+      "description": "세션 시작 시 활성/완료 플랜 상태 자동 출력"
+    },
+    "atos-recommend": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/recommendation-engine.js",
+      "triggers": ["before-response", "user-input"],
+      "priority": "medium",
+      "description": "ATOS 추천 - 맥락 분석 후 도구/워크플로우 추천 삽입"
+    },
+    "atos-track": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/execution-monitor.js track",
+      "triggers": ["after-tool-call"],
+      "priority": "low",
+      "description": "ATOS 추적 - 도구 호출 통계 업데이트 + 체이닝 패턴 기록"
+    },
+    "atos-learn": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/feedback-loop.js",
+      "triggers": ["session-end"],
+      "priority": "medium",
+      "description": "ATOS 학습 - 세션 패턴 분석 + 사용 통계 영구 저장 + 지침 진화 트리거"
+    },
+    "self-trigger": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/atos/self-trigger/index.js process",
+      "triggers": ["before-response"],
+      "priority": "high",
+      "description": "Claude 출력에서 키워드 감지 -> 리소스 자동 로드 (Plan/Implement/Execute 단계별)"
     },
     "context-detection": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/systems/context-monitor.js",
+      "command": "node K:/PortableApps/Claude-Code/_ACTIVE/scripts/systems/context-monitor.js",
       "triggers": ["git", "diff", "compare", "search", "youtube", "database"],
+      "priority": "medium",
       "description": "작업 컨텍스트 감지 시 도구 자동 추천"
     },
     "important-detection": {
       "enabled": true,
       "triggers": ["결정", "해결", "성공", "완료", "중요"],
       "action": "auto-save",
+      "priority": "low",
       "description": "중요 키워드 감지 시 자동 저장"
     },
     "periodic-save": {
       "enabled": true,
       "interval": "1h",
+      "priority": "low",
       "description": "1시간마다 자동 체크포인트"
     },
     "session-end": {
       "enabled": true,
-      "command": "node -e \"require('./hooks/auto-memory-system.js').saveSessionSummary()\"",
-      "description": "세션 종료 시 전체 요약 저장"
+      "command": "node K:/PortableApps/Claude-Code/unified-task-system/session-persist.js",
+      "triggers": ["session-end"],
+      "priority": "high",
+      "description": "세션 종료 시 후속조치 및 작업 상태 저장 (Unified Task System)"
+    },
+    "planning-persist": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/planning-system/checkpoint.js --auto-save",
+      "triggers": ["session-end"],
+      "priority": "high",
+      "description": "세션 종료 시 플랜 상태 자동 저장"
+    },
+    "date-validation": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/systems/date-validator-hook.js --check-recent",
+      "triggers": ["file-save", "pre-commit"],
+      "priority": "medium",
+      "description": "파일 저장/커밋 시 하드코딩된 날짜 오류 감지"
     }
   },
   "memory-config": {
