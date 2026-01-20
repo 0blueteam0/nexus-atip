@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /**
  * Bidirectional Sync - Planning ↔ Shrimp ↔ Unified Task 양방향 동기화
- * 
+ *
  * 위치: K:/PortableApps/Claude-Code/atos/bidirectional-sync.js
- * 
+ *
  * 핵심 기능:
  * - Shrimp → Planning 동기화 (태스크 완료 시)
  * - Planning → Unified Task 동기화 (완료된 태스크 추가)
  * - 주기적 동기화 (5분 또는 Task 완료 시)
- * 
+ * - [v2.0] 트랜잭션 기반 원자적 쓰기
+ * - [v2.0] Mutex 기반 동시 실행 방지
+ *
  * 사용법:
  *   node bidirectional-sync.js          # 전체 동기화
  *   node bidirectional-sync.js shrimp   # Shrimp → Planning
@@ -18,42 +20,79 @@
 const fs = require('fs');
 const path = require('path');
 
+// 일관성 보장 모듈 로드
+const { safeRead, writeWithBackup } = require('./file-ops');
+const { FileTransaction } = require('./transaction');
+
 // 경로 설정
 const BASE_PATH = 'K:/PortableApps/Claude-Code';
 const PLANS_DIR = path.join(BASE_PATH, 'plans');
 const SHRIMP_TASKS_FILE = path.join(BASE_PATH, 'ShrimpData/tasks/current-tasks.json');
 const UNIFIED_STATE_FILE = path.join(BASE_PATH, 'unified-task-system/session-state.json');
 const SYNC_LOG_FILE = path.join(BASE_PATH, 'atos/sync-log.json');
+const MUTEX_FILE = path.join(BASE_PATH, 'atos/.sync-mutex');
 
 /**
- * 파일 안전하게 읽기
+ * 파일 안전하게 읽기 (file-ops 모듈 사용)
  */
 function safeReadJSON(filePath, defaultValue = null) {
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(data);
-    }
-  } catch (error) {
-    console.error(`[!] 파일 읽기 실패 (${path.basename(filePath)}):`, error.message);
-  }
-  return defaultValue;
+  return safeRead(filePath, defaultValue);
 }
 
 /**
- * 파일 안전하게 쓰기
+ * 파일 안전하게 쓰기 (file-ops 모듈 사용, 백업 포함)
  */
 function safeWriteJSON(filePath, data) {
+  const result = writeWithBackup(filePath, data);
+  if (!result.success) {
+    console.error(`[!] 파일 쓰기 실패: ${result.error}`);
+  }
+  return result.success;
+}
+
+/**
+ * Mutex 획득 (동시 실행 방지)
+ * @returns {boolean} true면 획득 성공, false면 다른 프로세스 실행 중
+ */
+function acquireMutex() {
   try {
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+    if (fs.existsSync(MUTEX_FILE)) {
+      const data = JSON.parse(fs.readFileSync(MUTEX_FILE, 'utf8'));
+      const age = Date.now() - new Date(data.timestamp).getTime();
+
+      // 1분 이내면 아직 실행 중
+      if (age < 60000) {
+        console.log('[*] 다른 동기화 진행 중 - 스킵');
+        return false;
+      }
+
+      // Stale mutex - 제거
+      console.log('[*] Stale mutex 감지 - 제거');
     }
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+
+    // Mutex 생성
+    fs.writeFileSync(MUTEX_FILE, JSON.stringify({
+      pid: process.pid,
+      timestamp: new Date().toISOString()
+    }), 'utf8');
+
     return true;
   } catch (error) {
-    console.error(`[!] 파일 쓰기 실패:`, error.message);
-    return false;
+    console.error(`[!] Mutex 획득 실패: ${error.message}`);
+    return true;  // 실패 시에도 진행 허용
+  }
+}
+
+/**
+ * Mutex 해제
+ */
+function releaseMutex() {
+  try {
+    if (fs.existsSync(MUTEX_FILE)) {
+      fs.unlinkSync(MUTEX_FILE);
+    }
+  } catch (error) {
+    // 해제 실패 무시
   }
 }
 
@@ -157,20 +196,27 @@ class BidirectionalSync {
       }
     }
     
-    // 변경 사항이 있으면 저장
+    // 변경 사항이 있으면 트랜잭션으로 저장
     if (changeCount > 0) {
-      // Planning 저장
+      // Planning 진행률 업데이트
       this.updatePlanProgress(planData);
-      safeWriteJSON(planFile, planData);
-      
-      // Shrimp 저장 (syncedToPlan 플래그)
-      safeWriteJSON(SHRIMP_TASKS_FILE, shrimpData);
-      
-      console.log(`[+] Shrimp -> Planning: ${changeCount}개 태스크 동기화 완료`);
+
+      // 트랜잭션으로 다중 파일 원자적 저장
+      const tx = new FileTransaction({ logging: false });
+      tx.add(planFile, planData);
+      tx.add(SHRIMP_TASKS_FILE, shrimpData);
+
+      const txResult = tx.commit();
+      if (txResult.success) {
+        console.log(`[+] Shrimp -> Planning: ${changeCount}개 태스크 동기화 완료 (TX: ${tx.id})`);
+      } else {
+        console.log(`[-] Shrimp -> Planning: 트랜잭션 실패 - ${txResult.error}`);
+        return { success: false, changes: 0, error: txResult.error };
+      }
     } else {
       console.log('[*] Shrimp -> Planning: 동기화할 변경 사항 없음');
     }
-    
+
     return { success: true, changes: changeCount };
   }
 
@@ -280,59 +326,85 @@ class BidirectionalSync {
       unifiedState.recentTasks = unifiedState.recentTasks.slice(0, 20);
     }
 
-    // 변경 사항이 있으면 저장
+    // 변경 사항이 있으면 트랜잭션으로 저장
     if (changeCount > 0) {
       unifiedState.lastUpdated = new Date().toISOString();
-      safeWriteJSON(UNIFIED_STATE_FILE, unifiedState);
-      
-      // Planning 파일도 업데이트 (syncedToUnified 플래그)
+
+      // Planning 파일 경로 가져오기
       const { filePath: planFile } = findActivePlanFile();
+
+      // 트랜잭션으로 다중 파일 원자적 저장
+      const tx = new FileTransaction({ logging: false });
+      tx.add(UNIFIED_STATE_FILE, unifiedState);
       if (planFile) {
-        safeWriteJSON(planFile, planData);
+        tx.add(planFile, planData);
       }
-      
-      console.log(`[+] Planning -> Unified: ${changeCount}개 태스크 동기화 완료`);
+
+      const txResult = tx.commit();
+      if (txResult.success) {
+        console.log(`[+] Planning -> Unified: ${changeCount}개 태스크 동기화 완료 (TX: ${tx.id})`);
+      } else {
+        console.log(`[-] Planning -> Unified: 트랜잭션 실패 - ${txResult.error}`);
+        return { success: false, changes: 0, error: txResult.error };
+      }
     } else {
       console.log('[*] Planning -> Unified: 동기화할 변경 사항 없음');
     }
-    
+
     return { success: true, changes: changeCount };
   }
 
   /**
-   * 전체 동기화 실행
+   * 전체 동기화 실행 (Mutex 보호)
    */
   runFullSync() {
     console.log('\n========================================');
-    console.log('  Bidirectional Sync - Full Sync');
+    console.log('  Bidirectional Sync - Full Sync v2.0');
     console.log('========================================\n');
-    
+
+    // Mutex 획득 시도
+    if (!acquireMutex()) {
+      return {
+        success: false,
+        error: 'Another sync in progress',
+        shrimpToPlan: 0,
+        planToUnified: 0
+      };
+    }
+
     const startTime = Date.now();
-    
-    // 1. Shrimp → Planning
-    const shrimpResult = this.syncFromShrimp();
-    
-    // 2. Planning → Unified
-    const unifiedResult = this.syncToUnified();
-    
-    // 3. 동기화 로그 저장
-    this.saveSyncLog(shrimpResult, unifiedResult);
-    
-    const elapsed = Date.now() - startTime;
-    
-    console.log('\n--- 동기화 결과 ---');
-    console.log(`[*] Shrimp -> Planning: ${shrimpResult.changes}개`);
-    console.log(`[*] Planning -> Unified: ${unifiedResult.changes}개`);
-    console.log(`[*] 소요 시간: ${elapsed}ms`);
-    console.log('========================================\n');
-    
-    return {
-      success: true,
-      shrimpToPlan: shrimpResult.changes,
-      planToUnified: unifiedResult.changes,
-      elapsed,
-      changes: this.changes
-    };
+
+    try {
+      // 1. Shrimp → Planning
+      const shrimpResult = this.syncFromShrimp();
+
+      // 2. Planning → Unified
+      const unifiedResult = this.syncToUnified();
+
+      // 3. 동기화 로그 저장
+      this.saveSyncLog(shrimpResult, unifiedResult);
+
+      const elapsed = Date.now() - startTime;
+
+      console.log('\n--- 동기화 결과 ---');
+      console.log(`[*] Shrimp -> Planning: ${shrimpResult.changes}개`);
+      console.log(`[*] Planning -> Unified: ${unifiedResult.changes}개`);
+      console.log(`[*] 소요 시간: ${elapsed}ms`);
+      console.log('[+] 트랜잭션 기반 원자적 저장 완료');
+      console.log('========================================\n');
+
+      return {
+        success: true,
+        shrimpToPlan: shrimpResult.changes,
+        planToUnified: unifiedResult.changes,
+        elapsed,
+        changes: this.changes
+      };
+
+    } finally {
+      // Mutex 해제 (항상 실행)
+      releaseMutex();
+    }
   }
 
   /**

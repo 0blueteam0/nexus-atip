@@ -1,16 +1,26 @@
 #!/usr/bin/env node
 /**
  * checkpoint.js - Phase/Task 완료 시 상태 저장 + Git 커밋
- * 
+ *
  * 사용법:
  *   node checkpoint.js --plan <planId> --task <taskId> --status completed
  *   node checkpoint.js --plan <planId> --phase <phaseId> --status completed
  *   node checkpoint.js --test
+ *
+ * [v2.0] 원자적 쓰기 지원
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+
+// file-ops 모듈 로드 시도
+let fileOps;
+try {
+  fileOps = require('../atos/file-ops');
+} catch (e) {
+  fileOps = null;
+}
 
 const PLANS_DIR = path.join(__dirname, '..', 'plans');
 const LOG_DIR = path.join(__dirname, '..', 'planning-log');
@@ -57,10 +67,26 @@ function loadProgress(planId) {
   return JSON.parse(fs.readFileSync(progressFile, 'utf8'));
 }
 
-// Save progress file
+// Save progress file (원자적 쓰기 + 백업)
 function saveProgress(planId, data) {
   const progressFile = path.join(PLANS_DIR, `${planId}-progress.json`);
   data.lastModified = new Date().toISOString();
+
+  // file-ops 모듈 사용 (있으면)
+  if (fileOps && fileOps.writeWithBackup) {
+    const result = fileOps.writeWithBackup(progressFile, data);
+    if (result.success) {
+      console.log(`[+] Progress saved (atomic): ${progressFile}`);
+    } else {
+      console.error(`[-] Atomic save failed: ${result.error}`);
+      // 폴백
+      fs.writeFileSync(progressFile, JSON.stringify(data, null, 2));
+      console.log(`[+] Progress saved (fallback): ${progressFile}`);
+    }
+    return;
+  }
+
+  // 폴백: 기본 fs 사용
   fs.writeFileSync(progressFile, JSON.stringify(data, null, 2));
   console.log(`[+] Progress saved: ${progressFile}`);
 }

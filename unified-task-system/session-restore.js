@@ -4,6 +4,8 @@
  *
  * 위치: K:/PortableApps/Claude-Code/unified-task-system/session-restore.js
  * 호출: .claude-hooks.json의 session-start hook
+ *
+ * [v2.0] Autosave 복원 지원 추가
  */
 
 const fs = require('fs');
@@ -13,25 +15,65 @@ const { execSync } = require('child_process');
 const BASE_PATH = 'K:/PortableApps/Claude-Code/unified-task-system';
 const SESSION_STATE_FILE = path.join(BASE_PATH, 'session-state.json');
 const TASKS_FILE = path.join(BASE_PATH, 'tasks.json');
+const AUTOSAVE_FILE = path.join('K:/PortableApps/Claude-Code/atos', 'autosave-snapshot.json');
 
 /**
- * 세션 상태 파일 로드
+ * 세션 상태 파일 로드 (Autosave 복구 포함)
  */
 function loadSessionState() {
+  const defaultState = {
+    version: '1.0.0',
+    pendingFollowups: [],
+    recentTasks: [],
+    sessionHistory: []
+  };
+
+  // 1. 정상 상태 파일 시도
   try {
     if (fs.existsSync(SESSION_STATE_FILE)) {
       const data = fs.readFileSync(SESSION_STATE_FILE, 'utf8');
       return JSON.parse(data);
     }
   } catch (error) {
-    console.error('[!] 세션 상태 로드 실패:', error.message);
+    console.error('[!] 세션 상태 파일 손상 감지');
   }
-  return {
-    version: '1.0.0',
-    pendingFollowups: [],
-    recentTasks: [],
-    sessionHistory: []
-  };
+
+  // 2. 백업 파일에서 복구 시도
+  const backupFile = `${SESSION_STATE_FILE}.backup`;
+  try {
+    if (fs.existsSync(backupFile)) {
+      console.log('[*] 백업 파일에서 복구 시도...');
+      const backupData = fs.readFileSync(backupFile, 'utf8');
+      const state = JSON.parse(backupData);
+      console.log('[+] 백업에서 복구 성공');
+      return state;
+    }
+  } catch (error) {
+    console.error('[!] 백업 파일도 손상됨');
+  }
+
+  // 3. Autosave 스냅샷에서 복구 시도
+  try {
+    if (fs.existsSync(AUTOSAVE_FILE)) {
+      console.log('[*] Autosave 스냅샷에서 복구 시도...');
+      const autosaveData = fs.readFileSync(AUTOSAVE_FILE, 'utf8');
+      const snapshot = JSON.parse(autosaveData);
+
+      if (snapshot.sessionState) {
+        console.log(`[+] Autosave에서 복구 성공: ${snapshot.timestamp}`);
+        if (snapshot.emergencySave) {
+          console.log('[!] 긴급 저장 스냅샷 - 이전 세션이 비정상 종료됨');
+        }
+        return snapshot.sessionState;
+      }
+    }
+  } catch (error) {
+    console.error('[!] Autosave 복구 실패:', error.message);
+  }
+
+  // 4. 모든 복구 실패 - 기본값 반환
+  console.log('[*] 새 세션 상태로 시작');
+  return defaultState;
 }
 
 /**
