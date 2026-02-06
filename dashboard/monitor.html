@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Stack Monitor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: #1a1a1a;
+            padding: 12px 20px;
+            border-radius: 6px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .section-meta {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+        
+        .card:hover {
+            border-color: #3a3a3a;
+            background: #1f1f1f;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .card-name {
+            font-size: 14px;
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .status {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .status-ok {
+            background: #0f3a2f;
+            color: #4ade80;
+        }
+        
+        .status-error {
+            background: #3a0f0f;
+            color: #ef4444;
+        }
+        
+        .card-version {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .card-desc {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #3a0f0f;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Stack Monitor</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">MCP Servers</div>
+                    <div class="stat-value" id="mcp-count">--</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">npm Packages</div>
+                    <div class="stat-value" id="npm-count">--</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Python Packages</div>
+                    <div class="stat-value" id="python-count">--</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Global Tools</div>
+                    <div class="stat-value" id="global-count">--</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">MCP Servers</div>
+                <div class="section-meta" id="mcp-time">--</div>
+            </div>
+            <div class="grid" id="mcp-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">npm Packages (Local)</div>
+                <div class="section-meta" id="npm-time">--</div>
+            </div>
+            <div class="grid" id="npm-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Python Packages</div>
+                <div class="section-meta" id="python-time">--</div>
+            </div>
+            <div class="grid" id="python-grid"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Global Tools</div>
+                <div class="section-meta" id="global-time">--</div>
+            </div>
+            <div class="grid" id="global-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:13579/api';
+        let lastUpdate = { mcp: 0, packages: 0 };
+        
+        function timeAgo(ts) {
+            if (!ts) return 'Unknown';
+            const diff = Date.now() - ts;
+            const mins = Math.floor(diff / 60000);
+            const hrs = Math.floor(mins / 60);
+            const days = Math.floor(hrs / 24);
+            if (days > 0) return `${days}d ago`;
+            if (hrs > 0) return `${hrs}h ago`;
+            if (mins > 0) return `${mins}m ago`;
+            return 'Just now';
+        }
+        
+        function createCard(item) {
+            const statusClass = item.status === 'connected' ? 'status-ok' : 'status-error';
+            const statusText = item.status === 'connected' ? 'Connected' : 'Error';
+            
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-name">${item.name}</div>
+                        <div class="status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="card-version">${item.version}</div>
+                    ${item.description ? `<div class="card-desc">${item.description}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        async function loadMCP() {
+            try {
+                console.log('[DEBUG] Fetching MCP data...');
+                const res = await fetch(`${API}/mcp-status`);
+                const data = await res.json();
+                console.log('[DEBUG] MCP data:', data);
+                
+                lastUpdate.mcp = data.cachedAt || Date.now();
+                document.getElementById('mcp-count').textContent = data.count || 0;
+                document.getElementById('mcp-time').textContent = timeAgo(lastUpdate.mcp);
+                document.getElementById('mcp-grid').innerHTML = 
+                    (data.servers || []).map(createCard).join('');
+                    
+                console.log('[OK] MCP data loaded');
+            } catch (err) {
+                console.error('[ERROR] MCP load failed:', err);
+                document.getElementById('mcp-grid').innerHTML = 
+                    `<div class="error">Failed to load MCP data: ${err.message}</div>`;
+            }
+        }
+        
+        async function loadPackages() {
+            try {
+                console.log('[DEBUG] Fetching package data...');
+                const [npm, python, global] = await Promise.all([
+                    fetch(`${API}/npm-packages`).then(r => r.json()),
+                    fetch(`${API}/python-packages`).then(r => r.json()),
+                    fetch(`${API}/global-tools`).then(r => r.json())
+                ]);
+                
+                console.log('[DEBUG] Package data:', { npm, python, global });
+                
+                lastUpdate.packages = npm.cachedAt || Date.now();
+                
+                document.getElementById('npm-count').textContent = npm.count || 0;
+                document.getElementById('python-count').textContent = python.count || 0;
+                document.getElementById('global-count').textContent = global.count || 0;
+                
+                document.getElementById('npm-time').textContent = timeAgo(lastUpdate.packages);
+                document.getElementById('python-time').textContent = timeAgo(lastUpdate.packages);
+                document.getElementById('global-time').textContent = timeAgo(lastUpdate.packages);
+                
+                document.getElementById('npm-grid').innerHTML = 
+                    (npm.packages || []).map(createCard).join('');
+                document.getElementById('python-grid').innerHTML = 
+                    (python.packages || []).map(createCard).join('');
+                document.getElementById('global-grid').innerHTML = 
+                    (global.packages || []).map(createCard).join('');
+                    
+                console.log('[OK] Package data loaded');
+            } catch (err) {
+                console.error('[ERROR] Package load failed:', err);
+            }
+        }
+        
+        // Initial load
+        console.log('[START] Loading dashboard...');
+        loadMCP();
+        loadPackages();
+        
+        // Auto refresh
+        setInterval(loadMCP, 300000);      // 5min
+        setInterval(loadPackages, 432000000); // 5days
+        
+        console.log('[OK] Dashboard initialized');
+    </script>
+</body>
+</html>

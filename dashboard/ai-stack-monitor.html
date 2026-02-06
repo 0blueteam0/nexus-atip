@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Stack Integration Monitor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      margin-bottom: 30px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .last-update {
+      font-size: 12px;
+      color: #666;
+      margin-top: 8px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 15px;
+    }
+    
+    .service-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    
+    .service-card:hover {
+      border-color: #3a3a3a;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .service-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      text-transform: capitalize;
+    }
+    
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-running {
+      background: #0f3a2f;
+      color: #4ade80;
+    }
+    
+    .status-stopped {
+      background: #3a3a0f;
+      color: #fbbf24;
+    }
+    
+    .status-error {
+      background: #3a0f0f;
+      color: #ef4444;
+    }
+    
+    .status-library {
+      background: #1a1a2a;
+      color: #818cf8;
+    }
+    
+    .version {
+      font-size: 13px;
+      color: #888;
+      margin: 8px 0;
+    }
+    
+    .dependencies {
+      font-size: 12px;
+      color: #666;
+      margin: 8px 0;
+    }
+    
+    .dep-badge {
+      display: inline-block;
+      background: #2a2a2a;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-right: 4px;
+      font-size: 11px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-start {
+      background: #0f3a2f;
+      color: #4ade80;
+    }
+    
+    .btn-start:hover:not(:disabled) {
+      background: #164e3f;
+    }
+    
+    .btn-stop {
+      background: #3a0f0f;
+      color: #ef4444;
+    }
+    
+    .btn-stop:hover:not(:disabled) {
+      background: #4a1f1f;
+    }
+    
+    .last-check {
+      font-size: 11px;
+      color: #555;
+      margin-top: 10px;
+      text-align: right;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    
+    .error-message {
+      background: #3a0f0f;
+      border: 1px solid #5a1f1f;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AI Stack Integration Monitor</h1>
+      <div class="last-update">마지막 업데이트: <span id="lastUpdate">-</span></div>
+    </header>
+    
+    <div id="errorContainer"></div>
+    <div id="servicesGrid" class="grid">
+      <div class="loading">서비스 정보를 불러오는 중...</div>
+    </div>
+  </div>
+  
+  <script>
+    const API_BASE = 'http://localhost:13579/api';
+    let servicesData = {};
+    let serviceRegistry = {};
+    
+    async function fetchServiceRegistry() {
+      try {
+        const response = await fetch(`${API_BASE}/service-registry`);
+        serviceRegistry = await response.json();
+      } catch (error) {
+        console.error('Failed to fetch service registry:', error);
+      }
+    }
+    
+    async function fetchServiceStatus() {
+      try {
+        const [healthRes, versionRes] = await Promise.all([
+          fetch(`${API_BASE}/services/health`),
+          fetch(`${API_BASE}/services/versions`)
+        ]);
+        
+        if (!healthRes.ok || !versionRes.ok) {
+          throw new Error('API request failed');
+        }
+        
+        const health = await healthRes.json();
+        const versions = await versionRes.json();
+        
+        servicesData = {
+          health: health.services,
+          versions: versions.versions
+        };
+        
+        renderServices();
+        clearError();
+        
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ko-KR');
+      } catch (error) {
+        console.error('Failed to fetch status:', error);
+        showError('서버 연결 실패: ' + error.message);
+      }
+    }
+    
+    function showError(message) {
+      const container = document.getElementById('errorContainer');
+      container.innerHTML = `<div class="error-message">${message}</div>`;
+    }
+    
+    function clearError() {
+      document.getElementById('errorContainer').innerHTML = '';
+    }
+    
+    function renderServices() {
+      const grid = document.getElementById('servicesGrid');
+      const serviceIds = Object.keys(servicesData.health);
+      
+      if (serviceIds.length === 0) {
+        grid.innerHTML = '<div class="loading">서비스 정보가 없습니다.</div>';
+        return;
+      }
+      
+      grid.innerHTML = serviceIds.map(id => {
+        const health = servicesData.health[id];
+        const version = servicesData.versions[id]?.version || 'unknown';
+        const status = health.status;
+        const registry = serviceRegistry[id] || {};
+        const deps = registry.dependencies || [];
+        
+        return `
+          <div class="service-card">
+            <div class="card-header">
+              <div class="service-name">${registry.name || id}</div>
+              <span class="status-badge status-${status}">${status}</span>
+            </div>
+            
+            <div class="version">Version: ${version}</div>
+            
+            ${deps.length > 0 ? `
+              <div class="dependencies">
+                Dependencies: ${deps.map(dep => `<span class="dep-badge">${dep}</span>`).join('')}
+              </div>
+            ` : ''}
+            
+            ${status !== 'library' ? `
+              <div class="controls">
+                <button class="btn-start" onclick="startService('${id}')" ${status === 'running' ? 'disabled' : ''}>
+                  Start
+                </button>
+                <button class="btn-stop" onclick="stopService('${id}')" ${status === 'stopped' ? 'disabled' : ''}>
+                  Stop
+                </button>
+              </div>
+            ` : '<div style="text-align:center; padding:10px; color:#666; font-size:12px;">Library - No controls</div>'}
+            
+            <div class="last-check">
+              ${health.lastCheck ? 'Last check: ' + new Date(health.lastCheck).toLocaleTimeString('ko-KR') : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    async function startService(id) {
+      try {
+        const res = await fetch(`${API_BASE}/services/${id}/start`, {
+          method: 'POST'
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          if (data.batchFile) {
+            alert(`${id} 시작 준비:\n\n배치 파일을 실행하세요:\n${data.batchFile}`);
+          } else {
+            alert(`${id} 시작 성공`);
+          }
+          
+          // 2초 후 상태 업데이트
+          setTimeout(fetchServiceStatus, 2000);
+        } else {
+          alert(`${id} 시작 실패:\n${data.error}\n\n${data.suggestion || ''}`);
+        }
+      } catch (error) {
+        alert(`오류 발생: ${error.message}`);
+      }
+    }
+    
+    async function stopService(id) {
+      if (!confirm(`${id} 서비스를 중지하시겠습니까?`)) {
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_BASE}/services/${id}/stop`, {
+          method: 'POST'
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          alert(`${id} 중지 성공`);
+          setTimeout(fetchServiceStatus, 2000);
+        } else {
+          alert(`${id} 중지 실패: ${data.error}`);
+        }
+      } catch (error) {
+        alert(`오류 발생: ${error.message}`);
+      }
+    }
+    
+    // 초기화
+    async function init() {
+      await fetchServiceRegistry();
+      await fetchServiceStatus();
+      
+      // 10초마다 자동 새로고침
+      setInterval(fetchServiceStatus, 10000);
+    }
+    
+    init();
+  </script>
+</body>
+</html>

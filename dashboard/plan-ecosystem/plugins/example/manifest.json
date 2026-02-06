@@ -1,0 +1,16 @@
+{
+  "name": "example-plugin",
+  "version": "1.0.0",
+  "description": "Example plugin demonstrating the plugin system",
+  "author": "Dashboard Team",
+  "enabled": true,
+  "main": "collector.js",
+  "router": "router.js",
+  "api": "/api/plugins/example",
+  "tab": {
+    "id": "example",
+    "label": "Example",
+    "icon": "star"
+  },
+  "dependencies": []
+}

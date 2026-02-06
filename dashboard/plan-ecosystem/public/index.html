@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Ecosystem Dashboard v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- v4.0: Soft UI Design System -->
+    <link rel="stylesheet" href="/css/soft-ui.css">
+    <style>
+        /* v3.0 Theme Variables (Phase 18) */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --accent-color: #14b8a6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --accent-color: #0d9488;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --error-color: #dc2626;
+        }
+        body { background: var(--bg-primary); color: var(--text-primary); }
+        .bg-slate-900 { background: var(--bg-primary) !important; }
+        .bg-slate-800 { background: var(--bg-secondary) !important; }
+        .bg-slate-700 { background: var(--bg-tertiary) !important; }
+        .text-slate-100 { color: var(--text-primary) !important; }
+        .text-slate-400 { color: var(--text-secondary) !important; }
+        .text-slate-500 { color: var(--text-muted) !important; }
+        .border-slate-700 { border-color: var(--border-color) !important; }
+        .text-teal-400 { color: var(--accent-color) !important; }
+
+        .status-active { background: #10b981; }
+        .status-completed { background: #3b82f6; }
+        .status-archived { background: #6b7280; }
+        .progress-bar { transition: width 0.3s ease; }
+        .card { transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .tab-active { border-bottom: 2px solid #14b8a6; color: #14b8a6; }
+        .timeline-item { border-left: 2px solid #334155; padding-left: 1rem; margin-left: 0.5rem; }
+        .agent-running { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* v3.0 Alerts */
+        .alert-bell { position: relative; cursor: pointer; }
+        .alert-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+        .alert-dropdown { position: absolute; right: 0; top: 100%; margin-top: 8px; width: 380px; max-height: 400px; overflow-y: auto; background: #1e293b; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; display: none; }
+        .alert-dropdown.show { display: block; }
+        .alert-item { padding: 12px 16px; border-bottom: 1px solid #334155; cursor: pointer; }
+        .alert-item:hover { background: #334155; }
+        .alert-item.unread { background: rgba(20, 184, 166, 0.1); border-left: 3px solid #14b8a6; }
+        .alert-severity-info { border-left-color: #3b82f6; }
+        .alert-severity-warning { border-left-color: #f59e0b; }
+        .alert-severity-critical { border-left-color: #ef4444; }
+        /* v3.0 Search */
+        .search-dropdown { position: absolute; right: 0; top: 100%; margin-top: 8px; width: 400px; max-height: 400px; overflow-y: auto; background: #1e293b; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; display: none; }
+        .search-dropdown.show { display: block; }
+        .search-item { padding: 10px 12px; border-bottom: 1px solid #334155; cursor: pointer; }
+        .search-item:hover { background: #334155; }
+        .search-item mark { background: #14b8a6; color: white; border-radius: 2px; padding: 0 2px; }
+        .search-category { padding: 8px 12px; background: #0f172a; font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* v3.0 Mobile Responsive (Phase 19) */
+        .mobile-menu { display: none; }
+        @media (max-width: 1024px) {
+            .grid-cols-3 { grid-template-columns: repeat(2, 1fr) !important; }
+            .col-span-2 { grid-column: span 2 !important; }
+            .grid-cols-6 { grid-template-columns: repeat(3, 1fr) !important; }
+        }
+        @media (max-width: 768px) {
+            .mobile-menu { display: flex; }
+            .desktop-nav { display: none; }
+            .grid-cols-3, .grid-cols-6 { grid-template-columns: 1fr !important; }
+            .col-span-2 { grid-column: span 1 !important; }
+            header { padding: 12px 16px; }
+            main { padding: 16px; }
+            .gap-6 { gap: 1rem !important; }
+            .text-2xl { font-size: 1.25rem !important; }
+            .text-3xl { font-size: 1.5rem !important; }
+            #global-search { width: 150px; }
+            .alert-dropdown, .search-dropdown { width: 300px; right: -50px; }
+            nav.flex { flex-wrap: wrap; gap: 8px !important; }
+            nav.flex button { font-size: 12px; padding-bottom: 4px; }
+        }
+        @media (max-width: 480px) {
+            .card { padding: 12px; }
+            .grid-cols-6 .card { min-height: auto; }
+            #global-search { width: 120px; font-size: 12px; }
+            .alert-dropdown, .search-dropdown { width: 280px; right: -80px; }
+            header .flex.items-center { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-teal-400">Plan Ecosystem Dashboard</h1>
+                <span class="text-xs text-slate-500 ml-2">v3.0 - AI Agent Observability</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle (v3.0 Phase 18) -->
+                <button onclick="toggleTheme()" id="theme-toggle" class="p-2 rounded hover:bg-slate-700 transition-colors" title="Toggle theme">
+                    <svg id="theme-icon-dark" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg id="theme-icon-light" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <!-- Search (v3.0 Phase 16) -->
+                <div class="relative">
+                    <input type="text" id="global-search" placeholder="Search..."
+                           onkeyup="handleSearchInput(event)"
+                           onfocus="document.getElementById('search-dropdown').classList.add('show')"
+                           class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-1.5 text-sm w-64 focus:outline-none focus:border-teal-500">
+                    <div id="search-dropdown" class="search-dropdown">
+                        <div id="search-results" class="p-3 text-slate-500 text-sm">Type to search...</div>
+                    </div>
+                </div>
+                <!-- Alert Bell (v3.0) -->
+                <div class="alert-bell" id="alert-bell" onclick="toggleAlertDropdown()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400 hover:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span id="alert-badge" class="alert-badge hidden">0</span>
+                    <!-- Alert Dropdown -->
+                    <div id="alert-dropdown" class="alert-dropdown">
+                        <div class="p-3 border-b border-slate-700 flex justify-between items-center sticky top-0 bg-slate-800">
+                            <span class="font-semibold">Alerts</span>
+                            <button onclick="markAllAlertsRead(event)" class="text-xs text-teal-400 hover:text-teal-300">Mark all read</button>
+                        </div>
+                        <div id="alert-list" class="divide-y divide-slate-700">
+                            <div class="p-4 text-slate-500 text-center">No alerts</div>
+                        </div>
+                    </div>
+                </div>
+                <span id="connection-status" class="px-3 py-1 rounded text-sm bg-red-600">Disconnected</span>
+                <span id="last-update" class="text-slate-400 text-sm"></span>
+            </div>
+        </div>
+        <!-- Tab Navigation -->
+        <nav class="flex gap-6 mt-4">
+            <button onclick="switchTab('projects')" id="tab-projects" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Projects</button>
+            <button onclick="switchTab('workflows')" id="tab-workflows" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Workflows</button>
+            <button onclick="switchTab('plans')" id="tab-plans" class="tab-btn pb-2 text-sm font-medium tab-active">Plans</button>
+            <button onclick="switchTab('tasks')" id="tab-tasks" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Tasks</button>
+            <button onclick="switchTab('mcp')" id="tab-mcp" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">MCP</button>
+            <button onclick="switchTab('tools')" id="tab-tools" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Tools</button>
+            <button onclick="switchTab('agents')" id="tab-agents" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Agents</button>
+            <button onclick="switchTab('skills')" id="tab-skills" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Skills</button>
+            <button onclick="switchTab('prompts')" id="tab-prompts" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Prompts</button>
+            <button onclick="switchTab('timeline')" id="tab-timeline" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Timeline</button>
+            <button onclick="switchTab('sessions')" id="tab-sessions" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Sessions</button>
+            <button onclick="switchTab('system')" id="tab-system" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">System</button>
+            <button onclick="switchTab('costs')" id="tab-costs" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Costs</button>
+        </nav>
+    </header>
+
+    <main class="p-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-6 gap-4 mb-6">
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Active Plans</div>
+                <div id="stat-active" class="text-3xl font-bold text-teal-400">-</div>
+            </div>
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Completed</div>
+                <div id="stat-completed" class="text-3xl font-bold text-blue-400">-</div>
+            </div>
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Total Tasks</div>
+                <div id="stat-tasks" class="text-3xl font-bold text-amber-400">-</div>
+            </div>
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Tool Calls</div>
+                <div id="stat-tools" class="text-3xl font-bold text-cyan-400">-</div>
+            </div>
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Agents Run</div>
+                <div id="stat-agents" class="text-3xl font-bold text-rose-400">-</div>
+            </div>
+            <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="text-slate-400 text-sm">Prompts</div>
+                <div id="stat-prompts" class="text-3xl font-bold text-cyan-400">-</div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Projects (v4.0) -->
+        <div id="content-projects" class="tab-content hidden">
+            <!-- Projects Overview -->
+            <div id="project-overview" class="mb-6"></div>
+
+            <!-- Projects Grid -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Projects</h2>
+                <button onclick="ProjectDashboard.showCreateModal()" class="soft-btn soft-btn-primary">
+                    + New Project
+                </button>
+            </div>
+            <div id="project-list" class="grid grid-cols-2 gap-4"></div>
+
+            <!-- Project Detail Panel (hidden by default) -->
+            <div id="project-detail-panel" class="hidden fixed inset-y-0 right-0 w-1/2 bg-slate-900 border-l border-slate-700 overflow-y-auto p-6 z-40"></div>
+
+            <!-- Project Modal -->
+            <div id="project-modal" class="hidden"></div>
+        </div>
+
+        <!-- Tab Content: Workflows (v4.0 Phase 9 Week 3) -->
+        <div id="content-workflows" class="tab-content hidden">
+            <!-- Workflow Overview Stats -->
+            <div id="workflow-overview" class="mb-6"></div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Workflow Detail Panel -->
+                <div class="col-span-2">
+                    <div id="workflow-detail" class="soft-card">
+                        <div class="text-center py-8 soft-text-muted">
+                            <p>Select a workflow to view details</p>
+                            <p class="text-sm mt-2">or start a new RIPER+ workflow</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Panel -->
+                <div class="space-y-4">
+                    <div id="workflow-insights">
+                        <div class="soft-card text-center py-4">
+                            <p class="soft-text-muted">Loading insights...</p>
+                        </div>
+                    </div>
+
+                    <!-- Phase Legend -->
+                    <div class="soft-card">
+                        <h3 class="font-semibold mb-3">RIPER+ Phases</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-teal-500"></span>
+                                <span>SPECIFY - Requirements</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-cyan-500"></span>
+                                <span>EXPLORE - Codebase</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                                <span>PLAN - Architecture</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <span>IMPLEMENT - Code</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span>VERIFY - Testing</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                                <span>RELEASE - Deploy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: MCP (Phase 9 Week 4) -->
+        <div id="content-mcp" class="tab-content hidden">
+            <!-- MCP Overview Stats -->
+            <div id="mcp-overview"></div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <!-- MCP Server Status -->
+                <div class="col-span-1">
+                    <div id="mcp-status"></div>
+                </div>
+
+                <!-- Unified MCP Tasks -->
+                <div class="col-span-2">
+                    <div id="mcp-tasks"></div>
+                </div>
+            </div>
+
+            <!-- Kanban Board (optional) -->
+            <div id="mcp-kanban" class="mt-6"></div>
+
+            <!-- Thinking Chains (optional) -->
+            <div id="mcp-thinking" class="mt-6"></div>
+        </div>
+
+        <!-- Tab Content: Plans -->
+        <div id="content-plans" class="tab-content">
+            <!-- Phase 8H: Multi-Plan Overview -->
+            <div id="multi-plan-overview"></div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Plans List -->
+                <div class="col-span-2 bg-slate-800 rounded-lg border border-slate-700">
+                    <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold">Plans</h2>
+                        <div class="flex gap-4">
+                            <div class="flex gap-2">
+                                <button onclick="filterPlans('all')" class="filter-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">All</button>
+                                <button onclick="filterPlans('active')" class="filter-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Active</button>
+                                <button onclick="filterPlans('completed')" class="filter-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Completed</button>
+                            </div>
+                            <div class="flex gap-2 border-l border-slate-600 pl-4">
+                                <button onclick="sortPlans('updatedAt')" class="sort-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Recent</button>
+                                <button onclick="sortPlans('title')" class="sort-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">A-Z</button>
+                                <button onclick="sortPlans('progress')" class="sort-btn px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">%</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="plans-list" class="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+                        <div class="text-slate-500">Loading...</div>
+                    </div>
+                </div>
+                <!-- Right Sidebar -->
+                <div class="space-y-6">
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Recent Activity</h2>
+                        </div>
+                        <div id="activity-feed" class="p-4 space-y-2 max-h-[300px] overflow-y-auto">
+                            <div class="text-slate-500">Waiting for updates...</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Progress Overview</h2>
+                        <canvas id="progress-chart" height="180"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lifecycle View (Phase 7) -->
+            <div class="mt-6 bg-slate-800 rounded-lg border border-slate-700">
+                <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Planning Lifecycle</h2>
+                    <div class="flex gap-2">
+                        <button onclick="LifecycleViz.renderList('lifecycle-list')" class="px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Refresh</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4 p-4">
+                    <div id="lifecycle-list" class="space-y-2">
+                        <div class="text-slate-500 text-sm">Click a plan to view its lifecycle...</div>
+                    </div>
+                    <div id="lifecycle-view" class="col-span-2">
+                        <div class="text-slate-500 text-sm p-4 bg-slate-700 rounded">Select a plan to view lifecycle details</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        <!-- Tab Content: Tasks (Phase 8) -->
+        <div id="content-tasks" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- Task Filters -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <div class="flex gap-4 items-center">
+                            <span class="text-slate-400">Filter:</span>
+                            <button onclick="filterTasks('all')" class="task-filter px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">All</button>
+                            <button onclick="filterTasks('pending')" class="task-filter px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Pending</button>
+                            <button onclick="filterTasks('in-progress')" class="task-filter px-3 py-1 rounded text-sm bg-amber-600 hover:bg-amber-500">In Progress</button>
+                            <button onclick="filterTasks('completed')" class="task-filter px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">Completed</button>
+                            <span class="text-slate-600 mx-2">|</span>
+                            <span class="text-slate-400">Source:</span>
+                            <button onclick="filterTasksSource('all')" class="source-filter px-3 py-1 rounded text-sm bg-slate-700 hover:bg-slate-600">All</button>
+                            <button onclick="filterTasksSource('shrimp')" class="source-filter px-3 py-1 rounded text-sm bg-teal-600 hover:bg-teal-500">Shrimp</button>
+                            <button onclick="filterTasksSource('unified')" class="source-filter px-3 py-1 rounded text-sm bg-blue-600 hover:bg-blue-500">Unified</button>
+                            <button onclick="filterTasksSource('task-master')" class="source-filter px-3 py-1 rounded text-sm bg-slate-600 hover:bg-slate-500">Task Master</button>
+                        </div>
+                    </div>
+                    <!-- Task List -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Integrated Tasks</h2>
+                        </div>
+                        <div id="tasks-list" class="p-4 space-y-2 max-h-[500px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Task Source Distribution -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">By Source</h2>
+                        <canvas id="tasks-source-chart" height="200"></canvas>
+                    </div>
+                    <!-- Task Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Tasks</span>
+                                <span id="tasks-total" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Pending</span>
+                                <span id="tasks-pending" class="font-bold text-amber-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">In Progress</span>
+                                <span id="tasks-in-progress" class="font-bold text-blue-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Completed</span>
+                                <span id="tasks-completed" class="font-bold text-green-400">-</span>
+                            </div>
+                            <div class="flex justify-between border-t border-slate-700 pt-2 mt-2">
+                                <span class="text-slate-400">Completion Rate</span>
+                                <span id="tasks-completion-rate" class="font-bold text-teal-400">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Tools -->
+        <div id="content-tools" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- Top Tools -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Top Tools by Usage</h2>
+                        </div>
+                        <div id="tools-list" class="p-4 space-y-2 max-h-[400px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                    <!-- Chaining Patterns -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Tool Chaining Patterns</h2>
+                        </div>
+                        <div id="chains-list" class="p-4 space-y-2 max-h-[300px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Tool Categories -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">By Category</h2>
+                        <canvas id="tools-category-chart" height="200"></canvas>
+                    </div>
+                    <!-- Tool Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Calls</span>
+                                <span id="tools-total" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Unique Tools</span>
+                                <span id="tools-unique" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Avg Success Rate</span>
+                                <span id="tools-success-rate" class="font-bold text-green-400">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Agents -->
+        <div id="content-agents" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- Running Agents -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                            <h2 class="text-lg font-semibold">Running Agents</h2>
+                            <span id="running-count" class="px-2 py-1 bg-green-600 rounded text-sm">0</span>
+                        </div>
+                        <div id="running-agents" class="p-4 space-y-2">
+                            <div class="text-slate-500">No agents running</div>
+                        </div>
+                    </div>
+                    <!-- Recent Agents -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Recent Agent Activity</h2>
+                        </div>
+                        <div id="agents-list" class="p-4 space-y-2 max-h-[400px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Agent Types -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">By Type</h2>
+                        <canvas id="agents-type-chart" height="200"></canvas>
+                    </div>
+                    <!-- Agent Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Agents</span>
+                                <span id="agents-total" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Completed</span>
+                                <span id="agents-completed" class="font-bold text-green-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Avg Duration</span>
+                                <span id="agents-avg-duration" class="font-bold">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Skills (Phase 7) -->
+        <div id="content-skills" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2">
+                    <!-- Skills List -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Registered Skills</h2>
+                        </div>
+                        <div id="skills-list" class="p-4 space-y-3 max-h-[500px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Skill Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Registered Skills</span>
+                                <span id="skills-registered" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Activations</span>
+                                <span id="skills-activations" class="font-bold text-teal-400">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Skill Usage Chart -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Top Skills</h2>
+                        <canvas id="skills-usage-chart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Prompts -->
+        <div id="content-prompts" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2">
+                    <!-- Prompt Search -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 mb-6">
+                        <div class="p-4">
+                            <input type="text" id="prompt-search" placeholder="Search prompts..." 
+                                class="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2 text-sm focus:outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+                    <!-- Prompt List -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Recent Prompts</h2>
+                        </div>
+                        <div id="prompts-list" class="p-4 space-y-3 max-h-[500px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Prompt Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Hourly Distribution</h2>
+                        <canvas id="prompts-hourly-chart" height="150"></canvas>
+                    </div>
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Statistics</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Prompts</span>
+                                <span id="prompts-total" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">With Tools</span>
+                                <span id="prompts-with-tools" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">With Agents</span>
+                                <span id="prompts-with-agents" class="font-bold">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Tab Content: Timeline -->
+        <div id="content-timeline" class="tab-content hidden">
+            <div class="bg-slate-800 rounded-lg border border-slate-700">
+                <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold">Session Timeline</h2>
+                    <input type="date" id="timeline-date" class="bg-slate-700 border border-slate-600 rounded px-3 py-1 text-sm">
+                </div>
+                <div id="timeline-view" class="p-4 space-y-4 max-h-[600px] overflow-y-auto">
+                    <div class="text-slate-500">Select a date to view timeline</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: System Graph (Phase 9) -->
+        <div id="content-system" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- System Graph Visualization -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                            <h2 class="text-lg font-semibold">System Architecture (D3.js Interactive)</h2>
+                            <div class="flex gap-2">
+                                <button onclick="resetD3Zoom()" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm">Reset View</button>
+                                <button onclick="refreshSystemGraph()" class="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm">Refresh</button>
+                                <button onclick="exportMermaid()" class="px-3 py-1 bg-teal-600 hover:bg-teal-500 rounded text-sm">Export Mermaid</button>
+                            </div>
+                        </div>
+                        <div id="system-graph" class="p-0" style="min-height: 500px; overflow: hidden;">
+                            <svg id="d3-graph" width="100%" height="500"></svg>
+                        </div>
+                    </div>
+                    <!-- Node Details -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Node Details</h2>
+                        </div>
+                        <div id="node-details" class="p-4">
+                            <div class="text-slate-500">Click a node to view details</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- System Status -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">System Status</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Nodes</span>
+                                <span id="system-total-nodes" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Active Nodes</span>
+                                <span id="system-active-nodes" class="font-bold text-green-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Connections</span>
+                                <span id="system-connections" class="font-bold">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Categories -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Categories</h2>
+                        <div id="system-categories" class="space-y-2">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                    <!-- Legend -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Legend</h2>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-teal-500"></span> Core Systems</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500"></span> Task Management</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-pink-500"></span> Orchestration</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-sky-500"></span> Configuration</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-500"></span> UI/Dashboard</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span> MCP Servers</div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-fuchsia-500"></span> Memory</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Sessions (Phase 14) -->
+        <div id="content-sessions" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- Session Replay Player -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                            <h2 class="text-lg font-semibold">Session Replay</h2>
+                            <div class="flex gap-2">
+                                <select id="session-select" onchange="loadSessionReplay()" class="bg-slate-700 rounded px-3 py-1 text-sm">
+                                    <option value="">Select a session...</option>
+                                </select>
+                                <button onclick="refreshSessionList()" class="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600 text-sm">
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <!-- Replay Controls -->
+                            <div id="replay-controls" class="hidden mb-4 flex items-center gap-4 bg-slate-700/50 p-3 rounded">
+                                <button onclick="toggleReplay()" id="replay-play-btn" class="px-4 py-2 bg-teal-600 rounded hover:bg-teal-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    </svg>
+                                </button>
+                                <input type="range" id="replay-slider" min="0" max="100" value="0" class="flex-1" onchange="seekReplay(this.value)">
+                                <span id="replay-time" class="text-sm text-slate-400 w-24 text-right">0:00 / 0:00</span>
+                                <select id="replay-speed" onchange="setReplaySpeed(this.value)" class="bg-slate-600 rounded px-2 py-1 text-sm">
+                                    <option value="0.5">0.5x</option>
+                                    <option value="1" selected>1x</option>
+                                    <option value="2">2x</option>
+                                    <option value="4">4x</option>
+                                </select>
+                            </div>
+                            <!-- Timeline -->
+                            <div id="session-timeline" class="space-y-2 max-h-[400px] overflow-y-auto">
+                                <div class="text-slate-500 text-center py-8">Select a session to view replay</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Event Detail -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Event Detail</h2>
+                        </div>
+                        <div id="event-detail" class="p-4">
+                            <div class="text-slate-500">Click an event to view details</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Session Stats -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Session Stats</h2>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Sessions</span>
+                                <span id="session-total" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Active</span>
+                                <span id="session-active" class="font-bold text-teal-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Completed</span>
+                                <span id="session-completed" class="font-bold text-blue-400">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Avg Duration</span>
+                                <span id="session-avg-duration" class="font-bold">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Selected Session Info -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Selected Session</h2>
+                        <div id="session-info" class="space-y-3">
+                            <div class="text-slate-500">No session selected</div>
+                        </div>
+                    </div>
+                    <!-- Event Type Filter -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Filter Events</h2>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked onchange="filterSessionEvents('prompt', this.checked)" class="rounded">
+                                <span class="text-sm">Prompts</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked onchange="filterSessionEvents('tool_call', this.checked)" class="rounded">
+                                <span class="text-sm">Tool Calls</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked onchange="filterSessionEvents('agent_spawn', this.checked)" class="rounded">
+                                <span class="text-sm">Agents</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" checked onchange="filterSessionEvents('error', this.checked)" class="rounded">
+                                <span class="text-sm">Errors</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content: Costs (Phase 11) -->
+        <div id="content-costs" class="tab-content hidden">
+            <div class="grid grid-cols-3 gap-6">
+                <div class="col-span-2 space-y-6">
+                    <!-- Cost Trend Chart -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Cost Trend (30 Days)</h2>
+                        </div>
+                        <div class="p-4">
+                            <canvas id="cost-trend-chart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <!-- Recent Sessions -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700">
+                        <div class="p-4 border-b border-slate-700">
+                            <h2 class="text-lg font-semibold">Recent Sessions</h2>
+                        </div>
+                        <div id="cost-sessions" class="p-4 space-y-2 max-h-[300px] overflow-y-auto">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <!-- Today's Cost -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Today's Usage</h2>
+                        <div class="space-y-3">
+                            <div class="text-center py-4">
+                                <div id="cost-today" class="text-4xl font-bold text-teal-400">$0.00</div>
+                                <div class="text-slate-500 text-sm mt-1">Today's Cost</div>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Input Tokens</span>
+                                <span id="cost-input-tokens" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Output Tokens</span>
+                                <span id="cost-output-tokens" class="font-bold">-</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Sessions</span>
+                                <span id="cost-sessions-count" class="font-bold">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Projected Cost -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">Monthly Projection</h2>
+                        <div class="text-center py-4">
+                            <div id="cost-projected" class="text-3xl font-bold text-amber-400">$0.00</div>
+                            <div class="text-slate-500 text-sm mt-1">Estimated Monthly Cost</div>
+                        </div>
+                        <div class="flex justify-between mt-4">
+                            <span class="text-slate-400">MTD Cost</span>
+                            <span id="cost-mtd" class="font-bold">-</span>
+                        </div>
+                    </div>
+                    <!-- Model Breakdown -->
+                    <div class="bg-slate-800 rounded-lg border border-slate-700 p-4">
+                        <h2 class="text-lg font-semibold mb-4">By Model</h2>
+                        <div id="cost-models" class="space-y-2">
+                            <div class="text-slate-500">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Plan Detail Modal -->
+    <div id="plan-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-slate-800 rounded-lg w-3/4 max-h-[80vh] overflow-hidden">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 id="modal-title" class="text-xl font-bold"></h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="modal-content" class="p-4 overflow-y-auto max-h-[60vh]"></div>
+        </div>
+    </div>
+
+    <script src="/js/lifecycle-viz.js"></script>
+    <script src="/js/goal-viz.js"></script>
+    <script src="/js/multi-plan-overview.js"></script>
+    <script src="/js/project-dashboard.js"></script>
+    <script src="/js/workflow-viz.js"></script>
+    <script src="/js/mcp-dashboard.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

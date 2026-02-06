@@ -1,0 +1,679 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-02-06T18:54:24.101Z",
+  "metadata": {
+    "totalTasks": 13,
+    "completedTasks": 3,
+    "pendingTasks": 5,
+    "sources": {
+      "manual": 3,
+      "shrimp": 9,
+      "cli": 1
+    }
+  },
+  "tasks": [
+    {
+      "id": "hub-1770205470646-pf9og",
+      "externalId": null,
+      "title": "Test Task 1",
+      "description": "Phase 1 테스트 태스크",
+      "status": "in_progress",
+      "priority": "high",
+      "source": "manual",
+      "phase": "implement",
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [],
+      "tags": [],
+      "metadata": {},
+      "createdAt": "2026-02-04T11:44:30.646Z",
+      "updatedAt": "2026-02-04T11:44:30.657Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205489147-x3z5v",
+      "externalId": null,
+      "title": "Test Task 1",
+      "description": "Phase 1 테스트 태스크",
+      "status": "in_progress",
+      "priority": "high",
+      "source": "manual",
+      "phase": "implement",
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [],
+      "tags": [],
+      "metadata": {},
+      "createdAt": "2026-02-04T11:44:49.147Z",
+      "updatedAt": "2026-02-04T11:44:49.163Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205515159-iapv3",
+      "externalId": null,
+      "title": "Test Task 1",
+      "description": "Phase 1 테스트 태스크",
+      "status": "in_progress",
+      "priority": "high",
+      "source": "manual",
+      "phase": "implement",
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [],
+      "tags": [],
+      "metadata": {},
+      "createdAt": "2026-02-04T11:45:15.159Z",
+      "updatedAt": "2026-02-04T11:45:15.176Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205682963-k78qq",
+      "externalId": "shrimp-task-001",
+      "title": "MCP 서버 설치 및 연동",
+      "description": "",
+      "status": "completed",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-001-1",
+          "title": "Shrimp Task Manager 설치",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-001-2",
+          "title": "Git MCP Server 설치",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-001-3",
+          "title": "Diff TypeScript MCP 설치",
+          "status": "completed"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-001"
+      },
+      "createdAt": "2026-02-04T11:48:02.963Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": "2026-02-04T11:49:50.906Z",
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205682978-2q4ve",
+      "externalId": "shrimp-task-002",
+      "title": "Unified Diff MCP 비교 분석",
+      "description": "",
+      "status": "in_progress",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-002-1",
+          "title": "@gorosun/unified-diff-mcp 조사",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-002-2",
+          "title": "mcp-server-diff-typescript 조사",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-002-3",
+          "title": "mcp-server-diff-editor 조사",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-002-4",
+          "title": "비교 테이블 작성",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-002-5",
+          "title": "Windows Native 최적 선택",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-002"
+      },
+      "createdAt": "2026-02-04T11:48:02.978Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205682995-k4bar",
+      "externalId": "shrimp-task-003",
+      "title": "MCP 자동 발견 시스템 구축",
+      "description": "",
+      "status": "pending",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-003-1",
+          "title": "프로젝트 분석 자동화",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-003-2",
+          "title": "필요 MCP 자동 감지",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-003-3",
+          "title": "자동 설치 스크립트",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-003-4",
+          "title": "cmd 인자 자동 수정기",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-003"
+      },
+      "createdAt": "2026-02-04T11:48:02.995Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683008-vd6j0",
+      "externalId": "shrimp-task-007",
+      "title": "추천 MCP 서버 설치",
+      "description": "",
+      "status": "in_progress",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-007-1",
+          "title": "Kiro Memory MCP 설치",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-007-2",
+          "title": "Firecrawl MCP 설치",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-007-3",
+          "title": "Prisma Postgres MCP 설치",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-007-4",
+          "title": "REST Client MCP 설치",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-007"
+      },
+      "createdAt": "2026-02-04T11:48:03.008Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683025-iough",
+      "externalId": "shrimp-task-004",
+      "title": "문서화 자동 업데이트 체계",
+      "description": "",
+      "status": "pending",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-004-1",
+          "title": "CLAUDE.md 자동 업데이트",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-004-2",
+          "title": "MCP-DISCOVERY-SYSTEM.md 유지보수",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-004-3",
+          "title": "설치 패턴 학습 및 저장",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-004"
+      },
+      "createdAt": "2026-02-04T11:48:03.025Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683038-9om7e",
+      "externalId": "shrimp-task-005",
+      "title": "NEXUS ATIP V2.0 프로젝트",
+      "description": "",
+      "status": "pending",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-005-1",
+          "title": "프로젝트 재개",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-005-2",
+          "title": "VSCode Live Server 연동",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-005-3",
+          "title": "실시간 UI 개발",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-005"
+      },
+      "createdAt": "2026-02-04T11:48:03.038Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683055-aqdw3",
+      "externalId": "shrimp-task-006",
+      "title": "API 키 설정",
+      "description": "",
+      "status": "pending",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-006-1",
+          "title": "Context7 API 키",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-006-2",
+          "title": "YouTube Data API 키",
+          "status": "pending"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-006"
+      },
+      "createdAt": "2026-02-04T11:48:03.055Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": null,
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683072-bcbm4",
+      "externalId": "shrimp-task-008",
+      "title": "mcp-memory-service 컨테이너화",
+      "description": "",
+      "status": "completed",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-008-1",
+          "title": "Podman Desktop 설치",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-008-2",
+          "title": "Podman 머신 생성 및 확인",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-008-3",
+          "title": "mcp-memory-service 컨테이너 이미지 준비",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-008-3a",
+          "title": "mcp-memory-service 즉시 실행",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-008-4",
+          "title": "K드라이브 볼륨 마운트 설정",
+          "status": "pending"
+        },
+        {
+          "id": "shrimp-sub-008-5",
+          "title": "Claude Code MCP 연동",
+          "status": "completed"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-008"
+      },
+      "createdAt": "2026-02-04T11:48:03.072Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": "2026-02-04T11:49:51.018Z",
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770205683085-5x0y1",
+      "externalId": "shrimp-task-009",
+      "title": "메모리 시스템 개선",
+      "description": "",
+      "status": "completed",
+      "priority": "medium",
+      "source": "shrimp",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [
+        {
+          "id": "shrimp-sub-009-1",
+          "title": "자동 저장 메커니즘 연구",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-009-2",
+          "title": "수동 저장 워크플로우 정립",
+          "status": "completed"
+        },
+        {
+          "id": "shrimp-sub-009-3",
+          "title": "메모리 검색 최적화",
+          "status": "completed"
+        }
+      ],
+      "tags": [],
+      "metadata": {
+        "shrimpId": "task-009"
+      },
+      "createdAt": "2026-02-04T11:48:03.085Z",
+      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "completedAt": "2026-02-04T11:49:51.035Z",
+      "syncedAt": null
+    },
+    {
+      "id": "hub-1770206790528-q3kw0",
+      "externalId": null,
+      "title": "Phase 5 Migration 완료",
+      "description": "",
+      "status": "pending",
+      "priority": "high",
+      "source": "cli",
+      "phase": null,
+      "dependencies": [],
+      "blockedBy": [],
+      "subtasks": [],
+      "tags": [],
+      "metadata": {},
+      "createdAt": "2026-02-04T12:06:30.528Z",
+      "updatedAt": "2026-02-04T12:06:30.529Z",
+      "completedAt": null,
+      "syncedAt": null
+    }
+  ],
+  "queue": {
+    "pending": [],
+    "processing": [],
+    "completed": []
+  },
+  "adapters": {
+    "shrimp": {
+      "enabled": true,
+      "lastSync": "2026-02-06T18:54:24.095Z",
+      "taskCount": 9
+    },
+    "taskmaster": {
+      "enabled": false,
+      "lastSync": null,
+      "taskCount": 0
+    },
+    "vibekanban": {
+      "enabled": false,
+      "lastSync": null,
+      "taskCount": 0
+    },
+    "planning": {
+      "enabled": true,
+      "lastSync": "2026-02-06T18:54:24.096Z",
+      "taskCount": 0
+    }
+  },
+  "syncHistory": [
+    {
+      "timestamp": "2026-02-04T12:05:52.493Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-04T12:10:15.669Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-04T12:18:47.480Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-04T12:22:25.784Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-04T19:21:03.051Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-04T19:37:27.096Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-05T01:11:52.465Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-05T02:06:38.149Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-05T02:25:32.668Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:32:48.594Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:39:24.387Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:44:22.998Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:49:22.524Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:52:38.137Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:54:24.096Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    }
+  ]
+}

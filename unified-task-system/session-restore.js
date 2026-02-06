@@ -6,11 +6,21 @@
  * 호출: .claude-hooks.json의 session-start hook
  *
  * [v2.0] Autosave 복원 지원 추가
+ * [v3.0] UnifiedTaskHub 통합 - Single Source of Truth
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+
+// UnifiedTaskHub 로드
+let UnifiedTaskHub;
+try {
+  UnifiedTaskHub = require('./unified-task-hub');
+} catch (e) {
+  console.log('[!] UnifiedTaskHub 로드 실패, 폴백 모드');
+  UnifiedTaskHub = null;
+}
 
 const BASE_PATH = 'K:/PortableApps/Claude-Code/unified-task-system';
 const SESSION_STATE_FILE = path.join(BASE_PATH, 'session-state.json');
@@ -95,6 +105,32 @@ function restorePlanningState() {
 }
 
 /**
+ * UnifiedTaskHub에서 태스크 복원
+ */
+function restoreFromHub() {
+  if (!UnifiedTaskHub) return { tasks: [], status: null };
+
+  try {
+    const hub = new UnifiedTaskHub({ autoSync: false });
+
+    // 활성 태스크 (pending, in_progress)
+    const activeTasks = hub.listTasks({
+      sortBy: 'updatedAt',
+      sortOrder: 'desc'
+    }).filter(t => t.status !== 'completed').slice(0, 10);
+
+    // Hub 상태
+    const status = hub.getStatus();
+
+    hub.destroy();
+    return { tasks: activeTasks, status };
+  } catch (error) {
+    console.error('[!] Hub 복원 실패:', error.message);
+    return { tasks: [], status: null };
+  }
+}
+
+/**
  * 세션 복원 메인 함수
  */
 function restoreSession() {
@@ -106,7 +142,25 @@ function restoreSession() {
   const newSessionId = generateSessionId();
   const startTime = new Date().toISOString();
 
-  // 후속조치 확인
+  // [v3.0] UnifiedTaskHub에서 활성 태스크 복원
+  const { tasks: hubTasks, status: hubStatus } = restoreFromHub();
+
+  if (hubStatus) {
+    console.log('[+] UnifiedTaskHub 연결됨');
+    console.log(`[*] Hub 태스크: ${hubStatus.metadata.totalTasks}개 (완료: ${hubStatus.metadata.completedTasks})`);
+
+    // Hub에서 활성 태스크 표시
+    if (hubTasks.length > 0) {
+      console.log('\n[*] === 활성 태스크 (from Hub) ===\n');
+      hubTasks.forEach((task, index) => {
+        const statusIcon = task.status === 'in_progress' ? '[*]' : '[-]';
+        const source = task.source ? `[${task.source}]` : '';
+        console.log(`  ${index + 1}. ${statusIcon} ${source} ${task.title}`);
+      });
+    }
+  }
+
+  // 후속조치 확인 (기존 session-state.json 호환)
   if (state.pendingFollowups && state.pendingFollowups.length > 0) {
     console.log('[!] === 후속조치 발견 (Pending Follow-ups) ===\n');
     state.pendingFollowups.forEach((followup, index) => {
@@ -120,12 +174,12 @@ function restoreSession() {
     });
     console.log('\n[*] "후속조치" 입력 시 위 작업들을 순차 진행합니다.');
     console.log('[*] ========================================\n');
-  } else {
+  } else if (hubTasks.length === 0) {
     console.log('[+] 대기 중인 후속조치가 없습니다.');
   }
 
-  // 최근 작업 표시
-  if (state.recentTasks && state.recentTasks.length > 0) {
+  // 최근 작업 표시 (Hub에 없으면 기존 방식)
+  if (hubTasks.length === 0 && state.recentTasks && state.recentTasks.length > 0) {
     console.log('\n[*] === 최근 작업 (Recent Tasks) ===\n');
     state.recentTasks.slice(0, 5).forEach((task, index) => {
       const statusIcon = task.status === 'completed' ? '[+]' :
@@ -156,7 +210,8 @@ function restoreSession() {
   state.sessionHistory.push({
     id: newSessionId,
     startTime: startTime,
-    restoredFollowups: state.pendingFollowups ? state.pendingFollowups.length : 0
+    restoredFollowups: state.pendingFollowups ? state.pendingFollowups.length : 0,
+    hubTasksCount: hubTasks.length
   });
 
   // 히스토리 최대 20개 유지
@@ -188,5 +243,6 @@ module.exports = {
   loadSessionState,
   generateSessionId,
   restoreSession,
-  restorePlanningState
+  restorePlanningState,
+  restoreFromHub
 };

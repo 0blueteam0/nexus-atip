@@ -11,10 +11,20 @@
  *   node session-persist.js --task "제목" --priority high
  *
  * [v2.0] 원자적 쓰기 + 백업 지원
+ * [v3.0] UnifiedTaskHub 통합 - Single Source of Truth
  */
 
 const fs = require('fs');
 const path = require('path');
+
+// UnifiedTaskHub 로드
+let UnifiedTaskHub;
+try {
+  UnifiedTaskHub = require('./unified-task-hub');
+} catch (e) {
+  console.log('[!] UnifiedTaskHub 로드 실패, 폴백 모드');
+  UnifiedTaskHub = null;
+}
 
 // file-ops 모듈 로드 시도
 let fileOps;
@@ -168,6 +178,54 @@ function parseArgs() {
 }
 
 /**
+ * UnifiedTaskHub에 태스크 저장
+ */
+function persistToHub(tasks, followups) {
+  if (!UnifiedTaskHub) return false;
+
+  try {
+    const hub = new UnifiedTaskHub({ autoSync: false });
+
+    // 후속조치를 Hub 태스크로 변환하여 저장
+    for (const followup of (followups || [])) {
+      hub.addTask({
+        title: followup.title,
+        description: followup.description || '',
+        priority: followup.priority || 'medium',
+        status: 'pending',
+        source: 'followup',
+        metadata: {
+          sessionId: followup.sessionId,
+          savedAt: followup.savedAt
+        }
+      });
+    }
+
+    // 작업을 Hub에 저장
+    for (const task of (tasks || [])) {
+      hub.addTask({
+        title: task.title,
+        status: task.status || 'in_progress',
+        source: 'session',
+        metadata: {
+          savedAt: task.savedAt
+        }
+      });
+    }
+
+    // 전체 동기화 실행
+    hub.syncAll().catch(() => {});
+
+    hub.destroy();
+    console.log('[+] Hub에 상태 저장 완료');
+    return true;
+  } catch (error) {
+    console.error('[!] Hub 저장 실패:', error.message);
+    return false;
+  }
+}
+
+/**
  * 세션 종료 처리 메인 함수
  */
 function persistSession() {
@@ -199,7 +257,10 @@ function persistSession() {
     state.currentSession.endTime = new Date().toISOString();
   }
 
-  // 상태 저장
+  // [v3.0] UnifiedTaskHub에 저장
+  persistToHub(args.tasks, state.pendingFollowups);
+
+  // 상태 저장 (기존 session-state.json 호환)
   if (saveSessionState(state)) {
     console.log('\n[+] 세션 상태 저장 완료');
 
@@ -222,7 +283,8 @@ module.exports = {
   saveSessionState,
   addFollowup,
   addRecentTask,
-  persistSession
+  persistSession,
+  persistToHub
 };
 
 // 직접 실행 시

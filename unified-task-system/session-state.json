@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-06T18:54:24.075Z",
+  "currentSession": {
+    "id": "session-1770403958299-5gxnun97a",
+    "startTime": "2026-02-06T18:52:38.299Z",
+    "activeTask": null,
+    "endTime": "2026-02-06T18:54:24.072Z"
+  },
+  "pendingFollowups": [],
+  "recentTasks": [],
+  "sessionHistory": [
+    {
+      "id": "session-1770254577148-b10z932f6",
+      "startTime": "2026-02-05T01:22:57.148Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770256503650-6r1vgav5d",
+      "startTime": "2026-02-05T01:55:03.650Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770256591682-xt5tavk13",
+      "startTime": "2026-02-05T01:56:31.682Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770257164757-v0p6vmo73",
+      "startTime": "2026-02-05T02:06:04.757Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770257198310-h0sjx789c",
+      "startTime": "2026-02-05T02:06:38.310Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770257409212-5rrmj9ea5",
+      "startTime": "2026-02-05T02:10:09.212Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770257510670-5idyxuvq3",
+      "startTime": "2026-02-05T02:11:50.670Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258004201-84zkt0w35",
+      "startTime": "2026-02-05T02:20:04.201Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258004972-pmuh0sahy",
+      "startTime": "2026-02-05T02:20:04.972Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258005843-qfbaa6luh",
+      "startTime": "2026-02-05T02:20:05.843Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258044824-fcyygrym8",
+      "startTime": "2026-02-05T02:20:44.824Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258314961-jtzfrbzy2",
+      "startTime": "2026-02-05T02:25:14.961Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258332844-2uyd7shr6",
+      "startTime": "2026-02-05T02:25:32.844Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770258731108-528bmox0z",
+      "startTime": "2026-02-05T02:32:11.108Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770259431197-ggszqkrao",
+      "startTime": "2026-02-05T02:43:51.197Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770401523138-ua7ky9h98",
+      "startTime": "2026-02-06T18:12:03.138Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770401534594-j1m6e98ff",
+      "startTime": "2026-02-06T18:12:14.594Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770402444357-6fo1s4k6n",
+      "startTime": "2026-02-06T18:27:24.357Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770402768758-icnws7yrs",
+      "startTime": "2026-02-06T18:32:48.758Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    },
+    {
+      "id": "session-1770403958299-5gxnun97a",
+      "startTime": "2026-02-06T18:52:38.299Z",
+      "restoredFollowups": 0,
+      "hubTasksCount": 10
+    }
+  ]
+}
