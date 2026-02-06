@@ -32,6 +32,55 @@
 
 ---
 
+## [RIPER+] 개발 워크플로우 (CRITICAL)
+**유연한 회귀적 개발 워크플로우** - 선형이 아닌 순환형 모델
+
+### 6단계 프로세스
+```
+SPECIFY → EXPLORE → PLAN → IMPLEMENT → VERIFY → RELEASE
+    ↑         ↑        ↑         │
+    └─────────┴────────┴─────────┘ (회귀 가능)
+```
+
+| 단계 | 목표 | 산출물 |
+|------|------|--------|
+| **SPECIFY** | 요구사항 명확화 | PRD, Goal, Scope |
+| **EXPLORE** | 코드베이스 이해 | 패턴 분석, 리스크 |
+| **PLAN** | 계획 수립 | 아키텍처, 태스크 분해 |
+| **IMPLEMENT** | 코드 작성 | 코드, 테스트 |
+| **VERIFY** | 품질 검증 | QA 결과, 리뷰 |
+| **RELEASE** | 배포 | PR, 배포 |
+
+### Phase Gate (품질 관문)
+- 각 단계 전환 시 Gate Check 수행
+- Gate 미통과 시 이전 단계로 회귀
+
+- **상세 규칙**: `.claude/rules/development-workflow.md`
+
+---
+
+## [WS] 워크스페이스 구조 (CRITICAL)
+**목적별 워크스페이스 분리**
+
+### 3-Tier 계층
+| 레벨 | 위치 | 역할 |
+|------|------|------|
+| **L0** | 루트 CLAUDE.md | 글로벌 공통 규칙 |
+| **L1** | workspaces/*/CLAUDE.md | 목적별 규칙 |
+| **L2** | projects/*/CLAUDE.md | 프로젝트 특화 |
+
+### 워크스페이스 목록
+| 워크스페이스 | 용도 |
+|-------------|------|
+| `research/` | 논문/연구 |
+| `app-dev/` | 앱 개발 |
+| `web-services/` | 웹서비스/API |
+| `automation/` | 자동화/도구 |
+
+- **상세 규칙**: `.claude/rules/workspace-structure.md`
+
+---
+
 ## [KR] 한국어 표시 프로토콜 (ULTRA CRITICAL)
 **모든 작업을 한국어로 병기하여 사용자 이해도 극대화**
 - 도구 호출 전: [작업], [목적] 태그로 설명
@@ -171,6 +220,25 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 
 | 파일 | 설명 |
 |------|------|
+| `development-workflow.md` | **RIPER+ 개발 워크플로우** |
+| `workspace-structure.md` | **워크스페이스 계층 구조** |
+| `tiered-review.md` | **단계별 코드 리뷰 (PR)** |
+
+### 에이전트 설정 (.claude/agents/)
+| 파일 | 설명 |
+|------|------|
+| `parallel-workflow.md` | 병렬 에이전트 워크플로우 |
+| `native-binding-expert.md` | Python-C/C++ 바인딩 전문가 |
+
+### 템플릿 (.claude/templates/)
+| 파일 | 설명 |
+|------|------|
+| `specs/spec-template.md` | PRD 템플릿 |
+| `specs/plan-template.md` | 구현 계획 템플릿 |
+| `specs/tasks-template.md` | 태스크 템플릿 |
+| `phase-gate-checklist.md` | 품질 관문 체크리스트 |
+| `complexity-assessment.md` | 복잡도 평가 기준 |
+| `pr/pull-request-template.md` | PR 템플릿 |
 | `update-workflow.md` | Claude Code 업데이트 프로세스 |
 | `agentic-learning.md` | 에이전틱 자기학습 워크플로우 |
 | `docker-workflow.md` | Docker 시작 확인 (MCP 서버 작업 시) |
@@ -195,6 +263,10 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 | academic-paper-verifier | "논문 검증", "학술 검증", "citation check" |
 | update-optimizer | "업데이트", "update", "새 버전" |
 | pdf-vision | "PDF 분석", "OCR" |
+| **project-init** | "프로젝트 생성", "새 프로젝트", "project init" |
+| **bmad-agents** | "분석가 모드", "아키텍트 모드", "QA 모드" |
+| **vibe-coding** | "바이브 코딩", "vibe coding", "빠른 개발", "프로토타입" |
+| **python-c-binding** | "pybind11", "C 바인딩", "Python C extension", "native module" |
 
 ---
 
@@ -221,6 +293,44 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 
 ---
 
+## [MCP] MCP 서버 인벤토리 (38개)
+**상세 문서**: `documentation/guides/TOOL-CATALOG-2026.md`
+
+### 카테고리별 요약
+| 카테고리 | 수량 | 주요 서버 |
+|----------|------|----------|
+| **File/Code** | 6 | desktop-commander (P1), edit-file-lines (P2), git-mcp, github |
+| **Web Crawling** | 6 | firecrawl, one-search, crawl4ai-lite, playwright |
+| **Research** | 4 | deep-research-mcp, paper-search-mcp, context7 |
+| **AI/LLM** | 5 | multi-ai-orchestration, llm-council, sequential-thinking |
+| **Database** | 2 | sqlite-mcp, supabase |
+| **Memory** | 2 | memory, kiro-memory |
+| **Task Mgmt** | 3 | shrimp-task (P3), vibekanban, task-master-ai |
+| **Media** | 5 | image-recognition, paddleocr-mcp, marker-mcp, antv-chart |
+| **Automation** | 3 | playwright, n8n, e2b |
+| **Other** | 2 | mcp-installer, hfspace |
+
+### 도구 선택 가이드 (P1-P4)
+| 우선순위 | 도구 | 용도 |
+|---------|------|------|
+| **P1** | desktop-commander | 모든 파일 작업 (90% 커버리지) |
+| **P2** | edit-file-lines | 정밀 라인 편집 (DC 실패 시) |
+| **P3** | shrimp-task | 작업 관리 (**TodoWrite 절대 금지**) |
+| **P4** | Built-in Tools | 폴백 전용 (Read, Write, Edit) |
+
+### Docker 필요 서버
+| 서버 | 컨테이너 | 자동 시작 |
+|------|----------|----------|
+| firecrawl (self-hosted) | firecrawl-api-1 | O (Hook) |
+| searxng-crawl4ai-mcp | searxng | O (Hook) |
+
+### 참조 문서
+- **도구 카탈로그**: `documentation/guides/TOOL-CATALOG-2026.md`
+- **MCP 비교**: `documentation/guides/MCP-COMPARISON-2026.md`
+- **설치 제안서**: `documentation/reports/MCP-INSTALLATION-PROPOSAL.md`
+
+---
+
 ## 환경 정보 (요약)
 
 | 항목 | 경로 |
@@ -236,5 +346,5 @@ git add -A && git commit -m "Savepoint: work in progress" && git push
 
 ---
 
-버전: 5.0.0 (Modularized)
-최적화: .claude/rules/ 자동 로드 시스템
+버전: 6.0.0 (Production Workflow)
+최적화: RIPER+ 워크플로우 + 워크스페이스 계층 구조
