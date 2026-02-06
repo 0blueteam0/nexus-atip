@@ -172,6 +172,7 @@
             <button onclick="switchTab('sessions')" id="tab-sessions" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Sessions</button>
             <button onclick="switchTab('system')" id="tab-system" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">System</button>
             <button onclick="switchTab('costs')" id="tab-costs" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">Costs</button>
+            <button onclick="switchTab('ai-stack')" id="tab-ai-stack" class="tab-btn pb-2 text-sm font-medium text-slate-400 hover:text-slate-200">AI Stack</button>
         </nav>
     </header>
 
@@ -881,6 +882,16 @@
                             <div class="text-slate-500">Loading...</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Stack Tab (Plugin) -->
+        <div id="content-ai-stack" class="tab-content hidden">
+            <div id="ai-stack-content">
+                <div class="text-center p-8">
+                    <div class="animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    Loading AI Stack data...
                 </div>
             </div>
         </div>

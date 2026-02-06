@@ -658,6 +658,7 @@ function switchTab(tabName) {
     if (tabName === 'costs') loadCostsTab();
     if (tabName === 'workflows') loadWorkflowsTab();
     if (tabName === 'mcp') loadMCPTab();
+    if (tabName === 'ai-stack') loadAIStackTab();
 }
 
 // ===== v4.0: Projects Tab =====
@@ -2576,5 +2577,163 @@ window.switchTab = function(tab) {
         case 'costs':
             loadCostsTab();
             break;
+        case 'ai-stack':
+            loadAIStackTab();
+            break;
     }
 };
+
+// ===== AI Stack Monitor Plugin Tab =====
+async function loadAIStackTab() {
+    const container = document.getElementById('ai-stack-content');
+    if (!container) return;
+
+    container.innerHTML = '<div class="text-center p-8"><div class="animate-spin h-8 w-8 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-4"></div>Loading AI Stack data...</div>';
+
+    try {
+        const response = await fetch('/api/plugins/ai-stack/summary');
+        const data = await response.json();
+
+        if (!data.connected) {
+            container.innerHTML = `
+                <div class="bg-slate-800 rounded-lg p-6 border border-slate-700 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <h3 class="text-lg font-semibold mb-2">AI Stack Monitor Not Running</h3>
+                    <p class="text-slate-400 mb-4">${data.hint || 'Start the AI Stack Monitor server to see package and service information.'}</p>
+                    <div class="bg-slate-900 rounded p-3 text-left inline-block">
+                        <code class="text-teal-400 text-sm">node dashboard/server.js</code>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        // Render AI Stack dashboard
+        container.innerHTML = `
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm">npm Packages</div>
+                    <div class="text-3xl font-bold text-cyan-400">${data.packages?.npm || 0}</div>
+                </div>
+                <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm">Python Packages</div>
+                    <div class="text-3xl font-bold text-amber-400">${data.packages?.python || 0}</div>
+                </div>
+                <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm">Global Tools</div>
+                    <div class="text-3xl font-bold text-purple-400">${data.packages?.global || 0}</div>
+                </div>
+                <div class="card bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm">MCP Servers</div>
+                    <div class="text-3xl font-bold text-teal-400">${data.mcp?.count || 0}</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <!-- MCP Servers Section -->
+                <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-semibold mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                        </svg>
+                        MCP Servers
+                    </h3>
+                    <div id="mcp-servers-list" class="space-y-2 max-h-64 overflow-y-auto">
+                        ${renderMCPServers(data.mcp?.servers || [])}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-semibold mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <button onclick="refreshAIStack()" class="w-full bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition-colors">
+                            Refresh All Data
+                        </button>
+                        <button onclick="openAIStackMonitor()" class="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded transition-colors">
+                            Open Full Monitor (localhost:13579)
+                        </button>
+                        <button onclick="loadPackageDetails('npm')" class="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded transition-colors">
+                            View npm Packages
+                        </button>
+                        <button onclick="loadPackageDetails('python')" class="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded transition-colors">
+                            View Python Packages
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Package Details (initially hidden) -->
+            <div id="package-details" class="hidden mt-6 bg-slate-800 rounded-lg p-4 border border-slate-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="package-details-title" class="font-semibold">Package Details</h3>
+                    <button onclick="hidePackageDetails()" class="text-slate-400 hover:text-white">&times; Close</button>
+                </div>
+                <div id="package-list" class="max-h-96 overflow-y-auto"></div>
+            </div>
+        `;
+    } catch (error) {
+        container.innerHTML = `
+            <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                <p class="text-red-400">Error loading AI Stack data: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+function renderMCPServers(servers) {
+    if (!servers || servers.length === 0) {
+        return '<div class="text-slate-500 text-sm">No MCP servers detected</div>';
+    }
+
+    return servers.map(s => `
+        <div class="flex items-center justify-between bg-slate-700/50 rounded px-3 py-2">
+            <span class="text-sm">${s.name}</span>
+            <span class="px-2 py-0.5 rounded text-xs ${s.status === 'connected' ? 'bg-teal-600' : 'bg-red-600'}">${s.status}</span>
+        </div>
+    `).join('');
+}
+
+async function refreshAIStack() {
+    await loadAIStackTab();
+}
+
+function openAIStackMonitor() {
+    window.open('http://localhost:13579', '_blank');
+}
+
+async function loadPackageDetails(type) {
+    const container = document.getElementById('package-details');
+    const list = document.getElementById('package-list');
+    const title = document.getElementById('package-details-title');
+
+    container.classList.remove('hidden');
+    title.textContent = type === 'npm' ? 'npm Packages' : 'Python Packages';
+    list.innerHTML = '<div class="text-center p-4"><div class="animate-spin h-6 w-6 border-2 border-teal-500 border-t-transparent rounded-full mx-auto"></div></div>';
+
+    try {
+        const endpoint = type === 'npm' ? '/api/plugins/ai-stack/npm-packages' : '/api/plugins/ai-stack/python-packages';
+        const response = await fetch(endpoint);
+        const data = await response.json();
+
+        const packages = data.packages || [];
+        list.innerHTML = packages.length === 0
+            ? '<div class="text-slate-500">No packages found</div>'
+            : `<table class="w-full text-sm">
+                <thead class="text-slate-400 border-b border-slate-700">
+                    <tr><th class="text-left py-2">Package</th><th class="text-right py-2">Version</th></tr>
+                </thead>
+                <tbody>
+                    ${packages.map(p => `<tr class="border-b border-slate-700/50"><td class="py-2">${p.name}</td><td class="text-right text-teal-400">${p.version}</td></tr>`).join('')}
+                </tbody>
+            </table>`;
+    } catch (error) {
+        list.innerHTML = `<div class="text-red-400">Error: ${error.message}</div>`;
+    }
+}
+
+function hidePackageDetails() {
+    document.getElementById('package-details').classList.add('hidden');
+}

@@ -57,11 +57,10 @@ const CONFIG = {
         }
     ],
 
-    // 브라우저 자동 열기
+    // 브라우저 자동 열기 (Plan Ecosystem만 - AI Stack은 통합됨)
     openBrowser: true,
     browserUrls: [
-        'http://localhost:13579',  // AI Stack Monitor
-        'http://localhost:7847'    // Plan Ecosystem
+        'http://localhost:7847'    // Plan Ecosystem (AI Stack 통합)
     ]
 };
 

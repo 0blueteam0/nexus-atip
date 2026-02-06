@@ -1,0 +1,21 @@
+{
+  "name": "ai-stack-monitor",
+  "version": "1.0.0",
+  "description": "AI Stack Monitor integration - npm/pip packages, MCP status, service health",
+  "author": "Claude Code",
+  "enabled": true,
+  "main": "collector.js",
+  "router": "router.js",
+  "api": "/api/plugins/ai-stack",
+  "tab": {
+    "id": "ai-stack",
+    "label": "AI Stack",
+    "icon": "server"
+  },
+  "dependencies": [],
+  "hostProxy": {
+    "enabled": true,
+    "target": "http://localhost:13579",
+    "description": "Proxy requests to host AI Stack Monitor server for npm/pip commands"
+  }
+}
