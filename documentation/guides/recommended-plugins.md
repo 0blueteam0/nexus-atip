@@ -15,6 +15,14 @@
 | [awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) | - | 100+ 전문 서브에이전트 |
 | [claude-code-showcase](https://github.com/ChrisWiles/claude-code-showcase) | - | 종합 설정 예제 |
 
+### 고급 에이전트 레포지토리 (2026-02 추가)
+
+| 레포지토리 | 설명 |
+|-----------|------|
+| [lukilabs/craft-agents-oss](https://github.com/lukilabs/craft-agents-oss) | Anthropic Skills 기반 에이전트 빌더 |
+| [badlogic/pi-mono](https://github.com/badlogic/pi-mono) | 미니멀리스트 에이전트 철학 (4 도구, <1000 토큰) |
+| [microsoft/agent-lightning](https://github.com/microsoft/agent-lightning) | RL 기반 에이전트 학습 프레임워크 |
+
 ---
 
 ## 추천 플러그인
@@ -23,7 +31,7 @@
 
 | 플러그인 | 용도 | 링크 |
 |---------|------|------|
-| **ralph-wiggum** | 반복적 자기개선 루프 | GitHub |
+| **ralph-wiggum** | 반복적 자기개선 루프 | `.claude/skills/ralph-wiggum-loop/` |
 | **hookify** | 마크다운 기반 규칙 강제 | GitHub |
 | **firecrawl plugin** | 웹 데이터 추출 강화 | GitHub |
 | **context7** | 최신 API 문서 참조 | MCP 내장 |

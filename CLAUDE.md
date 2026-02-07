@@ -267,6 +267,7 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 | **bmad-agents** | "분석가 모드", "아키텍트 모드", "QA 모드" |
 | **vibe-coding** | "바이브 코딩", "vibe coding", "빠른 개발", "프로토타입" |
 | **python-c-binding** | "pybind11", "C 바인딩", "Python C extension", "native module" |
+| **ralph-wiggum-loop** | "자율 루프", "autonomous loop", "반복 개선", "ralph wiggum" |
 
 ---
 
