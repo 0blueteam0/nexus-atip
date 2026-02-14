@@ -1,0 +1,40 @@
+{
+  "$schema": "atos-memory-config-v1",
+  "$description": "Memory configuration restored from .claude-hooks.json.disabled (2025-12-19)",
+  
+  "memory-config": {
+    "auto-save": true,
+    "compression": true,
+    "max-entries": 1000,
+    "cleanup-days": -1,
+    
+    "storage": {
+      "primary": "kiro-memory",
+      "backup": "K:/PortableApps/Claude-Code/memory-archive"
+    },
+    
+    "triggers": {
+      "important-keywords-kr": ["결정", "해결", "성공", "완료", "중요"],
+      "important-keywords-en": ["decided", "resolved", "success", "completed", "important", "critical"],
+      "auto-save-on-detection": true
+    },
+    
+    "integration": {
+      "kiro-memory": {
+        "enabled": true,
+        "sync-interval": "on-change",
+        "backup-on-session-end": true
+      },
+      "unified-task-system": {
+        "enabled": true,
+        "path": "K:/PortableApps/Claude-Code/unified-task-system"
+      }
+    }
+  },
+  
+  "metadata": {
+    "created": "2025-12-19",
+    "source": "migrated from .claude-hooks.json.disabled",
+    "version": "1.0.0"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "lastUpdated": "2026-02-06T18:54:24.101Z",
+  "lastUpdated": "2026-02-14T15:44:32.737Z",
   "metadata": {
     "totalTasks": 13,
     "completedTasks": 3,
@@ -102,7 +102,7 @@
         "shrimpId": "task-001"
       },
       "createdAt": "2026-02-04T11:48:02.963Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": "2026-02-04T11:49:50.906Z",
       "syncedAt": null
     },
@@ -149,7 +149,7 @@
         "shrimpId": "task-002"
       },
       "createdAt": "2026-02-04T11:48:02.978Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -191,7 +191,7 @@
         "shrimpId": "task-003"
       },
       "createdAt": "2026-02-04T11:48:02.995Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -233,7 +233,7 @@
         "shrimpId": "task-007"
       },
       "createdAt": "2026-02-04T11:48:03.008Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -270,7 +270,7 @@
         "shrimpId": "task-004"
       },
       "createdAt": "2026-02-04T11:48:03.025Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -307,7 +307,7 @@
         "shrimpId": "task-005"
       },
       "createdAt": "2026-02-04T11:48:03.038Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -339,7 +339,7 @@
         "shrimpId": "task-006"
       },
       "createdAt": "2026-02-04T11:48:03.055Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": null,
       "syncedAt": null
     },
@@ -391,7 +391,7 @@
         "shrimpId": "task-008"
       },
       "createdAt": "2026-02-04T11:48:03.072Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": "2026-02-04T11:49:51.018Z",
       "syncedAt": null
     },
@@ -428,7 +428,7 @@
         "shrimpId": "task-009"
       },
       "createdAt": "2026-02-04T11:48:03.085Z",
-      "updatedAt": "2026-02-06T18:54:24.074Z",
+      "updatedAt": "2026-02-14T15:44:32.700Z",
       "completedAt": "2026-02-04T11:49:51.035Z",
       "syncedAt": null
     },
@@ -460,7 +460,7 @@
   "adapters": {
     "shrimp": {
       "enabled": true,
-      "lastSync": "2026-02-06T18:54:24.095Z",
+      "lastSync": "2026-02-14T15:44:32.728Z",
       "taskCount": 9
     },
     "taskmaster": {
@@ -475,7 +475,7 @@
     },
     "planning": {
       "enabled": true,
-      "lastSync": "2026-02-06T18:54:24.096Z",
+      "lastSync": "2026-02-14T15:44:32.729Z",
       "taskCount": 0
     }
   },
@@ -664,6 +664,162 @@
     },
     {
       "timestamp": "2026-02-06T18:54:24.096Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T18:59:23.596Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:04:22.651Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:09:24.597Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:13:21.201Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:14:26.716Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:14:33.394Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:19:26.875Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:24:27.141Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:29:24.462Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-06T19:34:25.862Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-14T13:37:42.696Z",
+      "results": {
+        "shrimp": {
+          "success": true,
+          "synced": 9
+        },
+        "planning": {
+          "success": true,
+          "synced": 0
+        }
+      }
+    },
+    {
+      "timestamp": "2026-02-14T15:44:32.729Z",
       "results": {
         "shrimp": {
           "success": true,

@@ -1,0 +1,1238 @@
+{
+  "discoveries": [
+    {
+      "timestamp": "2025-12-15T21:21:48.474Z",
+      "type": {
+        "type": "plan",
+        "name": "Archived Plans",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\archived\\README.md",
+        "status": "draft",
+        "category": "documentation"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.430Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code Skills System Implementation Plan",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\completed\\robust-tinkering-snowglobe.md",
+        "status": "completed",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.379Z",
+      "type": {
+        "type": "plan",
+        "name": "Completed Plans",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\completed\\README.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.335Z",
+      "type": {
+        "type": "plan",
+        "name": "ATOS Plan Management System",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\completed\\concurrent-discovering-torvalds.md",
+        "status": "completed",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.302Z",
+      "type": {
+        "type": "plan",
+        "name": "통합 작업 관리 시스템 (Unified Task Management System)",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\streamed-wobbling-sunbeam.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.270Z",
+      "type": {
+        "type": "plan",
+        "name": "K:\\ 드라이브 정리 완료 보고서 및 추가 시스템 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala.md",
+        "status": "in-progress",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.236Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 대규모 정리 계획서",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-f600cb93.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.203Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 임시/캐시 폴더 정리 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-d156f3e0.md",
+        "status": "draft",
+        "category": "refactor"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.170Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 폴더 정리 및 구조화 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-3b34f2a7.md",
+        "status": "draft",
+        "category": "bugfix"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.139Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 폴더 정리 마스터 플랜",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-0ec0b0a5.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.108Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code Skills System - Comprehensive Implementation Plan",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\robust-tinkering-snowglobe-agent-ab701a0f.md",
+        "status": "in-progress",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.075Z",
+      "type": {
+        "type": "plan",
+        "name": "K:/PortableApps/Claude-Code Project Exploration Report",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\robust-tinkering-snowglobe-agent-32a85b67.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.039Z",
+      "type": {
+        "type": "plan",
+        "name": "AI 보안 전문가 관점 문서 작성 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\rippling-wondering-pebble.md",
+        "status": "draft",
+        "category": "refactor"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:48.008Z",
+      "type": {
+        "type": "plan",
+        "name": "Attention 메커니즘의 AI 보안 취약점 연구 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\prancy-gathering-moon.md",
+        "status": "in-progress",
+        "category": "research"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.978Z",
+      "type": {
+        "type": "plan",
+        "name": "연구 논문 작성 계획: Attention 메커니즘의 보안 취약점 분석",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\prancy-gathering-moon-agent-42ecdffa.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.946Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code 업데이트 자동화 시스템 구축 플랜",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.915Z",
+      "type": {
+        "type": "plan",
+        "name": "날짜/시간 오류 근본 원인 분석 및 수정 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver-agent-3d738ea8.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.884Z",
+      "type": {
+        "type": "plan",
+        "name": "MCP Server Inventory & Status Analysis",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver-agent-0cc17e47.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.851Z",
+      "type": {
+        "type": "plan",
+        "name": "K:\\PortableApps\\Claude-Code 폴더 구조 조사 - Very Thorough Analysis",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver-agent-0582e063.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.819Z",
+      "type": {
+        "type": "plan",
+        "name": "CLAUDE.md 및 하위 지침 전체 검증 테스트 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\parsed-purring-bird.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.786Z",
+      "type": {
+        "type": "plan",
+        "name": "OCR MCP 서버 보완 설치 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\ocr-mcp-complementary-install.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.752Z",
+      "type": {
+        "type": "plan",
+        "name": "AI 보안 연구 LAB 블로그 시스템 설계",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\mossy-munching-pixel.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.718Z",
+      "type": {
+        "type": "plan",
+        "name": "AI 보안 종합 연구 v2.0 - 서사적 분석 계획서",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\linear-sleeping-dolphin.md",
+        "status": "draft",
+        "category": "documentation"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.684Z",
+      "type": {
+        "type": "plan",
+        "name": "AI Security Research Compilation Plan",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\linear-sleeping-dolphin-agent-ee0e8914.md",
+        "status": "in-progress",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.650Z",
+      "type": {
+        "type": "plan",
+        "name": "MITRE ATLAS 종합 탐색 계획",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\linear-sleeping-dolphin-agent-721d8a03.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.614Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code Agentic Self-Learning Workflow",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\humble-orbiting-tome.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.581Z",
+      "type": {
+        "type": "plan",
+        "name": "Cleanup Opportunities Analysis - K:/PortableApps/Claude-Code",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\cleanup-analysis-report.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.549Z",
+      "type": {
+        "type": "plan",
+        "name": "LLM Council 통합 계획 (Multi-LLM Consensus System)",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\async-sleeping-corbato.md",
+        "status": "draft",
+        "category": "bugfix"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.513Z",
+      "type": "mcp-server",
+      "name": "superclaude-official",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "tools": [],
+        "category": "ai",
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.479Z",
+      "type": "mcp-server",
+      "name": "mcp-edit-file-lines",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "tools": [],
+        "category": "filesystem",
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.439Z",
+      "type": "mcp-server",
+      "name": "git-mcp-server",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "tools": [],
+        "category": "development",
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.405Z",
+      "type": "mcp-server",
+      "name": "firecrawl-stub",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "tools": [],
+        "category": "web",
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.366Z",
+      "type": "workflow",
+      "name": "master-workflows",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.331Z",
+      "type": "command",
+      "name": "write-tests",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.297Z",
+      "type": "command",
+      "name": "workflow-orchestrator",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.260Z",
+      "type": "command",
+      "name": "update-docs",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.221Z",
+      "type": "command",
+      "name": "update-dependencies",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.185Z",
+      "type": "command",
+      "name": "ultra-think",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.152Z",
+      "type": "command",
+      "name": "todo",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.119Z",
+      "type": "command",
+      "name": "test-coverage",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.087Z",
+      "type": "command",
+      "name": "setup-linting",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.055Z",
+      "type": "command",
+      "name": "setup-development-environment",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:47.019Z",
+      "type": "command",
+      "name": "security-hardening",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.982Z",
+      "type": "command",
+      "name": "secrets-scanner",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.946Z",
+      "type": "command",
+      "name": "rollback-deploy",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.914Z",
+      "type": "command",
+      "name": "refactor-code",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.881Z",
+      "type": "command",
+      "name": "prepare-release",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.848Z",
+      "type": "command",
+      "name": "pr-review",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.815Z",
+      "type": "command",
+      "name": "performance-audit",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.783Z",
+      "type": "command",
+      "name": "optimize-database-performance",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.747Z",
+      "type": "command",
+      "name": "optimize-bundle-size",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.710Z",
+      "type": "command",
+      "name": "optimize-api-performance",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.673Z",
+      "type": "command",
+      "name": "milestone-tracker",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.638Z",
+      "type": "command",
+      "name": "migration-guide",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.601Z",
+      "type": "command",
+      "name": "migrate-to-typescript",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.566Z",
+      "type": "command",
+      "name": "init-project",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.532Z",
+      "type": "command",
+      "name": "generate-tests",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.499Z",
+      "type": "command",
+      "name": "fix-issue",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.466Z",
+      "type": "command",
+      "name": "fix-github-issue",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.430Z",
+      "type": "command",
+      "name": "explain-code",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.398Z",
+      "type": "command",
+      "name": "e2e-setup",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.363Z",
+      "type": "command",
+      "name": "dependency-audit",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.331Z",
+      "type": "command",
+      "name": "debug-error",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.297Z",
+      "type": "command",
+      "name": "create-prd",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.261Z",
+      "type": "command",
+      "name": "create-pr",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.228Z",
+      "type": "command",
+      "name": "create-architecture-documentation",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.194Z",
+      "type": "command",
+      "name": "commit",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.161Z",
+      "type": "command",
+      "name": "code-review",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.124Z",
+      "type": "command",
+      "name": "clean",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.087Z",
+      "type": "command",
+      "name": "ci-setup",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.055Z",
+      "type": "command",
+      "name": "ci-pipeline",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:46.021Z",
+      "type": "command",
+      "name": "branch-cleanup",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.988Z",
+      "type": "command",
+      "name": "blue-green-deployment",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.953Z",
+      "type": "skill",
+      "name": "test-writer",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "test",
+          "writer"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.920Z",
+      "type": "skill",
+      "name": "refactorer",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "refactorer"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.887Z",
+      "type": "skill",
+      "name": "mcp-health-checker",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "mcp",
+          "health",
+          "checker"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.852Z",
+      "type": "skill",
+      "name": "documentation-writer",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "documentation",
+          "writer"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.817Z",
+      "type": "skill",
+      "name": "doc-researcher",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "doc",
+          "researcher"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.784Z",
+      "type": "skill",
+      "name": "debugger",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "debugger"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.750Z",
+      "type": "skill",
+      "name": "code-reviewer",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "code",
+          "reviewer"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.716Z",
+      "type": "skill",
+      "name": "cleanup-advisor",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "cleanup",
+          "advisor"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.682Z",
+      "type": "skill",
+      "name": "base-skill",
+      "action": "updated",
+      "source": "initial-scan",
+      "metadata": {
+        "triggers": [
+          "base",
+          "skill"
+        ],
+        "source": "initial-scan"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.645Z",
+      "type": "mcp-server",
+      "name": "paper-search-mcp",
+      "action": "updated",
+      "source": ".claude.json",
+      "metadata": {
+        "tools": [],
+        "category": "web",
+        "source": ".claude.json"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:21:45.607Z",
+      "type": "mcp-server",
+      "name": "task-master-ai",
+      "action": "updated",
+      "source": ".claude.json",
+      "metadata": {
+        "tools": [],
+        "category": "workflow",
+        "source": ".claude.json"
+      }
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.530Z",
+      "type": {
+        "type": "plan",
+        "name": "Archived Plans",
+        "action": "updated",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\archived\\README.md",
+        "status": "draft",
+        "category": "documentation"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.474Z",
+      "type": {
+        "type": "plan",
+        "name": "Completed Plans",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\completed\\README.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.443Z",
+      "type": {
+        "type": "plan",
+        "name": "통합 작업 관리 시스템 (Unified Task Management System)",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\streamed-wobbling-sunbeam.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.408Z",
+      "type": {
+        "type": "plan",
+        "name": "K:\\ 드라이브 정리 완료 보고서 및 추가 시스템 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala.md",
+        "status": "in-progress",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.374Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 대규모 정리 계획서",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-f600cb93.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.336Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 임시/캐시 폴더 정리 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-d156f3e0.md",
+        "status": "draft",
+        "category": "refactor"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.304Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 폴더 정리 및 구조화 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-3b34f2a7.md",
+        "status": "draft",
+        "category": "bugfix"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.270Z",
+      "type": {
+        "type": "plan",
+        "name": "K드라이브 폴더 정리 마스터 플랜",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\sassy-inventing-koala-agent-0ec0b0a5.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.237Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code Skills System Implementation Plan",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\robust-tinkering-snowglobe.md",
+        "status": "completed",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.201Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code Skills System - Comprehensive Implementation Plan",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\robust-tinkering-snowglobe-agent-ab701a0f.md",
+        "status": "in-progress",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.169Z",
+      "type": {
+        "type": "plan",
+        "name": "K:/PortableApps/Claude-Code Project Exploration Report",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\robust-tinkering-snowglobe-agent-32a85b67.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.135Z",
+      "type": {
+        "type": "plan",
+        "name": "AI 보안 전문가 관점 문서 작성 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\rippling-wondering-pebble.md",
+        "status": "draft",
+        "category": "refactor"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.102Z",
+      "type": {
+        "type": "plan",
+        "name": "Attention 메커니즘의 AI 보안 취약점 연구 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\prancy-gathering-moon.md",
+        "status": "in-progress",
+        "category": "research"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.071Z",
+      "type": {
+        "type": "plan",
+        "name": "연구 논문 작성 계획: Attention 메커니즘의 보안 취약점 분석",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\prancy-gathering-moon-agent-42ecdffa.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.038Z",
+      "type": {
+        "type": "plan",
+        "name": "Claude Code 업데이트 자동화 시스템 구축 플랜",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver.md",
+        "status": "draft",
+        "category": "workflow"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2025-12-15T21:19:21.005Z",
+      "type": {
+        "type": "plan",
+        "name": "날짜/시간 오류 근본 원인 분석 및 수정 계획",
+        "action": "registered",
+        "source": "initial-scan",
+        "path": "K:\\PortableApps\\Claude-Code\\plans\\plucky-tinkering-beaver-agent-3d738ea8.md",
+        "status": "draft",
+        "category": "feature"
+      },
+      "source": "auto-discovery",
+      "metadata": {}
+    }
+  ],
+  "statistics": {
+    "totalDiscovered": 168,
+    "byType": {
+      "mcp-server": 12,
+      "skill": 18,
+      "agent": 0,
+      "workflow": 2,
+      "command": 80,
+      "hook": 0
+    }
+  }
+}

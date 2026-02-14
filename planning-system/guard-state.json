@@ -1,0 +1,48 @@
+{
+  "snapshots": {
+    "concurrent-exploring-locket.md": {
+      "hash": "f6c23d05c764bf968d4f9ccc0fc811c0",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\concurrent-exploring-locket_2026-02-03T23-40-31-286Z.md",
+      "size": 10123
+    },
+    "dynamic-frolicking-wozniak.md": {
+      "hash": "efa2d255f7284666f35de3035f3d5084",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\dynamic-frolicking-wozniak_2026-02-03T23-40-31-286Z.md",
+      "size": 2164
+    },
+    "floofy-sauteeing-alpaca.md": {
+      "hash": "3040638afaaeb4577b981f4f94fc24b2",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\floofy-sauteeing-alpaca_2026-02-03T23-40-31-286Z.md",
+      "size": 16138
+    },
+    "lucky-splashing-thompson.md": {
+      "hash": "476fe8683578beae547c60feec31f362",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\lucky-splashing-thompson_2026-02-03T23-40-31-286Z.md",
+      "size": 7139
+    },
+    "breezy-strolling-turing.md": {
+      "hash": "e0bbc047f1d8228271b1c82c7cfad166",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\breezy-strolling-turing_2026-02-03T23-40-31-286Z.md",
+      "size": 15184
+    },
+    "compiled-crafting-whisper.md": {
+      "hash": "3a5fcf7c4ef5e8806a4e9252957dc9b6",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\compiled-crafting-whisper_2026-02-03T23-40-31-286Z.md",
+      "size": 4285
+    },
+    "wobbly-wandering-honey.md": {
+      "hash": "47d06d92e008419dad544138d0aedb11",
+      "lastSnapshot": "2026-02-03T23-40-31-286Z",
+      "snapshotPath": "K:\\PortableApps\\Claude-Code\\planning-system\\snapshots\\wobbly-wandering-honey_2026-02-03T23-40-31-286Z.md",
+      "size": 3578
+    }
+  },
+  "lastCheck": "2026-02-03T23:40:31.355Z",
+  "violations": []
+}

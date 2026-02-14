@@ -1,11 +1,25 @@
 {
   "hooks": {
-    "docker-check": {
+    "startup-orchestrator": {
       "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/systems/startup-orchestrator.js",
+      "triggers": ["session-start"],
+      "priority": "highest",
+      "description": "통합 시작 시스템: Docker + AI Stack Monitor (13579) + Plan Ecosystem (7847) + Self-hosted MCP"
+    },
+    "dashboard-autostart": {
+      "enabled": false,
+      "command": "docker compose -f K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/docker-compose.yml up -d && start http://localhost:7847",
+      "triggers": ["session-start"],
+      "priority": "low",
+      "description": "[DEPRECATED] startup-orchestrator로 통합됨"
+    },
+    "docker-check": {
+      "enabled": false,
       "command": "node K:/PortableApps/Claude-Code/systems/docker-checker.js",
       "triggers": ["session-start"],
       "priority": "highest",
-      "description": "세션 시작 시 Docker 및 Self-hosted MCP 컨테이너 자동 시작 (firecrawl, searxng-crawl4ai)"
+      "description": "[DEPRECATED] startup-orchestrator로 통합됨"
     },
     "session-start": {
       "enabled": true,
@@ -27,6 +41,20 @@
       "triggers": ["session-start"],
       "priority": "high",
       "description": "세션 시작 시 활성/완료 플랜 상태 자동 출력"
+    },
+    "planning-workflow-start": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/planning-system/workflow.js session-start",
+      "triggers": ["session-start"],
+      "priority": "highest",
+      "description": "세션 시작 시 플래닝 워크플로우 실행 (스냅샷 + 상태 로드 + 규칙 출력)"
+    },
+    "planning-workflow-end": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/planning-system/workflow.js session-end",
+      "triggers": ["session-end"],
+      "priority": "highest",
+      "description": "세션 종료 시 플래닝 워크플로우 실행 (검증 + 자동복원 + 상태저장)"
     },
     "atos-recommend": {
       "enabled": true,
@@ -55,7 +83,14 @@
       "triggers": ["task-complete", "phase-change", "session-end"],
       "interval": "5m",
       "priority": "medium",
-      "description": "Shrimp ↔ Planning ↔ Unified 양방향 동기화 (5분 주기 또는 태스크 완료 시)"
+      "description": "Shrimp ↔ Planning ↔ Hub 양방향 동기화 (5분 주기 또는 태스크 완료 시, v3.0 Hub 우선)"
+    },
+    "hub-sync": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/unified-task-system/cli.js sync",
+      "triggers": ["session-start"],
+      "priority": "medium",
+      "description": "세션 시작 시 UnifiedTaskHub 전체 동기화"
     },
     "self-trigger": {
       "enabled": true,
@@ -98,12 +133,65 @@
       "priority": "high",
       "description": "세션 종료 시 플랜 상태 자동 저장"
     },
+    "auto-cleanup": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/systems/auto-cleanup.js",
+      "triggers": ["session-end"],
+      "priority": "low",
+      "description": "세션 종료 시 오래된 debug/shell-snapshots 자동 정리 (30일+)"
+    },
     "date-validation": {
       "enabled": true,
       "command": "node K:/PortableApps/Claude-Code/systems/date-validator-hook.js --check-recent",
       "triggers": ["file-save", "pre-commit"],
       "priority": "medium",
       "description": "파일 저장/커밋 시 하드코딩된 날짜 오류 감지"
+    },
+    "design-lint": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/design-system/lint-design.js",
+      "triggers": ["PostToolResult"],
+      "filter": {
+        "tools": ["Edit", "Write", "desktop-commander__write_file", "desktop-commander__edit_block"],
+        "extensions": [".css", ".scss", ".tsx", ".jsx", ".vue", ".svelte", ".html"]
+      },
+      "priority": "medium",
+      "description": "디자인 파일 수정 시 AI 동질화 패턴 자동 검사"
+    },
+    "dashboard-tool-track": {
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/tool -H \"Content-Type: application/json\" -d \"{\\\"tool\\\": \\\"$TOOL_NAME\\\", \\\"success\\\": $TOOL_SUCCESS, \\\"responseTime\\\": $TOOL_DURATION}\" || true",
+      "triggers": ["after-tool-call"],
+      "priority": "low",
+      "description": "Dashboard v3.0 - 도구 호출 자동 기록 (Phase 12)"
+    },
+    "dashboard-agent-start": {
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"start\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"type\\\": \\\"$AGENT_TYPE\\\", \\\"prompt\\\": \\\"$AGENT_PROMPT\\\"}\" || true",
+      "triggers": ["agent-spawn"],
+      "priority": "low",
+      "description": "Dashboard v3.0 - 에이전트 시작 자동 기록 (Phase 12)"
+    },
+    "dashboard-agent-complete": {
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"complete\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"status\\\": \\\"$AGENT_STATUS\\\"}\" || true",
+      "triggers": ["agent-complete"],
+      "priority": "low",
+      "description": "Dashboard v3.0 - 에이전트 완료 자동 기록 (Phase 12)"
+    },
+    "dashboard-prompt-record": {
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/prompt -H \"Content-Type: application/json\" -d \"{\\\"prompt\\\": \\\"$USER_PROMPT\\\", \\\"activePlan\\\": \\\"$ACTIVE_PLAN\\\", \\\"toolsUsed\\\": $TOOLS_USED, \\\"agentsSpawned\\\": $AGENTS_SPAWNED, \\\"duration\\\": $RESPONSE_DURATION, \\\"success\\\": $RESPONSE_SUCCESS}\" 2>/dev/null || true",
+      "triggers": ["after-response"],
+      "priority": "low",
+      "description": "Dashboard v3.0 - 프롬프트 자동 기록 + Lifecycle 연동 (Phase 8E)"
+    },
+    "lifecycle-sync": {
+      "enabled": true,
+      "command": "node K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
+      "triggers": ["plan-complete", "phase-change"],
+      "priority": "medium",
+      "description": "플랜 완료/Phase 변경 시 Lifecycle 자동 동기화 (Phase 8B)"
     }
   },
   "memory-config": {

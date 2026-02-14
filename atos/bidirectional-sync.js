@@ -24,11 +24,21 @@ const path = require('path');
 const { safeRead, writeWithBackup } = require('./file-ops');
 const { FileTransaction } = require('./transaction');
 
+// [v3.0] UnifiedTaskHub 로드
+let UnifiedTaskHub;
+try {
+  UnifiedTaskHub = require('../unified-task-system/unified-task-hub');
+} catch (e) {
+  console.log('[*] UnifiedTaskHub 로드 실패 - 폴백 모드');
+  UnifiedTaskHub = null;
+}
+
 // 경로 설정
 const BASE_PATH = 'K:/PortableApps/Claude-Code';
 const PLANS_DIR = path.join(BASE_PATH, 'plans');
 const SHRIMP_TASKS_FILE = path.join(BASE_PATH, 'ShrimpData/tasks/current-tasks.json');
 const UNIFIED_STATE_FILE = path.join(BASE_PATH, 'unified-task-system/session-state.json');
+const HUB_FILE = path.join(BASE_PATH, 'unified-task-system/tasks-hub.json');
 const SYNC_LOG_FILE = path.join(BASE_PATH, 'atos/sync-log.json');
 const MUTEX_FILE = path.join(BASE_PATH, 'atos/.sync-mutex');
 
@@ -266,37 +276,114 @@ class BidirectionalSync {
   /**
    * Planning → Unified Task 동기화
    * 완료된 태스크를 Unified Task System에 반영
+   * [v3.0] UnifiedTaskHub 우선 사용
    */
   syncToUnified() {
     console.log('[*] Planning -> Unified 동기화 시작...');
-    
+
     const { data: planData } = findActivePlanFile();
+
+    if (!planData) {
+      console.log('[*] 활성 플랜 없음 - 스킵');
+      return { success: true, changes: 0 };
+    }
+
+    // [v3.0] UnifiedTaskHub 사용 시도
+    if (UnifiedTaskHub) {
+      return this._syncToHub(planData);
+    }
+
+    // 폴백: 기존 session-state.json 방식
+    return this._syncToLegacy(planData);
+  }
+
+  /**
+   * [v3.0] UnifiedTaskHub로 동기화
+   */
+  _syncToHub(planData) {
+    let changeCount = 0;
+
+    try {
+      const hub = new UnifiedTaskHub({ autoSync: false });
+
+      for (const phase of planData.phases) {
+        for (const task of phase.tasks) {
+          if (task.status === 'completed' && !task.syncedToHub) {
+            // Hub에 태스크 추가/업데이트
+            hub.addTask({
+              title: task.title,
+              description: task.description || '',
+              status: 'completed',
+              source: 'planning',
+              phase: phase.id,
+              priority: task.priority || 'medium',
+              metadata: {
+                planId: planData.planId,
+                phaseId: phase.id,
+                phaseName: phase.name,
+                completedAt: task.completedAt || new Date().toISOString()
+              }
+            });
+
+            task.syncedToHub = true;
+            task.syncedToUnified = true; // 하위 호환
+            changeCount++;
+
+            this.changes.planToUnified.push({
+              task: task.title,
+              phase: phase.id
+            });
+
+            console.log(`  [+] ${task.title} -> Hub`);
+          }
+        }
+      }
+
+      if (changeCount > 0) {
+        // Planning 파일 업데이트
+        const { filePath: planFile } = findActivePlanFile();
+        if (planFile) {
+          safeWriteJSON(planFile, planData);
+        }
+        console.log(`[+] Planning -> Hub: ${changeCount}개 태스크 동기화 완료`);
+      } else {
+        console.log('[*] Planning -> Hub: 동기화할 변경 사항 없음');
+      }
+
+      hub.destroy();
+      return { success: true, changes: changeCount };
+    } catch (error) {
+      console.error('[!] Hub 동기화 실패:', error.message);
+      // 폴백으로 전환
+      return this._syncToLegacy(planData);
+    }
+  }
+
+  /**
+   * [Legacy] session-state.json으로 동기화 (하위 호환)
+   */
+  _syncToLegacy(planData) {
     const unifiedState = safeReadJSON(UNIFIED_STATE_FILE, {
       version: '1.0.0',
       pendingFollowups: [],
       recentTasks: [],
       sessionHistory: []
     });
-    
-    if (!planData) {
-      console.log('[*] 활성 플랜 없음 - 스킵');
-      return { success: true, changes: 0 };
-    }
-    
+
     let changeCount = 0;
-    
+
     // 완료된 태스크 중 아직 Unified에 없는 것 추가
     for (const phase of planData.phases) {
       for (const task of phase.tasks) {
         if (task.status === 'completed' && !task.syncedToUnified) {
           // recentTasks에 추가
           unifiedState.recentTasks = unifiedState.recentTasks || [];
-          
+
           // 중복 체크
-          const exists = unifiedState.recentTasks.some(t => 
+          const exists = unifiedState.recentTasks.some(t =>
             t.title === task.title && t.source === 'planning'
           );
-          
+
           if (!exists) {
             unifiedState.recentTasks.unshift({
               title: task.title,
@@ -306,21 +393,21 @@ class BidirectionalSync {
               phase: phase.id,
               completedAt: task.completedAt || new Date().toISOString()
             });
-            
+
             task.syncedToUnified = true;
             changeCount++;
-            
+
             this.changes.planToUnified.push({
               task: task.title,
               phase: phase.id
             });
-            
-            console.log(`  [+] ${task.title} -> Unified`);
+
+            console.log(`  [+] ${task.title} -> Unified (legacy)`);
           }
         }
       }
     }
-    
+
     // 최근 20개만 유지
     if (unifiedState.recentTasks.length > 20) {
       unifiedState.recentTasks = unifiedState.recentTasks.slice(0, 20);
@@ -342,7 +429,7 @@ class BidirectionalSync {
 
       const txResult = tx.commit();
       if (txResult.success) {
-        console.log(`[+] Planning -> Unified: ${changeCount}개 태스크 동기화 완료 (TX: ${tx.id})`);
+        console.log(`[+] Planning -> Unified (legacy): ${changeCount}개 태스크 동기화 완료 (TX: ${tx.id})`);
       } else {
         console.log(`[-] Planning -> Unified: 트랜잭션 실패 - ${txResult.error}`);
         return { success: false, changes: 0, error: txResult.error };

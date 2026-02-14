@@ -1,0 +1,2092 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-15T21:21:47.494Z",
+  "description": "Active Tool Orchestration System (ATOS) - Tool Registry",
+  "anthropicPatterns": {
+    "defer_loading": true,
+    "response_format": "concise",
+    "namespacing": "{service}_{resource}_{action}"
+  },
+  "mcpServers": {
+    "desktop-commander": {
+      "category": "filesystem",
+      "priority": "high",
+      "description": "파일 시스템 작업 및 프로세스 관리",
+      "tools": [
+        "read_file",
+        "write_file",
+        "edit_block",
+        "search_files",
+        "search_code",
+        "list_directory",
+        "create_directory",
+        "move_file",
+        "get_file_info",
+        "start_process",
+        "interact_with_process"
+      ],
+      "triggerKeywords": [
+        "파일",
+        "작성",
+        "수정",
+        "읽기",
+        "디렉토리",
+        "폴더",
+        "저장",
+        "편집",
+        "검색",
+        "코드검색",
+        "프로세스"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "파일 작성해줘",
+          "expected_tool": "write_file"
+        },
+        {
+          "input": "코드 검색",
+          "expected_tool": "search_code"
+        },
+        {
+          "input": "폴더 생성",
+          "expected_tool": "create_directory"
+        }
+      ]
+    },
+    "filesystem": {
+      "category": "filesystem",
+      "priority": "medium",
+      "description": "기본 파일 시스템 MCP 서버",
+      "tools": [
+        "read_file",
+        "read_multiple_files",
+        "write_file",
+        "edit_file",
+        "create_directory",
+        "list_directory",
+        "move_file",
+        "search_files",
+        "get_file_info"
+      ],
+      "triggerKeywords": [
+        "파일",
+        "읽기",
+        "쓰기",
+        "폴더"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "edit-file-lines": {
+      "category": "filesystem",
+      "priority": "high",
+      "description": "라인 기반 파일 편집",
+      "tools": [
+        "edit_file_lines",
+        "get_file_lines",
+        "search_file",
+        "approve_edit"
+      ],
+      "triggerKeywords": [
+        "라인",
+        "행",
+        "줄",
+        "정밀편집",
+        "드라이런"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "특정 줄 수정",
+          "expected_tool": "edit_file_lines"
+        },
+        {
+          "input": "라인 번호 확인",
+          "expected_tool": "get_file_lines"
+        }
+      ]
+    },
+    "firecrawl": {
+      "category": "web",
+      "priority": "high",
+      "description": "웹 검색, 크롤링, 스크래핑",
+      "tools": [
+        "firecrawl_search",
+        "firecrawl_scrape",
+        "firecrawl_map",
+        "firecrawl_crawl",
+        "firecrawl_extract"
+      ],
+      "triggerKeywords": [
+        "웹검색",
+        "크롤링",
+        "스크래핑",
+        "URL",
+        "웹페이지",
+        "사이트맵",
+        "딥리서치"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "웹 검색해줘",
+          "expected_tool": "firecrawl_search"
+        },
+        {
+          "input": "페이지 크롤링",
+          "expected_tool": "firecrawl_scrape"
+        },
+        {
+          "input": "사이트 구조 파악",
+          "expected_tool": "firecrawl_map"
+        }
+      ]
+    },
+    "one-search": {
+      "category": "web",
+      "priority": "high",
+      "description": "Google Search API 기반 웹 검색 (npx one-search-mcp)",
+      "tools": [
+        "one_search",
+        "one_scrape",
+        "one_extract",
+        "one_map"
+      ],
+      "triggerKeywords": [
+        "검색",
+        "웹",
+        "구글",
+        "뉴스",
+        "이미지검색"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "검색해줘",
+          "expected_tool": "one_search"
+        },
+        {
+          "input": "뉴스 검색",
+          "expected_tool": "one_search"
+        }
+      ]
+    },
+    "searxng-crawl4ai": {
+      "category": "web",
+      "priority": "high",
+      "description": "SearXNG 메타검색 + Crawl4AI 스크래핑 (Docker 기반)",
+      "tools": [
+        "scrape_url",
+        "batch_scrape",
+        "crawl_website",
+        "map_website",
+        "extract_structured_data",
+        "get_crawl_status",
+        "search_web",
+        "search_and_scrape",
+        "crawl4ai_scrape"
+      ],
+      "triggerKeywords": [
+        "SearXNG",
+        "메타검색",
+        "크롤4AI",
+        "도커크롤링",
+        "배치스크래핑",
+        "웹사이트맵"
+      ],
+      "defer_loading": true,
+      "notes": "Docker 컨테이너 실행 필요. docker compose up -d로 시작",
+      "requirements": ["Docker Desktop 실행 필요", "searxng-crawl4ai-mcp-mcp-server-1 컨테이너"]
+    },
+    "websearch": {
+      "category": "web",
+      "priority": "medium",
+      "description": "Tavily 기반 웹 검색",
+      "tools": [
+        "web_search"
+      ],
+      "triggerKeywords": [
+        "검색",
+        "타빌리",
+        "뉴스",
+        "블로그"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "crawl4ai-lite": {
+      "category": "web",
+      "priority": "medium",
+      "description": "Crawl4AI 경량 버전 - 폴백용 기본 크롤러",
+      "tools": [
+        "crawl4ai_scrape"
+      ],
+      "triggerKeywords": [
+        "크롤링",
+        "스크래핑",
+        "폴백",
+        "crawl4ai"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "기본 크롤링",
+          "expected_tool": "crawl4ai_scrape"
+        }
+      ],
+      "notes": "Docker 미실행시 폴백용. npx @iflow-mcp/crawl4ai-mcp-server 사용"
+    },
+    "scrapegraph-local": {
+      "category": "web",
+      "priority": "medium",
+      "description": "ScrapeGraphAI 로컬 버전 - Ollama 기반 AI 스크래핑 (무료)",
+      "tools": [
+        "smart_scraper",
+        "markdownify",
+        "search_scraper",
+        "scrape_local_html"
+      ],
+      "triggerKeywords": [
+        "AI스크래핑",
+        "올라마",
+        "Ollama",
+        "로컬LLM",
+        "스마트스크래핑",
+        "마크다운변환"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "AI로 웹페이지에서 데이터 추출",
+          "expected_tool": "smart_scraper"
+        },
+        {
+          "input": "웹페이지 마크다운 변환",
+          "expected_tool": "markdownify"
+        },
+        {
+          "input": "검색 후 AI 분석",
+          "expected_tool": "search_scraper"
+        }
+      ],
+      "notes": "Ollama llama3.2 모델 필요. localhost:11434에서 실행",
+      "requirements": ["Ollama 실행 필요"]
+    },
+    "github": {
+      "category": "development",
+      "priority": "high",
+      "description": "GitHub API 통합",
+      "tools": [
+        "search_repositories",
+        "get_file_contents",
+        "create_issue",
+        "create_pull_request",
+        "list_issues",
+        "list_pull_requests",
+        "search_code",
+        "merge_pull_request"
+      ],
+      "triggerKeywords": [
+        "깃헙",
+        "GitHub",
+        "PR",
+        "이슈",
+        "레포지토리",
+        "커밋",
+        "풀리퀘스트"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "GitHub 레포 검색",
+          "expected_tool": "search_repositories"
+        },
+        {
+          "input": "PR 생성",
+          "expected_tool": "create_pull_request"
+        },
+        {
+          "input": "이슈 생성",
+          "expected_tool": "create_issue"
+        }
+      ]
+    },
+    "git-mcp": {
+      "category": "development",
+      "priority": "high",
+      "description": "로컬 Git 저장소 관리",
+      "tools": [
+        "git_status",
+        "git_diff",
+        "git_log",
+        "git_commit",
+        "git_branch",
+        "git_checkout",
+        "git_push",
+        "git_pull",
+        "git_stash"
+      ],
+      "triggerKeywords": [
+        "깃",
+        "git",
+        "커밋",
+        "브랜치",
+        "푸시",
+        "풀",
+        "스태시",
+        "체크아웃"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "git 상태",
+          "expected_tool": "git_status"
+        },
+        {
+          "input": "커밋해줘",
+          "expected_tool": "git_commit"
+        },
+        {
+          "input": "변경사항 확인",
+          "expected_tool": "git_diff"
+        }
+      ]
+    },
+    "context7": {
+      "category": "documentation",
+      "priority": "high",
+      "description": "라이브러리 문서 검색",
+      "tools": [
+        "resolve-library-id",
+        "get-library-docs"
+      ],
+      "triggerKeywords": [
+        "문서",
+        "docs",
+        "라이브러리",
+        "API문서",
+        "레퍼런스"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "React 문서 찾아줘",
+          "expected_tool": "resolve-library-id"
+        },
+        {
+          "input": "API 문서",
+          "expected_tool": "get-library-docs"
+        }
+      ]
+    },
+    "memory": {
+      "category": "storage",
+      "priority": "medium",
+      "description": "기본 메모리 저장소",
+      "tools": [
+        "create_entities",
+        "create_relations",
+        "add_observations",
+        "read_graph",
+        "search_nodes"
+      ],
+      "triggerKeywords": [
+        "메모리",
+        "기억",
+        "저장",
+        "그래프"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "kiro-memory": {
+      "category": "storage",
+      "priority": "high",
+      "description": "향상된 메모리 시스템 (영구 저장)",
+      "tools": [
+        "get_memory_context",
+        "create_task",
+        "get_tasks",
+        "update_task_status",
+        "start_thinking_chain",
+        "auto_process_conversation",
+        "get_project_conventions"
+      ],
+      "triggerKeywords": [
+        "메모리",
+        "기억",
+        "작업",
+        "태스크",
+        "세션",
+        "컨텍스트",
+        "학습"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "메모리 저장",
+          "expected_tool": "auto_process_conversation"
+        },
+        {
+          "input": "작업 생성",
+          "expected_tool": "create_task"
+        },
+        {
+          "input": "컨텍스트 확인",
+          "expected_tool": "get_memory_context"
+        }
+      ]
+    },
+    "shrimp-task": {
+      "category": "taskmanagement",
+      "priority": "high",
+      "description": "Shrimp 작업 관리자",
+      "tools": [
+        "plan_task",
+        "analyze_task",
+        "reflect_task",
+        "split_tasks",
+        "list_tasks",
+        "execute_task",
+        "verify_task",
+        "query_task",
+        "get_task_detail"
+      ],
+      "triggerKeywords": [
+        "작업",
+        "태스크",
+        "플랜",
+        "계획",
+        "분석",
+        "검증",
+        "실행"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "작업 계획",
+          "expected_tool": "plan_task"
+        },
+        {
+          "input": "태스크 분해",
+          "expected_tool": "split_tasks"
+        },
+        {
+          "input": "작업 목록",
+          "expected_tool": "list_tasks"
+        }
+      ]
+    },
+    "vibekanban": {
+      "category": "taskmanagement",
+      "priority": "high",
+      "description": "Vibe Kanban 보드 - 칸반 기반 작업 관리",
+      "tools": ["get_project_id_by_name", "get_kanban_status", "create_ticket", "update_ticket_state", "list_projects", "list_tickets", "add_comment"],
+      "triggerKeywords": ["칸반", "kanban", "보드", "티켓", "ticket", "vibe", "board"],
+      "defer_loading": true,
+      "input_examples": [
+        {"input": "칸반 상태", "expected_tool": "get_kanban_status"},
+        {"input": "티켓 생성", "expected_tool": "create_ticket"},
+        {"input": "프로젝트 목록", "expected_tool": "list_projects"}
+      ]
+    },
+    "sqlite-mcp": {
+      "category": "data",
+      "priority": "medium",
+      "description": "SQLite 데이터베이스 조작",
+      "tools": [
+        "read_query",
+        "write_query",
+        "create_table",
+        "list_tables",
+        "describe_table"
+      ],
+      "triggerKeywords": [
+        "SQL",
+        "데이터베이스",
+        "DB",
+        "쿼리",
+        "테이블"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "SQL 쿼리",
+          "expected_tool": "read_query"
+        },
+        {
+          "input": "테이블 목록",
+          "expected_tool": "list_tables"
+        }
+      ]
+    },
+    "supabase": {
+      "category": "data",
+      "priority": "medium",
+      "description": "Supabase 클라우드 DB",
+      "tools": [
+        "search_docs",
+        "list_tables",
+        "execute_sql",
+        "apply_migration",
+        "get_logs",
+        "deploy_edge_function"
+      ],
+      "triggerKeywords": [
+        "수파베이스",
+        "Supabase",
+        "클라우드DB",
+        "마이그레이션"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "youtube-data": {
+      "category": "media",
+      "priority": "medium",
+      "description": "YouTube 데이터 API",
+      "tools": [
+        "searchVideos",
+        "getVideoDetails",
+        "getTranscripts",
+        "getChannelStatistics",
+        "getTrendingVideos"
+      ],
+      "triggerKeywords": [
+        "유튜브",
+        "YouTube",
+        "동영상",
+        "비디오",
+        "채널",
+        "트랜스크립트"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "유튜브 검색",
+          "expected_tool": "searchVideos"
+        },
+        {
+          "input": "자막 가져와",
+          "expected_tool": "getTranscripts"
+        }
+      ]
+    },
+    "playwright": {
+      "category": "automation",
+      "priority": "high",
+      "description": "브라우저 자동화",
+      "tools": [
+        "playwright_navigate",
+        "playwright_screenshot",
+        "playwright_click",
+        "playwright_fill",
+        "playwright_evaluate",
+        "playwright_get_visible_text"
+      ],
+      "triggerKeywords": [
+        "브라우저",
+        "자동화",
+        "스크린샷",
+        "클릭",
+        "웹테스트",
+        "E2E"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "웹페이지 열어줘",
+          "expected_tool": "playwright_navigate"
+        },
+        {
+          "input": "스크린샷",
+          "expected_tool": "playwright_screenshot"
+        },
+        {
+          "input": "버튼 클릭",
+          "expected_tool": "playwright_click"
+        }
+      ]
+    },
+    "n8n": {
+      "category": "automation",
+      "priority": "medium",
+      "description": "n8n 워크플로우 자동화",
+      "tools": [
+        "init-n8n",
+        "list-workflows",
+        "get-workflow",
+        "create-workflow",
+        "activate-workflow",
+        "list-executions"
+      ],
+      "triggerKeywords": [
+        "n8n",
+        "워크플로우",
+        "자동화",
+        "노코드"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "sequential-thinking": {
+      "category": "reasoning",
+      "priority": "high",
+      "description": "단계별 사고 프로세스",
+      "tools": [
+        "sequentialthinking"
+      ],
+      "triggerKeywords": [
+        "생각",
+        "thinking",
+        "분석",
+        "단계별",
+        "추론",
+        "ultrathink"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "깊이 생각해봐",
+          "expected_tool": "sequentialthinking"
+        },
+        {
+          "input": "단계별 분석",
+          "expected_tool": "sequentialthinking"
+        }
+      ]
+    },
+    "llm-council": {
+      "category": "reasoning",
+      "priority": "medium",
+      "description": "다중 LLM 협의 시스템",
+      "tools": [
+        "council_ask",
+        "council_quick",
+        "council_config"
+      ],
+      "triggerKeywords": [
+        "협의",
+        "council",
+        "다중모델",
+        "의견수렴"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "여러 모델 의견",
+          "expected_tool": "council_ask"
+        }
+      ]
+    },
+    "antv-chart": {
+      "category": "visualization",
+      "priority": "medium",
+      "description": "차트 및 시각화 생성",
+      "tools": [
+        "generate_line_chart",
+        "generate_bar_chart",
+        "generate_pie_chart",
+        "generate_area_chart",
+        "generate_scatter_chart",
+        "generate_radar_chart",
+        "generate_mind_map",
+        "generate_flow_diagram"
+      ],
+      "triggerKeywords": [
+        "차트",
+        "그래프",
+        "시각화",
+        "마인드맵",
+        "플로우차트",
+        "다이어그램"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "차트 그려줘",
+          "expected_tool": "generate_line_chart"
+        },
+        {
+          "input": "마인드맵 생성",
+          "expected_tool": "generate_mind_map"
+        },
+        {
+          "input": "파이차트",
+          "expected_tool": "generate_pie_chart"
+        }
+      ]
+    },
+    "image-recognition": {
+      "category": "vision",
+      "priority": "medium",
+      "description": "이미지 분석 및 OCR",
+      "tools": [
+        "describe_image",
+        "describe_image_from_file"
+      ],
+      "triggerKeywords": [
+        "이미지분석",
+        "사진",
+        "비전",
+        "OCR"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "이미지 설명해줘",
+          "expected_tool": "describe_image_from_file"
+        }
+      ]
+    },
+    "paddleocr-mcp": {
+      "category": "vision",
+      "priority": "medium",
+      "description": "PaddleOCR 텍스트 추출",
+      "tools": [
+        "ocr_image",
+        "extract_table",
+        "detect_language"
+      ],
+      "triggerKeywords": [
+        "OCR",
+        "텍스트추출",
+        "테이블추출",
+        "문서인식"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "이미지에서 텍스트 추출",
+          "expected_tool": "ocr_image"
+        },
+        {
+          "input": "테이블 추출",
+          "expected_tool": "extract_table"
+        }
+      ]
+    },
+    "marker-mcp": {
+      "category": "document",
+      "priority": "medium",
+      "description": "PDF 변환 및 분석",
+      "tools": [
+        "convert_pdf",
+        "extract_text",
+        "analyze_structure"
+      ],
+      "triggerKeywords": [
+        "PDF",
+        "문서변환",
+        "마크다운변환"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "PDF 분석",
+          "expected_tool": "convert_pdf"
+        },
+        {
+          "input": "PDF 텍스트 추출",
+          "expected_tool": "extract_text"
+        }
+      ]
+    },
+    "runpod-jupyter": {
+      "category": "compute",
+      "priority": "medium",
+      "description": "원격 Jupyter 노트북 실행",
+      "tools": [
+        "use_notebook",
+        "insert_execute_code_cell",
+        "execute_code",
+        "read_notebook",
+        "list_kernels"
+      ],
+      "triggerKeywords": [
+        "주피터",
+        "Jupyter",
+        "노트북",
+        "Python실행",
+        "GPU",
+        "RunPod"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "주피터 노트북",
+          "expected_tool": "use_notebook"
+        },
+        {
+          "input": "코드 실행",
+          "expected_tool": "execute_code"
+        }
+      ]
+    },
+    "hfspace": {
+      "category": "ai",
+      "priority": "medium",
+      "description": "Hugging Face Spaces 통합",
+      "tools": [
+        "search-spaces",
+        "FLUX_1-schnell-infer",
+        "available-files"
+      ],
+      "triggerKeywords": [
+        "허깅페이스",
+        "HuggingFace",
+        "이미지생성",
+        "FLUX",
+        "AI모델"
+      ],
+      "defer_loading": true,
+      "input_examples": [
+        {
+          "input": "이미지 생성",
+          "expected_tool": "FLUX_1-schnell-infer"
+        },
+        {
+          "input": "HF 스페이스 검색",
+          "expected_tool": "search-spaces"
+        }
+      ]
+    },
+    "zen-mcp": {
+      "category": "ai",
+      "priority": "low",
+      "description": "OpenRouter LLM 연동",
+      "tools": [],
+      "triggerKeywords": [
+        "OpenRouter",
+        "다른모델"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "mcp-installer": {
+      "category": "utility",
+      "priority": "low",
+      "description": "MCP 서버 설치 도우미",
+      "tools": [
+        "install_repo_mcp_server",
+        "install_local_mcp_server"
+      ],
+      "triggerKeywords": [
+        "MCP설치",
+        "서버설치"
+      ],
+      "defer_loading": true,
+      "input_examples": []
+    },
+    "task-master-ai": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "workflow",
+      "triggerKeywords": [
+        "task",
+        "master",
+        "ai"
+      ],
+      "description": "",
+      "discoveredAt": "2025-12-15T21:21:45.580Z",
+      "source": ".claude.json"
+    },
+    "paper-search-mcp": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "web",
+      "triggerKeywords": [
+        "paper",
+        "search",
+        "mcp"
+      ],
+      "description": "",
+      "discoveredAt": "2025-12-15T21:21:45.624Z",
+      "source": ".claude.json"
+    },
+    "firecrawl-stub": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "web",
+      "triggerKeywords": [
+        "firecrawl",
+        "stub"
+      ],
+      "description": "",
+      "discoveredAt": "2025-12-15T21:21:47.383Z",
+      "source": "initial-scan"
+    },
+    "git-mcp-server": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "development",
+      "triggerKeywords": [
+        "git",
+        "mcp",
+        "server",
+        "(model",
+        "context",
+        "protocol)",
+        "enabling",
+        "llms",
+        "ai",
+        "agents"
+      ],
+      "description": "An MCP (Model Context Protocol) server enabling LLMs and AI agents to interact with Git repositories. Provides tools for comprehensive Git operations including clone, commit, branch, diff, log, status, push, pull, merge, rebase, worktree, tag management, and more, via the MCP standard. STDIO & HTTP.",
+      "discoveredAt": "2025-12-15T21:21:47.424Z",
+      "source": "initial-scan"
+    },
+    "mcp-edit-file-lines": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "filesystem",
+      "triggerKeywords": [
+        "mcp",
+        "edit",
+        "file",
+        "lines",
+        "make",
+        "line",
+        "based",
+        "edits",
+        "text",
+        "each"
+      ],
+      "description": "Make line-based edits to a text file. Each edit replaces exact line sequences.",
+      "discoveredAt": "2025-12-15T21:21:47.460Z",
+      "source": "initial-scan"
+    },
+    "superclaude-official": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true,
+      "tools": [],
+      "category": "ai",
+      "triggerKeywords": [
+        "superclaude",
+        "official",
+        "framework",
+        "npm",
+        "wrapper",
+        "node",
+        "js",
+        "python",
+        "package",
+        "enhances"
+      ],
+      "description": "SuperClaude Framework NPM wrapper - Official Node.js wrapper for the Python SuperClaude package. Enhances Claude Code with specialized commands and AI development tools.",
+      "discoveredAt": "2025-12-15T21:21:47.494Z",
+      "source": "initial-scan"
+    },
+    "lsp": {
+      "category": "code-intelligence",
+      "priority": "high",
+      "isBuiltIn": true,
+      "description": "Language Server Protocol 코드 인텔리전스 - 정의 이동, 참조 찾기, 호버 문서 (Claude Code 2.0.74+)",
+      "tools": [
+        "go_to_definition",
+        "find_references",
+        "hover_documentation"
+      ],
+      "triggerKeywords": [
+        "정의",
+        "정의로",
+        "definition",
+        "go to definition",
+        "참조",
+        "레퍼런스",
+        "references",
+        "find references",
+        "호버",
+        "hover",
+        "문서보기",
+        "LSP",
+        "코드인텔리전스"
+      ],
+      "defer_loading": false,
+      "input_examples": [
+        {
+          "input": "이 함수의 정의로 이동",
+          "expected_tool": "go_to_definition"
+        },
+        {
+          "input": "이 변수 참조 찾기",
+          "expected_tool": "find_references"
+        },
+        {
+          "input": "함수 문서 보기",
+          "expected_tool": "hover_documentation"
+        }
+      ],
+      "notes": "Claude Code 2.0.74에서 추가된 내장 도구. TypeScript/JavaScript, Python 등 LSP 지원 언어에서 작동",
+      "addedAt": "2025-12-26",
+      "source": "claude-code-builtin"
+    }
+  },
+  "skills": {
+    "research-workflow": {
+      "path": ".claude/skills/research-workflow",
+      "triggers": [
+        "연구",
+        "조사",
+        "분석",
+        "리서치"
+      ],
+      "autoActivate": true,
+      "description": "체계적인 조사 및 분석 워크플로우"
+    },
+    "code-analysis": {
+      "path": ".claude/skills/code-analysis",
+      "triggers": [
+        "코드분석",
+        "리뷰",
+        "품질"
+      ],
+      "autoActivate": true,
+      "description": "코드 품질 분석 및 리뷰"
+    },
+    "update-optimizer": {
+      "path": ".claude/skills/update-optimizer",
+      "triggers": [
+        "업데이트",
+        "최적화",
+        "정리"
+      ],
+      "autoActivate": true,
+      "description": "Claude Code 업데이트 최적화"
+    },
+    "pdf-vision": {
+      "path": ".claude/skills/pdf-vision",
+      "triggers": [
+        "PDF",
+        "OCR",
+        "문서분석"
+      ],
+      "autoActivate": true,
+      "description": "PDF 및 이미지 문서 분석"
+    },
+    "base-skill": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "base",
+        "skill"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\base-skill\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.663Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "cleanup-advisor": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "cleanup",
+        "advisor"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\cleanup-advisor\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.698Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "code-reviewer": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "code",
+        "reviewer"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\code-reviewer\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.731Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "debugger": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "debugger"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\debugger\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.765Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "doc-researcher": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "doc",
+        "researcher"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\doc-researcher\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.798Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "documentation-writer": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "documentation",
+        "writer"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\documentation-writer\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.837Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "mcp-health-checker": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "mcp",
+        "health",
+        "checker"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\mcp-health-checker\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.870Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "refactorer": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "refactorer"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\refactorer\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.905Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "test-writer": {
+      "autoActivate": false,
+      "priority": "medium",
+      "triggers": [
+        "test",
+        "writer"
+      ],
+      "description": "---",
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\skills\\test-writer\\SKILL.md",
+      "discoveredAt": "2025-12-15T21:21:45.939Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    }
+  },
+  "workflows": {
+    "research": {
+      "path": "workflows/master-workflows.json",
+      "triggers": [
+        "조사",
+        "찾아줘",
+        "연구"
+      ],
+      "description": "체계적 조사 워크플로우"
+    },
+    "development": {
+      "path": "workflows/master-workflows.json",
+      "triggers": [
+        "개발",
+        "구현",
+        "코딩"
+      ],
+      "description": "개발 워크플로우"
+    },
+    "news-archiving": {
+      "path": "workflows/master-workflows.json",
+      "triggers": [
+        "뉴스",
+        "아카이빙"
+      ],
+      "description": "뉴스 수집 및 아카이빙"
+    },
+    "master-workflows": {
+      "enabled": true,
+      "autoTrigger": false,
+      "version": "2.0.0",
+      "description": "마스터 워크플로우 정의 - 에이전틱 자기학습 통합",
+      "updated": "2025-12-13",
+      "workflows": {
+        "news-archiving": {
+          "name": "뉴스 아카이빙 워크플로우",
+          "description": "위협 인텔리전스 뉴스 수집, 분석, 저장",
+          "steps": [
+            {
+              "phase": "계획",
+              "tools": [
+                "shrimp-task.plan_task",
+                "shrimp-task.split_tasks"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "수집",
+              "tools": [
+                "websearch.web_search",
+                "firecrawl.firecrawl_search",
+                "one-search.one_search"
+              ],
+              "parallel": true,
+              "note": "3개 도구 동시 실행으로 속도 3배"
+            },
+            {
+              "phase": "저장",
+              "tools": [
+                "kiro-memory.auto_process_conversation",
+                "desktop-commander.write_file",
+                "supabase.apply_migration"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "검증",
+              "tools": [
+                "playwright.navigate",
+                "playwright.screenshot"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "development": {
+          "name": "개발 워크플로우",
+          "description": "코드 작성, 수정, 테스트, 커밋",
+          "steps": [
+            {
+              "phase": "탐색",
+              "tools": [
+                "Task(subagent_type=Explore)"
+              ],
+              "parallel": false,
+              "auto_trigger": true,
+              "note": "코드베이스 이해 우선"
+            },
+            {
+              "phase": "설계",
+              "tools": [
+                "shrimp-task.analyze_task",
+                "shrimp-task.reflect_task"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "구현",
+              "tools": [
+                "desktop-commander.create_directory",
+                "desktop-commander.write_file",
+                "edit-file-lines.edit_file_lines"
+              ],
+              "parallel": false,
+              "note": "DC 청크 작성(30줄) → edit-lines 정밀 수정"
+            },
+            {
+              "phase": "테스트",
+              "tools": [
+                "playwright.navigate(2560x1330)",
+                "playwright.screenshot",
+                "playwright.console_logs"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "저장",
+              "tools": [
+                "git-mcp.git_add",
+                "git-mcp.git_commit",
+                "git-mcp.git_push"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "research": {
+          "name": "리서치 워크플로우",
+          "description": "심층 조사 및 분석",
+          "steps": [
+            {
+              "phase": "초기조사",
+              "tools": [
+                "one-search.one_search",
+                "firecrawl.firecrawl_search",
+                "context7.get-library-docs"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "심화분석",
+              "tools": [
+                "firecrawl.firecrawl_scrape",
+                "sequential-thinking.sequentialthinking"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "문서화",
+              "tools": [
+                "desktop-commander.write_file",
+                "github.create_issue"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "메모리저장",
+              "tools": [
+                "kiro-memory.remember_project_pattern"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "update-optimization": {
+          "name": "업데이트 최적화 워크플로우",
+          "description": "Claude Code 업데이트 후 자기학습 프로세스",
+          "trigger_keywords": [
+            "업데이트 최적화",
+            "optimize after update",
+            "post-update"
+          ],
+          "steps": [
+            {
+              "phase": "리소스발견",
+              "tools": [
+                "firecrawl.firecrawl_map"
+              ],
+              "targets": [
+                "code.claude.com",
+                "platform.claude.com/docs"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "딥리서치",
+              "tools": [
+                "github.get_file_contents(CHANGELOG.md)",
+                "firecrawl.firecrawl_scrape",
+                "context7.get-library-docs"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "MCP발견",
+              "tools": [
+                "github.search_repositories(mcp server)",
+                "one-search.one_search(huggingface mcp)",
+                "firecrawl.firecrawl_scrape(smithery.ai)"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "깊은사고",
+              "tools": [
+                "sequential-thinking.sequentialthinking"
+              ],
+              "analysis": [
+                "현재상태",
+                "개선기회",
+                "제안생성"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "자동적용",
+              "tools": [
+                "desktop-commander.edit_block(CLAUDE.md)",
+                "desktop-commander.write_file(skills/)",
+                "desktop-commander.write_file(workflows/)"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "정리",
+              "tools": [
+                "desktop-commander.search_files",
+                "Bash(del)"
+              ],
+              "targets": [
+                ".claude.json.corrupted.*",
+                "temp/7days+",
+                "shell-snapshots/60days+"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "deep-analysis": {
+          "name": "심층 코드 분석 워크플로우",
+          "description": "코드베이스 깊은 분석 및 패턴 발견",
+          "trigger_keywords": [
+            "코드 분석",
+            "analyze code",
+            "deep analysis"
+          ],
+          "steps": [
+            {
+              "phase": "탐색",
+              "tools": [
+                "Task(subagent_type=Explore, thoroughness=very thorough)"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "패턴감지",
+              "tools": [
+                "Grep",
+                "Glob"
+              ],
+              "patterns": [
+                "TODO",
+                "FIXME",
+                "HACK",
+                "security",
+                "deprecated"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "심층분석",
+              "tools": [
+                "sequential-thinking.sequentialthinking"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "보고서생성",
+              "tools": [
+                "desktop-commander.write_file"
+              ],
+              "output": "documentation/reports/",
+              "parallel": false
+            },
+            {
+              "phase": "패턴저장",
+              "tools": [
+                "kiro-memory.remember_project_pattern"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "mcp-discovery": {
+          "name": "MCP 서버 발견 워크플로우",
+          "description": "GitHub/HuggingFace에서 MCP 서버 검색 및 평가",
+          "trigger_keywords": [
+            "MCP 추천",
+            "recommend mcp",
+            "mcp discovery"
+          ],
+          "steps": [
+            {
+              "phase": "GitHub검색",
+              "tools": [
+                "github.search_repositories"
+              ],
+              "queries": [
+                "mcp server stars:>100",
+                "model context protocol",
+                "@modelcontextprotocol"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "HuggingFace검색",
+              "tools": [
+                "one-search.one_search",
+                "firecrawl.firecrawl_scrape"
+              ],
+              "targets": [
+                "huggingface.co/spaces",
+                "huggingface.co/models"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "레지스트리조회",
+              "tools": [
+                "firecrawl.firecrawl_scrape"
+              ],
+              "targets": [
+                "smithery.ai",
+                "glama.ai/mcp/servers"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "평가",
+              "criteria": {
+                "stars": 0.3,
+                "recent_update": 0.25,
+                "documentation": 0.2,
+                "dependencies": 0.15,
+                "relevance": 0.1
+              },
+              "parallel": false
+            },
+            {
+              "phase": "보고서",
+              "tools": [
+                "desktop-commander.write_file"
+              ],
+              "output": "documentation/reports/mcp-recommendations-[date].md",
+              "parallel": false
+            }
+          ]
+        },
+        "pdf-vision": {
+          "name": "PDF/Vision 분석 워크플로우",
+          "description": "PDF 문서 및 이미지 분석",
+          "trigger_keywords": [
+            "PDF 분석",
+            "analyze pdf",
+            "이미지 분석",
+            "vision"
+          ],
+          "steps": [
+            {
+              "phase": "문서변환",
+              "tools": [
+                "marker-mcp.convert_pdf",
+                "marker-mcp.extract_text"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "이미지OCR",
+              "tools": [
+                "paddleocr-mcp.ocr_image",
+                "image-recognition.describe_image_from_file"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "구조분석",
+              "tools": [
+                "marker-mcp.analyze_structure",
+                "paddleocr-mcp.extract_table"
+              ],
+              "parallel": true
+            },
+            {
+              "phase": "내용분석",
+              "tools": [
+                "sequential-thinking.sequentialthinking"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "결과저장",
+              "tools": [
+                "desktop-commander.write_file",
+                "kiro-memory.remember_project_pattern"
+              ],
+              "parallel": false
+            }
+          ]
+        },
+        "memory-persistence": {
+          "name": "메모리 영구 저장 워크플로우",
+          "description": "중요 패턴 및 학습 내용 영구 저장",
+          "auto_trigger": true,
+          "trigger_conditions": [
+            "session_end",
+            "important_discovery",
+            "user_feedback"
+          ],
+          "steps": [
+            {
+              "phase": "패턴추출",
+              "tools": [
+                "kiro-memory.get_memory_context"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "중요도평가",
+              "criteria": {
+                "user_explicit": 1,
+                "repeated_pattern": 0.9,
+                "error_fix": 0.8,
+                "optimization": 0.7
+              },
+              "parallel": false
+            },
+            {
+              "phase": "영구저장",
+              "tools": [
+                "kiro-memory.remember_project_pattern",
+                "desktop-commander.edit_block(CLAUDE.md)"
+              ],
+              "parallel": false
+            },
+            {
+              "phase": "백업",
+              "tools": [
+                "git-mcp.git_add",
+                "git-mcp.git_commit"
+              ],
+              "parallel": false
+            }
+          ]
+        }
+      },
+      "skill_triggers": {
+        "research-workflow": {
+          "keywords": [
+            "조사",
+            "research",
+            "분석해줘",
+            "찾아줘"
+          ],
+          "workflow": "research"
+        },
+        "code-analysis": {
+          "keywords": [
+            "코드 분석",
+            "버그 찾기",
+            "리뷰"
+          ],
+          "workflow": "deep-analysis"
+        },
+        "update-optimizer": {
+          "keywords": [
+            "업데이트 최적화",
+            "post-update",
+            "새 버전"
+          ],
+          "workflow": "update-optimization"
+        }
+      },
+      "explore_patterns": {
+        "auto_call_conditions": [
+          "codebase question without specific file",
+          "architecture understanding needed",
+          "file location unknown",
+          "pattern search across multiple files"
+        ],
+        "thoroughness_rules": {
+          "quick": "simple file search",
+          "medium": "moderate exploration",
+          "very thorough": "comprehensive analysis"
+        },
+        "default_thoroughness": "medium"
+      },
+      "automation_rules": {
+        "auto_chain": true,
+        "error_recovery": "rollback",
+        "parallel_threshold": 3,
+        "chunk_size": 30,
+        "viewport": "2560x1330",
+        "memory_auto_save": true,
+        "explore_auto_call": true,
+        "skill_auto_detect": true
+      },
+      "chaining_rules": {
+        "output_to_input": true,
+        "error_propagation": "stop_and_report",
+        "success_chain": "continue",
+        "max_parallel": 5,
+        "timeout_per_step": 60000
+      },
+      "discoveredAt": "2025-12-15T21:21:47.346Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    }
+  },
+  "agents": {
+    "explore": {
+      "type": "builtin",
+      "triggers": [
+        "탐색",
+        "구조",
+        "아키텍처",
+        "어디서",
+        "찾아"
+      ],
+      "description": "코드베이스 탐색 에이전트"
+    },
+    "plan": {
+      "type": "builtin",
+      "triggers": [
+        "계획",
+        "설계",
+        "플랜"
+      ],
+      "description": "구현 계획 수립 에이전트"
+    }
+  },
+  "categories": {
+    "filesystem": {
+      "description": "파일 및 디렉토리 작업",
+      "color": "#4CAF50"
+    },
+    "web": {
+      "description": "웹 검색 및 크롤링",
+      "color": "#2196F3"
+    },
+    "development": {
+      "description": "개발 도구 (Git, GitHub)",
+      "color": "#FF9800"
+    },
+    "documentation": {
+      "description": "문서 검색 및 참조",
+      "color": "#9C27B0"
+    },
+    "storage": {
+      "description": "메모리 및 데이터 저장",
+      "color": "#607D8B"
+    },
+    "taskmanagement": {
+      "description": "작업 및 태스크 관리",
+      "color": "#F44336"
+    },
+    "data": {
+      "description": "데이터베이스 작업",
+      "color": "#00BCD4"
+    },
+    "media": {
+      "description": "미디어 처리 (YouTube 등)",
+      "color": "#E91E63"
+    },
+    "automation": {
+      "description": "브라우저 및 워크플로우 자동화",
+      "color": "#795548"
+    },
+    "reasoning": {
+      "description": "추론 및 사고 도구",
+      "color": "#3F51B5"
+    },
+    "visualization": {
+      "description": "차트 및 시각화",
+      "color": "#CDDC39"
+    },
+    "vision": {
+      "description": "이미지 분석 및 OCR",
+      "color": "#FF5722"
+    },
+    "document": {
+      "description": "문서 변환 및 처리",
+      "color": "#009688"
+    },
+    "compute": {
+      "description": "원격 컴퓨팅 (Jupyter, GPU)",
+      "color": "#673AB7"
+    },
+    "ai": {
+      "description": "AI 모델 통합",
+      "color": "#8BC34A"
+    },
+    "utility": {
+      "description": "유틸리티 도구",
+      "color": "#9E9E9E"
+    },
+    "research": {
+      "description": "학술 논문 및 연구 자료 검색",
+      "color": "#1565C0"
+    },
+    "code-intelligence": {
+      "description": "코드 인텔리전스 (LSP 기반 정의 이동, 참조 찾기, 호버 문서)",
+      "color": "#00ACC1"
+    }
+  },
+  "commands": {
+    "blue-green-deployment": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\blue-green-deployment.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:45.973Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "branch-cleanup": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\branch-cleanup.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.006Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "ci-pipeline": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\ci-pipeline.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.038Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "ci-setup": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\ci-setup.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.072Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "clean": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\clean.md",
+      "description": "Fix all black, isort, flake8 and mypy issues in the entire codebase",
+      "discoveredAt": "2025-12-15T21:21:46.104Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "code-review": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\code-review.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.142Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "commit": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\commit.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.177Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "create-architecture-documentation": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\create-architecture-documentation.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.209Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "create-pr": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\create-pr.md",
+      "description": "Create a new branch, commit changes, and submit a pull request.",
+      "discoveredAt": "2025-12-15T21:21:46.242Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "create-prd": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\create-prd.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.279Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "debug-error": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\debug-error.md",
+      "description": "Systematically debug and fix errors",
+      "discoveredAt": "2025-12-15T21:21:46.311Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "dependency-audit": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\dependency-audit.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.345Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "e2e-setup": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\e2e-setup.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.382Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "explain-code": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\explain-code.md",
+      "description": "Analyze and explain code functionality",
+      "discoveredAt": "2025-12-15T21:21:46.412Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "fix-github-issue": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\fix-github-issue.md",
+      "description": "Please analyze and fix the GitHub issue: $ARGUMENTS.",
+      "discoveredAt": "2025-12-15T21:21:46.448Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "fix-issue": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\fix-issue.md",
+      "description": "Identify and resolve code issues",
+      "discoveredAt": "2025-12-15T21:21:46.481Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "generate-tests": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\generate-tests.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.517Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "init-project": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\init-project.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.550Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "migrate-to-typescript": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\migrate-to-typescript.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.584Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "migration-guide": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\migration-guide.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.621Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "milestone-tracker": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\milestone-tracker.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.657Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "optimize-api-performance": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\optimize-api-performance.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.691Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "optimize-bundle-size": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\optimize-bundle-size.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.728Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "optimize-database-performance": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\optimize-database-performance.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.765Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "performance-audit": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\performance-audit.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.797Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "pr-review": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\pr-review.md",
+      "description": "**PR Link/Number**: $ARGUMENTS",
+      "discoveredAt": "2025-12-15T21:21:46.830Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "prepare-release": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\prepare-release.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.862Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "refactor-code": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\refactor-code.md",
+      "description": "Intelligently refactor and improve code quality",
+      "discoveredAt": "2025-12-15T21:21:46.896Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "rollback-deploy": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\rollback-deploy.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.928Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "secrets-scanner": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\secrets-scanner.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:46.964Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "security-hardening": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\security-hardening.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.003Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "setup-development-environment": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\setup-development-environment.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.038Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "setup-linting": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\setup-linting.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.073Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "test-coverage": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\test-coverage.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.104Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "todo": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\todo.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.138Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "ultra-think": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\ultra-think.md",
+      "description": "Deep analysis and problem solving mode",
+      "discoveredAt": "2025-12-15T21:21:47.170Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "update-dependencies": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\update-dependencies.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.205Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "update-docs": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\update-docs.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.240Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "workflow-orchestrator": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\workflow-orchestrator.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.277Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    },
+    "write-tests": {
+      "path": "K:\\PortableApps\\Claude-Code\\.claude\\commands\\write-tests.md",
+      "description": "---",
+      "discoveredAt": "2025-12-15T21:21:47.313Z",
+      "autoDiscovered": true,
+      "source": "initial-scan"
+    }
+  }
+}

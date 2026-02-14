@@ -1,0 +1,125 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2026-01-20T02:40:54.450Z",
+  "saveNumber": 1,
+  "pid": 50536,
+  "sessionState": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-01-20T02:32:09.154Z",
+    "currentSession": {
+      "id": "session-1768876329321-v8dvqtid1",
+      "startTime": "2026-01-20T02:32:09.321Z",
+      "activeTask": null
+    },
+    "pendingFollowups": [],
+    "recentTasks": [],
+    "sessionHistory": [
+      {
+        "id": "session-1768811477328-zw8ooav6q",
+        "startTime": "2026-01-19T08:31:17.328Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768812571015-y97tzlpgl",
+        "startTime": "2026-01-19T08:49:31.015Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768812616138-8vzuwe6tk",
+        "startTime": "2026-01-19T08:50:16.138Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768812997637-nu6mr0fp2",
+        "startTime": "2026-01-19T08:56:37.637Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768813099769-pwgnk8d4w",
+        "startTime": "2026-01-19T08:58:19.769Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768813237175-ix9iyjm5s",
+        "startTime": "2026-01-19T09:00:37.175Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768813629412-603id7t39",
+        "startTime": "2026-01-19T09:07:09.412Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768813649808-lpo9e983f",
+        "startTime": "2026-01-19T09:07:29.808Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768813808438-we69athlz",
+        "startTime": "2026-01-19T09:10:08.438Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768814097575-6on182mf1",
+        "startTime": "2026-01-19T09:14:57.575Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768814288970-23k1p3m2b",
+        "startTime": "2026-01-19T09:18:08.970Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768814300487-u4j550mp7",
+        "startTime": "2026-01-19T09:18:20.487Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768814755701-1xnvpb1oy",
+        "startTime": "2026-01-19T09:25:55.701Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768814857737-vuobmh24c",
+        "startTime": "2026-01-19T09:27:37.737Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768874438046-0ewqaqu67",
+        "startTime": "2026-01-20T02:00:38.046Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768874751728-8omsdm9or",
+        "startTime": "2026-01-20T02:05:51.728Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768875220849-61lzbul73",
+        "startTime": "2026-01-20T02:13:40.849Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768875243457-2bfd0606k",
+        "startTime": "2026-01-20T02:14:03.457Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768875422447-s0z2unwna",
+        "startTime": "2026-01-20T02:17:02.447Z",
+        "restoredFollowups": 0
+      },
+      {
+        "id": "session-1768876329321-v8dvqtid1",
+        "startTime": "2026-01-20T02:32:09.321Z",
+        "restoredFollowups": 0
+      }
+    ]
+  },
+  "activePlan": null,
+  "environment": {
+    "cwd": "K:\\PortableApps\\Claude-Code",
+    "nodeVersion": "v20.19.6",
+    "platform": "win32"
+  }
+}

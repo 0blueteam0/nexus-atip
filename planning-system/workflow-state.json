@@ -1,0 +1,52 @@
+{
+  "sessionId": "session-1770162031210",
+  "phase": "idle",
+  "activePlans": [
+    {
+      "name": "breezy-strolling-turing",
+      "progress": 0,
+      "file": "breezy-strolling-turing.md"
+    },
+    {
+      "name": "compiled-crafting-whisper",
+      "progress": 0,
+      "file": "compiled-crafting-whisper.md"
+    },
+    {
+      "name": "concurrent-exploring-locket",
+      "progress": 0,
+      "file": "concurrent-exploring-locket.md"
+    },
+    {
+      "name": "dynamic-frolicking-wozniak",
+      "progress": 0,
+      "file": "dynamic-frolicking-wozniak.md"
+    },
+    {
+      "name": "floofy-sauteeing-alpaca",
+      "progress": 0,
+      "file": "floofy-sauteeing-alpaca.md"
+    },
+    {
+      "name": "lucky-splashing-thompson",
+      "progress": 0,
+      "file": "lucky-splashing-thompson.md"
+    },
+    {
+      "name": "wobbly-wandering-honey",
+      "progress": 0,
+      "file": "wobbly-wandering-honey.md"
+    }
+  ],
+  "currentPlan": "floofy-sauteeing-alpaca",
+  "protectionLocked": false,
+  "lastWorkflow": "session-start",
+  "history": [
+    {
+      "sessionId": "session-1770161772755",
+      "endTime": "2026-02-03T23:36:21.182Z",
+      "violations": 0,
+      "activePlans": 7
+    }
+  ]
+}

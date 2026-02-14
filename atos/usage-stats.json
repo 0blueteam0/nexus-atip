@@ -1,0 +1,192 @@
+{
+  "version": "1.0.0",
+  "initialized": "2025-12-15T00:00:00.000Z",
+  "lastUpdated": "2026-02-04T21:19:30.771562",
+  "globalStats": {
+    "totalToolCalls": 3,
+    "totalSessions": 3,
+    "totalRecommendations": 0,
+    "recommendationAcceptRate": 0,
+    "averageToolsPerSession": 1.0
+  },
+  "tools": {
+    "_template": {
+      "totalCalls": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "successRate": 0,
+      "averageResponseTime": 0,
+      "lastUsed": null,
+      "commonContexts": [],
+      "chainedWith": [],
+      "recommendedCount": 0,
+      "recommendedAcceptedCount": 0,
+      "inputExamples": []
+    },
+    "test_tool": {
+      "totalCalls": 3,
+      "successCount": 3,
+      "failureCount": 0,
+      "successRate": 100,
+      "averageResponseTime": 0,
+      "lastUsed": "2026-02-04T21:19:30.760590",
+      "commonContexts": [],
+      "chainedWith": [],
+      "recommendedCount": 0,
+      "recommendedAcceptedCount": 0,
+      "inputExamples": []
+    }
+  },
+  "patterns": {
+    "_description": "Intent + Entity 조합별 성공 패턴",
+    "intent:research + entity:url": {
+      "recommendedTools": [
+        "mcp__firecrawl__firecrawl_search",
+        "mcp__one-search__one_search"
+      ],
+      "successRate": 0,
+      "totalOccurrences": 0,
+      "lastOccurrence": null
+    },
+    "intent:file_operation + entity:file_path": {
+      "recommendedTools": [
+        "mcp__desktop-commander__write_file",
+        "mcp__desktop-commander__edit_block"
+      ],
+      "successRate": 0,
+      "totalOccurrences": 0,
+      "lastOccurrence": null
+    },
+    "intent:github_operation + entity:github_repo": {
+      "recommendedTools": [
+        "mcp__github__get_file_contents",
+        "mcp__github__search_code"
+      ],
+      "successRate": 0,
+      "totalOccurrences": 0,
+      "lastOccurrence": null
+    },
+    "intent:database + entity:sql": {
+      "recommendedTools": [
+        "mcp__sqlite-mcp__read_query",
+        "mcp__supabase__execute_sql"
+      ],
+      "successRate": 0,
+      "totalOccurrences": 0,
+      "lastOccurrence": null
+    },
+    "intent:visualization + entity:data": {
+      "recommendedTools": [
+        "mcp__antv-chart__generate_line_chart",
+        "mcp__antv-chart__generate_bar_chart"
+      ],
+      "successRate": 0,
+      "totalOccurrences": 0,
+      "lastOccurrence": null
+    }
+  },
+  "workflows": {
+    "research": {
+      "triggerCount": 0,
+      "completionRate": 0,
+      "averageSteps": 0,
+      "lastTriggered": null
+    },
+    "development": {
+      "triggerCount": 0,
+      "completionRate": 0,
+      "averageSteps": 0,
+      "lastTriggered": null
+    },
+    "news-archiving": {
+      "triggerCount": 0,
+      "completionRate": 0,
+      "averageSteps": 0,
+      "lastTriggered": null
+    }
+  },
+  "skills": {
+    "research-workflow": {
+      "activationCount": 0,
+      "successRate": 0,
+      "lastActivated": null
+    },
+    "code-analysis": {
+      "activationCount": 0,
+      "successRate": 0,
+      "lastActivated": null
+    },
+    "update-optimizer": {
+      "activationCount": 0,
+      "successRate": 0,
+      "lastActivated": null
+    },
+    "pdf-vision": {
+      "activationCount": 0,
+      "successRate": 0,
+      "lastActivated": null
+    }
+  },
+  "sessions": {
+    "history": [
+      {
+        "id": "session-1770207570748-facc1d",
+        "startTime": "2026-02-04T21:19:30.748491",
+        "endTime": "2026-02-04T21:19:30.771528",
+        "toolCount": 1,
+        "uniqueTools": [
+          "test_tool"
+        ]
+      },
+      {
+        "id": "session-1770206163934-e0f358",
+        "startTime": "2026-02-04T20:56:03.934504",
+        "endTime": "2026-02-04T20:56:03.960369",
+        "toolCount": 1,
+        "uniqueTools": [
+          "test_tool"
+        ]
+      },
+      {
+        "id": "session-1770205521042-adc4a4",
+        "startTime": "2026-02-04T20:45:21.042295",
+        "endTime": "2026-02-04T20:45:21.058657",
+        "toolCount": 1,
+        "uniqueTools": [
+          "test_tool"
+        ]
+      }
+    ],
+    "maxHistorySize": 100
+  },
+  "chainingPatterns": {
+    "_description": "도구 체이닝 성공 패턴",
+    "patterns": []
+  },
+  "learningQueue": {
+    "_description": "피드백 루프에서 처리할 학습 대기열",
+    "pending": []
+  },
+  "autoSaveLog": [
+    {
+      "timestamp": "2025-12-19T03:51:31.255Z",
+      "triggerKeywords": [
+        "결정",
+        "완료",
+        "중요"
+      ],
+      "contentPreview": "중요한 결정 완료",
+      "source": "important-detection",
+      "storage": "kiro-memory"
+    },
+    {
+      "timestamp": "2025-12-19T03:51:50.388Z",
+      "triggerKeywords": [
+        "완료"
+      ],
+      "contentPreview": "데이터베이스 쿼리 실행 완료",
+      "source": "important-detection",
+      "storage": "kiro-memory"
+    }
+  ]
+}

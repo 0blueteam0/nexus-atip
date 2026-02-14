@@ -82,6 +82,9 @@ coverage/
 yarn.lock
 pnpm-lock.yaml
 
+# Rust/Cargo registry
+.cargo/
+
 # Claude specific
 .claude-history/
 .claude-cache/
