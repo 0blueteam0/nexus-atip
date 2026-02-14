@@ -1,4 +1,4 @@
-# 📁 K:\PortableApps\Claude-Code 폴더 분석 보고서
+# 📁 K:\PortableApps\genai 폴더 분석 보고서
 
 ## 🔴 즉시 삭제 필요 (불필요/중복)
 

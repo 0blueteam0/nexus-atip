@@ -10,12 +10,12 @@
       "updatedAt": "2025-08-27T02:35:12.501Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "path": "K:/PortableApps/genai/.claude.json",
           "type": "TO_MODIFY",
           "description": "Claude 설정"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/shell-snapshots/",
+          "path": "K:/PortableApps/genai/shell-snapshots/",
           "type": "TO_MODIFY",
           "description": "스냅샷 디렉토리"
         }
@@ -41,12 +41,12 @@
       "updatedAt": "2025-08-27T02:39:12.891Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/bash.bat",
+          "path": "K:/PortableApps/genai/bash.bat",
           "type": "TO_MODIFY",
           "description": "Bash 래퍼"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/.bashrc",
+          "path": "K:/PortableApps/genai/.bashrc",
           "type": "TO_MODIFY",
           "description": "Bash 설정"
         }

@@ -131,7 +131,7 @@ set "PATH=%TOOLS_ROOT%\nodejs;%TOOLS_ROOT%\git\bin;%TOOLS_ROOT%\python-portable;
 
 ---
 
-## Layer 3: K:/PortableApps/Claude-Code/ 루트 파일 정리
+## Layer 3: K:/PortableApps/genai/ 루트 파일 정리
 
 ### 현재 상태: 72개 파일 분산
 
@@ -296,7 +296,7 @@ K:/.system/
 ## 이동 금지 목록 (CRITICAL)
 
 ```
-[X] K:/PortableApps/Claude-Code/         # 512개 파일 참조
+[X] K:/PortableApps/genai/         # 512개 파일 참조
 [X] K:/PortableApps/tools/nodejs/        # 환경 변수 고정
 [X] K:/PortableApps/tools/python/        # MCP 의존성
 [X] K:/PortableApps/tools/git/           # PATH 참조

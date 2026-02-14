@@ -1,0 +1,30 @@
+{
+  "sessionId": "session-1768889584566",
+  "phase": "idle",
+  "activePlans": [
+    {
+      "name": "concurrent-exploring-locket",
+      "progress": 0,
+      "file": "concurrent-exploring-locket.md"
+    },
+    {
+      "name": "dynamic-frolicking-wozniak",
+      "progress": 0,
+      "file": "dynamic-frolicking-wozniak.md"
+    },
+    {
+      "name": "floofy-sauteeing-alpaca",
+      "progress": 0,
+      "file": "floofy-sauteeing-alpaca.md"
+    },
+    {
+      "name": "lucky-splashing-thompson",
+      "progress": 0,
+      "file": "lucky-splashing-thompson.md"
+    }
+  ],
+  "currentPlan": "floofy-sauteeing-alpaca",
+  "protectionLocked": false,
+  "lastWorkflow": "session-start",
+  "history": []
+}

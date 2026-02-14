@@ -1,0 +1,19 @@
+{
+  "category": "database",
+  "description": "데이터베이스 작업",
+  "priority": "medium",
+  "servers": {
+    "sqlite-mcp": {
+      "priority": "medium",
+      "description": "SQLite 데이터베이스",
+      "tools": ["read_query", "write_query", "create_table", "list_tables", "describe_table"],
+      "triggerKeywords": ["DB", "SQL", "데이터베이스", "쿼리", "SQLite"]
+    },
+    "supabase": {
+      "priority": "medium",
+      "description": "Supabase 백엔드 서비스",
+      "tools": ["apply_migration", "execute_sql", "get_logs"],
+      "triggerKeywords": ["Supabase", "PostgreSQL", "백엔드"]
+    }
+  }
+}

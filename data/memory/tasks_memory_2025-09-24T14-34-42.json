@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "id": "927afd4f-d3e4-4000-8bac-6a7f59449fc2",
+      "name": "핵심 에이전트 10개 선별 및 설치",
+      "description": "가장 유용한 에이전트 10개를 선별하여 설치",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-03T09:31:57.114Z",
+      "updatedAt": "2025-09-12T07:23:46.401Z",
+      "implementationGuide": "개발, MCP, 연구 관련 우선 선택",
+      "verificationCriteria": "npx 명령어로 설치 완료",
+      "analysisResult": "Claude Code Templates에서 30개 컴포넌트를 선별하여 단계적으로 설치. 성능과 실용성을 고려한 최적 구성.",
+      "summary": "핵심 에이전트 10개 성공적으로 설치 완료: fullstack-developer, debugger, code-reviewer, prompt-engineer, database-architect, technical-writer, security-auditor, python-pro, typescript-pro, nextjs-architecture-expert",
+      "completedAt": "2025-09-12T07:23:46.381Z"
+    }
+  ]
+}

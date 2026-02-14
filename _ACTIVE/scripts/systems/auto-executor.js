@@ -9,7 +9,7 @@ const { exec, spawn } = require('child_process');
 
 class AutoExecutor {
     constructor() {
-        this.baseDir = 'K:/PortableApps/Claude-Code';
+        this.baseDir = 'K:/PortableApps/genai';
         this.isRunning = true;
         this.tasks = new Map();
         

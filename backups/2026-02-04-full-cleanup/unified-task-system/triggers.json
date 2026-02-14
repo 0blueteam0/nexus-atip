@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "triggers": [
+    {
+      "id": "followup",
+      "pattern": "후속조치|follow-up|followup|이어서",
+      "action": "restorePendingTasks",
+      "priority": "immediate",
+      "description": "세션 재시작 후 저장된 후속 작업 복원"
+    },
+    {
+      "id": "status",
+      "pattern": "진행상황|status|현재 작업|what am i working on",
+      "action": "showCurrentTasks",
+      "priority": "immediate",
+      "description": "현재 진행 중인 작업 목록 표시"
+    },
+    {
+      "id": "complete",
+      "pattern": "작업 완료|done|완료|finished",
+      "action": "markTaskComplete",
+      "priority": "high",
+      "description": "현재 작업을 완료로 표시"
+    },
+    {
+      "id": "save",
+      "pattern": "저장해|save|기억해|remember",
+      "action": "persistCurrentState",
+      "priority": "high",
+      "description": "현재 상태를 즉시 저장"
+    }
+  ]
+}

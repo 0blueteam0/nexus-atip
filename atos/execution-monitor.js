@@ -2,7 +2,7 @@
  * ATOS Execution Monitor
  * 도구 실행 추적 및 통계 업데이트
  *
- * 위치: K:/PortableApps/Claude-Code/atos/execution-monitor.js
+ * 위치: K:/PortableApps/genai/atos/execution-monitor.js
  *
  * 기능:
  * - 도구 호출 전/후 추적

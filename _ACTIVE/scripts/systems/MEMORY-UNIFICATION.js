@@ -11,15 +11,15 @@ class UnifiedMemorySystem {
   constructor() {
     // 5개 분산 메모리 시스템
     this.memorySystems = {
-      shrimp: 'K:/PortableApps/Claude-Code/ShrimpData/Claude-Code/memory/',
-      brain: 'K:/PortableApps/Claude-Code/brain/',
-      archive: 'K:/PortableApps/Claude-Code/memory-archive/',
-      claude: 'K:/PortableApps/Claude-Code/.claude/memory/',
-      memoryData: 'K:/PortableApps/Claude-Code/memory-data/'
+      shrimp: 'K:/PortableApps/genai/ShrimpData/Claude-Code/memory/',
+      brain: 'K:/PortableApps/genai/brain/',
+      archive: 'K:/PortableApps/genai/memory-archive/',
+      claude: 'K:/PortableApps/genai/.claude/memory/',
+      memoryData: 'K:/PortableApps/genai/memory-data/'
     };
     
     // 통합 대상
-    this.unifiedPath = 'K:/PortableApps/Claude-Code/UNIFIED-MEMORY/';
+    this.unifiedPath = 'K:/PortableApps/genai/UNIFIED-MEMORY/';
     this.db = null;
   }
 

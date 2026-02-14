@@ -9,9 +9,9 @@ const path = require('path');
 
 class ClaudeMdEnhancer {
   constructor() {
-    this.claudeMdPath = 'K:/PortableApps/Claude-Code/CLAUDE.md';
-    this.settingsPath = 'K:/PortableApps/Claude-Code/.claude/settings.json';
-    this.hooksPath = 'K:/PortableApps/Claude-Code/.claude-hooks.json';
+    this.claudeMdPath = 'K:/PortableApps/genai/CLAUDE.md';
+    this.settingsPath = 'K:/PortableApps/genai/.claude/settings.json';
+    this.hooksPath = 'K:/PortableApps/genai/.claude-hooks.json';
   }
 
   // 1. CLAUDE.md에 모듈 임포트 추가
@@ -46,7 +46,7 @@ class ClaudeMdEnhancer {
     }
     
     // systemPromptFile 설정
-    settings.systemPromptFile = 'K:/PortableApps/Claude-Code/CLAUDE.md';
+    settings.systemPromptFile = 'K:/PortableApps/genai/CLAUDE.md';
     
     // customInstructions 추가
     if (!settings.customInstructions) {
@@ -79,14 +79,14 @@ class ClaudeMdEnhancer {
       const cmd = hooks.hooks['session-start'].command;
       if (!cmd.includes('load-claude-md')) {
         hooks.hooks['session-start'].command = 
-          `node K:/PortableApps/Claude-Code/systems/load-claude-md.js && ${cmd}`;
+          `node K:/PortableApps/genai/systems/load-claude-md.js && ${cmd}`;
       }
     }
     
     // UserPromptSubmit hook 추가
     hooks.hooks['user-prompt-submit'] = {
       enabled: true,
-      command: 'node K:/PortableApps/Claude-Code/systems/inject-context.js',
+      command: 'node K:/PortableApps/genai/systems/inject-context.js',
       description: 'CLAUDE.md 컨텍스트 자동 주입'
     };
     
@@ -100,7 +100,7 @@ class ClaudeMdEnhancer {
 // CLAUDE.md 자동 로드 스크립트
 const fs = require('fs');
 
-const claudeMd = fs.readFileSync('K:/PortableApps/Claude-Code/CLAUDE.md', 'utf8');
+const claudeMd = fs.readFileSync('K:/PortableApps/genai/CLAUDE.md', 'utf8');
 const lines = claudeMd.split('\\n').slice(0, 50); // 핵심 50줄만
 
 console.log('[CLAUDE.md 로드됨]');
@@ -112,7 +112,7 @@ console.log('- Shrimp Task Manager 사용');
 `;
 
     fs.writeFileSync(
-      'K:/PortableApps/Claude-Code/systems/load-claude-md.js',
+      'K:/PortableApps/genai/systems/load-claude-md.js',
       loaderScript
     );
     console.log('[+] 컨텍스트 로더 생성 완료');
@@ -138,7 +138,7 @@ process.stdout.write(core);
 `;
 
     fs.writeFileSync(
-      'K:/PortableApps/Claude-Code/systems/inject-context.js', 
+      'K:/PortableApps/genai/systems/inject-context.js', 
       injectorScript
     );
     console.log('[+] 컨텍스트 주입기 생성 완료');

@@ -3,3 +3,5 @@
 [user]
 	email = fofzoy@gmail.com
 	name = 0blueteam0
+[core]
+	quotepath = false

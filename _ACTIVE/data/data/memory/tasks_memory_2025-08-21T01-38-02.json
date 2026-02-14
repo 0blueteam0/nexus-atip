@@ -10,7 +10,7 @@
       "updatedAt": "2025-08-21T01:32:34.808Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/node_modules/@anthropic-ai/claude-code",
+          "path": "K:/PortableApps/genai/node_modules/@anthropic-ai/claude-code",
           "type": "REFERENCE",
           "description": "Claude Code 구현 디렉토리"
         }

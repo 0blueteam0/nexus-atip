@@ -9,7 +9,7 @@ const path = require('path');
 
 class ShrimpFormatter {
     constructor() {
-        this.taskFile = 'K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json';
+        this.taskFile = 'K:/PortableApps/genai/ShrimpData/current-tasks.json';
         this.icons = {
             pending: '⏳',
             in_progress: '🔄',

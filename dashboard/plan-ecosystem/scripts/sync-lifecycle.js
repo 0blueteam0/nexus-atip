@@ -20,7 +20,7 @@ try {
     process.exit(1);
 }
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const PLANS_DIR = path.join(BASE_PATH, 'plans');
 
 // CLI 인자

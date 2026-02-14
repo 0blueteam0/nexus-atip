@@ -4,7 +4,7 @@
 
 ### 1️⃣ 원클릭 설치
 ```batch
-# K:\PortableApps\Claude-Code\install-claude-ecosystem.bat 실행
+# K:\PortableApps\genai\install-claude-ecosystem.bat 실행
 # 또는 수동으로 다음 명령어들 실행:
 ```
 
@@ -15,7 +15,7 @@
 2. "Code" → "Download ZIP" 클릭
 3. 압축해제 후 `agents/` 폴더의 모든 `.json` 파일을 다음 위치로 복사:
    ```
-   K:\PortableApps\Claude-Code\.claude\agents\
+   K:\PortableApps\genai\.claude\agents\
    ```
 
 #### BMAD 방법론 다운로드
@@ -23,7 +23,7 @@
 2. "Code" → "Download ZIP" 클릭  
 3. 압축해제 후 전체 폴더를 다음 위치로 복사:
    ```
-   K:\PortableApps\Claude-Code\frameworks\bmad\
+   K:\PortableApps\genai\frameworks\bmad\
    ```
 
 ### 3️⃣ 즉시 사용 가능한 에이전트들
@@ -72,14 +72,14 @@
 ```bash
 # Python 3.8+ 설치 후
 pip install SuperClaude
-python3 SuperClaude install --dir K:\PortableApps\Claude-Code\.claude
+python3 SuperClaude install --dir K:\PortableApps\genai\.claude
 ```
 
 ### Phase 3: Claude-Flow 통합
 ```bash  
 # Node.js 18+ 설치 후
 npm install -g @anthropic-ai/claude-code
-npx claude-flow@alpha init --force --dir K:\PortableApps\Claude-Code
+npx claude-flow@alpha init --force --dir K:\PortableApps\genai
 ```
 
 ## 🎯 Self-Assessment 결과

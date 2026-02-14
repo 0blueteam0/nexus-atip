@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const ALERTS_FILE = path.join(BASE_PATH, 'planning-log/alerts/alerts.json');
 const SETTINGS_FILE = path.join(BASE_PATH, 'planning-log/alerts/settings.json');
 

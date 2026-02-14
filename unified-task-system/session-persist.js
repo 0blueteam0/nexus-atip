@@ -2,7 +2,7 @@
  * Session Persist Script
  * 세션 종료 시 자동 실행되어 후속조치 및 상태 저장
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/session-persist.js
+ * 위치: K:/PortableApps/genai/unified-task-system/session-persist.js
  * 호출: .claude-hooks.json의 session-end hook
  *
  * 사용법:
@@ -35,7 +35,7 @@ try {
   fileOps = null;
 }
 
-const BASE_PATH = 'K:/PortableApps/Claude-Code/unified-task-system';
+const BASE_PATH = 'K:/PortableApps/genai/unified-task-system';
 const SESSION_STATE_FILE = path.join(BASE_PATH, 'session-state.json');
 const TASKS_FILE = path.join(BASE_PATH, 'tasks.json');
 

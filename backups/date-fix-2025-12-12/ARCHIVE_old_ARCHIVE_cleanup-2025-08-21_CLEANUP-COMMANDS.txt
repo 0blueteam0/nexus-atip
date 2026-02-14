@@ -1,0 +1,154 @@
+REM ===================================
+REM 전체 정리 명령 - 순서대로 실행하세요
+REM ===================================
+
+REM 1. 아카이브 폴더 생성
+mkdir K:\PortableApps\genai\ARCHIVE\old-bat-files
+mkdir K:\PortableApps\genai\ARCHIVE\old-docs
+mkdir K:\PortableApps\genai\ARCHIVE\old-configs
+mkdir K:\PortableApps\genai\ARCHIVE\old-directories
+
+REM ===================================
+REM 2. 배치 파일 정리 (31개)
+REM ===================================
+move claude-fast.bat ARCHIVE\old-bat-files\
+move claude-original.bat ARCHIVE\old-bat-files\
+move claude-fixed.bat ARCHIVE\old-bat-files\
+move claude-english.bat ARCHIVE\old-bat-files\
+move claude-final.bat ARCHIVE\old-bat-files\
+move claude-work.bat ARCHIVE\old-bat-files\
+move claude-global-tools.bat ARCHIVE\old-bat-files\
+move claude-k-tools.bat ARCHIVE\old-bat-files\
+move pre-flight-check-utf8.bat ARCHIVE\old-bat-files\
+move pre-flight-check-v2.bat ARCHIVE\old-bat-files\
+move PARALLEL-MCP-CONNECT.bat ARCHIVE\old-bat-files\
+move CHECK-ALL-MCP.bat ARCHIVE\old-bat-files\
+move FINAL-MCP-VERIFY.bat ARCHIVE\old-bat-files\
+move build-official-mcp.bat ARCHIVE\old-bat-files\
+move UPDATE-CLAUDE-CONFIG.bat ARCHIVE\old-bat-files\
+move MIGRATE-TO-GLOBAL-TOOLS.bat ARCHIVE\old-bat-files\
+move MOVE-TO-K-TOOLS.bat ARCHIVE\old-bat-files\
+move CREATE-SYMLINKS-FIRST.bat ARCHIVE\old-bat-files\
+move STEP2-PHYSICAL-MOVE.bat ARCHIVE\old-bat-files\
+move RUN-SYMLINK-NOW.bat ARCHIVE\old-bat-files\
+move EXECUTE-NOW.bat ARCHIVE\old-bat-files\
+move EXECUTE-TOOLS-INTEGRATION.bat ARCHIVE\old-bat-files\
+move SCAN-K-DRIVE.bat ARCHIVE\old-bat-files\
+move K-DRIVE-DEEP-SCAN.bat ARCHIVE\old-bat-files\
+move CLEANUP-REDUNDANT-FILES.bat ARCHIVE\old-bat-files\
+move MOVE-BAT-FILES.bat ARCHIVE\old-bat-files\
+move archive-cleanup.bat ARCHIVE\old-bat-files\
+move move-to-external-archive.bat ARCHIVE\old-bat-files\
+move SAFE-BACKUP.bat ARCHIVE\old-bat-files\
+move FINAL-FIX.bat ARCHIVE\old-bat-files\
+
+REM ===================================
+REM 3. MD 파일 정리 (35개)
+REM ===================================
+move MCP-COMPARISON-2025-01-16.md ARCHIVE\old-docs\
+move MCP-PRIORITY-GUIDE.md ARCHIVE\old-docs\
+move MCP-ECOSYSTEM-COMPLETE.md ARCHIVE\old-docs\
+move MCP-INSTALLATION-ISSUES-2025-01-17.md ARCHIVE\old-docs\
+move MCP-API-KEYS.md ARCHIVE\old-docs\
+move MCP-INVENTORY-ULTRATHINK.md ARCHIVE\old-docs\
+move API-KEY-VALIDATION-REPORT.md ARCHIVE\old-docs\
+move MCP-INSTALLATION-STATUS.md ARCHIVE\old-docs\
+move MCP-CONNECTION-TEST-RESULTS.md ARCHIVE\old-docs\
+move MCP-FINAL-STATUS-REPORT.md ARCHIVE\old-docs\
+move MCP-COMPLETE-GUIDE.md ARCHIVE\old-docs\
+move MCP-INSTALLATION-GUIDE.md ARCHIVE\old-docs\
+move MCP-FINAL-STATUS-2025-01-19.md ARCHIVE\old-docs\
+move MCP-CONNECTION-STATUS-2025-01-19.md ARCHIVE\old-docs\
+move MCP-STATUS-REPORT.md ARCHIVE\old-docs\
+move COMPLETE-MASTER-PLAN.md ARCHIVE\old-docs\
+move MASTER-PLAN-BRAINSTORM.md ARCHIVE\old-docs\
+move MASTER-PLAN-REVISED-SCALE.md ARCHIVE\old-docs\
+move ULTIMATE-MASTER-PLAN.md ARCHIVE\old-docs\
+move PHASE1-COMPLETE.md ARCHIVE\old-docs\
+move CRITICAL-ISSUES-2025-01-16.md ARCHIVE\old-docs\
+move CONVERSATION-CONTEXT-2025-01-16.md ARCHIVE\old-docs\
+move PROJECT-AUDIT-2025-01-16.md ARCHIVE\old-docs\
+move COMPLETE-LEARNING-DOCUMENTATION-2025-01-16.md ARCHIVE\old-docs\
+move BASH-ERROR-DIAGNOSTIC.md ARCHIVE\old-docs\
+move SSD-ENVIRONMENT-REPORT-2025-01-20.md ARCHIVE\old-docs\
+move K-TOOLS-INTEGRATION-PLAN.md ARCHIVE\old-docs\
+move K-DRIVE-DEEP-ANALYSIS.md ARCHIVE\old-docs\
+move SYSTEM-HEALTH-REPORT-2025-01-20.md ARCHIVE\old-docs\
+move ORCHESTRATION-HIERARCHY.md ARCHIVE\old-docs\
+move orchestration-flow.md ARCHIVE\old-docs\
+move ZEN-COMPLETE-METHODOLOGY.md ARCHIVE\old-docs\
+move HYBRID-COMPLETE-FLOW.md ARCHIVE\old-docs\
+move CLAUDE-MINIMAL.md ARCHIVE\old-docs\
+move INDEX.md ARCHIVE\old-docs\
+
+REM ===================================
+REM 4. JSON 파일 정리 (8개)
+REM ===================================
+move mcp-config-template.json ARCHIVE\old-configs\
+move MCP-CONFIG-ADDITION.json ARCHIVE\old-configs\
+move fix-filesystem-access.json ARCHIVE\old-configs\
+move configure-mcp-phase1.json ARCHIVE\old-configs\
+move claude-config-final.json ARCHIVE\old-configs\
+move claude-mcp-complete.json ARCHIVE\old-configs\
+move mcp-config-18.json ARCHIVE\old-configs\
+move mcp-config-clean.json ARCHIVE\old-configs\
+move mcp-config-optimized.json ARCHIVE\old-configs\
+move zen-orchestration-config.json ARCHIVE\old-configs\
+
+REM ===================================
+REM 5. 임시 디렉토리 삭제
+REM ===================================
+rmdir /s /q temp
+rmdir /s /q tmp
+rmdir /s /q shell-snapshots
+rmdir /s /q statsig
+rmdir /s /q AppData
+
+REM ===================================
+REM 6. 불필요한 디렉토리 이동
+REM ===================================
+move projects ARCHIVE\old-directories\
+move todos ARCHIVE\old-directories\
+move ClaudeMemory ARCHIVE\old-directories\
+move threat-knowledge-graph ARCHIVE\old-directories\
+move frameworks ARCHIVE\old-directories\
+move K-TOOLS-TEMP ARCHIVE\old-directories\
+move backups ARCHIVE\old-directories\
+move brain ARCHIVE\old-directories\
+move plans ARCHIVE\old-directories\
+move tasks ARCHIVE\old-directories\
+move tools-ready ARCHIVE\old-directories\
+move mcp-tools ARCHIVE\old-directories\
+move memory-archive ARCHIVE\old-directories\
+move data ARCHIVE\old-directories\
+move logs ARCHIVE\old-directories\
+
+REM ===================================
+REM 7. 기타 불필요한 파일 정리
+REM ===================================
+del AUTO-EXECUTE.ps1
+del K-DRIVE-SMART-SCAN.ps1
+del RUN-INTEGRATION.ps1
+del nul
+del "[K-Drive"
+del "claude.bat.backup-encoding-issue"
+del "claude-fixed.bat.de289cfd796a5c0a69ab31218eb0f00a.tmp"
+del view-orchestration.html
+del zen-methodology-viewer.html
+
+REM ===================================
+echo 정리 완료!
+echo.
+echo 유지된 파일:
+echo - claude.bat (메인 실행 파일)
+echo - CLAUDE.md (핵심 지침)
+echo - package.json, package-lock.json
+echo - 필수 시스템 디렉토리들
+echo.
+echo 정리된 파일:
+echo - 배치 파일 31개
+echo - MD 문서 35개
+echo - JSON 설정 8개
+echo - 디렉토리 20개+
+echo - 임시 파일 200개+
+pause

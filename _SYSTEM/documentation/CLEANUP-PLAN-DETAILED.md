@@ -133,7 +133,7 @@ move trace-*.js ARCHIVE\temp-scripts\
 
 ### Step 3: 최종 구조
 ```
-K:/PortableApps/Claude-Code/
+K:/PortableApps/genai/
 ├── claude.bat              [ESSENTIAL]
 ├── CLAUDE.md               [ESSENTIAL]
 ├── package.json            [ESSENTIAL]

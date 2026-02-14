@@ -55,7 +55,7 @@ unified-task-system/session-restore.js  # 세션 복원
 ### 0.1 폴더 구조 생성
 ```
 [ ] 0.1.1 planning-system/ 생성
-    mkdir -p K:/PortableApps/Claude-Code/planning-system
+    mkdir -p K:/PortableApps/genai/planning-system
 
     planning-system/
     ├── index.js              # 통합 CLI (node planning-system init)
@@ -69,9 +69,9 @@ unified-task-system/session-restore.js  # 세션 복원
     └── template-engine.js    # 플랜 템플릿 시스템 (NEW)
 
 [ ] 0.1.2 planning-log/ 생성
-    mkdir -p K:/PortableApps/Claude-Code/planning-log/daily
-    mkdir -p K:/PortableApps/Claude-Code/planning-log/milestones
-    mkdir -p K:/PortableApps/Claude-Code/planning-log/metrics
+    mkdir -p K:/PortableApps/genai/planning-log/daily
+    mkdir -p K:/PortableApps/genai/planning-log/milestones
+    mkdir -p K:/PortableApps/genai/planning-log/metrics
 
     planning-log/
     ├── daily/
@@ -470,7 +470,7 @@ git commit -m "[PLAN] Phase 2 완료: 통합 (Consolidation)"
 ### 3.1 SYSTEM-INVENTORY.md 생성
 ```
 [ ] 3.1.1 SYSTEM-INVENTORY.md 작성
-    위치: K:/PortableApps/Claude-Code/SYSTEM-INVENTORY.md
+    위치: K:/PortableApps/genai/SYSTEM-INVENTORY.md
 
 내용:
 # System Inventory v1.0.0

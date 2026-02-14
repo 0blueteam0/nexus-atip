@@ -2,7 +2,7 @@
 /**
  * Unified Event Bus
  * 
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/event-bus.js
+ * 위치: K:/PortableApps/genai/unified-task-system/event-bus.js
  * 
  * 목적:
  * - 모든 시스템 간 이벤트 기반 통신

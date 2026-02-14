@@ -10,8 +10,8 @@ const path = require('path');
 
 class SafeJsonBackup {
     constructor() {
-        this.configPath = 'K:\\PortableApps\\Claude-Code\\.claude.json';
-        this.backupDir = 'K:\\PortableApps\\Claude-Code\\ARCHIVE\\json-backups';
+        this.configPath = 'K:\\PortableApps\\genai\\.claude.json';
+        this.backupDir = 'K:\\PortableApps\\genai\\ARCHIVE\\json-backups';
         this.maxBackups = 10;
         
         if (!fs.existsSync(this.backupDir)) {

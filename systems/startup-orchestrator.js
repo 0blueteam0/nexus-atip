@@ -18,7 +18,7 @@ const path = require('path');
 
 // 설정
 const CONFIG = {
-    statusFile: 'K:/PortableApps/Claude-Code/data/startup-status.json',
+    statusFile: 'K:/PortableApps/genai/data/startup-status.json',
     dockerDesktop: 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe',
     timeoutSec: 90,  // Docker 대기 시간 (60 → 90초)
     checkInterval: 2,
@@ -27,7 +27,7 @@ const CONFIG = {
     aiStackMonitor: {
         name: 'AI Stack Monitor',
         port: 13579,
-        path: 'K:/PortableApps/Claude-Code/dashboard',
+        path: 'K:/PortableApps/genai/dashboard',
         script: 'server.js',
         requiresDocker: false
     },
@@ -36,8 +36,8 @@ const CONFIG = {
     planEcosystem: {
         name: 'Plan Ecosystem',
         port: 7847,
-        path: 'K:/PortableApps/Claude-Code/dashboard/plan-ecosystem',
-        composePath: 'K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/docker-compose.yml',
+        path: 'K:/PortableApps/genai/dashboard/plan-ecosystem',
+        composePath: 'K:/PortableApps/genai/dashboard/plan-ecosystem/docker-compose.yml',
         requiresDocker: true
     },
 
@@ -45,15 +45,15 @@ const CONFIG = {
     containers: [
         {
             name: 'firecrawl-self-hosted',
-            path: 'K:/PortableApps/Claude-Code/mcp-servers/firecrawl-self-hosted'
+            path: 'K:/PortableApps/genai/mcp-servers/firecrawl-self-hosted'
         },
         {
             name: 'searxng-crawl4ai-mcp',
-            path: 'K:/PortableApps/Claude-Code/mcp-servers/searxng-crawl4ai-mcp'
+            path: 'K:/PortableApps/genai/mcp-servers/searxng-crawl4ai-mcp'
         },
         {
             name: 'plan-ecosystem',
-            path: 'K:/PortableApps/Claude-Code/dashboard/plan-ecosystem'
+            path: 'K:/PortableApps/genai/dashboard/plan-ecosystem'
         }
     ],
 

@@ -67,7 +67,7 @@ const filters = {
     
     // 경로 단축
     shortenPaths(line) {
-        // K:/PortableApps/Claude-Code/... -> K:/.../
+        // K:/PortableApps/genai/... -> K:/.../
         const longPath = /K:[\/\\]PortableApps[\/\\]Claude-Code[\/\\]/g;
         if (line.match(longPath)) {
             return line.replace(longPath, 'K:/.../');

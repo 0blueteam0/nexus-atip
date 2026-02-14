@@ -9,9 +9,9 @@ const path = require('path');
 
 class ClaudeMdHook {
   constructor() {
-    this.hooksPath = 'K:/PortableApps/Claude-Code/.claude-hooks.json';
-    this.claudeMdPath = 'K:/PortableApps/Claude-Code/CLAUDE.md';
-    this.contextCachePath = 'K:/PortableApps/Claude-Code/.claude-context-cache.json';
+    this.hooksPath = 'K:/PortableApps/genai/.claude-hooks.json';
+    this.claudeMdPath = 'K:/PortableApps/genai/CLAUDE.md';
+    this.contextCachePath = 'K:/PortableApps/genai/.claude-context-cache.json';
   }
 
   // Hook 설정 업데이트
@@ -23,7 +23,7 @@ class ClaudeMdHook {
       if (!hooks.hooks['user-prompt-submit']) {
         hooks.hooks['user-prompt-submit'] = {
           enabled: true,
-          command: 'node K:/PortableApps/Claude-Code/systems/inject-claude-md.js',
+          command: 'node K:/PortableApps/genai/systems/inject-claude-md.js',
           description: '매 프롬프트마다 CLAUDE.md 컨텍스트 자동 주입',
           priority: 1
         };

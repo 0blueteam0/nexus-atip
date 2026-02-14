@@ -1,7 +1,7 @@
 /**
  * MCP Bridge Collector
  *
- * 위치: K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/collectors/mcp-bridge.js
+ * 위치: K:/PortableApps/genai/dashboard/plan-ecosystem/collectors/mcp-bridge.js
  *
  * 목적:
  * - vibekanban SQLite 데이터 수집
@@ -16,16 +16,16 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 
 // Database paths - Docker 환경에서는 /data 기반으로 마운트됨
 const VIBEKANBAN_DB = process.env.BASE_PATH
   ? path.join(BASE_PATH, 'mcp-servers/vibekanban/instance/kanban.sqlite')
-  : 'K:/PortableApps/Claude-Code/mcp-servers/vibekanban/instance/kanban.sqlite';
+  : 'K:/PortableApps/genai/mcp-servers/vibekanban/instance/kanban.sqlite';
 
 const KIRO_MEMORY_DB = process.env.BASE_PATH
   ? path.join(BASE_PATH, 'data/kiro-memory/mcp_memory.db')
-  : 'K:/PortableApps/Claude-Code/data/kiro-memory/mcp_memory.db';
+  : 'K:/PortableApps/genai/data/kiro-memory/mcp_memory.db';
 
 /**
  * 안전하게 SQLite 데이터베이스 열기

@@ -9,8 +9,8 @@ const path = require('path');
 
 class ClaudeHistoryManager {
     constructor() {
-        this.configPath = 'K:/PortableApps/Claude-Code/.claude.json';
-        this.backupDir = 'K:/PortableApps/Claude-Code/_ARCHIVE/claude-history';
+        this.configPath = 'K:/PortableApps/genai/.claude.json';
+        this.backupDir = 'K:/PortableApps/genai/_ARCHIVE/claude-history';
         this.maxHistoryItems = 10; // Keep only 10 most recent
         this.historyArchiveFile = null;
     }

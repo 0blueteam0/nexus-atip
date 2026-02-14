@@ -1576,7 +1576,7 @@ const fs = require('fs');
 const path = require('path');
 const { loadLifecycle, saveLifecycle, extractGoalsFromPlan, startPhase } = require('../collectors/lifecycle-collector');
 
-const PLANS_DIR = 'K:/PortableApps/Claude-Code/plans';
+const PLANS_DIR = 'K:/PortableApps/genai/plans';
 
 function migrateAllPlans() {
     const planFiles = fs.readdirSync(PLANS_DIR)
@@ -1727,7 +1727,7 @@ planModeEnter(planName = null) {
 {
     "lifecycle-sync": {
         "enabled": true,
-        "command": "node K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
+        "command": "node K:/PortableApps/genai/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
         "triggers": ["plan-complete", "phase-change"],
         "priority": "high",
         "description": "플랜 완료/Phase 변경 시 Lifecycle 자동 동기화"
@@ -1981,7 +1981,7 @@ if (promptData.lifecycle?.planId) {
 {
     "prompt-record": {
         "enabled": true,
-        "command": "node K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/scripts/record-prompt.js",
+        "command": "node K:/PortableApps/genai/dashboard/plan-ecosystem/scripts/record-prompt.js",
         "triggers": ["after-response"],
         "priority": "low",
         "description": "사용자 프롬프트 및 응답 기록 (Lifecycle 연동)"
@@ -2436,7 +2436,7 @@ module.exports = { sendToDashboard };
         "hooks": [
           {
             "type": "command",
-            "command": "node K:/PortableApps/Claude-Code/systems/dashboard-hook-client.js prompt",
+            "command": "node K:/PortableApps/genai/systems/dashboard-hook-client.js prompt",
             "async": true,
             "timeout": 5
           }
@@ -2448,7 +2448,7 @@ module.exports = { sendToDashboard };
         "hooks": [
           {
             "type": "command",
-            "command": "node K:/PortableApps/Claude-Code/systems/dashboard-hook-client.js response",
+            "command": "node K:/PortableApps/genai/systems/dashboard-hook-client.js response",
             "async": true,
             "timeout": 5
           }

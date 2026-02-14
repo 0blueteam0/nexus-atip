@@ -1,0 +1,33 @@
+{
+  "tasks": [
+    {
+      "id": "8bbf10ec-5128-4f70-9c77-c92e5ba915fd",
+      "name": "기존 Intelligence 자산 통합 및 패턴 Import",
+      "description": "nexus-intelligence-hunter.js의 IOC/TTP 추출 패턴을 Asset Intelligence Engine에 통합. window.assetIntelligence 객체를 확장하여 기존 IntelligenceHunterBot의 extractionPatterns를 직접 활용.",
+      "notes": "기존 검증된 정규식 패턴 100% 재사용. 새로 만들지 말고 import만 할 것",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-01T05:48:54.007Z",
+      "updatedAt": "2025-09-01T05:51:31.360Z",
+      "relatedFiles": [
+        {
+          "path": "vite-app/index.html",
+          "type": "TO_MODIFY",
+          "description": "window.assetIntelligence 객체 확장",
+          "lineStart": 13600,
+          "lineEnd": 13700
+        },
+        {
+          "path": "vite-app/nexus-intelligence-hunter.js",
+          "type": "REFERENCE",
+          "description": "IOC/TTP 패턴 소스"
+        }
+      ],
+      "implementationGuide": "1. vite-app/index.html 13600행 이후 window.assetIntelligence 확장\n2. IntelligenceHunterBot.extractionPatterns import\n3. 기존 패턴을 assetIntelligence.patterns에 매핑\n4. IOC 추출 함수 구현 (domains, IPs, hashes, CVEs)\n5. TTP 추출 함수 구현 (MITRE, Kill Chain, Tactics)",
+      "verificationCriteria": "console에서 window.assetIntelligence.patterns 실행시 IOC/TTP 패턴 객체가 정상 출력되어야 함",
+      "analysisResult": "Asset Intelligence Engine을 cutting-edge 수준으로 업그레이드. 기존 IntelligenceHunterBot 클래스와 통합하여 AI 기반 필드 추론, 실시간 학습, MITRE ATT&CK 매핑 구현. vite-app/index.html의 Asset Intelligence 섹션을 확장하고 nexus-intelligence-hunter.js의 패턴을 재사용.",
+      "summary": "IntelligenceHunterBot 패턴을 Asset Intelligence Engine에 성공적으로 통합. window.assetIntelligence 객체 생성, IOC/TTP 추출 패턴 import, extractIOCs/extractTTPs 함수 구현, testPatterns 검증 함수 추가 완료",
+      "completedAt": "2025-09-01T05:51:31.307Z"
+    }
+  ]
+}

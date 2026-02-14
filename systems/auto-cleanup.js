@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = 'K:/PortableApps/Claude-Code';
+const ROOT = 'K:/PortableApps/genai';
 const DRY_RUN = process.argv.includes('--dry-run');
 
 // Cleanup configuration

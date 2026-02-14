@@ -1,0 +1,46 @@
+{
+  "tasks": [
+    {
+      "id": "4f8fdc90-b155-43c2-8390-e0d694cbc8a1",
+      "name": "왼쪽 사이드바에 API Keys Management 섹션 추가",
+      "description": "Navigation 메뉴에 API 키 관리 섹션을 추가하여 사용자가 각종 API 키를 관리할 수 있도록 함",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T16:44:14.025Z",
+      "updatedAt": "2025-08-27T16:46:00.072Z",
+      "implementationGuide": "nav-section 클래스를 사용하여 API Keys 섹션 추가, 클릭 시 loadAPIKeys() 함수 호출",
+      "verificationCriteria": "왼쪽 사이드바에 API Keys Management 메뉴가 표시되고 클릭 가능",
+      "analysisResult": "vite-app/index.html에 사라진 UI 컴포넌트들을 복원하고 개선",
+      "summary": "왼쪽 사이드바에 API Keys Management 섹션 성공적으로 추가. 3개 카테고리(Threat Intelligence, AI Services, Cloud Providers)로 구성된 메뉴와 loadAPIKeys 함수 구현 완료",
+      "completedAt": "2025-08-27T16:46:00.034Z"
+    },
+    {
+      "id": "f5732950-aaaf-4895-aabd-3f27cb84d026",
+      "name": "왼쪽 사이드바에 Automation Builder 섹션 추가",
+      "description": "자동화 워크플로우를 구성할 수 있는 Automation Builder 메뉴 추가",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T16:44:14.025Z",
+      "updatedAt": "2025-08-27T16:53:11.992Z",
+      "implementationGuide": "nav-section 클래스를 사용하여 Automation Builder 섹션 추가",
+      "verificationCriteria": "왼쪽 사이드바에 Automation Builder 메뉴가 표시됨",
+      "analysisResult": "vite-app/index.html에 사라진 UI 컴포넌트들을 복원하고 개선",
+      "summary": "왼쪽 사이드바에 Automation Builder 섹션 추가 완료. Workflow Designer with Triggers, Canvas, Actions 3-panel layout 구현",
+      "completedAt": "2025-08-27T16:53:11.946Z"
+    },
+    {
+      "id": "eac15339-2491-40df-9a8f-fd8224e0d412",
+      "name": "오른쪽 NEXUS AI Security 챗봇 활성화",
+      "description": "기존 챗봇 코드를 활성화하고 초기화 함수 호출하여 화면에 표시",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-27T16:44:14.025Z",
+      "updatedAt": "2025-08-27T16:55:17.876Z",
+      "implementationGuide": "챗봇 HTML을 main content 영역에 추가하고 위치 조정",
+      "verificationCriteria": "오른쪽 하단에 NEXUS AI Security 챗봇이 표시되고 토글 가능",
+      "analysisResult": "vite-app/index.html에 사라진 UI 컴포넌트들을 복원하고 개선",
+      "summary": "NEXUS AI Security 챗봇을 오른쪽 하단에 성공적으로 추가. 기본 최소화 상태, 토글 가능, Quick Actions 버튼 4개 포함",
+      "completedAt": "2025-08-27T16:55:17.823Z"
+    }
+  ]
+}

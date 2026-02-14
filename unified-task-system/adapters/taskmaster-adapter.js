@@ -2,7 +2,7 @@
 /**
  * TaskMaster AI Adapter
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/adapters/taskmaster-adapter.js
+ * 위치: K:/PortableApps/genai/unified-task-system/adapters/taskmaster-adapter.js
  *
  * 목적:
  * - TaskMaster AI MCP ↔ Unified Task Hub 동기화

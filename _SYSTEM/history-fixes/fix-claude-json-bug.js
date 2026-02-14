@@ -9,8 +9,8 @@ const path = require('path');
 
 class ClaudeJsonFixer {
     constructor() {
-        this.configPath = 'K:/PortableApps/Claude-Code/.claude.json';
-        this.backupDir = 'K:/PortableApps/Claude-Code/_ARCHIVE/claude-json-backups';
+        this.configPath = 'K:/PortableApps/genai/.claude.json';
+        this.backupDir = 'K:/PortableApps/genai/_ARCHIVE/claude-json-backups';
     }
 
     backup() {
@@ -159,7 +159,7 @@ class ClaudeJsonFixer {
         console.log('\n[*] Actual session storage:');
         console.log('==========================');
         
-        const sessionsDir = 'K:/PortableApps/Claude-Code/projects/K--PortableApps-Claude-Code';
+        const sessionsDir = 'K:/PortableApps/genai/projects/K--PortableApps-genai';
         
         if (fs.existsSync(sessionsDir)) {
             const files = fs.readdirSync(sessionsDir).filter(f => f.endsWith('.jsonl'));

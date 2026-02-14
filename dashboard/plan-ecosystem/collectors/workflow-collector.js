@@ -1,7 +1,7 @@
 /**
  * Workflow Collector
  * 
- * 위치: K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/collectors/workflow-collector.js
+ * 위치: K:/PortableApps/genai/dashboard/plan-ecosystem/collectors/workflow-collector.js
  * 
  * 목적:
  * - RIPER+ 워크플로우 상태 수집
@@ -15,7 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const WORKFLOW_DATA_PATH = path.join(BASE_PATH, 'data', 'workflow-history.json');
 
 // RIPER+ Phase 정의

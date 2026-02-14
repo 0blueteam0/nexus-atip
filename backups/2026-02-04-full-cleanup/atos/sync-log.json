@@ -1,0 +1,27 @@
+{
+  "lastSync": "2026-01-20T02:41:06.851Z",
+  "syncHistory": [
+    {
+      "timestamp": "2026-01-20T02:24:16.490Z",
+      "shrimpToPlan": 0,
+      "planToUnified": 0,
+      "changes": {
+        "shrimpToPlan": [],
+        "planToUnified": []
+      }
+    },
+    {
+      "timestamp": "2026-01-20T02:41:06.851Z",
+      "shrimpToPlan": 0,
+      "planToUnified": 0,
+      "changes": {
+        "shrimpToPlan": [],
+        "planToUnified": []
+      }
+    }
+  ],
+  "syncStats": {
+    "shrimpToPlan": 0,
+    "planToUnified": 0
+  }
+}

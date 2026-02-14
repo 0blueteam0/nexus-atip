@@ -124,7 +124,7 @@
         "-y",
         "mcp-server-sqlite-npx",
         "--db-path",
-        "K:/PortableApps/Claude-Code/data/sqlite/test.db"
+        "K:/PortableApps/genai/data/sqlite/test.db"
       ]
     },
     "git-mcp": {

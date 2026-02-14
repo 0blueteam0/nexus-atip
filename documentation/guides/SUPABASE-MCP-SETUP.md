@@ -61,7 +61,7 @@ node systems/supabase-keep-alive.js --setup
 ```
 
 2. **설정 파일 편집:**
-`K:/PortableApps/Claude-Code/data/supabase-config.json`
+`K:/PortableApps/genai/data/supabase-config.json`
 ```json
 {
   "projectUrl": "https://xxxxx.supabase.co",

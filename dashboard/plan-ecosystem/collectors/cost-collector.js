@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const COST_DATA_PATH = path.join(BASE_PATH, 'planning-log', 'costs');
 
 // Claude 모델별 토큰 비용 (USD per 1M tokens) - 2026년 기준 예상

@@ -15,7 +15,7 @@
 ### 2. 경로
 ```javascript
 // ❌ 잘못된 방식
-"path": "K:\\PortableApps\\Claude-Code"
+"path": "K:\\PortableApps\\genai"
 
 // ✅ 올바른 방식
 "path": process.cwd()      // 현재 작업 디렉토리

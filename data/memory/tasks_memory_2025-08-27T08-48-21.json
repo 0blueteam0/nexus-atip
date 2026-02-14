@@ -10,14 +10,14 @@
       "updatedAt": "2025-08-27T08:26:13.542Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code",
+          "path": "K:/PortableApps/genai",
           "type": "REFERENCE",
           "description": "메인 디렉토리"
         }
       ],
       "implementationGuide": "LS와 directory_tree를 사용하여 전체 구조 파악, 시스템 의존성 확인",
       "verificationCriteria": "모든 디렉토리와 파일 목록 확보, 의존성 파악 완료",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
       "summary": "디렉토리 구조 분석 완료. 총 26개 파일, 22개 디렉토리 확인. 주요 구조는 _ACTIVE, _ARCHIVE, _SYSTEM으로 정리되어 있음. 백업 파일 2개 발견",
       "completedAt": "2025-08-27T08:26:13.516Z"
     },
@@ -36,8 +36,8 @@
       "relatedFiles": [],
       "implementationGuide": "파일명 패턴 분석 (test-, old-, backup- 등), 날짜별 분류, 중복 기능 파일 찾기",
       "verificationCriteria": "아카이빙 대상 파일 목록 작성 완료",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
-      "summary": "중복 및 오래된 파일 식별 완료. 백업 파일 2개, 임시 파일 3개, 날짜 오타 디렉토리 1개 발견. cleanup-target-list-2025-01-27.txt 문서 생성",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "중복 및 오래된 파일 식별 완료. 백업 파일 2개, 임시 파일 3개, 날짜 오타 디렉토리 1개 발견. cleanup-target-list-2025-08-27.txt 문서 생성",
       "completedAt": "2025-08-27T08:34:46.002Z"
     },
     {
@@ -71,7 +71,7 @@
       ],
       "implementationGuide": "claude.bat, MCP 설정, 환경 변수, 실행 스크립트 의존성 확인",
       "verificationCriteria": "시스템 핵심 파일 목록 및 의존성 맵 작성",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
       "summary": "시스템 의존성 체크 완료. 9개 MCP 서버, 핵심 설정 파일들, 환경 변수 확인. system-dependencies-map.txt 생성으로 삭제 금지 목록 명확화",
       "completedAt": "2025-08-27T08:35:57.088Z"
     },
@@ -97,10 +97,10 @@
           "description": "아카이브 메인 폴더"
         }
       ],
-      "implementationGuide": "날짜별, 유형별 하위 폴더 생성 (2025-01-27-cleanup, old-tests, old-configs 등)",
+      "implementationGuide": "날짜별, 유형별 하위 폴더 생성 (2025-08-27-cleanup, old-tests, old-configs 등)",
       "verificationCriteria": "체계적인 아카이브 폴더 구조 생성 완료",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
-      "summary": "ARCHIVE 구조 정비 완료. 2025-01-27-cleanup 폴더와 5개 하위 카테고리(backups, configs, scripts, temp-files, old-versions) 생성. README.txt 문서화 완료",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "summary": "ARCHIVE 구조 정비 완료. 2025-08-27-cleanup 폴더와 5개 하위 카테고리(backups, configs, scripts, temp-files, old-versions) 생성. README.txt 문서화 완료",
       "completedAt": "2025-08-27T08:36:46.531Z"
     },
     {
@@ -118,7 +118,7 @@
       "relatedFiles": [],
       "implementationGuide": "mv 명령으로 안전하게 이동, 이동 로그 작성, 롤백 가능하도록 기록",
       "verificationCriteria": "모든 대상 파일 안전하게 이동 완료",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
       "summary": "파일 이동 완료. 백업 파일 2개 아카이브, 임시 파일 2개 삭제. 날짜 오류 수정 필요 (8월이 맞음). cleanup-log.txt 생성",
       "completedAt": "2025-08-27T08:38:12.191Z"
     },
@@ -137,7 +137,7 @@
       "relatedFiles": [],
       "implementationGuide": "mcp list 실행, claude.bat 테스트, 정리 보고서 작성",
       "verificationCriteria": "시스템 정상 작동 확인, 정리 보고서 완성",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
+      "analysisResult": "K:\\PortableApps\\genai 디렉토리 정리 작업 - 불필요한 파일 아카이빙, 시스템 의존성 확인, 안전한 정리",
       "summary": "최종 검증 완료. MCP 8개 중 5개 정상, 시스템 안정적. CLEANUP-REPORT-2025-08-27.md 작성. 날짜/언어/JSON 문제 발견 및 문서화",
       "completedAt": "2025-08-27T08:39:45.124Z"
     },

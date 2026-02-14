@@ -10,7 +10,7 @@
       "updatedAt": "2025-08-15T15:21:14.752Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "path": "K:/PortableApps/genai/claude.bat",
           "type": "REFERENCE",
           "description": "현재 배치 파일"
         }

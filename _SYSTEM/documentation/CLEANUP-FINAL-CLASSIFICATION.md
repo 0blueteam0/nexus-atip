@@ -45,7 +45,7 @@ shrimp-view.bat             # 뷰어
 
 #### D. 프로젝트 세션 파일 (Claude가 참조)
 ```
-projects/K--PortableApps-Claude-Code/*.jsonl  # 세션 기록
+projects/K--PortableApps-genai/*.jsonl  # 세션 기록
 statsig/                    # 통계 데이터
 ```
 
@@ -267,7 +267,7 @@ rmdir /Q failed-attempts
 
 ## [!] 최종 예상 구조
 ```
-K:/PortableApps/Claude-Code/
+K:/PortableApps/genai/
 ├── [ESSENTIAL: 7 files]       # 핵심 파일만
 ├── [SYSTEM-LINKED: 5 folders] # 시스템 연결 폴더
 ├── documentation/              # 문서 (유지)

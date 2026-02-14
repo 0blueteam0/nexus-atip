@@ -1,0 +1,30 @@
+# Claude Code 업데이트 백업 정보
+
+## 백업 시간
+2025-10-31 (업데이트 직전)
+
+## 백업 파일
+- .claude.json (MCP 서버 설정 포함)
+- package.json (의존성 정의)
+- package-lock.json (정확한 버전 잠금)
+- claude.bat (환경변수 설정 - 수정됨)
+- .npmrc (npm 영구 설정 - 수정됨)
+
+## 현재 버전
+Claude Code: 2.0.23
+
+## 목표 버전
+Claude Code: 2.0.30
+
+## 주요 변경사항
+- claude.bat: NPM_CONFIG_CACHE를 K드라이브로 변경
+- .npmrc: prefix를 K:\PortableApps\genai로 통일
+- .npmrc: tmp 설정 추가
+
+## 롤백 방법
+1. 이 디렉토리의 파일들을 K:/PortableApps/genai/로 복사
+2. npm install 실행 (package-lock.json 기준 복원)
+3. 버전 확인: claude --version
+
+## 백업 목적
+Zero C-Drive Dependency 완전 보장 및 안전한 업데이트

@@ -8,7 +8,7 @@ setlocal EnableDelayedExpansion
 
 REM Create today's archive folder
 set TODAY=%date:~0,4%-%date:~5,2%-%date:~8,2%
-set ARCHIVE_PATH=K:\PortableApps\Claude-Code\ARCHIVE\auto-archive\%TODAY%
+set ARCHIVE_PATH=K:\PortableApps\genai\ARCHIVE\auto-archive\%TODAY%
 
 if not exist "%ARCHIVE_PATH%" (
     mkdir "%ARCHIVE_PATH%" 2>nul
@@ -48,7 +48,7 @@ set patterns=%patterns% *-test.* *-temp.* *-debug.*
 
 REM Process each pattern
 for %%p in (%patterns%) do (
-    for %%f in (K:\PortableApps\Claude-Code\%%p) do (
+    for %%f in (K:\PortableApps\genai\%%p) do (
         if exist "%%f" (
             call :CHECK_AND_ARCHIVE "%%f"
         )

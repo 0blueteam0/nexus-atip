@@ -1,0 +1,260 @@
+{
+  "tasks": [
+    {
+      "id": "930b98cc-4f1c-4e27-a8db-2d1271a49cbe",
+      "name": "Phase 1: K드라이브 루트 정리",
+      "description": "K:\\ 루트의 불필요한 폴더 삭제 및 통합. 임시 폴더(k/, cache/, logs/, tmp/, SquirrelTemp/) 삭제, 프로젝트 폴더 이동 준비",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-12-12T05:10:10.711Z",
+      "updatedAt": "2025-12-12T17:02:25.417Z",
+      "relatedFiles": [
+        {
+          "path": "K:/",
+          "type": "TO_MODIFY",
+          "description": "K드라이브 루트 정리 대상"
+        }
+      ],
+      "implementationGuide": "1. K:\\ 루트 현재 상태 확인 (dir K:\\)\n2. 삭제 대상 폴더 확인: k/, cache/, logs/, tmp/, SquirrelTemp/\n3. 백업 생성: K:/Archive/backup-YYYYMMDD/\n4. 불필요 폴더 삭제\n5. 통합 대상 폴더 확인 및 이동 준비",
+      "verificationCriteria": "- K:\\ 루트에 임시 폴더 없음\n- 백업 완료 확인\n- 폴더 수 감소 확인",
+      "analysisResult": "K:\\ 드라이브 전체 정리 + Multi-AI 통합 + Obsidian 연계. 29개 폴더를 8개로 단순화하고, Claude Code/Gemini CLI/Claude Desktop/Obsidian이 WORKSPACE를 공유하며, Obsidian에서 변경사항/로그/작업상황을 확인할 수 있도록 구성.",
+      "summary": "K드라이브 루트 확인 완료. 삭제 대상 폴더(k/, cache/, logs/, tmp/, SquirrelTemp/) 이미 없음. 현재 10개 폴더로 정리된 상태. temp는 분류 시스템용으로 유지.",
+      "completedAt": "2025-12-12T17:02:25.392Z"
+    },
+    {
+      "id": "7c999cad-1bd3-4133-b261-87dac3e46e66",
+      "name": "Phase 2: WORKSPACE 구조 생성",
+      "description": "K:/WORKSPACE/ 전체 구조 생성. projects/, archive/, logs/, shared/, _obsidian/ 폴더 생성 및 기존 프로젝트 이동",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "930b98cc-4f1c-4e27-a8db-2d1271a49cbe"
+        }
+      ],
+      "createdAt": "2025-12-12T05:10:10.711Z",
+      "updatedAt": "2025-12-12T17:02:49.250Z",
+      "relatedFiles": [
+        {
+          "path": "K:/WORKSPACE/",
+          "type": "CREATE",
+          "description": "공유 작업 공간 루트"
+        }
+      ],
+      "implementationGuide": "1. K:/WORKSPACE/ 메인 폴더 생성\n2. 하위 폴더 생성:\n   - projects/\n   - archive/\n   - logs/claude-code/, logs/gemini-cli/, logs/claude-desktop/\n   - shared/prompts/, shared/templates/, shared/scripts/\n   - _obsidian/daily/, _obsidian/changelogs/, _obsidian/status/, _obsidian/templates/\n3. 기존 프로젝트를 WORKSPACE/projects/로 이동\n4. conventions.md 생성",
+      "verificationCriteria": "- K:/WORKSPACE/ 전체 구조 존재\n- 모든 하위 폴더 생성 완료\n- 기존 프로젝트 이동 완료",
+      "analysisResult": "K:\\ 드라이브 전체 정리 + Multi-AI 통합 + Obsidian 연계. 29개 폴더를 8개로 단순화하고, Claude Code/Gemini CLI/Claude Desktop/Obsidian이 WORKSPACE를 공유하며, Obsidian에서 변경사항/로그/작업상황을 확인할 수 있도록 구성.",
+      "summary": "WORKSPACE 구조 이미 완벽하게 구축됨. logs/(claude-code, gemini-cli, claude-desktop), shared/(prompts, templates, scripts, conventions.md), _obsidian/(daily, changelogs, status, templates) 모두 존재. 추가 작업 불필요.",
+      "completedAt": "2025-12-12T17:02:49.218Z"
+    },
+    {
+      "id": "27f36ae2-ecbe-4458-bc32-79540998cf11",
+      "name": "Phase 3: 심볼릭 링크 생성",
+      "description": "Claude Code, Gemini CLI, Claude Desktop에서 WORKSPACE에 접근할 수 있도록 심볼릭 링크 생성",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "7c999cad-1bd3-4133-b261-87dac3e46e66"
+        }
+      ],
+      "createdAt": "2025-12-12T05:10:10.711Z",
+      "updatedAt": "2025-12-12T18:23:35.847Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/WORKSPACE",
+          "type": "CREATE",
+          "description": "Claude Code 심볼릭 링크"
+        },
+        {
+          "path": "K:/PortableApps/Gemini-CLI/WORKSPACE",
+          "type": "CREATE",
+          "description": "Gemini CLI 심볼릭 링크"
+        },
+        {
+          "path": "K:/PortableApps/Claude-Desktop/WORKSPACE",
+          "type": "CREATE",
+          "description": "Claude Desktop 심볼릭 링크"
+        }
+      ],
+      "implementationGuide": "1. 관리자 권한 확인\n2. 심볼릭 링크 생성:\n   mklink /D \"K:\\PortableApps\\genai\\WORKSPACE\" \"K:\\WORKSPACE\"\n   mklink /D \"K:\\PortableApps\\Gemini-CLI\\WORKSPACE\" \"K:\\WORKSPACE\"\n   mklink /D \"K:\\PortableApps\\Claude-Desktop\\WORKSPACE\" \"K:\\WORKSPACE\"\n3. 각 프로그램에서 접근 테스트",
+      "verificationCriteria": "- 3개 심볼릭 링크 생성 완료\n- 각 프로그램에서 WORKSPACE/projects/ 접근 가능\n- 기존 프로그램 설정 정상 작동",
+      "analysisResult": "K:\\ 드라이브 전체 정리 + Multi-AI 통합 + Obsidian 연계. 29개 폴더를 8개로 단순화하고, Claude Code/Gemini CLI/Claude Desktop/Obsidian이 WORKSPACE를 공유하며, Obsidian에서 변경사항/로그/작업상황을 확인할 수 있도록 구성.",
+      "summary": "3개 Junction 링크 생성 완료. Claude Code, Gemini-CLI, Claude Desktop 모두 K:\\WORKSPACE에 접근 가능. PowerShell New-Item -ItemType Junction 사용.",
+      "completedAt": "2025-12-12T18:23:35.811Z"
+    },
+    {
+      "id": "2baa1893-cfd6-4bdb-ab29-e7e49d16e915",
+      "name": "Phase 4: 로깅 시스템 설정",
+      "description": "Markdown 형식 로깅 시스템 설정. Claude Code hook 설정, 로그 형식 정의, conventions.md 작성",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "27f36ae2-ecbe-4458-bc32-79540998cf11"
+        }
+      ],
+      "createdAt": "2025-12-12T05:10:10.711Z",
+      "updatedAt": "2025-12-12T18:24:29.393Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/.claude-hooks.json",
+          "type": "TO_MODIFY",
+          "description": "Claude Code hook 설정"
+        },
+        {
+          "path": "K:/WORKSPACE/shared/scripts/log-to-markdown.js",
+          "type": "CREATE",
+          "description": "로그 변환 스크립트"
+        },
+        {
+          "path": "K:/WORKSPACE/shared/conventions.md",
+          "type": "CREATE",
+          "description": "작업 규칙 문서"
+        }
+      ],
+      "implementationGuide": "1. .claude-hooks.json에 post-tool hook 추가 (로그 생성)\n2. 로그 형식 정의 (Markdown 테이블)\n3. log-to-markdown.js 스크립트 작성\n4. conventions.md 작업 규칙 문서 작성\n5. 테스트 로그 생성 확인",
+      "verificationCriteria": "- 작업 시 자동 로그 생성\n- 로그가 Markdown 형식\n- 날짜별/프로그램별 로그 분리",
+      "analysisResult": "K:\\ 드라이브 전체 정리 + Multi-AI 통합 + Obsidian 연계. 29개 폴더를 8개로 단순화하고, Claude Code/Gemini CLI/Claude Desktop/Obsidian이 WORKSPACE를 공유하며, Obsidian에서 변경사항/로그/작업상황을 확인할 수 있도록 구성.",
+      "summary": "로깅 시스템 설정 완료. conventions.md 이미 존재, log-to-markdown.js 생성, 테스트 로그 생성 성공 (2025-12-12.md). Markdown 테이블 형식으로 시간/프로젝트/작업/파일/설명 기록.",
+      "completedAt": "2025-12-12T18:24:29.349Z"
+    },
+    {
+      "id": "9413c9b6-7039-4813-82be-6ec896d07fbb",
+      "name": "Phase 5: Obsidian 연계 설정",
+      "description": "Obsidian Vault 설정, 플러그인 설치, 템플릿 및 대시보드 생성, 자동화 스크립트 설정",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "2baa1893-cfd6-4bdb-ab29-e7e49d16e915"
+        }
+      ],
+      "createdAt": "2025-12-12T05:10:10.711Z",
+      "updatedAt": "2025-12-12T18:45:28.555Z",
+      "relatedFiles": [
+        {
+          "path": "K:/WORKSPACE/.obsidian/",
+          "type": "CREATE",
+          "description": "Obsidian 설정 폴더"
+        },
+        {
+          "path": "K:/WORKSPACE/_obsidian/status/_dashboard.md",
+          "type": "CREATE",
+          "description": "프로젝트 상태 대시보드"
+        },
+        {
+          "path": "K:/WORKSPACE/_obsidian/templates/daily-note.md",
+          "type": "CREATE",
+          "description": "일일 노트 템플릿"
+        },
+        {
+          "path": "K:/WORKSPACE/shared/scripts/obsidian-sync.js",
+          "type": "CREATE",
+          "description": "Obsidian 동기화 스크립트"
+        }
+      ],
+      "implementationGuide": "1. WORKSPACE를 Obsidian Vault로 열기 (.obsidian/ 폴더 생성됨)\n2. 필수 플러그인 설치: Dataview, Templater, Folder Note\n3. 템플릿 파일 생성:\n   - _obsidian/templates/daily-note.md\n   - _obsidian/templates/changelog.md\n   - _obsidian/templates/project-status.md\n4. 대시보드 생성: _obsidian/status/_dashboard.md\n5. obsidian-sync.js 자동화 스크립트 작성\n6. AUTO-STARTUP.bat에 자동 시작 등록",
+      "verificationCriteria": "- WORKSPACE가 Obsidian Vault로 열림\n- Dataview 쿼리 정상 작동\n- 일일 노트/변경 로그 자동 생성\n- 대시보드에서 전체 현황 확인 가능",
+      "analysisResult": "K:\\ 드라이브 전체 정리 + Multi-AI 통합 + Obsidian 연계. 29개 폴더를 8개로 단순화하고, Claude Code/Gemini CLI/Claude Desktop/Obsidian이 WORKSPACE를 공유하며, Obsidian에서 변경사항/로그/작업상황을 확인할 수 있도록 구성.",
+      "summary": "Phase 5 Obsidian 연계 설정 완료: obsidian-sync.js 스크립트 생성(108줄), daily/changelogs 디렉토리 생성, sync 명령어 테스트 성공, 2025-12-12 Daily Note 자동 생성 확인. 템플릿 3종과 대시보드 정상 동작. Dataview 쿼리 포함된 Obsidian Vault 구조 완성.",
+      "completedAt": "2025-12-12T18:45:28.500Z"
+    },
+    {
+      "id": "aa8f9be0-1d65-4122-bda3-0ecd582c63df",
+      "name": "update-optimizer 스킬에 Phase 0 추가",
+      "description": "update-optimizer/SKILL.md에 Phase 0: 공식 문서 딥 리서치(MANDATORY) 추가. doc-researcher 스킬 자동 호출 연동.",
+      "notes": "Phase 번호 재정렬 필요 (기존 1-4 → 1-5)",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-12-12T20:15:08.884Z",
+      "updatedAt": "2025-12-12T20:19:45.898Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/.claude/skills/update-optimizer/SKILL.md",
+          "type": "TO_MODIFY",
+          "description": "Phase 0 추가 대상"
+        }
+      ],
+      "implementationGuide": "1. Phase 0 섹션 추가 (Phase 1 앞에)\n2. MANDATORY 표시 및 경고 메시지\n3. doc-researcher 스킬 호출 지침\n4. Anthropic 공식 문서 3개 소스 명시",
+      "verificationCriteria": "Phase 0이 MANDATORY로 추가되고 doc-researcher 연동 지침 포함",
+      "analysisResult": "Claude Code 업데이트 시 공식 문서 딥 리서치와 폴더 정리를 필수(MANDATORY)로 실행하도록 시스템 수정",
+      "summary": "Phase 0: 공식 문서 딥 리서치 (MANDATORY) 섹션 추가 완료. doc-researcher 스킬 자동 호출, Anthropic 공식 문서 3개 소스, Context7 연동 지침 포함. Purpose 섹션에도 필수 항목 명시.",
+      "completedAt": "2025-12-12T20:19:45.840Z"
+    },
+    {
+      "id": "a3e75305-9b8d-42fb-aace-9259a98ba7a5",
+      "name": "update-optimizer Phase 4를 필수로 변경",
+      "description": "기존 Phase 4 'Cleanup Recommendations'를 'Cleanup Execution (MANDATORY)'로 변경. cleanup-advisor 스킬 자동 호출.",
+      "notes": "Phase 번호 재정렬과 함께 진행",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "aa8f9be0-1d65-4122-bda3-0ecd582c63df"
+        }
+      ],
+      "createdAt": "2025-12-12T20:15:08.884Z",
+      "updatedAt": "2025-12-12T20:21:12.899Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/.claude/skills/update-optimizer/SKILL.md",
+          "type": "TO_MODIFY",
+          "description": "Phase 4 수정 대상"
+        }
+      ],
+      "implementationGuide": "1. Phase 4 → Phase 5로 번호 변경\n2. 'Recommendations' → 'Execution (MANDATORY)' 변경\n3. cleanup-advisor 스킬 호출 지침 추가\n4. 필수 실행 경고 메시지 추가",
+      "verificationCriteria": "Phase가 MANDATORY로 변경되고 cleanup-advisor 연동 지침 포함",
+      "analysisResult": "Claude Code 업데이트 시 공식 문서 딥 리서치와 폴더 정리를 필수(MANDATORY)로 실행하도록 시스템 수정",
+      "summary": "update-optimizer/SKILL.md에서 Phase 4를 Phase 5로 변경하고 MANDATORY 상태로 설정 완료. cleanup-advisor 스킬 자동 호출, 정리 대상 식별 및 실행, 디스크 사용량 분석, 정리 보고서 생성 등 4가지 필수 단계 추가됨.",
+      "completedAt": "2025-12-12T20:21:12.836Z"
+    },
+    {
+      "id": "6d1d7e29-12d0-47d3-93c0-e48383ba6e9c",
+      "name": "post-update.js에 문서 리서치 단계 추가",
+      "description": "post-update.js에 Step 0: 공식 문서 딥 리서치 단계 추가. 기존 5단계 → 7단계로 확장.",
+      "notes": "함수 stub만 추가, 실제 구현은 doc-researcher.js에서",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "a3e75305-9b8d-42fb-aace-9259a98ba7a5"
+        }
+      ],
+      "createdAt": "2025-12-12T20:15:08.884Z",
+      "updatedAt": "2025-12-12T20:22:07.380Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/.claude-update-system/post-update.js",
+          "type": "TO_MODIFY",
+          "description": "단계 추가 대상"
+        }
+      ],
+      "implementationGuide": "1. Step 0 추가: officialDocResearch() 함수 호출\n2. 기존 단계 번호 재정렬 (1-5 → 1-6)\n3. Step 5를 폴더 정리 '실행'으로 변경\n4. 콘솔 출력 메시지 업데이트",
+      "verificationCriteria": "7단계로 확장되고 Step 0에 문서 리서치 포함",
+      "analysisResult": "Claude Code 업데이트 시 공식 문서 딥 리서치와 폴더 정리를 필수(MANDATORY)로 실행하도록 시스템 수정",
+      "summary": "post-update.js를 5단계에서 7단계(0-6)로 확장 완료. Phase 0: officialDocResearch() 함수 추가 (MANDATORY), Phase 6: executeCleanup() 함수 추가 (MANDATORY). 콘솔 출력에 [!!] MANDATORY 마커 표시, 모듈 export에 새 함수 추가됨.",
+      "completedAt": "2025-12-12T20:22:07.305Z"
+    },
+    {
+      "id": "8fb5269e-2122-4bff-a74f-b47faed769be",
+      "name": "CLAUDE.md에 필수 프로세스 지침 추가",
+      "description": "CLAUDE.md에 '[!!] Claude Code 업데이트 필수 프로세스' 섹션 추가. 공식 문서 리서치와 폴더 정리를 필수로 명시.",
+      "notes": "xAI 기반 작업 프로세스 섹션 근처에 배치",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "6d1d7e29-12d0-47d3-93c0-e48383ba6e9c"
+        }
+      ],
+      "createdAt": "2025-12-12T20:15:08.884Z",
+      "updatedAt": "2025-12-12T20:22:58.319Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "필수 지침 추가 대상"
+        }
+      ],
+      "implementationGuide": "1. ULTRA CRITICAL 섹션으로 추가\n2. 필수 항목 2개 명시 (문서 리서치, 폴더 정리)\n3. 트리거 키워드 및 자동 호출 스킬 명시\n4. 생략 불가능 경고 추가",
+      "verificationCriteria": "ULTRA CRITICAL 섹션에 필수 프로세스 2개 명시",
+      "analysisResult": "Claude Code 업데이트 시 공식 문서 딥 리서치와 폴더 정리를 필수(MANDATORY)로 실행하도록 시스템 수정",
+      "summary": "CLAUDE.md에 '[!!] Claude Code 업데이트 필수 프로세스 (ULTRA CRITICAL - MANDATORY)' 섹션 추가 완료. 필수 1: 공식 문서 딥 리서치 (Phase 0), 필수 2: 폴더 정리 실행 (Phase 6). 트리거 키워드, 자동 호출 스킬, 상세 단계 모두 명시됨. xAI 기반 작업 프로세스 섹션 바로 아래에 배치.",
+      "completedAt": "2025-12-12T20:22:58.240Z"
+    }
+  ]
+}

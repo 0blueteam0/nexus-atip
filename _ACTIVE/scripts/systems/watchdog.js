@@ -10,7 +10,7 @@ const { spawn } = require('child_process');
 
 class ClaudeWatchdog {
     constructor() {
-        this.baseDir = 'K:\\PortableApps\\Claude-Code';
+        this.baseDir = 'K:\\PortableApps\\genai';
         this.problems = [];
         this.fixes = 0;
         

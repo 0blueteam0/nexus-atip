@@ -24,7 +24,7 @@
 // .claude.json에 잘못 추가되는 항목들
 {
   "projects": {
-    "K:\\PortableApps\\Claude-Code": {
+    "K:\\PortableApps\\genai": {
       "history": [...]  // <- 버그! 여기 있으면 안됨
     }
   },
@@ -47,7 +47,7 @@
 const fs = require('fs');
 
 function cleanClaudeJson() {
-    const configPath = 'K:/PortableApps/Claude-Code/.claude.json';
+    const configPath = 'K:/PortableApps/genai/.claude.json';
     
     // 백업
     const backup = fs.readFileSync(configPath, 'utf8');
@@ -82,7 +82,7 @@ attrib +R .claude.json
 ```
 
 ### 3. 올바른 세션 관리
-- 세션은 `projects/K--PortableApps-Claude-Code/*.jsonl`에 저장됨
+- 세션은 `projects/K--PortableApps-genai/*.jsonl`에 저장됨
 - 이 파일들이 실제 대화 기록
 - `.claude.json`은 설정만
 

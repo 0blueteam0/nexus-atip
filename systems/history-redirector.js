@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 // 히스토리를 별도 파일로 리다이렉트
-const configPath = 'K:\\PortableApps\\Claude-Code\\.claude.json';
-const historyPath = 'K:\\PortableApps\\Claude-Code\\.claude\\history-temp.json';
+const configPath = 'K:\\PortableApps\\genai\\.claude.json';
+const historyPath = 'K:\\PortableApps\\genai\\.claude\\history-temp.json';
 
 // Proxy handler for history field
 const handler = {

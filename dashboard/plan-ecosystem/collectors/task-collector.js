@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const SHRIMP_TASKS_PATH = path.join(BASE_PATH, 'ShrimpData/tasks/current-tasks.json');
 const UNIFIED_TASKS_PATH = path.join(BASE_PATH, 'unified-task-system/tasks.json');
 const TASK_MASTER_PATH = path.join(BASE_PATH, 'data/tasks.json');

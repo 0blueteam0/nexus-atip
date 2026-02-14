@@ -14,7 +14,7 @@ class SessionAssessment {
         this.recorder = new AssessmentRecorder();
         this.sessionStart = new Date();
         this.sessionId = this.generateSessionId();
-        this.sessionLogPath = 'K:\\PortableApps\\Claude-Code\\brain\\metrics\\session-logs.jsonl';
+        this.sessionLogPath = 'K:\\PortableApps\\genai\\brain\\metrics\\session-logs.jsonl';
         this.ensureDirectories();
     }
 
@@ -87,7 +87,7 @@ class SessionAssessment {
 
     checkToolSuggestions() {
         // Smart Suggest 로그 체크
-        const suggestLog = 'K:\\PortableApps\\Claude-Code\\brain\\tool-patterns.json';
+        const suggestLog = 'K:\\PortableApps\\genai\\brain\\tool-patterns.json';
         
         try {
             if (fs.existsSync(suggestLog)) {
@@ -106,7 +106,7 @@ class SessionAssessment {
 
     checkProblemsSolved() {
         // 에러 해결 및 문제 해결 추적
-        const paradigmLog = 'K:\\PortableApps\\Claude-Code\\brain\\metrics\\paradigm-check-' + 
+        const paradigmLog = 'K:\\PortableApps\\genai\\brain\\metrics\\paradigm-check-' + 
                           new Date().toISOString().split('T')[0].replace(/-/g, '') + '.log';
         
         let solvedCount = 0;
@@ -126,8 +126,8 @@ class SessionAssessment {
     checkImprovements() {
         // 개선 사항 체크 (파일 생성/수정)
         const improvementIndicators = [
-            'K:\\PortableApps\\Claude-Code\\systems',
-            'K:\\PortableApps\\Claude-Code\\modules'
+            'K:\\PortableApps\\genai\\systems',
+            'K:\\PortableApps\\genai\\modules'
         ];
         
         let improvements = 0;
@@ -162,7 +162,7 @@ class SessionAssessment {
         let automationScore = 7;
         
         automationFiles.forEach(file => {
-            const filePath = `K:\\PortableApps\\Claude-Code\\${file}`;
+            const filePath = `K:\\PortableApps\\genai\\${file}`;
             try {
                 if (fs.existsSync(filePath)) {
                     const stats = fs.statSync(filePath);

@@ -24,7 +24,7 @@ const icons = {
 };
 
 // Read actual Shrimp data
-const shrimpFile = 'K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json';
+const shrimpFile = 'K:/PortableApps/genai/ShrimpData/current-tasks.json';
 
 try {
     const data = JSON.parse(fs.readFileSync(shrimpFile, 'utf8'));

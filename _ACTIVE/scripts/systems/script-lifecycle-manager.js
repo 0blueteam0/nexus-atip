@@ -9,7 +9,7 @@ const path = require('path');
 
 class ScriptLifecycleManager {
     constructor() {
-        this.workDir = 'K:/PortableApps/Claude-Code';
+        this.workDir = 'K:/PortableApps/genai';
         this.archiveBase = path.join(this.workDir, 'ARCHIVE', 'auto-archive');
         this.oneTimePatterns = [
             /^FIX-/i, /^TEST-/i, /^DEBUG-/i, /^TEMP-/i,

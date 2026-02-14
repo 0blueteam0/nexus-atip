@@ -3,22 +3,22 @@
 :: This ensures the snapshot blocker stays in place
 
 :check
-if exist "K:\PortableApps\Claude-Code\shell-snapshots" (
+if exist "K:\PortableApps\genai\shell-snapshots" (
     :: Check if it's a file (not directory)
-    dir /a-d "K:\PortableApps\Claude-Code\shell-snapshots" >nul 2>&1
+    dir /a-d "K:\PortableApps\genai\shell-snapshots" >nul 2>&1
     if %errorlevel% == 0 (
         echo [OK] Snapshot blocker file exists
     ) else (
         echo [FIXING] shell-snapshots is a folder, removing...
-        rmdir /S /Q "K:\PortableApps\Claude-Code\shell-snapshots" 2>nul
-        echo This file prevents snapshot folder creation > "K:\PortableApps\Claude-Code\shell-snapshots"
-        attrib +R "K:\PortableApps\Claude-Code\shell-snapshots"
+        rmdir /S /Q "K:\PortableApps\genai\shell-snapshots" 2>nul
+        echo This file prevents snapshot folder creation > "K:\PortableApps\genai\shell-snapshots"
+        attrib +R "K:\PortableApps\genai\shell-snapshots"
         echo [FIXED] Recreated blocker file
     )
 ) else (
     echo [CREATING] Creating snapshot blocker...
-    echo This file prevents snapshot folder creation > "K:\PortableApps\Claude-Code\shell-snapshots"
-    attrib +R "K:\PortableApps\Claude-Code\shell-snapshots"
+    echo This file prevents snapshot folder creation > "K:\PortableApps\genai\shell-snapshots"
+    attrib +R "K:\PortableApps\genai\shell-snapshots"
     echo [CREATED] Blocker file created
 )
 

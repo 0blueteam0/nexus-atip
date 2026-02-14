@@ -9,7 +9,7 @@ const path = require('path');
 
 class ClaudeHistoryWatchdog {
     constructor() {
-        this.configPath = 'K:/PortableApps/Claude-Code/.claude.json';
+        this.configPath = 'K:/PortableApps/genai/.claude.json';
         this.lastClean = Date.now();
         this.cleanCount = 0;
     }

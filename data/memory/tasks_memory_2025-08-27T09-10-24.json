@@ -17,7 +17,7 @@
     {
       "id": "dd2335c1-6d87-4201-a79b-806caf017930",
       "name": "ShrimpData 폴더 재구성",
-      "description": "K:/PortableApps/Claude-Code/ShrimpData 메인 위치 생성 및 구조화",
+      "description": "K:/PortableApps/genai/ShrimpData 메인 위치 생성 및 구조화",
       "status": "completed",
       "dependencies": [
         {

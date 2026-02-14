@@ -18,7 +18,7 @@ setInterval(() => {
 
 // 첫 체크
 console.log('첫 체크 실행...');
-exec('dir K:\\PortableApps\\Claude-Code\\*.bat', (err, stdout) => {
+exec('dir K:\\PortableApps\\genai\\*.bat', (err, stdout) => {
     if (!err) {
         const batCount = (stdout.match(/\.bat/g) || []).length;
         console.log(`📁 BAT 파일: ${batCount}개`);

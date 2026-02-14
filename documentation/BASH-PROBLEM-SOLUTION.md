@@ -20,7 +20,7 @@ Claude Code가 매 Bash 명령 실행마다 셸 환경 스냅샷을 생성하는
 ### 1단계: 에러 메시지 추적
 ```bash
 # 발견된 문제
-/k/PortableApps/Claude-Code/shell-snapshots/snapshot-bash-1756277500079-845q4u.sh: No such file or directory
+/k/PortableApps/genai/shell-snapshots/snapshot-bash-1756277500079-845q4u.sh: No such file or directory
 ```
 - `.bashrc`의 echo 문이 반복 출력됨
 - 스냅샷 파일이 계속 생성/삭제됨
@@ -46,13 +46,13 @@ k$0(YQ(),"shell-snapshots")  // 스냅샷 폴더 생성
 ```batch
 @echo off
 REM 1. 기존 스냅샷 폴더 삭제
-rmdir /S /Q "K:\PortableApps\Claude-Code\shell-snapshots" 2>nul
+rmdir /S /Q "K:\PortableApps\genai\shell-snapshots" 2>nul
 
 REM 2. 같은 이름의 파일 생성 (폴더 생성 차단)
-echo This file prevents snapshot folder creation > "K:\PortableApps\Claude-Code\shell-snapshots"
+echo This file prevents snapshot folder creation > "K:\PortableApps\genai\shell-snapshots"
 
 REM 3. 읽기 전용 설정 (선택사항)
-attrib +R "K:\PortableApps\Claude-Code\shell-snapshots"
+attrib +R "K:\PortableApps\genai\shell-snapshots"
 ```
 
 ### 보조 해결 방법
@@ -86,7 +86,7 @@ attrib +R "K:\PortableApps\Claude-Code\shell-snapshots"
 
 ### Before
 ```
-K:\PortableApps\Claude-Code\shell-snapshots\
+K:\PortableApps\genai\shell-snapshots\
 ├── snapshot-bash-1756277247137-v78vvq.sh
 ├── snapshot-bash-1756277500079-845q4u.sh
 └── ... (계속 생성됨)
@@ -94,7 +94,7 @@ K:\PortableApps\Claude-Code\shell-snapshots\
 
 ### After
 ```
-K:\PortableApps\Claude-Code\shell-snapshots  (파일, 46 bytes)
+K:\PortableApps\genai\shell-snapshots  (파일, 46 bytes)
 ```
 - 더 이상 스냅샷 생성 안 됨
 - Bash 명령 정상 실행
@@ -123,8 +123,8 @@ K:\PortableApps\Claude-Code\shell-snapshots  (파일, 46 bytes)
 ### 상태 확인 스크립트
 ```batch
 @echo off
-if exist "K:\PortableApps\Claude-Code\shell-snapshots" (
-    dir /a-d "K:\PortableApps\Claude-Code\shell-snapshots" >nul 2>&1
+if exist "K:\PortableApps\genai\shell-snapshots" (
+    dir /a-d "K:\PortableApps\genai\shell-snapshots" >nul 2>&1
     if %errorlevel% == 0 (
         echo [OK] Blocker file exists
     )

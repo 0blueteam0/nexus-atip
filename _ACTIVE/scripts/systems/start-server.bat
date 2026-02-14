@@ -6,6 +6,6 @@ echo.
 echo Python HTTP Server를 시작합니다...
 echo 브라우저에서 http://localhost:8000 접속
 echo.
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 python -m http.server 8000
 pause

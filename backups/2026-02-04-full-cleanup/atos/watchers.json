@@ -1,0 +1,216 @@
+{
+  "version": "1.0.0",
+  "description": "ATOS Auto-Discovery 감시 설정 - 새 도구/MCP/에이전트/Skills 자동 감지",
+  "lastUpdated": null,
+
+  "watchPaths": [
+    {
+      "id": "mcp-config",
+      "path": ".claude.json",
+      "type": "mcp-config",
+      "watchFor": "mcpServers",
+      "onDetect": "registerMcpServer",
+      "description": "MCP 서버 설정 변경 감지",
+      "priority": "high"
+    },
+    {
+      "id": "skills",
+      "path": ".claude/skills/*/SKILL.md",
+      "type": "skill",
+      "pattern": "glob",
+      "onDetect": "registerSkill",
+      "description": "새 스킬 추가 감지",
+      "priority": "high"
+    },
+    {
+      "id": "commands",
+      "path": ".claude/commands/*.md",
+      "type": "command",
+      "pattern": "glob",
+      "onDetect": "registerCommand",
+      "description": "새 슬래시 명령어 감지",
+      "priority": "medium"
+    },
+    {
+      "id": "agents",
+      "path": "agents/*.json",
+      "type": "agent",
+      "pattern": "glob",
+      "onDetect": "registerAgent",
+      "description": "새 에이전트 정의 감지",
+      "priority": "medium"
+    },
+    {
+      "id": "workflows",
+      "path": "workflows/*.json",
+      "type": "workflow",
+      "pattern": "glob",
+      "onDetect": "registerWorkflow",
+      "description": "새 워크플로우 감지",
+      "priority": "medium"
+    },
+    {
+      "id": "local-mcp",
+      "path": "mcp-servers/*/package.json",
+      "type": "local-mcp",
+      "pattern": "glob",
+      "onDetect": "registerLocalMcp",
+      "description": "로컬 MCP 서버 감지",
+      "priority": "high"
+    },
+    {
+      "id": "hooks",
+      "path": ".claude-hooks.json",
+      "type": "hooks-config",
+      "watchFor": "hooks",
+      "onDetect": "registerHook",
+      "description": "새 훅 설정 감지",
+      "priority": "low"
+    },
+    {
+      "id": "tool-registry",
+      "path": "atos/tool-registry.json",
+      "type": "registry",
+      "watchFor": "manual-update",
+      "onDetect": "syncRegistry",
+      "description": "수동 레지스트리 업데이트 감지",
+      "priority": "low"
+    },
+    {
+      "id": "plans",
+      "path": "plans/*.md",
+      "type": "plan",
+      "pattern": "glob",
+      "onDetect": "registerPlan",
+      "description": "새 플랜 파일 감지",
+      "priority": "high"
+    },
+    {
+      "id": "plans-completed",
+      "path": "plans/completed/*.md",
+      "type": "plan-completed",
+      "pattern": "glob",
+      "onDetect": "registerCompletedPlan",
+      "description": "완료된 플랜 감지",
+      "priority": "low"
+    },
+    {
+      "id": "plans-archived",
+      "path": "plans/archived/*.md",
+      "type": "plan-archived",
+      "pattern": "glob",
+      "onDetect": "registerArchivedPlan",
+      "description": "아카이브된 플랜 감지",
+      "priority": "low"
+    },
+    {
+      "id": "plan-registry",
+      "path": "atos/plan-registry.json",
+      "type": "plan-registry",
+      "watchFor": "manual-update",
+      "onDetect": "syncPlanRegistry",
+      "description": "플랜 레지스트리 업데이트 감지",
+      "priority": "medium"
+    },
+    {
+      "id": "external-docs",
+      "path": "documentation/external-docs-cache/anthropic-docs-index.json",
+      "type": "external-doc-index",
+      "watchFor": "tracking.newUrls",
+      "onDetect": "notifyNewDocs",
+      "description": "외부 문서 변경/신규 URL 감지",
+      "priority": "high"
+    },
+    {
+      "id": "external-docs-cache",
+      "path": "documentation/external-docs-cache/*.md",
+      "type": "external-doc-cache",
+      "pattern": "glob",
+      "onDetect": "registerCachedDoc",
+      "description": "캐시된 외부 문서 감지",
+      "priority": "low"
+    }
+  ],
+
+  "settings": {
+    "scanInterval": 60000,
+    "autoRegister": true,
+    "notifyOnDiscovery": true,
+    "backupBeforeUpdate": true,
+    "maxDiscoveryLogSize": 100,
+    "enableFileWatch": true,
+    "debounceMs": 1000
+  },
+
+  "categoryInference": {
+    "description": "이름/경로에서 카테고리 자동 추론 규칙",
+    "rules": [
+      { "pattern": "file|fs|filesystem|desktop-commander", "category": "filesystem" },
+      { "pattern": "github|git|repo", "category": "development" },
+      { "pattern": "search|web|crawl|firecrawl|one-search", "category": "web" },
+      { "pattern": "memory|kiro|storage|cache", "category": "storage" },
+      { "pattern": "database|sql|sqlite|supabase|postgres", "category": "data" },
+      { "pattern": "chart|antv|visual|graph", "category": "visualization" },
+      { "pattern": "youtube|video|media", "category": "media" },
+      { "pattern": "pdf|ocr|marker|image|vision", "category": "document" },
+      { "pattern": "playwright|browser|automation", "category": "automation" },
+      { "pattern": "n8n|workflow|task|shrimp", "category": "workflow" },
+      { "pattern": "security|auth|encrypt", "category": "security" },
+      { "pattern": "ai|llm|council|thinking", "category": "ai" },
+      { "pattern": "paper|research|arxiv|pubmed|scholar|academic|biorxiv|semantic", "category": "research" }
+    ]
+  },
+
+  "keywordExtraction": {
+    "description": "도구 설명에서 트리거 키워드 자동 추출 규칙",
+    "stopWords": ["the", "a", "an", "is", "are", "to", "for", "and", "or", "of", "in", "on", "at", "by"],
+    "minKeywordLength": 2,
+    "maxKeywords": 10,
+    "includeToolNameParts": true
+  },
+
+  "registrationDefaults": {
+    "mcp-server": {
+      "defer_loading": true,
+      "input_examples": [],
+      "autoDiscovered": true
+    },
+    "skill": {
+      "autoActivate": false,
+      "priority": "medium"
+    },
+    "agent": {
+      "thoroughness": "medium"
+    },
+    "workflow": {
+      "enabled": true,
+      "autoTrigger": false
+    },
+    "plan": {
+      "autoDetectStatus": true,
+      "preserveVersions": true,
+      "defaultCategory": "feature"
+    }
+  },
+
+  "planSettings": {
+    "description": "플랜 상태 자동 감지 및 관리 설정",
+    "statusKeywords": {
+      "draft": ["draft", "wip", "todo", "proposed", "구상", "계획"],
+      "in-progress": ["in-progress", "ongoing", "active", "진행중", "진행 중", "작업중"],
+      "completed": ["completed", "done", "finished", "완료", "구현 완료"],
+      "archived": ["archived", "deprecated", "아카이브", "보관"]
+    },
+    "autoStatusDetection": true,
+    "titleExtraction": "first-h1",
+    "checkboxAnalysis": {
+      "enabled": true,
+      "completedThreshold": 0.9,
+      "inProgressThreshold": 0.1
+    },
+    "autoArchive": {
+      "enabled": true,
+      "daysAfterCompletion": 7
+    }
+  }
+}

@@ -2,7 +2,7 @@
 /**
  * Shrimp-TaskMaster Bridge
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/bridges/shrimp-taskmaster-bridge.js
+ * 위치: K:/PortableApps/genai/unified-task-system/bridges/shrimp-taskmaster-bridge.js
  *
  * 목적:
  * - Shrimp Task Manager ↔ TaskMaster AI 양방향 동기화

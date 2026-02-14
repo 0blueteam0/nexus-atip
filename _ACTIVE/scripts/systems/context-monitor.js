@@ -12,7 +12,7 @@ class ContextMonitor {
         this.suggest = new SmartSuggest();
         this.lastContext = null;
         this.contextHistory = [];
-        this.logPath = 'K:\\PortableApps\\Claude-Code\\brain\\context-history.jsonl';
+        this.logPath = 'K:\\PortableApps\\genai\\brain\\context-history.jsonl';
     }
 
     detectContextChange(input) {

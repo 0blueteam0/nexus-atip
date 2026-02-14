@@ -5,7 +5,7 @@ REM  Absolute minimum, no UI, no prompts
 REM ============================================
 
 REM Set environment silently
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 set PATH=K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python;%PATH%
 
 REM Quick JSON cleanup (once)

@@ -11,12 +11,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "path": "K:/PortableApps/genai/.claude.json",
           "type": "TO_MODIFY",
           "description": "MCP 서버 설정 파일"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "path": "K:/PortableApps/genai/claude.bat",
           "type": "REFERENCE",
           "description": "MCP 명령 실행 배치 파일"
         }
@@ -40,12 +40,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/memory-data",
+          "path": "K:/PortableApps/genai/memory-data",
           "type": "CREATE",
           "description": "메모리 데이터 저장 디렉토리"
         }
       ],
-      "implementationGuide": "1. Podman Desktop 실행 상태 확인\n2. docker.io/mcp/memory 이미지 pull\n3. 컨테이너 실행 테스트\n4. K:/PortableApps/Claude-Code/memory-data 볼륨 마운트 확인\n5. MCP 연결 테스트",
+      "implementationGuide": "1. Podman Desktop 실행 상태 확인\n2. docker.io/mcp/memory 이미지 pull\n3. 컨테이너 실행 테스트\n4. K:/PortableApps/genai/memory-data 볼륨 마운트 확인\n5. MCP 연결 테스트",
       "verificationCriteria": "컨테이너가 실제로 실행되고 MCP 서버로 연결 가능",
       "analysisResult": "K드라이브 기반 Claude Code 환경의 완전한 MCP 서버 연동 및 자율 시스템 구축. 모든 시스템이 실제로 작동하며 상호 연결되어야 하고, Bottom-up 자율 판단으로 문제를 선제적으로 해결해야 함."
     },
@@ -64,12 +64,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/auto-tool-finder.js",
+          "path": "K:/PortableApps/genai/systems/auto-tool-finder.js",
           "type": "TO_MODIFY",
           "description": "자동 도구 검색 시스템"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/systems/integration-hub.js",
+          "path": "K:/PortableApps/genai/systems/integration-hub.js",
           "type": "TO_MODIFY",
           "description": "시스템 통합 허브"
         }
@@ -93,12 +93,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/dynamic-date.js",
+          "path": "K:/PortableApps/genai/systems/dynamic-date.js",
           "type": "REFERENCE",
           "description": "동적 날짜 생성 시스템"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/systems/*.js",
+          "path": "K:/PortableApps/genai/systems/*.js",
           "type": "TO_MODIFY",
           "description": "모든 시스템 파일"
         }
@@ -122,7 +122,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/integration-hub.js",
+          "path": "K:/PortableApps/genai/systems/integration-hub.js",
           "type": "TO_MODIFY",
           "description": "시스템 통합 허브"
         }
@@ -146,7 +146,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/approval-system.js",
+          "path": "K:/PortableApps/genai/systems/approval-system.js",
           "type": "CREATE",
           "description": "승인 시스템 구현"
         }
@@ -166,12 +166,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "path": "K:/PortableApps/genai/.claude.json",
           "type": "TO_MODIFY",
           "description": "설정 파일 정리"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/conversation-history.json",
+          "path": "K:/PortableApps/genai/conversation-history.json",
           "type": "CREATE",
           "description": "분리된 대화 기록"
         }
@@ -191,12 +191,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/.npmrc",
+          "path": "K:/PortableApps/genai/.npmrc",
           "type": "TO_MODIFY",
           "description": "NPM 설정 파일"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "path": "K:/PortableApps/genai/claude.bat",
           "type": "TO_MODIFY",
           "description": "환경변수 설정"
         }
@@ -216,7 +216,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json",
+          "path": "K:/PortableApps/genai/ShrimpData/current-tasks.json",
           "type": "REFERENCE",
           "description": "Shrimp 작업 데이터"
         }
@@ -240,7 +240,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/mcp-discovery.js",
+          "path": "K:/PortableApps/genai/systems/mcp-discovery.js",
           "type": "CREATE",
           "description": "MCP 자동 발견 시스템"
         }
@@ -264,7 +264,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/bottom-up-engine.js",
+          "path": "K:/PortableApps/genai/systems/bottom-up-engine.js",
           "type": "CREATE",
           "description": "자율 판단 엔진"
         }
@@ -288,7 +288,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/hooks/auto-memory-system.js",
+          "path": "K:/PortableApps/genai/hooks/auto-memory-system.js",
           "type": "TO_MODIFY",
           "description": "자동 메모리 Hook"
         }
@@ -312,12 +312,12 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/CLAUDE.md",
+          "path": "K:/PortableApps/genai/CLAUDE.md",
           "type": "TO_MODIFY",
           "description": "메인 지침 문서"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/@*.md",
+          "path": "K:/PortableApps/genai/@*.md",
           "type": "TO_MODIFY",
           "description": "모듈 문서들"
         }
@@ -341,7 +341,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/systems/auto-recovery.js",
+          "path": "K:/PortableApps/genai/systems/auto-recovery.js",
           "type": "CREATE",
           "description": "자동 복구 시스템"
         }
@@ -365,7 +365,7 @@
       "updatedAt": "2025-08-16T01:34:48.652Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/AUTO-STARTUP.bat",
+          "path": "K:/PortableApps/genai/AUTO-STARTUP.bat",
           "type": "TO_MODIFY",
           "description": "자동 시작 배치"
         }

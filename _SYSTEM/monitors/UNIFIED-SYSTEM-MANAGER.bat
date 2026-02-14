@@ -97,7 +97,7 @@ if exist "_SYSTEM" (
 
 REM Count session files
 set /a sessions=0
-for %%f in (projects\K--PortableApps-Claude-Code\*.jsonl) do set /a sessions+=1
+for %%f in (projects\K--PortableApps-genai\*.jsonl) do set /a sessions+=1
 echo [*] Session files: %sessions%
 
 echo.

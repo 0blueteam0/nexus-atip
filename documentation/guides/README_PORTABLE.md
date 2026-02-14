@@ -9,22 +9,22 @@ K 드라이브(또는 USB 드라이브)의 설정만 사용합니다.
 
 ### 방법 1: --mcp-config 옵션 사용 (권장)
 ```bash
-claude --mcp-config "/k/PortableApps/Claude-Code/mcp-config.json"
+claude --mcp-config "/k/PortableApps/genai/mcp-config.json"
 ```
 
 ### 방법 2: 배치 파일 사용 (Windows)
 ```cmd
-K:\PortableApps\Claude-Code\claude-portable.bat
+K:\PortableApps\genai\claude-portable.bat
 ```
 
 ### 방법 3: 쉘 스크립트 사용 (Git Bash/Linux/Mac)
 ```bash
-/k/PortableApps/Claude-Code/claude-portable.sh
+/k/PortableApps/genai/claude-portable.sh
 ```
 
 ## 파일 구조
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── mcp-config.json       # MCP 서버 설정 (포터블용)
 ├── .claude.json          # Claude 주 설정 파일
 ├── claude-portable.bat   # Windows 실행 스크립트
@@ -53,8 +53,8 @@ K:\PortableApps\Claude-Code\
    - 포터블 설정을 사용하려면 반드시 mcp-config 옵션을 지정해야 합니다
 
 2. **경로 형식**
-   - Windows 경로: `K:\\PortableApps\\Claude-Code\\` (JSON 내부)
-   - Unix 경로: `/k/PortableApps/Claude-Code/` (명령줄)
+   - Windows 경로: `K:\\PortableApps\\genai\\` (JSON 내부)
+   - Unix 경로: `/k/PortableApps/genai/` (명령줄)
 
 3. **다른 컴퓨터에서 사용 시**
    - USB 드라이브 문자가 다를 수 있으므로 확인 필요

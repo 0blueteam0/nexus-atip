@@ -6,8 +6,8 @@ REM ===== PERMANENT BASH FIX FOR CLAUDE CODE =====
 REM No snapshots, no echo, no problems
 
 REM Core environment
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
-set CLAUDE_CONFIG_FILE=K:\PortableApps\Claude-Code\.claude.json
+set CLAUDE_HOME=K:\PortableApps\genai
+set CLAUDE_CONFIG_FILE=K:\PortableApps\genai\.claude.json
 set NODE_PATH=K:\PortableApps\tools\nodejs
 set GIT_PATH=K:\PortableApps\tools\git
 
@@ -25,9 +25,9 @@ REM Clean paths
 set PATH=%NODE_PATH%;%NODE_PATH%\node_modules\.bin;%GIT_PATH%\bin;%SystemRoot%\system32;%SystemRoot%
 
 REM Temp directories
-set TEMP=K:\PortableApps\Claude-Code\temp
-set TMP=K:\PortableApps\Claude-Code\temp
-set TMPDIR=K:\PortableApps\Claude-Code\temp
+set TEMP=K:\PortableApps\genai\temp
+set TMP=K:\PortableApps\genai\temp
+set TMPDIR=K:\PortableApps\genai\temp
 
 REM NPM config
 set NPM_CONFIG_CACHE=%TEMP%\npm-cache

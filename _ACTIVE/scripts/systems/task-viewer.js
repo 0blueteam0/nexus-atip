@@ -8,7 +8,7 @@ const path = require('path');
 
 class TaskViewer {
     constructor() {
-        this.shrimpFile = 'K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json';
+        this.shrimpFile = 'K:/PortableApps/genai/ShrimpData/current-tasks.json';
         this.colors = {
             reset: '\x1b[0m',
             bright: '\x1b[1m',

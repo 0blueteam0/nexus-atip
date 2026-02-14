@@ -1,113 +1,129 @@
 {
   "tasks": [
     {
-      "id": "9d109227-293d-4ff6-a9b4-41835442c49f",
-      "name": "현재 index.html 구조 분석 및 백업",
-      "description": "현재 작업중인 index.html의 구조와 기능을 분석하고 백업 생성. 어떤 라이브러리를 사용중인지, 어떤 기능이 구현되어 있는지 파악",
-      "status": "pending",
+      "id": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e",
+      "name": "consensus-engine.js FRAMEWORK_HOOKS 통합",
+      "description": "ProviderStreamHandler를 consensus-engine.js의 FRAMEWORK_HOOKS 시스템에 연결. 16개 이벤트(CoT, ToT, ReAct, Consensus)가 발생할 때 split-view 터미널에 자동으로 라우팅되도록 구현",
+      "notes": "provider-stream-handler.js에 이미 HOOK_TO_PROVIDER 매핑과 createHookHandler() 메서드 존재",
+      "status": "completed",
       "dependencies": [],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. index.html 읽기\n2. 사용중인 라이브러리 확인\n3. index-backup-[timestamp].html로 백업\n4. 현재 기능 목록 작성",
-      "verificationCriteria": "백업 파일 생성 확인, 현재 구조 문서화 완료",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
-    },
-    {
-      "id": "db08dbcc-461e-487e-a315-5b9175a591f0",
-      "name": "Vite 프로젝트 병렬 설정",
-      "description": "기존 index.html을 방해하지 않고 vite-app/ 폴더에 별도 Vite 프로젝트 생성. HMR(Hot Module Replacement)로 더 빠른 개발 환경 구성",
-      "status": "pending",
-      "dependencies": [
+      "createdAt": "2025-12-30T16:57:42.913Z",
+      "updatedAt": "2025-12-30T17:04:39.188Z",
+      "relatedFiles": [
         {
-          "taskId": "9d109227-293d-4ff6-a9b4-41835442c49f"
+          "path": "multi-ai-orchestration/consensus-engine.js",
+          "type": "TO_MODIFY",
+          "description": "FRAMEWORK_HOOKS 정의 및 emitHook 함수"
+        },
+        {
+          "path": "multi-ai-orchestration/provider-stream-handler.js",
+          "type": "REFERENCE",
+          "description": "createHookHandler 메서드 참조"
         }
       ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. npm create vite@latest vite-app -- --template vanilla\n2. 기존 index.html 내용을 vite-app/index.html로 복사\n3. npm install && npm run dev\n4. localhost:5173에서 확인",
-      "verificationCriteria": "Vite 개발 서버 정상 작동, HMR 기능 확인",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
+      "implementationGuide": "1. consensus-engine.js에서 emitHook() 함수 확인\\n2. ProviderStreamHandler.createHookHandler() 활용\\n3. 모든 FRAMEWORK_HOOKS에 대해 registerHook() 호출\\n4. hook-integration.js 생성하여 연결 코드 분리",
+      "verificationCriteria": "모든 16개 FRAMEWORK_HOOKS 이벤트가 split-view 패널에 올바르게 라우팅되는지 확인",
+      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
+      "summary": "hook-integration.js 생성 완료: 17개 FRAMEWORK_HOOKS를 ProviderStreamHandler에 연결하는 브릿지 모듈 구현. setupHookIntegration()으로 모든 훅 등록, cleanupHookIntegration()으로 정리, getIntegrationStatus()로 상태 확인 가능. CoT/ToT/ReAct/Consensus 4개 카테고리 훅이 split-view 패널로 자동 라우팅됨.",
+      "completedAt": "2025-12-30T17:04:39.184Z"
     },
     {
-      "id": "9d0abb52-2d16-4aeb-a8c9-322dc08d2c69",
-      "name": "컴포넌트 기반 구조로 리팩토링",
-      "description": "index.html의 반복되는 UI 요소를 재사용 가능한 컴포넌트로 분리. Web Components 또는 간단한 JS 모듈로 구성",
-      "status": "pending",
+      "id": "727b47f2-8732-45ca-bab2-70c59204dd2f",
+      "name": "stmux 프로덕션 런처 스크립트 생성",
+      "description": "blessed/stmux 기반 터미널 분할을 위한 프로덕션 배포 스크립트 작성. Windows ConPTY 호환, 2-4 패널 레이아웃 지원",
+      "notes": "stmux는 단순 설정으로 1-2시간 내 구현 가능",
+      "status": "completed",
       "dependencies": [
         {
-          "taskId": "db08dbcc-461e-487e-a315-5b9175a591f0"
+          "taskId": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e"
         }
       ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. components/ 폴더 생성\n2. 반복되는 UI 패턴 식별\n3. 각 컴포넌트를 별도 JS 파일로 분리\n4. import/export로 모듈화",
-      "verificationCriteria": "최소 3개 이상 컴포넌트 분리, 재사용성 확인",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
+      "createdAt": "2025-12-30T16:57:42.913Z",
+      "updatedAt": "2025-12-30T17:18:36.657Z",
+      "relatedFiles": [
+        {
+          "path": "multi-ai-orchestration/start-split-terminal.bat",
+          "type": "CREATE",
+          "description": "Windows 배치 런처"
+        },
+        {
+          "path": "multi-ai-orchestration/split-terminal-config.json",
+          "type": "CREATE",
+          "description": "레이아웃 설정 파일"
+        }
+      ],
+      "implementationGuide": "1. stmux npm 패키지 설치 확인\\n2. start-split-terminal.bat 배치 파일 생성\\n3. 레이아웃 옵션: horizontal(2열), vertical(2행), quad(4패널)\\n4. 각 패널에 Claude/Gemini/System 출력 연결",
+      "verificationCriteria": "배치 파일 실행 시 분할 터미널이 올바르게 생성되고 각 패널에 Provider 출력 표시",
+      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
+      "summary": "Task 2 완료: stmux 프로덕션 런처 스크립트 생성 완료. 모든 필수 파일 생성됨 - package.json (stmux/blessed 의존성), split-terminal-config.json (4개 레이아웃 설정), start-split-terminal.bat (Windows 배치 런처), split-terminal-launcher.js (메인 Node.js 오케스트레이터 396줄), panels/ 폴더 (claude/gemini/system/output 4개 패널 스크립트). CLI 인터페이스 지원 (--layout, --providers, --simple), stmux 자동 설치 기능, 폴백 심플 모드 포함.",
+      "completedAt": "2025-12-30T17:18:36.655Z"
     },
     {
-      "id": "6c590bac-cc9d-4634-a6b3-a064e4d2c4f9",
-      "name": "Figma 디자인 시스템 연동",
-      "description": "Figma에서 디자인 토큰(색상, 폰트, 간격)을 정의하고 CSS 변수로 자동 동기화. Figma Tokens 플러그인 활용",
-      "notes": "Figma 무료 플랜으로도 충분, 선택사항",
-      "status": "pending",
+      "id": "a71a3edd-b8d0-46e9-8a16-f8f9560813f8",
+      "name": "추가 Provider 지원 (OpenAI, Anthropic API)",
+      "description": "OpenAI GPT-4, Anthropic Claude API 직접 호출 지원 추가. 기존 Gemini CLI 패턴을 확장하여 external-router.js에 통합",
+      "notes": "기존 gemini-bridge.js 패턴 참조하여 일관된 인터페이스 유지",
+      "status": "completed",
       "dependencies": [
         {
-          "taskId": "9d0abb52-2d16-4aeb-a8c9-322dc08d2c69"
+          "taskId": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e"
         }
       ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. Figma에서 디자인 시스템 생성\n2. Design Tokens 정의 (colors, typography, spacing)\n3. tokens.css 파일로 export\n4. CSS 변수로 적용",
-      "verificationCriteria": "디자인 토큰 CSS 파일 생성, 일관된 스타일 적용",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
+      "createdAt": "2025-12-30T16:57:42.913Z",
+      "updatedAt": "2025-12-31T05:37:45.990Z",
+      "relatedFiles": [
+        {
+          "path": "multi-ai-orchestration/external-router.js",
+          "type": "TO_MODIFY",
+          "description": "Provider 라우팅 로직"
+        },
+        {
+          "path": "multi-ai-orchestration/openai-bridge.js",
+          "type": "CREATE",
+          "description": "OpenAI API 브릿지"
+        },
+        {
+          "path": "multi-ai-orchestration/anthropic-bridge.js",
+          "type": "CREATE",
+          "description": "Anthropic API 브릿지"
+        }
+      ],
+      "implementationGuide": "1. external-router.js에 openai, anthropic 프로바이더 추가\\n2. API 키 환경변수 처리 (OPENAI_API_KEY, ANTHROPIC_API_KEY)\\n3. 응답 포맷 표준화 (success, response, type, timestamp)\\n4. PROVIDER_PATTERNS에 새 패턴 추가",
+      "verificationCriteria": "OpenAI와 Anthropic API 호출이 성공하고 split-view에 결과 표시",
+      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
+      "summary": "Task 3 \"추가 Provider 지원 (OpenAI, Anthropic API)\" 구현 완료. openai-bridge.js(416줄), anthropic-bridge.js(459줄) 완전 구현됨. external-router.js SERVICE_CONFIGS에 두 프로바이더 등록됨. provider-stream-handler.js PROVIDER_PATTERNS에 출력 라우팅 패턴 포함됨. isAvailable() 테스트 결과 API 키 미설정 시 올바르게 false 반환 확인. 환경변수(OPENAI_API_KEY, ANTHROPIC_API_KEY) 설정 시 즉시 사용 가능.",
+      "completedAt": "2025-12-31T05:37:45.981Z"
     },
     {
-      "id": "2dfc1d08-8b5c-4a14-b618-48a609f138fe",
-      "name": "Mock API 서버 구축",
-      "description": "json-server 또는 MSW로 백엔드 없이 API 목업 구현. 프론트엔드 개발과 백엔드 개발을 분리",
-      "status": "pending",
+      "id": "f5e77693-8c7f-4993-89b3-6b128fcf305a",
+      "name": "실시간 스트리밍 청크 레벨 출력",
+      "description": "AI 응답을 청크 단위로 실시간 표시. 긴 응답도 점진적으로 패널에 표시되도록 스트리밍 구현",
+      "notes": "LiveOutputStreamer 기존 인프라 활용 가능",
+      "status": "completed",
       "dependencies": [
         {
-          "taskId": "9d0abb52-2d16-4aeb-a8c9-322dc08d2c69"
+          "taskId": "727b47f2-8732-45ca-bab2-70c59204dd2f"
         }
       ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. npm install -D json-server\n2. db.json 파일 생성\n3. package.json에 mock 스크립트 추가\n4. API 엔드포인트 테스트",
-      "verificationCriteria": "Mock API 서버 실행, CRUD 작업 테스트 완료",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
-    },
-    {
-      "id": "4bd9dfad-47e4-4cd1-933e-198a4c0e0e4d",
-      "name": "실제 백엔드 구축",
-      "description": "Express.js 또는 Fastify로 실제 백엔드 구현. Mock API와 동일한 인터페이스 유지",
-      "status": "pending",
-      "dependencies": [
+      "createdAt": "2025-12-30T16:57:42.913Z",
+      "updatedAt": "2025-12-30T23:57:34.247Z",
+      "relatedFiles": [
         {
-          "taskId": "2dfc1d08-8b5c-4a14-b618-48a609f138fe"
-        }
-      ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. backend/ 폴더 생성\n2. Express + SQLite 설정\n3. Mock API와 동일한 라우트 구현\n4. 환경변수로 Mock/Real 전환",
-      "verificationCriteria": "백엔드 서버 실행, 프론트엔드와 연동 확인",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
-    },
-    {
-      "id": "49bbf59e-01d5-49d1-87f1-318d91f8b74b",
-      "name": "Playwright E2E 테스트 설정",
-      "description": "이미 설치된 Playwright MCP를 활용하여 E2E 테스트 자동화 구축",
-      "status": "pending",
-      "dependencies": [
+          "path": "multi-ai-orchestration/live-output-streamer.js",
+          "type": "TO_MODIFY",
+          "description": "스트리밍 코어 로직"
+        },
         {
-          "taskId": "4bd9dfad-47e4-4cd1-933e-198a4c0e0e4d"
+          "path": "multi-ai-orchestration/provider-stream-handler.js",
+          "type": "TO_MODIFY",
+          "description": "청크 처리 메서드"
         }
       ],
-      "createdAt": "2025-08-27T14:16:11.292Z",
-      "updatedAt": "2025-08-27T14:16:11.292Z",
-      "implementationGuide": "1. tests/e2e/ 폴더 생성\n2. 주요 사용자 시나리오 테스트 작성\n3. CI/CD 파이프라인 연동\n4. 테스트 리포트 생성",
-      "verificationCriteria": "3개 이상 E2E 테스트 시나리오 작성 및 통과",
-      "analysisResult": "index.html 기반 프로토타입을 Vite 기반 모던 개발 환경으로 점진적 마이그레이션하면서 UI/UX 중심 풀스택 개발 워크플로우 구축"
+      "implementationGuide": "1. StreamingOutputHandler 확장\\n2. processChunk() 메서드에 실시간 업데이트 로직 추가\\n3. blessed Box 위젯의 scrollable 속성 활용\\n4. 청크 버퍼링 및 디바운스 처리",
+      "verificationCriteria": "긴 응답이 청크 단위로 점진적으로 표시되며 스크롤 가능",
+      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
+      "summary": "실시간 스트리밍 청크 레벨 출력 구현 완료. unified-stream-pipeline.js 통합 레이어 생성, PROVIDER_PREFIXES 동기화, 6/6 통합 테스트 통과 (Pipeline 초기화, Provider 스트리밍, 청크 처리, FRAMEWORK_HOOKS 연동, Real Gemini 통합, Multi-Provider 컨센서스). 긴 응답이 청크 단위로 점진적 표시되며 스크롤 가능.",
+      "completedAt": "2025-12-30T23:57:34.245Z"
     }
   ]
 }

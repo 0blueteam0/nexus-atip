@@ -5,7 +5,7 @@ echo [*] AI Stack 컴팩트 위젯 시작...
 REM 서버 확인 및 시작
 tasklist /FI "WINDOWTITLE eq AI Stack Monitor Server" | find "node.exe" >nul
 if errorlevel 1 (
-    cd /d K:\PortableApps\Claude-Code\dashboard
+    cd /d K:\PortableApps\genai\dashboard
     start "AI Stack Monitor Server" /MIN K:\PortableApps\tools\nodejs\node.exe server.js
     timeout /t 2 /nobreak >nul
 )

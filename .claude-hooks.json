@@ -2,84 +2,84 @@
   "hooks": {
     "startup-orchestrator": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/systems/startup-orchestrator.js",
+      "command": "node K:/PortableApps/genai/systems/startup-orchestrator.js",
       "triggers": ["session-start"],
       "priority": "highest",
       "description": "통합 시작 시스템: Docker + AI Stack Monitor (13579) + Plan Ecosystem (7847) + Self-hosted MCP"
     },
     "dashboard-autostart": {
       "enabled": false,
-      "command": "docker compose -f K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/docker-compose.yml up -d && start http://localhost:7847",
+      "command": "docker compose -f K:/PortableApps/genai/dashboard/plan-ecosystem/docker-compose.yml up -d && start http://localhost:7847",
       "triggers": ["session-start"],
       "priority": "low",
       "description": "[DEPRECATED] startup-orchestrator로 통합됨"
     },
     "docker-check": {
       "enabled": false,
-      "command": "node K:/PortableApps/Claude-Code/systems/docker-checker.js",
+      "command": "node K:/PortableApps/genai/systems/docker-checker.js",
       "triggers": ["session-start"],
       "priority": "highest",
       "description": "[DEPRECATED] startup-orchestrator로 통합됨"
     },
     "session-start": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/unified-task-system/session-restore.js",
+      "command": "node K:/PortableApps/genai/unified-task-system/session-restore.js",
       "triggers": ["session-start"],
       "priority": "high",
       "description": "세션 시작 시 후속조치 및 이전 작업 상태 복원 (Unified Task System)"
     },
     "atos-init": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/index.js init",
+      "command": "node K:/PortableApps/genai/atos/index.js init",
       "triggers": ["session-start"],
       "priority": "high",
       "description": "ATOS 초기화 - 도구 레지스트리 로드 + Auto-Discovery 스캔 + 초기 추천 생성"
     },
     "planning-restore": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/planning-system/restore.js --all",
+      "command": "node K:/PortableApps/genai/planning-system/restore.js --all",
       "triggers": ["session-start"],
       "priority": "high",
       "description": "세션 시작 시 활성/완료 플랜 상태 자동 출력"
     },
     "planning-workflow-start": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/planning-system/workflow.js session-start",
+      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-start",
       "triggers": ["session-start"],
       "priority": "highest",
       "description": "세션 시작 시 플래닝 워크플로우 실행 (스냅샷 + 상태 로드 + 규칙 출력)"
     },
     "planning-workflow-end": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/planning-system/workflow.js session-end",
+      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-end",
       "triggers": ["session-end"],
       "priority": "highest",
       "description": "세션 종료 시 플래닝 워크플로우 실행 (검증 + 자동복원 + 상태저장)"
     },
     "atos-recommend": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/recommendation-engine.js",
+      "command": "node K:/PortableApps/genai/atos/recommendation-engine.js",
       "triggers": ["before-response", "user-input"],
       "priority": "medium",
       "description": "ATOS 추천 - 맥락 분석 후 도구/워크플로우 추천 삽입"
     },
     "atos-track": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/execution-monitor.js track",
+      "command": "node K:/PortableApps/genai/atos/execution-monitor.js track",
       "triggers": ["after-tool-call"],
       "priority": "low",
       "description": "ATOS 추적 - 도구 호출 통계 업데이트 + 체이닝 패턴 기록"
     },
     "atos-learn": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/feedback-loop.js",
+      "command": "node K:/PortableApps/genai/atos/feedback-loop.js",
       "triggers": ["session-end"],
       "priority": "medium",
       "description": "ATOS 학습 - 세션 패턴 분석 + 사용 통계 영구 저장 + 지침 진화 트리거"
     },
     "bidirectional-sync": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/bidirectional-sync.js full",
+      "command": "node K:/PortableApps/genai/atos/bidirectional-sync.js full",
       "triggers": ["task-complete", "phase-change", "session-end"],
       "interval": "5m",
       "priority": "medium",
@@ -87,21 +87,21 @@
     },
     "hub-sync": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/unified-task-system/cli.js sync",
+      "command": "node K:/PortableApps/genai/unified-task-system/cli.js sync",
       "triggers": ["session-start"],
       "priority": "medium",
       "description": "세션 시작 시 UnifiedTaskHub 전체 동기화"
     },
     "self-trigger": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/atos/self-trigger/index.js process",
+      "command": "node K:/PortableApps/genai/atos/self-trigger/index.js process",
       "triggers": ["before-response"],
       "priority": "high",
       "description": "Claude 출력에서 키워드 감지 -> 리소스 자동 로드 (Plan/Implement/Execute 단계별)"
     },
     "context-detection": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/_ACTIVE/scripts/systems/context-monitor.js",
+      "command": "node K:/PortableApps/genai/_ACTIVE/scripts/systems/context-monitor.js",
       "triggers": ["git", "diff", "compare", "search", "youtube", "database"],
       "priority": "medium",
       "description": "작업 컨텍스트 감지 시 도구 자동 추천"
@@ -121,35 +121,35 @@
     },
     "session-end": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/unified-task-system/session-persist.js",
+      "command": "node K:/PortableApps/genai/unified-task-system/session-persist.js",
       "triggers": ["session-end"],
       "priority": "high",
       "description": "세션 종료 시 후속조치 및 작업 상태 저장 (Unified Task System)"
     },
     "planning-persist": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/planning-system/checkpoint.js --auto-save",
+      "command": "node K:/PortableApps/genai/planning-system/checkpoint.js --auto-save",
       "triggers": ["session-end"],
       "priority": "high",
       "description": "세션 종료 시 플랜 상태 자동 저장"
     },
     "auto-cleanup": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/systems/auto-cleanup.js",
+      "command": "node K:/PortableApps/genai/systems/auto-cleanup.js",
       "triggers": ["session-end"],
       "priority": "low",
       "description": "세션 종료 시 오래된 debug/shell-snapshots 자동 정리 (30일+)"
     },
     "date-validation": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/systems/date-validator-hook.js --check-recent",
+      "command": "node K:/PortableApps/genai/systems/date-validator-hook.js --check-recent",
       "triggers": ["file-save", "pre-commit"],
       "priority": "medium",
       "description": "파일 저장/커밋 시 하드코딩된 날짜 오류 감지"
     },
     "design-lint": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/design-system/lint-design.js",
+      "command": "node K:/PortableApps/genai/design-system/lint-design.js",
       "triggers": ["PostToolResult"],
       "filter": {
         "tools": ["Edit", "Write", "desktop-commander__write_file", "desktop-commander__edit_block"],
@@ -188,7 +188,7 @@
     },
     "lifecycle-sync": {
       "enabled": true,
-      "command": "node K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
+      "command": "node K:/PortableApps/genai/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
       "triggers": ["plan-complete", "phase-change"],
       "priority": "medium",
       "description": "플랜 완료/Phase 변경 시 Lifecycle 자동 동기화 (Phase 8B)"
@@ -201,7 +201,7 @@
     "cleanup-days": -1,
     "storage": {
       "primary": "kiro-memory",
-      "backup": "K:/PortableApps/Claude-Code/memory-archive"
+      "backup": "K:/PortableApps/genai/memory-archive"
     }
   }
 }

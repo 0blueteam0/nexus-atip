@@ -1,0 +1,34 @@
+ Diagnostics                                                                                                                                                                                                                                                       └ Currently running: unknown (2.1.37)                                                                                                                                                                                                                             └ Path: K:\PortableApps\tools\nodejs\node.exe                                                                                                                                                                                                                     └ Invoked: K:\PortableApps\tools\nodejs\npm-global\node_modules\@anthropic-ai\claude-code\cli.js                                                                                                                                                                  └ Config install method: global                                                                                                                                                                                                                                   └ Search: OK (vendor)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Updates                                                                                                                                                                                                                                                           └ Auto-updates: enabled                                                                                                                                                                                                                                           └ Auto-update channel: latest                                                                                                                                                                                                                                     └ Stable version: 2.1.25                                                                                                                                                                                                                                          └ Latest version: 2.1.37                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+
+ MCP Config Diagnostics
+
+ For help configuring MCP servers, see: https://code.claude.com/docs/en/mcp
+ 
+ [Contains warnings] User config (available in all your projects)
+ Location: K:\PortableApps\genai\.claude.json
+  └ [Warning] [mcp-installer] mcpServers.mcp-installer: Windows requires 'cmd /c' wrapper to execute npx
+  └ [Warning] [crawl4ai-lite] mcpServers.crawl4ai-lite: Windows requires 'cmd /c' wrapper to execute npx     
+  └ [Warning] [supabase] mcpServers.supabase: Windows requires 'cmd /c' wrapper to execute npx
+  └ [Warning] [runpod-jupyter] mcpServers.runpod-jupyter: Missing environment variables: RUNPOD_JUPYTER_TOKEN
+  └ [Warning] [hfspace] mcpServers.hfspace: Missing environment variables: HF_TOKEN
+  └ [Warning] [task-master-ai] mcpServers.task-master-ai: Missing environment variables: ANTHROPIC_API_KEY
+  └ [Warning] [task-master-ai] mcpServers.task-master-ai: Windows requires 'cmd /c' wrapper to execute npx
+  └ [Warning] [notion] mcpServers.notion: Windows requires 'cmd /c' wrapper to execute npx       
+  └ [Warning] [e2b] mcpServers.e2b: Windows requires 'cmd /c' wrapper to execute npx
+  └ [Warning] [pal] mcpServers.pal: Missing environment variables: GEMINI_API_KEY, OPENAI_API_KEY
+ 
+ [Contains warnings] Project config (shared via .mcp.json)
+ Location: K:\PortableApps\genai\.mcp.json
+  └ [Warning] [e2b] mcpServers.e2b: Windows requires 'cmd /c' wrapper to execute npx
+ 
+
+ Version Locks
+ └ No active version locks
+
+ Context Usage Warnings
+ └ ⚠ Large MCP tools context (~134,605 tokens > 25,000)
+   └ MCP servers:
+     └ notion: 22 tools (~21,076 tokens)
+     └ antv-chart: 25 tools (~17,112 tokens)
+     └ shrimp-task: 15 tools (~11,365 tokens)
+     └ git-

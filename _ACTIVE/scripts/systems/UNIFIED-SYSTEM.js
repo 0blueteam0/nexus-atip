@@ -97,7 +97,7 @@ class UnifiedClaudeSystem extends EventEmitter {
     const { exec } = require('child_process');
     
     // SAFE-MONITOR 통합
-    if (fs.existsSync('K:/PortableApps/Claude-Code/systems/SAFE-MONITOR.js')) {
+    if (fs.existsSync('K:/PortableApps/genai/systems/SAFE-MONITOR.js')) {
       console.log('[MONITOR] Integrating SAFE-MONITOR...');
       this.monitors.safe = require('./SAFE-MONITOR');
     }
@@ -119,8 +119,8 @@ class UnifiedClaudeSystem extends EventEmitter {
         }
         
         // npm-cache 체크
-        if (fs.existsSync('K:/PortableApps/Claude-Code/npm-cache')) {
-          const stats = fs.statSync('K:/PortableApps/Claude-Code/npm-cache');
+        if (fs.existsSync('K:/PortableApps/genai/npm-cache')) {
+          const stats = fs.statSync('K:/PortableApps/genai/npm-cache');
           if (stats.size > 100 * 1024 * 1024) { // 100MB
             issues.push('npm-cache bloated');
           }
@@ -312,7 +312,7 @@ class UnifiedClaudeSystem extends EventEmitter {
     
     try {
       // Windows 권한으로 강제 삭제
-      execSync('cmd /c "rmdir /s /q npm-cache"', { cwd: 'K:/PortableApps/Claude-Code' });
+      execSync('cmd /c "rmdir /s /q npm-cache"', { cwd: 'K:/PortableApps/genai' });
       console.log('[CLEAN] npm cache cleaned');
     } catch (error) {
       console.error('[CLEAN] Failed to clean npm cache:', error.message);
@@ -321,10 +321,10 @@ class UnifiedClaudeSystem extends EventEmitter {
 
   // 메모리 백업
   async backupMemory() {
-    const backupPath = `K:/PortableApps/Claude-Code/memory-archive/backup-${Date.now()}.db`;
+    const backupPath = `K:/PortableApps/genai/memory-archive/backup-${Date.now()}.db`;
     console.log(`[BACKUP] Backing up memory to ${backupPath}`);
     
-    const source = 'K:/PortableApps/Claude-Code/UNIFIED-MEMORY/unified.db';
+    const source = 'K:/PortableApps/genai/UNIFIED-MEMORY/unified.db';
     if (fs.existsSync(source)) {
       fs.copyFileSync(source, backupPath);
       console.log('[BACKUP] Memory backup complete');

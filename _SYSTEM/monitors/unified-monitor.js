@@ -8,8 +8,8 @@ const path = require('path');
 
 class UnifiedMonitor {
     constructor() {
-        this.configPath = 'K:/PortableApps/Claude-Code/.claude.json';
-        this.archivePath = 'K:/PortableApps/Claude-Code/_ARCHIVE/auto-scripts';
+        this.configPath = 'K:/PortableApps/genai/.claude.json';
+        this.archivePath = 'K:/PortableApps/genai/_ARCHIVE/auto-scripts';
         this.stats = {
             jsonCleans: 0,
             filesArchived: 0,

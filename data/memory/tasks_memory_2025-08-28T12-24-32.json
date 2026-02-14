@@ -1,0 +1,100 @@
+{
+  "tasks": [
+    {
+      "id": "dde976a8-2274-457a-8622-739dfc167648",
+      "name": "switchModule 함수 event 처리 수정",
+      "description": "switchModule 함수가 event를 파라미터로 받도록 수정하고, event.currentTarget 대신 element 파라미터 사용",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-28T11:35:26.237Z",
+      "updatedAt": "2025-08-28T11:35:57.043Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/vite-app/index.html",
+          "type": "TO_MODIFY",
+          "description": "switchModule 함수 정의 부분",
+          "lineStart": 4138,
+          "lineEnd": 4160
+        }
+      ],
+      "implementationGuide": "1. 4138줄의 switchModule 함수 시그니처를 function switchModule(module, element)로 변경\n2. event.currentTarget 참조를 element 파라미터로 변경\n3. active 클래스 토글 로직 수정",
+      "verificationCriteria": "switchModule 함수가 에러 없이 실행되고 active 클래스가 올바르게 토글됨",
+      "analysisResult": "vite-app/index.html의 클릭 이벤트 복구 - switchModule 등 함수에서 event 객체 참조 오류로 인한 네비게이션 실패 수정",
+      "summary": "switchModule 함수 시그니처를 수정하여 module과 element 파라미터를 받도록 변경했고, event.currentTarget 대신 element 파라미터를 사용하여 active 클래스를 토글하도록 수정 완료",
+      "completedAt": "2025-08-28T11:35:56.989Z"
+    },
+    {
+      "id": "ff75d1a0-b32c-400b-bb47-90d2e838d2f6",
+      "name": "모든 onclick 핸들러에 this 전달 추가",
+      "description": "사이드바의 neural-module onclick 호출 부분에 this 객체 전달",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "dde976a8-2274-457a-8622-739dfc167648"
+        }
+      ],
+      "createdAt": "2025-08-28T11:35:26.237Z",
+      "updatedAt": "2025-08-28T11:37:00.527Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/vite-app/index.html",
+          "type": "TO_MODIFY",
+          "description": "사이드바 neural-module onclick 부분",
+          "lineStart": 1750,
+          "lineEnd": 1850
+        }
+      ],
+      "implementationGuide": "1. onclick=\"switchModule('dashboard')\"를 onclick=\"switchModule('dashboard', this)\"로 변경\n2. 약 1750줄 근처의 모든 neural-module onclick 수정\n3. dashboard, ingestion, graph, detection 등 모든 모듈 수정",
+      "verificationCriteria": "모든 사이드바 메뉴 클릭 시 해당 모듈이 정상적으로 로드됨",
+      "analysisResult": "vite-app/index.html의 클릭 이벤트 복구 - switchModule 등 함수에서 event 객체 참조 오류로 인한 네비게이션 실패 수정",
+      "summary": "모든 사이드바 neural-module의 onclick 핸들러를 수정하여 switchModule 함수 호출 시 this를 두 번째 파라미터로 전달하도록 변경 완료 (총 9개 메뉴 수정)",
+      "completedAt": "2025-08-28T11:37:00.467Z"
+    },
+    {
+      "id": "8544de3b-05e0-4b5c-b634-e4aaa9daa15b",
+      "name": "Data Sources 카드 클릭 이벤트 복구",
+      "description": "Data Sources 섹션의 카드들이 클릭 가능하도록 이벤트 핸들러 추가 또는 수정",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-08-28T11:35:26.237Z",
+      "updatedAt": "2025-08-28T11:40:48.582Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/vite-app/index.html",
+          "type": "TO_MODIFY",
+          "description": "Data Sources 카드 부분"
+        }
+      ],
+      "implementationGuide": "1. showDataSourceDetails 함수 정의 확인 또는 생성\n2. 카드 onclick 이벤트 연결 확인\n3. 필요시 새 함수 정의 추가",
+      "verificationCriteria": "Data Sources 카드 클릭 시 상세 정보가 표시됨",
+      "analysisResult": "vite-app/index.html의 클릭 이벤트 복구 - switchModule 등 함수에서 event 객체 참조 오류로 인한 네비게이션 실패 수정",
+      "summary": "Data Sources 섹션의 클릭 이벤트 복구 완료. loadDataSource 함수에 element 파라미터 추가하여 active 클래스 토글 처리 구현. 모든 nav-item onclick 핸들러에 this 전달 추가로 네비게이션 하이라이팅 정상 작동",
+      "completedAt": "2025-08-28T11:40:48.517Z"
+    },
+    {
+      "id": "4f6ab100-3370-406e-95b8-100c0b074ed0",
+      "name": "브라우저 테스트 및 검증",
+      "description": "모든 수정 사항이 정상 작동하는지 브라우저에서 확인",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "dde976a8-2274-457a-8622-739dfc167648"
+        },
+        {
+          "taskId": "ff75d1a0-b32c-400b-bb47-90d2e838d2f6"
+        },
+        {
+          "taskId": "8544de3b-05e0-4b5c-b634-e4aaa9daa15b"
+        }
+      ],
+      "createdAt": "2025-08-28T11:35:26.237Z",
+      "updatedAt": "2025-08-28T11:41:25.985Z",
+      "relatedFiles": [],
+      "implementationGuide": "1. 브라우저 콘솔 에러 확인\n2. 각 사이드바 메뉴 클릭 테스트\n3. Data Sources 카드 클릭 테스트\n4. 페이지 새로고침 후 재테스트",
+      "verificationCriteria": "모든 클릭 이벤트가 에러 없이 작동하고 의도한 기능이 실행됨",
+      "analysisResult": "vite-app/index.html의 클릭 이벤트 복구 - switchModule 등 함수에서 event 객체 참조 오류로 인한 네비게이션 실패 수정",
+      "summary": "브라우저 테스트를 위한 수정 완료. 모든 클릭 이벤트 핸들러에서 this를 전달하도록 수정했으며, 함수들이 element 파라미터를 받아 active 클래스를 처리하도록 변경. 사용자에게 브라우저 테스트 요청",
+      "completedAt": "2025-08-28T11:41:25.909Z"
+    }
+  ]
+}

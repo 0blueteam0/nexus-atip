@@ -1,0 +1,47 @@
+# n8n Docker Compose Configuration
+# Location: K:/PortableApps/genai/mcp-servers/n8n/docker-compose.yml
+# Purpose: n8n workflow automation with MCP integration
+
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-automation
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic Auth
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-admin}
+      # General settings
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
+      # Enable community nodes
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+      # Timezone
+      - GENERIC_TIMEZONE=Asia/Seoul
+      - TZ=Asia/Seoul
+    volumes:
+      # Persistent data
+      - ./n8n-data:/home/node/.n8n
+      # Workflow templates
+      - ../../../n8n-workflows:/home/node/workflows:ro
+    networks:
+      - plan-ecosystem
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  plan-ecosystem:
+    name: plan-ecosystem-network
+    external: true

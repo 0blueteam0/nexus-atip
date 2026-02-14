@@ -7,7 +7,7 @@ echo.
 echo Creating startup task...
 
 :: Create scheduled task that runs at login
-schtasks /create /tn "ClaudeCodeBashFix" /tr "K:\PortableApps\Claude-Code\MAINTAIN-BASH-FIX.bat" /sc onlogon /rl highest /f >nul 2>&1
+schtasks /create /tn "ClaudeCodeBashFix" /tr "K:\PortableApps\genai\MAINTAIN-BASH-FIX.bat" /sc onlogon /rl highest /f >nul 2>&1
 
 if %errorlevel% == 0 (
     echo [SUCCESS] Task created successfully!
@@ -19,7 +19,7 @@ if %errorlevel% == 0 (
     echo [ALTERNATIVE] Creating startup shortcut...
     
     :: Alternative: Add to Startup folder
-    copy "K:\PortableApps\Claude-Code\MAINTAIN-BASH-FIX.bat" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeCodeBashFix.bat" >nul 2>&1
+    copy "K:\PortableApps\genai\MAINTAIN-BASH-FIX.bat" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeCodeBashFix.bat" >nul 2>&1
     
     if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\ClaudeCodeBashFix.bat" (
         echo [SUCCESS] Added to Startup folder!

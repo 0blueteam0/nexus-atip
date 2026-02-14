@@ -6,7 +6,7 @@ REM Check if server is already running
 tasklist /FI "WINDOWTITLE eq AI Stack Monitor Server" | find "node.exe" >nul
 if errorlevel 1 (
     echo [*] Starting server...
-    cd /d K:\PortableApps\Claude-Code\dashboard
+    cd /d K:\PortableApps\genai\dashboard
     start "AI Stack Monitor Server" /MIN K:\PortableApps\tools\nodejs\node.exe server.js
     timeout /t 2 /nobreak >nul
 )

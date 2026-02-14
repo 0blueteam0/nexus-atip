@@ -2,7 +2,7 @@
 /**
  * Unified Task System CLI
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/cli.js
+ * 위치: K:/PortableApps/genai/unified-task-system/cli.js
  *
  * 통합 CLI 진입점 - 모든 태스크 관리 기능 제공
  *

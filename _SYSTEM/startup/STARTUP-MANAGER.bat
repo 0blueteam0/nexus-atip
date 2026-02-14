@@ -69,7 +69,7 @@ echo ----------------------------------------
 
 REM Only the absolute minimum
 echo [+] Setting environment variables...
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 set PATH=K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python;%PATH%
 
 echo [+] Quick JSON cleanup (one-time)...
@@ -121,7 +121,7 @@ exit /b
 
 :MINIMAL_START
 REM Silent minimal start for scheduled tasks
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 set PATH=K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python;%PATH%
 K:\PortableApps\tools\nodejs\node.exe fix-claude-json-bug.js fix >nul 2>&1
 exit /b

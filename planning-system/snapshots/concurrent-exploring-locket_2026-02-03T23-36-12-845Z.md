@@ -29,7 +29,7 @@
 | 변수 | 값 | 필수 여부 | 훼손 시 영향 |
 |------|-----|----------|------------|
 | NPM_CONFIG_CACHE | K:\...\npm-cache | 필수 | NPX 매번 다운로드 |
-| HOME | K:\PortableApps\Claude-Code | 필수 | Git 설정 손실 |
+| HOME | K:\PortableApps\genai | 필수 | Git 설정 손실 |
 | CLAUDE_CONFIG_FILE | .claude.json | 필수 | MCP 서버 로드 실패 |
 | PATH | 5단계 경로 | 필수 | 도구 실행 실패 |
 
@@ -353,31 +353,31 @@ atos/index.js
 
 ```powershell
 # 백업 폴더 생성
-mkdir "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117" -Force
+mkdir "K:\PortableApps\genai\backups\startup-optimization-20260117" -Force
 
 # 1. claude.bat 백업
-copy "K:\PortableApps\Claude-Code\claude.bat" `
-     "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\claude.bat.backup"
+copy "K:\PortableApps\genai\claude.bat" `
+     "K:\PortableApps\genai\backups\startup-optimization-20260117\claude.bat.backup"
 
 # 2. docker-checker.js 백업
-copy "K:\PortableApps\Claude-Code\systems\docker-checker.js" `
-     "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\docker-checker.js.backup"
+copy "K:\PortableApps\genai\systems\docker-checker.js" `
+     "K:\PortableApps\genai\backups\startup-optimization-20260117\docker-checker.js.backup"
 
 # 3. atos/index.js 백업
-copy "K:\PortableApps\Claude-Code\atos\index.js" `
-     "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\atos-index.js.backup"
+copy "K:\PortableApps\genai\atos\index.js" `
+     "K:\PortableApps\genai\backups\startup-optimization-20260117\atos-index.js.backup"
 ```
 
 ## 롤백 명령 (문제 발생 시)
 
 ```powershell
 # 전체 롤백
-copy "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\claude.bat.backup" `
-     "K:\PortableApps\Claude-Code\claude.bat"
-copy "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\docker-checker.js.backup" `
-     "K:\PortableApps\Claude-Code\systems\docker-checker.js"
-copy "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\atos-index.js.backup" `
-     "K:\PortableApps\Claude-Code\atos\index.js"
+copy "K:\PortableApps\genai\backups\startup-optimization-20260117\claude.bat.backup" `
+     "K:\PortableApps\genai\claude.bat"
+copy "K:\PortableApps\genai\backups\startup-optimization-20260117\docker-checker.js.backup" `
+     "K:\PortableApps\genai\systems\docker-checker.js"
+copy "K:\PortableApps\genai\backups\startup-optimization-20260117\atos-index.js.backup" `
+     "K:\PortableApps\genai\atos\index.js"
 ```
 
 ---
@@ -388,10 +388,10 @@ copy "K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\atos-ind
 
 ```powershell
 # 수정 전 측정
-Measure-Command { cmd /c "K:\PortableApps\Claude-Code\claude.bat --version" }
+Measure-Command { cmd /c "K:\PortableApps\genai\claude.bat --version" }
 
 # 수정 후 측정 (동일 명령)
-Measure-Command { cmd /c "K:\PortableApps\Claude-Code\claude.bat --version" }
+Measure-Command { cmd /c "K:\PortableApps\genai\claude.bat --version" }
 ```
 
 ## 기능 검증 체크리스트
@@ -427,6 +427,6 @@ Measure-Command { cmd /c "K:\PortableApps\Claude-Code\claude.bat --version" }
 
 # Part 7: 사용자 확인 필요 사항
 
-1. **백업 위치**: `K:\PortableApps\Claude-Code\backups\startup-optimization-20260117\`
+1. **백업 위치**: `K:\PortableApps\genai\backups\startup-optimization-20260117\`
 2. **적용 범위**: Phase 1만? Phase 1+2 함께?
 3. **Docker 동작**: 백그라운드 실행 시 첫 firecrawl 호출 지연 허용?

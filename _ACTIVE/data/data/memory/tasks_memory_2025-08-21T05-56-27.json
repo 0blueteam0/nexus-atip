@@ -10,12 +10,12 @@
       "updatedAt": "2025-08-21T03:58:06.015Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/shell-snapshots",
+          "path": "K:/PortableApps/genai/shell-snapshots",
           "type": "TO_MODIFY",
           "description": "shell-snapshots 폴더 정리"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/.claude-hooks.json",
+          "path": "K:/PortableApps/genai/.claude-hooks.json",
           "type": "REFERENCE",
           "description": "hooks 설정 확인"
         }
@@ -36,7 +36,7 @@
       "updatedAt": "2025-08-21T03:59:41.453Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/DIRECT-TEST.ps1",
+          "path": "K:/PortableApps/genai/DIRECT-TEST.ps1",
           "type": "REFERENCE",
           "description": "PowerShell 진단 스크립트"
         }
@@ -61,7 +61,7 @@
       "updatedAt": "2025-08-21T04:01:14.352Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/node_modules/@anthropic-ai/claude-code/cli.js",
+          "path": "K:/PortableApps/genai/node_modules/@anthropic-ai/claude-code/cli.js",
           "type": "REFERENCE",
           "description": "Claude CLI 메인 파일"
         }

@@ -1,0 +1,140 @@
+REM ===================================
+REM 증거 폴더 재구성 - 순환 참조 분리
+REM ===================================
+
+REM 1. 순환 참조 전용 폴더 생성
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\CIRCULAR-REFERENCE
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\CIRCULAR-REFERENCE\code
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\CIRCULAR-REFERENCE\analysis
+
+REM 2. 타임스탬프 오류 전용 폴더 생성
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\TIMESTAMP-ISSUES
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\TIMESTAMP-ISSUES\backups
+mkdir K:\PortableApps\genai\EVIDENCE-20250820\TIMESTAMP-ISSUES\analysis
+
+REM ===================================
+REM 3. 순환 참조 관련 파일 이동/복사
+REM ===================================
+
+REM 문제 코드
+copy systems\claude-json-protector.js EVIDENCE-20250820\CIRCULAR-REFERENCE\code\
+copy systems\date-fix-monitor.js EVIDENCE-20250820\CIRCULAR-REFERENCE\code\
+
+REM 순환 참조 분석 문서
+copy docs\CIRCULAR-REFERENCE-ISSUE-DOCUMENTATION.md EVIDENCE-20250820\CIRCULAR-REFERENCE\analysis\
+copy docs\REQUEST-VS-IMPLEMENTATION-ANALYSIS.md EVIDENCE-20250820\CIRCULAR-REFERENCE\analysis\
+
+REM 순환 참조 설명 문서 생성
+echo ================================= > EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 순환 참조 증거 보관소 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 날짜: 2025-08-20 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo ================================= >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo. >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo [핵심 증거] >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo. >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 1. claude-json-protector.js >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo    - 위치: 197-203행 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo    - 문제: fs.watchFile이 자신이 수정하는 파일을 감시 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo    - 상태: 작성됨, 실행 안 됨 (사용자가 사전 차단) >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo. >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 2. date-fix-monitor.js >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo    - 비교용 코드 (순환 참조 없음) >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo    - setInterval 사용으로 안전 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo. >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo [순환 참조 패턴] >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 1. fs.watchFile로 파일 감시 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 2. 변경 감지 시 validateJson() 호출 >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 3. validateJson()이 같은 파일 수정 (121행) >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo 4. 다시 1번으로 (무한 루프) >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+echo ================================= >> EVIDENCE-20250820\CIRCULAR-REFERENCE\README.txt
+
+REM ===================================
+REM 4. 타임스탬프 관련 파일 이동/복사
+REM ===================================
+
+REM 백업 파일들
+copy .claude.json.broken-20250120 EVIDENCE-20250820\TIMESTAMP-ISSUES\backups\
+copy backups\claude-20250117-152434.json EVIDENCE-20250820\TIMESTAMP-ISSUES\backups\
+copy ARCHIVE\claude.json.backup-20250120 EVIDENCE-20250820\TIMESTAMP-ISSUES\backups\
+
+REM 타임스탬프 분석 문서
+copy docs\COMPLETE-TIMESTAMP-ANALYSIS.md EVIDENCE-20250820\TIMESTAMP-ISSUES\analysis\
+copy docs\FUTURE-TIMESTAMP-ISSUE.md EVIDENCE-20250820\TIMESTAMP-ISSUES\analysis\
+copy docs\TIMESTAMP-ANALYSIS.md EVIDENCE-20250820\TIMESTAMP-ISSUES\analysis\
+
+REM 수정 후 상태
+copy .claude.json EVIDENCE-20250820\TIMESTAMP-ISSUES\.claude.json.fixed-20250820
+
+REM 타임스탬프 문제 설명 문서 생성
+echo ================================= > EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo 타임스탬프 오류 증거 보관소 >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo 날짜: 2025-08-20 >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo ================================= >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo. >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo [발견된 문제] >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo. >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo 1. claudeCodeFirstTokenDate >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo    - 오류: 2025-01-20 (1월) >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo    - 정답: 2025-08-20 (8월) >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo. >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo 2. changelogLastFetched >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo    - 오류: 1755661156324 (8월 22일 - 미래!) >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo    - 현재: 8월 20일 >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo. >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo [타임스탬프 진화 과정] >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo - 7월 → 1월로 퇴화 >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo - 미래 날짜로 계속 증가 >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+echo ================================= >> EVIDENCE-20250820\TIMESTAMP-ISSUES\README.txt
+
+REM ===================================
+REM 5. 교훈 문서는 최상위에 유지
+REM ===================================
+copy LESSON-LEARNED-20250820.md EVIDENCE-20250820\
+
+REM ===================================
+REM 6. 기존 파일 정리 (선택사항)
+REM ===================================
+REM 이미 EVIDENCE-20250820에 있던 중복 파일들 제거
+del EVIDENCE-20250820\claude-json-protector.js 2>nul
+del EVIDENCE-20250820\systems\*.* 2>nul
+del EVIDENCE-20250820\docs\*.* 2>nul
+del EVIDENCE-20250820\backups\*.* 2>nul
+rmdir EVIDENCE-20250820\systems 2>nul
+rmdir EVIDENCE-20250820\docs 2>nul
+rmdir EVIDENCE-20250820\backups 2>nul
+
+REM ===================================
+REM 7. 최종 구조 설명 파일 생성
+REM ===================================
+echo ================================= > EVIDENCE-20250820\STRUCTURE.txt
+echo 증거 폴더 구조 >> EVIDENCE-20250820\STRUCTURE.txt
+echo ================================= >> EVIDENCE-20250820\STRUCTURE.txt
+echo. >> EVIDENCE-20250820\STRUCTURE.txt
+echo EVIDENCE-20250820/ >> EVIDENCE-20250820\STRUCTURE.txt
+echo ├── CIRCULAR-REFERENCE/       [순환 참조 관련] >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   ├── code/                 - 문제 코드 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   ├── analysis/             - 분석 문서 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   └── README.txt            - 설명 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │ >> EVIDENCE-20250820\STRUCTURE.txt
+echo ├── TIMESTAMP-ISSUES/         [타임스탬프 오류] >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   ├── backups/              - 백업 파일들 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   ├── analysis/             - 분석 문서 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │   └── README.txt            - 설명 >> EVIDENCE-20250820\STRUCTURE.txt
+echo │ >> EVIDENCE-20250820\STRUCTURE.txt
+echo ├── LESSON-LEARNED-20250820.md  [오늘의 교훈] >> EVIDENCE-20250820\STRUCTURE.txt
+echo ├── README.md                    [전체 요약] >> EVIDENCE-20250820\STRUCTURE.txt
+echo └── STRUCTURE.txt                [이 파일] >> EVIDENCE-20250820\STRUCTURE.txt
+echo ================================= >> EVIDENCE-20250820\STRUCTURE.txt
+
+echo.
+echo ===================================
+echo 증거 폴더 재구성 완료!
+echo ===================================
+echo.
+echo EVIDENCE-20250820/
+echo   ├── CIRCULAR-REFERENCE/  (순환 참조 전용)
+echo   └── TIMESTAMP-ISSUES/    (타임스탬프 전용)
+echo.
+echo 각 폴더에 README.txt로 상세 설명이 포함되어 있습니다.
+echo.
+pause

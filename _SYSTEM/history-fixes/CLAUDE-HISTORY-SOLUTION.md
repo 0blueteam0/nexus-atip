@@ -64,7 +64,7 @@ node claude-history-manager.js monitor
 
 ### Windows 스케줄러 등록
 ```batch
-schtasks /create /tn "ClaudeHistoryClean" /tr "node K:\PortableApps\Claude-Code\claude-history-manager.js clean" /sc minute /mo 30
+schtasks /create /tn "ClaudeHistoryClean" /tr "node K:\PortableApps\genai\claude-history-manager.js clean" /sc minute /mo 30
 ```
 
 ## [=] 효과

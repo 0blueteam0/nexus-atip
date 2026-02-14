@@ -1,0 +1,37 @@
+{
+  "patterns": [
+    {
+      "type": "rule",
+      "name": "자동 진화 시스템 활성화",
+      "description": "학습된 패턴이 자동으로 CLAUDE.md에 반영됩니다.",
+      "section": "## [*] 자동 학습된 규칙",
+      "timestamp": "2025-12-19T00:57:27.824Z",
+      "applied": true
+    },
+    {
+      "type": "rule",
+      "name": "자동 진화 시스템 활성화",
+      "description": "학습된 패턴이 자동으로 CLAUDE.md에 반영됩니다.",
+      "section": "## [*] 자동 학습된 규칙",
+      "timestamp": "2025-12-19T01:01:35.586Z",
+      "applied": true
+    },
+    {
+      "type": "rule",
+      "name": "자동 진화 시스템 활성화",
+      "description": "학습된 패턴이 자동으로 CLAUDE.md에 반영됩니다.",
+      "section": "## [*] 자동 학습된 규칙",
+      "timestamp": "2025-12-19T01:19:48.793Z",
+      "applied": true
+    },
+    {
+      "type": "rule",
+      "name": "자동 진화 시스템 활성화",
+      "description": "학습된 패턴이 자동으로 CLAUDE.md에 반영됩니다.",
+      "section": "## [*] 자동 학습된 규칙",
+      "timestamp": "2025-12-19T01:22:08.886Z",
+      "applied": true
+    }
+  ],
+  "lastUpdate": "2025-12-19T01:22:08.887Z"
+}

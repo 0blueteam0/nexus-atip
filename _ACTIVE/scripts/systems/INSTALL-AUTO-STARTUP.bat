@@ -18,13 +18,13 @@ if %errorLevel% neq 0 (
 
 :: 작업 스케줄러에 등록
 echo [1/3] Windows 시작 시 자동 실행 등록 중...
-schtasks /create /tn "ClaudeAutoExecutor" /tr "K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\systems\auto-executor.js" /sc onstart /ru SYSTEM /f >nul 2>&1
+schtasks /create /tn "ClaudeAutoExecutor" /tr "K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\systems\auto-executor.js" /sc onstart /ru SYSTEM /f >nul 2>&1
 
 echo [2/3] 로그온 시 자동 실행 등록 중...  
-schtasks /create /tn "ClaudeAutoStartup" /tr "K:\PortableApps\Claude-Code\AUTO-STARTUP.bat" /sc onlogon /rl highest /f >nul 2>&1
+schtasks /create /tn "ClaudeAutoStartup" /tr "K:\PortableApps\genai\AUTO-STARTUP.bat" /sc onlogon /rl highest /f >nul 2>&1
 
 echo [3/3] 30분마다 자동 체크 등록 중...
-schtasks /create /tn "ClaudeAutoMonitor" /tr "K:\PortableApps\Claude-Code\systems\auto-executor.js" /sc minute /mo 30 /f >nul 2>&1
+schtasks /create /tn "ClaudeAutoMonitor" /tr "K:\PortableApps\genai\systems\auto-executor.js" /sc minute /mo 30 /f >nul 2>&1
 
 :: 즉시 시작
 echo.
@@ -33,8 +33,8 @@ set /p START=선택:
 if /i "%START%"=="Y" (
     echo.
     echo 자율 시스템 시작 중...
-    start /B node "K:\PortableApps\Claude-Code\systems\auto-executor.js"
-    start /B "K:\PortableApps\Claude-Code\AUTO-STARTUP.bat"
+    start /B node "K:\PortableApps\genai\systems\auto-executor.js"
+    start /B "K:\PortableApps\genai\AUTO-STARTUP.bat"
 )
 
 echo.

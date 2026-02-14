@@ -10,7 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const ATOS_STATS_FILE = path.join(BASE_PATH, 'atos/usage-stats.json');
 const ATOS_LOGS_DIR = path.join(BASE_PATH, 'atos/logs');
 const TOOLS_LOG_DIR = path.join(BASE_PATH, 'planning-log/tools');

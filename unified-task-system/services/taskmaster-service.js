@@ -2,7 +2,7 @@
 /**
  * TaskMaster Integration Service
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/services/taskmaster-service.js
+ * 위치: K:/PortableApps/genai/unified-task-system/services/taskmaster-service.js
  *
  * 목적:
  * - TaskMaster AI MCP와 Unified Task Hub 통합

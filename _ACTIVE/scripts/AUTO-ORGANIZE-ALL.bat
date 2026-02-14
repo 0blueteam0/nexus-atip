@@ -16,26 +16,26 @@ REM Create organized structure
 echo [*] Creating organized folder structure...
 
 REM Main categories
-mkdir "K:\PortableApps\Claude-Code\_SYSTEM" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_ACTIVE" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_ARCHIVE" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_TEMP" 2>nul
+mkdir "K:\PortableApps\genai\_SYSTEM" 2>nul
+mkdir "K:\PortableApps\genai\_ACTIVE" 2>nul
+mkdir "K:\PortableApps\genai\_ARCHIVE" 2>nul
+mkdir "K:\PortableApps\genai\_TEMP" 2>nul
 
 REM System subfolders
-mkdir "K:\PortableApps\Claude-Code\_SYSTEM\mcp-servers" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_SYSTEM\tools" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_SYSTEM\configs" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_SYSTEM\documentation" 2>nul
+mkdir "K:\PortableApps\genai\_SYSTEM\mcp-servers" 2>nul
+mkdir "K:\PortableApps\genai\_SYSTEM\tools" 2>nul
+mkdir "K:\PortableApps\genai\_SYSTEM\configs" 2>nul
+mkdir "K:\PortableApps\genai\_SYSTEM\documentation" 2>nul
 
 REM Active subfolders
-mkdir "K:\PortableApps\Claude-Code\_ACTIVE\scripts" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_ACTIVE\projects" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_ACTIVE\data" 2>nul
+mkdir "K:\PortableApps\genai\_ACTIVE\scripts" 2>nul
+mkdir "K:\PortableApps\genai\_ACTIVE\projects" 2>nul
+mkdir "K:\PortableApps\genai\_ACTIVE\data" 2>nul
 
 REM Archive subfolders by date
 set TODAY=%date:~0,4%-%date:~5,2%-%date:~8,2%
-mkdir "K:\PortableApps\Claude-Code\_ARCHIVE\%TODAY%" 2>nul
-mkdir "K:\PortableApps\Claude-Code\_ARCHIVE\old" 2>nul
+mkdir "K:\PortableApps\genai\_ARCHIVE\%TODAY%" 2>nul
+mkdir "K:\PortableApps\genai\_ARCHIVE\old" 2>nul
 
 REM ========================================
 REM STEP 1: Move system folders

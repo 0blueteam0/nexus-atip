@@ -1,0 +1,1252 @@
+{
+  "skipped": [
+    {
+      "path": ".cache\\n8n\\public\\types\\nodes.json",
+      "reason": "외부 라이브러리"
+    }
+  ],
+  "needsDate": [
+    {
+      "path": "ARCHIVE\\2025-08-27-cleanup\\cleanup-log.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-27",
+          "actualDate": "2025-08-27",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-27"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\2025-08-27-cleanup\\README.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-27",
+          "actualDate": "2025-08-27",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-27"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\failed-projects\\transformer-security-discarded-2025-01-11\\DISCARDED-REASON.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→11월 오류 확정 (10개월 차이, 일자 동일)",
+          "contentDate": "2025-01-11",
+          "actualDate": "2025-11-11",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-11-11"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\2025-08-27-cleanup\\obsolete\\FIX-ALL-ISSUES-CMD.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-21",
+          "actualDate": "2025-08-21",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-21"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\2025-08-27-cleanup\\obsolete\\FIX-ALL-ISSUES-POWERSHELL.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-21",
+          "actualDate": "2025-08-21",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-21"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\CLEANUP-COMMANDS.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\CLEANUP-EXCESSIVE-FILES.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-21",
+          "actualDate": "2025-08-21",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-21"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\EVIDENCE-REORGANIZE.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\MOVE-ALL-CLEANUP.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-21",
+          "actualDate": "2025-08-21",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-21"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\README-FIX-INSTRUCTIONS.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-21",
+          "actualDate": "2025-08-21",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-21"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\CLEANUP-REPORT-20250120.md",
+      "issues": [
+        {
+          "type": "filename_date_error",
+          "pattern": "01월→08월 오류 의심 (7개월 차이, 일자 동일)",
+          "filenameDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\deprecated-bat\\README.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\FILES-CLEANUP-PLAN.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\API-KEY-VALIDATION-REPORT.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\BASH-ERROR-DIAGNOSTIC.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\CLAUDE-MINIMAL.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\K-DRIVE-DEEP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\K-TOOLS-INTEGRATION-PLAN.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-API-KEYS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-18",
+          "actualDate": "2025-08-18",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-18"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-COMPLETE-GUIDE.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-CONNECTION-STATUS-2025-01-19.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-CONNECTION-TEST-RESULTS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-FINAL-STATUS-2025-01-19.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-FINAL-STATUS-REPORT.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-GUIDE.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-ISSUES-2025-01-17.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-17",
+          "actualDate": "2025-08-17",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-17"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-STATUS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INVENTORY-ULTRATHINK.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-19",
+          "actualDate": "2025-08-19",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-19"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\PHASE1-COMPLETE.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-17",
+          "actualDate": "2025-08-17",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-17"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\SSD-ENVIRONMENT-REPORT-2025-01-20.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\SYSTEM-HEALTH-REPORT-2025-01-20.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\README.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-17",
+          "actualDate": "2025-08-17",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-17"
+        }
+      ]
+    },
+    {
+      "path": "data\\date-diagnosis-report.json",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→12월 오류 확정 (11개월 차이, 일자 동일)",
+          "contentDate": "2025-01-13",
+          "actualDate": "2025-12-12",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-12-13"
+        }
+      ]
+    },
+    {
+      "path": "data\\memory\\tasks_memory_2025-08-27T08-48-21.json",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-27",
+          "actualDate": "2025-08-27",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-27"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\analysis\\diff-mcp-comparison-2025.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\core-modules\\@deep-think-framework.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\CIRCULAR-REFERENCE\\code\\claude-json-protector.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\CIRCULAR-REFERENCE\\code\\date-fix-monitor.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\claude-json-protector.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\docs\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\docs\\TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\README.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\systems\\claude-json-protector.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\systems\\date-fix-monitor.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\analysis\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\analysis\\TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\README.txt",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\evidence\\TIMESTAMP-ANALYSIS.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-20",
+          "actualDate": "2025-08-20",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-20"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\guides\\@file-editing-tools.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-15",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\guides\\EDIT-FILE-LINES-GUIDE.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-28",
+          "actualDate": "2025-08-28",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-28"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\reports\\CLEANUP-REPORT.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\reports\\DIAGNOSIS-20250116.md",
+      "issues": [
+        {
+          "type": "filename_date_error",
+          "pattern": "01월→08월 오류 의심 (7개월 차이, 일자 동일)",
+          "filenameDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        },
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "documentation\\reports\\SYSTEM-RECOVERY-PLAN.md",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→08월 오류 확정 (7개월 차이, 일자 동일)",
+          "contentDate": "2025-01-16",
+          "actualDate": "2025-08-16",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-08-16"
+        }
+      ]
+    },
+    {
+      "path": "WORKSPACE\\shared\\scripts\\ai-session-tracker.js",
+      "issues": [
+        {
+          "type": "content_date_error",
+          "pattern": "01월→12월 오류 확정 (11개월 차이, 일자 동일)",
+          "contentDate": "2025-01-12",
+          "actualDate": "2025-12-12",
+          "confidence": "high",
+          "autoFixable": true,
+          "suggestedFix": "2025-12-12"
+        }
+      ]
+    }
+  ],
+  "noDateNeeded": [
+    {
+      "path": ".vscode\\extensions\\anthropic.claude-code-2.0.53-win32-x64\\extension.js",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "AI-STACK-README.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "cleanup-target-list-2025-01-27.txt",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "index-backup-20250127.html",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "plans\\prancy-gathering-moon.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "python-packages\\Python313\\site-packages\\litellm\\model_prices_and_context_window_backup.json",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "system-dependencies-map.txt",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "systems\\temp-auto-classifier.js",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\README.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\shared\\configs\\AI-COLLABORATION-PROTOCOL.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\shared\\configs\\K-DRIVE-ORGANIZATION.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\shared\\conventions.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\shared\\scripts\\workspace-cleanup.js",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\_obsidian\\daily\\2025-01-12.md",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "WORKSPACE\\_workspace-meta\\cleanup-policy.json",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "_ACTIVE\\data\\ShrimpData\\folder-cleanup-task.json",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "_ACTIVE\\scripts\\systems\\claude-json-protector.js",
+      "reason": "날짜 불필요"
+    },
+    {
+      "path": "_ACTIVE\\scripts\\systems\\date-fix-monitor.js",
+      "reason": "날짜 불필요"
+    }
+  ],
+  "fixed": [
+    {
+      "path": "ARCHIVE\\2025-08-27-cleanup\\cleanup-log.txt",
+      "fixes": [
+        "2025-01-27 → 2025-08-27"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_2025-08-27-cleanup_cleanup-log.txt"
+    },
+    {
+      "path": "ARCHIVE\\2025-08-27-cleanup\\README.txt",
+      "fixes": [
+        "2025-01-27 → 2025-08-27"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_2025-08-27-cleanup_README.txt"
+    },
+    {
+      "path": "ARCHIVE\\failed-projects\\transformer-security-discarded-2025-01-11\\DISCARDED-REASON.md",
+      "fixes": [
+        "2025-01-11 → 2025-11-11"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_failed-projects_transformer-security-discarded-2025-01-11_DISCARDED-REASON.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\2025-08-27-cleanup\\obsolete\\FIX-ALL-ISSUES-CMD.txt",
+      "fixes": [
+        "2025-01-21 → 2025-08-21"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_2025-08-27-cleanup_obsolete_FIX-ALL-ISSUES-CMD.txt"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\2025-08-27-cleanup\\obsolete\\FIX-ALL-ISSUES-POWERSHELL.txt",
+      "fixes": [
+        "2025-01-21 → 2025-08-21"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_2025-08-27-cleanup_obsolete_FIX-ALL-ISSUES-POWERSHELL.txt"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\CLEANUP-COMMANDS.txt",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_cleanup-2025-08-21_CLEANUP-COMMANDS.txt"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\CLEANUP-EXCESSIVE-FILES.js",
+      "fixes": [
+        "2025-01-21 → 2025-08-21"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_cleanup-2025-08-21_CLEANUP-EXCESSIVE-FILES.js"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\EVIDENCE-REORGANIZE.txt",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_cleanup-2025-08-21_EVIDENCE-REORGANIZE.txt"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\MOVE-ALL-CLEANUP.js",
+      "fixes": [
+        "2025-01-21 → 2025-08-21"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_cleanup-2025-08-21_MOVE-ALL-CLEANUP.js"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\cleanup-2025-08-21\\README-FIX-INSTRUCTIONS.txt",
+      "fixes": [
+        "2025-01-21 → 2025-08-21"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_cleanup-2025-08-21_README-FIX-INSTRUCTIONS.txt"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\CLEANUP-REPORT-20250120.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_CLEANUP-REPORT-20250120.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\deprecated-bat\\README.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_deprecated-bat_README.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\FILES-CLEANUP-PLAN.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_FILES-CLEANUP-PLAN.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\API-KEY-VALIDATION-REPORT.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_API-KEY-VALIDATION-REPORT.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\BASH-ERROR-DIAGNOSTIC.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_BASH-ERROR-DIAGNOSTIC.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\CLAUDE-MINIMAL.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_CLAUDE-MINIMAL.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\K-DRIVE-DEEP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_K-DRIVE-DEEP-ANALYSIS.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\K-TOOLS-INTEGRATION-PLAN.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_K-TOOLS-INTEGRATION-PLAN.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-API-KEYS.md",
+      "fixes": [
+        "2025-01-18 → 2025-08-18"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-API-KEYS.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-COMPLETE-GUIDE.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-COMPLETE-GUIDE.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-CONNECTION-STATUS-2025-01-19.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-CONNECTION-STATUS-2025-01-19.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-CONNECTION-TEST-RESULTS.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-CONNECTION-TEST-RESULTS.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-FINAL-STATUS-2025-01-19.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-FINAL-STATUS-2025-01-19.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-FINAL-STATUS-REPORT.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-FINAL-STATUS-REPORT.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-GUIDE.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-INSTALLATION-GUIDE.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-ISSUES-2025-01-17.md",
+      "fixes": [
+        "2025-01-17 → 2025-08-17"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-INSTALLATION-ISSUES-2025-01-17.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INSTALLATION-STATUS.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-INSTALLATION-STATUS.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\MCP-INVENTORY-ULTRATHINK.md",
+      "fixes": [
+        "2025-01-19 → 2025-08-19"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_MCP-INVENTORY-ULTRATHINK.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\PHASE1-COMPLETE.md",
+      "fixes": [
+        "2025-01-17 → 2025-08-17"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_PHASE1-COMPLETE.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\SSD-ENVIRONMENT-REPORT-2025-01-20.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_SSD-ENVIRONMENT-REPORT-2025-01-20.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\old-docs\\SYSTEM-HEALTH-REPORT-2025-01-20.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_old-docs_SYSTEM-HEALTH-REPORT-2025-01-20.md"
+    },
+    {
+      "path": "ARCHIVE\\old\\ARCHIVE\\README.md",
+      "fixes": [
+        "2025-01-17 → 2025-08-17"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\ARCHIVE_old_ARCHIVE_README.md"
+    },
+    {
+      "path": "data\\date-diagnosis-report.json",
+      "fixes": [
+        "2025-01-13 → 2025-12-13"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\data_date-diagnosis-report.json"
+    },
+    {
+      "path": "data\\memory\\tasks_memory_2025-08-27T08-48-21.json",
+      "fixes": [
+        "2025-01-27 → 2025-08-27"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\data_memory_tasks_memory_2025-08-27T08-48-21.json"
+    },
+    {
+      "path": "documentation\\analysis\\diff-mcp-comparison-2025.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_analysis_diff-mcp-comparison-2025.md"
+    },
+    {
+      "path": "documentation\\core-modules\\@deep-think-framework.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_core-modules_@deep-think-framework.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\CIRCULAR-REFERENCE\\code\\claude-json-protector.js",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_CIRCULAR-REFERENCE_code_claude-json-protector.js"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\CIRCULAR-REFERENCE\\code\\date-fix-monitor.js",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_CIRCULAR-REFERENCE_code_date-fix-monitor.js"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\claude-json-protector.js",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_claude-json-protector.js"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\docs\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_docs_COMPLETE-TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\docs\\TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_docs_TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\README.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_README.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\systems\\claude-json-protector.js",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_systems_claude-json-protector.js"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\systems\\date-fix-monitor.js",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_systems_date-fix-monitor.js"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\analysis\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_TIMESTAMP-ISSUES_analysis_COMPLETE-TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\analysis\\TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_TIMESTAMP-ISSUES_analysis_TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\evidence\\2025-08-20\\TIMESTAMP-ISSUES\\README.txt",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_2025-08-20_TIMESTAMP-ISSUES_README.txt"
+    },
+    {
+      "path": "documentation\\evidence\\COMPLETE-TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_COMPLETE-TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\evidence\\TIMESTAMP-ANALYSIS.md",
+      "fixes": [
+        "2025-01-20 → 2025-08-20"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_evidence_TIMESTAMP-ANALYSIS.md"
+    },
+    {
+      "path": "documentation\\guides\\@file-editing-tools.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_guides_@file-editing-tools.md"
+    },
+    {
+      "path": "documentation\\guides\\EDIT-FILE-LINES-GUIDE.md",
+      "fixes": [
+        "2025-01-28 → 2025-08-28"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_guides_EDIT-FILE-LINES-GUIDE.md"
+    },
+    {
+      "path": "documentation\\reports\\CLEANUP-REPORT.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_reports_CLEANUP-REPORT.md"
+    },
+    {
+      "path": "documentation\\reports\\DIAGNOSIS-20250116.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16",
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_reports_DIAGNOSIS-20250116.md"
+    },
+    {
+      "path": "documentation\\reports\\SYSTEM-RECOVERY-PLAN.md",
+      "fixes": [
+        "2025-01-16 → 2025-08-16"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\documentation_reports_SYSTEM-RECOVERY-PLAN.md"
+    },
+    {
+      "path": "WORKSPACE\\shared\\scripts\\ai-session-tracker.js",
+      "fixes": [
+        "2025-01-12 → 2025-12-12"
+      ],
+      "backup": "K:\\PortableApps\\genai\\backups\\date-fix-2025-12-12\\WORKSPACE_shared_scripts_ai-session-tracker.js"
+    }
+  ],
+  "errors": []
+}

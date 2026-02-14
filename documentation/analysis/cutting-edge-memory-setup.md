@@ -65,7 +65,7 @@ python install.py --storage-backend chromadb --migrate
     "args": ["-m", "memory_service"],
     "env": {
       "STORAGE_BACKEND": "sqlite_vec",
-      "MEMORY_DB_PATH": "K:/PortableApps/Claude-Code/memory/memories.db",
+      "MEMORY_DB_PATH": "K:/PortableApps/genai/memory/memories.db",
       "AUTO_BACKUP": "true",
       "BACKUP_PATH": "K:/PortableApps/Claude-Archive/memory-backups/"
     }

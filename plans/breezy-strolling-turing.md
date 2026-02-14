@@ -159,7 +159,7 @@ File System
 
 ### 서버 시작
 ```bash
-cd K:/PortableApps/Claude-Code/dashboard
+cd K:/PortableApps/genai/dashboard
 node server.js
 # http://localhost:3030 접속
 ```

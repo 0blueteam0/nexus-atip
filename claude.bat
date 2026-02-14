@@ -14,14 +14,14 @@ set LESSCHARSET=utf-8
 set CHARSET=UTF-8
 
 REM Environment setup
-set NPM_CONFIG_CACHE=K:\PortableApps\Claude-Code\npm-cache
+set NPM_CONFIG_CACHE=K:\PortableApps\genai\npm-cache
 set NPM_CONFIG_PREFIX=K:\PortableApps\tools\nodejs\npm-global
-set NPM_CONFIG_USERCONFIG=K:\PortableApps\Claude-Code\.npmrc
-set TEMP=K:\PortableApps\Claude-Code\temp
-set TMP=K:\PortableApps\Claude-Code\temp
-set TMPDIR=K:\PortableApps\Claude-Code\temp
-set HOME=K:\PortableApps\Claude-Code
-set USERPROFILE=K:\PortableApps\Claude-Code
+set NPM_CONFIG_USERCONFIG=K:\PortableApps\genai\.npmrc
+set TEMP=K:\PortableApps\genai\temp
+set TMP=K:\PortableApps\genai\temp
+set TMPDIR=K:\PortableApps\genai\temp
+set HOME=K:\PortableApps\genai
+set USERPROFILE=K:\PortableApps\genai
 
 REM Python UTF-8 encoding
 set PYTHONIOENCODING=utf-8:replace
@@ -31,12 +31,12 @@ REM Claude settings
 set CLAUDE_CODE_GIT_BASH_PATH=K:\PortableApps\tools\git\bin\bash.exe
 set CLAUDE_CODE_SHELL=cmd.exe
 set SHELL=cmd.exe
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
-set CLAUDE_CONFIG_FILE=K:\PortableApps\Claude-Code\.claude.json
-set CLAUDE_CONFIG_DIR=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
+set CLAUDE_CONFIG_FILE=K:\PortableApps\genai\.claude.json
+set CLAUDE_CONFIG_DIR=K:\PortableApps\genai
 set CLAUDE_DISABLE_HISTORY=true
 set CLAUDE_NO_PROJECT_HISTORY=true
-set BASH_ENV=K:\PortableApps\Claude-Code\.bashrc
+set BASH_ENV=K:\PortableApps\genai\.bashrc
 set NODE_PATH=K:\PortableApps\tools\nodejs-v20-backup
 set UV_PATH=K:\PortableApps\tools\uv
 set PATH=%UV_PATH%;%NODE_PATH%;%NODE_PATH%\node_modules\.bin;K:\PortableApps\tools\git\bin;%PATH%
@@ -47,7 +47,7 @@ if exist "%CLAUDE_HOME%\.env" (
 )
 
 REM Execute Claude
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 K:\PortableApps\tools\nodejs-v20-backup\node.exe K:\PortableApps\tools\nodejs\npm-global\node_modules\@anthropic-ai\claude-code\cli.js %*
 
 endlocal

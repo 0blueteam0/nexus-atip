@@ -1,0 +1,22 @@
+{
+  "category": "research",
+  "description": "학술 논문 및 연구 자료 검색",
+  "priority": "medium",
+  "servers": {
+    "paper-search-mcp": {
+      "priority": "medium",
+      "description": "학술 논문 검색 (arXiv, PubMed, Semantic Scholar)",
+      "tools": [
+        "search_arxiv", "search_pubmed", "search_semantic",
+        "search_google_scholar", "download_arxiv", "read_arxiv_paper"
+      ],
+      "triggerKeywords": ["논문", "arXiv", "학술", "paper", "research"]
+    },
+    "context7": {
+      "priority": "high",
+      "description": "라이브러리 문서 검색",
+      "tools": ["resolve-library-id", "query-docs"],
+      "triggerKeywords": ["문서", "라이브러리", "docs", "documentation"]
+    }
+  }
+}

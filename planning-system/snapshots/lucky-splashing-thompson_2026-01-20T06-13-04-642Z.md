@@ -191,7 +191,7 @@ git clone https://github.com/VetCoders/mcp-server-semgrep
   - MCP 표준 준수 (기존 32개 서버와 동일 패턴)
   - 칸반 보드 기능 (Shrimp Task Manager 보완)
   - 바로 .claude.json에 추가 가능
-- **설치 경로**: K:/PortableApps/Claude-Code/mcp-servers/vibekanban/
+- **설치 경로**: K:/PortableApps/genai/mcp-servers/vibekanban/
 
 ### CLI 대안: irukasano/vibe-kanban-cli
 - **유형**: CLI Tool (독립 실행)
@@ -231,16 +231,16 @@ Shrimp Task Manager (P3) ← [새로운 연결: vibekanban MCP]
 ### Phase 0: 백업 생성 (필수)
 ```bash
 # 1. .claude.json 백업
-cp K:/PortableApps/Claude-Code/.claude.json K:/PortableApps/Claude-Code/.claude.json.backup-$(date +%Y%m%d)
+cp K:/PortableApps/genai/.claude.json K:/PortableApps/genai/.claude.json.backup-$(date +%Y%m%d)
 
 # 2. MCP 서버 목록 스냅샷
-dir K:/PortableApps/Claude-Code/mcp-servers/ > mcp-snapshot.txt
+dir K:/PortableApps/genai/mcp-servers/ > mcp-snapshot.txt
 ```
 
 ### Phase 1: Vibe Kanban MCP 추가 (사용자 승인 후)
 ```bash
 # shahriarb/vibekanban 클론
-cd K:/PortableApps/Claude-Code/mcp-servers/
+cd K:/PortableApps/genai/mcp-servers/
 git clone https://github.com/shahriarb/vibekanban
 
 # .claude.json에 MCP 서버 등록 (수동 검토 후)

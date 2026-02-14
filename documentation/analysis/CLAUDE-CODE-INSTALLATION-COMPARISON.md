@@ -6,9 +6,9 @@
 | 구분 | NPM Global | Native Install | K드라이브 Portable |
 |------|------------|----------------|-------------------|
 | **설치 명령** | `npm install -g @anthropic-ai/claude-code` | `curl -fsSL claude.ai/install.sh \| bash` | `npm init` + `npm install @anthropic-ai/claude-code` |
-| **설치 위치** | `%AppData%\npm\node_modules` (Windows)<br>`/usr/local/lib/node_modules` (Linux/Mac) | `~/.claude/` 디렉토리 | `K:\PortableApps\Claude-Code\node_modules` |
+| **설치 위치** | `%AppData%\npm\node_modules` (Windows)<br>`/usr/local/lib/node_modules` (Linux/Mac) | `~/.claude/` 디렉토리 | `K:\PortableApps\genai\node_modules` |
 | **실행 파일** | 시스템 PATH에 자동 등록 | 바이너리 직접 설치 | `claude.bat` 커스텀 래퍼 |
-| **설정 파일** | `~/.claude.json` | `~/.claude.json` | `K:\PortableApps\Claude-Code\.claude.json` |
+| **설정 파일** | `~/.claude.json` | `~/.claude.json` | `K:\PortableApps\genai\.claude.json` |
 | **package.json** | ❌ 없음 | ❌ 없음 | ✅ 있음 (MCP 서버 관리용) |
 | **MCP 서버** | 별도 설치 필요 | 별도 설치 필요 | dependencies로 통합 관리 |
 | **업데이트** | `npm update -g` | 자동 업데이트 | `npm update` |
@@ -44,7 +44,7 @@ C:\Users\[username]\AppData\Roaming\npm\
 
 ### 3. K드라이브 Portable (현재 환경)
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── package.json (✅ 정당함 - MCP 관리용)
 ├── package-lock.json
 ├── node_modules\

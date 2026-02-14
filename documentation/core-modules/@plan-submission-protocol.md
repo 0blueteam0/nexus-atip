@@ -97,7 +97,7 @@ graph LR
 
 모든 제출된 플랜은 자동 저장:
 ```
-K:\PortableApps\Claude-Code\plans\
+K:\PortableApps\genai\plans\
 ├── YYYY-MM-DD-HH-MM-project-name.md
 ├── approved\  (승인된 플랜)
 ├── rejected\  (거절된 플랜)

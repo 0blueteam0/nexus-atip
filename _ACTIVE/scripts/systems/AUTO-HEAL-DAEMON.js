@@ -16,7 +16,7 @@ const { exec } = require('child_process');
 // 설정
 const CONFIG = {
     checkInterval: 30000,  // 30초
-    logFile: 'K:\\PortableApps\\Claude-Code\\auto-heal.log',
+    logFile: 'K:\\PortableApps\\genai\\auto-heal.log',
     maxLogSize: 1024 * 1024,  // 1MB
     safeMode: true  // 안전 모드 (수정 전 확인)
 };
@@ -60,7 +60,7 @@ class AutoHealDaemon {
         const issues = [];
         
         // 1. tmp 디렉토리 확인
-        const tmpDir = 'K:\\PortableApps\\Claude-Code\\tmp';
+        const tmpDir = 'K:\\PortableApps\\genai\\tmp';
         if (!fs.existsSync(tmpDir)) {
             issues.push({
                 type: 'MISSING_DIR',
@@ -73,7 +73,7 @@ class AutoHealDaemon {
         }
         
         // 2. shell-snapshots 정리
-        const snapshotDir = 'K:\\PortableApps\\Claude-Code\\shell-snapshots';
+        const snapshotDir = 'K:\\PortableApps\\genai\\shell-snapshots';
         if (fs.existsSync(snapshotDir)) {
             const files = fs.readdirSync(snapshotDir);
             const now = Date.now();
@@ -107,8 +107,8 @@ class AutoHealDaemon {
         
         // 3. 환경 변수 체크
         const requiredEnvVars = {
-            'CLAUDE_HOME': 'K:\\PortableApps\\Claude-Code',
-            'TMPDIR': 'K:\\PortableApps\\Claude-Code\\tmp'
+            'CLAUDE_HOME': 'K:\\PortableApps\\genai',
+            'TMPDIR': 'K:\\PortableApps\\genai\\tmp'
         };
         
         for (const [varName, expectedValue] of Object.entries(requiredEnvVars)) {
@@ -134,13 +134,13 @@ class AutoHealDaemon {
         ];
         
         dangerousFiles.forEach(filename => {
-            const filePath = `K:\\PortableApps\\Claude-Code\\${filename}`;
+            const filePath = `K:\\PortableApps\\genai\\${filename}`;
             if (fs.existsSync(filePath)) {
                 issues.push({
                     type: 'DANGEROUS_FILE',
                     path: filePath,
                     fix: () => {
-                        const backupPath = `K:\\PortableApps\\Claude-Code\\BACKUP\\${filename}.quarantine`;
+                        const backupPath = `K:\\PortableApps\\genai\\BACKUP\\${filename}.quarantine`;
                         try {
                             fs.renameSync(filePath, backupPath);
                             log(`Quarantined dangerous file: ${filename}`, 'WARN');

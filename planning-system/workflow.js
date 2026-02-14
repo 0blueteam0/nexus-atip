@@ -48,8 +48,8 @@ try {
   lifecycleCollector = null;
 }
 
-const PLANS_DIR = 'K:/PortableApps/Claude-Code/plans';
-const PLANNING_SYSTEM_DIR = 'K:/PortableApps/Claude-Code/planning-system';
+const PLANS_DIR = 'K:/PortableApps/genai/plans';
+const PLANNING_SYSTEM_DIR = 'K:/PortableApps/genai/planning-system';
 const WORKFLOW_STATE_FILE = path.join(PLANNING_SYSTEM_DIR, 'workflow-state.json');
 const ACTIVE_PLAN_FILE = path.join(PLANS_DIR, 'ACTIVE-PLAN.md');
 
@@ -97,7 +97,7 @@ class PlanningWorkflow {
     // 2. Create plan snapshots
     console.log('\n[1/3] Creating plan snapshots...');
     try {
-      execSync('node K:/PortableApps/Claude-Code/planning-system/plan-guard.js snapshot', {
+      execSync('node K:/PortableApps/genai/planning-system/plan-guard.js snapshot', {
         stdio: 'inherit'
       });
     } catch (e) {
@@ -226,7 +226,7 @@ class PlanningWorkflow {
     // 1. Verify integrity
     console.log('[1/3] Verifying plan integrity...');
     try {
-      execSync('node K:/PortableApps/Claude-Code/planning-system/plan-guard.js verify', {
+      execSync('node K:/PortableApps/genai/planning-system/plan-guard.js verify', {
         stdio: 'inherit'
       });
     } catch (e) {
@@ -272,7 +272,7 @@ class PlanningWorkflow {
       violations.forEach(v => {
         console.log(`  [!] Restoring: ${v.file}`);
         try {
-          execSync(`node K:/PortableApps/Claude-Code/planning-system/plan-guard.js restore "${v.file}"`, {
+          execSync(`node K:/PortableApps/genai/planning-system/plan-guard.js restore "${v.file}"`, {
             stdio: 'inherit'
           });
         } catch (e) {

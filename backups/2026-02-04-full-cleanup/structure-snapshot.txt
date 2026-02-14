@@ -1,0 +1,61 @@
+=== K:/ Structure Snapshot ===
+Date: 2026년 02월  4일 수 오전  9:54:02
+
+=== K:/ Root ===
+total 37
+drwxr-xr-x 1 A.SONG 197121  0  9월 17 12:12 $RECYCLE.BIN/
+drwxr-xr-x 1 A.SONG 197121  0  2월  4 08:49 ./
+drwxr-xr-x 1 A.SONG 197121  0  2월  4 08:49 ../
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 14:11 .system/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 19:24 Archive/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 19:44 Development/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 19:45 Documents/
+drwxr-xr-x 1 A.SONG 197121  0  1월 20 11:40 nonexistent/
+-rw-r--r-- 1 A.SONG 197121 59  2월  4 08:49 nul
+drwxr-xr-x 1 A.SONG 197121  0  2월  4 07:03 PortableApps/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 14:33 Security/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 19:46 Security-Research/
+drwxr-xr-x 1 A.SONG 197121  0  1월 31 00:44 System Volume Information/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 23:55 temp/
+drwxr-xr-x 1 A.SONG 197121  0 12월 15 02:07 tmp/
+drwxr-xr-x 1 A.SONG 197121  0 12월 12 19:51 Work-Projects/
+
+=== K:/PortableApps ===
+total 1579
+drwxr-xr-x 1 A.SONG 197121       0  2월  4 07:03 ./
+drwxr-xr-x 1 A.SONG 197121       0  2월  4 08:49 ../
+-rw-r--r-- 1 A.SONG 197121      99  8월 13 15:40 .bash_profile
+-rwxr-xr-x 1 A.SONG 197121     331  8월 13 15:25 .bashrc*
+drwxr-xr-x 1 A.SONG 197121       0  8월 13 14:53 .claude/
+-rw-r--r-- 1 A.SONG 197121   23650  8월 13 15:58 .claude.json
+-rw-r--r-- 1 A.SONG 197121   23216  8월 13 15:58 .claude.json.backup
+drwxr-xr-x 1 A.SONG 197121       0  8월 13 15:33 .claude-cache/
+-rw-r--r-- 1 A.SONG 197121    2224  8월 17 05:51 .env
+drwxr-xr-x 1 A.SONG 197121       0  8월 13 15:40 .localappdata/
+drwxr-xr-x 1 A.SONG 197121       0  8월 13 15:33 .npm-cache/
+drwxr-xr-x 1 A.SONG 197121       0  8월 19 16:04 .pip/
+drwxr-xr-x 1 A.SONG 197121       0 10월 26 14:06 ai-stack/
+drwxr-xr-x 1 A.SONG 197121       0  2월  3 14:36 Antigravity/
+drwxr-xr-x 1 A.SONG 197121       0  8월 13 15:40 AppData/
+drwxr-xr-x 1 A.SONG 197121       0  8월 26 15:30 bin/
+-rw-r--r-- 1 A.SONG 197121     316  8월 13 15:36 claude.cmd
+drwxr-xr-x 1 A.SONG 197121       0  8월 15 16:00 Claude-Archive/
+drwxr-xr-x 1 A.SONG 197121       0  2월  4 09:53 Claude-Code/
+drwxr-xr-x 1 A.SONG 197121       0  8월 16 12:32 Claude-Code_Backup/
+drwxr-xr-x 1 A.SONG 197121       0 12월 13 02:04 Claude-Desktop/
+drwxr-xr-x 1 A.SONG 197121       0  8월 27 12:09 ClaudeForWinPC/
+-rw-r--r-- 1 A.SONG 197121     380  8월 13 15:34 claude-portable.bat
+drwxr-xr-x 1 A.SONG 197121       0 12월 29 10:33 cursor/
+drwxr-xr-x 1 A.SONG 197121       0 11월  3 15:37 data/
+drwxr-xr-x 1 A.SONG 197121       0 10월 26 14:06 dify workflow/
+drwxr-xr-x 1 A.SONG 197121       0 12월 27 19:13 Gemini-CLI/
+drwxr-xr-x 1 A.SONG 197121       0 12월  4 18:01 MiKTex/
+-rwxr-xr-x 1 A.SONG 197121 1420220 10월 23 16:08 Portable-VirtualBox_Installer.exe*
+-rwxr-xr-x 1 A.SONG 197121     399  8월 13 15:34 run-claude.sh*
+-rw-r--r-- 1 A.SONG 197121     611  8월 13 15:39 run-claude-anywhere.bat
+drwxr-xr-x 1 A.SONG 197121       0 12월 12 19:45 Security-Tools/
+drwxr-xr-x 1 A.SONG 197121       0 11월 27 16:01 test sample/
+drwxr-xr-x 1 A.SONG 197121       0  2월  4 09:33 tools/
+-rw-r--r-- 1 A.SONG 197121     286 10월 23 16:16 ubuntu-22.04.tar.gz
+drwxr-xr-x 1 A.SONG 197121       0 11월  4 00:10 VSCode-Portable/
+-rw-r--r-- 1 A.SONG 197121       0  8월 17 05:46 새 텍스트 문서.txt

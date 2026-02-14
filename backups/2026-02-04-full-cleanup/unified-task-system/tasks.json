@@ -1,0 +1,373 @@
+{
+  "version": "1.0.0",
+  "lastSync": "2025-12-15T11:02:13.225Z",
+  "currentSession": {
+    "id": null,
+    "startTime": null,
+    "activeTask": null
+  },
+  "tasks": [
+    {
+      "id": "shrimp-task-001",
+      "title": "MCP 서버 설치 및 연동",
+      "status": "completed",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.224Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-001-1",
+          "title": "Shrimp Task Manager 설치",
+          "status": "completed",
+          "note": "cmd C:/ → /c 수정 필요"
+        },
+        {
+          "id": "shrimp-001-2",
+          "title": "Git MCP Server 설치",
+          "status": "completed",
+          "note": ""
+        },
+        {
+          "id": "shrimp-001-3",
+          "title": "Diff TypeScript MCP 설치",
+          "status": "completed",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-001"
+      }
+    },
+    {
+      "id": "shrimp-task-002",
+      "title": "Unified Diff MCP 비교 분석",
+      "status": "in_progress",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-002-1",
+          "title": "@gorosun/unified-diff-mcp 조사",
+          "status": "pending",
+          "note": "Bun 런타임 기반, HTML/PNG 시각화"
+        },
+        {
+          "id": "shrimp-002-2",
+          "title": "mcp-server-diff-typescript 조사",
+          "status": "pending",
+          "note": "TypeScript 기반, npm만 필요"
+        },
+        {
+          "id": "shrimp-002-3",
+          "title": "mcp-server-diff-editor 조사",
+          "status": "pending",
+          "note": "고급 편집기, 패턴 인식"
+        },
+        {
+          "id": "shrimp-002-4",
+          "title": "비교 테이블 작성",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-002-5",
+          "title": "Windows Native 최적 선택",
+          "status": "pending",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-002"
+      }
+    },
+    {
+      "id": "shrimp-task-003",
+      "title": "MCP 자동 발견 시스템 구축",
+      "status": "pending",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-003-1",
+          "title": "프로젝트 분석 자동화",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-003-2",
+          "title": "필요 MCP 자동 감지",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-003-3",
+          "title": "자동 설치 스크립트",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-003-4",
+          "title": "cmd 인자 자동 수정기",
+          "status": "pending",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-003"
+      }
+    },
+    {
+      "id": "shrimp-task-007",
+      "title": "추천 MCP 서버 설치",
+      "status": "in_progress",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-007-1",
+          "title": "Kiro Memory MCP 설치",
+          "status": "completed",
+          "note": "멀티 프로젝트 메모리 관리 - uvx 방식으로 성공"
+        },
+        {
+          "id": "shrimp-007-2",
+          "title": "Firecrawl MCP 설치",
+          "status": "completed",
+          "note": "웹 스크래핑 - 패키지명 수정으로 성공"
+        },
+        {
+          "id": "shrimp-007-3",
+          "title": "Prisma Postgres MCP 설치",
+          "status": "pending",
+          "note": "DB 백업/마이그레이션"
+        },
+        {
+          "id": "shrimp-007-4",
+          "title": "REST Client MCP 설치",
+          "status": "pending",
+          "note": "API 테스트용"
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-007"
+      }
+    },
+    {
+      "id": "shrimp-task-004",
+      "title": "문서화 자동 업데이트 체계",
+      "status": "pending",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-004-1",
+          "title": "CLAUDE.md 자동 업데이트",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-004-2",
+          "title": "MCP-DISCOVERY-SYSTEM.md 유지보수",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-004-3",
+          "title": "설치 패턴 학습 및 저장",
+          "status": "pending",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-004"
+      }
+    },
+    {
+      "id": "shrimp-task-005",
+      "title": "NEXUS ATIP V2.0 프로젝트",
+      "status": "pending",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-005-1",
+          "title": "프로젝트 재개",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-005-2",
+          "title": "VSCode Live Server 연동",
+          "status": "pending",
+          "note": "127.0.0.1:5500"
+        },
+        {
+          "id": "shrimp-005-3",
+          "title": "실시간 UI 개발",
+          "status": "pending",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-005"
+      }
+    },
+    {
+      "id": "shrimp-task-006",
+      "title": "API 키 설정",
+      "status": "pending",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-006-1",
+          "title": "Context7 API 키",
+          "status": "pending",
+          "note": ""
+        },
+        {
+          "id": "shrimp-006-2",
+          "title": "YouTube Data API 키",
+          "status": "pending",
+          "note": ""
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-006"
+      }
+    },
+    {
+      "id": "shrimp-task-008",
+      "title": "mcp-memory-service 컨테이너화",
+      "status": "completed",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-008-1",
+          "title": "Podman Desktop 설치",
+          "status": "completed",
+          "note": "121MB 다운로드, C드라이브 설치 완료"
+        },
+        {
+          "id": "shrimp-008-2",
+          "title": "Podman 머신 생성 및 확인",
+          "status": "completed",
+          "note": "podman-adriabluelabs WSL 머신, Podman 5.5.2 작동 확인"
+        },
+        {
+          "id": "shrimp-008-3",
+          "title": "mcp-memory-service 컨테이너 이미지 준비",
+          "status": "completed",
+          "note": "Dockerfile 확인 완료, WSL K드라이브 마운트 이슈 발견"
+        },
+        {
+          "id": "shrimp-008-3a",
+          "title": "mcp-memory-service 즉시 실행",
+          "status": "completed",
+          "note": "docker.io/mcp/memory 이미지 정상 작동 확인 - stdio MCP 서버로 통신 대기"
+        },
+        {
+          "id": "shrimp-008-4",
+          "title": "K드라이브 볼륨 마운트 설정",
+          "status": "pending",
+          "note": "ChromaDB 데이터를 K드라이브에 저장"
+        },
+        {
+          "id": "shrimp-008-5",
+          "title": "Claude Code MCP 연동",
+          "status": "completed",
+          "note": "kiro-memory 정상 작동 확인 - SQLite 기반 메모리 시스템 준비 완료"
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-008"
+      }
+    },
+    {
+      "id": "shrimp-task-009",
+      "title": "메모리 시스템 개선",
+      "status": "completed",
+      "source": "shrimp",
+      "priority": "medium",
+      "created": "2025-12-15T11:02:13.225Z",
+      "updated": "2025-12-15T11:02:13.225Z",
+      "subtasks": [
+        {
+          "id": "shrimp-009-1",
+          "title": "자동 저장 메커니즘 연구",
+          "status": "completed",
+          "note": "auto-memory-system.js 구현 완료 - Hook 시스템 활성화"
+        },
+        {
+          "id": "shrimp-009-2",
+          "title": "수동 저장 워크플로우 정립",
+          "status": "completed",
+          "note": "중요 내용 선별적 저장 전략"
+        },
+        {
+          "id": "shrimp-009-3",
+          "title": "메모리 검색 최적화",
+          "status": "completed",
+          "note": "효율적인 컨텍스트 검색 방법"
+        }
+      ],
+      "dependencies": [],
+      "tags": [],
+      "originalData": {
+        "shrimpId": "task-009"
+      }
+    }
+  ],
+  "pendingFollowups": [],
+  "completedTasks": [],
+  "chainOfThought": {
+    "source": "shrimp",
+    "current_focus": "환경 구축 완료 및 문서화",
+    "next_steps": [
+      "메모리 자동 저장 방식 구현",
+      "중요 대화 내용 수동 저장",
+      "K드라이브 WSL 마운트 문제 해결"
+    ],
+    "learned_patterns": [
+      "claude mcp add 시 cmd 인자가 C:/로 잘못 설정됨",
+      "수동으로 .claude.json 수정 필요",
+      "Shrimp Task Manager는 @ 없이 mcp-shrimp-task-manager",
+      "WSL K드라이브 마운트 성공 - /mnt/k/로 접근 가능",
+      "TodoWrite 시스템 리마인더 무시 설정 완료"
+    ],
+    "syncedAt": "2025-12-15T11:02:13.225Z"
+  },
+  "lastSyncSource": "shrimp"
+}

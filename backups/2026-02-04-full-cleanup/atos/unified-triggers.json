@@ -1,0 +1,591 @@
+{
+  "$schema": "unified-triggers-schema",
+  "version": "1.0.0",
+  "description": "Self-Triggered Loading (STL) - 통합 키워드 트리거 매핑",
+  "lastUpdated": "2025-12-22",
+
+  "commands": {
+    "커밋|commit|git add|git commit": {
+      "type": "command",
+      "target": "/commit",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "디버그|debug|에러|error|버그|bug": {
+      "type": "command",
+      "target": "/debug-error",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "초기화|init|프로젝트 시작|new project": {
+      "type": "command",
+      "target": "/init-project",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "PR|풀리퀘|pull request|풀 리퀘스트": {
+      "type": "command",
+      "target": "/create-pr",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "테스트|test|단위테스트|unit test": {
+      "type": "command",
+      "target": "/write-tests",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "리뷰|review|코드리뷰|code review": {
+      "type": "command",
+      "target": "/code-review",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "이슈|issue|fix": {
+      "type": "command",
+      "target": "/fix-issue",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "테스트 생성|generate test|테스트 자동": {
+      "type": "command",
+      "target": "/generate-tests",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "pr 리뷰|pr review|PR 검토": {
+      "type": "command",
+      "target": "/pr-review",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "개발환경|dev setup|환경설정|development environment": {
+      "type": "command",
+      "target": "/setup-development-environment",
+      "location": "core/",
+      "action": "Execute",
+      "priority": 1
+    },
+    "배포|deploy|블루그린|blue-green|deployment": {
+      "type": "command",
+      "target": "/blue-green-deployment",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "CI|파이프라인|pipeline|CI/CD": {
+      "type": "command",
+      "target": "/ci-pipeline",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "CI 설정|ci setup|CI 환경": {
+      "type": "command",
+      "target": "/ci-setup",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "릴리스|release|배포준비|release prep": {
+      "type": "command",
+      "target": "/prepare-release",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "롤백|rollback|되돌리기": {
+      "type": "command",
+      "target": "/rollback-deploy",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "API 최적화|api performance|API 성능": {
+      "type": "command",
+      "target": "/optimize-api-performance",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "번들 최적화|bundle size|번들 크기": {
+      "type": "command",
+      "target": "/optimize-bundle-size",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "DB 최적화|database performance|DB 성능": {
+      "type": "command",
+      "target": "/optimize-database-performance",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "성능 감사|performance audit|성능 분석": {
+      "type": "command",
+      "target": "/performance-audit",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "리팩토링|refactor|코드 정리": {
+      "type": "command",
+      "target": "/refactor-code",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "코드 설명|explain|설명해줘": {
+      "type": "command",
+      "target": "/explain-code",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "린팅|linting|eslint|prettier": {
+      "type": "command",
+      "target": "/setup-linting",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "테스트 커버리지|coverage|커버리지": {
+      "type": "command",
+      "target": "/test-coverage",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "E2E|엔드투엔드|end to end": {
+      "type": "command",
+      "target": "/e2e-setup",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "보안|security|hardening|보안 강화": {
+      "type": "command",
+      "target": "/security-hardening",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "시크릿|secrets|스캔|secret scan": {
+      "type": "command",
+      "target": "/secrets-scanner",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "의존성 감사|dependency audit|취약점": {
+      "type": "command",
+      "target": "/dependency-audit",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "문서 업데이트|update docs|문서 갱신": {
+      "type": "command",
+      "target": "/update-docs",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "아키텍처 문서|architecture doc|구조 문서": {
+      "type": "command",
+      "target": "/create-architecture-documentation",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "PRD|기획서|요구사항 문서": {
+      "type": "command",
+      "target": "/create-prd",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "마이그레이션|migration|이관": {
+      "type": "command",
+      "target": "/migration-guide",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "타입스크립트|typescript|TS 전환": {
+      "type": "command",
+      "target": "/migrate-to-typescript",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "워크플로우|workflow|오케스트레이션": {
+      "type": "command",
+      "target": "/workflow-orchestrator",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "브랜치 정리|branch cleanup|브랜치 삭제": {
+      "type": "command",
+      "target": "/branch-cleanup",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "의존성 업데이트|update deps|패키지 업데이트": {
+      "type": "command",
+      "target": "/update-dependencies",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "마일스톤|milestone|이정표": {
+      "type": "command",
+      "target": "/milestone-tracker",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "GitHub 이슈|github issue|깃헙 이슈": {
+      "type": "command",
+      "target": "/fix-github-issue",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "정리|clean|클린업": {
+      "type": "command",
+      "target": "/clean",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 3
+    },
+    "할일|todo|투두": {
+      "type": "command",
+      "target": "/todo",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    },
+    "울트라씽크|ultrathink|심층분석|deep think": {
+      "type": "command",
+      "target": "/ultra-think",
+      "location": "library/",
+      "action": "Read → Execute",
+      "priority": 2
+    }
+  },
+
+  "tools": {
+    "git|깃|버전관리|version control": {
+      "type": "mcp",
+      "target": ["git-mcp", "github"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "검색|search|찾아|find|research|조사|연구": {
+      "type": "mcp",
+      "target": ["firecrawl", "one-search", "websearch"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "웹검색|크롤링|스크래핑|URL|웹페이지|사이트맵|딥리서치": {
+      "type": "mcp",
+      "target": ["firecrawl"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "비교|diff|compare|차이": {
+      "type": "mcp",
+      "target": ["git-mcp"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "youtube|유튜브|video|영상|동영상": {
+      "type": "mcp",
+      "target": ["youtube-data"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "database|sql|데이터베이스|DB|쿼리": {
+      "type": "mcp",
+      "target": ["sqlite-mcp"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "차트|chart|그래프|graph|시각화|visualization|마인드맵|플로우차트|다이어그램": {
+      "type": "mcp",
+      "target": ["antv-chart"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "파일|file|작성|write|수정|edit|읽기|read|디렉토리|폴더|저장|편집|코드검색": {
+      "type": "mcp",
+      "target": ["desktop-commander", "filesystem"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "깃헙|GitHub|레포지토리|repo|이슈|issue|풀리퀘스트": {
+      "type": "mcp",
+      "target": ["github"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "브라우저|browser|playwright|자동화|automation|스크린샷": {
+      "type": "mcp",
+      "target": ["playwright"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "n8n|워크플로우 자동화|노드": {
+      "type": "mcp",
+      "target": ["n8n"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "task|작업|태스크|할일 관리": {
+      "type": "mcp",
+      "target": ["shrimp-task", "task-master-ai"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "칸반|kanban|보드|kanban board|작업 보드": {
+      "type": "mcp",
+      "target": ["vibekanban"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "memory|기억|메모리|저장소": {
+      "type": "mcp",
+      "target": ["kiro-memory", "memory"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "thinking|사고|sequential|순차적": {
+      "type": "mcp",
+      "target": ["sequential-thinking"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "pdf|문서|ocr|추출|marker": {
+      "type": "mcp",
+      "target": ["marker-mcp", "paddleocr-mcp"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "image|이미지|사진|vision|인식": {
+      "type": "mcp",
+      "target": ["image-recognition"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "jupyter|노트북|notebook|python 실행": {
+      "type": "mcp",
+      "target": ["runpod-jupyter"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "llm|ai 모델|council|다중 모델": {
+      "type": "mcp",
+      "target": ["llm-council"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "context7|라이브러리 문서|library docs": {
+      "type": "mcp",
+      "target": ["context7"],
+      "action": "Recommend",
+      "priority": 1
+    },
+    "huggingface|hf|모델|spaces": {
+      "type": "mcp",
+      "target": ["hfspace"],
+      "action": "Recommend",
+      "priority": 2
+    },
+    "map|지도|위치|장소": {
+      "type": "mcp",
+      "target": ["antv-chart"],
+      "action": "Recommend",
+      "priority": 2
+    }
+  },
+
+  "skills": {
+    "논문|paper|학술|academic|검증|verification|인용|citation": {
+      "type": "skill",
+      "target": "academic-paper-verifier",
+      "location": ".claude/skills/academic-paper-verifier/",
+      "action": "Load SKILL.md",
+      "priority": 1
+    },
+    "업데이트|update|새 버전|최신|optimize": {
+      "type": "skill",
+      "target": "update-optimizer",
+      "location": ".claude/skills/update-optimizer/",
+      "action": "Load SKILL.md",
+      "priority": 1
+    },
+    "pdf|vision|ocr|문서 분석": {
+      "type": "skill",
+      "target": "pdf-vision",
+      "location": ".claude/skills/pdf-vision/",
+      "action": "Load SKILL.md",
+      "priority": 1
+    },
+    "리서치|research|fic|조사 모드": {
+      "type": "skill",
+      "target": "fic-research",
+      "location": ".claude/skills/fic-research/",
+      "action": "Load SKILL.md",
+      "priority": 2
+    },
+    "플랜|plan|계획|fic plan": {
+      "type": "skill",
+      "target": "fic-plan",
+      "location": ".claude/skills/fic-plan/",
+      "action": "Load SKILL.md",
+      "priority": 2
+    },
+    "구현|implement|만들어줘|fic implement": {
+      "type": "skill",
+      "target": "fic-implement",
+      "location": ".claude/skills/fic-implement/",
+      "action": "Load SKILL.md",
+      "priority": 2
+    }
+  },
+
+  "memory": {
+    "중요|important|기억|remember|저장|save|핵심|critical": {
+      "type": "memory",
+      "target": "kiro-memory",
+      "action": "Auto-save",
+      "priority": 1
+    },
+    "필수|must|항상|always|절대|never forget": {
+      "type": "memory",
+      "target": "kiro-memory",
+      "action": "Auto-save",
+      "priority": 1
+    },
+    "결정|decided|해결|resolved|성공|success|완료|completed": {
+      "type": "memory",
+      "target": "kiro-memory",
+      "action": "Auto-save",
+      "priority": 2
+    },
+    "확정|finalized|마무리|done|끝|finished|종료|final|최종": {
+      "type": "memory",
+      "target": "kiro-memory",
+      "action": "Auto-save",
+      "priority": 2
+    }
+  },
+
+  "intents": {
+    "research": {
+      "patterns": ["연구", "조사", "분석", "찾아", "검색", "research", "analyze", "find", "search"],
+      "recommendedTools": ["firecrawl", "one-search", "paper-search-mcp"],
+      "priority": 1
+    },
+    "file_operation": {
+      "patterns": ["파일", "작성", "수정", "읽기", "생성", "file", "write", "read", "create"],
+      "recommendedTools": ["desktop-commander", "filesystem"],
+      "priority": 1
+    },
+    "web_scraping": {
+      "patterns": ["스크래핑", "크롤링", "웹페이지", "scrape", "crawl", "webpage"],
+      "recommendedTools": ["firecrawl", "crawl4ai-lite"],
+      "priority": 1
+    },
+    "development": {
+      "patterns": ["개발", "코딩", "프로그래밍", "develop", "code", "programming", "build"],
+      "recommendedTools": ["desktop-commander", "git-mcp"],
+      "priority": 1
+    },
+    "git_operation": {
+      "patterns": ["git", "commit", "push", "pull", "branch", "커밋", "푸시", "브랜치", "merge"],
+      "recommendedTools": ["git-mcp", "github"],
+      "priority": 1
+    },
+    "github_operation": {
+      "patterns": ["github", "깃헙", "레포", "이슈", "PR", "풀리퀘", "repository"],
+      "recommendedTools": ["github"],
+      "priority": 1
+    },
+    "database": {
+      "patterns": ["데이터베이스", "DB", "SQL", "쿼리", "database", "query", "table"],
+      "recommendedTools": ["sqlite-mcp"],
+      "priority": 1
+    },
+    "visualization": {
+      "patterns": ["차트", "그래프", "시각화", "chart", "graph", "visualization", "diagram"],
+      "recommendedTools": ["antv-chart"],
+      "priority": 1
+    },
+    "browser_automation": {
+      "patterns": ["브라우저", "자동화", "playwright", "스크린샷", "browser", "automation"],
+      "recommendedTools": ["playwright"],
+      "priority": 1
+    },
+    "task_management": {
+      "patterns": ["작업", "태스크", "할일", "task", "todo", "plan"],
+      "recommendedTools": ["shrimp-task", "task-master-ai"],
+      "priority": 1
+    },
+    "memory": {
+      "patterns": ["기억", "메모리", "저장", "memory", "remember", "save"],
+      "recommendedTools": ["kiro-memory"],
+      "priority": 1
+    },
+    "document_analysis": {
+      "patterns": ["PDF", "문서", "OCR", "추출", "document", "extract"],
+      "recommendedTools": ["marker-mcp", "paddleocr-mcp"],
+      "priority": 1
+    },
+    "youtube": {
+      "patterns": ["유튜브", "영상", "동영상", "youtube", "video"],
+      "recommendedTools": ["youtube-data"],
+      "priority": 1
+    },
+    "ai_llm": {
+      "patterns": ["AI", "LLM", "모델", "council", "다중 모델"],
+      "recommendedTools": ["llm-council", "hfspace"],
+      "priority": 2
+    },
+    "paper_research": {
+      "patterns": ["논문", "학술", "arxiv", "paper", "academic", "research paper"],
+      "recommendedTools": ["paper-search-mcp"],
+      "priority": 1
+    },
+    "mapping": {
+      "patterns": ["지도", "위치", "map", "location", "route"],
+      "recommendedTools": ["antv-chart"],
+      "priority": 2
+    }
+  },
+
+  "meta": {
+    "totalKeywords": 150,
+    "sources": [
+      "_registry.md (40 commands)",
+      "recommendation-engine.js (24 mappings + 20 important keywords)",
+      "tool-registry.json (28+ servers)",
+      "context-analyzer.js (16 intents)"
+    ],
+    "selfTriggerPhases": ["plan", "implement", "execute"],
+    "duplicateLoadPrevention": true
+  }
+}

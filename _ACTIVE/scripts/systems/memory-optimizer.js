@@ -12,7 +12,7 @@ const { exec } = require('child_process');
 class MemoryOptimizer {
     constructor() {
         this.threshold = 0.8; // 80% 메모리 사용 시 정리
-        this.cacheDir = 'K:\\PortableApps\\Claude-Code\\cache';
+        this.cacheDir = 'K:\\PortableApps\\genai\\cache';
         this.monitoring = false;
     }
     
@@ -65,8 +65,8 @@ class MemoryOptimizer {
     // 임시 파일 정리
     cleanTempFiles() {
         const tempDirs = [
-            'K:\\PortableApps\\Claude-Code\\tmp',
-            'K:\\PortableApps\\Claude-Code\\shell-snapshots'
+            'K:\\PortableApps\\genai\\tmp',
+            'K:\\PortableApps\\genai\\shell-snapshots'
         ];
         
         let cleaned = 0;
@@ -96,7 +96,7 @@ class MemoryOptimizer {
     
     // 오래된 로그 압축
     compressOldLogs() {
-        const logDir = 'K:\\PortableApps\\Claude-Code\\logs';
+        const logDir = 'K:\\PortableApps\\genai\\logs';
         if (!fs.existsSync(logDir)) return;
         
         const files = fs.readdirSync(logDir);
@@ -138,7 +138,7 @@ class MemoryOptimizer {
     // Windows 메모리 정리
     windowsMemoryClean() {
         // Windows 메모리 압축
-        exec('compact /c /s:K:\\PortableApps\\Claude-Code\\tmp /i', () => {});
+        exec('compact /c /s:K:\\PortableApps\\genai\\tmp /i', () => {});
         
         // 작업 세트 정리
         exec('powershell -Command "Clear-RecycleBin -Force -ErrorAction SilentlyContinue"', () => {});

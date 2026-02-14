@@ -10,8 +10,8 @@ const crypto = require('crypto');
 
 class ContextPreserver {
     constructor() {
-        this.memoryFile = 'K:\\PortableApps\\Claude-Code\\memory-bank.json';
-        this.contextFile = 'K:\\PortableApps\\Claude-Code\\CONTEXT.md';
+        this.memoryFile = 'K:\\PortableApps\\genai\\memory-bank.json';
+        this.contextFile = 'K:\\PortableApps\\genai\\CONTEXT.md';
         this.maxContextSize = 200000; // 200K tokens
         this.currentSize = 0;
     }
@@ -92,7 +92,7 @@ class ContextPreserver {
     // 수정된 파일 목록
     getModifiedFiles() {
         const recentFiles = [];
-        const dir = 'K:\\PortableApps\\Claude-Code';
+        const dir = 'K:\\PortableApps\\genai';
         
         const files = fs.readdirSync(dir);
         const now = Date.now();
@@ -232,7 +232,7 @@ ${memory.sessions.slice(-5).map(s =>
     
     // 자동 백업
     autoBackup() {
-        const backupDir = 'K:\\PortableApps\\Claude-Code\\context-backups';
+        const backupDir = 'K:\\PortableApps\\genai\\context-backups';
         if (!fs.existsSync(backupDir)) {
             fs.mkdirSync(backupDir);
         }

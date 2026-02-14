@@ -1,0 +1,28 @@
+Checking MCP server health...
+
+mcp-installer: npx @anaisbetts/mcp-installer - ✓ Connected
+filesystem: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\node_modules\@modelcontextprotocol\server-filesystem\dist\index.js - ✓ Connected
+memory: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\node_modules\@modelcontextprotocol\server-memory\dist\index.js - ✓ Connected
+shrimp-task: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\node_modules\mcp-shrimp-task-manager\dist\index.js - ✓ Connected
+github: cmd /c npx @modelcontextprotocol/server-github - ✓ Connected
+firecrawl: K:/PortableApps/tools/nodejs/npx.cmd firecrawl-mcp - ✓ Connected
+git-mcp: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\node_modules\@cyanheads\git-mcp-server\dist\index.js - ✓ Connected
+sqlite-mcp: K:/PortableApps/tools/nodejs/npx.cmd mcp-server-sqlite-npx K:/PortableApps/genai/data/sqlite/test.db - ✓ Connected
+websearch: cmd /c npx websearch-mcp - ✓ Connected
+youtube-data: cmd /c npx youtube-data-mcp-server - ✓ Connected
+edit-file-lines: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\mcp-servers\mcp-edit-file-lines\build\index.js K:\PortableApps\genai - ✓ Connected
+kiro-memory: K:/PortableApps/tools/python-portable/python.exe -m mcp_server_enhanced - ✓ Connected
+context7: cmd /c npx @upstash/context7-mcp@latest - ✓ Connected
+one-search: K:/PortableApps/tools/nodejs/npx.cmd one-search-mcp - ✓ Connected
+playwright: cmd /c npx @executeautomation/playwright-mcp-server - ✓ Connected
+desktop-commander: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\desktop-commander-mcp\dist\index.js - ✓ Connected
+supabase: npx @supabase/mcp-server-supabase@latest --read-only --project-ref=sofkjjpgastzbxnmrwwx - ✓ Connected
+n8n: K:/PortableApps/tools/nodejs/node.exe K:\PortableApps\genai\node_modules\@illuminaresolutions\n8n-mcp-server\build\index.js - ✓ Connected
+sequential-thinking: K:/PortableApps/tools/nodejs/node.exe K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js - ✓ Connected
+runpod-jupyter: cmd /c K:/PortableApps/tools/uv/uvx.exe jupyter-mcp-server@latest - ✓ Connected
+image-recognition: K:/PortableApps/tools/python-portable/python.exe -m image_recognition_server.server - ✓ Connected
+paddleocr-mcp: K:/PortableApps/tools/python-portable/python.exe K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src/server.py - ✓ Connected
+marker-mcp: K:/PortableApps/tools/python-portable/python.exe K:/PortableApps/genai/mcp-servers/marker-mcp/src/server.py - ✓ Connected
+zen-mcp: K:/PortableApps/tools/python-portable/python.exe K:/PortableApps/genai/mcp-servers/zen-mcp/server.py - ✗ Failed to connect
+llm-council: K:/PortableApps/tools/python-portable/python.exe K:/PortableApps/genai/mcp-servers/llm-council-mcp/server.py - ✓ Connected
+memory-keeper: npx mcp-memory-keeper - ✓ Connected

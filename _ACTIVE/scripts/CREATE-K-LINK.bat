@@ -17,7 +17,7 @@ if exist C:\k (
 )
 
 REM Test
-if exist C:\k\PortableApps\Claude-Code (
+if exist C:\k\PortableApps\genai (
     echo SUCCESS: /k path works!
 ) else (
     echo FAILED: /k path not working

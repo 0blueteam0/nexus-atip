@@ -2,7 +2,7 @@
  * Unified Task Manager
  * 통합 작업 관리 시스템 - 영구적 솔루션
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/task-manager.js
+ * 위치: K:/PortableApps/genai/unified-task-system/task-manager.js
  *
  * [DEPRECATED] v3.0 - unified-task-hub.js로 대체됨
  * 호환성을 위해 유지되지만, 새 코드에서는 unified-task-hub.js 사용 권장

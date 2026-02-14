@@ -117,7 +117,7 @@ echo ========================================
 echo.
 REM Count files in current K: directory only
 set count=0
-for %%f in (K:\PortableApps\Claude-Code\*) do (
+for %%f in (K:\PortableApps\genai\*) do (
     set /a count+=1
 )
 echo Files in root: !count! (was ~80+)

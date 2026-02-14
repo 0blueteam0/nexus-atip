@@ -13,9 +13,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const CLAUDE_JSON_PATH = 'K:/PortableApps/Claude-Code/.claude.json';
-const HISTORY_DIR = 'K:/PortableApps/Claude-Code/history-sessions';
-const ARCHIVE_DIR = 'K:/PortableApps/Claude-Code/history-sessions/archive';
+const CLAUDE_JSON_PATH = 'K:/PortableApps/genai/.claude.json';
+const HISTORY_DIR = 'K:/PortableApps/genai/history-sessions';
+const ARCHIVE_DIR = 'K:/PortableApps/genai/history-sessions/archive';
 
 class HistoryExternalizer {
     constructor() {

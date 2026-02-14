@@ -32,7 +32,7 @@ function safeFileSystemCheck() {
     const checks = [
         {
             name: 'K드라이브 접근',
-            path: 'K:\\PortableApps\\Claude-Code',
+            path: 'K:\\PortableApps\\genai',
             type: 'directory'
         },
         {
@@ -52,7 +52,7 @@ function safeFileSystemCheck() {
         },
         {
             name: 'tmp 디렉토리',
-            path: 'K:\\PortableApps\\Claude-Code\\tmp',
+            path: 'K:\\PortableApps\\genai\\tmp',
             type: 'directory'
         }
     ];
@@ -92,9 +92,9 @@ function detectCircularReferences() {
     console.log('\n🔄 순환참조 패턴 감지...');
     
     const scriptsToCheck = [
-        'K:\\PortableApps\\Claude-Code\\AUTO-CHECK.js',
-        'K:\\PortableApps\\Claude-Code\\FIX-BASH-NOW.bat',
-        'K:\\PortableApps\\Claude-Code\\ULTIMATE-BASH-FIX.bat'
+        'K:\\PortableApps\\genai\\AUTO-CHECK.js',
+        'K:\\PortableApps\\genai\\FIX-BASH-NOW.bat',
+        'K:\\PortableApps\\genai\\ULTIMATE-BASH-FIX.bat'
     ];
     
     for (const scriptPath of scriptsToCheck) {
@@ -144,7 +144,7 @@ function detectCircularReferences() {
 function checkShellSnapshots() {
     console.log('\n📸 Shell Snapshots 검사...');
     
-    const snapshotDir = 'K:\\PortableApps\\Claude-Code\\shell-snapshots';
+    const snapshotDir = 'K:\\PortableApps\\genai\\shell-snapshots';
     
     if (fs.existsSync(snapshotDir)) {
         const files = fs.readdirSync(snapshotDir);
@@ -289,7 +289,7 @@ echo 2. SAFE-MONITOR.js를 다시 실행하여 확인하세요
 pause
 `;
         
-        fs.writeFileSync('K:\\PortableApps\\Claude-Code\\SAFE-FIX.bat', safeFix);
+        fs.writeFileSync('K:\\PortableApps\\genai\\SAFE-FIX.bat', safeFix);
         console.log('✅ SAFE-FIX.bat 생성 완료');
     }
     
@@ -318,7 +318,7 @@ function generateSafetyReport() {
     console.log('='.repeat(50));
     
     // JSON 보고서 저장
-    const reportPath = 'K:\\PortableApps\\Claude-Code\\safety-report.json';
+    const reportPath = 'K:\\PortableApps\\genai\\safety-report.json';
     fs.writeFileSync(reportPath, JSON.stringify(safetyReport, null, 2));
     console.log(`\n📄 상세 보고서: ${reportPath}`);
     
@@ -368,7 +368,7 @@ async function main() {
         safetyReport.error = error.message;
         
         // 에러 보고서 저장
-        const errorPath = 'K:\\PortableApps\\Claude-Code\\safety-error.json';
+        const errorPath = 'K:\\PortableApps\\genai\\safety-error.json';
         fs.writeFileSync(errorPath, JSON.stringify(safetyReport, null, 2));
         console.log(`📄 에러 보고서: ${errorPath}`);
     }

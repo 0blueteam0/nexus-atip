@@ -14,9 +14,9 @@ const path = require('path');
 
 class ClaudeJsonProtector {
     constructor() {
-        this.configPath = 'K:\\PortableApps\\Claude-Code\\.claude.json';
+        this.configPath = 'K:\\PortableApps\\genai\\.claude.json';
         this.lockFile = this.configPath + '.lock';
-        this.backupDir = 'K:\\PortableApps\\Claude-Code\\ARCHIVE\\json-backups';
+        this.backupDir = 'K:\\PortableApps\\genai\\ARCHIVE\\json-backups';
         this.maxBackups = 20;
         
         // 백업 디렉토리 생성

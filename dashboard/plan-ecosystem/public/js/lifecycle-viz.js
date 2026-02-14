@@ -457,7 +457,7 @@ const LifecycleViz = {
             showTab('plans');
         }
         // 외부 에디터로 열기는 보안상 불가, 경로만 표시
-        alert(`Plan file: K:/PortableApps/Claude-Code/plans/${planId}.md`);
+        alert(`Plan file: K:/PortableApps/genai/plans/${planId}.md`);
     }
 };
 

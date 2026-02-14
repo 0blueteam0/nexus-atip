@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 echo [*] AI Stack Monitor 시작중...
-cd /d K:\PortableApps\Claude-Code\dashboard
+cd /d K:\PortableApps\genai\dashboard
 start "AI Stack Monitor Server" K:\PortableApps\tools\nodejs\node.exe server.js
 timeout /t 2 /nobreak >nul
 start http://localhost:13579

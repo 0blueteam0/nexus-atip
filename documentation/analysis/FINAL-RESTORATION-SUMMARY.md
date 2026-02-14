@@ -91,7 +91,7 @@ node systems/session-cleaner.js
    - 월 1회 세션 파일 정리
 
 2. **백업 전략**
-   - 전체 K:\PortableApps\Claude-Code 폴더 백업
+   - 전체 K:\PortableApps\genai 폴더 백업
    - .claude.json과 package.json 별도 보관
 
 3. **성능 최적화**

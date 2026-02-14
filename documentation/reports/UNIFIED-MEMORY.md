@@ -8,22 +8,22 @@
 - 상태: ✅ 작동 중
 
 ### 2. **memory-bank.json** (백업)
-- 위치: K:\PortableApps\Claude-Code\memory-bank.json
+- 위치: K:\PortableApps\genai\memory-bank.json
 - 용도: 수동 백업
 - 상태: ✅ 활성
 
 ### 3. **ShrimpData/** (태스크)
-- 위치: K:\PortableApps\Claude-Code\ShrimpData\
+- 위치: K:\PortableApps\genai\ShrimpData\
 - 용도: 태스크 관리 전용
 - 상태: ✅ 활성
 
 ### 4. **brain/** (학습)
-- 위치: K:\PortableApps\Claude-Code\brain\
+- 위치: K:\PortableApps\genai\brain\
 - 용도: 패턴 학습, 메트릭스
 - 상태: ⚠️ 부분 활성
 
 ### 5. **memory-archive/** (영구)
-- 위치: K:\PortableApps\Claude-Code\memory-archive\permanent\
+- 위치: K:\PortableApps\genai\memory-archive\permanent\
 - 용도: 영구 보관
 - 상태: ⚠️ 미사용
 

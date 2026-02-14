@@ -3,7 +3,7 @@
 ## 📋 프로젝트 관리
 - 시작: 항상 project_plan.md 파일 생성
 - 진행: 각 작업 완료 시 project_plan.md 업데이트
-- 백업: 매일 K:\PortableApps\Claude-Code\backup에 백업
+- 백업: 매일 K:\PortableApps\genai\backup에 백업
 - 실행 위치: 항상 K드라이브에서 작업
 
 ## 코딩 규칙
@@ -11,7 +11,7 @@
 - 에러 처리: try-catch 블록 필수
 - 주석: 복잡한 로직에는 상세 주석
 - 테스트: 기능 구현 후 즉시 테스트
-- 로그 파일: K:\PortableApps\Claude-Code\logs 폴더에 저장
+- 로그 파일: K:\PortableApps\genai\logs 폴더에 저장
 
 ## Git 워크플로우
 1. .git이 없으면 git init

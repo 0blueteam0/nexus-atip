@@ -42,7 +42,7 @@
     },
     "filesystem": {
       "type": "stdio",
-      "command": "K:/PortableApps/Claude-Code/backup-20250120/nodejs/node.exe",
+      "command": "K:/PortableApps/genai/backup-20250120/nodejs/node.exe",
       "args": [
         "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
       ],
@@ -124,7 +124,7 @@
         "-y",
         "mcp-server-sqlite-npx",
         "--db-path",
-        "K:/PortableApps/Claude-Code/data/sqlite/test.db"
+        "K:/PortableApps/genai/data/sqlite/test.db"
       ]
     },
     "git-mcp": {

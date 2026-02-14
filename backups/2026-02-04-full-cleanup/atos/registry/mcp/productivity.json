@@ -1,0 +1,37 @@
+{
+  "category": "productivity",
+  "description": "작업 및 태스크 관리",
+  "priority": "high",
+  "servers": {
+    "shrimp-task": {
+      "priority": "high",
+      "description": "Shrimp 태스크 매니저",
+      "tools": [
+        "plan_task", "analyze_task", "reflect_task", "split_tasks",
+        "list_tasks", "execute_task", "verify_task", "update_task"
+      ],
+      "triggerKeywords": ["작업", "태스크", "계획", "task", "plan"]
+    },
+    "kiro-memory": {
+      "priority": "high",
+      "description": "메모리 및 컨텍스트 관리",
+      "tools": [
+        "get_memory_context", "create_task", "get_tasks",
+        "remember_project_pattern", "auto_process_conversation"
+      ],
+      "triggerKeywords": ["메모리", "기억", "컨텍스트", "memory"]
+    },
+    "memory": {
+      "priority": "medium",
+      "description": "지식 그래프 메모리",
+      "tools": ["create_entities", "create_relations", "search_nodes", "read_graph"],
+      "triggerKeywords": ["지식", "엔티티", "관계", "knowledge"]
+    },
+    "task-master-ai": {
+      "priority": "medium",
+      "description": "Task Master AI",
+      "tools": ["get_tasks", "next_task", "get_task", "set_task_status", "expand_task"],
+      "triggerKeywords": ["task master", "태스크마스터"]
+    }
+  }
+}

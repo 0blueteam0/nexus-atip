@@ -54,7 +54,7 @@ class AutoSystem {
         console.log('🔧 MCP 자동 수정 시작...');
         
         // .claude.json에서 cmd /c 제거
-        const configPath = 'K:/PortableApps/Claude-Code/.claude.json';
+        const configPath = 'K:/PortableApps/genai/.claude.json';
         let config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
         
         Object.keys(config.mcpServers).forEach(server => {
@@ -89,7 +89,7 @@ class AutoSystem {
         console.log('🧹 메모리 정리 중...');
         
         // npm-cache 정리
-        const cacheDir = 'K:/PortableApps/Claude-Code/npm-cache';
+        const cacheDir = 'K:/PortableApps/genai/npm-cache';
         const cacheSize = this.getDirSize(cacheDir);
         
         if (cacheSize > this.config.memoryLimit * 1024 * 1024) {
@@ -105,7 +105,7 @@ class AutoSystem {
 
     // 오래된 로그 삭제
     cleanOldLogs() {
-        const logsDir = 'K:/PortableApps/Claude-Code/npm-cache/_logs';
+        const logsDir = 'K:/PortableApps/genai/npm-cache/_logs';
         const now = Date.now();
         const maxAge = this.config.logRetention * 24 * 60 * 60 * 1000;
         

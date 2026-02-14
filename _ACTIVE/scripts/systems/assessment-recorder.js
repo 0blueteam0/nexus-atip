@@ -9,11 +9,11 @@ const path = require('path');
 
 // K-Drive only configuration
 const CONFIG = {
-    HOME: 'K:\\PortableApps\\Claude-Code',
-    METRICS_DIR: 'K:\\PortableApps\\Claude-Code\\brain\\metrics',
-    MEMORY_DIR: 'K:\\PortableApps\\Claude-Code\\memory-data',
-    PATTERNS_FILE: 'K:\\PortableApps\\Claude-Code\\brain\\patterns.json',
-    ASSESSMENT_LOG: 'K:\\PortableApps\\Claude-Code\\brain\\metrics\\assessments.jsonl'
+    HOME: 'K:\\PortableApps\\genai',
+    METRICS_DIR: 'K:\\PortableApps\\genai\\brain\\metrics',
+    MEMORY_DIR: 'K:\\PortableApps\\genai\\memory-data',
+    PATTERNS_FILE: 'K:\\PortableApps\\genai\\brain\\patterns.json',
+    ASSESSMENT_LOG: 'K:\\PortableApps\\genai\\brain\\metrics\\assessments.jsonl'
 };
 
 class AssessmentRecorder {

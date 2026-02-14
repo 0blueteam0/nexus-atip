@@ -7,7 +7,7 @@ REM ============================================
 title Evolution Engine - Self-Evolving AI
 color 0E
 
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 echo ╔══════════════════════════════════════════════════════╗
 echo ║      🧬 EVOLUTION ENGINE - 자가발전 AI 시스템 🧬      ║
@@ -39,6 +39,6 @@ echo └────────────────────────
 echo.
 
 REM 데몬 모드로 실행
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\evolution-engine.js daemon
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\evolution-engine.js daemon
 
 pause

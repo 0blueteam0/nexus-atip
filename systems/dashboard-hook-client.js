@@ -23,7 +23,7 @@ const CONFIG = {
     retries: 2
 };
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const LOG_FILE = path.join(BASE_PATH, 'data/hook-client.log');
 
 /**

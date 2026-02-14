@@ -174,7 +174,7 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 
 ## [TASK] Task Management (CRITICAL)
 - **ALWAYS use Shrimp Task Manager**
-- **Path**: K:/PortableApps/Claude-Code/ShrimpData/tasks/current-tasks.json
+- **Path**: K:/PortableApps/genai/ShrimpData/tasks/current-tasks.json
 - **Shrimp 우선**: plan_task → split_tasks → execute_task → verify_task
 
 ---
@@ -274,7 +274,7 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 ## SuperClaude Framework
 
 ### 설치 정보
-- **경로**: K:/PortableApps/Claude-Code/superclaude
+- **경로**: K:/PortableApps/genai/superclaude
 - **버전**: 4.0.8
 
 ### 주요 명령어
@@ -336,7 +336,7 @@ Task(subagent_type=Explore, prompt="[탐색 목적]", thoroughness="medium")
 
 | 항목 | 경로 |
 |------|------|
-| Windows Native | K:\PortableApps\Claude-Code |
+| Windows Native | K:\PortableApps\genai |
 | Node.js | K:\PortableApps\tools\nodejs\node.exe |
 | Python | K:\PortableApps\tools\python\python.exe |
 

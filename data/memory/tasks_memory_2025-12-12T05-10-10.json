@@ -1,0 +1,150 @@
+{
+  "tasks": [
+    {
+      "id": "1043273e-0641-4169-950e-b4cc54dea196",
+      "name": "Background 섹션 작성 (2페이지)",
+      "description": "논문의 기초 개념 섹션 작성: 3.1 Attention 메커니즘 개요 (Query/Key/Value, Self-Attention 수식), 3.2 OWASP LLM Top 10 & Agentic AI Top 10 요약, 3.3 MITRE ATLAS 개요",
+      "notes": "심화 내용 지양, 개념 수준으로 간결하게",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:15:15.866Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/ai-security-report.md",
+          "type": "REFERENCE",
+          "description": "기존 OWASP/MITRE 분석 자료",
+          "lineStart": 29,
+          "lineEnd": 95
+        }
+      ],
+      "implementationGuide": "1. ai-security-report.md 29-43행 Attention 설명 참조\\n2. OWASP LLM Top 10 표 (62-73행) 재사용\\n3. Agentic AI Top 10 핵심 4개 (AAI001, AAI003, AAI006, AAI007) 추가\\n4. MITRE ATLAS 요약 (82-95행) 참조\\n5. 수식은 Attention(Q,K,V) = softmax(QK^T/sqrt(d))V 하나만",
+      "verificationCriteria": "약 2페이지 분량, Attention/OWASP/MITRE 3개 섹션 포함, 전문 용어 한글 병기",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "Background 섹션 완료: 3.1 Attention 메커니즘 개요(Transformer 등장, Self-Attention Q/K/V 수식, 보안 관점 특성), 3.2 OWASP LLM Top 10 및 Agentic AI Top 10(AAI001/003/006/007), 3.3 MITRE ATLAS 프레임워크(16 Tactics, 140 Techniques, 공격 체인). 총 104줄, 약 2페이지 분량.",
+      "completedAt": "2025-12-11T06:15:15.843Z"
+    },
+    {
+      "id": "a395ee2f-89f8-4ec3-bc25-e44e00054db2",
+      "name": "Security Analysis 섹션 작성 (3페이지)",
+      "description": "핵심 취약점 분석 섹션: 4.1 V1 Prompt Injection과 Attention 연관성, 4.2 V2 Context Hijacking 메커니즘, 4.3 V3 Agentic AI 취약점 분석",
+      "notes": "각 취약점에 공격 예시와 방어 방향 간략히 포함",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1043273e-0641-4169-950e-b4cc54dea196"
+        }
+      ],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:16:19.335Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/ai-security-report.md",
+          "type": "REFERENCE",
+          "description": "Prompt Injection 분석",
+          "lineStart": 75,
+          "lineEnd": 79
+        }
+      ],
+      "implementationGuide": "1. V1 Prompt Injection:\\n   - Self-Attention 균등 토큰 처리 문제\\n   - LLM01 (OWASP) + AAI003 (Agentic AI) 매핑\\n   - 구체적 예시 1개 포함\\n2. V2 Context Hijacking:\\n   - 긴 Context Window (128K+) 악용\\n   - LLM02 + AAI006 매핑\\n3. V3 Agent Manipulation:\\n   - Multi-Agent 환경 Attention 흐름 조작\\n   - AAI001, AAI007 매핑",
+      "verificationCriteria": "약 3페이지 분량, V1/V2/V3 취약점별 OWASP-Attention 연결 논리 명확",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "Security Analysis 섹션 완료: 4.1 V1 Prompt Injection(Self-Attention 균등 처리 문제, Direct/Indirect 공격 예시, 방어 기법 테이블), 4.2 V2 Context Hijacking(128K+ Context Window 악용, Lost in the Middle 현상, 공격 시나리오), 4.3 V3 Agentic AI 취약점(AAI001/AAI007 분석, Multi-Agent Attention 흐름 공격, 방어 방향). 121줄 추가, 총 225줄, 약 3페이지 분량.",
+      "completedAt": "2025-12-11T06:16:19.303Z"
+    },
+    {
+      "id": "54c51b31-8208-4424-8207-253a0b59d66d",
+      "name": "Introduction 섹션 작성 (1페이지)",
+      "description": "연구 동기와 목적: Attention 메커니즘의 혁명적 성공, 보안 관점 우려, 연구 질문 정의, 논문 구조 소개",
+      "notes": "Background와 Security Analysis 내용 참조하여 작성",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1043273e-0641-4169-950e-b4cc54dea196"
+        },
+        {
+          "taskId": "a395ee2f-89f8-4ec3-bc25-e44e00054db2"
+        }
+      ],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:17:33.825Z",
+      "relatedFiles": [],
+      "implementationGuide": "1. 도입: Transformer/Attention의 AI 혁명 (GPT, BERT 등)\\n2. 문제 제기: 성능과 보안의 트레이드오프\\n3. 연구 질문: Self-Attention이 왜 보안에 취약한가?\\n4. 기여점: OWASP 프레임워크와 Attention 메커니즘 연결 분석\\n5. 논문 구조 안내",
+      "verificationCriteria": "약 1페이지 분량, 연구 질문 명확, 기여점 3개 이상 명시",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "Introduction 섹션 완료: 2.1 연구 배경(Transformer 혁명, 보안 우려), 2.2 문제 제기(연구 질문 명시: \"Self-Attention의 어떤 구조적 특성이 AI 보안 취약점을 야기하는가?\"), 2.3 연구 기여점(4개: Attention-취약점 연결, Context Window 보안, Agentic AI 위험, 통합 프레임워크), 2.4 논문 구조 안내. 약 1페이지 분량.",
+      "completedAt": "2025-12-11T06:17:33.787Z"
+    },
+    {
+      "id": "131a2429-5d93-4743-965c-9bf0740360f8",
+      "name": "Discussion & Conclusion 작성 (1.5페이지)",
+      "description": "발견의 의미, 한계점, 미래 연구 방향 정리",
+      "notes": "ai-security-report.md 방어 전략 (99-121행) 참조",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "a395ee2f-89f8-4ec3-bc25-e44e00054db2"
+        }
+      ],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:19:31.199Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/ai-security-report.md",
+          "type": "REFERENCE",
+          "description": "방어 전략 매트릭스",
+          "lineStart": 99,
+          "lineEnd": 121
+        }
+      ],
+      "implementationGuide": "1. Discussion (1p):\\n   - 주요 발견 요약 (Attention-취약점 연결)\\n   - 실무적 시사점 (방어 전략 권고)\\n   - 연구 한계 (실험 부재, 이론적 분석 위주)\\n2. Conclusion (0.5p):\\n   - 핵심 결론 3줄\\n   - 미래 연구 방향 (실험적 검증, 새로운 방어 기법)",
+      "verificationCriteria": "약 1.5페이지 분량, 한계점 명시, 미래 연구 방향 2개 이상",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "Discussion & Conclusion 섹션 완료: 5.1 주요 발견 요약(Data-Instruction Conflation, Context Window Attack Surface, Cascading Risk), 5.2 실무적 시사점(계층별 방어 전략 테이블 포함), 5.3 연구 한계(4개 항목), 5.4 미래 연구 방향(4개 항목), 6. Conclusion(핵심 결론 3개). 총 65줄 추가, 약 1.5페이지 분량 달성.",
+      "completedAt": "2025-12-11T06:19:31.151Z"
+    },
+    {
+      "id": "cb62b8cd-c049-4510-9208-e7a2e1d3353c",
+      "name": "Abstract 작성 (0.5페이지)",
+      "description": "논문 전체 요약: 목적, 방법론, 주요 발견, 기여점을 300단어 이내로",
+      "notes": "마지막에 작성 (전체 내용 요약)",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "54c51b31-8208-4424-8207-253a0b59d66d"
+        },
+        {
+          "taskId": "131a2429-5d93-4743-965c-9bf0740360f8"
+        }
+      ],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:20:19.263Z",
+      "relatedFiles": [],
+      "implementationGuide": "1. 배경: Attention 메커니즘의 성공과 보안 우려\\n2. 목적: Self-Attention 취약점 분석\\n3. 방법: OWASP LLM/Agentic AI Top 10, MITRE ATLAS 매핑\\n4. 발견: V1 Prompt Injection, V2 Context Hijacking, V3 Agent Manipulation\\n5. 기여: 아키텍처-취약점 연결 프레임워크 제시",
+      "verificationCriteria": "300단어 이내, 목적/방법/발견/기여 모두 포함",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "Abstract 섹션 완료: 연구 목적(Self-Attention 보안 취약점 분석), 방법론(OWASP LLM/Agentic AI Top 10, MITRE ATLAS 활용), 주요 발견 3가지(Data-Instruction Conflation, Context Window Exploitation, Cascading Agent Risk), 기여점(아키텍처-취약점 연결 프레임워크, 계층별 방어 전략), 키워드 포함. 약 280단어, 0.5페이지 분량.",
+      "completedAt": "2025-12-11T06:20:19.208Z"
+    },
+    {
+      "id": "a05f20f3-6db0-48f5-96a0-b04fe06fcd2d",
+      "name": "References 정리 (1페이지)",
+      "description": "참고 문헌 15-20개 정리, 학술 논문 형식 (APA 또는 IEEE)",
+      "notes": "IEEE 형식 권장, DOI 포함 시 더 좋음",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "cb62b8cd-c049-4510-9208-e7a2e1d3353c"
+        }
+      ],
+      "createdAt": "2025-12-11T06:12:32.160Z",
+      "updatedAt": "2025-12-11T06:22:57.627Z",
+      "relatedFiles": [],
+      "implementationGuide": "필수 인용 논문 15개:\\n1. Vaswani et al. (2017) - Attention Is All You Need\\n2. Goodfellow et al. (2015) - FGSM\\n3. Perez & Ribeiro (2022) - HackAPrompt\\n4. Greshake et al. (2023) - LLM-Integrated App Attacks\\n5. Zou et al. (2023) - Universal Adversarial Attacks\\n6. Wei et al. (2024) - Jailbroken\\n7. OWASP (2025) - LLM Top 10\\n8. OWASP (2024) - Agentic AI Top 10\\n9. MITRE (2024) - ATLAS Framework\\n10-15: Brown (GPT-3), Devlin (BERT), Carlini, Li (BERT-ATTACK), Anthropic, OpenAI",
+      "verificationCriteria": "15개 이상 참고문헌, 일관된 인용 형식",
+      "analysisResult": "Attention 메커니즘의 AI 보안 취약점 분석 논문 (8-10페이지). OWASP LLM Top 10, Agentic AI Top 10, MITRE ATLAS 프레임워크 참조. ai-security-report.md 기존 자료 활용. 송영해 양식, 기여도 테이블 제외.",
+      "summary": "References 섹션 완료: IEEE 형식 18개 참고문헌 정리. 핵심 문헌 포함 - Vaswani(Attention), Goodfellow(FGSM), Perez(HackAPrompt), Greshake(Indirect Injection), Zou(Universal Attack), Wei(Jailbroken), OWASP LLM/Agentic AI Top 10, MITRE ATLAS, Brown(GPT-3), Devlin(BERT), Carlini(Data Extraction), Li(BERT-ATTACK), Anthropic(Constitutional AI), Ouyang(RLHF), Liu(Lost in Middle), Hubinger(Learned Optimization), NIST AI RMF. 모든 문헌에 저자, 제목, 학회/저널, 연도 포함.",
+      "completedAt": "2025-12-11T06:22:57.567Z"
+    }
+  ]
+}

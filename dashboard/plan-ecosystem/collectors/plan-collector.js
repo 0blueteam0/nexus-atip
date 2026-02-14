@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const PLANS_DIR = path.join(BASE_PATH, 'plans');
 const COMPLETED_DIR = path.join(PLANS_DIR, 'completed');
 const ARCHIVED_DIR = path.join(PLANS_DIR, 'archived');

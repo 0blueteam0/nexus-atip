@@ -10,10 +10,10 @@ const crypto = require('crypto');
 
 class SelfUpdater {
     constructor() {
-        this.claudeMd = 'K:\\PortableApps\\Claude-Code\\CLAUDE.md';
-        this.learnings = 'K:\\PortableApps\\Claude-Code\\@learnings.md';
-        this.patterns = 'K:\\PortableApps\\Claude-Code\\@patterns.json';
-        this.updateLog = 'K:\\PortableApps\\Claude-Code\\self-updates.log';
+        this.claudeMd = 'K:\\PortableApps\\genai\\CLAUDE.md';
+        this.learnings = 'K:\\PortableApps\\genai\\@learnings.md';
+        this.patterns = 'K:\\PortableApps\\genai\\@patterns.json';
+        this.updateLog = 'K:\\PortableApps\\genai\\self-updates.log';
         
         this.initializePatterns();
     }

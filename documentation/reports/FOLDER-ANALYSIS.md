@@ -46,7 +46,7 @@
 
 ### 새로운 구조 (CLEAN)
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── core/           # 핵심 실행 파일
 │   ├── claude.bat
 │   ├── .claude.json

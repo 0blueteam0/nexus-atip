@@ -57,7 +57,7 @@
 
 ### Phase 1: plan-registry.json 생성
 
-**위치**: `K:\PortableApps\Claude-Code\atos\plan-registry.json`
+**위치**: `K:\PortableApps\genai\atos\plan-registry.json`
 
 ```json
 {
@@ -137,7 +137,7 @@
 ### Phase 3: 폴더 구조 생성
 
 ```
-K:\PortableApps\Claude-Code\plans\
+K:\PortableApps\genai\plans\
   ├── *.md                    # 활성 플랜 (draft, in-progress)
   ├── completed/              # 완료된 플랜 (새로 생성)
   │   └── *.md

@@ -68,7 +68,7 @@
 
 ### Phase 3: 구조 재정리
 ```
-K:/PortableApps/Claude-Code/
+K:/PortableApps/genai/
 ├── [필수 파일들만 최상위]
 ├── configs/          (설정 파일)
 ├── scripts/          (활성 스크립트)

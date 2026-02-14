@@ -1,0 +1,149 @@
+@echo off
+REM ============================================
+REM     K드라이브 환경 전체 수정 스크립트
+REM     CMD에 이 전체 내용을 복사-붙여넣기
+REM ============================================
+
+REM [1] 작업 디렉토리 설정
+cd /d K:\PortableApps\genai
+
+REM [2] 아카이브 디렉토리 생성
+if not exist "ARCHIVE\cleanup-2025-01-21" mkdir "ARCHIVE\cleanup-2025-01-21"
+
+REM [3] 대량 파일 이동 (FIX 관련)
+move FIX-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move FIX-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move FIX-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move fix-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move fix-*.sh "ARCHIVE\cleanup-2025-01-21" 2>nul
+
+REM [4] TEST 파일 이동
+move TEST-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move TEST-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move TEST-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move test-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move test-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move test-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+
+REM [5] VERIFY 파일 이동
+move VERIFY-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move VERIFY-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+
+REM [6] RUN 파일 이동
+move RUN-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move RUN-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move run-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move run-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+
+REM [7] 기타 정리 파일 이동
+move ULTIMATE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CLEANUP-*.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CLEANUP-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move cleanup-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move cleanup-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CHECK-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CHECK-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move DETECT-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move EXECUTE-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move EXECUTE-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move FINAL-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move DIRECT-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move direct-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move direct-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move TRACE-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move UPDATE-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move UPDATE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move ENABLE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move DISABLE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move RESTORE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move ANALYZE-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move MONITOR-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move AUTO-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move AUTO-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move START-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move EMERGENCY-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move ONE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move OPTIMIZE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move POWERSHELL-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move comprehensive-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move switch-*.ps1 "ARCHIVE\cleanup-2025-01-21" 2>nul
+move remove-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move delete-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move delete-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move init-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move init-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move init-*.sh "ARCHIVE\cleanup-2025-01-21" 2>nul
+move simple-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+move SET-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move set-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move INSTALL-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move FORCE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CLAUDE-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move CLAUDE-*.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move claude-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-PHASE2.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-PLAN.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-REPORT.md "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-CONSOLIDATION.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-PRESERVATION.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-REORGANIZE.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-COMMANDS.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move *-FILES.txt "ARCHIVE\cleanup-2025-01-21" 2>nul
+move bash.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move c.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move git.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move node-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move python-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move pwsh.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move BATCH-*.bat "ARCHIVE\cleanup-2025-01-21" 2>nul
+move MOVE-*.js "ARCHIVE\cleanup-2025-01-21" 2>nul
+
+REM [8] 중요 파일 복원 (실수로 이동된 경우)
+if exist "ARCHIVE\cleanup-2025-01-21\claude.bat" move "ARCHIVE\cleanup-2025-01-21\claude.bat" . 2>nul
+if exist "ARCHIVE\cleanup-2025-01-21\quick.bat" move "ARCHIVE\cleanup-2025-01-21\quick.bat" . 2>nul
+if exist "ARCHIVE\cleanup-2025-01-21\load-env-keys.bat" move "ARCHIVE\cleanup-2025-01-21\load-env-keys.bat" . 2>nul
+if exist "ARCHIVE\cleanup-2025-01-21\CLAUDE.md" move "ARCHIVE\cleanup-2025-01-21\CLAUDE.md" . 2>nul
+
+REM [9] Bash 환경 수정
+if not exist "shell-snapshots" mkdir "shell-snapshots"
+if not exist "temp" mkdir "temp"
+if not exist "tmp" mkdir "tmp"
+
+REM [10] 환경 변수 설정
+set BASH_ENV=K:\PortableApps\genai\.bashrc
+set SHELL=cmd.exe
+set CLAUDE_HOME=K:\PortableApps\genai
+set CLAUDE_CONFIG_FILE=K:\PortableApps\genai\.claude.json
+set NPM_CONFIG_CACHE=K:\PortableApps\genai\temp\npm-cache
+set TEMP=K:\PortableApps\genai\temp
+set TMP=K:\PortableApps\genai\temp
+
+REM [11] 테스트 실행
+echo.
+echo ============================================
+echo     환경 수정 완료 - 테스트 시작
+echo ============================================
+echo.
+
+REM Claude 버전 확인
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js --version
+
+REM MCP 목록 확인
+echo.
+echo MCP 서버 목록:
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js mcp list
+
+REM [12] 최종 상태 확인
+echo.
+echo ============================================
+echo     최종 파일 개수 확인
+echo ============================================
+dir /b | find /c /v ""
+
+echo.
+echo ============================================
+echo     모든 작업 완료!
+echo ============================================
+echo 파일들이 ARCHIVE\cleanup-2025-01-21로 이동되었습니다.
+echo Claude 환경이 정상화되었습니다.
+echo.

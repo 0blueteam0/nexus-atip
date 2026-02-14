@@ -1,0 +1,31 @@
+{
+  "category": "media",
+  "description": "미디어 처리 (PDF, 이미지, 영상)",
+  "priority": "low",
+  "servers": {
+    "marker-mcp": {
+      "priority": "medium",
+      "description": "PDF 변환 및 분석",
+      "tools": ["convert_pdf", "extract_text", "analyze_structure"],
+      "triggerKeywords": ["PDF", "문서변환", "마크다운변환"]
+    },
+    "paddleocr-mcp": {
+      "priority": "medium",
+      "description": "PaddleOCR 텍스트 추출",
+      "tools": ["ocr_image", "extract_table", "detect_language"],
+      "triggerKeywords": ["OCR", "텍스트추출", "테이블추출", "문서인식"]
+    },
+    "youtube-data": {
+      "priority": "medium",
+      "description": "YouTube 데이터 조회",
+      "tools": ["getVideoDetails", "searchVideos", "getTranscripts", "getChannelStatistics"],
+      "triggerKeywords": ["유튜브", "YouTube", "영상", "비디오"]
+    },
+    "image-recognition": {
+      "priority": "medium",
+      "description": "이미지 분석 및 OCR",
+      "tools": ["describe_image", "describe_image_from_file"],
+      "triggerKeywords": ["이미지분석", "사진", "비전"]
+    }
+  }
+}

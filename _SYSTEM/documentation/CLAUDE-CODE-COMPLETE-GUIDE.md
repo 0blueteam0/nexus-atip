@@ -38,7 +38,7 @@
 #### 3단계: Claude Code 설치 (K드라이브 전용)
 ```batch
 # K드라이브 Claude Code 디렉토리로 이동
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 # 로컬 설치 (글로벌 설치 대신)
 K:\PortableApps\tools\nodejs\npm.cmd install @anthropic-ai/claude-code@latest
@@ -52,8 +52,8 @@ K:\PortableApps\tools\nodejs\npm.cmd update @anthropic-ai/claude-code
 # claude.bat 파일에 이미 설정됨
 set PATH=K:\PortableApps\tools\nodejs;K:\PortableApps\tools\git\bin;%PATH%
 set NODE_PATH=K:\PortableApps\tools\nodejs
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
-set CLAUDE_CONFIG_FILE=K:\PortableApps\Claude-Code\.claude.json
+set CLAUDE_HOME=K:\PortableApps\genai
+set CLAUDE_CONFIG_FILE=K:\PortableApps\genai\.claude.json
 ```
 
 ### ✨ 포터블 환경의 장점
@@ -112,7 +112,7 @@ Get-ChildItem HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss |
 
 #### 1. 환경 확인 (K드라이브 포터블)
 - **OS**: Windows (Native)
-- **환경**: `K:\PortableApps\Claude-Code`
+- **환경**: `K:\PortableApps\genai`
 - **Node.js**: `K:\PortableApps\tools\nodejs\node.exe`
 - **NPM**: `K:\PortableApps\tools\nodejs\npm.cmd`
 - **Git Bash**: `K:\PortableApps\tools\git\bin\bash.exe`
@@ -120,7 +120,7 @@ Get-ChildItem HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss |
 #### 2. mcp-installer 설치 (K드라이브 로컬)
 ```batch
 # K드라이브 Claude-Code 디렉토리에서 실행
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 K:\PortableApps\tools\nodejs\npm.cmd install @anaisbetts/mcp-installer
 ```
 
@@ -144,7 +144,7 @@ K:\PortableApps\tools\nodejs\npm.cmd install @anaisbetts/mcp-installer
 #### 단계 3: K드라이브 로컬 설치 (user 스코프)
 ```batch
 # mcp-installer 사용 (K드라이브 경로)
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\node_modules\.bin\mcp-installer install [MCP이름] --user
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\.bin\mcp-installer install [MCP이름] --user
 
 # 또는 직접 npm 설치 (권장)
 K:\PortableApps\tools\nodejs\npm.cmd install [MCP패키지명]
@@ -167,20 +167,20 @@ K:\PortableApps\tools\nodejs\npm.cmd install @modelcontextprotocol/server-github
 #### 3. Shrimp Task Manager (이미 설치됨)
 ```batch
 # K드라이브에 이미 설치 및 설정 완료
-# 경로: K:\PortableApps\Claude-Code\mcp-servers\mcp-shrimp-task-manager
+# 경로: K:\PortableApps\genai\mcp-servers\mcp-shrimp-task-manager
 ```
 
 ### ⚠️ K드라이브 환경 특별 주의사항
 
 1. **경로 문제 해결**
-   - 모든 설치는 `K:\PortableApps\Claude-Code` 내부에
+   - 모든 설치는 `K:\PortableApps\genai` 내부에
    - 절대 C드라이브에 설치하지 않음
    - node_modules는 K드라이브에만 생성
 
 2. **설정 파일 위치**
-   - MCP 설정: `K:\PortableApps\Claude-Code\mcp-config.json`
-   - 환경 변수: `K:\PortableApps\Claude-Code\claude.bat`에 통합
-   - API 키: `K:\PortableApps\Claude-Code\.env` (gitignore 필수)
+   - MCP 설정: `K:\PortableApps\genai\mcp-config.json`
+   - 환경 변수: `K:\PortableApps\genai\claude.bat`에 통합
+   - API 키: `K:\PortableApps\genai\.env` (gitignore 필수)
 
 3. **Python 기반 MCP 처리**
 ```batch
@@ -188,7 +188,7 @@ K:\PortableApps\tools\nodejs\npm.cmd install @modelcontextprotocol/server-github
 K:\PortableApps\tools\python\python.exe -m pip install [패키지]
 
 # 가상환경은 K드라이브에 생성
-K:\PortableApps\tools\python\python.exe -m venv K:\PortableApps\Claude-Code\venv
+K:\PortableApps\tools\python\python.exe -m venv K:\PortableApps\genai\venv
 ```
 
 ---
@@ -200,10 +200,10 @@ K:\PortableApps\tools\python\python.exe -m venv K:\PortableApps\Claude-Code\venv
 #### YouTube MCP 설치 예시 (K드라이브 버전)
 ```batch
 # K드라이브 Claude Code 디렉토리에서 실행
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 # claude.bat를 통한 MCP 추가 (K드라이브 경로)
-K:\PortableApps\Claude-Code\claude.bat mcp add --scope user youtube-mcp ^
+K:\PortableApps\genai\claude.bat mcp add --scope user youtube-mcp ^
   -e YOUTUBE_API_KEY=YOUR_YT_API_KEY ^
   -e YOUTUBE_TRANSCRIPT_LANG=ko ^
   -- K:\PortableApps\tools\nodejs\npx.cmd -y youtube-data-mcp-server
@@ -218,7 +218,7 @@ K:\PortableApps\Claude-Code\claude.bat mcp add --scope user youtube-mcp ^
     "youtube-mcp": {
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
       "args": [
-        "K:\\PortableApps\\Claude-Code\\node_modules\\youtube-data-mcp-server\\dist\\index.js"
+        "K:\\PortableApps\\genai\\node_modules\\youtube-data-mcp-server\\dist\\index.js"
       ]
     }
   }
@@ -244,14 +244,14 @@ K:\PortableApps\tools\nodejs\npx.cmd -y [패키지명]
 #### 1단계: 설치 목록 확인
 ```batch
 # K드라이브 포터블 환경
-K:\PortableApps\Claude-Code\claude.bat mcp list
+K:\PortableApps\genai\claude.bat mcp list
 ```
 ✅ **확인 사항**: 설치한 MCP가 목록에 표시되어야 함
 
 #### 2단계: 디버그 모드로 서브 에이전트 구동
 ```batch
 # K드라이브 포터블 환경
-K:\PortableApps\Claude-Code\claude.bat --debug
+K:\PortableApps\genai\claude.bat --debug
 ```
 🕰️ **최대 2분 동안 관찰**
 - Task 도구를 통해 서브 에이전트 시작
@@ -261,7 +261,7 @@ K:\PortableApps\Claude-Code\claude.bat --debug
 #### 3단계: /mcp를 통한 실제 작동 확인 (필수)
 ```batch
 # K드라이브 포터블 환경
-echo "/mcp" | K:\PortableApps\Claude-Code\claude.bat --debug
+echo "/mcp" | K:\PortableApps\genai\claude.bat --debug
 ```
 🎯 **최종 검증**: MCP 서버가 정상 응답하는지 확인
 
@@ -290,30 +290,30 @@ echo "/mcp" | K:\PortableApps\Claude-Code\claude.bat --debug
 
 **K드라이브 포터블 환경:**
 ```batch
-K:\PortableApps\Claude-Code\claude.bat mcp remove [MCP이름]
+K:\PortableApps\genai\claude.bat mcp remove [MCP이름]
 ```
 
 ### 제거 예시 (다양한 MCP)
 
 ```batch
 # YouTube MCP 제거
-K:\PortableApps\Claude-Code\claude.bat mcp remove youtube-mcp
+K:\PortableApps\genai\claude.bat mcp remove youtube-mcp
 
 # Filesystem MCP 제거
-K:\PortableApps\Claude-Code\claude.bat mcp remove filesystem
+K:\PortableApps\genai\claude.bat mcp remove filesystem
 
 # GitHub MCP 제거
-K:\PortableApps\Claude-Code\claude.bat mcp remove github
+K:\PortableApps\genai\claude.bat mcp remove github
 
 # 모든 MCP 목록 확인 후 선택적 제거
-K:\PortableApps\Claude-Code\claude.bat mcp list
-K:\PortableApps\Claude-Code\claude.bat mcp remove [MCP이름]
+K:\PortableApps\genai\claude.bat mcp list
+K:\PortableApps\genai\claude.bat mcp remove [MCP이름]
 ```
 
 ### 제거 후 확인
 ```batch
 # 제거 확인
-K:\PortableApps\Claude-Code\claude.bat mcp list
+K:\PortableApps\genai\claude.bat mcp list
 # → 제거된 MCP가 목록에서 사라져야 함
 ```
 
@@ -339,18 +339,18 @@ C:\Users\<사용자이름>\AppData\Roaming\Claude\claude_desktop_config.json
 
 2. **대상 파일 (K드라이브 Claude Code):**
    ```
-   K:\PortableApps\Claude-Code\mcp-config.json
+   K:\PortableApps\genai\mcp-config.json
    ```
 
 3. **복사 절차:**
 ```batch
 # 1. Claude Desktop 설정 백업
 copy "C:\Users\%USERNAME%\AppData\Roaming\Claude\claude_desktop_config.json" ^
-     "K:\PortableApps\Claude-Code\backup-desktop-config.json"
+     "K:\PortableApps\genai\backup-desktop-config.json"
 
 # 2. 메모장으로 편집
-notepad "K:\PortableApps\Claude-Code\backup-desktop-config.json"
-notepad "K:\PortableApps\Claude-Code\mcp-config.json"
+notepad "K:\PortableApps\genai\backup-desktop-config.json"
+notepad "K:\PortableApps\genai\mcp-config.json"
 
 # 3. mcpServers 내용 수동 복사
 ```
@@ -377,13 +377,13 @@ notepad "K:\PortableApps\Claude-Code\mcp-config.json"
 
 ```batch
 # 1. MCP 목록 확인
-K:\PortableApps\Claude-Code\claude.bat mcp list
+K:\PortableApps\genai\claude.bat mcp list
 
 # 2. 디버그 모드로 테스트
-K:\PortableApps\Claude-Code\claude.bat --debug
+K:\PortableApps\genai\claude.bat --debug
 
 # 3. 실제 작동 테스트
-echo "/mcp" | K:\PortableApps\Claude-Code\claude.bat --debug
+echo "/mcp" | K:\PortableApps\genai\claude.bat --debug
 ```
 
 ---
@@ -392,16 +392,16 @@ echo "/mcp" | K:\PortableApps\Claude-Code\claude.bat --debug
 
 ### 📁 K드라이브 포터블 환경 설정 파일 위치
 
-- **메인 설정**: `K:\PortableApps\Claude-Code\.claude.json`
-- **MCP 설정**: `K:\PortableApps\Claude-Code\mcp-config.json`
-- **환경 변수**: `K:\PortableApps\Claude-Code\.env`
+- **메인 설정**: `K:\PortableApps\genai\.claude.json`
+- **MCP 설정**: `K:\PortableApps\genai\mcp-config.json`
+- **환경 변수**: `K:\PortableApps\genai\.env`
 
 ### 🔄 성공한 인자를 JSON으로 변환하는 방법
 
 #### 1단계: 터미널에서 성공한 명령어 캡처
 ```batch
 # 예시: 성공한 명령어
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\node_modules\@modelcontextprotocol\server-filesystem\dist\index.js --allowed-paths "K:/PortableApps" --port 3000
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@modelcontextprotocol\server-filesystem\dist\index.js --allowed-paths "K:/PortableApps" --port 3000
 
 # 환경 변수
 set FILESYSTEM_ROOT=K:/PortableApps
@@ -415,7 +415,7 @@ set MCP_PORT=3000
     "filesystem": {
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
       "args": [
-        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js",
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js",
         "--allowed-paths",
         "K:/PortableApps",
         "--port",
@@ -498,7 +498,7 @@ set MCP_PORT=3000
       "type": "stdio",
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
       "args": [
-        "K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
       ],
       "env": {
         "ALLOWED_PATHS": "K:\\PortableApps"
@@ -544,7 +544,7 @@ set MCP_PORT=3000
 {
   "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
   "args": [
-    "K:\\PortableApps\\Claude-Code\\mcp-servers\\server.js"
+    "K:\\PortableApps\\genai\\mcp-servers\\server.js"
   ]
 }
 ```
@@ -554,9 +554,9 @@ set MCP_PORT=3000
 ```json
 {
   "env": {
-    "UV_DEPS_CACHE": "K:\\PortableApps\\Claude-Code\\cache\\uvcache",
-    "NODE_MODULES_CACHE": "K:\\PortableApps\\Claude-Code\\cache\\node_modules",
-    "TEMP": "K:\\PortableApps\\Claude-Code\\temp",
+    "UV_DEPS_CACHE": "K:\\PortableApps\\genai\\cache\\uvcache",
+    "NODE_MODULES_CACHE": "K:\\PortableApps\\genai\\cache\\node_modules",
+    "TEMP": "K:\\PortableApps\\genai\\temp",
     "API_KEY": "${API_KEY}"
   }
 }
@@ -593,7 +593,7 @@ set MCP_PORT=3000
 set PATH=%PATH%;"K:\PortableApps\tools\git\usr\bin"
 
 # 영구 설정 (claude.bat에 추가)
-echo set PATH=%%PATH%%;K:\PortableApps\tools\git\usr\bin >> K:\PortableApps\Claude-Code\claude.bat
+echo set PATH=%%PATH%%;K:\PortableApps\tools\git\usr\bin >> K:\PortableApps\genai\claude.bat
 
 # 확인 방법
 cygpath --version
@@ -607,7 +607,7 @@ set PATH=K:\PortableApps\tools\nodejs;%PATH%
 set NODE_PATH=K:\PortableApps\tools\nodejs
 
 # claude.bat에 영구 추가
-echo set PATH=K:\PortableApps\tools\nodejs;%%PATH%% >> K:\PortableApps\Claude-Code\claude.bat
+echo set PATH=K:\PortableApps\tools\nodejs;%%PATH%% >> K:\PortableApps\genai\claude.bat
 ```
 
 ### 🛠️ NPX 버전 호환성
@@ -658,24 +658,24 @@ K:\PortableApps\tools\python\Scripts\uvx.exe --version
     "filesystem": {
       "type": "stdio",
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
-      "args": ["K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"],
+      "args": ["K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"],
       "env": {"ALLOWED_PATHS": "K:\\PortableApps"}
     },
     "github": {
       "type": "stdio",
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
-      "args": ["K:\\PortableApps\\Claude-Code\\node_modules\\@modelcontextprotocol\\server-github\\dist\\index.js"],
+      "args": ["K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-github\\dist\\index.js"],
       "env": {"GITHUB_TOKEN": "YOUR_TOKEN"}
     },
     "shrimp-task": {
       "type": "stdio",
       "command": "K:\\PortableApps\\tools\\nodejs\\node.exe",
-      "args": ["K:\\PortableApps\\Claude-Code\\mcp-servers\\mcp-shrimp-task-manager\\dist\\index.js"],
-      "env": {"TASK_DB_PATH": "K:\\PortableApps\\Claude-Code\\ShrimpData\\tasks.db"}
+      "args": ["K:\\PortableApps\\genai\\mcp-servers\\mcp-shrimp-task-manager\\dist\\index.js"],
+      "env": {"TASK_DB_PATH": "K:\\PortableApps\\genai\\ShrimpData\\tasks.db"}
     }
   },
   "globalEnv": {
-    "NODE_PATH": "K:\\PortableApps\\Claude-Code\\node_modules",
+    "NODE_PATH": "K:\\PortableApps\\genai\\node_modules",
     "PYTHONPATH": "K:\\PortableApps\\tools\\python\\Lib\\site-packages"
   }
 }
@@ -687,4 +687,4 @@ K:\PortableApps\tools\python\Scripts\uvx.exe --version
 
 ✅ **문서 버전**: 2.0.0 (Markdown Format)  
 📅 **최종 업데이트**: 2025-08-21  
-📍 **위치**: `K:\PortableApps\Claude-Code\CLAUDE-CODE-COMPLETE-GUIDE.md`
+📍 **위치**: `K:\PortableApps\genai\CLAUDE-CODE-COMPLETE-GUIDE.md`

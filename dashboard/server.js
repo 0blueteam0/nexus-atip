@@ -39,7 +39,7 @@ function execCommand(command, timeout = 10000) {
             : command;
         
         exec(finalCommand, { 
-            cwd: 'K:/PortableApps/Claude-Code',
+            cwd: 'K:/PortableApps/genai',
             timeout: timeout,
             windowsHide: true
         }, (error, stdout, stderr) => {
@@ -182,7 +182,7 @@ async function getMcpStatus() {
     if (cached) return cached;
 
     try {
-        const output = await execCommand('K:/PortableApps/Claude-Code/claude.bat mcp list');
+        const output = await execCommand('K:/PortableApps/genai/claude.bat mcp list');
         const lines = output.split('\n');
         const servers = [];
         

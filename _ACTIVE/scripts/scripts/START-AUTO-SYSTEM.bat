@@ -21,7 +21,7 @@ set PATH=%NODE_PATH%;%PATH%
 
 REM 시스템 시작
 echo 🚀 자율 시스템 시작 중...
-cd /d K:\PortableApps\Claude-Code\systems
+cd /d K:\PortableApps\genai\systems
 K:\PortableApps\tools\nodejs\node.exe AUTO-SYSTEM-V2.js
 
 pause

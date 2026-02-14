@@ -4,7 +4,7 @@
 
 ### 1️⃣ **WSL 경로 변환 에러**
 ```bash
-WSL ERROR: Failed to translate K:\PortableApps\Claude-Code
+WSL ERROR: Failed to translate K:\PortableApps\genai
 ```
 - **원인**: WSL이 K드라이브(USB)를 /mnt/k/로 자동 마운트 실패
 - **영향**: Podman 컨테이너와 K드라이브 연동 불가
@@ -54,7 +54,7 @@ sudo mount -t drvfs K: /mnt/k
 
 ### 환경 변수 정리
 ```bash
-export CLAUDE_HOME="K:/PortableApps/Claude-Code"
+export CLAUDE_HOME="K:/PortableApps/genai"
 export SUPPRESS_WARNINGS=true
 export USE_SHRIMP_TASKS=true
 ```

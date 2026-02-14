@@ -1,0 +1,108 @@
+{
+  "tasks": [
+    {
+      "id": "98848d23-3399-4c99-80b5-9fd7507b715b",
+      "name": "n8n 워크플로우 설정",
+      "description": "n8n으로 NVD API 연동하여 CVE 데이터 자동 수집 워크플로우 구축",
+      "notes": "NVD API는 무료이며 API 키 불필요",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-24T14:34:42.555Z",
+      "updatedAt": "2025-09-24T14:35:49.825Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/n8n-workflow.json",
+          "type": "CREATE",
+          "description": "n8n 워크플로우 설정 파일"
+        }
+      ],
+      "implementationGuide": "1. n8n 웹 인터페이스 접속\n2. HTTP Request 노드로 NVD API 호출\n3. Schedule Trigger로 30분마다 실행\n4. Webhook 노드로 실시간 데이터 수신\n5. SQLite 노드로 데이터 저장",
+      "verificationCriteria": "n8n에서 CVE 데이터가 자동으로 수집되고 SQLite에 저장되는지 확인",
+      "analysisResult": "Security Alert Intelligence Hub 구축 - n8n으로 CVE 데이터 자동 수집, LangChain으로 AI 분석 및 한국어 요약, Vite 대시보드로 실시간 표시",
+      "summary": "n8n 워크플로우 JSON 파일 생성 완료. NVD API 연동, 30분 스케줄, SQLite 저장, Webhook 수신, LangChain 연동 노드 모두 구성",
+      "completedAt": "2025-09-24T14:35:49.790Z"
+    },
+    {
+      "id": "79ef5064-1dfe-4b55-8448-72c296a65112",
+      "name": "Python LangChain 분석 서버 구축",
+      "description": "LangChain으로 CVE 데이터 분석 및 한국어 요약 생성 서버 개발",
+      "notes": "Claude API 키 활용, 포트 8001 사용",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-24T14:34:42.555Z",
+      "updatedAt": "2025-09-24T14:37:29.102Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/langchain_server.py",
+          "type": "CREATE",
+          "description": "LangChain 분석 서버"
+        },
+        {
+          "path": "K:/PortableApps/genai/security-hub/requirements.txt",
+          "type": "CREATE",
+          "description": "Python 패키지 목록"
+        }
+      ],
+      "implementationGuide": "1. FastAPI 서버 생성\n2. LangChain으로 CVE 텍스트 분석 파이프라인\n3. Claude API로 한국어 요약 생성\n4. CVSS 점수 기반 위험도 평가\n5. REST API 엔드포인트 제공",
+      "verificationCriteria": "API 호출 시 CVE 데이터가 분석되고 한국어 요약이 반환되는지 확인",
+      "analysisResult": "Security Alert Intelligence Hub 구축 - n8n으로 CVE 데이터 자동 수집, LangChain으로 AI 분석 및 한국어 요약, Vite 대시보드로 실시간 표시",
+      "summary": "FastAPI 기반 LangChain 분석 서버 구축 완료. Claude API 연동, CVE 한국어 요약, 위험도 평가, SQLite 연동, REST API 엔드포인트 구현",
+      "completedAt": "2025-09-24T14:37:29.056Z"
+    },
+    {
+      "id": "670ea0eb-de36-4596-aeee-f2a87ad6f452",
+      "name": "Vite React 대시보드 개발",
+      "description": "실시간 보안 위협 정보를 표시하는 웹 대시보드 구축",
+      "notes": "포트 5174 사용 (기존 5173과 충돌 방지)",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "98848d23-3399-4c99-80b5-9fd7507b715b"
+        },
+        {
+          "taskId": "79ef5064-1dfe-4b55-8448-72c296a65112"
+        }
+      ],
+      "createdAt": "2025-09-24T14:34:42.555Z",
+      "updatedAt": "2025-09-24T14:43:00.015Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/dashboard",
+          "type": "CREATE",
+          "description": "Vite 대시보드 폴더"
+        }
+      ],
+      "implementationGuide": "1. Vite React 프로젝트 초기화\n2. 위협 현황 카드 컴포넌트\n3. 24시간 트렌드 차트 (Chart.js)\n4. 위험도별 색상 코딩 (Critical=빨강, High=주황)\n5. WebSocket으로 실시간 업데이트",
+      "verificationCriteria": "대시보드에서 실시간 CVE 정보가 표시되고 차트가 업데이트되는지 확인",
+      "analysisResult": "Security Alert Intelligence Hub 구축 - n8n으로 CVE 데이터 자동 수집, LangChain으로 AI 분석 및 한국어 요약, Vite 대시보드로 실시간 표시",
+      "summary": "Vite React 대시보드 완성. 실시간 CVE 모니터링, 통계 표시, Chart.js 차트, 한국어 분석 모달, 위험도별 색상 코딩 구현",
+      "completedAt": "2025-09-24T14:42:59.964Z"
+    },
+    {
+      "id": "38bdf5de-7ea5-4d1e-8aa5-9c128f6dd5b5",
+      "name": "통합 테스트 및 자동 실행 설정",
+      "description": "전체 시스템 통합 테스트 및 자동 시작 배치 파일 생성",
+      "notes": "START-SECURITY-HUB.bat 파일로 원클릭 실행",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "670ea0eb-de36-4596-aeee-f2a87ad6f452"
+        }
+      ],
+      "createdAt": "2025-09-24T14:34:42.555Z",
+      "updatedAt": "2025-09-24T14:44:13.061Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/START-SECURITY-HUB.bat",
+          "type": "CREATE",
+          "description": "통합 실행 스크립트"
+        }
+      ],
+      "implementationGuide": "1. 모든 서비스 시작 배치 파일 생성\n2. 데이터 흐름 테스트\n3. 에러 처리 확인\n4. 성능 모니터링",
+      "verificationCriteria": "배치 파일 실행으로 모든 서비스가 자동 시작되고 정상 작동하는지 확인",
+      "analysisResult": "Security Alert Intelligence Hub 구축 - n8n으로 CVE 데이터 자동 수집, LangChain으로 AI 분석 및 한국어 요약, Vite 대시보드로 실시간 표시",
+      "summary": "통합 실행 스크립트 및 문서화 완료. START-SECURITY-HUB.bat로 모든 서비스 원클릭 실행, README.md 작성으로 사용법 문서화",
+      "completedAt": "2025-09-24T14:44:13.005Z"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 /**
  * Task Queue Manager
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/task-queue/queue-manager.js
+ * 위치: K:/PortableApps/genai/unified-task-system/task-queue/queue-manager.js
  *
  * 목적:
  * - BullMQ 기반 비동기 태스크 큐 관리

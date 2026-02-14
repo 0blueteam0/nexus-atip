@@ -5,12 +5,12 @@
 setlocal enabledelayedexpansion
 
 echo.
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\systems\shrimp-formatter.js %*
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\systems\shrimp-formatter.js %*
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo [오류] Task 표시 실패
-    echo 직접 파일 확인: K:\PortableApps\Claude-Code\ShrimpData\current-tasks.json
+    echo 직접 파일 확인: K:\PortableApps\genai\ShrimpData\current-tasks.json
 )
 
 endlocal

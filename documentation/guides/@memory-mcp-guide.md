@@ -65,7 +65,7 @@ python -m pip install mcp-memory-keeper
     "command": "python",
     "args": ["-m", "memory_keeper"],
     "env": {
-      "DATA_DIR": "K:/PortableApps/Claude-Code/memory/"
+      "DATA_DIR": "K:/PortableApps/genai/memory/"
     }
   }
 }

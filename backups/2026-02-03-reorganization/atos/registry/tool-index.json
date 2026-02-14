@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "description": "Category-based lazy loading index for MCP servers",
+  "lastUpdated": "2025-12-31",
+  "categories": {
+    "filesystem": {
+      "path": "./mcp/filesystem.json",
+      "triggers": ["파일", "작성", "수정", "디렉토리", "file", "write", "read", "edit", "folder"],
+      "servers": ["desktop-commander", "filesystem", "edit-file-lines"],
+      "priority": "high"
+    },
+    "web-crawl": {
+      "path": "./mcp/web-crawl.json",
+      "triggers": ["검색", "스크래핑", "크롤링", "웹", "search", "scrape", "crawl", "fetch"],
+      "servers": ["firecrawl", "one-search", "crawl4ai-lite", "websearch", "deep-research-mcp"],
+      "priority": "high"
+    },
+    "github": {
+      "path": "./mcp/github.json",
+      "triggers": ["깃헙", "깃허브", "레포", "PR", "이슈", "github", "repo", "commit", "git"],
+      "servers": ["github", "git-mcp"],
+      "priority": "high"
+    },
+    "database": {
+      "path": "./mcp/database.json",
+      "triggers": ["DB", "SQL", "데이터베이스", "쿼리", "database", "query", "table"],
+      "servers": ["sqlite-mcp", "supabase"],
+      "priority": "medium"
+    },
+    "ai-models": {
+      "path": "./mcp/ai-models.json",
+      "triggers": ["AI", "모델", "생성", "이미지", "model", "generate", "inference"],
+      "servers": ["hfspace", "llm-council", "e2b", "multi-ai-orchestration"],
+      "priority": "medium"
+    },
+    "research": {
+      "path": "./mcp/research.json",
+      "triggers": ["논문", "리서치", "학술", "paper", "research", "academic", "arxiv"],
+      "servers": ["paper-search-mcp", "context7"],
+      "priority": "medium"
+    },
+    "visualization": {
+      "path": "./mcp/visualization.json",
+      "triggers": ["차트", "그래프", "시각화", "chart", "graph", "plot", "diagram"],
+      "servers": ["antv-chart"],
+      "priority": "low"
+    },
+    "productivity": {
+      "path": "./mcp/productivity.json",
+      "triggers": ["작업", "태스크", "메모리", "task", "memory", "todo", "plan"],
+      "servers": ["shrimp-task", "kiro-memory", "memory", "task-master-ai"],
+      "priority": "high"
+    },
+    "media": {
+      "path": "./mcp/media.json",
+      "triggers": ["PDF", "이미지", "OCR", "영상", "비디오", "image", "video", "youtube"],
+      "servers": ["marker-mcp", "paddleocr-mcp", "youtube-data", "image-recognition"],
+      "priority": "low"
+    }
+  },
+  "fallback": {
+    "path": "../tool-registry.json",
+    "description": "Full registry for unknown categories"
+  }
+}

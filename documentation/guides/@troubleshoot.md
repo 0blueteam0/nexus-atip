@@ -7,15 +7,15 @@
 # 증상: shell-snapshots/snapshot-bash-*.sh 파일 없음
 # 해결:
 optimize.bat  # 또는
-del /Q K:\PortableApps\Claude-Code\shell-snapshots\*.sh
+del /Q K:\PortableApps\genai\shell-snapshots\*.sh
 ```
 
 ### 임시 디렉토리 문제
 ```bash
 # 증상: /tmp/claude-* 경로 에러
 # 해결:
-mkdir K:\PortableApps\Claude-Code\tmp
-set TMPDIR=K:\PortableApps\Claude-Code\tmp
+mkdir K:\PortableApps\genai\tmp
+set TMPDIR=K:\PortableApps\genai\tmp
 ```
 
 ### MCP 서버 연결 실패

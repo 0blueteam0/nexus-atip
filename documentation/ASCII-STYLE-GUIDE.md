@@ -132,4 +132,4 @@ file -b file.txt | grep ASCII
 ```
 
 ---
-*이 가이드는 K:\PortableApps\Claude-Code 프로젝트의 공식 스타일 가이드입니다.*
+*이 가이드는 K:\PortableApps\genai 프로젝트의 공식 스타일 가이드입니다.*

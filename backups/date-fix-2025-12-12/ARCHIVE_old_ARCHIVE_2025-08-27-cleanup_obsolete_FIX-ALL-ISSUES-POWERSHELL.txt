@@ -1,0 +1,139 @@
+# ============================================
+#     K드라이브 환경 전체 수정 스크립트 (PowerShell)
+#     PowerShell에 이 전체 내용을 복사-붙여넣기
+# ============================================
+
+# [1] 작업 디렉토리 설정
+Set-Location K:\PortableApps\genai
+
+# [2] 아카이브 디렉토리 생성
+$archiveDir = "ARCHIVE\cleanup-2025-01-21"
+if (-not (Test-Path $archiveDir)) {
+    New-Item -ItemType Directory -Path $archiveDir -Force | Out-Null
+}
+
+# [3] 파일 패턴 정의
+$patterns = @(
+    "FIX-*", "fix-*",
+    "TEST-*", "test-*",
+    "VERIFY-*", "verify-*",
+    "RUN-*", "run-*",
+    "ULTIMATE-*",
+    "CLEANUP-*", "cleanup-*",
+    "CHECK-*", "check-*",
+    "DETECT-*",
+    "EXECUTE-*",
+    "FINAL-*",
+    "DIRECT-*", "direct-*",
+    "TRACE-*",
+    "UPDATE-*", "update-*",
+    "ENABLE-*", "DISABLE-*",
+    "RESTORE-*",
+    "ANALYZE-*",
+    "MONITOR-*",
+    "AUTO-*", "auto-*",
+    "START-*", "start-*",
+    "EMERGENCY-*",
+    "ONE-*",
+    "OPTIMIZE-*",
+    "POWERSHELL-*",
+    "comprehensive-*",
+    "switch-*",
+    "remove-*",
+    "delete-*",
+    "init-*",
+    "simple-*",
+    "SET-*", "set-*",
+    "INSTALL-*",
+    "FORCE-*",
+    "CLAUDE-*", "claude-*",
+    "*-PHASE2.txt",
+    "*-PLAN.txt",
+    "*-REPORT.md",
+    "*-CONSOLIDATION.txt",
+    "*-PRESERVATION.txt",
+    "*-REORGANIZE.txt",
+    "*-COMMANDS.txt",
+    "*-FILES.txt",
+    "bash.bat", "c.bat", "git.bat",
+    "node-*.bat", "python-*.bat", "pwsh.bat",
+    "BATCH-*.bat", "MOVE-*.js"
+)
+
+# [4] 보존할 파일
+$keepFiles = @(
+    "claude.bat",
+    "CLAUDE.md",
+    "quick.bat",
+    "load-env-keys.bat"
+)
+
+# [5] 파일 이동 실행
+Write-Host "파일 정리 시작..." -ForegroundColor Yellow
+$movedCount = 0
+
+foreach ($pattern in $patterns) {
+    Get-ChildItem -Path . -Filter $pattern -File -ErrorAction SilentlyContinue | ForEach-Object {
+        if ($keepFiles -notcontains $_.Name) {
+            try {
+                Move-Item -Path $_.FullName -Destination $archiveDir -Force -ErrorAction Stop
+                $movedCount++
+                Write-Host "✓ 이동: $($_.Name)" -ForegroundColor Green
+            } catch {
+                # 무시
+            }
+        }
+    }
+}
+
+# [6] 중요 파일 복원
+foreach ($file in $keepFiles) {
+    $archivePath = Join-Path $archiveDir $file
+    if (Test-Path $archivePath) {
+        Move-Item -Path $archivePath -Destination . -Force
+        Write-Host "✓ 복원: $file" -ForegroundColor Cyan
+    }
+}
+
+# [7] Bash 환경 디렉토리 생성
+@("shell-snapshots", "temp", "tmp") | ForEach-Object {
+    if (-not (Test-Path $_)) {
+        New-Item -ItemType Directory -Path $_ -Force | Out-Null
+        Write-Host "✓ 디렉토리 생성: $_" -ForegroundColor Blue
+    }
+}
+
+# [8] 환경 변수 설정
+$env:BASH_ENV = "K:\PortableApps\genai\.bashrc"
+$env:SHELL = "cmd.exe"
+$env:CLAUDE_HOME = "K:\PortableApps\genai"
+$env:CLAUDE_CONFIG_FILE = "K:\PortableApps\genai\.claude.json"
+$env:NPM_CONFIG_CACHE = "K:\PortableApps\genai\temp\npm-cache"
+$env:TEMP = "K:\PortableApps\genai\temp"
+$env:TMP = "K:\PortableApps\genai\temp"
+
+Write-Host "`n============================================" -ForegroundColor Cyan
+Write-Host "     환경 수정 완료 - 테스트 시작" -ForegroundColor Cyan
+Write-Host "============================================`n" -ForegroundColor Cyan
+
+# [9] Claude 버전 확인
+Write-Host "Claude 버전:" -ForegroundColor Yellow
+& K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js --version
+
+# [10] MCP 목록 확인
+Write-Host "`nMCP 서버 목록:" -ForegroundColor Yellow
+& K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js mcp list
+
+# [11] 최종 상태 확인
+$remainingFiles = (Get-ChildItem -Path . -File).Count
+$remainingDirs = (Get-ChildItem -Path . -Directory).Count
+
+Write-Host "`n============================================" -ForegroundColor Cyan
+Write-Host "     최종 상태" -ForegroundColor Cyan
+Write-Host "============================================" -ForegroundColor Cyan
+Write-Host "이동된 파일: $movedCount 개" -ForegroundColor Green
+Write-Host "남은 파일: $remainingFiles 개" -ForegroundColor Yellow
+Write-Host "디렉토리: $remainingDirs 개" -ForegroundColor Yellow
+Write-Host "아카이브 위치: $archiveDir" -ForegroundColor Blue
+
+Write-Host "`n✅ 모든 작업 완료!" -ForegroundColor Green

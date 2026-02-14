@@ -1,4 +1,4 @@
-# 🚨 SYSTEM RECOVERY PLAN - 2025-01-16
+# 🚨 SYSTEM RECOVERY PLAN - 2025-08-16
 
 ## 📅 실패 타임라인 (15일~16일)
 
@@ -9,7 +9,7 @@
 - **20:00**: Python 의존성 문제 → Podman 시도
 - **23:00**: 자율 시스템 파일 생성 (미작동)
 
-### Day 2: 2025-01-16 오전
+### Day 2: 2025-08-16 오전
 - **09:00**: 폴더 정리 시작 (31개 폴더)
 - **10:00**: MCP 연결 대규모 실패 발생
 - **11:00**: .claude.json 정리 시도 (부분 성공)
@@ -46,7 +46,7 @@
 #### 1.1 완전 백업
 ```bash
 # 전체 프로젝트 백업
-xcopy K:\PortableApps\Claude-Code K:\PortableApps\Claude-SystemBackup-20250116 /E /I /H /Y
+xcopy K:\PortableApps\genai K:\PortableApps\Claude-SystemBackup-20250116 /E /I /H /Y
 
 # 설정 파일 개별 백업
 copy .claude.json backup\.claude.json.20250116.full
@@ -72,7 +72,7 @@ tree /F > backup\folder-structure-20250116.txt
     "filesystem": {
       "type": "stdio",
       "command": "node",
-      "args": ["K:\\PortableApps\\Claude-Code\\mcp-servers\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"],
+      "args": ["K:\\PortableApps\\genai\\mcp-servers\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"],
       "env": {"ALLOWED_DIRECTORIES": "K:\\"}
     }
   }
@@ -100,7 +100,7 @@ claude mcp test filesystem
     "command": "cmd",
     "args": ["/c", "npx", "-y", "mcp-shrimp-task-manager"],
     "env": {
-      "DATA_DIR": "K:\\PortableApps\\Claude-Code\\ShrimpData",
+      "DATA_DIR": "K:\\PortableApps\\genai\\ShrimpData",
       "WEB_PORT": "3000"
     }
   }
@@ -137,7 +137,7 @@ claude mcp test filesystem
 
 #### 4.1 새로운 폴더 구조
 ```
-K:\PortableApps\Claude-Code-Clean\
+K:\PortableApps\genai-Clean\
 ├── system/              # 핵심 시스템 파일
 │   ├── claude.bat       # 메인 실행
 │   ├── .claude.json     # MCP 설정
@@ -205,7 +205,7 @@ goto loop
 ### 롤백 시나리오
 ```bash
 # 실패 시 즉시 복구
-xcopy K:\PortableApps\Claude-SystemBackup-20250116 K:\PortableApps\Claude-Code /E /I /H /Y
+xcopy K:\PortableApps\Claude-SystemBackup-20250116 K:\PortableApps\genai /E /I /H /Y
 ```
 
 ## 🎯 예상 결과
@@ -241,7 +241,7 @@ xcopy K:\PortableApps\Claude-SystemBackup-20250116 K:\PortableApps\Claude-Code /
 5. **Rollback Ready**: 언제든 복구 가능
 
 ---
-📅 작성: 2025-01-16 12:35
+📅 작성: 2025-08-16 12:35
 🎯 목표: 시스템 완전 복구
 ⏱️ 예상: 총 7.5시간
 🔄 상태: Phase 1 시작 대기

@@ -2,7 +2,7 @@
 /**
  * Dashboard Bridge
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/dashboard/dashboard-bridge.js
+ * 위치: K:/PortableApps/genai/unified-task-system/dashboard/dashboard-bridge.js
  *
  * 목적:
  * - plan-ecosystem-dashboard (localhost:7847)와 Unified Task Hub 연동

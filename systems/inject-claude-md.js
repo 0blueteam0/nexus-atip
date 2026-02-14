@@ -8,7 +8,7 @@ const fs = require('fs');
 
 // CLAUDE.md 핵심 내용을 간결하게 출력
 function injectClaudeMd() {
-  const claudeMdPath = 'K:/PortableApps/Claude-Code/CLAUDE.md';
+  const claudeMdPath = 'K:/PortableApps/genai/CLAUDE.md';
   
   // 핵심 지침만 추출
   const coreGuidelines = `

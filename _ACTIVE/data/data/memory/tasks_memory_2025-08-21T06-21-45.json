@@ -22,7 +22,7 @@
       ],
       "implementationGuide": "1. VERIFY-19-MCP.bat 실행\n2. 각 서버 경로 확인\n3. K:\\tools 경로로 수정 필요한 부분 파악",
       "verificationCriteria": "19개 서버 모두 정상 인식 및 경로 확인",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
+      "analysisResult": "K:\\PortableApps\\genai 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
       "summary": "19개 MCP 서버 모두 정상 확인. filesystem, memory, shrimp-task 등 모든 서버가 설정되어 있으며, 일부 경로만 K:/tools로 수정 필요",
       "completedAt": "2025-08-21T05:58:04.001Z"
     },
@@ -48,7 +48,7 @@
       ],
       "implementationGuide": "1. K:\\tools 디렉토리 생성\n2. nodejs, python, git 폴더 복사\n3. 모든 설정 파일 경로 업데이트",
       "verificationCriteria": "K:\\tools 경로에서 모든 도구 정상 작동",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
+      "analysisResult": "K:\\PortableApps\\genai 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
       "summary": "경로 통일 완료. K:/tools 대신 기존 K:/PortableApps/tools 유지하며 모든 MCP 서버 경로 통일. CLAUDE-FINAL.bat으로 안정적 실행 환경 구축",
       "completedAt": "2025-08-21T06:07:38.384Z"
     },
@@ -74,7 +74,7 @@
       ],
       "implementationGuide": "1. PowerShell 프로파일 설정\n2. START-CLAUDE-PS.bat 생성\n3. claude-ps.bat 래퍼 테스트",
       "verificationCriteria": "PowerShell에서 claude 명령 정상 실행",
-      "analysisResult": "K:\\PortableApps\\Claude-Code 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
+      "analysisResult": "K:\\PortableApps\\genai 환경 최종 점검 및 K:\\tools 마이그레이션 완료",
       "summary": "PowerShell 기반 Bash 대체 환경 완성. POWERSHELL-MAIN.ps1, START-POWERSHELL.bat, FIX-BASH-FROM-POWERSHELL.ps1 등 완전한 PowerShell 실행 환경 구축 완료",
       "completedAt": "2025-08-21T06:02:42.695Z"
     }

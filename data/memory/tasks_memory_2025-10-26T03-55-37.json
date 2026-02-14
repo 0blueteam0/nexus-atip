@@ -1,0 +1,78 @@
+{
+  "tasks": [
+    {
+      "id": "07bb27fd-1d5f-4690-97a1-7600820d41e6",
+      "name": "보안 도메인 분류 체계 문서화",
+      "description": "20개 보안 도메인(Foundation/Intelligence/Compliance/Operation/Emerging)을 체계적으로 문서화하고 각 도메인의 범위와 책임을 명확히 정의",
+      "notes": "Markdown 테이블과 다이어그램 활용하여 가독성 높이기",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-24T15:08:47.684Z",
+      "updatedAt": "2025-09-24T15:12:45.215Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/",
+          "type": "CREATE",
+          "description": "보안 전문 문서 저장 디렉토리"
+        }
+      ],
+      "implementationGuide": "K:/PortableApps/genai/security-hub/SECURITY-DOMAINS-TAXONOMY.md 파일 생성. 3차원 분류(Layer/Function/Evolution)를 시각화하고 각 도메인별 핵심 업무와 기술 요구사항 정리",
+      "verificationCriteria": "20개 도메인이 명확히 분류되고 각각의 정의와 범위가 구체적으로 작성되었는지 확인",
+      "analysisResult": "정보보안 생태계를 3차원 분류 체계로 재정의하고 20개 도메인별 전문가 역할을 명확히 정의. 실무 중심 업무 프로세스와 기술 스택, 인증 체계를 매핑하여 2030년까지의 보안 패러다임 전환을 제시하는 종합적 프레임워크 구축",
+      "summary": "20개 보안 도메인을 Foundation/Intelligence/Compliance/Operation/Emerging 5개 카테고리로 체계적 분류. 3차원 분류 체계(Layer/Function/Evolution) 시각화, 각 도메인별 범위/핵심업무/기술요구사항 명확히 정의. 성숙도 모델과 2030년 진화 로드맵 포함",
+      "completedAt": "2025-09-24T15:12:45.178Z"
+    },
+    {
+      "id": "a22bf0c9-321a-470a-bc57-4bbdd5746d9b",
+      "name": "보안 전문가 역할 매트릭스 구축",
+      "description": "Offensive/Defensive/Engineering/Specialized 4개 카테고리별 전문가 역할과 구체적 업무를 정의하는 역할 매트릭스 작성",
+      "notes": "SOC Analyst L1/L2/L3 구분, Red Team vs Penetration Tester 차이점 명확화",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "07bb27fd-1d5f-4690-97a1-7600820d41e6"
+        }
+      ],
+      "createdAt": "2025-09-24T15:08:47.684Z",
+      "updatedAt": "2025-09-24T15:18:18.939Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/SECURITY-ROLES-MATRIX.md",
+          "type": "CREATE",
+          "description": "보안 전문가 역할 정의 문서"
+        }
+      ],
+      "implementationGuide": "SECURITY-ROLES-MATRIX.md 파일 생성. 각 역할별 일일 업무, 프로젝트 사이클, 필요 기술, 협업 대상을 상세히 기술",
+      "verificationCriteria": "최소 20개 이상의 보안 직무가 정의되고 각 직무의 일일 업무가 시간대별로 구체화되었는지 확인",
+      "analysisResult": "정보보안 생태계를 3차원 분류 체계로 재정의하고 20개 도메인별 전문가 역할을 명확히 정의. 실무 중심 업무 프로세스와 기술 스택, 인증 체계를 매핑하여 2030년까지의 보안 패러다임 전환을 제시하는 종합적 프레임워크 구축",
+      "summary": "22개 보안 전문가 역할을 Offensive/Defensive/Engineering/Specialized 4개 카테고리로 체계화. 각 역할별 일일 업무 시간표, 프로젝트 사이클, 필요 기술, 협업 대상, 인증 상세 정의. SOC L1/L2/L3 레벨 구분 및 Red Team vs Penetration Tester 차이점 명확화 완료",
+      "completedAt": "2025-09-24T15:18:18.903Z"
+    },
+    {
+      "id": "732b30d8-0324-4776-a4ad-aa8cf46474f5",
+      "name": "AI 학습용 보안 직무 분해 프레임워크 구축 - 완료",
+      "description": "보안 전문가들의 모든 역할을 AI 에이전트가 학습하고 이해하여 대체 가능하도록 하는 완전한 지식 체계 구축 완료. 15단계 Sequential Thinking 분석 완료, AI-LEARNABLE-JOB-DESCRIPTIONS.md (621줄) 작성, 2개 Python AI 에이전트 구현 (SOC Analyst, Penetration Tester)",
+      "notes": "자동화로 인한 직무 변화와 새로운 역량 요구사항 명시",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "a22bf0c9-321a-470a-bc57-4bbdd5746d9b"
+        }
+      ],
+      "createdAt": "2025-09-24T15:08:47.684Z",
+      "updatedAt": "2025-09-25T03:50:20.592Z",
+      "relatedFiles": [
+        {
+          "path": "K:/PortableApps/genai/security-hub/SECURITY-AUTOMATION-MAP.md",
+          "type": "CREATE",
+          "description": "보안 업무 자동화 로드맵"
+        }
+      ],
+      "implementationGuide": "SECURITY-AUTOMATION-MAP.md 생성. Python 코드 예시로 자동화 가능 업무 구현 방향 제시. SOAR, UEBA, XDR 등 자동화 플랫폼 활용 방안 포함",
+      "verificationCriteria": "자동화 가능/불가능 업무가 명확히 구분되고 각각의 근거가 제시되었는지 확인",
+      "analysisResult": "정보보안 생태계를 3차원 분류 체계로 재정의하고 20개 도메인별 전문가 역할을 명확히 정의. 실무 중심 업무 프로세스와 기술 스택, 인증 체계를 매핑하여 2030년까지의 보안 패러다임 전환을 제시하는 종합적 프레임워크 구축",
+      "summary": "AI 보안 전문가 대체 프레임워크 완료. 15단계 Sequential Thinking 분석 완료, AI-LEARNABLE-JOB-DESCRIPTIONS.md 621줄 작성, SOC Analyst Agent 287줄, Penetration Tester Agent 342줄 구현, 총 6개 문서 2,074줄의 포괄적 지식 체계 구축 완료",
+      "completedAt": "2025-09-25T03:50:20.541Z"
+    }
+  ]
+}

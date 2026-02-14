@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "description": "Anthropic 공식 문서 팔로우 시스템 - URL 인덱스 및 변경 추적",
+  "lastScan": "2025-12-19T09:30:00Z",
+  "lastUpdate": "2025-12-19T09:30:00Z",
+
+  "domains": {
+    "docs.anthropic.com": {
+      "description": "Claude API 공식 문서 (→ platform.claude.com 리다이렉트)",
+      "scanFrequency": "daily",
+      "urls": [
+        "https://platform.claude.com/docs/en/about-claude/models/overview",
+        "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-5",
+        "https://platform.claude.com/docs/en/about-claude/use-case-guides/legal-summarization",
+        "https://platform.claude.com/docs/en/about-claude/use-case-guides/overview",
+        "https://platform.claude.com/docs/en/about-claude/use-case-guides/ticket-routing",
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+        "https://platform.claude.com/docs/en/agents-and-tools/mcp/mcp-connector",
+        "https://platform.claude.com/docs/en/agents-and-tools/mcp/overview",
+        "https://platform.claude.com/docs/en/agents-and-tools/tool-use/best-practices",
+        "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "https://platform.claude.com/docs/en/agents-and-tools/tool-use/prompt-caching",
+        "https://platform.claude.com/docs/en/agent-sdk/overview",
+        "https://platform.claude.com/docs/en/api/accessing-the-api",
+        "https://platform.claude.com/docs/en/api/api-versioning",
+        "https://platform.claude.com/docs/en/api/authentication",
+        "https://platform.claude.com/docs/en/api/claude-on-amazon-bedrock",
+        "https://platform.claude.com/docs/en/api/claude-on-vertex-ai",
+        "https://platform.claude.com/docs/en/api/errors-and-rate-limits",
+        "https://platform.claude.com/docs/en/api/overview",
+        "https://platform.claude.com/docs/en/api/testing-prompts",
+        "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+        "https://platform.claude.com/docs/en/build-with-claude/multimodal/overview",
+        "https://platform.claude.com/docs/en/build-with-claude/multimodal/pdf-support",
+        "https://platform.claude.com/docs/en/build-with-claude/multimodal/vision",
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompt-caching",
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompt-types",
+        "https://platform.claude.com/docs/en/claude-code/bedrock-and-vertex",
+        "https://platform.claude.com/docs/en/claude-code/github-actions",
+        "https://platform.claude.com/docs/en/claude-code/gitlab-ci-cd",
+        "https://platform.claude.com/docs/en/claude-code/headless-mode",
+        "https://platform.claude.com/docs/en/claude-code/hooks",
+        "https://platform.claude.com/docs/en/claude-code/ide-integrations",
+        "https://platform.claude.com/docs/en/claude-code/interactive-mode",
+        "https://platform.claude.com/docs/en/claude-code/mcp",
+        "https://platform.claude.com/docs/en/claude-code/memory",
+        "https://platform.claude.com/docs/en/claude-code/overview",
+        "https://platform.claude.com/docs/en/claude-code/security",
+        "https://platform.claude.com/docs/en/claude-code/settings",
+        "https://platform.claude.com/docs/en/claude-code/skills",
+        "https://platform.claude.com/docs/en/claude-code/tutorials/automate-testing",
+        "https://platform.claude.com/docs/en/claude-code/tutorials/create-cli",
+        "https://platform.claude.com/docs/en/claude-code/tutorials/pair-program",
+        "https://platform.claude.com/docs/en/overview",
+        "https://platform.claude.com/docs/en/quickstarts/computer-use",
+        "https://platform.claude.com/docs/en/quickstarts/conversations",
+        "https://platform.claude.com/docs/en/quickstarts/extended-thinking",
+        "https://platform.claude.com/docs/en/quickstarts/mcp-from-claude-desktop",
+        "https://platform.claude.com/docs/en/quickstarts/tool-use",
+        "https://platform.claude.com/docs/en/resources/release-notes"
+      ],
+      "checksums": {},
+      "lastScanned": "2025-12-19T09:30:00Z"
+    },
+    "claude.ai/docs": {
+      "description": "Claude.ai 사용자 문서",
+      "scanFrequency": "daily",
+      "urls": [],
+      "checksums": {},
+      "lastScanned": null
+    },
+    "support.anthropic.com": {
+      "description": "Anthropic 지원 문서",
+      "scanFrequency": "weekly",
+      "urls": [],
+      "checksums": {},
+      "lastScanned": null
+    },
+    "github.com/anthropics": {
+      "description": "Anthropic 공식 GitHub",
+      "scanFrequency": "daily",
+      "urls": [],
+      "checksums": {},
+      "lastScanned": null
+    },
+    "www.anthropic.com/news": {
+      "description": "Anthropic 뉴스/블로그",
+      "scanFrequency": "weekly",
+      "urls": [],
+      "checksums": {},
+      "lastScanned": null
+    }
+  },
+
+  "tracking": {
+    "newUrls": [
+      "https://platform.claude.com/docs/en/about-claude/models/whats-new-claude-4-5",
+      "https://platform.claude.com/docs/en/agent-sdk/overview",
+      "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+      "https://platform.claude.com/docs/en/claude-code/hooks",
+      "https://platform.claude.com/docs/en/claude-code/skills"
+    ],
+    "changedUrls": [],
+    "removedUrls": []
+  },
+
+  "statistics": {
+    "totalUrls": 50,
+    "totalScans": 1,
+    "lastNewUrlCount": 50,
+    "lastChangedUrlCount": 0
+  },
+
+  "crawlerPreference": {
+    "primary": "firecrawl_map",
+    "secondary": "one_search",
+    "fallback": "crawl4ai_scrape"
+  },
+
+  "crawlerStatus": {
+    "lastTest": "2025-12-19T09:30:00Z",
+    "results": {
+      "firecrawl_map": {"status": "success", "urls": 50, "note": "platform.claude.com 리다이렉트"},
+      "firecrawl_search": {"status": "success", "results": 5},
+      "one_search": {"status": "success", "results": 10},
+      "WebFetch": {"status": "success", "note": "Claude 4.5 문서 스크래핑 성공"},
+      "WebSearch": {"status": "success", "note": "최신 버전 2.0.72 정보"},
+      "websearch_tavily": {"status": "error", "note": "API 연결 실패"},
+      "crawl4ai_lite": {"status": "limited", "note": "데모 모드"},
+      "scrapegraph_local": {"status": "not_tested", "note": "Ollama 필요"},
+      "searxng_crawl4ai": {"status": "not_tested", "note": "Docker 필요"}
+    }
+  }
+}

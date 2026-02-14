@@ -11,13 +11,13 @@ const { exec } = require('child_process');
 const CONFIG = {
   autoSaveInterval: 3600000, // 1시간마다
   importantKeywords: ['결정', '해결', '성공', '완료', '중요', '핵심', '문제'],
-  memoryPath: 'K:/PortableApps/Claude-Code/memory-archive',
-  shrimpDataPath: 'K:/PortableApps/Claude-Code/ShrimpData',
+  memoryPath: 'K:/PortableApps/genai/memory-archive',
+  shrimpDataPath: 'K:/PortableApps/genai/ShrimpData',
   retention: {
     enabled: false,  // false = 영구 보관
     days: -1,        // -1 = 삭제하지 않음
     compress: true,  // 오래된 파일 압축
-    archivePath: 'K:/PortableApps/Claude-Code/memory-archive/permanent'
+    archivePath: 'K:/PortableApps/genai/memory-archive/permanent'
   }
 };
 

@@ -1,0 +1,62 @@
+{
+  "profiles": {
+    "plan": {
+      "description": "Planning phase - research and design focused",
+      "maxPriority": 2,
+      "enabledCategories": ["tools", "skills", "memory"],
+      "preferredTools": [
+        "firecrawl_search",
+        "firecrawl_map",
+        "one_search",
+        "context7",
+        "sequential_thinking",
+        "paper_search"
+      ],
+      "cooldownMultiplier": 1.0
+    },
+    "implement": {
+      "description": "Implementation phase - code writing focused",
+      "maxPriority": 1,
+      "enabledCategories": ["tools", "commands"],
+      "preferredTools": [
+        "desktop-commander",
+        "edit-file-lines",
+        "filesystem",
+        "git-mcp"
+      ],
+      "cooldownMultiplier": 0.5
+    },
+    "execute": {
+      "description": "Execution phase - testing and verification",
+      "maxPriority": 1,
+      "enabledCategories": ["tools", "memory"],
+      "preferredTools": [
+        "playwright",
+        "sequential_thinking",
+        "sqlite",
+        "bash"
+      ],
+      "cooldownMultiplier": 0.5
+    },
+    "default": {
+      "description": "Default profile when phase is unknown",
+      "maxPriority": 1,
+      "enabledCategories": ["tools"],
+      "preferredTools": [],
+      "cooldownMultiplier": 1.0
+    }
+  },
+  "globalSettings": {
+    "enabled": true,
+    "minConfidence": 0.4,
+    "maxTriggersPerPhase": 20,
+    "debugMode": false
+  },
+  "categoryPriorities": {
+    "tools": 1,
+    "skills": 2,
+    "commands": 1,
+    "memory": 3,
+    "workflows": 2
+  }
+}

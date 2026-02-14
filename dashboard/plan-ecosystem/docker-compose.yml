@@ -9,20 +9,20 @@ services:
       - "7847:7847"
     volumes:
       # Mount data directories - planning-log is read-write for v2.0 logging
-      - K:/PortableApps/Claude-Code/plans:/data/plans:ro
-      - K:/PortableApps/Claude-Code/planning-log:/data/planning-log:rw
-      - K:/PortableApps/Claude-Code/ShrimpData:/data/ShrimpData:ro
+      - K:/PortableApps/genai/plans:/data/plans:ro
+      - K:/PortableApps/genai/planning-log:/data/planning-log:rw
+      - K:/PortableApps/genai/ShrimpData:/data/ShrimpData:ro
       # v2.0: ATOS stats and logs
-      - K:/PortableApps/Claude-Code/atos:/data/atos:ro
+      - K:/PortableApps/genai/atos:/data/atos:ro
       # v2.0: Unified task system
-      - K:/PortableApps/Claude-Code/unified-task-system:/data/unified-task-system:ro
+      - K:/PortableApps/genai/unified-task-system:/data/unified-task-system:ro
       # v2.0 Phase 7: Skills directory
-      - K:/PortableApps/Claude-Code/.claude/skills:/data/.claude/skills:ro
+      - K:/PortableApps/genai/.claude/skills:/data/.claude/skills:ro
       # v2.0 Phase 8: Task Master data
-      - K:/PortableApps/Claude-Code/data:/data/data:ro
+      - K:/PortableApps/genai/data:/data/data:ro
       # v4.0 Phase 9 Week 4: MCP Server databases
-      - K:/PortableApps/Claude-Code/mcp-servers/vibekanban/instance:/data/mcp-servers/vibekanban/instance:ro
-      - K:/PortableApps/Claude-Code/data/kiro-memory:/data/data/kiro-memory:ro
+      - K:/PortableApps/genai/mcp-servers/vibekanban/instance:/data/mcp-servers/vibekanban/instance:ro
+      - K:/PortableApps/genai/data/kiro-memory:/data/data/kiro-memory:ro
     environment:
       - NODE_ENV=production
       - BASE_PATH=/data

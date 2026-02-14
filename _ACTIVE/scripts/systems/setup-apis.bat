@@ -27,13 +27,13 @@ set /p YOUTUBE_KEY="YouTube API Key 입력 (Enter 건너뛰기): "
 
 if not "%CONTEXT7_KEY%"=="" (
     echo Setting Context7 API key...
-    powershell -Command "(Get-Content K:\PortableApps\Claude-Code\.claude.json) -replace 'YOUR_CONTEXT7_API_KEY_HERE', '%CONTEXT7_KEY%' | Set-Content K:\PortableApps\Claude-Code\.claude.json"
+    powershell -Command "(Get-Content K:\PortableApps\genai\.claude.json) -replace 'YOUR_CONTEXT7_API_KEY_HERE', '%CONTEXT7_KEY%' | Set-Content K:\PortableApps\genai\.claude.json"
     echo ✅ Context7 API key set!
 )
 
 if not "%YOUTUBE_KEY%"=="" (
     echo Setting YouTube API key...
-    powershell -Command "(Get-Content K:\PortableApps\Claude-Code\.claude.json) -replace 'YOUR_YOUTUBE_API_KEY_HERE', '%YOUTUBE_KEY%' | Set-Content K:\PortableApps\Claude-Code\.claude.json"
+    powershell -Command "(Get-Content K:\PortableApps\genai\.claude.json) -replace 'YOUR_YOUTUBE_API_KEY_HERE', '%YOUTUBE_KEY%' | Set-Content K:\PortableApps\genai\.claude.json"
     echo ✅ YouTube API key set!
 )
 

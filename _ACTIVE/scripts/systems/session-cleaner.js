@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const PROJECTS_DIR = 'K:/PortableApps/Claude-Code/projects';
-const SHELL_SNAPSHOTS_DIR = 'K:/PortableApps/Claude-Code/shell-snapshots';
+const PROJECTS_DIR = 'K:/PortableApps/genai/projects';
+const SHELL_SNAPSHOTS_DIR = 'K:/PortableApps/genai/shell-snapshots';
 
 async function cleanSessionFile(filePath) {
     console.log(`Cleaning session file: ${path.basename(filePath)}`);
@@ -37,7 +37,7 @@ async function cleanSessionFile(filePath) {
                     fs.writeFileSync(fullPath, 
 `# Auto-generated snapshot
 export PATH=$PATH
-export CLAUDE_HOME="/k/PortableApps/Claude-Code"
+export CLAUDE_HOME="/k/PortableApps/genai"
 echo "Bash environment loaded successfully"
 `);
                     linesModified++;

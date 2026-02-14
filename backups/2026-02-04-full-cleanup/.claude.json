@@ -1,0 +1,792 @@
+{
+  "numStartups": 119,
+  "installMethod": "global",
+  "autoUpdates": true,
+  "hasSeenTasksHint": true,
+  "customApiKeyResponses": {
+    "approved": [
+      "sdwWiorb1yw-ImTf_AAA"
+    ],
+    "rejected": [
+      "8nG8mApsSMw-xpCpoQAA",
+      "_UrZdGCFz9Q-Y5V7igAA"
+    ]
+  },
+  "tipsHistory": {
+    "memory-command": 106,
+    "theme-command": 117,
+    "status-line": 115,
+    "prompt-queue": 11,
+    "enter-to-steer-in-relatime": 117,
+    "todo-list": 117,
+    "ide-upsell-external-terminal": 16,
+    "# for memory": 99,
+    "install-github-app": 112,
+    "permissions": 115,
+    "drag-and-drop-images": 117,
+    "double-esc": 23,
+    "continue": 118,
+    "custom-commands": 108,
+    "shift-tab": 118,
+    "image-paste": 117,
+    "custom-agents": 108,
+    "ide-hotkey": 25,
+    "terminal-setup": 118,
+    "shift-enter": 17,
+    "plan-mode-for-complex-tasks": 117,
+    "shift-enter-setup": 117,
+    "double-esc-code-restore": 118,
+    "tab-toggle-thinking": 77,
+    "ultrathink-keyword": 107,
+    "default-permission-mode-config": 117,
+    "stickers-command": 100,
+    "git-worktrees": 117,
+    "rename-conversation": 108,
+    "config-thinking-mode": 108,
+    "guest-passes": 118,
+    "frontend-design-plugin": 118,
+    "install-slack-app": 112,
+    "btw-side-question": 101,
+    "desktop-app": 117,
+    "web-app": 117,
+    "mobile-app": 117,
+    "agent-flag": 118
+  },
+  "promptQueueUseCount": 906,
+  "showExpandedTodos": true,
+  "cachedStatsigGates": {
+    "tengu_disable_bypass_permissions_mode": false,
+    "tengu_tool_pear": false,
+    "tengu_migrate_ignore_patterns": false,
+    "tengu_halloween": false,
+    "tengu_web_tasks": true,
+    "tengu_log_1p_events": true,
+    "code_slack_app_install_banner": false,
+    "tengu_c4w_usage_limit_notifications_enabled": true,
+    "tengu_sumi": false,
+    "tengu_react_vulnerability_warning": false,
+    "tengu_thinkback": false,
+    "tengu_tool_result_persistence": false,
+    "tengu_prompt_suggestion": true,
+    "tengu_year_end_2025_campaign_promo": false
+  },
+  "cachedDynamicConfigs": {
+    "tengu_1p_event_batch_config": {
+      "scheduledDelayMillis": 5000,
+      "maxExportBatchSize": 200,
+      "maxQueueSize": 8192
+    },
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
+    }
+  },
+  "cachedGrowthBookFeatures": {
+    "strawberry_granite_flag": "N/A",
+    "persimmon_marble_flag": "N/A",
+    "tengu_mcp_tool_search": true,
+    "tengu_disable_bypass_permissions_mode": false,
+    "tengu_tool_pear": false,
+    "tengu_c4w_usage_limit_notifications_enabled": true,
+    "tengu_thinkback": false,
+    "tengu_sumi": true,
+    "tengu_react_vulnerability_warning": false,
+    "tengu_ant_attribution_header_new": true,
+    "tengu_accept_with_feedback": true,
+    "tengu_pid_based_version_locking": true,
+    "tengu_tool_result_persistence": false,
+    "tengu_1p_event_batch_config": {
+      "scheduledDelayMillis": 5000,
+      "maxExportBatchSize": 200,
+      "maxQueueSize": 8192
+    },
+    "tengu_scratch": true,
+    "tengu_log_segment_events": false,
+    "tengu_log_datadog_events": true,
+    "tengu_event_sampling_config": {},
+    "tengu_tool_search_unsupported_models": [
+      "haiku"
+    ],
+    "enhanced_telemetry_beta": false,
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
+    },
+    "tengu_code_diff_cli": true,
+    "tengu_post_compact_survey": false,
+    "tengu_streaming_tool_execution2": true,
+    "tengu_permission_explainer": true,
+    "tengu_plan_mode_interview_phase": false,
+    "tengu_session_memory": false,
+    "tengu_sm_compact": false,
+    "tengu_bash_haiku_prefetch": true,
+    "tengu_compact_streaming_retry": false,
+    "tengu_brass_pebble": false,
+    "tengu_marble_anvil": true,
+    "tengu_scarf_coffee": false,
+    "tengu_keybinding_customization_release": true,
+    "tengu_pr_status_cli": true,
+    "tengu_claudeai_mcp_connectors": false,
+    "tengu_marble_kite": false,
+    "tengu_system_prompt_global_cache": true,
+    "tengu_attribution_header": true,
+    "tengu_workout": false,
+    "tengu_coral_fern": false,
+    "tengu_cache_plum_violet": true,
+    "tengu_kv7_prompt_sort": false,
+    "tengu_plank_river_frost": "user_intent",
+    "tengu_file_write_optimization": false,
+    "tengu_plum_vx3": false,
+    "tengu_vinteuil_phrase": false,
+    "tengu_compact_cache_prefix": true,
+    "tengu_cork_m4q": false
+  },
+  "hasSeenStashHint": true,
+  "mcpServers": {
+    "mcp-installer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@anaisbetts/mcp-installer"
+      ]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+      ],
+      "env": {
+        "ALLOWED_DIRECTORIES": "K:\\"
+      }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
+      ]
+    },
+    "shrimp-task": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
+      ],
+      "env": {
+        "TASK_DATA_PATH": "K:\\PortableApps\\genai\\ShrimpData",
+        "LANG": "ko_KR.UTF-8",
+        "LANGUAGE": "ko",
+        "LC_ALL": "ko_KR.UTF-8",
+        "OUTPUT_LANGUAGE": "ko,en"
+      }
+    },
+    "github": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "deep-research-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/deep-research-mcp/index.js"
+      ]
+    },
+    "multi-ai-orchestration": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/multi-ai-mcp/index.js"
+      ]
+    },
+    "firecrawl": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "firecrawl-mcp"
+      ],
+      "env": {
+        "FIRECRAWL_API_KEY": "${FIRECRAWL_API_KEY}",
+        "FIRECRAWL_API_URL": "http://localhost:3002"
+      }
+    },
+    "scrapegraph-local": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/scrapegraph-local-mcp/server.py"
+      ],
+      "env": {
+        "OLLAMA_MODEL": "llama3.2",
+        "OLLAMA_BASE_URL": "http://localhost:11434"
+      }
+    },
+    "searxng-crawl4ai": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "searxng-crawl4ai-mcp-mcp-server-1",
+        "node",
+        "dist/index.js"
+      ]
+    },
+    "crawl4ai-lite": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/crawl4ai-mcp-server"
+      ]
+    },
+    "git-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
+      ],
+      "env": {
+        "GIT_REPOSITORY_PATH": "K:\\PortableApps\\genai"
+      }
+    },
+    "sqlite-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "mcp-server-sqlite-npx",
+        "K:/PortableApps/genai/data/sqlite/claude.db"
+      ]
+    },
+    "websearch": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "websearch-mcp"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+      }
+    },
+    "youtube-data": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "youtube-data-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "${YOUTUBE_API_KEY}"
+      }
+    },
+    "edit-file-lines": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\mcp-servers\\mcp-edit-file-lines\\build\\index.js",
+        "K:\\PortableApps\\genai"
+      ]
+    },
+    "kiro-memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "-m",
+        "mcp_server_enhanced"
+      ],
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1",
+        "LANG": "ko_KR.UTF-8",
+        "LC_ALL": "ko_KR.UTF-8",
+        "KIRO_DB_PATH": "K:/PortableApps/genai/data/kiro-memory/mcp_memory.db"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "one-search": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "one-search-mcp"
+      ],
+      "env": {
+        "GOOGLE_SEARCH_API_KEY": "${GOOGLE_SEARCH_API_KEY}",
+        "GOOGLE_SEARCH_ENGINE_ID": "65c0e1c5d01ac4edb"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "desktop-commander": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\desktop-commander-mcp\\dist\\index.js"
+      ]
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=sofkjjpgastzbxnmrwwx"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    },
+    "n8n": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@illuminaresolutions\\n8n-mcp-server\\build\\index.js"
+      ],
+      "env": {
+        "N8N_API_KEY": "${N8N_API_KEY}",
+        "N8N_HOST": "${N8N_HOST}"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "runpod-jupyter": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "K:/PortableApps/tools/uv/uvx.exe",
+        "jupyter-mcp-server@latest"
+      ],
+      "env": {
+        "JUPYTER_URL": "http://localhost:8888",
+        "JUPYTER_TOKEN": "${RUNPOD_JUPYTER_TOKEN}",
+        "ALLOW_IMG_OUTPUT": "true"
+      }
+    },
+    "image-recognition": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "-m",
+        "image_recognition_server.server"
+      ],
+      "env": {
+        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/mcp-image-recognition/src",
+        "VISION_PROVIDER": "anthropic",
+        "ENABLE_OCR": "true",
+        "TESSERACT_CMD": "K:/tools/tesseract.exe",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "paddleocr-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src/server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "marker-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/marker-mcp/src/server.py"
+      ],
+      "env": {
+        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/marker-mcp/src",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "llm-council": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/llm-council-mcp/server.py"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "antv-chart": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@antv/mcp-server-chart"
+      ]
+    },
+    "hfspace": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@llmindset/mcp-hfspace",
+        "--work-dir=K:/PortableApps/genai/Downloads",
+        "black-forest-labs/FLUX.1-schnell",
+        "Qwen/Qwen2.5-72B-Instruct"
+      ],
+      "env": {
+        "HF_TOKEN": "${HF_TOKEN}"
+      }
+    },
+    "task-master-ai": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "task-master-ai"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      }
+    },
+    "paper-search-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/uv/uv.exe",
+      "args": [
+        "run",
+        "--directory",
+        "K:/PortableApps/genai/mcp-servers/paper-search-mcp",
+        "-m",
+        "paper_search_mcp.server"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "serena": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/uv/uvx.exe",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1"
+      }
+    },
+    "vibekanban": {
+      "type": "stdio",
+      "command": "K:/PortableApps/genai/mcp-servers/vibekanban/.venv/Scripts/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/vibekanban/kanban_mcp_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "FLASK_APP": "app"
+      }
+    },
+    "notion": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {
+        "NOTION_TOKEN": "${NOTION_TOKEN}"
+      }
+    },
+    "e2b": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@e2b/mcp-server"
+      ],
+      "env": {
+        "E2B_API_KEY": "${E2B_API_KEY}"
+      }
+    },
+    "ocr-mcp": {
+      "type": "stdio",
+      "command": "C:/Python313/python.exe",
+      "args": [
+        "-m",
+        "ocr_mcp.server"
+      ],
+      "cwd": "K:/PortableApps/genai/mcp-servers/ocr-mcp",
+      "env": {
+        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/ocr-mcp/src",
+        "PYTHONIOENCODING": "utf-8:replace",
+        "PYTHONUTF8": "1",
+        "OCR_DEFAULT_ENGINE": "tesseract"
+      }
+    },
+    "pal": {
+      "type": "stdio",
+      "command": "K:/PortableApps/genai/mcp-servers/pal-mcp-server/.pal_venv/Scripts/python.exe",
+      "args": [
+        "K:/PortableApps/genai/mcp-servers/pal-mcp-server/server.py"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
+        "DISABLED_TOOLS": "analyze,refactor,testgen,secaudit,docgen,tracer",
+        "DEFAULT_MODEL": "auto"
+      }
+    }
+  },
+  "shell": "cmd.exe",
+  "gitBashPath": "K:\\tools\\git\\bin\\bash.exe",
+  "userID": "c4c10b6644c2d667dffe707a92908a2c7784320f4bc2364c35ab54fd6ba7b91b",
+  "projects": {
+    "K:\\PortableApps\\genai": {
+      "allowedTools": [],
+      "hasCompletedProjectOnboarding": true,
+      "lastTotalWebSearchRequests": 0,
+      "projectOnboardingSeenCount": 7,
+      "mcpServers": {
+        "memory-keeper": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "mcp-memory-keeper"
+          ],
+          "env": {}
+        }
+      },
+      "reactVulnerabilityCache": {
+        "detected": false,
+        "package": null,
+        "packageName": null,
+        "version": null,
+        "packageManager": null
+      },
+      "lastAPIDurationWithoutRetries": 2460591,
+      "lastModelUsage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 12977,
+          "outputTokens": 1637,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 17211,
+          "webSearchRequests": 0,
+          "costUSD": 0.04267574999999997
+        },
+        "claude-opus-4-5-20251101": {
+          "inputTokens": 1306,
+          "outputTokens": 107429,
+          "cacheReadInputTokens": 15805405,
+          "cacheCreationInputTokens": 1501048,
+          "webSearchRequests": 0,
+          "costUSD": 19.97650749999999
+        }
+      }
+    },
+    "K:/PortableApps/genai": {
+      "allowedTools": [
+        "mcp__desktop-commander__*",
+        "mcp__edit-file-lines__*",
+        "mcp__shrimp-task__*",
+        "mcp__filesystem__*",
+        "mcp__memory__*",
+        "mcp__github__*",
+        "mcp__git-mcp__*",
+        "mcp__sequential-thinking__*",
+        "mcp__context7__*",
+        "mcp__one-search__*",
+        "mcp__kiro-memory__*"
+      ],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "exampleFiles": [],
+      "reactVulnerabilityCache": {
+        "detected": false,
+        "package": null,
+        "packageName": null,
+        "version": null,
+        "packageManager": null
+      },
+      "hasCompletedProjectOnboarding": true,
+      "lastCost": 33.692415600000004,
+      "lastAPIDuration": 14142360,
+      "lastAPIDurationWithoutRetries": 10077385,
+      "lastToolDuration": 59259072,
+      "lastDuration": 64251608,
+      "lastLinesAdded": 1292,
+      "lastLinesRemoved": 330,
+      "lastTotalInputTokens": 1694082,
+      "lastTotalOutputTokens": 602732,
+      "lastTotalCacheCreationInputTokens": 4628990,
+      "lastTotalCacheReadInputTokens": 28427295,
+      "lastTotalWebSearchRequests": 29,
+      "lastModelUsage": {
+        "claude-haiku-4-5-20251001": {
+          "inputTokens": 1617832,
+          "outputTokens": 433339,
+          "cacheReadInputTokens": 12624341,
+          "cacheCreationInputTokens": 2618657,
+          "webSearchRequests": 0,
+          "costUSD": 8.320282350000003
+        },
+        "claude-opus-4-5-20251101": {
+          "inputTokens": 76250,
+          "outputTokens": 169393,
+          "cacheReadInputTokens": 15802954,
+          "cacheCreationInputTokens": 2010333,
+          "webSearchRequests": 29,
+          "costUSD": 25.372133249999997
+        }
+      },
+      "lastSessionId": "53a24280-50e5-4399-ae14-aba41be61468"
+    },
+    "K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": false,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false
+    }
+  },
+  "fallbackAvailableWarningThreshold": 0.5,
+  "changelogLastFetched": 1770164944629,
+  "firstStartTime": "2025-08-27T08:05:58.945Z",
+  "claudeCodeFirstTokenDate": "2025-07-23T03:27:24.018678Z",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "1.0.77",
+  "lastReleaseNotesSeen": "2.1.30",
+  "subscriptionNoticeCount": 1,
+  "hasAvailableSubscription": false,
+  "s1mAccessCache": {
+    "504d6456-0ca3-4a13-a46e-84b077157abf": {
+      "hasAccess": false,
+      "hasAccessNotAsDefault": false,
+      "timestamp": 1770160967995
+    }
+  },
+  "isQualifiedForDataSharing": false,
+  "hasOpusPlanDefault": false,
+  "s1mNonSubscriberAccessCache": {
+    "3039b841-6e4f-46ee-ae45-7bbf3d85e3f8": {
+      "hasAccess": false,
+      "timestamp": 1765512930384
+    }
+  },
+  "_backup_metadata": {
+    "timestamp": "2025-08-27T13:46:52.855Z",
+    "reason": "Config updated",
+    "backupNumber": 6,
+    "mcpServerCount": 22,
+    "hash": "7bfb8ee4b1774b9a7131c990bb56bcc23209144daed63f15dada1e9684eebbf7"
+  },
+  "hasUsedBackslashReturn": true,
+  "recommendedSubscription": "",
+  "sonnet45MigrationComplete": true,
+  "feedbackSurveyState": {
+    "lastShownTime": 1768624478925
+  },
+  "lastPlanModeUse": 1770162267134,
+  "opus45MigrationComplete": true,
+  "githubRepoPaths": {
+    "0blueteam0/nexus-atip": [
+      "K:\\PortableApps\\genai\\multi-ai-orchestration",
+      "K:\\PortableApps\\genai"
+    ]
+  },
+  "passesEligibilityCache": {
+    "504d6456-0ca3-4a13-a46e-84b077157abf": {
+      "eligible": true,
+      "referral_code_details": {
+        "code": "RYv-Or0o7w",
+        "campaign": "claude_code_guest_pass",
+        "referral_link": "https://claude.ai/referral/RYv-Or0o7w"
+      },
+      "referrer_reward": null,
+      "remaining_passes": 3,
+      "timestamp": 1770160965369
+    }
+  },
+  "hasShownOpus45Notice": {
+    "504d6456-0ca3-4a13-a46e-84b077157abf": true,
+    "3039b841-6e4f-46ee-ae45-7bbf3d85e3f8": true
+  },
+  "hasIdeOnboardingBeenShown": {
+    "cursor": true
+  },
+  "anonymousId": "claudecode.v1.cf6caad5-2433-4763-9e9f-9688b0270b67",
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true,
+  "passesUpsellSeenCount": 4,
+  "oauthAccount": {
+    "accountUuid": "42075a9f-2049-448b-808b-2fa8a0a9aff9",
+    "emailAddress": "fofzoy@gmail.com",
+    "organizationUuid": "504d6456-0ca3-4a13-a46e-84b077157abf",
+    "hasExtraUsageEnabled": false,
+    "displayName": "RRR",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "fofzoy@gmail.com's Organization"
+  },
+  "thinkingMigrationComplete": true,
+  "opusProMigrationComplete": true,
+  "cachedChromeExtensionInstalled": false,
+  "groveConfigCache": {
+    "42075a9f-2049-448b-808b-2fa8a0a9aff9": {
+      "grove_enabled": true,
+      "timestamp": 1770096717829
+    }
+  },
+  "hasVisitedPasses": false,
+  "passesLastSeenRemaining": 3,
+  "clientDataCache": {
+    "data": {},
+    "timestamp": 1770162407566
+  }
+}

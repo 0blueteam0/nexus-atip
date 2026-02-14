@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    {
+      "id": "3f58903e-5b3c-481e-892c-ebe908728b4e",
+      "name": "HTML 구조 검증 및 태그 짝 맞추기",
+      "description": "모든 열린 태그와 닫힌 태그가 올바르게 매칭되는지 확인하고, 잘못된 중첩 구조 수정",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-01T06:29:00.993Z",
+      "updatedAt": "2025-09-01T06:30:51.731Z",
+      "implementationGuide": "1. div 태그 개수 확인\n2. 중복된 닫는 태그 제거\n3. 누락된 닫는 태그 추가",
+      "verificationCriteria": "모든 HTML 태그가 올바르게 열리고 닫혀있음",
+      "analysisResult": "vite-app/index.html 파일의 모든 Syntax Error를 찾아서 수정",
+      "summary": "HTML 구조 검증 완료 - window.assetInventory 객체 닫는 중괄호 누락 수정, huntForIP 함수 닫는 중괄호 누락 수정",
+      "completedAt": "2025-09-01T06:30:51.666Z"
+    },
+    {
+      "id": "dbc70c08-01d0-4285-8c49-70b5c53d3cee",
+      "name": "JavaScript 문법 오류 검증",
+      "description": "인라인 JavaScript 및 script 태그 내의 문법 오류 확인 및 수정",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-09-01T06:29:00.993Z",
+      "updatedAt": "2025-09-01T06:34:56.480Z",
+      "implementationGuide": "1. 잘못된 문자열 이스케이프 확인\n2. 함수 정의 중복 확인\n3. 변수 선언 오류 확인",
+      "verificationCriteria": "모든 JavaScript 코드가 문법적으로 올바름",
+      "analysisResult": "vite-app/index.html 파일의 모든 Syntax Error를 찾아서 수정",
+      "summary": "JavaScript 문법 오류 검증 완료 - 중복 함수 제거, 잘못된 닫는 중괄호 수정, 객체 리터럴 구조 정리",
+      "completedAt": "2025-09-01T06:34:56.404Z"
+    }
+  ]
+}

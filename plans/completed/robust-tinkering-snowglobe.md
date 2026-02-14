@@ -4,7 +4,7 @@
 ## Overview / 개요
 
 **[목적]** K드라이브 Claude Code 환경에 범용 개발 스킬 시스템 구축
-**[위치]** `K:/PortableApps/Claude-Code/.claude/skills/`
+**[위치]** `K:/PortableApps/genai/.claude/skills/`
 **[구조]** 완전 구조 (SKILL.md + scripts/ + templates/ + references/)
 
 ---

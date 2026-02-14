@@ -1,4 +1,4 @@
-# 🧹 정리 완료 보고서 - 2025-01-16
+# 🧹 정리 완료 보고서 - 2025-08-16
 
 ## ✅ 정리 결과
 
@@ -31,7 +31,7 @@
 
 ### 🎯 현재 구조 (깔끔)
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── 핵심 파일 (5개)
 │   ├── claude.bat
 │   ├── .claude.json

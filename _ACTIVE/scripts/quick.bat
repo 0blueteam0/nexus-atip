@@ -2,11 +2,11 @@
 REM Claude Code Quick Launch with Bottom-up Optimization
 REM 최적화된 빠른 실행 스크립트
 
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 REM 환경 변수 즉시 설정
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
-set CLAUDE_CONFIG_FILE=K:\PortableApps\Claude-Code\.claude.json
+set CLAUDE_HOME=K:\PortableApps\genai
+set CLAUDE_CONFIG_FILE=K:\PortableApps\genai\.claude.json
 set PATH=K:\PortableApps\tools\nodejs;K:\PortableApps\tools\git\bin;%PATH%
 set MCP_TIMEOUT=60000
 
@@ -22,4 +22,4 @@ echo ║         Cutting Edge Performance             ║
 echo ╚══════════════════════════════════════════════╝
 echo.
 
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\node_modules\@anthropic-ai\claude-code\cli.js %*
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js %*

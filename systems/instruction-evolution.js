@@ -14,9 +14,9 @@ const path = require('path');
 
 class InstructionEvolution {
   constructor() {
-    this.claudeMdPath = 'K:/PortableApps/Claude-Code/CLAUDE.md';
-    this.evolutionLogPath = 'K:/PortableApps/Claude-Code/documentation/evolution-log';
-    this.patternsPath = 'K:/PortableApps/Claude-Code/data/learned-patterns.json';
+    this.claudeMdPath = 'K:/PortableApps/genai/CLAUDE.md';
+    this.evolutionLogPath = 'K:/PortableApps/genai/documentation/evolution-log';
+    this.patternsPath = 'K:/PortableApps/genai/data/learned-patterns.json';
   }
 
   // 학습된 패턴 로드

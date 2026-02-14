@@ -10,7 +10,7 @@ const path = require('path');
 
 class DateFixMonitor {
     constructor() {
-        this.configPath = 'K:\\PortableApps\\Claude-Code\\.claude.json';
+        this.configPath = 'K:\\PortableApps\\genai\\.claude.json';
         this.today = new Date();
         // 실제 날짜 (환경 변수에서 확인)
         this.actualYear = 2025;
@@ -66,7 +66,7 @@ class DateFixMonitor {
     
     // 파일명 날짜 오류 감지
     checkFilenameDates() {
-        const files = fs.readdirSync('K:\\PortableApps\\Claude-Code');
+        const files = fs.readdirSync('K:\\PortableApps\\genai');
         const wrongDates = [];
         
         files.forEach(file => {

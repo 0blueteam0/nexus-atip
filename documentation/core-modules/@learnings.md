@@ -5,7 +5,7 @@
 ### 발견한 문제와 해결책
 1. **Bash 스냅샷 에러**
    - 원인: /tmp 경로가 C드라이브를 참조
-   - 해결: K:\PortableApps\Claude-Code\tmp로 재지정
+   - 해결: K:\PortableApps\genai\tmp로 재지정
    - 파일: auto-fix.bat, .bashrc
 
 2. **컨텍스트 윈도우 한계**

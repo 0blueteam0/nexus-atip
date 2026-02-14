@@ -10,7 +10,7 @@ const os = require('os');
 
 class AnomalyDetector {
     constructor() {
-        this.baseDir = 'K:/PortableApps/Claude-Code';
+        this.baseDir = 'K:/PortableApps/genai';
         this.patterns = new Map();
         this.solutions = new Map();
         this.history = [];

@@ -2,7 +2,7 @@
 /**
  * Unified Task Hub - Single Source of Truth
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/unified-task-hub.js
+ * 위치: K:/PortableApps/genai/unified-task-system/unified-task-hub.js
  *
  * 목적:
  * - 모든 태스크 시스템의 중앙 허브

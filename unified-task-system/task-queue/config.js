@@ -1,7 +1,7 @@
 /**
  * Task Queue Configuration
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/task-queue/config.js
+ * 위치: K:/PortableApps/genai/unified-task-system/task-queue/config.js
  *
  * 목적:
  * - BullMQ 기반 태스크 큐 설정

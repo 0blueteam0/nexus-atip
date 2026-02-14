@@ -1,7 +1,7 @@
 # 전체 시스템 빌드 검증 플랜
 
 ## 목표
-K:\PortableApps\Claude-Code 프로젝트의 모든 빌드 가능한 컴포넌트 검증
+K:\PortableApps\genai 프로젝트의 모든 빌드 가능한 컴포넌트 검증
 
 ---
 

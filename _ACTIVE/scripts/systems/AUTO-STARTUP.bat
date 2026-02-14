@@ -5,7 +5,7 @@
 echo [AUTO-STARTUP] Starting autonomous systems...
 
 :: 1. 환경 자동 설정
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 set TMPDIR=%CLAUDE_HOME%\tmp
 set TEMP=%CLAUDE_HOME%\tmp
 mkdir %CLAUDE_HOME%\tmp 2>nul
@@ -21,7 +21,7 @@ start /B node "%CLAUDE_HOME%\systems\auto-executor.js" 2>nul
 :: 3. 자동 정리 및 최적화
 powershell -Command "& {
     # 오래된 파일 자동 아카이브
-    $oldFiles = Get-ChildItem -Path 'K:\PortableApps\Claude-Code' -File | Where {$_.LastWriteTime -lt (Get-Date).AddDays(-30)}
+    $oldFiles = Get-ChildItem -Path 'K:\PortableApps\genai' -File | Where {$_.LastWriteTime -lt (Get-Date).AddDays(-30)}
     if ($oldFiles) {
         $archivePath = 'K:\PortableApps\Claude-Archive\auto-' + (Get-Date -Format 'yyyyMMdd')
         New-Item -ItemType Directory -Path $archivePath -Force | Out-Null
@@ -35,7 +35,7 @@ powershell -Command "& {
 }" 2>nul
 
 :: 4. Claude Code 자동 시작 (에러 무시)
-start /B cmd /c "K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\node_modules\@anthropic-ai\claude-code\cli.js 2>nul"
+start /B cmd /c "K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js 2>nul"
 
 echo [AUTO-STARTUP] All systems running autonomously
 exit /b 0

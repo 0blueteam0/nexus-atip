@@ -33,7 +33,7 @@ function safeFileOperation(filePath, operation) {
 ```batch
 @echo off
 :: AUTO-BACKUP.bat - 모든 중요 파일 자동 백업
-set BACKUP_DIR=K:\PortableApps\Claude-Code\backups\%DATE:~-4%%DATE:~4,2%%DATE:~7,2%
+set BACKUP_DIR=K:\PortableApps\genai\backups\%DATE:~-4%%DATE:~4,2%%DATE:~7,2%
 mkdir %BACKUP_DIR% 2>nul
 
 :: index.html 같은 중요 파일 백업
@@ -79,7 +79,7 @@ def safe_write(file_path, content):
 ### 5. Git 자동 커밋 (변경 추적)
 ```batch
 :: GIT-SAFETY.bat - 모든 변경사항 자동 추적
-cd K:\PortableApps\Claude-Code
+cd K:\PortableApps\genai
 git init 2>nul
 git add -A
 git commit -m "Auto-backup before Claude operation - %DATE% %TIME%" 2>nul
@@ -91,7 +91,7 @@ git commit -m "Auto-backup before Claude operation - %DATE% %TIME%" 2>nul
 const chokidar = require('chokidar');
 const fs = require('fs');
 
-const watcher = chokidar.watch('K:/PortableApps/Claude-Code', {
+const watcher = chokidar.watch('K:/PortableApps/genai', {
     ignored: /(^|[\/\\])\../, // 숨김 파일 무시
     persistent: true
 });

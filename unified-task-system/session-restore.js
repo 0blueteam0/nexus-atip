@@ -2,7 +2,7 @@
  * Session Restore Script
  * 세션 시작 시 자동 실행되어 이전 세션의 후속조치 복원
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/session-restore.js
+ * 위치: K:/PortableApps/genai/unified-task-system/session-restore.js
  * 호출: .claude-hooks.json의 session-start hook
  *
  * [v2.0] Autosave 복원 지원 추가
@@ -22,10 +22,10 @@ try {
   UnifiedTaskHub = null;
 }
 
-const BASE_PATH = 'K:/PortableApps/Claude-Code/unified-task-system';
+const BASE_PATH = 'K:/PortableApps/genai/unified-task-system';
 const SESSION_STATE_FILE = path.join(BASE_PATH, 'session-state.json');
 const TASKS_FILE = path.join(BASE_PATH, 'tasks.json');
-const AUTOSAVE_FILE = path.join('K:/PortableApps/Claude-Code/atos', 'autosave-snapshot.json');
+const AUTOSAVE_FILE = path.join('K:/PortableApps/genai/atos', 'autosave-snapshot.json');
 
 /**
  * 세션 상태 파일 로드 (Autosave 복구 포함)

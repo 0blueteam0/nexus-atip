@@ -8,8 +8,8 @@ const path = require('path');
 
 class MetricsCollector {
     constructor() {
-        this.dataPath = 'K:\\PortableApps\\Claude-Code\\brain\\metrics';
-        this.dashboardPath = 'K:\\PortableApps\\Claude-Code\\dashboard';
+        this.dataPath = 'K:\\PortableApps\\genai\\brain\\metrics';
+        this.dashboardPath = 'K:\\PortableApps\\genai\\dashboard';
         this.ensureDirectories();
     }
 
@@ -56,7 +56,7 @@ class MetricsCollector {
     }
 
     loadPatterns() {
-        const patternsFile = 'K:\\PortableApps\\Claude-Code\\brain\\patterns.json';
+        const patternsFile = 'K:\\PortableApps\\genai\\brain\\patterns.json';
         
         try {
             if (fs.existsSync(patternsFile)) {
@@ -173,8 +173,8 @@ class MetricsCollector {
     }
 
     analyzeToolUsage() {
-        const toolPatterns = 'K:\\PortableApps\\Claude-Code\\brain\\tool-patterns.json';
-        const contextHistory = 'K:\\PortableApps\\Claude-Code\\brain\\context-history.jsonl';
+        const toolPatterns = 'K:\\PortableApps\\genai\\brain\\tool-patterns.json';
+        const contextHistory = 'K:\\PortableApps\\genai\\brain\\context-history.jsonl';
         
         const usage = {
             mcpServers: {},
@@ -184,7 +184,7 @@ class MetricsCollector {
         
         // MCP 서버 사용 현황
         try {
-            const config = JSON.parse(fs.readFileSync('K:\\PortableApps\\Claude-Code\\.claude.json', 'utf8'));
+            const config = JSON.parse(fs.readFileSync('K:\\PortableApps\\genai\\.claude.json', 'utf8'));
             if (config.mcpServers) {
                 Object.keys(config.mcpServers).forEach(server => {
                     usage.mcpServers[server] = 'Active';

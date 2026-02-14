@@ -27,7 +27,7 @@
 
 #### **K 드라이브 (포터블)**
 ```
-K:/PortableApps/Claude-Code/
+K:/PortableApps/genai/
 ├── mcp-memory-service/          # 프로그램 설치
 ├── config/                      # 설정 파일들
 └── scripts/                     # 관리 스크립트들

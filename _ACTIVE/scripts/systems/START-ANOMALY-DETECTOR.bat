@@ -8,7 +8,7 @@ echo [시작] 이상 감지 시스템을 시작합니다...
 echo.
 
 :: Node.js로 직접 실행
-start /B "Anomaly Detector" "K:\PortableApps\tools\nodejs\node.exe" "K:\PortableApps\Claude-Code\systems\anomaly-detector.js"
+start /B "Anomaly Detector" "K:\PortableApps\tools\nodejs\node.exe" "K:\PortableApps\genai\systems\anomaly-detector.js"
 
 echo 시스템이 백그라운드에서 실행 중입니다.
 echo.

@@ -1,0 +1,509 @@
+{
+  "version": "2.0.0",
+  "description": "마스터 워크플로우 정의 - 에이전틱 자기학습 통합",
+  "updated": "2025-12-13",
+  
+  "workflows": {
+    "news-archiving": {
+      "name": "뉴스 아카이빙 워크플로우",
+      "description": "위협 인텔리전스 뉴스 수집, 분석, 저장",
+      "steps": [
+        {
+          "phase": "계획",
+          "tools": ["shrimp-task.plan_task", "shrimp-task.split_tasks"],
+          "parallel": false
+        },
+        {
+          "phase": "수집", 
+          "tools": [
+            "websearch.web_search",
+            "firecrawl.firecrawl_search", 
+            "one-search.one_search"
+          ],
+          "parallel": true,
+          "note": "3개 도구 동시 실행으로 속도 3배"
+        },
+        {
+          "phase": "저장",
+          "tools": [
+            "kiro-memory.auto_process_conversation",
+            "desktop-commander.write_file",
+            "supabase.apply_migration"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "검증",
+          "tools": ["playwright.navigate", "playwright.screenshot"],
+          "parallel": false
+        }
+      ]
+    },
+    
+    "development": {
+      "name": "개발 워크플로우",
+      "description": "코드 작성, 수정, 테스트, 커밋",
+      "steps": [
+        {
+          "phase": "탐색",
+          "tools": ["Task(subagent_type=Explore)"],
+          "parallel": false,
+          "auto_trigger": true,
+          "note": "코드베이스 이해 우선"
+        },
+        {
+          "phase": "설계",
+          "tools": ["shrimp-task.analyze_task", "shrimp-task.reflect_task"],
+          "parallel": false
+        },
+        {
+          "phase": "구현",
+          "tools": [
+            "desktop-commander.create_directory",
+            "desktop-commander.write_file",
+            "edit-file-lines.edit_file_lines"
+          ],
+          "parallel": false,
+          "note": "DC 청크 작성(30줄) → edit-lines 정밀 수정"
+        },
+        {
+          "phase": "테스트",
+          "tools": [
+            "playwright.navigate(2560x1330)",
+            "playwright.screenshot",
+            "playwright.console_logs"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "저장",
+          "tools": ["git-mcp.git_add", "git-mcp.git_commit", "git-mcp.git_push"],
+          "parallel": false
+        }
+      ]
+    },
+    
+    "research": {
+      "name": "리서치 워크플로우",
+      "description": "심층 조사 및 분석",
+      "steps": [
+        {
+          "phase": "초기조사",
+          "tools": [
+            "one-search.one_search",
+            "firecrawl.firecrawl_search", 
+            "context7.get-library-docs"
+          ],
+          "parallel": true
+        },
+        {
+          "phase": "심화분석",
+          "tools": [
+            "firecrawl.firecrawl_scrape",
+            "sequential-thinking.sequentialthinking"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "문서화",
+          "tools": [
+            "desktop-commander.write_file",
+            "github.create_issue"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "메모리저장",
+          "tools": ["kiro-memory.remember_project_pattern"],
+          "parallel": false
+        }
+      ]
+    },
+
+    "update-optimization": {
+      "name": "업데이트 최적화 워크플로우",
+      "description": "Claude Code 업데이트 후 자기학습 프로세스",
+      "trigger_keywords": ["업데이트 최적화", "optimize after update", "post-update"],
+      "steps": [
+        {
+          "phase": "리소스발견",
+          "tools": ["firecrawl.firecrawl_map"],
+          "targets": ["code.claude.com", "platform.claude.com/docs"],
+          "parallel": true
+        },
+        {
+          "phase": "딥리서치",
+          "tools": [
+            "github.get_file_contents(CHANGELOG.md)",
+            "firecrawl.firecrawl_scrape",
+            "context7.get-library-docs"
+          ],
+          "parallel": true
+        },
+        {
+          "phase": "MCP발견",
+          "tools": [
+            "github.search_repositories(mcp server)",
+            "one-search.one_search(huggingface mcp)",
+            "firecrawl.firecrawl_scrape(smithery.ai)"
+          ],
+          "parallel": true
+        },
+        {
+          "phase": "깊은사고",
+          "tools": ["sequential-thinking.sequentialthinking"],
+          "analysis": ["현재상태", "개선기회", "제안생성"],
+          "parallel": false
+        },
+        {
+          "phase": "자동적용",
+          "tools": [
+            "desktop-commander.edit_block(CLAUDE.md)",
+            "desktop-commander.write_file(skills/)",
+            "desktop-commander.write_file(workflows/)"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "정리",
+          "tools": ["desktop-commander.search_files", "Bash(del)"],
+          "targets": [".claude.json.corrupted.*", "temp/7days+", "shell-snapshots/60days+"],
+          "parallel": false
+        }
+      ]
+    },
+
+    "deep-analysis": {
+      "name": "심층 코드 분석 워크플로우",
+      "description": "코드베이스 깊은 분석 및 패턴 발견",
+      "trigger_keywords": ["코드 분석", "analyze code", "deep analysis"],
+      "steps": [
+        {
+          "phase": "탐색",
+          "tools": ["Task(subagent_type=Explore, thoroughness=very thorough)"],
+          "parallel": false
+        },
+        {
+          "phase": "패턴감지",
+          "tools": ["Grep", "Glob"],
+          "patterns": ["TODO", "FIXME", "HACK", "security", "deprecated"],
+          "parallel": true
+        },
+        {
+          "phase": "심층분석",
+          "tools": ["sequential-thinking.sequentialthinking"],
+          "parallel": false
+        },
+        {
+          "phase": "보고서생성",
+          "tools": ["desktop-commander.write_file"],
+          "output": "documentation/reports/",
+          "parallel": false
+        },
+        {
+          "phase": "패턴저장",
+          "tools": ["kiro-memory.remember_project_pattern"],
+          "parallel": false
+        }
+      ]
+    },
+
+    "mcp-discovery": {
+      "name": "MCP 서버 발견 워크플로우",
+      "description": "GitHub/HuggingFace에서 MCP 서버 검색 및 평가",
+      "trigger_keywords": ["MCP 추천", "recommend mcp", "mcp discovery"],
+      "steps": [
+        {
+          "phase": "GitHub검색",
+          "tools": ["github.search_repositories"],
+          "queries": [
+            "mcp server stars:>100",
+            "model context protocol",
+            "@modelcontextprotocol"
+          ],
+          "parallel": true
+        },
+        {
+          "phase": "HuggingFace검색",
+          "tools": ["one-search.one_search", "firecrawl.firecrawl_scrape"],
+          "targets": ["huggingface.co/spaces", "huggingface.co/models"],
+          "parallel": true
+        },
+        {
+          "phase": "레지스트리조회",
+          "tools": ["firecrawl.firecrawl_scrape"],
+          "targets": ["smithery.ai", "glama.ai/mcp/servers"],
+          "parallel": true
+        },
+        {
+          "phase": "평가",
+          "criteria": {
+            "stars": 0.3,
+            "recent_update": 0.25,
+            "documentation": 0.2,
+            "dependencies": 0.15,
+            "relevance": 0.1
+          },
+          "parallel": false
+        },
+        {
+          "phase": "보고서",
+          "tools": ["desktop-commander.write_file"],
+          "output": "documentation/reports/mcp-recommendations-[date].md",
+          "parallel": false
+        }
+      ]
+    },
+
+    "pdf-vision": {
+      "name": "PDF/Vision 분석 워크플로우",
+      "description": "PDF 문서 및 이미지 분석",
+      "trigger_keywords": ["PDF 분석", "analyze pdf", "이미지 분석", "vision"],
+      "steps": [
+        {
+          "phase": "문서변환",
+          "tools": ["marker-mcp.convert_pdf", "marker-mcp.extract_text"],
+          "parallel": false
+        },
+        {
+          "phase": "이미지OCR",
+          "tools": ["paddleocr-mcp.ocr_image", "image-recognition.describe_image_from_file"],
+          "parallel": true
+        },
+        {
+          "phase": "구조분석",
+          "tools": ["marker-mcp.analyze_structure", "paddleocr-mcp.extract_table"],
+          "parallel": true
+        },
+        {
+          "phase": "내용분석",
+          "tools": ["sequential-thinking.sequentialthinking"],
+          "parallel": false
+        },
+        {
+          "phase": "결과저장",
+          "tools": ["desktop-commander.write_file", "kiro-memory.remember_project_pattern"],
+          "parallel": false
+        }
+      ]
+    },
+
+    "memory-persistence": {
+      "name": "메모리 영구 저장 워크플로우",
+      "description": "중요 패턴 및 학습 내용 영구 저장",
+      "auto_trigger": true,
+      "trigger_conditions": ["session_end", "important_discovery", "user_feedback"],
+      "steps": [
+        {
+          "phase": "패턴추출",
+          "tools": ["kiro-memory.get_memory_context"],
+          "parallel": false
+        },
+        {
+          "phase": "중요도평가",
+          "criteria": {
+            "user_explicit": 1.0,
+            "repeated_pattern": 0.9,
+            "error_fix": 0.8,
+            "optimization": 0.7
+          },
+          "parallel": false
+        },
+        {
+          "phase": "영구저장",
+          "tools": [
+            "kiro-memory.remember_project_pattern",
+            "desktop-commander.edit_block(CLAUDE.md)"
+          ],
+          "parallel": false
+        },
+        {
+          "phase": "백업",
+          "tools": ["git-mcp.git_add", "git-mcp.git_commit"],
+          "parallel": false
+        }
+      ]
+    },
+
+    "parallel-crawl": {
+      "name": "병렬 크롤링 워크플로우",
+      "description": "8개 크롤러 동시 활용 - 외부 문서 수집 및 변경 감지",
+      "trigger_keywords": ["병렬 크롤링", "doc follow", "문서 스캔", "parallel crawl", "sync docs"],
+      "steps": [
+        {
+          "phase": "URL맵핑",
+          "description": "대상 도메인 전체 URL 구조 파악",
+          "tools": [
+            "firecrawl.firecrawl_map",
+            "searxng-crawl4ai.map_website"
+          ],
+          "targets": [
+            "docs.anthropic.com",
+            "claude.ai/docs",
+            "support.anthropic.com",
+            "github.com/anthropics"
+          ],
+          "parallel": true,
+          "note": "firecrawl과 searxng-crawl4ai 동시 맵핑"
+        },
+        {
+          "phase": "병렬검색",
+          "description": "여러 검색엔진 동시 쿼리",
+          "tools": [
+            "firecrawl.firecrawl_search",
+            "one-search.one_search",
+            "websearch.web_search",
+            "searxng-crawl4ai.search_web"
+          ],
+          "queries": ["Claude Code updates 2025", "Anthropic new features", "Claude API changes"],
+          "parallel": true,
+          "note": "4개 검색 도구 동시 실행"
+        },
+        {
+          "phase": "상세크롤링",
+          "description": "새 URL 상세 콘텐츠 수집",
+          "tools": [
+            "firecrawl.firecrawl_scrape",
+            "one-search.one_scrape",
+            "searxng-crawl4ai.scrape_url",
+            "crawl4ai-lite.crawl4ai_scrape"
+          ],
+          "parallel": true,
+          "fallback_order": ["firecrawl", "searxng-crawl4ai", "one-search", "crawl4ai-lite"],
+          "note": "4개 스크래퍼 동시 실행 + 폴백 체인"
+        },
+        {
+          "phase": "AI추출",
+          "description": "구조화된 데이터 추출 (Ollama 기반)",
+          "tools": [
+            "scrapegraph-local.smart_scraper",
+            "firecrawl.firecrawl_extract",
+            "searxng-crawl4ai.extract_structured_data"
+          ],
+          "parallel": true,
+          "requirements": ["Ollama 실행 필요 (scrapegraph)"],
+          "note": "AI 기반 구조화 추출"
+        },
+        {
+          "phase": "변경감지",
+          "description": "이전 스캔과 비교하여 새/변경된 URL 식별",
+          "tools": ["desktop-commander.read_file", "sequential-thinking.sequentialthinking"],
+          "index_file": "documentation/external-docs-cache/anthropic-docs-index.json",
+          "parallel": false,
+          "note": "체크섬 비교로 변경 감지"
+        },
+        {
+          "phase": "캐시저장",
+          "description": "수집된 콘텐츠 로컬 캐시에 저장",
+          "tools": [
+            "desktop-commander.write_file",
+            "kiro-memory.remember_project_pattern"
+          ],
+          "output_path": "documentation/external-docs-cache/",
+          "parallel": false,
+          "note": "인덱스 업데이트 + 메모리 저장"
+        },
+        {
+          "phase": "알림생성",
+          "description": "새 문서 발견 시 알림 메시지 생성",
+          "tools": ["kiro-memory.create_task"],
+          "parallel": false,
+          "note": "세션 시작 시 표시될 알림 저장"
+        }
+      ],
+      "crawlers": {
+        "firecrawl": {
+          "type": "Docker",
+          "priority": 1,
+          "tools": ["firecrawl_map", "firecrawl_search", "firecrawl_scrape", "firecrawl_extract"]
+        },
+        "one-search": {
+          "type": "npx",
+          "priority": 2,
+          "tools": ["one_search", "one_scrape", "one_extract", "one_map"]
+        },
+        "searxng-crawl4ai": {
+          "type": "Docker",
+          "priority": 2,
+          "tools": ["search_web", "scrape_url", "map_website", "extract_structured_data"]
+        },
+        "websearch": {
+          "type": "npx",
+          "priority": 3,
+          "tools": ["web_search"]
+        },
+        "crawl4ai-lite": {
+          "type": "npx",
+          "priority": 4,
+          "tools": ["crawl4ai_scrape"],
+          "note": "폴백용"
+        },
+        "scrapegraph-local": {
+          "type": "Python/Ollama",
+          "priority": 3,
+          "tools": ["smart_scraper", "search_scraper"],
+          "requirements": ["Ollama llama3.2"]
+        },
+        "WebFetch": {
+          "type": "builtin",
+          "priority": 5,
+          "note": "Claude 내장 도구"
+        },
+        "WebSearch": {
+          "type": "builtin",
+          "priority": 5,
+          "note": "Claude 내장 도구"
+        }
+      }
+    }
+  },
+  
+  "skill_triggers": {
+    "research-workflow": {
+      "keywords": ["조사", "research", "분석해줘", "찾아줘"],
+      "workflow": "research"
+    },
+    "code-analysis": {
+      "keywords": ["코드 분석", "버그 찾기", "리뷰"],
+      "workflow": "deep-analysis"
+    },
+    "update-optimizer": {
+      "keywords": ["업데이트 최적화", "post-update", "새 버전"],
+      "workflow": "update-optimization"
+    }
+  },
+
+  "explore_patterns": {
+    "auto_call_conditions": [
+      "codebase question without specific file",
+      "architecture understanding needed",
+      "file location unknown",
+      "pattern search across multiple files"
+    ],
+    "thoroughness_rules": {
+      "quick": "simple file search",
+      "medium": "moderate exploration",
+      "very thorough": "comprehensive analysis"
+    },
+    "default_thoroughness": "medium"
+  },
+
+  "automation_rules": {
+    "auto_chain": true,
+    "error_recovery": "rollback",
+    "parallel_threshold": 3,
+    "chunk_size": 30,
+    "viewport": "2560x1330",
+    "memory_auto_save": true,
+    "explore_auto_call": true,
+    "skill_auto_detect": true
+  },
+
+  "chaining_rules": {
+    "output_to_input": true,
+    "error_propagation": "stop_and_report",
+    "success_chain": "continue",
+    "max_parallel": 5,
+    "timeout_per_step": 60000
+  }
+}

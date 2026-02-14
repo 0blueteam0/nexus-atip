@@ -7,7 +7,7 @@ const { spawn } = require('child_process');
 
 class MCPIntegrationSystem {
   constructor() {
-    this.configPath = 'K:/PortableApps/Claude-Code/.claude.json';
+    this.configPath = 'K:/PortableApps/genai/.claude.json';
     this.mcpServers = {
       // 필수 MCP 서버들
       filesystem: {
@@ -17,13 +17,13 @@ class MCPIntegrationSystem {
       },
       shrimp: {
         path: 'mcp-servers/shrimp-mcp/dist/index.js',
-        env: { SHRIMP_DIR: 'K:/PortableApps/Claude-Code/ShrimpData' },
+        env: { SHRIMP_DIR: 'K:/PortableApps/genai/ShrimpData' },
         priority: 1,
         status: 'pending'
       },
       memory: {
         path: 'mcp-servers/kiro-memory/dist/index.js',
-        env: { MEMORY_DB: 'K:/PortableApps/Claude-Code/memory.db' },
+        env: { MEMORY_DB: 'K:/PortableApps/genai/memory.db' },
         priority: 1,
         status: 'pending'
       },
@@ -100,7 +100,7 @@ class MCPIntegrationSystem {
           // 설정에 추가
           config.mcpServers[name] = {
             command: 'node',
-            args: [`K:/PortableApps/Claude-Code/${server.path}`],
+            args: [`K:/PortableApps/genai/${server.path}`],
             ...(server.env && { env: server.env })
           };
           

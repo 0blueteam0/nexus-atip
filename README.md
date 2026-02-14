@@ -41,7 +41,7 @@ This repository contains a fully portable development environment for Claude Cod
 ## Project Structure
 
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── mcp-servers/        # MCP server implementations
 ├── systems/            # Automation and monitoring systems
 ├── documentation/      # Guides and modules
@@ -80,12 +80,12 @@ K:\PortableApps\Claude-Code\
 
 1. Clone this repository to your external drive:
 ```bash
-git clone https://github.com/0blueteam0/nexus-atip.git K:\PortableApps\Claude-Code
+git clone https://github.com/0blueteam0/nexus-atip.git K:\PortableApps\genai
 ```
 
 2. Navigate to the directory:
 ```bash
-cd K:\PortableApps\Claude-Code
+cd K:\PortableApps\genai
 ```
 
 3. Run the setup:

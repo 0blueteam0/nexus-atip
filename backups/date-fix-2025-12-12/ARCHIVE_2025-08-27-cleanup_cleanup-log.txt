@@ -1,0 +1,28 @@
+[*] 정리 작업 로그
+================================
+작업일시: 2025-01-27
+실행자: Claude Code Cleanup System
+
+## 이동된 파일
+1. .claude.json.backup -> _ARCHIVE/2025-01-27-cleanup/backups/
+2. claude.bat.backup -> _ARCHIVE/2025-01-27-cleanup/backups/
+
+## 삭제된 파일
+1. nul (47 bytes) - Windows 임시 파일
+2. shell-snapshots (46 bytes) - 임시 스냅샷 파일
+
+## 이름 변경
+1. FULL-BACKUP-2025-08-27/ -> FULL-BACKUP-2025-01-27/
+   (날짜 오타 수정: 08월 -> 01월)
+
+## 보존된 파일
+- .claude.json (시스템 필수)
+- claude.bat (실행 스크립트)
+- package.json, package-lock.json (NPM)
+- node_modules/ (의존성)
+- mcp-servers/ (MCP 서버)
+
+## 롤백 방법
+필요시 _ARCHIVE/2025-01-27-cleanup/backups/에서 파일 복원 가능
+
+총 처리: 5개 항목 (이동 2개, 삭제 2개, 이름변경 1개)

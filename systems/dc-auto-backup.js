@@ -8,8 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const CONFIG_FILE = 'K:\\PortableApps\\Claude-Code\\.claude.json';
-const BACKUP_DIR = 'K:\\PortableApps\\Claude-Code\\backups\\mcp-configs';
+const CONFIG_FILE = 'K:\\PortableApps\\genai\\.claude.json';
+const BACKUP_DIR = 'K:\\PortableApps\\genai\\backups\\mcp-configs';
 const MAX_BACKUPS = 20; // DC can handle more
 const CHECK_INTERVAL = 2000; // 2 seconds
 

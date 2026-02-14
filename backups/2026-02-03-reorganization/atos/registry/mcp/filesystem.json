@@ -1,0 +1,33 @@
+{
+  "category": "filesystem",
+  "description": "파일 및 디렉토리 작업",
+  "priority": "high",
+  "servers": {
+    "desktop-commander": {
+      "priority": "high",
+      "description": "파일/디렉토리 관리 및 프로세스 실행",
+      "tools": [
+        "read_file", "write_file", "edit_block", "create_directory",
+        "list_directory", "move_file", "search_files", "search_code",
+        "get_file_info", "start_process", "read_process_output"
+      ],
+      "triggerKeywords": ["파일", "작성", "수정", "디렉토리", "file", "write", "read", "folder"]
+    },
+    "filesystem": {
+      "priority": "medium",
+      "description": "기본 파일시스템 작업",
+      "tools": [
+        "read_file", "read_text_file", "read_multiple_files",
+        "write_file", "edit_file", "create_directory",
+        "list_directory", "directory_tree", "move_file"
+      ],
+      "triggerKeywords": ["파일", "폴더", "디렉토리"]
+    },
+    "edit-file-lines": {
+      "priority": "high",
+      "description": "라인 기반 정밀 파일 편집",
+      "tools": ["edit_file_lines", "approve_edit", "get_file_lines", "search_file"],
+      "triggerKeywords": ["수정", "편집", "라인", "edit", "line"]
+    }
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "exportedAt": "2026-01-13T08:12:19.969Z",
+  "serverCount": 35,
+  "servers": {
+    "mcp-installer": {
+      "command": "npx",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": false
+    },
+    "filesystem": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "memory": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": false
+    },
+    "shrimp-task": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "github": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": true
+    },
+    "deep-research-mcp": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": false
+    },
+    "multi-ai-orchestration": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": false
+    },
+    "firecrawl": {
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "scrapegraph-local": {
+      "command": "C:/Python313/python.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "searxng-crawl4ai": {
+      "command": "docker",
+      "type": "stdio",
+      "argsCount": 5,
+      "hasEnv": false
+    },
+    "crawl4ai-lite": {
+      "command": "npx",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": false
+    },
+    "git-mcp": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "sqlite-mcp": {
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": false
+    },
+    "websearch": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": true
+    },
+    "youtube-data": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": true
+    },
+    "edit-file-lines": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": false
+    },
+    "kiro-memory": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": true
+    },
+    "context7": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": false
+    },
+    "one-search": {
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "playwright": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": false
+    },
+    "desktop-commander": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": false
+    },
+    "supabase": {
+      "command": "npx",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": true
+    },
+    "n8n": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "sequential-thinking": {
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "runpod-jupyter": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": true
+    },
+    "image-recognition": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": true
+    },
+    "paddleocr-mcp": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "marker-mcp": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "zen-mcp": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "llm-council": {
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "type": "stdio",
+      "argsCount": 1,
+      "hasEnv": true
+    },
+    "antv-chart": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 3,
+      "hasEnv": false
+    },
+    "hfspace": {
+      "command": "cmd",
+      "type": "stdio",
+      "argsCount": 6,
+      "hasEnv": true
+    },
+    "task-master-ai": {
+      "command": "npx",
+      "type": "stdio",
+      "argsCount": 2,
+      "hasEnv": true
+    },
+    "paper-search-mcp": {
+      "command": "K:/PortableApps/tools/uv/uv.exe",
+      "type": "stdio",
+      "argsCount": 5,
+      "hasEnv": true
+    },
+    "serena": {
+      "command": "K:/PortableApps/tools/uv/uvx.exe",
+      "type": "stdio",
+      "argsCount": 4,
+      "hasEnv": true
+    }
+  }
+}

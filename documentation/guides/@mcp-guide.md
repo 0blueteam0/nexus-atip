@@ -9,7 +9,7 @@
 1. **초기 설치 명령** (구조 생성용):
 ```bash
 claude mcp add shrimp-task-manager --scope user \
-  -e DATA_DIR="K:\\PortableApps\\Claude-Code\\ShrimpData" \
+  -e DATA_DIR="K:\\PortableApps\\genai\\ShrimpData" \
   -e WEB_PORT=3000 \
   -- cmd /c npx -y mcp-shrimp-task-manager
 ```
@@ -25,7 +25,7 @@ claude mcp add shrimp-task-manager --scope user \
   "command": "cmd",
   "args": ["/c", "npx", "-y", "mcp-shrimp-task-manager"],
   "env": {
-    "DATA_DIR": "K:\\PortableApps\\Claude-Code\\ShrimpData",
+    "DATA_DIR": "K:\\PortableApps\\genai\\ShrimpData",
     "WEB_PORT": "3000"
   }
 }

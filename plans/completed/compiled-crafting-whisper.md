@@ -393,18 +393,18 @@ AICRA-analyze가 이미 web-services에 복사됨 - 전체 폴더 정리
 ### 실행 순서
 ```bash
 # 1. 원본 폴더 삭제
-rm -rf K:/PortableApps/Claude-Code/papers/
-rm -rf K:/PortableApps/Claude-Code/1211_논문분석/
-rm -rf K:/PortableApps/Claude-Code/요청작업/
+rm -rf K:/PortableApps/genai/papers/
+rm -rf K:/PortableApps/genai/1211_논문분석/
+rm -rf K:/PortableApps/genai/요청작업/
 
 # 2. WORKSPACE/ 정리 (전체 삭제)
-rm -rf K:/PortableApps/Claude-Code/WORKSPACE/
+rm -rf K:/PortableApps/genai/WORKSPACE/
 ```
 
 ### 검증
 ```bash
 # 삭제 후 확인
-ls -la K:/PortableApps/Claude-Code/ | grep -E "papers|논문|요청|WORKSPACE"
+ls -la K:/PortableApps/genai/ | grep -E "papers|논문|요청|WORKSPACE"
 ```
 
 ---

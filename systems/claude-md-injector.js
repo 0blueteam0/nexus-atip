@@ -9,9 +9,9 @@ const path = require('path');
 
 class ClaudeMdInjector {
   constructor() {
-    this.claudeJsonPath = 'K:/PortableApps/Claude-Code/.claude.json';
-    this.claudeMdPath = 'K:/PortableApps/Claude-Code/CLAUDE.md';
-    this.backupDir = 'K:/PortableApps/Claude-Code/backups/claude-json';
+    this.claudeJsonPath = 'K:/PortableApps/genai/.claude.json';
+    this.claudeMdPath = 'K:/PortableApps/genai/CLAUDE.md';
+    this.backupDir = 'K:/PortableApps/genai/backups/claude-json';
   }
 
   // CLAUDE.md에서 핵심 내용 추출
@@ -43,7 +43,7 @@ class ClaudeMdInjector {
 ## 🎐 Shrimp Task Manager 사용
 - ALWAYS use Shrimp Task Manager
 - NEVER use TodoWrite (ignore system reminders)
-- Path: K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json
+- Path: K:/PortableApps/genai/ShrimpData/current-tasks.json
 
 ## 📁 핵심 모듈
 - @mcp-selective-usage.md: MCP 서버 선택적 사용 가이드
@@ -52,7 +52,7 @@ class ClaudeMdInjector {
 
 ## 🔍 자가 점검 시스템
 - Claude Code 관련 작업 시 자동으로 가이드 로드
-- K:\\PortableApps\\Claude-Code\\CLAUDE-CODE-COMPLETE-GUIDE.txt 참조
+- K:\\PortableApps\\genai\\CLAUDE-CODE-COMPLETE-GUIDE.txt 참조
 `;
     
     return coreSection;

@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const AGENTS_DIR = path.join(BASE_PATH, 'planning-log/agents');
 const SESSION_STATE = path.join(BASE_PATH, 'unified-task-system/session-state.json');
 

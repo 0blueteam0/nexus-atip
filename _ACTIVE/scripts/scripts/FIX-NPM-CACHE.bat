@@ -7,7 +7,7 @@ echo 🔴 경고: npm-cache 폴더가 시스템 성능을 심각하게 저하시
 echo.
 
 echo 1단계: 현재 크기 확인...
-powershell -Command "(Get-ChildItem 'K:\PortableApps\Claude-Code\npm-cache' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB"
+powershell -Command "(Get-ChildItem 'K:\PortableApps\genai\npm-cache' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB"
 echo MB 사용 중
 
 echo.
@@ -16,7 +16,7 @@ echo 정말 삭제하시겠습니까?
 pause
 
 echo 삭제 중... (수천 개 파일 때문에 오래 걸립니다)
-rmdir /s /q K:\PortableApps\Claude-Code\npm-cache
+rmdir /s /q K:\PortableApps\genai\npm-cache
 
 echo.
 echo 3단계: 환경변수 수정...

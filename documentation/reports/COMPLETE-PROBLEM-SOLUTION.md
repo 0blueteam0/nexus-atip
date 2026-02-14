@@ -1,4 +1,4 @@
-# 🔴 K:\PortableApps\Claude-Code 완전 문제 분석 및 해결책
+# 🔴 K:\PortableApps\genai 완전 문제 분석 및 해결책
 생성: 2025-08-17 01:28 KST
 
 ## 1️⃣ 발견된 모든 문제 (우선순위순)
@@ -81,7 +81,7 @@ npm-cache/  - NPM 캐시
 cp .claude.json .claude.json.broken
 
 # 2. 초기화
-echo '{"mcpServers": {"filesystem": {"command": "node", "args": ["K:/PortableApps/Claude-Code/mcp-servers/mcp-server-filesystem/dist/index.js"], "env": {"NODE_PATH": "K:/PortableApps/tools/nodejs/node_modules"}}}}' > .claude.json
+echo '{"mcpServers": {"filesystem": {"command": "node", "args": ["K:/PortableApps/genai/mcp-servers/mcp-server-filesystem/dist/index.js"], "env": {"NODE_PATH": "K:/PortableApps/tools/nodejs/node_modules"}}}}' > .claude.json
 
 # 3. Claude 재시작
 ./claude.bat --restart
@@ -126,7 +126,7 @@ rmdir tmp
 
 ### 구조 개선 (최종 목표)
 ```
-K:\PortableApps\Claude-Code\
+K:\PortableApps\genai\
 ├── .claude.json (5KB 이하)
 ├── claude.bat
 ├── package.json

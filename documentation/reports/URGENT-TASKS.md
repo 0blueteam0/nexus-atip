@@ -4,8 +4,8 @@
 ```json
 "shrimp": {
   "command": "node",
-  "args": ["K:/PortableApps/Claude-Code/mcp-servers/shrimp-mcp/dist/index.js"],
-  "env": {"SHRIMP_DIR": "K:/PortableApps/Claude-Code/ShrimpData"}
+  "args": ["K:/PortableApps/genai/mcp-servers/shrimp-mcp/dist/index.js"],
+  "env": {"SHRIMP_DIR": "K:/PortableApps/genai/ShrimpData"}
 }
 ```
 

@@ -13,9 +13,9 @@ echo.
 pause
 
 echo 이동 시작...
-move /Y K:\PortableApps\Claude-Code\mcp-memory-service K:\PortableApps\Claude-Archive\
-move /Y K:\PortableApps\Claude-Code\memory-archive K:\PortableApps\Claude-Archive\
-rmdir /s /q K:\PortableApps\Claude-Code\.cache
+move /Y K:\PortableApps\genai\mcp-memory-service K:\PortableApps\Claude-Archive\
+move /Y K:\PortableApps\genai\memory-archive K:\PortableApps\Claude-Archive\
+rmdir /s /q K:\PortableApps\genai\.cache
 
 echo.
 echo ✅ 완료!

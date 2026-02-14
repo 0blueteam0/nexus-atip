@@ -11,9 +11,9 @@ fi
 
 # Export paths
 export PATH="/k/PortableApps/tools/nodejs:/k/PortableApps/tools/git/bin:$PATH"
-export CLAUDE_HOME="/k/PortableApps/Claude-Code"
-export TEMP="/k/PortableApps/Claude-Code/temp"
-export TMP="/k/PortableApps/Claude-Code/temp"
+export CLAUDE_HOME="/k/PortableApps/genai"
+export TEMP="/k/PortableApps/genai/temp"
+export TMP="/k/PortableApps/genai/temp"
 
 # Alias for K drive
 alias k:='cd /k'

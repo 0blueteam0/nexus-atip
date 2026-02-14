@@ -8,8 +8,8 @@ const path = require('path');
 
 class FirstRunChecker {
     constructor() {
-        this.lastRunFile = 'K:\\PortableApps\\Claude-Code\\brain\\metrics\\last-run.json';
-        this.metricsDir = 'K:\\PortableApps\\Claude-Code\\brain\\metrics';
+        this.lastRunFile = 'K:\\PortableApps\\genai\\brain\\metrics\\last-run.json';
+        this.metricsDir = 'K:\\PortableApps\\genai\\brain\\metrics';
         this.ensureDirectories();
     }
 
@@ -76,12 +76,12 @@ class FirstRunChecker {
 
     checkParadigmIntegrity() {
         const requiredFiles = [
-            'K:\\PortableApps\\Claude-Code\\CLAUDE.md',
-            'K:\\PortableApps\\Claude-Code\\modules\\@bottom-up-paradigm.md',
-            'K:\\PortableApps\\Claude-Code\\modules\\@precision-comparison-format.md',
-            'K:\\PortableApps\\Claude-Code\\claude.bat',
-            'K:\\PortableApps\\Claude-Code\\systems\\smart-suggest.js',
-            'K:\\PortableApps\\Claude-Code\\systems\\assessment-recorder.js'
+            'K:\\PortableApps\\genai\\CLAUDE.md',
+            'K:\\PortableApps\\genai\\modules\\@bottom-up-paradigm.md',
+            'K:\\PortableApps\\genai\\modules\\@precision-comparison-format.md',
+            'K:\\PortableApps\\genai\\claude.bat',
+            'K:\\PortableApps\\genai\\systems\\smart-suggest.js',
+            'K:\\PortableApps\\genai\\systems\\assessment-recorder.js'
         ];
         
         const integrity = requiredFiles.map(file => {
@@ -142,8 +142,8 @@ class FirstRunChecker {
     }
 
     checkEvolution() {
-        const patternsFile = 'K:\\PortableApps\\Claude-Code\\brain\\patterns.json';
-        const assessmentsFile = 'K:\\PortableApps\\Claude-Code\\brain\\metrics\\assessments.jsonl';
+        const patternsFile = 'K:\\PortableApps\\genai\\brain\\patterns.json';
+        const assessmentsFile = 'K:\\PortableApps\\genai\\brain\\metrics\\assessments.jsonl';
         
         let evolution = { level: 1, averageProactivity: 'N/A', techniques: 0 };
         

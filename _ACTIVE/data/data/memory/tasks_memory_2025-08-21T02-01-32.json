@@ -11,12 +11,12 @@
       "updatedAt": "2025-08-21T01:44:27.881Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/package.json",
+          "path": "K:/PortableApps/genai/package.json",
           "type": "TO_MODIFY",
           "description": "의심스러운 package.json"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/node_modules/@anthropic-ai/claude-code/cli.js",
+          "path": "K:/PortableApps/genai/node_modules/@anthropic-ai/claude-code/cli.js",
           "type": "REFERENCE",
           "description": "9MB cli.js 파일"
         }
@@ -38,12 +38,12 @@
       "updatedAt": "2025-08-21T01:42:43.002Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/CLAUDE.md",
+          "path": "K:/PortableApps/genai/CLAUDE.md",
           "type": "REFERENCE",
           "description": "작업 기록"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/package-lock.json",
+          "path": "K:/PortableApps/genai/package-lock.json",
           "type": "REFERENCE",
           "description": "설치 기록"
         }
@@ -65,12 +65,12 @@
       "updatedAt": "2025-08-21T01:40:39.655Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/projects",
+          "path": "K:/PortableApps/genai/projects",
           "type": "REFERENCE",
           "description": "세션 파일 위치"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/shell-snapshots",
+          "path": "K:/PortableApps/genai/shell-snapshots",
           "type": "REFERENCE",
           "description": "스냅샷 디렉토리"
         }
@@ -96,7 +96,7 @@
       "updatedAt": "2025-08-21T01:46:57.041Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/test-timestamp.js",
+          "path": "K:/PortableApps/genai/test-timestamp.js",
           "type": "REFERENCE",
           "description": "테스트 스크립트"
         }
@@ -131,12 +131,12 @@
       "updatedAt": "2025-08-21T01:50:10.761Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "path": "K:/PortableApps/genai/claude.bat",
           "type": "TO_MODIFY",
           "description": "실행 스크립트"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "path": "K:/PortableApps/genai/.claude.json",
           "type": "TO_MODIFY",
           "description": "설정 파일"
         }

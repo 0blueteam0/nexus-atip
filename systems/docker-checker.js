@@ -17,18 +17,18 @@ const path = require('path');
 
 // 설정
 const CONFIG = {
-    statusFile: 'K:/PortableApps/Claude-Code/data/docker-status.json',
+    statusFile: 'K:/PortableApps/genai/data/docker-status.json',
     dockerDesktop: 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe',
     timeoutSec: 90,  // 60 → 90초로 증가
     checkInterval: 2,
     containers: [
         {
             name: 'firecrawl-self-hosted',
-            path: 'K:/PortableApps/Claude-Code/mcp-servers/firecrawl-self-hosted'
+            path: 'K:/PortableApps/genai/mcp-servers/firecrawl-self-hosted'
         },
         {
             name: 'searxng-crawl4ai-mcp',
-            path: 'K:/PortableApps/Claude-Code/mcp-servers/searxng-crawl4ai-mcp'
+            path: 'K:/PortableApps/genai/mcp-servers/searxng-crawl4ai-mcp'
         }
     ]
 };

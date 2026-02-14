@@ -1,0 +1,239 @@
+{
+  "numStartups": 25,
+  "installMethod": "unknown",
+  "autoUpdates": true,
+  "hasSeenTasksHint": true,
+  "customApiKeyResponses": {
+    "approved": [],
+    "rejected": [
+      "8nG8mApsSMw-xpCpoQAA",
+      "_UrZdGCFz9Q-Y5V7igAA"
+    ]
+  },
+  "tipsHistory": {
+    "memory-command": 11,
+    "theme-command": 11,
+    "status-line": 11,
+    "prompt-queue": 11,
+    "enter-to-steer-in-relatime": 11,
+    "todo-list": 12,
+    "ide-upsell-external-terminal": 16,
+    "# for memory": 22,
+    "install-github-app": 22,
+    "permissions": 22,
+    "drag-and-drop-images": 23,
+    "double-esc": 23,
+    "continue": 23,
+    "custom-commands": 13,
+    "shift-tab": 23,
+    "image-paste": 14,
+    "custom-agents": 14,
+    "ide-hotkey": 25,
+    "terminal-setup": 17,
+    "shift-enter": 17
+  },
+  "promptQueueUseCount": 70,
+  "cachedStatsigGates": {
+    "tengu_disable_bypass_permissions_mode": false
+  },
+  "mcpServers": {
+    "mcp-installer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@anaisbetts/mcp-installer"
+      ]
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+      ],
+      "env": {
+        "ALLOWED_DIRECTORIES": "K:\\"
+      }
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
+      ]
+    },
+    "shrimp-task": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
+      ],
+      "env": {
+        "TASK_DATA_PATH": "K:\\PortableApps\\genai\\ShrimpData",
+        "LANG": "ko_KR.UTF-8",
+        "LANGUAGE": "ko",
+        "LC_ALL": "ko_KR.UTF-8",
+        "OUTPUT_LANGUAGE": "ko,en"
+      }
+    },
+    "github": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "github_pat_11AZVQ7MA0vZm8Ks5F7YBZ_6QOxBTJPvnxXvtZ0fR8B5Zr2HwzVXqT3mLqK9Wn8XpXJQZV5X9KqH7vLx8"
+      }
+    },
+    "firecrawl": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "args": [
+        "firecrawl-mcp"
+      ],
+      "env": {
+        "FIRECRAWL_API_KEY": "fc-1469b38350c643e4a3f8b1b4037e2b20"
+      }
+    },
+    "git-mcp": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
+      ],
+      "env": {
+        "GIT_REPOSITORY_PATH": "K:\\PortableApps\\genai"
+      }
+    },
+    "sqlite-mcp": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "mcp-server-sqlite-npx",
+        "--db-path",
+        "K:/PortableApps/genai/data/sqlite/test.db"
+      ]
+    },
+    "websearch": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "websearch-mcp"
+      ],
+      "env": {
+        "TAVILY_API_KEY": "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"
+      }
+    },
+    "youtube-data": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "youtube-data-mcp-server"
+      ],
+      "env": {
+        "YOUTUBE_API_KEY": "AIzaSyAJu9N0loVLcUWQiWLMVn69ANAYqVZu_o8"
+      }
+    },
+    "edit-file-lines": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\mcp-servers\\mcp-edit-file-lines\\build\\index.js",
+        "K:\\PortableApps\\genai"
+      ]
+    },
+    "kiro-memory": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "args": [
+        "-m",
+        "mcp_server_enhanced"
+      ],
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "google-search": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "google-search-mcp"
+      ],
+      "env": {
+        "GOOGLE_SEARCH_API_KEY": "AIzaSyCL_TqCq7LG8rKjGDgYSdCJEOT_8a9V1Gs",
+        "GOOGLE_SEARCH_ENGINE_ID": "65c0e1c5d01ac4edb"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "desktop-commander": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\desktop-commander-mcp\\dist\\index.js"
+      ]
+    },
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=sofkjjpgastzbxnmrwwx"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_346d56379fec759409294f0038c48ac05304b34d"
+      }
+    },
+    "n8n": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:\\PortableApps\\genai\\node_modules\\@illuminaresolutions\\n8n-mcp-server\\build\\index.js"
+      ],
+      "env": {
+        "N8N_API_KEY": "36c6b035-941c-46e1-9acb-5dbf80a2c85d",
+        "N8N_HOST": "http://localhost:5678"
+      }
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "args": [
+        "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  },
+  "shell": "cmd.exe",
+  "gitBashPath": "K:\\tools\\git\\bin\\bash.exe",
+  "userID": "c4c10b6644c2d667dffe707a92908a2c7784320f4bc2364c35ab54fd6ba7b91b"
+}

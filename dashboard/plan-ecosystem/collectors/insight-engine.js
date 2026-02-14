@@ -1,7 +1,7 @@
 /**
  * Insight Engine
  *
- * 위치: K:/PortableApps/Claude-Code/dashboard/plan-ecosystem/collectors/insight-engine.js
+ * 위치: K:/PortableApps/genai/dashboard/plan-ecosystem/collectors/insight-engine.js
  *
  * 목적:
  * - 작업 패턴 분석 및 예측 인사이트 생성
@@ -15,7 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/Claude-Code';
+const BASE_PATH = process.env.BASE_PATH || 'K:/PortableApps/genai';
 const INSIGHT_DATA_PATH = path.join(BASE_PATH, 'data', 'insights.json');
 
 // 인사이트 유형

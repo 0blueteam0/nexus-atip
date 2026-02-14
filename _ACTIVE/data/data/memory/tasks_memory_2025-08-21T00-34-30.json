@@ -10,7 +10,7 @@
       "updatedAt": "2025-08-20T08:11:43.295Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/ULTIMATE-BASH-FIX.bat",
+          "path": "K:/PortableApps/genai/ULTIMATE-BASH-FIX.bat",
           "type": "REFERENCE",
           "description": "실행된 수정 스크립트"
         }
@@ -35,7 +35,7 @@
       "updatedAt": "2025-08-20T08:13:45.987Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/AUTO-CHECK.js",
+          "path": "K:/PortableApps/genai/AUTO-CHECK.js",
           "type": "CREATE",
           "description": "자동 검증 및 치유 스크립트"
         }

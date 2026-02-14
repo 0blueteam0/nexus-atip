@@ -9,7 +9,7 @@ const path = require('path');
 
 class AutoOrganizer {
     constructor() {
-        this.baseDir = 'K:/PortableApps/Claude-Code';
+        this.baseDir = 'K:/PortableApps/genai';
         this.rules = {
             // Essential files that stay in root
             essential: ['claude.bat', 'CLAUDE.md', 'package.json', 'package-lock.json', '.bashrc', '.bash_profile', 'shell-snapshots', 'index.html'],

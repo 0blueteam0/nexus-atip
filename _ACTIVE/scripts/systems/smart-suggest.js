@@ -8,8 +8,8 @@ const path = require('path');
 
 class SmartSuggest {
     constructor() {
-        this.configPath = 'K:\\PortableApps\\Claude-Code\\.claude.json';
-        this.patternsPath = 'K:\\PortableApps\\Claude-Code\\brain\\tool-patterns.json';
+        this.configPath = 'K:\\PortableApps\\genai\\.claude.json';
+        this.patternsPath = 'K:\\PortableApps\\genai\\brain\\tool-patterns.json';
         this.mcpServers = this.loadMCPServers();
         this.patterns = this.loadPatterns();
         this.contextTriggers = this.defineContextTriggers();
@@ -316,7 +316,7 @@ echo.
 echo Installation complete!
 pause`;
             
-            const batchPath = 'K:\\PortableApps\\Claude-Code\\INSTALL-SUGGESTED-MCP.bat';
+            const batchPath = 'K:\\PortableApps\\genai\\INSTALL-SUGGESTED-MCP.bat';
             fs.writeFileSync(batchPath, batchContent);
             
             console.log(`\n✅ Installation script created: INSTALL-SUGGESTED-MCP.bat`);

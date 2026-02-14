@@ -2,7 +2,7 @@
 /**
  * Bidirectional Sync - Planning ↔ Shrimp ↔ Unified Task 양방향 동기화
  *
- * 위치: K:/PortableApps/Claude-Code/atos/bidirectional-sync.js
+ * 위치: K:/PortableApps/genai/atos/bidirectional-sync.js
  *
  * 핵심 기능:
  * - Shrimp → Planning 동기화 (태스크 완료 시)
@@ -34,7 +34,7 @@ try {
 }
 
 // 경로 설정
-const BASE_PATH = 'K:/PortableApps/Claude-Code';
+const BASE_PATH = 'K:/PortableApps/genai';
 const PLANS_DIR = path.join(BASE_PATH, 'plans');
 const SHRIMP_TASKS_FILE = path.join(BASE_PATH, 'ShrimpData/tasks/current-tasks.json');
 const UNIFIED_STATE_FILE = path.join(BASE_PATH, 'unified-task-system/session-state.json');

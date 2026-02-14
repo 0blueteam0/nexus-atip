@@ -2,7 +2,7 @@
 /**
  * Phase 1 Integration Test
  *
- * 위치: K:/PortableApps/Claude-Code/unified-task-system/test-phase1.js
+ * 위치: K:/PortableApps/genai/unified-task-system/test-phase1.js
  *
  * 목적:
  * - Unified Task Hub Phase 1 구현 검증

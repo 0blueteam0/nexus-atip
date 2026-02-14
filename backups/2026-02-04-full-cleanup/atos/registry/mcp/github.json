@@ -1,0 +1,26 @@
+{
+  "category": "github",
+  "description": "Git 및 GitHub 작업",
+  "priority": "high",
+  "servers": {
+    "github": {
+      "priority": "high",
+      "description": "GitHub API 통합",
+      "tools": [
+        "search_repositories", "search_code", "search_issues",
+        "get_file_contents", "create_or_update_file", "push_files",
+        "create_issue", "create_pull_request", "list_commits"
+      ],
+      "triggerKeywords": ["깃헙", "깃허브", "레포", "PR", "이슈", "github", "repo"]
+    },
+    "git-mcp": {
+      "priority": "high",
+      "description": "로컬 Git 작업",
+      "tools": [
+        "git_status", "git_add", "git_commit", "git_push", "git_pull",
+        "git_log", "git_diff", "git_branch", "git_checkout", "git_merge"
+      ],
+      "triggerKeywords": ["git", "커밋", "브랜치", "commit", "branch"]
+    }
+  }
+}

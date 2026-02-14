@@ -4,14 +4,14 @@
       "id": "264d5375-61b2-4c02-89e3-1dce84e685d3",
       "name": "핵심 실행 파일 점검",
       "description": "claude.bat과 관련 배치 파일들의 무결성 및 실행 가능 여부 확인",
-      "notes": "K:/PortableApps/Claude-Code 경로 기준",
+      "notes": "K:/PortableApps/genai 경로 기준",
       "status": "completed",
       "dependencies": [],
       "createdAt": "2025-08-21T06:21:45.180Z",
       "updatedAt": "2025-08-21T06:26:52.115Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/claude.bat",
+          "path": "K:/PortableApps/genai/claude.bat",
           "type": "TO_MODIFY",
           "description": "메인 실행 파일"
         },
@@ -42,12 +42,12 @@
       "updatedAt": "2025-08-21T06:54:11.660Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code/.claude.json",
+          "path": "K:/PortableApps/genai/.claude.json",
           "type": "REFERENCE",
           "description": "MCP 설정 파일"
         },
         {
-          "path": "K:/PortableApps/Claude-Code/ShrimpData/current-tasks.json",
+          "path": "K:/PortableApps/genai/ShrimpData/current-tasks.json",
           "type": "REFERENCE",
           "description": "Shrimp 데이터"
         }
@@ -69,7 +69,7 @@
       "updatedAt": "2025-08-21T07:03:41.663Z",
       "relatedFiles": [
         {
-          "path": "K:/PortableApps/Claude-Code",
+          "path": "K:/PortableApps/genai",
           "type": "REFERENCE",
           "description": "루트 디렉토리"
         }

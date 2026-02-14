@@ -12,10 +12,10 @@ const crypto = require('crypto');
 class EvolutionEngine {
     constructor() {
         this.brain = {
-            knowledge: 'K:\\PortableApps\\Claude-Code\\brain\\knowledge.json',
-            skills: 'K:\\PortableApps\\Claude-Code\\brain\\skills.json',
-            patterns: 'K:\\PortableApps\\Claude-Code\\brain\\patterns.json',
-            evolution: 'K:\\PortableApps\\Claude-Code\\brain\\evolution.json'
+            knowledge: 'K:\\PortableApps\\genai\\brain\\knowledge.json',
+            skills: 'K:\\PortableApps\\genai\\brain\\skills.json',
+            patterns: 'K:\\PortableApps\\genai\\brain\\patterns.json',
+            evolution: 'K:\\PortableApps\\genai\\brain\\evolution.json'
         };
         
         this.initializeBrain();
@@ -23,7 +23,7 @@ class EvolutionEngine {
     }
     
     initializeBrain() {
-        const brainDir = 'K:\\PortableApps\\Claude-Code\\brain';
+        const brainDir = 'K:\\PortableApps\\genai\\brain';
         if (!fs.existsSync(brainDir)) {
             fs.mkdirSync(brainDir, { recursive: true });
         }
@@ -174,7 +174,7 @@ class EvolutionEngine {
     
     // 스킬 스크립트 생성
     createSkillScript(skill) {
-        const scriptDir = 'K:\\PortableApps\\Claude-Code\\brain\\skills';
+        const scriptDir = 'K:\\PortableApps\\genai\\brain\\skills';
         if (!fs.existsSync(scriptDir)) {
             fs.mkdirSync(scriptDir, { recursive: true });
         }
@@ -275,7 +275,7 @@ module.exports = execute;`;
     
     // CLAUDE.md 자동 업데이트
     updateClaudeMd() {
-        const claudePath = 'K:\\PortableApps\\Claude-Code\\CLAUDE.md';
+        const claudePath = 'K:\\PortableApps\\genai\\CLAUDE.md';
         let content = fs.readFileSync(claudePath, 'utf8');
         
         const metrics = this.evolve();
@@ -399,7 +399,7 @@ module.exports = execute;`;
     }
     
     saveCapability(capability) {
-        const capDir = 'K:\\PortableApps\\Claude-Code\\brain\\capabilities';
+        const capDir = 'K:\\PortableApps\\genai\\brain\\capabilities';
         if (!fs.existsSync(capDir)) {
             fs.mkdirSync(capDir, { recursive: true });
         }
@@ -412,7 +412,7 @@ module.exports = execute;`;
     
     // 백업 생성
     backup() {
-        const backupDir = 'K:\\PortableApps\\Claude-Code\\brain\\backups';
+        const backupDir = 'K:\\PortableApps\\genai\\brain\\backups';
         if (!fs.existsSync(backupDir)) {
             fs.mkdirSync(backupDir, { recursive: true });
         }
@@ -479,8 +479,8 @@ class EvolutionDaemon {
     captureRecentActivity() {
         // 최근 로그 파일이나 활동 캡처
         const logFiles = [
-            'K:\\PortableApps\\Claude-Code\\forensic.log',
-            'K:\\PortableApps\\Claude-Code\\self-updates.log'
+            'K:\\PortableApps\\genai\\forensic.log',
+            'K:\\PortableApps\\genai\\self-updates.log'
         ];
         
         for (const logFile of logFiles) {

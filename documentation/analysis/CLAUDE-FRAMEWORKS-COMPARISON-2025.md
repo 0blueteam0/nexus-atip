@@ -21,12 +21,12 @@
 
 #### 1. **Awesome Claude Agents** - 최우선 추천
 ```bash
-# K:\PortableApps\Claude-Code\.claude\agents\ 폴더 생성
-mkdir K:\PortableApps\Claude-Code\.claude\agents
+# K:\PortableApps\genai\.claude\agents\ 폴더 생성
+mkdir K:\PortableApps\genai\.claude\agents
 
 # 핵심 에이전트 다운로드
 git clone https://github.com/VoltAgent/awesome-claude-code-subagents.git temp-agents
-xcopy temp-agents\agents\*.json K:\PortableApps\Claude-Code\.claude\agents\ /s
+xcopy temp-agents\agents\*.json K:\PortableApps\genai\.claude\agents\ /s
 rmdir temp-agents /s /q
 ```
 
@@ -39,7 +39,7 @@ rmdir temp-agents /s /q
 #### 2. **BMAD 방법론** - 프로젝트 구조화
 ```bash
 # BMAD 메서드 다운로드
-git clone https://github.com/24601/BMAD-AT-CLAUDE.git K:\PortableApps\Claude-Code\frameworks\bmad
+git clone https://github.com/24601/BMAD-AT-CLAUDE.git K:\PortableApps\genai\frameworks\bmad
 ```
 
 ### 🐍 Python 의존성 (향후 설치)
@@ -48,7 +48,7 @@ git clone https://github.com/24601/BMAD-AT-CLAUDE.git K:\PortableApps\Claude-Cod
 ```bash
 # K드라이브 Python 환경 확인 후
 # K:\PortableApps\tools\python\python.exe -m pip install SuperClaude
-# python3 SuperClaude install --dir K:\PortableApps\Claude-Code\.claude
+# python3 SuperClaude install --dir K:\PortableApps\genai\.claude
 ```
 
 ### 🟨 고급 설치 (Node.js 필요)
@@ -57,18 +57,18 @@ git clone https://github.com/24601/BMAD-AT-CLAUDE.git K:\PortableApps\Claude-Cod
 ```bash
 # Node.js 18+ 환경에서
 npm install -g @anthropic-ai/claude-code
-npx claude-flow@alpha init --force --dir K:\PortableApps\Claude-Code
+npx claude-flow@alpha init --force --dir K:\PortableApps\genai
 ```
 
 ## 🔧 K드라이브 환경 최적화 설정
 
 ### 환경 변수 설정
 ```batch
-# K:\PortableApps\Claude-Code\setup-frameworks.bat
+# K:\PortableApps\genai\setup-frameworks.bat
 @echo off
-set CLAUDE_CONFIG_DIR=K:\PortableApps\Claude-Code\.claude
+set CLAUDE_CONFIG_DIR=K:\PortableApps\genai\.claude
 set CLAUDE_AGENTS_DIR=%CLAUDE_CONFIG_DIR%\agents
-set CLAUDE_FRAMEWORKS_DIR=K:\PortableApps\Claude-Code\frameworks
+set CLAUDE_FRAMEWORKS_DIR=K:\PortableApps\genai\frameworks
 
 mkdir "%CLAUDE_CONFIG_DIR%" 2>nul
 mkdir "%CLAUDE_AGENTS_DIR%" 2>nul
@@ -79,7 +79,7 @@ echo Claude 프레임워크 환경 설정 완료
 
 ### 통합 설정 파일
 ```json
-// K:\PortableApps\Claude-Code\.claude\config.json
+// K:\PortableApps\genai\.claude\config.json
 {
   "version": "2025.1",
   "frameworks": {
@@ -115,7 +115,7 @@ echo Claude 프레임워크 환경 설정 완료
 
 ### 자동 실행 스크립트
 ```batch
-# K:\PortableApps\Claude-Code\start-claude-ecosystem.bat
+# K:\PortableApps\genai\start-claude-ecosystem.bat
 @echo off
 echo 🚀 Claude 생태계 시작...
 

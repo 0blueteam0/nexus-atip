@@ -6,15 +6,15 @@ echo.
 
 REM 1. Delete existing snapshots
 echo [1/4] Removing existing snapshots...
-if exist "K:\PortableApps\Claude-Code\shell-snapshots" (
-    rmdir /S /Q "K:\PortableApps\Claude-Code\shell-snapshots" 2>nul
+if exist "K:\PortableApps\genai\shell-snapshots" (
+    rmdir /S /Q "K:\PortableApps\genai\shell-snapshots" 2>nul
     echo    - Removed shell-snapshots folder
 )
 
 REM 2. Create dummy file to prevent folder creation
 echo [2/4] Creating blocker file...
-echo This file prevents snapshot folder creation > "K:\PortableApps\Claude-Code\shell-snapshots"
-attrib +R "K:\PortableApps\Claude-Code\shell-snapshots" 2>nul
+echo This file prevents snapshot folder creation > "K:\PortableApps\genai\shell-snapshots"
+attrib +R "K:\PortableApps\genai\shell-snapshots" 2>nul
 echo    - Created read-only blocker file
 
 REM 3. Set environment variables

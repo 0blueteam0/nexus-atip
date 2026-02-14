@@ -1,0 +1,18 @@
+{
+  "category": "visualization",
+  "description": "차트 및 시각화",
+  "priority": "low",
+  "servers": {
+    "antv-chart": {
+      "priority": "medium",
+      "description": "차트 및 시각화 생성",
+      "tools": [
+        "generate_line_chart", "generate_bar_chart", "generate_pie_chart",
+        "generate_area_chart", "generate_scatter_chart", "generate_radar_chart",
+        "generate_mind_map", "generate_flow_diagram", "generate_funnel_chart",
+        "generate_treemap_chart", "generate_sankey_chart"
+      ],
+      "triggerKeywords": ["차트", "그래프", "시각화", "마인드맵", "플로우차트", "다이어그램"]
+    }
+  }
+}

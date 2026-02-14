@@ -13,7 +13,7 @@
 | Field | Value | Converted Date | Issue |
 |-------|-------|---------------|-------|
 | **firstStartTime** | "2025-08-16T03:37:01.975Z" | Aug 16, 2025 | ✅ Correct |
-| **claudeCodeFirstTokenDate** | "2025-01-20T03:27:24.018678Z" | Jan 20, 2025 | ❌ WRONG (should be Aug) |
+| **claudeCodeFirstTokenDate** | "2025-08-20T03:27:24.018678Z" | Jan 20, 2025 | ❌ WRONG (should be Aug) |
 | **changelogLastFetched** | 1755661156324 | Aug 22, 2025 13:19 | ❌ FUTURE (2 days ahead) |
 | **s1mAccessCache.timestamp** | 1755661155543 | Aug 22, 2025 13:19 | ❌ FUTURE (2 days ahead) |
 

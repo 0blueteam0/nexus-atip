@@ -337,7 +337,7 @@ pytest tests/test_graphs.py
 
 ```bash
 # 1. Python 환경 준비
-cd K:/PortableApps/Claude-Code
+cd K:/PortableApps/genai
 python -m venv langgraph-env
 source langgraph-env/bin/activate  # Windows: langgraph-env\Scripts\activate
 
