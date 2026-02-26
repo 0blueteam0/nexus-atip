@@ -1,0 +1,48 @@
+{
+  "_description": "Declarative policy rules for NEXUS Policy Mesh",
+  "version": "1.0.0",
+  "permissions": {
+    "read": {
+      "level": "free",
+      "description": "Read operations pass freely",
+      "actions": ["get", "find", "list", "search", "getWeights", "getState", "getRules", "listAvailable"]
+    },
+    "compute": {
+      "level": "sandbox",
+      "description": "Compute operations run in sandbox",
+      "actions": ["route", "assemble", "compact", "detectPatterns", "detectAnomaly", "planTask", "reviewResult"]
+    },
+    "action": {
+      "level": "approval",
+      "description": "Write/mutate operations require approval",
+      "actions": ["set", "execute", "register", "adjustWeights", "applyImprovement", "audit", "recordResult"]
+    }
+  },
+  "rateLimits": {
+    "global": {
+      "maxCallsPerMinute": 60,
+      "maxTokensPerSession": 500000,
+      "maxCostPerSession": 10.0
+    },
+    "perProvider": {
+      "claude-code": {
+        "maxCallsPerMinute": 20,
+        "maxConcurrent": 3
+      },
+      "gemini-cli": {
+        "maxCallsPerMinute": 30,
+        "maxConcurrent": 5
+      },
+      "codex-cli": {
+        "maxCallsPerMinute": 15,
+        "maxConcurrent": 2
+      }
+    }
+  },
+  "audit": {
+    "enabled": true,
+    "logLevel": "action",
+    "maxEntries": 10000,
+    "retentionDays": 30
+  }
+}

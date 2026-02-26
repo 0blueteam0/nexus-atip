@@ -190,6 +190,14 @@ function bootstrapDefaults(container) {
   } catch (e) {
     // Compound loop not yet available - null adapter will be used
   }
+
+  // PolicyPort -> PolicyMesh (Phase 5)
+  try {
+    const { PolicyMesh } = require('../policy/mesh');
+    container.register('PolicyPort', new PolicyMesh());
+  } catch (e) {
+    // Policy mesh not yet available - null adapter will be used
+  }
 }
 
 // Singleton container
