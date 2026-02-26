@@ -198,6 +198,16 @@ function bootstrapDefaults(container) {
   } catch (e) {
     // Policy mesh not yet available - null adapter will be used
   }
+
+  // EvolutionPort -> EvolutionEngine (Phase 6)
+  try {
+    const { EvolutionEngine } = require('../evolution/evolution-engine');
+    const engine = new EvolutionEngine();
+    engine.init();
+    container.register('EvolutionPort', engine);
+  } catch (e) {
+    // Evolution engine not yet available - null adapter will be used
+  }
 }
 
 // Singleton container
