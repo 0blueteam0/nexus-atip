@@ -182,6 +182,14 @@ function bootstrapDefaults(container) {
   } catch (e) {
     // Context pipeline not yet available - null adapter will be used
   }
+
+  // AgentLoopPort -> CompoundLoop (Phase 3)
+  try {
+    const { CompoundLoop } = require('../compound/loop');
+    container.register('AgentLoopPort', new CompoundLoop());
+  } catch (e) {
+    // Compound loop not yet available - null adapter will be used
+  }
 }
 
 // Singleton container
