@@ -1,0 +1,47 @@
+{
+  "_description": "Context scoping rules based on ETH Zurich arXiv:2602.11988 Minimal Instruction Principle",
+  "maxInstructionsPerBridge": 10,
+  "netZeroPolicy": true,
+  "budgets": {
+    "claude-code": {
+      "maxTokens": 8000,
+      "maxInstructions": 10,
+      "priority": ["architecture", "patterns", "constraints", "tools", "conventions"],
+      "exclude": ["verbose_examples", "redundant_context", "session_history"]
+    },
+    "gemini-cli": {
+      "maxTokens": 12000,
+      "maxInstructions": 10,
+      "priority": ["task_description", "file_content", "large_context", "search_results"],
+      "exclude": ["mcp_tools", "session_state"]
+    },
+    "codex-cli": {
+      "maxTokens": 6000,
+      "maxInstructions": 8,
+      "priority": ["code_context", "test_patterns", "sandbox_rules"],
+      "exclude": ["architecture_docs", "verbose_history"]
+    }
+  },
+  "tiers": {
+    "hot": {
+      "description": "Active session context",
+      "maxAge": 3600000,
+      "maxItems": 20
+    },
+    "warm": {
+      "description": "Recent patterns and solutions",
+      "maxAge": 86400000,
+      "maxItems": 50
+    },
+    "cold": {
+      "description": "Archived knowledge",
+      "maxAge": null,
+      "maxItems": 200
+    }
+  },
+  "anomalyThresholds": {
+    "duplicateRatio": 0.3,
+    "staleAge": 604800000,
+    "conflictScore": 0.5
+  }
+}

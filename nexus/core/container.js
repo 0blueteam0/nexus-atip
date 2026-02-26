@@ -169,12 +169,28 @@ class Container {
   }
 }
 
+/**
+ * Bootstrap default adapters for ports that have implementations.
+ * Called once when container is first created.
+ * Each adapter is lazy-loaded to avoid circular dependencies.
+ */
+function bootstrapDefaults(container) {
+  // ContextEnginePort -> ContextPipeline (Phase 2)
+  try {
+    const { ContextPipeline } = require('../context/pipeline');
+    container.register('ContextEnginePort', new ContextPipeline());
+  } catch (e) {
+    // Context pipeline not yet available - null adapter will be used
+  }
+}
+
 // Singleton container
 let instance = null;
 
 function getContainer() {
   if (!instance) {
     instance = new Container();
+    bootstrapDefaults(instance);
   }
   return instance;
 }
