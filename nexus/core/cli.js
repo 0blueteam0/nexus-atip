@@ -236,6 +236,37 @@ async function main() {
       break;
     }
 
+    case 'dashboard': {
+      const container = getContainer();
+      const obs = container.resolve('ObservabilityPort');
+      const dashboard = await obs.getDashboard();
+      console.log('========================================');
+      console.log('  NEXUS Observability Dashboard');
+      console.log('========================================');
+      console.log(`  Total cost: $${dashboard.costs.total}`);
+      console.log(`  Total tokens: ${dashboard.costs.totalTokens}`);
+      console.log(`  Total entries: ${dashboard.costs.count}`);
+      console.log('');
+      console.log('  Today:');
+      console.log(`    Cost: $${dashboard.today.total} | Tokens: ${dashboard.today.totalTokens} | Tasks: ${dashboard.today.count}`);
+      console.log('');
+      if (Object.keys(dashboard.costs.byProvider).length > 0) {
+        console.log('  Cost by Provider:');
+        Object.entries(dashboard.costs.byProvider).forEach(([p, d]) => {
+          console.log(`    ${p}: $${d.cost.toFixed(4)} (${d.tokens} tokens, ${d.count} calls)`);
+        });
+      }
+      console.log('');
+      if (Object.keys(dashboard.quality).length > 0) {
+        console.log('  Quality by Provider:');
+        Object.entries(dashboard.quality).forEach(([p, d]) => {
+          console.log(`    ${p}: score ${d.avgScore} | success ${d.successRate} (${d.count} tasks)`);
+        });
+      }
+      console.log('========================================');
+      break;
+    }
+
     case 'ports': {
       console.log('========================================');
       console.log('  NEXUS Port Validation');
@@ -280,6 +311,7 @@ Commands:
   ports             Validate port interfaces
   infra             Infrastructure services status (L1)
   ecosystem         7-Layer ecosystem overview
+  dashboard         Cost/quality observability dashboard
 
 Version: 3.0.0
 `);
