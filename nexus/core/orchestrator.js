@@ -164,6 +164,9 @@ class Orchestrator {
       decision = this._applyEvolutionWeights(decision, task.type, complexity);
     }
 
+    // 3b. Ensure selected provider is available (auto-fallback)
+    decision = this._ensureAvailable(decision);
+
     // 4. Record routing decision
     const routingEntry = {
       taskType: task.type,
@@ -220,6 +223,30 @@ class Orchestrator {
       reason: 'default_fallback',
       strategy: 'default'
     };
+  }
+
+  /**
+   * Check if a provider is currently available, auto-fallback if not
+   * @private
+   */
+  _ensureAvailable(decision) {
+    const adapter = this.adapters.get(decision.provider);
+    if (adapter && adapter.status === 'unavailable' && decision.fallbacks.length > 0) {
+      const fallback = decision.fallbacks.find(fb => {
+        const a = this.adapters.get(fb);
+        return a && a.status !== 'unavailable';
+      });
+      if (fallback) {
+        return {
+          ...decision,
+          provider: fallback,
+          fallbacks: decision.fallbacks.filter(f => f !== fallback),
+          reason: `${decision.reason} -> fallback (${decision.provider} unavailable)`,
+          strategy: decision.strategy + '_fallback'
+        };
+      }
+    }
+    return decision;
   }
 
   /**
@@ -521,8 +548,19 @@ class Orchestrator {
 
   async _healthCheckAll() {
     for (const [id, adapter] of this.adapters) {
-      adapter.status = 'available'; // Optimistic default
-      this.bus.emit('provider:health', { provider: id, status: 'available' });
+      // For local LLM providers, check via LocalLLMPort
+      if (adapter.config.type === 'local_llm') {
+        try {
+          const localLLM = this.container.resolve('LocalLLMPort');
+          const available = await localLLM.isAvailable();
+          adapter.status = available ? 'available' : 'unavailable';
+        } catch {
+          adapter.status = 'unavailable';
+        }
+      } else {
+        adapter.status = 'available'; // Optimistic default for CLI providers
+      }
+      this.bus.emit('provider:health', { provider: id, status: adapter.status });
     }
   }
 

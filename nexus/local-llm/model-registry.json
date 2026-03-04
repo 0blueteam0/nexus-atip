@@ -1,0 +1,47 @@
+{
+  "recommended_cpu_models": {
+    "code": {
+      "primary": "qwen2.5-coder:7b",
+      "fallback": "qwen2.5-coder:3b",
+      "note": "Best code model for CPU. 7B ~7s/response, 3B ~3s/response"
+    },
+    "general": {
+      "primary": "llama3.2:3b",
+      "fallback": "phi3:mini",
+      "note": "Fast general purpose. 3B runs well on CPU"
+    },
+    "embedding": {
+      "primary": "nomic-embed-text",
+      "fallback": "all-minilm",
+      "note": "For RAG embeddings. nomic-embed-text: 768 dims, fast on CPU"
+    },
+    "reasoning": {
+      "primary": "qwen2.5:7b",
+      "fallback": "llama3.2:3b",
+      "note": "For complex reasoning tasks on CPU"
+    }
+  },
+  "task_model_map": {
+    "quick_fix": "qwen2.5-coder:3b",
+    "code_generation": "qwen2.5-coder:7b",
+    "code_review": "qwen2.5-coder:7b",
+    "documentation": "llama3.2:3b",
+    "translation": "llama3.2:3b",
+    "embedding": "nomic-embed-text",
+    "summarization": "llama3.2:3b",
+    "default": "llama3.2:3b"
+  },
+  "performance_notes": {
+    "cpu_only": true,
+    "expected_latency": {
+      "3b_model": "2-5 seconds",
+      "7b_model": "5-15 seconds",
+      "embedding": "0.5-2 seconds"
+    },
+    "memory_usage": {
+      "3b_model": "~2GB RAM",
+      "7b_model": "~4GB RAM",
+      "embedding": "~0.5GB RAM"
+    }
+  }
+}

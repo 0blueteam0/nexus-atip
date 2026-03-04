@@ -62,6 +62,52 @@
       "approval_mode": "full-auto",
       "enabled": true,
       "health_check": "codex --version"
+    },
+    "ollama-cpu": {
+      "type": "local_llm",
+      "endpoint": "http://localhost:11434",
+      "strengths": [
+        "free_inference",
+        "privacy",
+        "offline_capable",
+        "fast_embedding"
+      ],
+      "weaknesses": [
+        "cpu_only_slow",
+        "limited_model_size",
+        "no_tool_use"
+      ],
+      "cost_tier": "free",
+      "cost_note": "Local CPU inference, no API cost",
+      "context": 8192,
+      "role": "local_worker",
+      "enabled": true,
+      "health_check": "curl -s http://localhost:11434/api/tags",
+      "models": {
+        "code": "qwen2.5-coder:7b",
+        "general": "llama3.2:3b",
+        "embedding": "nomic-embed-text"
+      }
+    },
+    "api-direct": {
+      "type": "api_direct",
+      "strengths": [
+        "headless_operation",
+        "batch_processing",
+        "precise_token_control",
+        "structured_output"
+      ],
+      "weaknesses": [
+        "api_cost",
+        "no_tool_use",
+        "rate_limits"
+      ],
+      "cost_tier": "api_usage",
+      "cost_note": "Direct API calls to OpenAI/Anthropic",
+      "context": 200000,
+      "role": "headless_worker",
+      "enabled": false,
+      "health_check": "echo api-direct-ready"
     }
   },
   "routing": {
@@ -156,6 +202,20 @@
         "secondary": "-",
         "tertiary": "-",
         "condition": "consensus required"
+      },
+      {
+        "task_type": "summarization",
+        "primary": "ollama-cpu",
+        "secondary": "gemini-cli",
+        "tertiary": "-",
+        "condition": "lightweight, local first"
+      },
+      {
+        "task_type": "embedding",
+        "primary": "ollama-cpu",
+        "secondary": "-",
+        "tertiary": "-",
+        "condition": "local embedding via nomic-embed-text"
       }
     ],
     "strategy": "adaptive_weighted",
@@ -166,8 +226,9 @@
       {
         "complexity": "trivial",
         "score": "0-4",
-        "provider": "codex-cli",
-        "reason": "fast sandbox"
+        "provider": "ollama-cpu",
+        "fallback": "codex-cli",
+        "reason": "local first, free CPU inference"
       },
       {
         "complexity": "simple",
@@ -209,6 +270,7 @@
     "tiering_strategy": {
       "free_first": true,
       "order": [
+        "ollama-cpu",
         "gemini-cli",
         "claude-code",
         "codex-cli"
