@@ -1,0 +1,35 @@
+{
+  "qdrant": {
+    "base_url": "http://localhost:6333",
+    "timeout_ms": 30000
+  },
+  "embedding": {
+    "primary": {
+      "provider": "ollama",
+      "model": "nomic-embed-text",
+      "dimensions": 768,
+      "cost": "free (CPU)"
+    },
+    "fallback": {
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "cost": "$0.02/1M tokens"
+    }
+  },
+  "chunking": {
+    "chunk_size_tokens": 512,
+    "chunk_overlap_tokens": 64,
+    "break_on": ["paragraph", "sentence"]
+  },
+  "collections": {
+    "nexus_knowledge": "NEXUS knowledge base (patterns, best practices)",
+    "nexus_sessions": "Session summaries and evolution data",
+    "nexus_codebase": "Codebase documentation and structure"
+  },
+  "search": {
+    "default_limit": 5,
+    "score_threshold": 0.5,
+    "rerank": false
+  }
+}
