@@ -27,6 +27,8 @@ const { AutoResearcher } = require('../self-evolution/auto-researcher');
 const { ImprovementChecklist } = require('../self-evolution/improvement-checklist');
 const { AtosBridge } = require('../bridges/atos-bridge');
 const { MultiAiBridge } = require('../bridges/multi-ai-bridge');
+const { MCPRouter } = require('../gateway/mcp-router');
+const { A2AHub } = require('../gateway/a2a-hub');
 
 async function main() {
   const args = process.argv.slice(2);
@@ -236,6 +238,29 @@ async function main() {
       break;
     }
 
+    case 'gateway': {
+      const mcpRouter = new MCPRouter();
+      const a2aHub = new A2AHub();
+      console.log('========================================');
+      console.log('  NEXUS Gateway (L7)');
+      console.log('========================================');
+      console.log('');
+      const mcpStatus = mcpRouter.getStatus();
+      console.log(`  MCP Servers: ${mcpStatus.totalServers}`);
+      console.log('  Categories:');
+      Object.entries(mcpStatus.categories).forEach(([cat, count]) => {
+        console.log(`    ${cat}: ${count}`);
+      });
+      console.log('');
+      const a2aStatus = a2aHub.getStatus();
+      console.log(`  A2A Agents: ${a2aStatus.agents}`);
+      a2aHub.listAgents().forEach(a => {
+        console.log(`    [+] ${a.id}: ${a.capabilities.join(', ')}`);
+      });
+      console.log('========================================');
+      break;
+    }
+
     case 'dashboard': {
       const container = getContainer();
       const obs = container.resolve('ObservabilityPort');
@@ -312,6 +337,7 @@ Commands:
   infra             Infrastructure services status (L1)
   ecosystem         7-Layer ecosystem overview
   dashboard         Cost/quality observability dashboard
+  gateway           MCP/A2A gateway status (L7)
 
 Version: 3.0.0
 `);
