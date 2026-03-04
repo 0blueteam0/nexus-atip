@@ -227,10 +227,13 @@ function bootstrapDefaults(container) {
     // Ollama not available - null adapter
   }
 
-  // AgentFrameworkPort (v3.0 Phase 3) - null until implemented
-  // WorkflowPort (v3.0 Phase 4) - null until implemented
-  // RAGPort (v3.0 Phase 5) - null until implemented
-  // ObservabilityPort (v3.0 Phase 6) - null until implemented
+  // AgentFrameworkPort -> FrameworkAdapter (v3.0 Phase 3)
+  try {
+    const { FrameworkAdapter } = require('../agent-framework/framework-adapter');
+    container.register('AgentFrameworkPort', new FrameworkAdapter());
+  } catch (e) {
+    // Framework adapter not available - null adapter
+  }
 
   // WorkflowPort -> N8nAdapter (v3.0 Phase 4)
   try {
