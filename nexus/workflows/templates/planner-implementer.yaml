@@ -1,0 +1,31 @@
+# Planner-Implementer Workflow (W002)
+# Separate planning and implementation
+# Cases: 302, 305
+
+name: Planner-Implementer
+version: 1.0.0
+pattern: plan_then_execute
+
+steps:
+  - name: analyze
+    provider: $secondary
+    action: analyze_requirements
+    description: Analyze task requirements and constraints
+
+  - name: plan
+    provider: $secondary
+    action: create_plan
+    description: Create detailed implementation plan
+    input: $analyze.output
+
+  - name: implement
+    provider: $primary
+    action: execute_plan
+    description: Implement according to plan
+    input: $plan.output
+
+  - name: test
+    provider: $tertiary
+    action: run_tests
+    description: Run tests in sandbox
+    input: $implement.output

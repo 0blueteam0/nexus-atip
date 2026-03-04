@@ -1,0 +1,364 @@
+{
+  "providers": {
+    "claude-code": {
+      "command": "K:/PortableApps/genai/claude.bat",
+      "mode": "session_mcp | headless_cli",
+      "headless": "K:/PortableApps/genai/claude.bat -p \"{prompt}\" --output-format json",
+      "strengths": [
+        "mcp_tools",
+        "architecture",
+        "long_sessions",
+        "code_generation",
+        "file_editing",
+        "git_ops"
+      ],
+      "weaknesses": [
+        "cost_per_session",
+        "slower_startup"
+      ],
+      "cost_tier": "included",
+      "cost_note": "Max subscription - no per-token cost",
+      "context": "200K",
+      "role": "primary_orchestrator",
+      "enabled": true,
+      "health_check": "claude --version"
+    },
+    "gemini-cli": {
+      "command": "K:/PortableApps/genai/gemini.bat",
+      "strengths": [
+        "web_search",
+        "1M_context",
+        "fast_response",
+        "multimodal",
+        "large_file_analysis"
+      ],
+      "weaknesses": [
+        "occasional_hallucination",
+        "limited_tool_use"
+      ],
+      "cost_tier": "free",
+      "cost_note": "Free tier with Gemini CLI",
+      "context": 1000000,
+      "role": "collaborator",
+      "enabled": true,
+      "health_check": "gemini --version"
+    },
+    "codex-cli": {
+      "command": "K:/PortableApps/genai/codex.bat",
+      "strengths": [
+        "autonomous_coding",
+        "sandboxed_execution",
+        "fast_iteration",
+        "full_auto_mode"
+      ],
+      "weaknesses": [
+        "api_cost",
+        "limited_context"
+      ],
+      "cost_tier": "api_usage",
+      "cost_note": "Uses OpenAI API credits",
+      "context": 128000,
+      "role": "specialist",
+      "approval_mode": "full-auto",
+      "enabled": true,
+      "health_check": "codex --version"
+    }
+  },
+  "routing": {
+    "task_provider_map": [
+      {
+        "task_type": "code_generation",
+        "primary": "claude-code",
+        "secondary": "codex-cli",
+        "tertiary": "gemini-cli",
+        "condition": "default"
+      },
+      {
+        "task_type": "code_review",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "file_size > 300 lines -> gemini"
+      },
+      {
+        "task_type": "architecture",
+        "primary": "claude-code",
+        "secondary": "gemini-cli",
+        "tertiary": "-",
+        "condition": "always claude first"
+      },
+      {
+        "task_type": "web_research",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "gemini has free search"
+      },
+      {
+        "task_type": "large_file",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "file > 50KB -> gemini 1M ctx"
+      },
+      {
+        "task_type": "quick_fix",
+        "primary": "codex-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "sandbox safe"
+      },
+      {
+        "task_type": "security_audit",
+        "primary": "claude-code",
+        "secondary": "gemini-cli",
+        "tertiary": "-",
+        "condition": "mcp tools needed"
+      },
+      {
+        "task_type": "documentation",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "fast, free"
+      },
+      {
+        "task_type": "testing",
+        "primary": "codex-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "sandbox execution"
+      },
+      {
+        "task_type": "refactoring",
+        "primary": "claude-code",
+        "secondary": "codex-cli",
+        "tertiary": "gemini-cli",
+        "condition": "multi-file awareness"
+      },
+      {
+        "task_type": "translation",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "multilingual strength"
+      },
+      {
+        "task_type": "data_analysis",
+        "primary": "gemini-cli",
+        "secondary": "claude-code",
+        "tertiary": "-",
+        "condition": "1M context for large datasets"
+      },
+      {
+        "task_type": "cross_verify",
+        "primary": "ALL",
+        "secondary": "-",
+        "tertiary": "-",
+        "condition": "consensus required"
+      }
+    ],
+    "strategy": "adaptive_weighted",
+    "fallback_chain": [],
+    "max_retries": 3,
+    "timeout_ms": 60000,
+    "complexity_routing": [
+      {
+        "complexity": "trivial",
+        "score": "0-4",
+        "provider": "codex-cli",
+        "reason": "fast sandbox"
+      },
+      {
+        "complexity": "simple",
+        "score": "5-7",
+        "provider": "gemini-cli",
+        "reason": "free + fast"
+      },
+      {
+        "complexity": "medium",
+        "score": "8-12",
+        "provider": "claude-code",
+        "reason": "mcp tools"
+      },
+      {
+        "complexity": "complex",
+        "score": "13+",
+        "provider": "claude-code + gemini-cli",
+        "reason": "orchestrated"
+      }
+    ],
+    "routing_strategy": {
+      "default": "adaptive_weighted",
+      "fallback_chain": [
+        "primary -> secondary -> tertiary -> local_only"
+      ],
+      "max_retries": 3,
+      "timeout_ms": 60000
+    }
+  },
+  "cost": {
+    "budget": {
+      "daily_limit_usd": 5,
+      "weekly_limit_usd": 25,
+      "monthly_limit_usd": 80,
+      "alert_threshold": 0.8
+    },
+    "tiering": {},
+    "tracking": {},
+    "tiering_strategy": {
+      "free_first": true,
+      "order": [
+        "gemini-cli",
+        "claude-code",
+        "codex-cli"
+      ],
+      "claude_code_note": "included in Max subscription (no API cost)",
+      "codex_cli_note": "OpenAI API cost per token"
+    },
+    "cost_tracking": {
+      "log_file": "nexus/knowledge/cost-log.json",
+      "track_per_session": true,
+      "track_per_provider": true
+    }
+  },
+  "workflows": {
+    "registered": [
+      {
+        "id": "W001",
+        "name": "builder-reviewer",
+        "template": "templates/builder-reviewer.yaml",
+        "trigger": "\"review\", \"check code\""
+      },
+      {
+        "id": "W002",
+        "name": "planner-implementer",
+        "template": "templates/planner-implementer.yaml",
+        "trigger": "\"build\", \"create\", \"implement\""
+      },
+      {
+        "id": "W003",
+        "name": "cross-verification",
+        "template": "templates/cross-verification.yaml",
+        "trigger": "\"verify\", \"cross-check\""
+      },
+      {
+        "id": "W004",
+        "name": "parallel-worktree",
+        "template": "templates/parallel-worktree.yaml",
+        "trigger": "\"parallel\", \"concurrent\""
+      },
+      {
+        "id": "W005",
+        "name": "detection-fix-loop",
+        "template": "templates/detection-fix-loop.yaml",
+        "trigger": "\"auto-fix\", \"detect and fix\""
+      },
+      {
+        "id": "W006",
+        "name": "model-tiering",
+        "template": "templates/model-tiering.yaml",
+        "trigger": "auto (complexity-based)"
+      },
+      {
+        "id": "W007",
+        "name": "queen-led-swarm",
+        "template": "templates/queen-led-swarm.yaml",
+        "trigger": "\"swarm\", \"distribute\""
+      },
+      {
+        "id": "W008",
+        "name": "file-size-routing",
+        "template": "templates/file-size-routing.yaml",
+        "trigger": "auto (file-size-based)"
+      }
+    ],
+    "defaults": {}
+  },
+  "evolution": {
+    "weight_adjustment": {
+      "learning_rate": 0.05,
+      "decay_factor": 0.95,
+      "min_weight": 0.05,
+      "max_weight": 0.95,
+      "normalization": true,
+      "persistence": "nexus/evolution/evolution-state.json"
+    },
+    "pattern_learning": {
+      "min_observations": 5,
+      "confidence_threshold": 0.7,
+      "max_patterns": 1000,
+      "prune_below_confidence": 0.3,
+      "pattern_store": "nexus/knowledge/pattern-library.json"
+    },
+    "discovery": {
+      "auto_discover": true,
+      "discovery_interval_sessions": 5,
+      "sources": [
+        "github_trending",
+        "npm_registry",
+        "anthropic_docs",
+        "community"
+      ]
+    }
+  },
+  "self_evolution": {
+    "per_session": {},
+    "periodic": {},
+    "monthly": {
+      "deep_review": true,
+      "actions": [
+        "weight_trend_analysis",
+        "pattern_cleanup",
+        "cost_optimization",
+        "evolution_report"
+      ]
+    },
+    "per-session_(automatic)": {
+      "on_start": [
+        "load_state",
+        "health_check",
+        "restore_weights"
+      ],
+      "on_end": [
+        "adjust_weights",
+        "extract_patterns",
+        "log_evolution",
+        "save_state"
+      ]
+    },
+    "every_5_sessions": {
+      "auto_research": true,
+      "output": "nexus/self-evolution/research-findings/"
+    }
+  },
+  "integration": {
+    "atos": {},
+    "multi_ai": {},
+    "hooks": {
+      "session_start": "nexus-init",
+      "pre_route": "nexus-route",
+      "session_end": "nexus-learn"
+    },
+    "atos_bridge": {
+      "recommendation_engine": "atos/recommendation-engine.js",
+      "feedback_loop": "atos/feedback-loop.js",
+      "complexity_detector": "atos/complexity-detector.js",
+      "file_lock": "atos/file-lock.js"
+    },
+    "multi-ai_bridge": {
+      "external_router": "multi-ai-orchestration/external-router.js",
+      "consensus_engine": "multi-ai-orchestration/consensus-engine.js",
+      "gemini_bridge": "multi-ai-orchestration/gemini-bridge.js"
+    }
+  },
+  "metadata": {
+    "created": "2026-02-24",
+    "author": "NEXUS Auto-Config",
+    "schema_version": "1.0.0",
+    "parser": "nexus/core/config-parser.js",
+    "cache": "nexus/nexus.config.json"
+  },
+  "_cachedAt": 1771880155059,
+  "_architectMtime": 1771879997674.7212
+}

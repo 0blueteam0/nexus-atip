@@ -1,0 +1,38 @@
+# Model Tiering Workflow (W006)
+# Route by complexity score
+# Cases: 6, 374
+
+name: Model-Tiering
+version: 1.0.0
+pattern: complexity_routing
+
+steps:
+  - name: assess
+    provider: local
+    action: complexity_analysis
+    description: Assess task complexity (0-20 scale)
+
+  - name: route_trivial
+    provider: codex-cli
+    action: execute_direct
+    description: Trivial tasks go to Codex sandbox
+    condition: assess.score <= 4
+
+  - name: route_simple
+    provider: gemini-cli
+    action: execute_direct
+    description: Simple tasks go to Gemini (free + fast)
+    condition: assess.score >= 5 AND assess.score <= 7
+
+  - name: route_medium
+    provider: claude-code
+    action: execute_with_tools
+    description: Medium tasks go to Claude (MCP tools)
+    condition: assess.score >= 8 AND assess.score <= 12
+
+  - name: route_complex
+    provider: claude-code
+    action: orchestrated_execution
+    description: Complex tasks use multi-provider orchestration
+    condition: assess.score >= 13
+    collaborators: [gemini-cli, codex-cli]

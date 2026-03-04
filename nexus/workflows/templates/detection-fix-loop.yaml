@@ -1,0 +1,33 @@
+# Detection-Fix Loop Workflow (W005)
+# Autonomous detect-and-fix cycle
+# Case: 304
+
+name: Detection-Fix-Loop
+version: 1.0.0
+pattern: autonomous_loop
+
+steps:
+  - name: detect
+    provider: $secondary
+    action: scan_for_issues
+    description: Scan codebase for issues
+
+  - name: classify
+    provider: $primary
+    action: classify_issues
+    description: Classify and prioritize issues
+    input: $detect.output
+
+  - name: fix
+    provider: $primary
+    action: apply_fixes
+    description: Apply fixes for detected issues
+    input: $classify.output
+    loop: true
+    max_iterations: 5
+
+  - name: verify
+    provider: $tertiary
+    action: run_verification
+    description: Verify fixes in sandbox
+    input: $fix.output

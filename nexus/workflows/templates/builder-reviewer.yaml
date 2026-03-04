@@ -1,0 +1,32 @@
+# Builder-Reviewer Workflow (W001)
+# One provider builds, another reviews
+# Cases: 1, 306, 312
+
+name: Builder-Reviewer
+version: 1.0.0
+pattern: separation_of_concerns
+
+steps:
+  - name: build
+    provider: $primary
+    action: generate_code
+    description: Primary provider generates the code/solution
+
+  - name: review
+    provider: $secondary
+    action: review_output
+    description: Secondary provider reviews for bugs and improvements
+    input: $build.output
+
+  - name: revise
+    provider: $primary
+    action: apply_feedback
+    description: Primary applies review feedback
+    input: $review.output
+    condition: review.issues_found > 0
+
+  - name: verify
+    provider: $secondary
+    action: final_check
+    description: Final verification pass
+    input: $revise.output

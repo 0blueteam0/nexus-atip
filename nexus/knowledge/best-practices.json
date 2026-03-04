@@ -1,0 +1,39 @@
+{
+  "practices": [
+    {
+      "taskType": "large_file",
+      "practice": "Route files over 50KB to Gemini CLI (1M context window)",
+      "confidence": 0.9,
+      "source": "377-case-report",
+      "addedAt": 1740441600000
+    },
+    {
+      "taskType": "code_review",
+      "practice": "Use Builder-Reviewer pattern: one provider generates, another reviews",
+      "confidence": 0.85,
+      "source": "377-case-report",
+      "addedAt": 1740441600000
+    },
+    {
+      "taskType": "security_audit",
+      "practice": "Always use Claude Code for security tasks (MCP tool access required)",
+      "confidence": 0.95,
+      "source": "377-case-report",
+      "addedAt": 1740441600000
+    },
+    {
+      "taskType": "quick_fix",
+      "practice": "Route trivial fixes to Codex CLI in full-auto sandbox mode",
+      "confidence": 0.8,
+      "source": "377-case-report",
+      "addedAt": 1740441600000
+    },
+    {
+      "taskType": "cross_verify",
+      "practice": "Use Cross-Verification workflow for critical decisions requiring consensus",
+      "confidence": 0.85,
+      "source": "377-case-report",
+      "addedAt": 1740441600000
+    }
+  ]
+}

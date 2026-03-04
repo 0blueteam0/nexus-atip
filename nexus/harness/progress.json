@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "sessionId": "session-1772135278171",
+  "startedAt": "2026-02-26T19:47:58.171Z",
+  "lastActivity": "2026-02-26T19:47:58.184Z",
+  "activeTasks": [],
+  "completedTasks": [
+    {
+      "id": "test-1",
+      "description": "Test NEXUS harness",
+      "priority": "high",
+      "status": "completed",
+      "startedAt": "2026-02-26T19:47:58.174Z",
+      "completedAt": "2026-02-26T19:47:58.184Z",
+      "commits": [
+        "abc123"
+      ],
+      "notes": [
+        "All good"
+      ]
+    }
+  ],
+  "sessionCommits": [],
+  "totalCompleted": 1,
+  "history": []
+}

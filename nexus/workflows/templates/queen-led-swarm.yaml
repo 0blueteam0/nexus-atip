@@ -1,0 +1,41 @@
+# Queen-Led Swarm Workflow (W007)
+# Hierarchical swarm coordination
+# Case: 372
+
+name: Queen-Led-Swarm
+version: 1.0.0
+pattern: hierarchical_swarm
+
+steps:
+  - name: decompose
+    provider: claude-code
+    action: break_into_subtasks
+    description: Queen decomposes task into subtasks
+    role: queen
+
+  - name: assign
+    provider: claude-code
+    action: assign_subtasks
+    description: Queen assigns subtasks to workers
+    input: $decompose.output
+
+  - name: worker_execute
+    provider: auto
+    action: execute_subtask
+    description: Workers execute assigned subtasks
+    parallel: true
+    input: $assign.subtasks
+
+  - name: aggregate
+    provider: claude-code
+    action: collect_results
+    description: Queen collects and validates results
+    role: queen
+    input: $worker_execute.outputs
+
+  - name: synthesize
+    provider: claude-code
+    action: synthesize_final
+    description: Queen synthesizes final output
+    role: queen
+    input: $aggregate.output

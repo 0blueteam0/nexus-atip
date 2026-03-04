@@ -1,0 +1,30 @@
+# Cross-Verification Workflow (W003)
+# Multiple providers verify each other
+# Case: 304
+
+name: Cross-Verification
+version: 1.0.0
+pattern: consensus
+
+steps:
+  - name: answer_a
+    provider: claude-code
+    action: generate_answer
+    description: Claude generates answer
+
+  - name: answer_b
+    provider: gemini-cli
+    action: generate_answer
+    description: Gemini generates independent answer
+
+  - name: compare
+    provider: claude-code
+    action: compare_answers
+    description: Compare and synthesize both answers
+    input: [$answer_a.output, $answer_b.output]
+
+  - name: resolve
+    provider: claude-code
+    action: resolve_conflicts
+    description: Resolve any disagreements
+    condition: compare.conflicts > 0

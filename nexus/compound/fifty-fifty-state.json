@@ -1,0 +1,19 @@
+{
+  "feature": {
+    "count": 1,
+    "totalDuration": 0,
+    "history": [
+      {
+        "timestamp": "2026-02-26T19:41:13.548Z",
+        "description": "Review authentication module for security issues",
+        "duration": 0
+      }
+    ]
+  },
+  "system": {
+    "count": 0,
+    "totalDuration": 0,
+    "history": []
+  },
+  "startedAt": "2026-02-26T19:41:13.544Z"
+}

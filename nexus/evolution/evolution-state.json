@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "sessions": 0,
+  "weights": {},
+  "patterns": [],
+  "lastUpdated": null,
+  "lastSessionId": null,
+  "discoveries": [],
+  "metrics": {
+    "totalRoutings": 0,
+    "totalSuccesses": 0,
+    "totalFailures": 0,
+    "weightAdjustments": 0
+  }
+}

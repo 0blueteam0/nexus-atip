@@ -1,0 +1,33 @@
+# Parallel Worktree Workflow (W004)
+# Git worktree parallel execution
+# Cases: 9, 307, 309
+
+name: Parallel-Worktree
+version: 1.0.0
+pattern: parallel_isolation
+
+steps:
+  - name: create_worktrees
+    provider: claude-code
+    action: git_worktree_add
+    description: Create isolated git worktrees
+    parallel: true
+
+  - name: task_a
+    provider: $primary
+    action: execute_in_worktree
+    description: Execute task A in worktree 1
+    parallel_group: work
+
+  - name: task_b
+    provider: $secondary
+    action: execute_in_worktree
+    description: Execute task B in worktree 2
+    parallel_group: work
+
+  - name: merge
+    provider: claude-code
+    action: merge_worktrees
+    description: Merge results back to main
+    input: [$task_a.output, $task_b.output]
+    wait_for: work

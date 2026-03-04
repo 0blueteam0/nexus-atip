@@ -1,0 +1,32 @@
+# File Size Routing Workflow (W008)
+# Route by file size to optimal context window
+# Case: 368
+
+name: File-Size-Routing
+version: 1.0.0
+pattern: context_optimization
+
+steps:
+  - name: measure
+    provider: local
+    action: measure_file_sizes
+    description: Measure total input size in tokens
+
+  - name: route_small
+    provider: claude-code
+    action: process_files
+    description: Small files (<100K tokens) to Claude
+    condition: measure.total_tokens < 100000
+
+  - name: route_medium
+    provider: gemini-cli
+    action: process_files
+    description: Medium files (100K-500K) to Gemini 1M context
+    condition: measure.total_tokens >= 100000 AND measure.total_tokens < 500000
+
+  - name: route_large
+    provider: gemini-cli
+    action: chunked_process
+    description: Large files (500K+) chunked processing in Gemini
+    condition: measure.total_tokens >= 500000
+    strategy: sliding_window

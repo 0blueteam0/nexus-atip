@@ -1,0 +1,61 @@
+{
+  "version": "1.0.0",
+  "workflows": [
+    {
+      "id": "W001",
+      "name": "Builder-Reviewer",
+      "template": "builder-reviewer.yaml",
+      "description": "One provider builds, another reviews. Based on Cases 1, 306, 312.",
+      "triggers": ["review", "check code", "code review", "리뷰"]
+    },
+    {
+      "id": "W002",
+      "name": "Planner-Implementer",
+      "template": "planner-implementer.yaml",
+      "description": "Separate planning and implementation. Based on Cases 302, 305.",
+      "triggers": ["build", "create", "implement", "만들어", "구현"]
+    },
+    {
+      "id": "W003",
+      "name": "Cross-Verification",
+      "template": "cross-verification.yaml",
+      "description": "Multiple providers verify each other. Based on Case 304.",
+      "triggers": ["verify", "cross-check", "검증", "교차 검증"]
+    },
+    {
+      "id": "W004",
+      "name": "Parallel-Worktree",
+      "template": "parallel-worktree.yaml",
+      "description": "Git worktree parallel execution. Based on Cases 9, 307, 309.",
+      "triggers": ["parallel", "concurrent", "병렬"]
+    },
+    {
+      "id": "W005",
+      "name": "Detection-Fix-Loop",
+      "template": "detection-fix-loop.yaml",
+      "description": "Autonomous detect-and-fix cycle. Based on Case 304.",
+      "triggers": ["auto-fix", "detect and fix", "자동 수정"]
+    },
+    {
+      "id": "W006",
+      "name": "Model-Tiering",
+      "template": "model-tiering.yaml",
+      "description": "Route by complexity score. Based on Cases 6, 374.",
+      "triggers": ["auto"]
+    },
+    {
+      "id": "W007",
+      "name": "Queen-Led-Swarm",
+      "template": "queen-led-swarm.yaml",
+      "description": "Hierarchical swarm coordination. Based on Case 372.",
+      "triggers": ["swarm", "distribute", "스웜"]
+    },
+    {
+      "id": "W008",
+      "name": "File-Size-Routing",
+      "template": "file-size-routing.yaml",
+      "description": "Route by file size to optimal context. Based on Case 368.",
+      "triggers": ["auto"]
+    }
+  ]
+}
