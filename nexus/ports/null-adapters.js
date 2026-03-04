@@ -90,6 +90,74 @@ class NullEvolution {
   getState() { return { sessions: 0, patterns: [], weights: {} }; }
 }
 
+// === v3.0 Null Adapters (6) ===
+
+class NullInfra {
+  async getServiceStatus(serviceName) {
+    return { name: serviceName, status: 'unknown', reason: 'No InfraPort adapter' };
+  }
+  async startService(serviceName) {
+    return { success: false, reason: 'No InfraPort adapter' };
+  }
+  async stopService(serviceName) {
+    return { success: false, reason: 'No InfraPort adapter' };
+  }
+  async listServices() { return []; }
+}
+
+class NullLocalLLM {
+  async generate(prompt, options) {
+    return { text: '', model: 'none', reason: 'No LocalLLMPort adapter' };
+  }
+  async listModels() { return []; }
+  async isAvailable() { return false; }
+  async getModelInfo(modelName) { return null; }
+}
+
+class NullAgentFramework {
+  async executeGraph(graphDef, input) {
+    return { success: false, output: null, reason: 'No AgentFrameworkPort adapter' };
+  }
+  listGraphs() { return []; }
+  async getFrameworkStatus() {
+    return { available: false, frameworks: [], reason: 'No AgentFrameworkPort adapter' };
+  }
+}
+
+class NullWorkflow {
+  async triggerWorkflow(workflowId, data) {
+    return { success: false, reason: 'No WorkflowPort adapter' };
+  }
+  async listWorkflows() { return []; }
+  async getWorkflowStatus(executionId) {
+    return { status: 'unknown', reason: 'No WorkflowPort adapter' };
+  }
+}
+
+class NullRAG {
+  async index(documents, options) {
+    return { indexed: 0, reason: 'No RAGPort adapter' };
+  }
+  async search(query, options) { return []; }
+  async getStats() {
+    return { collections: 0, documents: 0, reason: 'No RAGPort adapter' };
+  }
+  async deleteCollection(collectionName) {
+    return { success: false, reason: 'No RAGPort adapter' };
+  }
+}
+
+class NullObservability {
+  async trackCost(entry) {}
+  async trackQuality(entry) {}
+  async getDashboard(timeRange) {
+    return { costs: [], quality: [], reason: 'No ObservabilityPort adapter' };
+  }
+  async getCostSummary(timeRange) {
+    return { total: 0, byProvider: {}, reason: 'No ObservabilityPort adapter' };
+  }
+}
+
 /**
  * Factory: create null adapter for a given port name
  */
@@ -103,11 +171,19 @@ function createNullAdapter(portName) {
     case 'ContextEnginePort': return new NullContextEngine();
     case 'PolicyPort': return new NullPolicy();
     case 'EvolutionPort': return new NullEvolution();
+    // v3.0 ports
+    case 'InfraPort': return new NullInfra();
+    case 'LocalLLMPort': return new NullLocalLLM();
+    case 'AgentFrameworkPort': return new NullAgentFramework();
+    case 'WorkflowPort': return new NullWorkflow();
+    case 'RAGPort': return new NullRAG();
+    case 'ObservabilityPort': return new NullObservability();
     default: return null;
   }
 }
 
 module.exports = {
+  // v2.0
   NullAgentLoop,
   NullModelRouter,
   NullToolExecution,
@@ -116,5 +192,12 @@ module.exports = {
   NullContextEngine,
   NullPolicy,
   NullEvolution,
+  // v3.0
+  NullInfra,
+  NullLocalLLM,
+  NullAgentFramework,
+  NullWorkflow,
+  NullRAG,
+  NullObservability,
   createNullAdapter
 };

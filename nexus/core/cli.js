@@ -187,6 +187,55 @@ async function main() {
       break;
     }
 
+    case 'infra': {
+      const container = getContainer();
+      const infra = container.resolve('InfraPort');
+      console.log('========================================');
+      console.log('  NEXUS Infrastructure Status (L1)');
+      console.log('========================================');
+      try {
+        const services = await infra.listServices();
+        services.forEach(s => {
+          const icon = s.status === 'running' ? '+' : s.status === 'stopped' ? '-' : '?';
+          console.log(`  [${icon}] ${s.name} (${s.type}) [${s.layer}]: ${s.status}`);
+        });
+      } catch (e) {
+        console.log('  [*] InfraPort using null adapter (services not checked)');
+      }
+      console.log('========================================');
+      break;
+    }
+
+    case 'ecosystem': {
+      const container = getContainer();
+      console.log('========================================');
+      console.log('  NEXUS v3.0 - 7-Layer Ecosystem');
+      console.log('========================================');
+      const portStatus = container.getStatus();
+      const layers = [
+        { id: 'L1', name: 'Infrastructure', ports: ['InfraPort'] },
+        { id: 'L2', name: 'AI Models/Providers', ports: ['ModelRouterPort', 'LocalLLMPort'] },
+        { id: 'L3', name: 'Agent Frameworks', ports: ['AgentFrameworkPort', 'AgentLoopPort'] },
+        { id: 'L4', name: 'Orchestration/Workflow', ports: ['WorkflowPort'] },
+        { id: 'L5', name: 'Data/RAG', ports: ['RAGPort', 'MemoryPort'] },
+        { id: 'L6', name: 'Observability', ports: ['ObservabilityPort', 'EvolutionPort'] },
+        { id: 'L7', name: 'Protocols', ports: ['ToolExecutionPort', 'ContextEnginePort', 'PolicyPort', 'SkillRegistryPort'] }
+      ];
+      layers.forEach(layer => {
+        console.log(`\n  [${layer.id}] ${layer.name}`);
+        layer.ports.forEach(p => {
+          const s = portStatus[p];
+          if (s) {
+            const icon = s.registered ? '+' : '*';
+            const tag = s.nullFallback ? 'null' : s.type;
+            console.log(`    [${icon}] ${p}: ${tag}`);
+          }
+        });
+      });
+      console.log('\n========================================');
+      break;
+    }
+
     case 'ports': {
       console.log('========================================');
       console.log('  NEXUS Port Validation');
@@ -228,9 +277,11 @@ Commands:
   knowledge         Show knowledge base stats
   research          Show auto-research status
   check             Run improvement checklist
-  ports             Validate port interfaces (v2.0)
+  ports             Validate port interfaces
+  infra             Infrastructure services status (L1)
+  ecosystem         7-Layer ecosystem overview
 
-Version: 2.0.0
+Version: 3.0.0
 `);
   }
 }

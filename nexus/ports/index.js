@@ -104,10 +104,77 @@ const EvolutionPort = {
   }
 };
 
+// === v3.0 New Ports (6) ===
+
+const InfraPort = {
+  name: 'InfraPort',
+  description: 'Infrastructure management: Docker, processes, services (L1)',
+  methods: {
+    getServiceStatus: { args: ['serviceName'], returns: 'Promise<ServiceStatus>' },
+    startService: { args: ['serviceName'], returns: 'Promise<Result>' },
+    stopService: { args: ['serviceName'], returns: 'Promise<Result>' },
+    listServices: { args: [], returns: 'Promise<Array<ServiceInfo>>' }
+  }
+};
+
+const LocalLLMPort = {
+  name: 'LocalLLMPort',
+  description: 'Local LLM inference via Ollama CPU (L2)',
+  methods: {
+    generate: { args: ['prompt', 'options'], returns: 'Promise<GenerateResult>' },
+    listModels: { args: [], returns: 'Promise<Array<ModelInfo>>' },
+    isAvailable: { args: [], returns: 'Promise<boolean>' },
+    getModelInfo: { args: ['modelName'], returns: 'Promise<ModelInfo>' }
+  }
+};
+
+const AgentFrameworkPort = {
+  name: 'AgentFrameworkPort',
+  description: 'Agent framework bridge: LangGraph/CrewAI (L3)',
+  methods: {
+    executeGraph: { args: ['graphDef', 'input'], returns: 'Promise<GraphResult>' },
+    listGraphs: { args: [], returns: 'Array<GraphInfo>' },
+    getFrameworkStatus: { args: [], returns: 'Promise<FrameworkStatus>' }
+  }
+};
+
+const WorkflowPort = {
+  name: 'WorkflowPort',
+  description: 'External workflow orchestration: n8n, Dify (L4)',
+  methods: {
+    triggerWorkflow: { args: ['workflowId', 'data'], returns: 'Promise<WorkflowResult>' },
+    listWorkflows: { args: [], returns: 'Promise<Array<WorkflowInfo>>' },
+    getWorkflowStatus: { args: ['executionId'], returns: 'Promise<WorkflowStatus>' }
+  }
+};
+
+const RAGPort = {
+  name: 'RAGPort',
+  description: 'RAG pipeline: embedding, indexing, retrieval (L5)',
+  methods: {
+    index: { args: ['documents', 'options'], returns: 'Promise<IndexResult>' },
+    search: { args: ['query', 'options'], returns: 'Promise<Array<SearchResult>>' },
+    getStats: { args: [], returns: 'Promise<RAGStats>' },
+    deleteCollection: { args: ['collectionName'], returns: 'Promise<Result>' }
+  }
+};
+
+const ObservabilityPort = {
+  name: 'ObservabilityPort',
+  description: 'Observability: cost tracking, quality scoring, dashboards (L6)',
+  methods: {
+    trackCost: { args: ['entry'], returns: 'Promise<void>' },
+    trackQuality: { args: ['entry'], returns: 'Promise<void>' },
+    getDashboard: { args: ['timeRange'], returns: 'Promise<DashboardData>' },
+    getCostSummary: { args: ['timeRange'], returns: 'Promise<CostSummary>' }
+  }
+};
+
 /**
  * All port definitions indexed by name
  */
 const PORTS = {
+  // v2.0 ports (8)
   AgentLoopPort,
   ModelRouterPort,
   ToolExecutionPort,
@@ -115,7 +182,14 @@ const PORTS = {
   SkillRegistryPort,
   ContextEnginePort,
   PolicyPort,
-  EvolutionPort
+  EvolutionPort,
+  // v3.0 ports (6)
+  InfraPort,
+  LocalLLMPort,
+  AgentFrameworkPort,
+  WorkflowPort,
+  RAGPort,
+  ObservabilityPort
 };
 
 /**
@@ -165,7 +239,7 @@ module.exports = {
   getPort,
   getPortNames,
   checkPort,
-  // Individual exports for convenience
+  // v2.0 ports
   AgentLoopPort,
   ModelRouterPort,
   ToolExecutionPort,
@@ -173,5 +247,12 @@ module.exports = {
   SkillRegistryPort,
   ContextEnginePort,
   PolicyPort,
-  EvolutionPort
+  EvolutionPort,
+  // v3.0 ports
+  InfraPort,
+  LocalLLMPort,
+  AgentFrameworkPort,
+  WorkflowPort,
+  RAGPort,
+  ObservabilityPort
 };

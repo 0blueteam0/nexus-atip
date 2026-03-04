@@ -208,6 +208,53 @@ function bootstrapDefaults(container) {
   } catch (e) {
     // Evolution engine not yet available - null adapter will be used
   }
+
+  // === v3.0 Port Bootstrapping ===
+
+  // InfraPort -> InfraAdapter (v3.0 Phase 1)
+  try {
+    const { InfraAdapter } = require('../infra/infra-adapter');
+    container.register('InfraPort', new InfraAdapter());
+  } catch (e) {
+    // InfraAdapter not available - null adapter
+  }
+
+  // LocalLLMPort -> OllamaAdapter (v3.0 Phase 2)
+  try {
+    const { OllamaAdapter } = require('../adapters/ollama-adapter');
+    container.register('LocalLLMPort', new OllamaAdapter());
+  } catch (e) {
+    // Ollama not available - null adapter
+  }
+
+  // AgentFrameworkPort (v3.0 Phase 3) - null until implemented
+  // WorkflowPort (v3.0 Phase 4) - null until implemented
+  // RAGPort (v3.0 Phase 5) - null until implemented
+  // ObservabilityPort (v3.0 Phase 6) - null until implemented
+
+  // WorkflowPort -> N8nAdapter (v3.0 Phase 4)
+  try {
+    const { WorkflowAdapter } = require('../workflow/workflow-adapter');
+    container.register('WorkflowPort', new WorkflowAdapter());
+  } catch (e) {
+    // n8n not available - null adapter
+  }
+
+  // RAGPort -> RAGAdapter (v3.0 Phase 5)
+  try {
+    const { RAGAdapter } = require('../rag/rag-adapter');
+    container.register('RAGPort', new RAGAdapter());
+  } catch (e) {
+    // RAG not available - null adapter
+  }
+
+  // ObservabilityPort -> ObservabilityAdapter (v3.0 Phase 6)
+  try {
+    const { ObservabilityAdapter } = require('../observability/observability-adapter');
+    container.register('ObservabilityPort', new ObservabilityAdapter());
+  } catch (e) {
+    // Observability not available - null adapter
+  }
 }
 
 // Singleton container
