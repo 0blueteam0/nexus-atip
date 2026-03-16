@@ -109,8 +109,7 @@ credentials/
 *.7z
 *.vhdx
 *.exe
-tools/podman/
-tools/nodejs/node.exe
+tools/
 
 # Media files (optional - remove if needed)
 *.mp4
