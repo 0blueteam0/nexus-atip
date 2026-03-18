@@ -11,11 +11,27 @@
 
 const { analyze } = require('./complexity-detector');
 
+// Feature flags for active hook behavior
+const HOOK_CONTEXT_HINTS = process.env.HOOK_CONTEXT_HINTS === '1';
+const HOOK_BLOCK_DESTRUCTIVE = process.env.HOOK_BLOCK_DESTRUCTIVE !== '0'; // ON by default
+const HINT_CONFIDENCE_THRESHOLD = 0.85;
+
+// Destructive command patterns to block
+const DESTRUCTIVE_PATTERNS = [
+  /rm\s+(-rf?|--force)\s+[\/~]/i,
+  /git\s+(reset\s+--hard|push\s+--force|clean\s+-f)/i,
+  /del\s+\/[sq]/i,
+  /format\s+[a-z]:/i,
+  /DROP\s+(TABLE|DATABASE)/i,
+  /TRUNCATE\s+TABLE/i
+];
+
 class EventCollector {
-  constructor(stateMachine, broadcaster, db) {
+  constructor(stateMachine, broadcaster, db, router) {
     this.stateMachine = stateMachine;
     this.broadcaster = broadcaster;
     this.db = db;
+    this._router = router || null;
     this.sessionId = null;
     this.verbose = process.env.VERBOSE === '1';
   }
@@ -60,6 +76,57 @@ class EventCollector {
         res.json({ ok: true });
       } catch (err) {
         res.status(400).json({ ok: false, error: err.message });
+      }
+    });
+
+    // Claude Code HTTP hook endpoint (smart active response)
+    app.post('/hook', (req, res) => {
+      try {
+        const data = req.body;
+        if (!data || !data.hook_event_name) {
+          res.json({ ok: true });
+          return;
+        }
+
+        const event = data.hook_event_name;
+        const sessionId = data.session_id;
+
+        // === ACTIVE BEHAVIOR: PreToolUse ===
+        if (event === 'PreToolUse') {
+          const response = this._handlePreToolUseActive(data);
+          res.json(response);
+        } else {
+          res.json({ ok: true });
+        }
+
+        // Map to Observer internal events
+        const mapped = this._mapClaudeHook(event, data);
+        if (mapped) {
+          this.stateMachine.processEvent(mapped);
+        }
+
+        // Record raw event for learning
+        this.db.recordEvent(`hook:${event}`, 'claude-hook', {
+          session_id: sessionId,
+          tool_name: data.tool_name,
+          model: data.model,
+          _pid: data._pid
+        });
+
+        // Broadcast to WS clients
+        this.broadcaster.broadcast('hook_event', {
+          type: event,
+          session_id: sessionId,
+          tool_name: data.tool_name,
+          timestamp: data._timestamp || Date.now()
+        });
+
+        if (this.verbose) {
+          console.log(`[Hook] ${event} session=${(sessionId || '').slice(0, 8)} tool=${data.tool_name || '-'}`);
+        }
+      } catch (err) {
+        res.json({ ok: true }); // never block on error
+        if (this.verbose) console.error('[Hook] Error:', err.message);
       }
     });
 
@@ -194,6 +261,151 @@ class EventCollector {
       this.broadcaster.broadcast('session_end', { sessionId: this.sessionId });
       console.log(`[Collector] Session ended: ${this.sessionId}`);
       this.sessionId = null;
+    }
+  }
+
+  /**
+   * Smart active response for PreToolUse hooks.
+   * Feature-flagged: security gate + context hints.
+   */
+  _handlePreToolUseActive(data) {
+    const toolName = data.tool_name;
+    const toolInput = data.tool_input || {};
+    const response = {};
+
+    // 1. Security Gate: block destructive commands (ON by default)
+    if (HOOK_BLOCK_DESTRUCTIVE && toolName === 'Bash' && toolInput.command) {
+      for (const pattern of DESTRUCTIVE_PATTERNS) {
+        if (pattern.test(toolInput.command)) {
+          this.db.recordEvent('hook:blocked_destructive', 'security-gate', {
+            tool: toolName,
+            command: toolInput.command.slice(0, 200),
+            pattern: pattern.source
+          });
+          return {
+            hookSpecificOutput: {
+              hookEventName: 'PreToolUse',
+              permissionDecision: 'deny',
+              permissionDecisionReason: `[Observer Security Gate] Destructive command blocked: ${toolInput.command.slice(0, 80)}`
+            }
+          };
+        }
+      }
+    }
+
+    // 2. Context Hints: provide routing hints for high-confidence intents
+    if (HOOK_CONTEXT_HINTS && this._router) {
+      try {
+        const intent = this._inferToolIntent(toolName);
+        if (intent) {
+          const tools = this.db.getBestToolsForIntent ? this.db.getBestToolsForIntent(intent, 3) : [];
+          const bestTool = tools[0];
+
+          if (bestTool && bestTool.weight >= HINT_CONFIDENCE_THRESHOLD && bestTool.tool_name !== toolName) {
+            response.hookSpecificOutput = {
+              hookEventName: 'PreToolUse',
+              additionalContext: `[Observer Hint] For ${intent}: ${bestTool.tool_name} has ${Math.round(bestTool.weight * 100)}% success rate vs current tool.`
+            };
+          }
+        }
+      } catch { /* hints are best-effort */ }
+    }
+
+    return Object.keys(response).length > 0 ? response : { ok: true };
+  }
+
+  /**
+   * Infer intent from tool name for context hints
+   */
+  _inferToolIntent(toolName) {
+    const map = {
+      'Read': 'file_operation', 'Write': 'file_operation', 'Edit': 'file_operation',
+      'Glob': 'code_search', 'Grep': 'code_search',
+      'Bash': 'testing', 'Agent': 'architecture',
+      'WebSearch': 'web_search', 'WebFetch': 'web_scrape',
+    };
+    if (toolName && toolName.startsWith('mcp__')) {
+      if (toolName.includes('desktop-commander')) return 'file_operation';
+      if (toolName.includes('serena')) return 'code_search';
+      if (toolName.includes('firecrawl') || toolName.includes('one-search')) return 'web_search';
+      if (toolName.includes('github') || toolName.includes('git-mcp')) return 'git_operation';
+      if (toolName.includes('sequential-thinking')) return 'architecture';
+    }
+    return map[toolName] || null;
+  }
+
+  _mapClaudeHook(event, data) {
+    const sessionId = data.session_id;
+    switch (event) {
+      case 'SessionStart':
+        this._handleSessionStart({ sessionId });
+        return { type: 'user_input', agentId: 'main' };
+
+      case 'SessionEnd':
+        this._handleSessionEnd({ sessionId });
+        return { type: 'session_end', agentId: 'main' };
+
+      case 'PreToolUse':
+        return {
+          type: 'tool_use',
+          agentId: data.agent_id || 'main',
+          toolName: data.tool_name,
+          command: data.tool_input?.command,
+          filePath: data.tool_input?.file_path || data.tool_input?.path
+        };
+
+      case 'PostToolUse':
+        // Record tool usage for learning
+        if (data.tool_name) {
+          this.db.recordToolUsage(
+            sessionId, data.tool_name, null,
+            data.tool_response?.duration_ms || null,
+            !data.tool_response?.is_error
+          );
+        }
+        return {
+          type: 'tool_result',
+          agentId: data.agent_id || 'main',
+          error: data.tool_response?.is_error || false
+        };
+
+      case 'PostToolUseFailure':
+        return {
+          type: 'tool_result',
+          agentId: data.agent_id || 'main',
+          error: true
+        };
+
+      case 'UserPromptSubmit':
+        // Feed prompt to router for intent analysis
+        if (data.prompt) {
+          this.db.recordEvent('user_prompt', 'claude-hook', {
+            prompt_length: data.prompt.length,
+            session_id: data.session_id
+          });
+        }
+        return { type: 'user_input', agentId: 'main' };
+
+      case 'SubagentStart':
+        return {
+          type: 'agent_spawn',
+          agentId: 'main',
+          subAgentId: data.agent_id,
+          subAgentType: data.agent_type
+        };
+
+      case 'SubagentStop':
+        return {
+          type: 'agent_complete',
+          agentId: 'main',
+          subAgentId: data.agent_id
+        };
+
+      case 'Stop':
+        return { type: 'session_end', agentId: 'main' };
+
+      default:
+        return null;
     }
   }
 

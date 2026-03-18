@@ -66,6 +66,15 @@ const INTENT_PATTERNS = [
   // Install/Setup
   { pattern: /\b(install|setup|configure)\b|설치|설정|구성|환경/i,
     intent: 'setup', tier: 1, agents: [] },
+  // Knowledge/RAG
+  { pattern: /\b(knowledge|RAG|retrieve|memory|obsidian|vault)\b|지식|메모리|검색|볼트|옵시디언/i,
+    intent: 'knowledge', tier: 2, agents: ['research-agent'] },
+  // AI Orchestration
+  { pattern: /\b(orchestrat|multi.?model|council|consensus|deliberat)\b|오케스트|합의|심의|다중.*모델/i,
+    intent: 'ai_orchestration', tier: 3, agents: ['research-agent', 'review-agent'] },
+  // Evolution
+  { pattern: /\b(evolv|upgrade|improv|optimiz)\b|진화|업그레이드|개선|최적화/i,
+    intent: 'evolution', tier: 3, agents: ['code-agent', 'review-agent'] },
 ];
 
 // Default tool recommendations per intent
@@ -74,17 +83,20 @@ const DEFAULT_TOOLS = {
   code_search: ['desktop-commander', 'serena', 'grep'],
   git_operation: ['git-mcp', 'github'],
   web_scrape: ['firecrawl', 'one-search', 'crawl4ai-lite'],
-  web_search: ['websearch', 'one-search'],
+  web_search: ['websearch', 'one-search', 'deep-research-mcp'],
   research: ['deep-research-mcp', 'paper-search-mcp', 'context7'],
-  architecture: ['sequential-thinking', 'serena'],
-  testing: ['sequential-thinking'],
-  security: ['sequential-thinking', 'serena'],
-  database: ['sqlite-mcp', 'supabase'],
+  architecture: ['sequential-thinking', 'serena', 'claude-code-mcp'],
+  testing: ['sequential-thinking', 'playwright'],
+  security: ['sequential-thinking', 'serena', 'semgrep', 'gitleaks', 'osv-scanner'],
+  database: ['sqlite-mcp', 'supabase', 'duckdb'],
   image_processing: ['image-recognition', 'paddleocr-mcp', 'ocr-mcp'],
   document: ['marker-mcp', 'ocr-mcp'],
   visualization: ['antv-chart'],
   deployment: ['n8n', 'github'],
-  design: ['playwright'],
+  design: ['playwright', 'figma'],
+  knowledge: ['obsidian-mcp', 'memory', 'kiro-memory', 'chromadb'],
+  ai_orchestration: ['codex', 'llm-council', 'multi-ai-orchestration', 'pal'],
+  evolution: ['claude-code-mcp', 'skill-factory', 'evolution-agent'],
 };
 
 class AutonomousRouter {
@@ -144,10 +156,12 @@ class AutonomousRouter {
   /**
    * Record tool outcome and update Bayesian weights
    */
+  /**
+   * Track tool usage for chain pattern detection only.
+   * Weight updates are handled by SelfLearningEngine.learn().
+   * Tool usage logging is handled by EventCollector /tool endpoint.
+   */
   recordOutcome(toolName, intent, success, durationMs) {
-    db.updateRoutingWeight(toolName, intent, success);
-    db.recordToolUsage(null, toolName, null, durationMs, success);
-
     // Track tool chain for pattern detection
     this.recentToolChain.push({ tool: toolName, intent, success, ts: Date.now() });
     if (this.recentToolChain.length > this.maxChainLength) this.recentToolChain.shift();

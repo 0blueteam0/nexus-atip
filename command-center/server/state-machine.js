@@ -61,6 +61,7 @@ const BASH_STATE_PATTERNS = [
 class AgentStateMachine {
   constructor() {
     this.agents = new Map(); // agentId -> { state, tool, file, lastChange }
+    this.lastToolEvents = new Map(); // agentId -> last tool_use event (for learning feedback)
     this.listeners = [];
   }
 
@@ -82,6 +83,8 @@ class AgentStateMachine {
         tool = event.toolName;
         file = event.filePath || current.file;
         newState = this._resolveToolState(event.toolName, event.command);
+        // Store full event for learning feedback (getLastTool)
+        this.lastToolEvents.set(agentId, { ...event });
         break;
 
       case 'tool_result':
@@ -107,6 +110,7 @@ class AgentStateMachine {
         newState = 'idle';
         tool = null;
         file = null;
+        this.lastToolEvents.delete(agentId);
         break;
 
       case 'agent_spawn':
@@ -128,6 +132,7 @@ class AgentStateMachine {
         const subAgent = event.subAgentId;
         if (subAgent && this.agents.has(subAgent)) {
           this.agents.get(subAgent).state = 'idle';
+          this.lastToolEvents.delete(subAgent);
           db.upsertAgentState(subAgent, 'idle', null, null);
           this._emit('state_change', { agentId: subAgent, state: 'idle' });
         }
@@ -200,6 +205,21 @@ class AgentStateMachine {
   }
 
   /**
+   * Get last tool_use event for an agent (used by learning feedback loop)
+   */
+  getLastTool(agentId) {
+    return this.lastToolEvents.get(agentId) || null;
+  }
+
+  /**
+   * Attach inferred intent to the stored last tool event
+   */
+  setLastToolIntent(agentId, intent) {
+    const evt = this.lastToolEvents.get(agentId);
+    if (evt) evt._inferredIntent = intent;
+  }
+
+  /**
    * Get current state of all agents
    */
   getAll() {
@@ -226,6 +246,7 @@ class AgentStateMachine {
       if (agent.state !== 'idle' && (now - agent.lastChange) > timeoutMs) {
         agent.state = 'idle';
         agent.tool = null;
+        this.lastToolEvents.delete(id);
         db.upsertAgentState(id, 'idle', null, agent.file);
         this._emit('state_change', { agentId: id, state: 'idle', reason: 'timeout' });
       }

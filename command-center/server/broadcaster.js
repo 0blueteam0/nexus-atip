@@ -11,9 +11,15 @@ class Broadcaster {
   constructor() {
     this.wss = null;
     this.clients = new Set();
+    this.clientScopes = new WeakMap(); // ws -> scope ('read'|'write'|'anonymous')
     this.messageQueue = []; // buffer when no clients connected
     this.maxQueueSize = 100;
     this.verbose = process.env.VERBOSE === '1';
+    this.auth = null; // set via setAuth()
+  }
+
+  setAuth(auth) {
+    this.auth = auth;
   }
 
   /**
@@ -23,9 +29,19 @@ class Broadcaster {
     this.wss = new WebSocket.Server({ server, path: '/ws' });
 
     this.wss.on('connection', (ws, req) => {
+      // Validate token if auth is configured
+      let scope = 'anonymous';
+      if (this.auth) {
+        scope = this.auth.validateWsToken(req);
+        if (scope === null) {
+          ws.close(4001, 'invalid token');
+          return;
+        }
+      }
       this.clients.add(ws);
+      this.clientScopes.set(ws, scope);
       const clientIp = req.socket.remoteAddress;
-      console.log(`[WS] Client connected (${this.clients.size} total) from ${clientIp}`);
+      console.log(`[WS] Client connected (${this.clients.size} total) from ${clientIp} scope=${scope}`);
 
       // Send queued messages to new client
       for (const msg of this.messageQueue) {

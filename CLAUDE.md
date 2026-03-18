@@ -17,7 +17,7 @@ chcp 65001 >nul 2>&1
 ## [ENV] Portable Paths
 - Windows: K:\PortableApps\genai
 - Node.js: K:\PortableApps\tools\nodejs\node.exe
-- Python: K:\PortableApps\tools\python\python.exe
+- Python: K:\PortableApps\tools\python-portable\python.exe
 
 ## [TOOL] Tool Priority
 | P | Tool | Use |
@@ -49,6 +49,25 @@ chcp 65001 >nul 2>&1
 - Discover: `nexus_discover(query="keyword")`
 - Route: `nexus_smart_route(task="description")`
 
+## [WORKFLOW] Always-On Protocol (see .claude/rules/workflow-protocol.md)
+- EVERY task: POST /route first -> get tool/agent recommendations
+- EVERY plan: include Execution Map (step/agent/tool/validation)
+- EVERY multi-step: track via Observer /control/command or /decompose/plan
+- EVERY completion: POST /obsidian/push + sync
+
+## [3LLM] Triple-LLM Collaboration (strengths, NOT rigid roles)
+| LLM | Call | Known Strengths (but not limits) |
+|-----|------|----------------------------------|
+| Claude Opus 4.6 | Direct | Implementation, tools, long context |
+| Codex GPT-5.3 | mcp__codex__codex | Code review, bug detection, architecture |
+| Gemini 3 Flash | mcp__pal__clink(gemini) | Research, planning, multi-source analysis |
+
+Any LLM can contribute to ANY area. Best argument wins, not role assignment.
+- **2-LLM**: routine tasks. **3-LLM**: complex/ambiguous. **4-LLM (Council)**: critical policy.
+
 ## [SKILL] Skills
 - skill-creator: `.claude/skills/skill-creator/` (Anthropic official)
+- evolution-package: `.claude/skills/evolution-package/` (진화 패키지)
+- observer-ops: `.claude/skills/observer-ops/` (Observer 운영)
+- evolution-governor: `.claude/skills/evolution-governor/` (진화 안전)
 - Auto-generated: `.claude/skills/auto/` (Skill Factory)

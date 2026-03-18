@@ -15,11 +15,12 @@ const path = require('path');
 const os = require('os');
 
 class TranscriptWatcher {
-  constructor(stateMachine, broadcaster, db, router) {
+  constructor(stateMachine, broadcaster, db, router, learner) {
     this.stateMachine = stateMachine;
     this.broadcaster = broadcaster;
     this.db = db;
     this.router = router; // AutonomousRouter for F architecture
+    this.learner = learner; // SelfLearningEngine for weight updates
     this.watchers = [];
     this.fileOffsets = new Map(); // path -> bytes read
     this.activeAgentFiles = new Map(); // agentId -> filePath (multi-agent tracking)
@@ -136,28 +137,37 @@ class TranscriptWatcher {
     const event = this._mapToEvent(entry);
     if (!event) return;
 
-    this.stateMachine.processEvent(event);
-    this.broadcaster.broadcast('transcript_event', event);
-
-    // F Architecture: Feed tool events to Autonomous Router
+    // F Architecture: Infer intent BEFORE processEvent so it's stored in lastToolEvents
     if (this.router && event.type === 'tool_use' && event.toolName) {
-      // Detect intent from recent context and record outcome
       const intent = this._inferIntentFromTool(event.toolName);
       if (intent) {
         event._inferredIntent = intent;
       }
     }
-    if (this.router && event.type === 'tool_result') {
-      // Record outcome for learning
+
+    this.stateMachine.processEvent(event);
+    this.broadcaster.broadcast('transcript_event', event);
+
+    // F Architecture: On tool_result, feed outcome to router (chain tracking) + learner (weights)
+    if (event.type === 'tool_result') {
       const lastTool = this.stateMachine.getLastTool(event.agentId);
       if (lastTool && lastTool._inferredIntent) {
-        this.router.recordOutcome(lastTool.toolName, lastTool._inferredIntent, !event.error, null);
+        // Router: chain pattern detection only
+        if (this.router) {
+          this.router.recordOutcome(lastTool.toolName, lastTool._inferredIntent, !event.error, null);
+        }
+        // Learner: Bayesian weight update + duration + cross-intent
+        if (this.learner) {
+          this.learner.learn(lastTool.toolName, lastTool._inferredIntent, !event.error, null);
+        }
 
         // Check for proactive hint
-        const hint = this.router.getProactiveHint(lastTool.toolName, lastTool._inferredIntent);
-        if (hint) {
-          this.broadcaster.broadcast('routing_hint', hint);
-          if (this.verbose) console.log(`[Router] Hint: ${hint.suggestion}`);
+        if (this.router) {
+          const hint = this.router.getProactiveHint(lastTool.toolName, lastTool._inferredIntent);
+          if (hint) {
+            this.broadcaster.broadcast('routing_hint', hint);
+            if (this.verbose) console.log(`[Router] Hint: ${hint.suggestion}`);
+          }
         }
       }
     }
