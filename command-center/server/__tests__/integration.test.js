@@ -424,6 +424,25 @@ describe('Scoped Dispatch', () => {
   });
 });
 
+describe('Task Integration (Shrimp)', () => {
+  it('should return shrimp tasks', async () => {
+    const { status, data } = await api('/tasks/shrimp');
+    assert.equal(status, 200);
+    assert.equal(data.ok, true);
+    assert.ok(data.count !== undefined);
+  });
+
+  it('should create a savepoint with tasks', async () => {
+    const { data } = await api('/tasks/savepoint', {
+      method: 'POST',
+      body: JSON.stringify({ label: 'test-savepoint' })
+    });
+    assert.ok(data.label);
+    assert.ok(data.timestamp);
+    assert.ok(data.git);
+  });
+});
+
 describe('Benchmark & Operational Metrics', () => {
   it('should return live metrics', async () => {
     const { status, data } = await api('/benchmark/live');

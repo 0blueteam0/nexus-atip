@@ -30,7 +30,7 @@ const LEASE_TTL_SEC = 45;
 const TICK_MS = 15000;
 
 class Scheduler {
-  constructor({ controlPlane, learner, router, coordinator, broadcaster, evolutionAgent, memorySync }) {
+  constructor({ controlPlane, learner, router, coordinator, broadcaster, evolutionAgent, memorySync, benchmark }) {
     this.controlPlane = controlPlane;
     this.learner = learner;
     this.router = router;
@@ -38,6 +38,7 @@ class Scheduler {
     this.broadcaster = broadcaster;
     this.evolutionAgent = evolutionAgent;
     this.memorySync = memorySync;
+    this.benchmark = benchmark;
     this.instanceId = 'observer-' + process.pid;
     this.tickTimer = null;
     this.leaseTimer = null;
@@ -318,6 +319,15 @@ class Scheduler {
     // Cleanup stale file locks via coordinator timeout check
     if (this.coordinator) {
       results.lockCleanup = true;
+    }
+
+    // Auto benchmark snapshot (every 2h, pushed to Obsidian)
+    if (this.benchmark) {
+      try {
+        const label = `auto-${new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')}`;
+        results.benchmark = { label, captured: true };
+        this.benchmark.captureSnapshot(label);
+      } catch (e) { results.benchmark = { error: e.message }; }
     }
 
     // Clean up old completed/failed commands (older than 7 days)

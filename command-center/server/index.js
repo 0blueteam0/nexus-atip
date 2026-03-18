@@ -68,7 +68,7 @@ const taskDecomposer = new TaskDecomposer({ claudeBridge, broadcaster, autonomyG
 const evolutionAgent = new EvolutionAgent({ learner, router, broadcaster });
 const memorySync = new MemorySync({ broadcaster });
 const controlPlane = new ControlPlane({ stateMachine, broadcaster, coordinator: null, scheduler: null, antifragile });
-const scheduler = new Scheduler({ controlPlane, learner, router, coordinator: null, broadcaster, evolutionAgent, memorySync });
+const scheduler = new Scheduler({ controlPlane, learner, router, coordinator: null, broadcaster, evolutionAgent, memorySync, benchmark });
 const watcher = new TranscriptWatcher(stateMachine, broadcaster, db, router, learner);
 const collector = new EventCollector(stateMachine, broadcaster, db, router, antifragile);
 
@@ -443,6 +443,53 @@ app.post('/code-mode/execute', writeAuth, (req, res) => {
   res.json({ server, tool, args, irreversibility: irrev, status: 'ready_for_execution' });
 });
 
+// === Task Integration API (Shrimp Task Manager bridge) ===
+app.get('/tasks/shrimp', (req, res) => {
+  try {
+    const tasksFile = path.join(__dirname, '..', '..', 'ShrimpData', 'tasks', 'current-tasks.json');
+    const fs = require('fs');
+    if (fs.existsSync(tasksFile)) {
+      const data = JSON.parse(fs.readFileSync(tasksFile, 'utf-8'));
+      const tasks = Array.isArray(data) ? data : (data.tasks || []);
+      res.json({ ok: true, count: tasks.length, tasks });
+    } else {
+      res.json({ ok: true, count: 0, tasks: [], note: 'Shrimp tasks file not found' });
+    }
+  } catch (e) { res.json({ ok: false, error: e.message }); }
+});
+
+app.post('/tasks/savepoint', writeAuth, (req, res) => {
+  // Capture benchmark + push to Obsidian + record which tasks are active
+  const snap = benchmark.captureSnapshot(req.body.label || `savepoint-${Date.now()}`);
+  // Attach current task context
+  try {
+    const tasksFile = path.join(__dirname, '..', '..', 'ShrimpData', 'tasks', 'current-tasks.json');
+    const fs = require('fs');
+    if (fs.existsSync(tasksFile)) {
+      const data = JSON.parse(fs.readFileSync(tasksFile, 'utf-8'));
+      const tasks = Array.isArray(data) ? data : (data.tasks || []);
+      const active = tasks.filter(t => t.status === 'in_progress' || t.status === 'pending');
+      snap.activeTasks = active.map(t => ({ id: t.id, name: t.name || t.title, status: t.status }));
+    }
+  } catch {}
+  // Push enriched snapshot to Obsidian
+  if (obsidianBridge) {
+    try {
+      const taskSection = snap.activeTasks
+        ? '\n## Active Tasks\n' + snap.activeTasks.map(t => `- [${t.status}] ${t.name}`).join('\n')
+        : '';
+      obsidianBridge.pushNote({
+        title: `Savepoint: ${snap.label}`,
+        content: _formatBenchmarkMarkdown(snap) + taskSection,
+        folder: '_Observer/Savepoints',
+        tags: ['savepoint', 'benchmark', 'tasks'],
+        frontmatter: { git_hash: snap.git?.hash, task_count: snap.activeTasks?.length || 0 }
+      });
+    } catch {}
+  }
+  res.json(snap);
+});
+
 // === Benchmark & Operational Metrics API ===
 app.get('/benchmark/live', (req, res) => {
   res.json(benchmark.getLiveMetrics());
@@ -469,7 +516,37 @@ app.post('/benchmark/snapshot', writeAuth, (req, res) => {
 app.get('/benchmark/compare', (req, res) => {
   const { from, to } = req.query;
   if (!from || !to) return res.status(400).json({ error: 'from and to labels required' });
-  res.json(benchmark.compare(from, to));
+  const result = benchmark.compare(from, to);
+  // Auto-push comparison report to Obsidian
+  if (result.ok && obsidianBridge) {
+    try {
+      const d = result.diff;
+      const lines = [`# Benchmark Comparison: ${from} -> ${to}`,
+        `- **From**: ${d.from.label} (${d.from.git?.hash}) @ ${d.from.timestamp}`,
+        `- **To**: ${d.to.label} (${d.to.git?.hash}) @ ${d.to.timestamp}`,
+        `- **Score**: ${d.summary.score} (${d.summary.improvements} improvements, ${d.summary.regressions} regressions)`,
+        ''];
+      for (const [cat, metrics] of Object.entries(d.deltas)) {
+        lines.push(`## ${cat}`);
+        lines.push('| Metric | Before | After | Delta | Change |');
+        lines.push('|--------|--------|-------|-------|--------|');
+        for (const [key, val] of Object.entries(metrics)) {
+          if (val.delta !== undefined) {
+            const arrow = val.improved === true ? '[+]' : val.improved === false ? '[-]' : '[=]';
+            lines.push(`| ${key} | ${val.before} | ${val.after} | ${val.delta} | ${arrow} ${val.pctChange || 0}% |`);
+          }
+        }
+        lines.push('');
+      }
+      obsidianBridge.pushNote({
+        title: `Benchmark Compare: ${from} vs ${to}`,
+        content: lines.join('\n'),
+        folder: '_Observer/Benchmarks',
+        tags: ['benchmark', 'comparison', 'metrics']
+      });
+    } catch {}
+  }
+  res.json(result);
 });
 
 app.get('/benchmark/snapshots', (req, res) => {
@@ -622,6 +699,7 @@ app.get('/', (req, res) => {
       'GET /antifragile/status', 'GET /antifragile/trust/:tool',
       'POST /antifragile/assess', 'GET /antifragile/failures',
       'POST /code-mode/search', 'POST /code-mode/execute',
+      'GET /tasks/shrimp', 'POST /tasks/savepoint',
       'GET /benchmark/live', 'POST /benchmark/snapshot', 'GET /benchmark/compare',
       'GET /benchmark/snapshots', 'POST /benchmark/test-results',
       'GET /metrics', 'GET /health'
