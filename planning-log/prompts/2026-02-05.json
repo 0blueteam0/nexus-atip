@@ -1,0 +1,35 @@
+{
+  "date": "2026-02-05",
+  "prompts": [
+    {
+      "id": "prompt-1770257677313-q4z7",
+      "timestamp": "2026-02-05T02:14:37.313Z",
+      "sessionId": "session-1770257677307",
+      "prompt": "Test prompt from CLI",
+      "context": {
+        "activePlan": null,
+        "currentTask": null,
+        "phase": null
+      },
+      "lifecycle": {
+        "planId": null,
+        "phase": null,
+        "goalContext": null,
+        "isImplementation": false
+      },
+      "response": {
+        "toolsUsed": [],
+        "agentsSpawned": [],
+        "duration": 0,
+        "success": true,
+        "codeChanges": [],
+        "implementationProgress": 0
+      }
+    }
+  ],
+  "stats": {
+    "total": 1,
+    "withTools": 0,
+    "withAgents": 0
+  }
+}

@@ -1,207 +1,25 @@
 {
   "hooks": {
-    "startup-orchestrator": {
+    "observer-session-start": {
       "enabled": true,
-      "command": "node K:/PortableApps/genai/systems/startup-orchestrator.js",
-      "triggers": ["session-start"],
-      "priority": "highest",
-      "description": "통합 시작 시스템: Docker + AI Stack Monitor (13579) + Plan Ecosystem (7847) + Self-hosted MCP"
-    },
-    "dashboard-autostart": {
-      "enabled": false,
-      "command": "docker compose -f K:/PortableApps/genai/dashboard/plan-ecosystem/docker-compose.yml up -d && start http://localhost:7847",
-      "triggers": ["session-start"],
-      "priority": "low",
-      "description": "[DEPRECATED] startup-orchestrator로 통합됨"
-    },
-    "docker-check": {
-      "enabled": false,
-      "command": "node K:/PortableApps/genai/systems/docker-checker.js",
-      "triggers": ["session-start"],
-      "priority": "highest",
-      "description": "[DEPRECATED] startup-orchestrator로 통합됨"
-    },
-    "session-start": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/unified-task-system/session-restore.js",
+      "command": "curl -s -X POST http://localhost:3847/session/start -H \"Content-Type: application/json\" -d \"{\\\"sessionId\\\": \\\"$SESSION_ID\\\"}\" 2>/dev/null || true",
       "triggers": ["session-start"],
       "priority": "high",
-      "description": "세션 시작 시 후속조치 및 이전 작업 상태 복원 (Unified Task System)"
+      "description": "Notify Swarm Commander Observer of session start"
     },
-    "atos-init": {
+    "observer-session-end": {
       "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/index.js init",
-      "triggers": ["session-start"],
-      "priority": "high",
-      "description": "ATOS 초기화 - 도구 레지스트리 로드 + Auto-Discovery 스캔 + 초기 추천 생성"
-    },
-    "planning-restore": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/planning-system/restore.js --all",
-      "triggers": ["session-start"],
-      "priority": "high",
-      "description": "세션 시작 시 활성/완료 플랜 상태 자동 출력"
-    },
-    "planning-workflow-start": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-start",
-      "triggers": ["session-start"],
-      "priority": "highest",
-      "description": "세션 시작 시 플래닝 워크플로우 실행 (스냅샷 + 상태 로드 + 규칙 출력)"
-    },
-    "planning-workflow-end": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-end",
-      "triggers": ["session-end"],
-      "priority": "highest",
-      "description": "세션 종료 시 플래닝 워크플로우 실행 (검증 + 자동복원 + 상태저장)"
-    },
-    "atos-recommend": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/recommendation-engine.js",
-      "triggers": ["before-response", "user-input"],
-      "priority": "medium",
-      "description": "ATOS 추천 - 맥락 분석 후 도구/워크플로우 추천 삽입"
-    },
-    "atos-track": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/execution-monitor.js track",
-      "triggers": ["after-tool-call"],
-      "priority": "low",
-      "description": "ATOS 추적 - 도구 호출 통계 업데이트 + 체이닝 패턴 기록"
-    },
-    "atos-learn": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/feedback-loop.js",
-      "triggers": ["session-end"],
-      "priority": "medium",
-      "description": "ATOS 학습 - 세션 패턴 분석 + 사용 통계 영구 저장 + 지침 진화 트리거"
-    },
-    "bidirectional-sync": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/bidirectional-sync.js full",
-      "triggers": ["task-complete", "phase-change", "session-end"],
-      "interval": "5m",
-      "priority": "medium",
-      "description": "Shrimp ↔ Planning ↔ Hub 양방향 동기화 (5분 주기 또는 태스크 완료 시, v3.0 Hub 우선)"
-    },
-    "hub-sync": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/unified-task-system/cli.js sync",
-      "triggers": ["session-start"],
-      "priority": "medium",
-      "description": "세션 시작 시 UnifiedTaskHub 전체 동기화"
-    },
-    "self-trigger": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/atos/self-trigger/index.js process",
-      "triggers": ["before-response"],
-      "priority": "high",
-      "description": "Claude 출력에서 키워드 감지 -> 리소스 자동 로드 (Plan/Implement/Execute 단계별)"
-    },
-    "context-detection": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/_ACTIVE/scripts/systems/context-monitor.js",
-      "triggers": ["git", "diff", "compare", "search", "youtube", "database"],
-      "priority": "medium",
-      "description": "작업 컨텍스트 감지 시 도구 자동 추천"
-    },
-    "important-detection": {
-      "enabled": true,
-      "triggers": ["결정", "해결", "성공", "완료", "중요"],
-      "action": "auto-save",
-      "priority": "low",
-      "description": "중요 키워드 감지 시 자동 저장"
-    },
-    "periodic-save": {
-      "enabled": true,
-      "interval": "1h",
-      "priority": "low",
-      "description": "1시간마다 자동 체크포인트"
-    },
-    "session-end": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/unified-task-system/session-persist.js",
+      "command": "curl -s -X POST http://localhost:3847/session/end -H \"Content-Type: application/json\" -d \"{\\\"sessionId\\\": \\\"$SESSION_ID\\\"}\" 2>/dev/null || true",
       "triggers": ["session-end"],
       "priority": "high",
-      "description": "세션 종료 시 후속조치 및 작업 상태 저장 (Unified Task System)"
+      "description": "Notify Swarm Commander Observer of session end"
     },
-    "planning-persist": {
+    "observer-tool-track": {
       "enabled": true,
-      "command": "node K:/PortableApps/genai/planning-system/checkpoint.js --auto-save",
-      "triggers": ["session-end"],
-      "priority": "high",
-      "description": "세션 종료 시 플랜 상태 자동 저장"
-    },
-    "auto-cleanup": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/systems/auto-cleanup.js",
-      "triggers": ["session-end"],
-      "priority": "low",
-      "description": "세션 종료 시 오래된 debug/shell-snapshots 자동 정리 (30일+)"
-    },
-    "date-validation": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/systems/date-validator-hook.js --check-recent",
-      "triggers": ["file-save", "pre-commit"],
-      "priority": "medium",
-      "description": "파일 저장/커밋 시 하드코딩된 날짜 오류 감지"
-    },
-    "design-lint": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/design-system/lint-design.js",
+      "command": "curl -s -X POST http://localhost:3847/tool -H \"Content-Type: application/json\" -d \"{\\\"tool_name\\\": \\\"$TOOL_NAME\\\", \\\"success\\\": $TOOL_SUCCESS, \\\"duration_ms\\\": $TOOL_DURATION}\" 2>/dev/null || true",
       "triggers": ["PostToolResult"],
-      "filter": {
-        "tools": ["Edit", "Write", "desktop-commander__write_file", "desktop-commander__edit_block"],
-        "extensions": [".css", ".scss", ".tsx", ".jsx", ".vue", ".svelte", ".html"]
-      },
-      "priority": "medium",
-      "description": "디자인 파일 수정 시 AI 동질화 패턴 자동 검사"
-    },
-    "dashboard-tool-track": {
-      "enabled": true,
-      "command": "curl -s -X POST http://localhost:7847/api/hooks/tool -H \"Content-Type: application/json\" -d \"{\\\"tool\\\": \\\"$TOOL_NAME\\\", \\\"success\\\": $TOOL_SUCCESS, \\\"responseTime\\\": $TOOL_DURATION}\" || true",
-      "triggers": ["after-tool-call"],
       "priority": "low",
-      "description": "Dashboard v3.0 - 도구 호출 자동 기록 (Phase 12)"
-    },
-    "dashboard-agent-start": {
-      "enabled": true,
-      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"start\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"type\\\": \\\"$AGENT_TYPE\\\", \\\"prompt\\\": \\\"$AGENT_PROMPT\\\"}\" || true",
-      "triggers": ["agent-spawn"],
-      "priority": "low",
-      "description": "Dashboard v3.0 - 에이전트 시작 자동 기록 (Phase 12)"
-    },
-    "dashboard-agent-complete": {
-      "enabled": true,
-      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"complete\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"status\\\": \\\"$AGENT_STATUS\\\"}\" || true",
-      "triggers": ["agent-complete"],
-      "priority": "low",
-      "description": "Dashboard v3.0 - 에이전트 완료 자동 기록 (Phase 12)"
-    },
-    "dashboard-prompt-record": {
-      "enabled": true,
-      "command": "curl -s -X POST http://localhost:7847/api/hooks/prompt -H \"Content-Type: application/json\" -d \"{\\\"prompt\\\": \\\"$USER_PROMPT\\\", \\\"activePlan\\\": \\\"$ACTIVE_PLAN\\\", \\\"toolsUsed\\\": $TOOLS_USED, \\\"agentsSpawned\\\": $AGENTS_SPAWNED, \\\"duration\\\": $RESPONSE_DURATION, \\\"success\\\": $RESPONSE_SUCCESS}\" 2>/dev/null || true",
-      "triggers": ["after-response"],
-      "priority": "low",
-      "description": "Dashboard v3.0 - 프롬프트 자동 기록 + Lifecycle 연동 (Phase 8E)"
-    },
-    "lifecycle-sync": {
-      "enabled": true,
-      "command": "node K:/PortableApps/genai/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
-      "triggers": ["plan-complete", "phase-change"],
-      "priority": "medium",
-      "description": "플랜 완료/Phase 변경 시 Lifecycle 자동 동기화 (Phase 8B)"
-    }
-  },
-  "memory-config": {
-    "auto-save": true,
-    "compression": true,
-    "max-entries": 1000,
-    "cleanup-days": -1,
-    "storage": {
-      "primary": "kiro-memory",
-      "backup": "K:/PortableApps/genai/memory-archive"
+      "description": "Track tool usage in Swarm Commander for Bayesian learning"
     }
   }
 }

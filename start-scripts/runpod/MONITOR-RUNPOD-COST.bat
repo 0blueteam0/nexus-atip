@@ -16,7 +16,7 @@ chcp 65001 >nul 2>&1
 
 REM Python 경로 설정
 set PYTHON_EXE=K:\PortableApps\tools\python\python.exe
-set RUNPOD_SCRIPTS=K:\PortableApps\Claude-Code\runpod\scripts
+set RUNPOD_SCRIPTS=K:\PortableApps\genai\runpod\scripts
 set MONITOR_SCRIPT=%RUNPOD_SCRIPTS%\monitor.py
 
 REM monitor.py 존재 확인
@@ -49,8 +49,8 @@ echo [+] RunPod 비용 모니터링 시작 완료!
 echo ================================================================
 echo.
 echo [*] 백그라운드에서 30초마다 비용 추적 중
-echo [*] 로그: K:/PortableApps/Claude-Code/runpod/logs/monitor.log
-echo [*] 기록: K:/PortableApps/Claude-Code/runpod/logs/cost-tracking.json
+echo [*] 로그: K:/PortableApps/genai/runpod/logs/monitor.log
+echo [*] 기록: K:/PortableApps/genai/runpod/logs/cost-tracking.json
 echo.
 echo [!] 모니터링 종료 방법:
 echo     1) Ctrl+C로 모니터 창 종료

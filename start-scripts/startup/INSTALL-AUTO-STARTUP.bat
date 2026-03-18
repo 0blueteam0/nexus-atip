@@ -17,7 +17,7 @@ if %errorLevel% neq 0 (
     exit /b 1
 )
 
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 
 :: Register to Task Scheduler
 echo [1/3] Registering Windows startup task...

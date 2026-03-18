@@ -64,4 +64,4 @@ def find_precise_error(filename):
         print("No obvious pattern errors found")
 
 if __name__ == "__main__":
-    find_precise_error("K:/PortableApps/Claude-Code/vite-app/index.html")
+    find_precise_error("K:/PortableApps/genai/vite-app/index.html")

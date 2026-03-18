@@ -1,0 +1,25 @@
+{
+  "date": "2026-03-12",
+  "agents": [
+    {
+      "agentId": "codex-1773344099585",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773344099585",
+      "startTime": "2026-03-12T19:34:59.632Z",
+      "endTime": "2026-03-12T19:34:59.650Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773344099585",
+      "runInBackground": false,
+      "result": null
+    }
+  ],
+  "stats": {
+    "total": 1,
+    "byType": {
+      "codex-cli": 1
+    },
+    "completed": 1,
+    "failed": 0
+  }
+}

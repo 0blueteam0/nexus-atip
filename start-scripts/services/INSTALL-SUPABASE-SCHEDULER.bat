@@ -19,7 +19,7 @@ REM 작업 스케줄러 등록
 echo [*] 작업 스케줄러 등록 중...
 schtask /create ^
     /tn "Supabase Keep-Alive" ^
-    /tr "K:\PortableApps\Claude-Code\SUPABASE-KEEP-ALIVE.bat" ^
+    /tr "K:\PortableApps\genai\SUPABASE-KEEP-ALIVE.bat" ^
     /sc DAILY ^
     /mo 6 ^
     /st 09:00 ^

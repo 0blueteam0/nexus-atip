@@ -1,0 +1,43 @@
+{
+  "lifecycleId": "lc-snoopy-petting-marble-1770253991262",
+  "planId": "snoopy-petting-marble",
+  "planTitle": "LangGraph/LangChain 기반 시스템 고도화 계획",
+  "phases": {
+    "prd": {
+      "status": "in_progress",
+      "startedAt": "2026-02-05T01:13:11.262Z",
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [],
+  "createdAt": "2026-02-05T01:13:11.262Z",
+  "updatedAt": "2026-02-05T01:13:11.262Z"
+}

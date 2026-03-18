@@ -1,0 +1,13 @@
+{
+  "name": "nexus-mcp-gateway",
+  "version": "1.0.0",
+  "description": "NEXUS MCP Gateway - Dynamic MCP orchestrator with mcp2cli integration",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0"
+  }
+}

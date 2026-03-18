@@ -1,0 +1,61 @@
+{
+  "date": "2026-03-11",
+  "agents": [
+    {
+      "agentId": "codex-1773251930268",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773251930268",
+      "startTime": "2026-03-11T17:58:50.516Z",
+      "endTime": "2026-03-11T17:58:50.534Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773251930268",
+      "runInBackground": false,
+      "result": null
+    },
+    {
+      "agentId": "codex-1773252342256",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773252342256",
+      "startTime": "2026-03-11T18:05:42.137Z",
+      "endTime": "2026-03-11T18:05:42.155Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773252342256",
+      "runInBackground": false,
+      "result": null
+    },
+    {
+      "agentId": "codex-1773252502648",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773252502648",
+      "startTime": "2026-03-11T18:08:22.369Z",
+      "endTime": "2026-03-11T18:08:22.387Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773252502648",
+      "runInBackground": false,
+      "result": null
+    },
+    {
+      "agentId": "codex-1773253275263",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773253275263",
+      "startTime": "2026-03-11T18:21:15.004Z",
+      "endTime": "2026-03-11T18:21:15.022Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773253275263",
+      "runInBackground": false,
+      "result": null
+    }
+  ],
+  "stats": {
+    "total": 4,
+    "byType": {
+      "codex-cli": 4
+    },
+    "completed": 4,
+    "failed": 0
+  }
+}

@@ -38,7 +38,7 @@
 ## 파일 구조 규칙
 
 ```
-K:/PortableApps/Claude-Code/
+K:/PortableApps/genai/
 ├── .claude/           # Claude Code 설정
 │   ├── rules/         # 자동 로드 규칙
 │   ├── skills/        # 스킬 정의
@@ -132,14 +132,124 @@ test('should throw error when file not found')
 
 ---
 
-## 참조
+## NEXUS Multi-AI Orchestration
 
-- **CLAUDE.md**: 전역 Claude Code 규칙
-- **RIPER+ 워크플로우**: `.claude/rules/development-workflow.md`
-- **도구 우선순위**: `.claude/rules/tool-priority.md`
+### Overview
+NEXUS (Network of Evolving eXtensible Unified Services) - 자기진화형 멀티 AI 오케스트레이션 시스템.
+377개 사례 기반으로 Claude Code, Gemini CLI, Codex CLI를 통합 관리.
+
+### Architecture (7 Layers)
+```
+Layer 1: Architect.md (Single Source of Truth)
+Layer 2: Provider Adapters (claude/gemini/codex)
+Layer 3: Workflow Templates (8 YAML patterns)
+Layer 4: Evolution Engine (Bayesian weights)
+Layer 5: Knowledge Accumulator (cross-session)
+Layer 6: Self-Evolution Loop (7-step cycle)
+Layer 7: Auto-Research (every 5 sessions)
+```
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `nexus/Architect.md` | Central config (providers, routing, evolution) |
+| `nexus/core/orchestrator.js` | Main entry: init -> route -> learn |
+| `nexus/core/cli.js` | CLI interface |
+| `nexus/evolution/evolution-state.json` | Persisted weights and patterns |
+| `nexus/knowledge/best-practices.json` | Growing best practices DB |
+
+### Provider Roles
+| Provider | Role | Context | Cost |
+|----------|------|---------|------|
+| Claude Code | primary_orchestrator | 200K | included |
+| Gemini CLI | collaborator | 1M | free |
+| Codex CLI | specialist | 128K | api_usage |
+
+### CLI Commands
+```bash
+node nexus/core/cli.js init          # Initialize
+node nexus/core/cli.js status        # Full status
+node nexus/core/cli.js route "task"  # Route task
+node nexus/core/cli.js evolve        # Evolution state
+node nexus/core/cli.js workflows     # List workflows
+node nexus/core/cli.js knowledge     # Knowledge stats
+node nexus/core/cli.js research      # Auto-research status
+node nexus/core/cli.js check         # Improvement checklist
+```
+
+### Coordination Protocol (for Codex CLI)
+When receiving tasks from NEXUS:
+1. Check Architect.md for your role and routing rules
+2. Execute in sandboxed mode (`--approval-mode full-auto`)
+3. Return structured JSON results
+4. Flag issues for Claude Code review
 
 ---
 
-**버전**: 1.0.0
-**작성일**: 2026-02-07
-**호환**: Claude Code v2.1.34+
+## xAI Tag System (All CLIs)
+
+Every tool call and significant action must include explanatory tags:
+- **[work]**: What is being done
+- **[purpose]**: Why it is being done
+- **[method]**: How it is being done
+- **[done]**: What was completed
+- **[impact]**: What effect it has
+
+---
+
+## Korean Display Protocol (All CLIs)
+
+- Provide Korean explanations alongside technical output
+- Use ASCII status markers: `[+]` success, `[-]` failure, `[*]` progress, `[!]` warning, `[?]` info
+- No emojis - ASCII characters only
+
+---
+
+## MCP Server Catalog (Shared)
+
+The following MCP servers are available to all CLIs:
+
+| Server | Purpose | Priority |
+|--------|---------|----------|
+| desktop-commander | File operations (read/write/edit/search) | P1 |
+| github | GitHub API (issues, PRs, repos) | - |
+| memory | Persistent key-value memory | - |
+| sqlite-mcp | SQLite database operations | - |
+| sequential-thinking | Deep structured reasoning | - |
+
+Docker-dependent servers (firecrawl, searxng-crawl4ai) require Docker running.
+
+---
+
+## Tool Priority (All CLIs)
+
+| Priority | Tool | Use Case |
+|----------|------|----------|
+| P1 | desktop-commander | All file operations (90% coverage) |
+| P2 | edit-file-lines | Precise line edits (when P1 fails) |
+| P3 | shrimp-task | Task management (never TodoWrite) |
+| P4 | Built-in tools | Fallback only |
+
+---
+
+## Config Sync
+
+Run `node nexus/sync/config-sync.js` to synchronize MCP server configs across all CLIs.
+Source of truth: `.claude.json` -> `.gemini/settings.json` + `.codex/config.toml`
+
+---
+
+## References
+
+- **CLAUDE.md**: Claude Code global rules
+- **GEMINI.md**: Gemini CLI NEXUS context
+- **CODEX.md**: Codex CLI NEXUS context
+- **RIPER+ Workflow**: `.claude/rules/development-workflow.md`
+- **Tool Priority**: `.claude/rules/tool-priority.md`
+- **NEXUS Config**: `nexus/Architect.md`
+
+---
+
+**Version**: 3.0.0
+**Date**: 2026-03-09
+**Compatible**: Claude Code v2.1.71+, Gemini CLI, Codex CLI

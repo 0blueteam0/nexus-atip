@@ -1,0 +1,43 @@
+{
+  "lifecycleId": "lc-lucky-splashing-thompson-1770253991252",
+  "planId": "lucky-splashing-thompson",
+  "planTitle": "AI 코딩 도구 딥리서치 - OpenCode, Vibe, Kanban 생태계 분석",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.252Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "in_progress",
+      "startedAt": "2026-02-05T01:13:11.252Z",
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 43
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 26,
+  "goalMapping": [],
+  "createdAt": "2026-02-05T01:13:11.252Z",
+  "updatedAt": "2026-02-05T01:13:11.252Z"
+}

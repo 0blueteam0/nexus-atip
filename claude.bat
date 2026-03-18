@@ -39,7 +39,15 @@ set CLAUDE_NO_PROJECT_HISTORY=true
 set BASH_ENV=K:\PortableApps\genai\.bashrc
 set NODE_PATH=K:\PortableApps\tools\nodejs-v20-backup
 set UV_PATH=K:\PortableApps\tools\uv
-set PATH=%UV_PATH%;%NODE_PATH%;%NODE_PATH%\node_modules\.bin;K:\PortableApps\tools\git\bin;%PATH%
+set UV_TOOLS_BIN=K:\PortableApps\genai\.local\bin
+set PATH=%UV_TOOLS_BIN%;%UV_PATH%;%NODE_PATH%;%NODE_PATH%\node_modules\.bin;K:\PortableApps\tools\git\bin;%PATH%
+
+REM Claude Code v2.1.71 new features
+set CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=60
+set CLAUDE_CODE_SUBAGENT_MODEL=claude-haiku-4-5-20251001
+set CLAUDE_AUTO_BACKGROUND_TASKS=1
+set CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+set CLAUDE_SKILL_DIR=K:\PortableApps\genai\.claude\skills
 
 REM Load API key
 if exist "%CLAUDE_HOME%\.env" (

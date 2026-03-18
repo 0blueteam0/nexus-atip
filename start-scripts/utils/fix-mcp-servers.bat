@@ -4,7 +4,7 @@ echo.
 
 REM 1. 백업 생성
 echo [+] 설정 파일 백업 중...
-copy K:\PortableApps\Claude-Code\.claude.json K:\PortableApps\Claude-Code\.claude.json.backup-%date:~0,4%%date:~5,2%%date:~8,2%
+copy K:\PortableApps\genai\.claude.json K:\PortableApps\genai\.claude.json.backup-%date:~0,4%%date:~5,2%%date:~8,2%
 
 REM 2. ClaudeJsonCleanup 작업 비활성화
 echo [+] 예약 작업 비활성화 중...

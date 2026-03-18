@@ -165,7 +165,7 @@ if __name__ == "__main__":
     vm.run_program_in_guest("C:\\\\Windows\\\\System32\\\\cmd.exe", "/c echo Hello from Claude!")
 '''
     
-    script_path = Path("K:/PortableApps/Claude-Code/vmware-automation-example.py")
+    script_path = Path("K:/PortableApps/genai/vmware-automation-example.py")
     script_path.write_text(script_content)
     print(f"[+] 스크립트 생성됨: {script_path}")
     

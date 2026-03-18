@@ -8,7 +8,7 @@ REM ============================================
 title Evolution Engine - Self-Evolving AI
 color 0E
 
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 echo ========================================
 echo    EVOLUTION ENGINE - Self-Evolving AI
@@ -17,7 +17,7 @@ echo ========================================
 echo.
 
 REM Set Node.js path
-set PATH=K:\PortableApps\Claude-Code\tools\nodejs;%PATH%
+set PATH=K:\PortableApps\genai\tools\nodejs;%PATH%
 
 echo [INFO] Starting Evolution Engine...
 echo.
@@ -31,6 +31,6 @@ echo   - Auto-Evolution
 echo.
 
 REM Run instruction-evolution.js
-K:\PortableApps\Claude-Code\tools\nodejs\node.exe K:\PortableApps\Claude-Code\systems\instruction-evolution.js
+K:\PortableApps\genai\tools\nodejs\node.exe K:\PortableApps\genai\systems\instruction-evolution.js
 
 pause

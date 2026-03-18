@@ -9,13 +9,13 @@ echo.
 echo [START] Starting anomaly detector...
 echo.
 
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 
 :: Set Node.js path
-set PATH=K:\PortableApps\Claude-Code\tools\nodejs;%PATH%
+set PATH=K:\PortableApps\genai\tools\nodejs;%PATH%
 
 :: Run with Node.js
-start /B "Anomaly Detector" "K:\PortableApps\Claude-Code\tools\nodejs\node.exe" "K:\PortableApps\Claude-Code\systems\anomaly-detector.js"
+start /B "Anomaly Detector" "K:\PortableApps\genai\tools\nodejs\node.exe" "K:\PortableApps\genai\systems\anomaly-detector.js"
 
 echo System running in background.
 echo.

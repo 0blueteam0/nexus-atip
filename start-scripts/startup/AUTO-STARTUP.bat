@@ -6,7 +6,7 @@ chcp 65001 >nul 2>&1
 echo [AUTO-STARTUP] Starting autonomous systems...
 
 :: 1. Environment setup
-set CLAUDE_HOME=K:\PortableApps\Claude-Code
+set CLAUDE_HOME=K:\PortableApps\genai
 set TMPDIR=%CLAUDE_HOME%\tmp
 set TEMP=%CLAUDE_HOME%\tmp
 set PATH=%CLAUDE_HOME%\tools\nodejs;%PATH%
@@ -28,7 +28,7 @@ echo [4/4] Starting Docker MCP checker...
 start /B "" "%CLAUDE_HOME%\tools\nodejs\node.exe" "%CLAUDE_HOME%\systems\docker-checker.js" 2>nul
 
 :: 3. Auto cleanup (7+ day old log files)
-powershell -Command "& {$dirs=@('K:\PortableApps\Claude-Code\workflows\logs','K:\PortableApps\Claude-Code\tmp','K:\PortableApps\Claude-Code\shell-snapshots');foreach($d in $dirs){if(Test-Path $d){gci $d -File|?{$_.LastWriteTime -lt (Get-Date).AddDays(-7)}|ri -Force 2>$null}}}" 2>nul
+powershell -Command "& {$dirs=@('K:\PortableApps\genai\workflows\logs','K:\PortableApps\genai\tmp','K:\PortableApps\genai\shell-snapshots');foreach($d in $dirs){if(Test-Path $d){gci $d -File|?{$_.LastWriteTime -lt (Get-Date).AddDays(-7)}|ri -Force 2>$null}}}" 2>nul
 
 echo.
 echo [AUTO-STARTUP] All systems running autonomously

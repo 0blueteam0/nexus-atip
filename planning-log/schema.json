@@ -1,0 +1,93 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Planning Log Schema",
+  "description": "Hybrid logging system - JSON format for machine processing",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["date", "sessions"],
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Log date in YYYY-MM-DD format"
+    },
+    "sessions": {
+      "type": "array",
+      "description": "List of Claude Code sessions for this day",
+      "items": {
+        "type": "object",
+        "required": ["id", "start"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique session identifier"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Session start timestamp (ISO 8601)"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Session end timestamp (ISO 8601)"
+          },
+          "plan": {
+            "type": "string",
+            "description": "Active plan ID (e.g., wobbly-wandering-honey)"
+          },
+          "phase": {
+            "type": "string",
+            "description": "Current phase within the plan"
+          },
+          "actions": {
+            "type": "array",
+            "description": "List of actions performed in this session",
+            "items": {
+              "type": "object",
+              "required": ["timestamp", "type"],
+              "properties": {
+                "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["task_update", "phase_update", "plan_archive", "session_start", "session_end", "file_create", "file_modify"],
+                  "description": "Action type"
+                },
+                "target": {
+                  "type": "string",
+                  "description": "Target of the action (task ID, file path, etc.)"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "in_progress", "completed", "skipped", "failed"],
+                  "description": "Status after action"
+                },
+                "details": {
+                  "type": "object",
+                  "description": "Additional action-specific details"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Daily summary statistics",
+      "properties": {
+        "totalSessions": { "type": "integer" },
+        "totalActions": { "type": "integer" },
+        "plansWorkedOn": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "completedTasks": { "type": "integer" },
+        "completedPhases": { "type": "integer" }
+      }
+    }
+  }
+}

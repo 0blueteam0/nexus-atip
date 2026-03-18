@@ -1,0 +1,204 @@
+{
+  "lifecycleId": "lc-federated-kindling-quilt-agent-a0cb9ec-1773181741127",
+  "planId": "federated-kindling-quilt-agent-a0cb9ec",
+  "planTitle": "MCP Task/Project Management Tools Analysis",
+  "phases": {
+    "prd": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [
+    {
+      "id": "goal-1773181741127-of4z",
+      "title": "Implement Shrimp Task `list_tasks` integration",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-r3gh",
+      "title": "Implement VibeKanban `get_kanban_status` + `list_tickets`",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-n52m",
+      "title": "Create unified task view component",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-69ue",
+      "title": "Basic polling implementation",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-b49k",
+      "title": "Task creation via Shrimp `split_tasks`",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-lrn1",
+      "title": "Ticket creation via VibeKanban `create_ticket`",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-y3i8",
+      "title": "Status updates across systems",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-hsyb",
+      "title": "Drag-drop Kanban board",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-4p8k",
+      "title": "Kiro-Memory `get_project_summary` for dashboard header",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-ijso",
+      "title": "Task-Master `next_task` for suggestions",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-9hzi",
+      "title": "Kiro thinking chain visualization",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-ln0l",
+      "title": "Health status monitoring",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-kt6m",
+      "title": "Serena `list_memories` for knowledge base",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-oigh",
+      "title": "Serena `search_for_pattern` for code search",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-ssmf",
+      "title": "File browser with `list_dir`",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-j49r",
+      "title": "Symbol overview integration",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-32nq",
+      "title": "Task-Master PRD parsing UI",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-ieup",
+      "title": "Cross-system task synchronization",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-s3jo",
+      "title": "AI-powered task decomposition",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    },
+    {
+      "id": "goal-1773181741127-09vi",
+      "title": "Real-time collaboration features",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.127Z"
+    }
+  ],
+  "createdAt": "2026-03-10T22:29:01.127Z",
+  "updatedAt": "2026-03-10T22:29:01.127Z"
+}

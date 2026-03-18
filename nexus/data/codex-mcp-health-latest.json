@@ -1,0 +1,652 @@
+{
+  "summary": {
+    "generatedAt": "2026-03-10T22:53:14.116Z",
+    "total": 39,
+    "healthy": 39,
+    "warnings": 0,
+    "failed": 0
+  },
+  "results": [
+    {
+      "name": "mcp_installer",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "filesystem",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Usage: mcp-server-filesystem [allowed-directory] [additional-directories...]\nNote: Allowed directories can be provided via:\n  1. Command-line arguments (shown above)\n  2. MCP roots protocol (if client supports it)\nAt least one directory must be provided by EITHER method for the server to operate.\nSecure MCP Filesystem Server running on stdio\nStarted without allowed directories - waiting for client to provide roots via MCP protocol",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "memory",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Knowledge Graph MCP Server running on stdio",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-memory/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "shrimp_task",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/mcp-shrimp-task-manager/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "github",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "GitHub MCP Server running on stdio",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "deep_research_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "[+] Deep research workflow loaded\n[*] Deep Research MCP Server starting...\n[+] Deep Research MCP Server running",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/deep-research-mcp/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "multi_ai_orchestration",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "[+] Multi-AI Orchestration MCP Server running",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/multi-ai-mcp/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "firecrawl",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "scrapegraph_local",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/scrapegraph-local-mcp/server.py",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "searxng_crawl4ai",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "SearXNG + Crawl4AI MCP Server started",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "cwd",
+          "path": "K:/PortableApps/genai/mcp-servers/searxng-crawl4ai-mcp",
+          "exists": true
+        },
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "crawl4ai_lite",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "git_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"LZY2X-5QP6C\",\"timestamp\":\"2026-03-10T22:52:14.813Z\",\"operation\":\"loggerInit\",\"msg\":\"Logger initialized. MCP level: debug.\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"1D2UA-NQ2LP\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"LoggerInit\",\"msg\":\"Logger initialized. Effective MCP logging level: debug.\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"runtime\":\"node\",\"runtimeVersion\":\"Node.js 22.22.0\",\"requestId\":\"I95CJ-VUC9H\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"RuntimeDetection\",\"msg\":\"Runtime detected: Node.js 22.22.0\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"8A1DW-KOM71\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"StorageInit\",\"msg\":\"Storage service initialized with provider: in-memory\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.5.6\",\"nodeEnvironment\":\"development\",\"requestId\":\"I8070-MNPND\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"ServerStartup\",\"msg\":\"Starting @cyanheads/git-mcp-server (v2.5.6)...\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"transport\":\"stdio\",\"requestId\":\"3V5NK-WF88U\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"TransportManager.start\",\"msg\":\"Starting transport: stdio\"}\n{\"level\":30,\"time\":1773183134816,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"XCF2M-C3WRT\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"createMcpServerInstance\",\"msg\":\"Initializing MCP server instance\"}\n{\"level\":30,\"time\":1773183134817,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"75288-EOJ8A\",\"timestamp\":\"2026-03-10T22:52:14.817Z\",\"operation\":\"ToolRegistry.registerAll\",\"msg\":\"Registering 27 tool(s)...\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_add\",\"requestId\":\"F51YF-F01B8\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_add' registered successfully.\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_blame\",\"requestId\":\"B7CCR-Q9C9G\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_blame' registered successfully.\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_branch\",\"requestId\":\"3LG19-KQ9BQ\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_branch' registered successfully.\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_checkout\",\"requestId\":\"66RSG-ML4GE\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_checkout' registered successfully.\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_cherry_pick\",\"requestId\":\"P3X22-THHDR\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_cherry_pick' registered successfully.\"}\n{\"level\":30,\"time\":1773183134818,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_clean\",\"requestId\":\"97EH1-S9AUT\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_clean' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_clear_working_dir\",\"requestId\":\"R6SEE-N343U\",\"timestamp\":\"2026-03-10T22:52:14.818Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_clear_working_dir' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_clone\",\"requestId\":\"EE9H3-48C26\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_clone' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_commit\",\"requestId\":\"61HYN-4CVC8\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_commit' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_diff\",\"requestId\":\"KAQXM-TUR8F\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_diff' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_fetch\",\"requestId\":\"93AXQ-TX6LP\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_fetch' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_init\",\"requestId\":\"KKIEI-7O9M8\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_init' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_log\",\"requestId\":\"2AVG4-DXU1V\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_log' registered successfully.\"}\n{\"level\":30,\"time\":1773183134819,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_merge\",\"requestId\":\"3QAJP-1BCEE\",\"timestamp\":\"2026-03-10T22:52:14.819Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_merge' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_pull\",\"requestId\":\"E81KT-2IHGA\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_pull' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_push\",\"requestId\":\"BPMZA-1C2WA\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_push' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_rebase\",\"requestId\":\"896LS-96H24\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_rebase' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_reflog\",\"requestId\":\"VE372-X4R0S\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_reflog' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_remote\",\"requestId\":\"FXWN5-PVSCP\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_remote' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_reset\",\"requestId\":\"ZNZU9-UYLX5\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_reset' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_set_working_dir\",\"requestId\":\"F1ZCE-EU91U\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_set_working_dir' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_show\",\"requestId\":\"EEF1Y-O1OIF\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_show' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_stash\",\"requestId\":\"APZ1K-XVQG6\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_stash' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_status\",\"requestId\":\"X8ZNE-II10I\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_status' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_tag\",\"requestId\":\"YZO0N-BBAGU\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_tag' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_worktree\",\"requestId\":\"N7RUL-MZ3GE\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_worktree' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"toolName\":\"git_wrapup_instructions\",\"requestId\":\"E5EBD-QKJMQ\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ToolRegistry.registerTool\",\"msg\":\"Tool 'git_wrapup_instructions' registered successfully.\"}\n{\"level\":30,\"time\":1773183134820,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"X6KRR-FFK6W\",\"timestamp\":\"2026-03-10T22:52:14.820Z\",\"operation\":\"ResourceRegistry.registerAll\",\"msg\":\"Registering 1 resource(s)...\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"MHB6D-82DN1\",\"timestamp\":\"2026-03-10T22:52:14.821Z\",\"resourceName\":\"git-working-directory\",\"operation\":\"RegisterResource\",\"msg\":\"Registering resource: 'git-working-directory'\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"MHB6D-82DN1\",\"timestamp\":\"2026-03-10T22:52:14.821Z\",\"resourceName\":\"git-working-directory\",\"operation\":\"RegisterResource\",\"msg\":\"Resource 'git-working-directory' registered successfully.\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"D2AHW-6WZ66\",\"timestamp\":\"2026-03-10T22:52:14.821Z\",\"operation\":\"PromptRegistry.registerAll\",\"msg\":\"Registered prompt: git_wrapup\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"D2AHW-6WZ66\",\"timestamp\":\"2026-03-10T22:52:14.821Z\",\"operation\":\"PromptRegistry.registerAll\",\"msg\":\"Successfully registered 1 prompts\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"7TFNL-1ZK8S\",\"timestamp\":\"2026-03-10T22:52:14.821Z\",\"operation\":\"RootsRegistry.registerAll\",\"msg\":\"Roots capability registered successfully\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"requestId\":\"XCF2M-C3WRT\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"createMcpServerInstance\",\"msg\":\"All MCP capabilities registered successfully\"}\n{\"level\":30,\"time\":1773183134821,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"transport\":\"stdio\",\"requestId\":\"3V5NK-WF88U\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"Attempting to connect stdio transport...\"}\n{\"level\":30,\"time\":1773183134822,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"transport\":\"stdio\",\"requestId\":\"3V5NK-WF88U\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"connectStdioTransport\",\"transportType\":\"Stdio\",\"msg\":\"MCP Server connected and listening via stdio transport.\"}\n{\"level\":30,\"time\":1773183134822,\"env\":\"development\",\"version\":\"2.5.6\",\"pid\":53844,\"applicationName\":\"@cyanheads/git-mcp-server\",\"applicationVersion\":\"2.5.6\",\"nodeEnvironment\":\"development\",\"requestId\":\"I8070-MNPND\",\"timestamp\":\"2026-03-10T22:52:14.816Z\",\"operation\":\"ServerStartup\",\"msg\":\"@cyanheads/git-mcp-server is now running and ready.\"}",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/@cyanheads/git-mcp-server/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "sqlite_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "SQLite MCP Server running on stdio\nDatabase path: K:\\PortableApps\\genai\\data\\sqlite\\claude.db",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "websearch",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Starting WebSearch MCP server...\nUsing API_URL: http://localhost:3001\nWebSearch MCP server started",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "youtube_data",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "edit_file_lines",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Edit File Lines Server running on stdio\nAllowed directories: [ 'k:\\\\portableapps\\\\genai' ]",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/mcp-edit-file-lines/build/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "kiro_memory",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "2026-03-11 07:52:26,006 - root - INFO - Database tables created successfully\r\n2026-03-11 07:52:26,006 - root - INFO - Database initialized at K:\\PortableApps\\genai\\ClaudeMemory\\data\\mcp_memory.db\r\n2026-03-11 07:52:26,022 - __main__ - INFO - 🚀 Enhanced MCP Memory Server starting...\r\n2026-03-11 07:52:26,023 - __main__ - INFO - 📊 Configuration: {'max_memory_items': 1000, 'cleanup_interval': 24, 'log_level': 'INFO', 'enable_auto_cleanup': True, 'max_concurrent_requests': 5, 'request_timeout': 30}\r\n2026-03-11 07:52:26,023 - __main__ - INFO - 💾 Database: K:\\PortableApps\\genai\\ClaudeMemory\\data\\mcp_memory.db",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "context7",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "one_search",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "playwright",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "desktop_commander",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Loading server.ts\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Setting up request handlers...\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Loading configuration...\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Configuration loaded successfully\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Enhanced FilteredStdioServerTransport initialized\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Connecting server...\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"notifications/message\",\"params\":{\"level\":\"info\",\"logger\":\"desktop-commander\",\"data\":\"Server connected successfully\"}}",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/desktop-commander-mcp/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "supabase",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "n8n",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "N8N MCP Server running on stdio",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/@illuminaresolutions/n8n-mcp-server/build/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "sequential_thinking",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Sequential Thinking MCP Server running on stdio",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/node.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "runpod_jupyter",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/uv/uvx.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "image_recognition",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "paddleocr_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src/server.py",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "marker_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/marker-mcp/src/server.py",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "llm_council",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "2026-03-11 07:52:51,241 - __main__ - INFO - OPENROUTER_API_KEY found\r\n2026-03-11 07:52:51,241 - __main__ - INFO - LLM Council MCP Server v1.0.0 starting...\r\n2026-03-11 07:52:51,241 - __main__ - INFO - Council path: K:\\PortableApps\\genai\\llm-council",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/python-portable/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/llm-council-mcp/server.py",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "antv_chart",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "[MCP-Server-Chart] 2026-03-10T22:52:54.247Z ℹ️  setting up tool handlers...\n[MCP-Server-Chart] 2026-03-10T22:52:54.249Z ℹ️  tool handlers set up\n[MCP-Server-Chart] 2026-03-10T22:52:54.250Z ✅ Stdio MCP Server started",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "hfspace",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "task_master_ai",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "paper_search_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/uv/uv.exe",
+          "exists": true
+        },
+        {
+          "kind": "directory",
+          "path": "K:/PortableApps/genai/mcp-servers/paper-search-mcp",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "serena",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/uv/uvx.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "vibekanban",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "Starting Kanban MCP Server...\r\nUsing direct database access instead of HTTP",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/genai/mcp-servers/vibekanban/.venv/Scripts/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/vibekanban/kanban_mcp_server.py",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "notion",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "e2b",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/tools/nodejs/npx.cmd",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "ocr_mcp",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "cwd",
+          "path": "K:/PortableApps/genai/mcp-servers/ocr-mcp",
+          "exists": true
+        },
+        {
+          "kind": "command",
+          "path": "C:/Python313/python.exe",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "name": "pal",
+      "status": "launch-ok",
+      "detail": "process stayed alive during probe window",
+      "stderr": "2026-03-10 22:53:13,401 - root - INFO - Logging to: K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server\\logs\\mcp_server.log\r\n2026-03-10 22:53:13,401 - root - INFO - Process PID: 19356\r\n2026-03-10 22:53:13,401 - __main__ - DEBUG - PAL_MCP_FORCE_ENV_OVERRIDE disabled - system environment variables take precedence\r\n2026-03-10 22:53:13,401 - mcp.server.lowlevel.server - DEBUG - Initializing server 'pal-server'\r\n2026-03-10 22:53:13,404 - clink.registry - DEBUG - Loaded CLI configuration for 'claude' from K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server\\conf\\cli_clients\\claude.json\r\n2026-03-10 22:53:13,405 - clink.registry - DEBUG - Loaded CLI configuration for 'codex' from K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server\\conf\\cli_clients\\codex.json\r\n2026-03-10 22:53:13,407 - clink.registry - DEBUG - Loaded CLI configuration for 'gemini' from K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server\\conf\\cli_clients\\gemini.json\r\n2026-03-10 22:53:13,407 - clink.registry - DEBUG - Configuration path does not exist: K:\\PortableApps\\genai\\.pal\\cli_clients\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'secaudit' disabled via DISABLED_TOOLS\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'docgen' disabled via DISABLED_TOOLS\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'analyze' disabled via DISABLED_TOOLS\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'refactor' disabled via DISABLED_TOOLS\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'tracer' disabled via DISABLED_TOOLS\r\n2026-03-10 22:53:13,408 - __main__ - DEBUG - Tool 'testgen' disabled via DISABLED_TOOLS",
+      "stdout": "",
+      "paths": [
+        {
+          "kind": "command",
+          "path": "K:/PortableApps/genai/mcp-servers/pal-mcp-server/.pal_venv/Scripts/python.exe",
+          "exists": true
+        },
+        {
+          "kind": "entry",
+          "path": "K:/PortableApps/genai/mcp-servers/pal-mcp-server/server.py",
+          "exists": true
+        }
+      ]
+    }
+  ]
+}

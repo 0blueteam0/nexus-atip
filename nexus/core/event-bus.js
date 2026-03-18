@@ -22,6 +22,25 @@
  *   evolution:pattern    - New pattern discovered
  *   evolution:research   - Auto-research triggered
  *   knowledge:updated    - Knowledge base updated
+ *   graph:start           - Graph execution started
+ *   graph:end             - Graph execution completed
+ *   graph:node:start      - Graph node started
+ *   graph:node:end        - Graph node completed
+ *   graph:stream          - Graph streaming chunk
+ *   hitl:request          - Human-in-the-loop approval requested
+ *   hitl:approved         - HITL approved
+ *   hitl:rejected         - HITL rejected
+ *   deep-agent:plan:created  - Deep agent plan created
+ *   deep-agent:subtask:completed - Deep agent subtask completed
+ *   subagent:spawned      - Subagent spawned
+ *   subagent:completed    - Subagent completed
+ *   team:started          - Agent team started
+ *   team:completed        - Agent team completed
+ *   team:member:completed - Team member completed
+ *   thinking:advised      - Thinking mode advised
+ *   monitor:started       - Monitor server started
+ *   checkpoint:saved      - Checkpoint saved
+ *   checkpoint:branched   - Checkpoint branched
  *
  * @module nexus/core/event-bus
  */

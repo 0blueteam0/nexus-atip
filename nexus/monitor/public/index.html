@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS Monitor</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <h1>NEXUS <span class="version">v3.0</span></h1>
+      <span class="subtitle">Live Monitor</span>
+    </div>
+    <div class="header-right">
+      <span id="sse-status" class="status-dot disconnected"></span>
+      <span id="event-count">0 events</span>
+      <span id="uptime">--</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="architecture">Architecture Map</button>
+    <button class="tab" data-view="flow">Flow Timeline</button>
+    <button class="tab" data-view="factory">Factory Floor</button>
+    <button class="tab" data-view="agents">Agent Office</button>
+    <button class="tab" data-view="events">Event Stream</button>
+    <button class="tab" data-view="savepoints">Savepoints</button>
+  </nav>
+
+  <main>
+    <div id="view-architecture" class="view active">
+      <div id="arch-map"></div>
+    </div>
+    <div id="view-flow" class="view">
+      <div id="flow-timeline"></div>
+    </div>
+    <div id="view-factory" class="view">
+      <canvas id="factory-canvas" width="1300" height="760"></canvas>
+    </div>
+    <div id="view-agents" class="view">
+      <canvas id="agent-canvas" width="1200" height="600"></canvas>
+    </div>
+    <div id="view-events" class="view">
+      <div class="event-controls">
+        <input type="text" id="event-filter" placeholder="Filter events (e.g. task:*)">
+        <button id="event-clear">Clear</button>
+        <label><input type="checkbox" id="event-autoscroll" checked> Auto-scroll</label>
+      </div>
+      <div id="event-log"></div>
+    </div>
+    <div id="view-savepoints" class="view">
+      <div id="savepoint-list"></div>
+    </div>
+  </main>
+
+  <script src="/js/architecture-map.js"></script>
+  <script src="/js/flow-timeline.js"></script>
+  <script src="/assets/sprites.js"></script>
+  <script src="/js/agent-office.js"></script>
+  <script src="/js/factory-floor.js"></script>
+  <script src="/js/event-stream.js"></script>
+  <script src="/js/savepoint-inspector.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('view-' + tab.dataset.view).classList.add('active');
+      });
+    });
+
+    // SSE connection
+    let eventSource = null;
+    let totalEvents = 0;
+    const startTime = Date.now();
+
+    function connectSSE() {
+      eventSource = new EventSource('/events');
+      const dot = document.getElementById('sse-status');
+
+      eventSource.onopen = () => {
+        dot.className = 'status-dot connected';
+      };
+
+      eventSource.onerror = () => {
+        dot.className = 'status-dot disconnected';
+        setTimeout(connectSSE, 3000);
+      };
+
+      eventSource.addEventListener('heartbeat', (e) => {
+        const data = JSON.parse(e.data);
+        document.getElementById('uptime').textContent =
+          Math.floor((Date.now() - startTime) / 1000) + 's';
+      });
+
+      // Route all events to view handlers
+      const eventTypes = [
+        'graph:start', 'graph:end', 'graph:node:start', 'graph:node:end',
+        'graph:stream', 'task:received', 'task:routed', 'task:completed',
+        'task:failed', 'system:init', 'system:ready', 'system:shutdown',
+        'provider:health', 'evolution:weight', 'evolution:pattern',
+        'deep-agent:plan:created', 'deep-agent:subtask:completed',
+        'subagent:spawned', 'subagent:completed',
+        'team:started', 'team:completed', 'team:member:completed',
+        'hitl:request', 'hitl:approved', 'hitl:rejected',
+        'monitor:started', 'heartbeat'
+      ];
+
+      // Generic event handler
+      eventSource.onmessage = (e) => {
+        totalEvents++;
+        document.getElementById('event-count').textContent = totalEvents + ' events';
+        try {
+          const data = JSON.parse(e.data);
+          if (window.onNexusEvent) window.onNexusEvent(e.type || 'message', data);
+        } catch {}
+      };
+
+      eventTypes.forEach(type => {
+        eventSource.addEventListener(type, (e) => {
+          totalEvents++;
+          document.getElementById('event-count').textContent = totalEvents + ' events';
+          try {
+            const data = JSON.parse(e.data);
+            if (window.onNexusEvent) window.onNexusEvent(type, data);
+          } catch {}
+        });
+      });
+    }
+
+    connectSSE();
+  </script>
+</body>
+</html>

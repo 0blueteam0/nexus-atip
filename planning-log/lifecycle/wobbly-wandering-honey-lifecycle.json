@@ -1,0 +1,274 @@
+{
+  "lifecycleId": "lc-wobbly-wandering-honey-1770253991273",
+  "planId": "wobbly-wandering-honey",
+  "planTitle": "K드라이브 전체 구조 정리 플랜 v3.0",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.273Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "in_progress",
+      "startedAt": "2026-02-05T01:13:11.273Z",
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 10
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 18,
+  "goalMapping": [
+    {
+      "id": "goal-1770253991273-7auv",
+      "title": "현재 구조 스냅샷 저장",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-7ysq",
+      "title": "중요 파일 백업 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-aoc1",
+      "title": "K:/Work/ 폴더 생성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-tu1o",
+      "title": "K:/Development/ → K:/Work/Projects/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-mux0",
+      "title": "K:/Work-Projects/ → K:/Work/Projects/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-pfyy",
+      "title": "K:/Documents/ → K:/Work/Documents/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-l2iw",
+      "title": "K:/Security-Research/ → K:/Work/Research/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-6upm",
+      "title": "K:/.system/temp/ 생성 및 temp,tmp 통합",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-jma9",
+      "title": "K:/nonexistent/, K:/nul 삭제",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-h1pl",
+      "title": "_archive/ 폴더 생성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-pbdh",
+      "title": "비활성 Claude 폴더 3개 → _archive/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-wrs2",
+      "title": "tools/ 내 구버전 → tools/_archive/ 이동",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-062g",
+      "title": "Claude-Code/tools/ 중복 도구 제거 (심볼릭 링크로 대체)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-fgfb",
+      "title": "scripts/ 폴더 생성 및 스크립트 이동 (19개)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-4z3q",
+      "title": "tests/ 폴더 생성 및 테스트 이동 (13개)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-as66",
+      "title": "documentation/ 하위로 문서 이동 (18개)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-n2rm",
+      "title": "불필요 백업 파일 삭제 (12개)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-crrc",
+      "title": "Archive/projects/, software/, personal/, misc/ 생성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-gzgw",
+      "title": "misc-folders/ 내용 분류 후 재배치",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-fpzv",
+      "title": "이전 버전 Claude Code 확장 삭제 (10개)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_6",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-cvq9",
+      "title": "환경 변수 테스트 (npm, python, git)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_7",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-hxqr",
+      "title": "Claude Code 실행 테스트",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_7",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    },
+    {
+      "id": "goal-1770253991273-bdgr",
+      "title": "MCP 서버 연결 테스트",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_7",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.273Z"
+    }
+  ],
+  "createdAt": "2026-02-05T01:13:11.273Z",
+  "updatedAt": "2026-02-05T01:13:11.273Z"
+}

@@ -1,0 +1,1341 @@
+{
+  "version": "1.0.0",
+  "builtAt": "2026-03-16T04:15:29.241Z",
+  "servers": {
+    "mcp-installer": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "install-repo-mcp-server",
+          "description": "Install an MCP server via npx or uvx"
+        },
+        {
+          "name": "install-local-mcp-server",
+          "description": "Install an MCP server whose code is cloned locally on your computer"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:32.518Z"
+    },
+    "memory": {
+      "tools": [
+        {
+          "name": "create_entities",
+          "description": "Create knowledge graph entities"
+        },
+        {
+          "name": "create_relations",
+          "description": "Create entity relations"
+        },
+        {
+          "name": "add_observations",
+          "description": "Add observations to entities"
+        },
+        {
+          "name": "search_nodes",
+          "description": "Search knowledge graph"
+        },
+        {
+          "name": "read_graph",
+          "description": "Read full knowledge graph"
+        },
+        {
+          "name": "open_nodes",
+          "description": "Open specific nodes"
+        },
+        {
+          "name": "delete_entities",
+          "description": "Delete entities"
+        },
+        {
+          "name": "delete_relations",
+          "description": "Delete relations"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:33.332Z"
+    },
+    "shrimp-task": {
+      "tools": [
+        {
+          "name": "plan_task",
+          "description": "Create a task plan"
+        },
+        {
+          "name": "split_tasks",
+          "description": "Decompose task into subtasks"
+        },
+        {
+          "name": "execute_task",
+          "description": "Execute a planned task"
+        },
+        {
+          "name": "verify_task",
+          "description": "Verify task completion"
+        },
+        {
+          "name": "list_tasks",
+          "description": "List all tasks"
+        },
+        {
+          "name": "get_task_detail",
+          "description": "Get detailed task info"
+        },
+        {
+          "name": "delete_task",
+          "description": "Delete a task"
+        },
+        {
+          "name": "analyze_task",
+          "description": "Analyze task complexity"
+        },
+        {
+          "name": "reflect_task",
+          "description": "Reflect on task execution"
+        },
+        {
+          "name": "research_mode",
+          "description": "Enter research mode for a task"
+        },
+        {
+          "name": "process_thought",
+          "description": "Process a thinking step"
+        },
+        {
+          "name": "query_task",
+          "description": "Query tasks with filters"
+        },
+        {
+          "name": "update_task",
+          "description": "Update task status"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:33.332Z"
+    },
+    "github": {
+      "tools": [
+        {
+          "name": "create_pull_request",
+          "description": "Create a GitHub PR"
+        },
+        {
+          "name": "get_pull_request",
+          "description": "Get PR details"
+        },
+        {
+          "name": "list_pull_requests",
+          "description": "List PRs"
+        },
+        {
+          "name": "create_issue",
+          "description": "Create a GitHub issue"
+        },
+        {
+          "name": "list_issues",
+          "description": "List issues"
+        },
+        {
+          "name": "search_code",
+          "description": "Search code on GitHub"
+        },
+        {
+          "name": "search_repositories",
+          "description": "Search repositories"
+        },
+        {
+          "name": "get_file_contents",
+          "description": "Get file from repo"
+        },
+        {
+          "name": "create_or_update_file",
+          "description": "Create/update file in repo"
+        },
+        {
+          "name": "push_files",
+          "description": "Push multiple files"
+        },
+        {
+          "name": "create_branch",
+          "description": "Create a branch"
+        },
+        {
+          "name": "list_commits",
+          "description": "List commits"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:33.332Z"
+    },
+    "deep-research-mcp": {
+      "tools": [
+        {
+          "name": "deep_research",
+          "description": "Deep multi-source research on a topic"
+        },
+        {
+          "name": "quick_research",
+          "description": "Quick research summary"
+        },
+        {
+          "name": "research_status",
+          "description": "Check research job status"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:33.332Z"
+    },
+    "multi-ai-orchestration": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "query-gemini",
+          "description": "Query Gemini CLI for AI responses. Use for collaborative thinking with"
+        },
+        {
+          "name": "deliberate",
+          "description": "Run Claude-Gemini consensus deliberation. Returns agreed-upon plan aft"
+        },
+        {
+          "name": "dispatch-crawl",
+          "description": "Dispatch crawl request to appropriate crawler based on depth. Crawlers"
+        },
+        {
+          "name": "generate-image",
+          "description": "Generate image using Gemini API via Nano Banana."
+        },
+        {
+          "name": "generate-diagram",
+          "description": "Generate technical diagram using Gemini API."
+        },
+        {
+          "name": "research",
+          "description": "Analyze search results for relevance, categorize sources, and generate"
+        },
+        {
+          "name": "verify",
+          "description": "Cross-verify claims across multiple sources. Returns verification stat"
+        },
+        {
+          "name": "get-crawler-status",
+          "description": "Get availability status of all crawlers (SearXNG, Crawl4AI, Firecrawl)"
+        },
+        {
+          "name": "get-system-status",
+          "description": "Get full Multi-AI Orchestration system status including Gemini CLI and"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:34.354Z"
+    },
+    "firecrawl": {
+      "tools": [
+        {
+          "name": "firecrawl_scrape",
+          "description": "Scrape a web page"
+        },
+        {
+          "name": "firecrawl_crawl",
+          "description": "Crawl a website recursively"
+        },
+        {
+          "name": "firecrawl_map",
+          "description": "Map website structure"
+        },
+        {
+          "name": "firecrawl_search",
+          "description": "Search and scrape"
+        },
+        {
+          "name": "firecrawl_extract",
+          "description": "Extract structured data"
+        },
+        {
+          "name": "firecrawl_check_crawl_status",
+          "description": "Check crawl job status"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:34.354Z"
+    },
+    "scrapegraph-local": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "smart-scraper",
+          "description": "Extract structured data from a webpage using AI. Provide a URL and a p"
+        },
+        {
+          "name": "markdownify",
+          "description": "Convert a webpage to clean Markdown format"
+        },
+        {
+          "name": "search-scraper",
+          "description": "Search the web and extract information from results using AI"
+        },
+        {
+          "name": "scrape-local-html",
+          "description": "Extract data from local HTML content using AI"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:40.176Z"
+    },
+    "crawl4ai-lite": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "crawl4ai-scrape",
+          "description": "Scrape a webpage with options for content extraction including markdow"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:44.539Z"
+    },
+    "sqlite-mcp": {
+      "tools": [
+        {
+          "name": "read_query",
+          "description": "Execute SELECT query"
+        },
+        {
+          "name": "write_query",
+          "description": "Execute INSERT/UPDATE/DELETE"
+        },
+        {
+          "name": "create_table",
+          "description": "Create database table"
+        },
+        {
+          "name": "list_tables",
+          "description": "List all tables"
+        },
+        {
+          "name": "describe_table",
+          "description": "Describe table schema"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:45.357Z"
+    },
+    "websearch": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "web-search",
+          "description": "Search the web for information."
+        },
+        {
+          "name": "Use",
+          "description": "this tool when you need to search"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:47.297Z"
+    },
+    "youtube-data": {
+      "tools": [
+        {
+          "name": "searchVideos",
+          "description": "Search YouTube videos"
+        },
+        {
+          "name": "getVideoDetails",
+          "description": "Get video details"
+        },
+        {
+          "name": "getTranscripts",
+          "description": "Get video transcripts"
+        },
+        {
+          "name": "getChannelStatistics",
+          "description": "Get channel stats"
+        },
+        {
+          "name": "getTrendingVideos",
+          "description": "Get trending videos"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:47.297Z"
+    },
+    "edit-file-lines": {
+      "tools": [
+        {
+          "name": "edit_file_lines",
+          "description": "Line-based precise file editing"
+        },
+        {
+          "name": "get_file_lines",
+          "description": "Get specific lines with context"
+        },
+        {
+          "name": "search_file",
+          "description": "Search patterns within a file"
+        },
+        {
+          "name": "approve_edit",
+          "description": "Approve a dry-run edit"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:47.297Z"
+    },
+    "kiro-memory": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "health-check",
+          "description": "Check server health and database connectivity"
+        },
+        {
+          "name": "get-performance-stats",
+          "description": "Get server performance statistics"
+        },
+        {
+          "name": "cleanup-old-data",
+          "description": "Clean up old memories, logs, and completed tasks"
+        },
+        {
+          "name": "optimize-memories",
+          "description": "Analyze and optimize memory storage"
+        },
+        {
+          "name": "get-database-stats",
+          "description": "Get comprehensive database statistics"
+        },
+        {
+          "name": "get-memory-context",
+          "description": "Get current memory context and task reminders for the AI"
+        },
+        {
+          "name": "create-task",
+          "description": "Create a new task for the current project"
+        },
+        {
+          "name": "get-tasks",
+          "description": "Get tasks for the current project"
+        },
+        {
+          "name": "update-task-status",
+          "description": "Update task status (pending, in_progress, completed, cancelled)"
+        },
+        {
+          "name": "get-project-summary",
+          "description": "Get summary of the current project"
+        },
+        {
+          "name": "start-thinking-chain",
+          "description": "Start a new sequential thinking chain for complex problem solving"
+        },
+        {
+          "name": "add-thinking-step",
+          "description": "Add a step to an existing thinking chain"
+        },
+        {
+          "name": "get-thinking-chain",
+          "description": "Retrieve a complete thinking chain with all steps"
+        },
+        {
+          "name": "list-thinking-chains",
+          "description": "List recent thinking chains for the current project"
+        },
+        {
+          "name": "create-context-summary",
+          "description": "Create a compressed summary of context to save tokens"
+        },
+        {
+          "name": "start-new-chat-session",
+          "description": "Start a new chat session, optionally continuing from a previous one"
+        },
+        {
+          "name": "consolidate-current-session",
+          "description": "Consolidate the current session into a summary for continuation"
+        },
+        {
+          "name": "get-optimized-context",
+          "description": "Get optimized context that fits within token limits"
+        },
+        {
+          "name": "estimate-token-usage",
+          "description": "Estimate token count for given text"
+        },
+        {
+          "name": "auto-process-conversation",
+          "description": "Automatically process conversation content to extract memories and tas"
+        },
+        {
+          "name": "decompose-task",
+          "description": "Decompose a complex prompt into parent task and subtasks"
+        },
+        {
+          "name": "auto-learn-project-conventions",
+          "description": "Automatically learn and remember project-specific conventions, command"
+        },
+        {
+          "name": "get-project-conventions",
+          "description": "Get current project conventions and environment details for AI context"
+        },
+        {
+          "name": "suggest-correct-command",
+          "description": "Suggest correct project-specific command based on learned conventions"
+        },
+        {
+          "name": "remember-project-pattern",
+          "description": "Manually remember a specific project pattern or convention"
+        },
+        {
+          "name": "update-memory-context",
+          "description": "Enhanced memory context that includes project conventions and environm"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "context7": {
+      "tools": [
+        {
+          "name": "resolve-library-id",
+          "description": "Resolve library name to Context7 ID"
+        },
+        {
+          "name": "query-docs",
+          "description": "Query library documentation"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "one-search": {
+      "tools": [
+        {
+          "name": "one_search",
+          "description": "Meta search engine query"
+        },
+        {
+          "name": "one_scrape",
+          "description": "Scrape a URL"
+        },
+        {
+          "name": "one_map",
+          "description": "Map site structure"
+        },
+        {
+          "name": "one_extract",
+          "description": "Extract data from page"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "playwright": {
+      "tools": [
+        {
+          "name": "playwright_navigate",
+          "description": "Navigate to URL"
+        },
+        {
+          "name": "playwright_screenshot",
+          "description": "Take screenshot"
+        },
+        {
+          "name": "playwright_click",
+          "description": "Click element"
+        },
+        {
+          "name": "playwright_fill",
+          "description": "Fill input field"
+        },
+        {
+          "name": "playwright_get_visible_text",
+          "description": "Get visible text"
+        },
+        {
+          "name": "playwright_get_visible_html",
+          "description": "Get visible HTML"
+        },
+        {
+          "name": "playwright_evaluate",
+          "description": "Execute JavaScript"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "desktop-commander": {
+      "tools": [
+        {
+          "name": "read_file",
+          "description": "Read file contents with offset/length support"
+        },
+        {
+          "name": "write_file",
+          "description": "Write content to file (rewrite or append mode)"
+        },
+        {
+          "name": "edit_block",
+          "description": "Precise text replacement (old_string -> new_string)"
+        },
+        {
+          "name": "list_directory",
+          "description": "List directory contents"
+        },
+        {
+          "name": "search_files",
+          "description": "Search for files by name pattern"
+        },
+        {
+          "name": "search_code",
+          "description": "Search code content (ripgrep)"
+        },
+        {
+          "name": "get_file_info",
+          "description": "Get file metadata (size, dates, permissions)"
+        },
+        {
+          "name": "create_directory",
+          "description": "Create directory recursively"
+        },
+        {
+          "name": "move_file",
+          "description": "Move or rename file/directory"
+        },
+        {
+          "name": "start_process",
+          "description": "Start a system process"
+        },
+        {
+          "name": "list_processes",
+          "description": "List running processes"
+        },
+        {
+          "name": "kill_process",
+          "description": "Kill a process by PID"
+        },
+        {
+          "name": "read_multiple_files",
+          "description": "Read multiple files at once"
+        },
+        {
+          "name": "read_process_output",
+          "description": "Read output from a running process"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "supabase": {
+      "tools": [
+        {
+          "name": "execute_sql",
+          "description": "Execute SQL on Supabase"
+        },
+        {
+          "name": "list_tables",
+          "description": "List Supabase tables"
+        },
+        {
+          "name": "apply_migration",
+          "description": "Apply database migration"
+        },
+        {
+          "name": "deploy_edge_function",
+          "description": "Deploy edge function"
+        },
+        {
+          "name": "get_logs",
+          "description": "Get Supabase logs"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "n8n": {
+      "tools": [
+        {
+          "name": "list-workflows",
+          "description": "List all n8n workflows"
+        },
+        {
+          "name": "get-workflow",
+          "description": "Get workflow details"
+        },
+        {
+          "name": "create-workflow",
+          "description": "Create new workflow"
+        },
+        {
+          "name": "activate-workflow",
+          "description": "Activate a workflow"
+        },
+        {
+          "name": "list-executions",
+          "description": "List workflow executions"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "sequential-thinking": {
+      "tools": [
+        {
+          "name": "sequentialthinking",
+          "description": "Multi-step sequential reasoning process"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:50.780Z"
+    },
+    "runpod-jupyter": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "List",
+          "description": "all files and directories recursively in the Jupyter server'"
+        },
+        {
+          "name": "list-kernels",
+          "description": "List all available kernels in the Jupyter server."
+        },
+        {
+          "name": "This",
+          "description": "tool s"
+        },
+        {
+          "name": "use-notebook",
+          "description": "Use a notebook and activate it for following cell operations."
+        },
+        {
+          "name": "list-notebooks",
+          "description": "List all notebooks that have been used via use_notebook tool"
+        },
+        {
+          "name": "restart-notebook",
+          "description": "Restart the kernel for a specific notebook."
+        },
+        {
+          "name": "unuse-notebook",
+          "description": "Unuse from a specific notebook and release its resources."
+        },
+        {
+          "name": "read-notebook",
+          "description": "Read a notebook and return index, source content, type, execution coun"
+        },
+        {
+          "name": "insert-cell",
+          "description": "Insert a cell to specified position from the currently activated noteb"
+        },
+        {
+          "name": "overwrite-cell-source",
+          "description": "Overwrite the source of a specific cell from the currently activated n"
+        },
+        {
+          "name": "execute-cell",
+          "description": "Execute a cell from the currently activated notebook with timeout and"
+        },
+        {
+          "name": "insert-execute-code-cell",
+          "description": "Insert a cell at specified index from the currently activated notebook"
+        },
+        {
+          "name": "read-cell",
+          "description": "Read a specific cell from the currently activated notebook and return"
+        },
+        {
+          "name": "delete-cell",
+          "description": "Delete specific cells from the currently activated notebook and return"
+        },
+        {
+          "name": "execute-code",
+          "description": "Execute code directly in the kernel (not saved to notebook) on the cur"
+        },
+        {
+          "name": "connect-to-jupyter",
+          "description": "Connect to a Jupyter server dynamically with URL and token."
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:15:59.338Z"
+    },
+    "image-recognition": {
+      "tools": [
+        {
+          "name": "describe_image",
+          "description": "Describe image from URL"
+        },
+        {
+          "name": "describe_image_from_file",
+          "description": "Describe image from file path"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:15:59.338Z"
+    },
+    "paddleocr-mcp": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "ocr-image",
+          "description": "Extract text from image using PaddleOCR. Supports 80+ languages."
+        },
+        {
+          "name": "extract-table",
+          "description": "Extract table structure from document image"
+        },
+        {
+          "name": "detect-language",
+          "description": "Detect text language in image"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:00.732Z"
+    },
+    "marker-mcp": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "convert-pdf",
+          "description": "Convert PDF to Markdown with structure preservation"
+        },
+        {
+          "name": "extract-text",
+          "description": "Extract plain text from PDF"
+        },
+        {
+          "name": "analyze-structure",
+          "description": "Analyze PDF document structure (headings, tables, images)"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:02.083Z"
+    },
+    "llm-council": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "council-ask",
+          "description": "Full 3-stage LLM Council deliberation for complex questions."
+        },
+        {
+          "name": "Stage",
+          "description": "1:"
+        },
+        {
+          "name": "council-quick",
+          "description": "Quick opinion collection from multiple models (Stage 1 only)."
+        },
+        {
+          "name": "council-config",
+          "description": "View current council configuration."
+        },
+        {
+          "name": "Shows",
+          "description": "which models are in the cou"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:03.449Z"
+    },
+    "antv-chart": {
+      "tools": [
+        {
+          "name": "generate_line_chart",
+          "description": "Generate line chart"
+        },
+        {
+          "name": "generate_bar_chart",
+          "description": "Generate bar chart"
+        },
+        {
+          "name": "generate_pie_chart",
+          "description": "Generate pie chart"
+        },
+        {
+          "name": "generate_scatter_chart",
+          "description": "Generate scatter plot"
+        },
+        {
+          "name": "generate_area_chart",
+          "description": "Generate area chart"
+        },
+        {
+          "name": "generate_column_chart",
+          "description": "Generate column chart"
+        },
+        {
+          "name": "generate_mind_map",
+          "description": "Generate mind map"
+        },
+        {
+          "name": "generate_flow_diagram",
+          "description": "Generate flow diagram"
+        },
+        {
+          "name": "generate_network_graph",
+          "description": "Generate network graph"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:16:03.449Z"
+    },
+    "hfspace": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "available-files",
+          "description": "A list of available file and resources. If the User requests things li"
+        },
+        {
+          "name": "search-spaces",
+          "description": "Use semantic search to find an endpoint on the `Hugging Face Spaces` s"
+        },
+        {
+          "name": "flux-1-schnell-infer",
+          "description": "Call the FLUX.1-schnell endpoint /infer"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:07.893Z"
+    },
+    "task-master-ai": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "get-tasks",
+          "description": "Get all tasks from Task Master, optionally filtering by status and inc"
+        },
+        {
+          "name": "next-task",
+          "description": "Find the next task to work on based on dependencies and status"
+        },
+        {
+          "name": "get-task",
+          "description": "Get detailed information about a specific task"
+        },
+        {
+          "name": "set-task-status",
+          "description": "Set the status of one or more tasks or subtasks."
+        },
+        {
+          "name": "update-subtask",
+          "description": "Appends timestamped information to a specific subtask without replacin"
+        },
+        {
+          "name": "parse-prd",
+          "description": "Parse a Product Requirements Document (PRD) text file to automatically"
+        },
+        {
+          "name": "expand-task",
+          "description": "Expand a task into subtasks for detailed implementation"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:15.990Z"
+    },
+    "paper-search-mcp": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "search-arxiv",
+          "description": "Search academic papers from arXiv."
+        },
+        {
+          "name": "query:",
+          "description": "Search query stri",
+          "group": "Args"
+        },
+        {
+          "name": "search-pubmed",
+          "description": "Search academic papers from PubMed.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Search query str",
+          "group": "Args"
+        },
+        {
+          "name": "search-biorxiv",
+          "description": "Search academic papers from bioRxiv.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Search query st",
+          "group": "Args"
+        },
+        {
+          "name": "search-medrxiv",
+          "description": "Search academic papers from medRxiv.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Search query st",
+          "group": "Args"
+        },
+        {
+          "name": "search-google-scholar",
+          "description": "Search academic papers from Google Scholar.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Search q",
+          "group": "Args"
+        },
+        {
+          "name": "search-iacr",
+          "description": "Search academic papers from IACR ePrint Archive.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Sea",
+          "group": "Args"
+        },
+        {
+          "name": "download-arxiv",
+          "description": "Download PDF of an arXiv paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "arXiv paper ID (e",
+          "group": "Args"
+        },
+        {
+          "name": "download-pubmed",
+          "description": "Attempt to download PDF of a PubMed paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "PubMed",
+          "group": "Args"
+        },
+        {
+          "name": "download-biorxiv",
+          "description": "Download PDF of a bioRxiv paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "bioRxiv DOI.",
+          "group": "Args"
+        },
+        {
+          "name": "download-medrxiv",
+          "description": "Download PDF of a medRxiv paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "medRxiv DOI.",
+          "group": "Args"
+        },
+        {
+          "name": "download-iacr",
+          "description": "Download PDF of an IACR ePrint paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "IACR paper",
+          "group": "Args"
+        },
+        {
+          "name": "read-arxiv-paper",
+          "description": "Read and extract text content from an arXiv paper PDF.",
+          "group": "Args"
+        },
+        {
+          "name": "read-pubmed-paper",
+          "description": "Read and extract text content from a PubMed paper.",
+          "group": "Args"
+        },
+        {
+          "name": "read-biorxiv-paper",
+          "description": "Read and extract text content from a bioRxiv paper PDF.",
+          "group": "Args"
+        },
+        {
+          "name": "read-medrxiv-paper",
+          "description": "Read and extract text content from a medRxiv paper PDF.",
+          "group": "Args"
+        },
+        {
+          "name": "read-iacr-paper",
+          "description": "Read and extract text content from an IACR ePrint paper PDF.",
+          "group": "Args"
+        },
+        {
+          "name": "search-semantic",
+          "description": "Search academic papers from Semantic Scholar.",
+          "group": "Args"
+        },
+        {
+          "name": "query:",
+          "description": "Search",
+          "group": "Args"
+        },
+        {
+          "name": "download-semantic",
+          "description": "Download PDF of a Semantic Scholar paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "Sem",
+          "group": "Args"
+        },
+        {
+          "name": "read-semantic-paper",
+          "description": "Read and extract text content from a Semantic Scholar paper.",
+          "group": "Args"
+        },
+        {
+          "name": "search-crossref",
+          "description": "Search academic papers from CrossRef database.",
+          "group": "Args"
+        },
+        {
+          "name": "CrossRef",
+          "description": "is a scholarl",
+          "group": "Args"
+        },
+        {
+          "name": "get-crossref-paper-by-doi",
+          "description": "Get a specific paper from CrossRef by its DOI.",
+          "group": "Args"
+        },
+        {
+          "name": "doi:",
+          "description": "Digital",
+          "group": "Args"
+        },
+        {
+          "name": "download-crossref",
+          "description": "Attempt to download PDF of a CrossRef paper.",
+          "group": "Args"
+        },
+        {
+          "name": "paper_id:",
+          "description": "Cros",
+          "group": "Args"
+        },
+        {
+          "name": "read-crossref-paper",
+          "description": "Attempt to read and extract text content from a CrossRef paper.",
+          "group": "Args"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:20.053Z"
+    },
+    "vibekanban": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "Look",
+          "description": "up a project ID by project name using fuzzy, case-insensitive, a"
+        },
+        {
+          "name": "Get",
+          "description": "the current status of the Kanban board, including ticket counts b"
+        },
+        {
+          "name": "Create",
+          "description": "a new ticket in the Kanban board."
+        },
+        {
+          "name": "project_id",
+          "description": "(int):",
+          "group": "Args"
+        },
+        {
+          "name": "Update",
+          "description": "a ticket's state in the Kanban board.",
+          "group": "Args"
+        },
+        {
+          "name": "ticket_id",
+          "description": "(in",
+          "group": "Args"
+        },
+        {
+          "name": "List",
+          "description": "all projects in the Kanban board.",
+          "group": "Args"
+        },
+        {
+          "name": "str:",
+          "description": "A formatted",
+          "group": "Returns"
+        },
+        {
+          "name": "List",
+          "description": "tickets, optionally filtered by project.",
+          "group": "Returns"
+        },
+        {
+          "name": "project_id",
+          "description": "(",
+          "group": "Args"
+        },
+        {
+          "name": "Add",
+          "description": "a comment to a ticket.",
+          "group": "Args"
+        },
+        {
+          "name": "ticket_id",
+          "description": "(int): The ID of the",
+          "group": "Args"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:37.186Z"
+    },
+    "notion": {
+      "tools": [
+        {
+          "name": "API-post-search",
+          "description": "Search Notion"
+        },
+        {
+          "name": "API-retrieve-a-page",
+          "description": "Get Notion page"
+        },
+        {
+          "name": "API-post-page",
+          "description": "Create Notion page"
+        },
+        {
+          "name": "API-patch-page",
+          "description": "Update Notion page"
+        },
+        {
+          "name": "API-query-data-source",
+          "description": "Query Notion database"
+        }
+      ],
+      "source": "known",
+      "scannedAt": "2026-03-16T04:16:37.187Z"
+    },
+    "e2b": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "run-code",
+          "description": "Run python code in a secure sandbox by E2B. Using the Jupyter Notebook"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:40.776Z"
+    },
+    "pal": {
+      "tools": [
+        {
+          "name": "Available",
+          "description": "tools:"
+        },
+        {
+          "name": "chat",
+          "description": "General chat and collaborative thinking partner for brainstorming, dev"
+        },
+        {
+          "name": "clink",
+          "description": "Link a request to an external AI CLI (Gemini CLI, Qwen CLI, etc.) thro"
+        },
+        {
+          "name": "thinkdeep",
+          "description": "Performs multi-stage investigation and reasoning for complex problem a"
+        },
+        {
+          "name": "planner",
+          "description": "Breaks down complex tasks through interactive, sequential planning wit"
+        },
+        {
+          "name": "consensus",
+          "description": "Builds multi-model consensus through systematic analysis and structure"
+        },
+        {
+          "name": "codereview",
+          "description": "Performs systematic, step-by-step code review with expert validation."
+        },
+        {
+          "name": "precommit",
+          "description": "Validates git changes and repository state before committing with syst"
+        },
+        {
+          "name": "debug",
+          "description": "Performs systematic debugging and root cause analysis for any type of"
+        },
+        {
+          "name": "challenge",
+          "description": "Prevents reflexive agreement by forcing critical thinking and reasoned"
+        },
+        {
+          "name": "apilookup",
+          "description": "Use this tool automatically when you need current API/SDK documentatio"
+        },
+        {
+          "name": "listmodels",
+          "description": "Shows which AI model providers are configured, available model names,"
+        },
+        {
+          "name": "version",
+          "description": "Get server version, configuration details, and list of available tools"
+        }
+      ],
+      "source": "mcp2cli",
+      "scannedAt": "2026-03-16T04:16:47.790Z"
+    }
+  }
+}

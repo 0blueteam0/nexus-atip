@@ -53,7 +53,34 @@ async function sessionStart() {
       console.log('    Run: node nexus/core/cli.js research');
     }
 
-    // 5. Knowledge summary
+    // 5. Start HookServer for hook -> EventBus bridge
+    try {
+      const cfg = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'nexus.config.json'), 'utf8'));
+      if (cfg.claude_features?.hook_server?.enabled) {
+        const { HookServer } = require('../claude-features/hook-server');
+        const hookServer = new HookServer({ port: cfg.claude_features.hook_server.port || 7851 });
+        const hsResult = await hookServer.start();
+        if (hsResult.started) {
+          console.log(`[+] HookServer: port ${hsResult.port} (hook -> EventBus bridge)`);
+        }
+      }
+
+      // Initialize TeamOrchestrator with config
+      if (cfg.claude_features?.agent_teams?.enabled) {
+        const { TeamOrchestrator } = require('../claude-features/team-orchestrator');
+        const at = cfg.claude_features.agent_teams;
+        const teamOrch = new TeamOrchestrator({
+          enabled: at.enabled,
+          maxTeamSize: at.max_members,
+          timeoutMs: at.timeout_ms
+        });
+        console.log(`[+] Agent Teams: enabled (max ${at.max_members}, hooks: ${(at.hook_events || []).join(', ')})`);
+      }
+    } catch (e) {
+      // Non-fatal: HookServer/Teams are optional enhancements
+    }
+
+    // 6. Knowledge summary
     try {
       const { KnowledgeIndex } = require('../knowledge/knowledge-index');
       const ki = new KnowledgeIndex();

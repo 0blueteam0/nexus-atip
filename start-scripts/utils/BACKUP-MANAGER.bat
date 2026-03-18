@@ -12,21 +12,21 @@ goto :help
 
 :backup
 echo [+] Creating backup: backup-%TIMESTAMP%.html
-copy K:\PortableApps\Claude-Code\vite-app\index.html K:\PortableApps\Claude-Code\backups\vite\backup-%TIMESTAMP%.html
+copy K:\PortableApps\genai\vite-app\index.html K:\PortableApps\genai\backups\vite\backup-%TIMESTAMP%.html
 echo [+] Backup created successfully!
 goto :end
 
 :restore
 echo [+] Available backups:
-dir /b K:\PortableApps\Claude-Code\backups\vite\*.html
+dir /b K:\PortableApps\genai\backups\vite\*.html
 set /p BACKUP_NAME="Enter backup filename to restore: "
-copy K:\PortableApps\Claude-Code\backups\vite\%BACKUP_NAME% K:\PortableApps\Claude-Code\vite-app\index.html
+copy K:\PortableApps\genai\backups\vite\%BACKUP_NAME% K:\PortableApps\genai\vite-app\index.html
 echo [+] Restored from %BACKUP_NAME%
 goto :end
 
 :list
 echo [*] Available backups:
-dir /b /od K:\PortableApps\Claude-Code\backups\vite\*.html
+dir /b /od K:\PortableApps\genai\backups\vite\*.html
 goto :end
 
 :help

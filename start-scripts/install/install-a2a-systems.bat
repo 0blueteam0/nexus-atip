@@ -8,7 +8,7 @@ echo  - A2A-MCP-Server (A2A Protocol Bridge)
 echo ================================================================
 echo.
 
-set "BASE_DIR=K:\PortableApps\Claude-Code"
+set "BASE_DIR=K:\PortableApps\genai"
 set "MCP_DIR=%BASE_DIR%\mcp-servers"
 set "PYTHON_EXE=K:\PortableApps\tools\python\python.exe"
 set "PIP_EXE=K:\PortableApps\tools\python\Scripts\pip.exe"
@@ -100,7 +100,7 @@ echo   "mcpServers": {
 echo     "zen": {
 echo       "command": "K:\\PortableApps\\tools\\python\\python.exe",
 echo       "args": [
-echo         "K:\\PortableApps\\Claude-Code\\mcp-servers\\zen-mcp-server\\zen_mcp_server.py"
+echo         "K:\\PortableApps\\genai\\mcp-servers\\zen-mcp-server\\zen_mcp_server.py"
 echo       ],
 echo       "env": {
 echo         "GEMINI_API_KEY": "${GEMINI_API_KEY}",
@@ -116,13 +116,13 @@ echo         "DISABLED_TOOLS": "analyze,refactor,testgen,secaudit,docgen,tracer"
 echo       }
 echo     },
 echo     "a2a": {
-echo       "command": "K:\\PortableApps\\Claude-Code\\mcp-servers\\A2A-MCP-Server\\.venv\\Scripts\\python.exe",
+echo       "command": "K:\\PortableApps\\genai\\mcp-servers\\A2A-MCP-Server\\.venv\\Scripts\\python.exe",
 echo       "args": [
-echo         "K:\\PortableApps\\Claude-Code\\mcp-servers\\A2A-MCP-Server\\a2a_mcp_server.py"
+echo         "K:\\PortableApps\\genai\\mcp-servers\\A2A-MCP-Server\\a2a_mcp_server.py"
 echo       ],
 echo       "env": {
 echo         "MCP_TRANSPORT": "stdio",
-echo         "PYTHONPATH": "K:\\PortableApps\\Claude-Code\\mcp-servers\\A2A-MCP-Server",
+echo         "PYTHONPATH": "K:\\PortableApps\\genai\\mcp-servers\\A2A-MCP-Server",
 echo         "MCP_DEBUG": "false"
 echo       }
 echo     }
@@ -151,7 +151,7 @@ echo def test_zen_installation^(^):
 echo     """ZEN MCP 서버 설치 상태 확인"""
 echo     print^("［*］ ZEN MCP 서버 설치 테스트..."^)
 echo     
-echo     zen_path = r"K:\PortableApps\Claude-Code\mcp-servers\zen-mcp-server"
+echo     zen_path = r"K:\PortableApps\genai\mcp-servers\zen-mcp-server"
 echo     requirements_path = os.path.join^(zen_path, "requirements.txt"^)
 echo     server_path = os.path.join^(zen_path, "zen_mcp_server.py"^)
 echo     
@@ -201,7 +201,7 @@ echo    2. O3로 최적화 방안 제시
 echo    3. 종합적인 개선 코드 작성"
 echo.
 echo 3. 설정 파일 위치:
-echo    K:\PortableApps\Claude-Code\claude_desktop_config_a2a.json
+echo    K:\PortableApps\genai\claude_desktop_config_a2a.json
 echo.
 echo ================================================================
 echo     """
@@ -234,7 +234,7 @@ echo def test_a2a_installation^(^):
 echo     """A2A MCP 서버 설치 상태 확인"""
 echo     print^("［*］ A2A MCP 서버 설치 테스트..."^)
 echo     
-echo     a2a_path = r"K:\PortableApps\Claude-Code\mcp-servers\A2A-MCP-Server"
+echo     a2a_path = r"K:\PortableApps\genai\mcp-servers\A2A-MCP-Server"
 echo     venv_path = os.path.join^(a2a_path, ".venv"^)
 echo     server_path = os.path.join^(a2a_path, "a2a_mcp_server.py"^)
 echo     
@@ -277,7 +277,7 @@ echo    2. 새로운 분석 작업 생성
 echo    3. 작업 상태 확인 및 결과 조회"
 echo.
 echo 3. 에이전트 개발:
-echo    - K:\PortableApps\Claude-Code\documentation\guides\A2A-COMPREHENSIVE-ANALYSIS-2025.md
+echo    - K:\PortableApps\genai\documentation\guides\A2A-COMPREHENSIVE-ANALYSIS-2025.md
 echo    - 참조하여 커스텀 에이전트 개발 가능
 echo.
 echo ================================================================
@@ -326,7 +326,7 @@ echo     1. API 키 설정 (GEMINI_API_KEY 등)
 echo     2. Claude Desktop 재시작  
 echo     3. /mcp 명령어로 서버 확인
 echo     4. 종합 가이드 참조: 
-echo        K:\PortableApps\Claude-Code\documentation\guides\A2A-COMPREHENSIVE-ANALYSIS-2025.md
+echo        K:\PortableApps\genai\documentation\guides\A2A-COMPREHENSIVE-ANALYSIS-2025.md
 echo.
 echo ================================================================
 

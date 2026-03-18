@@ -14,12 +14,12 @@ echo.
 
 REM MCP 출력 최소화 활성화
 echo [2] MCP 출력 필터 활성화...
-K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\Claude-Code\systems\mcp-output-minimizer.js
+K:\PortableApps\tools\nodejs\node.exe K:\PortableApps\genai\systems\mcp-output-minimizer.js
 echo.
 
 REM npm 패키지 설치 (chalk 필요)
 echo [3] 필요 패키지 확인...
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 if not exist node_modules\chalk (
     echo    - chalk 설치 중...
     K:\PortableApps\tools\nodejs\npm.cmd install chalk --no-save --silent

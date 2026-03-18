@@ -1,0 +1,188 @@
+{
+  "lifecycleId": "lc-distributed-marinating-hippo-1773181741101",
+  "planId": "distributed-marinating-hippo",
+  "planTitle": "Plan: ATOS & Plan Ecosystem - Python/C 리라이트 및 패키징 비교",
+  "phases": {
+    "prd": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [
+    {
+      "id": "goal-1773181741101-8uv1",
+      "title": "pyproject.toml 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-v6ph",
+      "title": "가상환경 설정 (venv)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-5l36",
+      "title": "의존성 설치",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-r272",
+      "title": "models/ 정의 (Pydantic)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-ye0n",
+      "title": "core/orchestrator.py",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-46xv",
+      "title": "core/recommender.py (가장 복잡)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-9p0z",
+      "title": "core/analyzer.py",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-3o4h",
+      "title": "cli.py",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-zvcr",
+      "title": "FastAPI 서버 기본 구조",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-30a4",
+      "title": "collectors/ 포팅 (plan, tool, agent)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-ihl1",
+      "title": "WebSocket 설정 (python-socketio)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-ozp5",
+      "title": "정적 파일 서빙",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-qb6e",
+      "title": "PyInstaller 빌드 설정",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-lbru",
+      "title": "Windows 실행 파일 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-l7ew",
+      "title": "테스트",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-n5gn",
+      "title": "벤치마크 스크립트 작성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-4jbu",
+      "title": "테스트 실행",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    },
+    {
+      "id": "goal-1773181741101-k87o",
+      "title": "보고서 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.101Z"
+    }
+  ],
+  "createdAt": "2026-03-10T22:29:01.101Z",
+  "updatedAt": "2026-03-10T22:29:01.102Z"
+}

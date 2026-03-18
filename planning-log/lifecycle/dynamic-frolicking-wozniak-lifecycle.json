@@ -1,0 +1,43 @@
+{
+  "lifecycleId": "lc-dynamic-frolicking-wozniak-1770253991212",
+  "planId": "dynamic-frolicking-wozniak",
+  "planTitle": "시스템 현황 분석 및 문서화 플랜",
+  "phases": {
+    "prd": {
+      "status": "in_progress",
+      "startedAt": "2026-02-05T01:13:11.212Z",
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [],
+  "createdAt": "2026-02-05T01:13:11.212Z",
+  "updatedAt": "2026-02-05T01:13:11.212Z"
+}

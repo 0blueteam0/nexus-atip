@@ -17,6 +17,7 @@
 
 'use strict';
 
+const path = require('path');
 const { Orchestrator } = require('./orchestrator');
 const { loadConfig, getEnabledProviders } = require('./config-parser');
 const { getContainer } = require('./container');
@@ -318,6 +319,266 @@ async function main() {
       break;
     }
 
+    case 'monitor': {
+      console.log('[*] Starting NEXUS Monitor...');
+      try {
+        const { MonitorServer } = require('../monitor/server');
+        const server = new MonitorServer();
+        const result = await server.start();
+        if (result.started) {
+          console.log(`[+] Monitor started: ${result.url}`);
+          console.log('    Press Ctrl+C to stop');
+          process.on('SIGINT', () => { server.stop(); process.exit(0); });
+        } else {
+          console.error(`[-] Monitor failed: ${result.error}`);
+        }
+      } catch (e) {
+        console.error(`[-] Monitor error: ${e.message}`);
+      }
+      break;
+    }
+
+    case 'checkpoint': {
+      const subCmd = args[1];
+      try {
+        const { CheckpointStore } = require('../agent-framework/checkpoint-store');
+        const store = new CheckpointStore();
+
+        if (subCmd === 'list') {
+          const stats = store.getStats();
+          console.log('[*] Checkpoint Stats:');
+          console.log(`    Backend: ${stats.backend}`);
+          console.log(`    Total: ${stats.totalCheckpoints}`);
+          console.log(`    Runs: ${stats.runs}`);
+          if (stats.latestCheckpoint) {
+            console.log(`    Latest: ${new Date(stats.latestCheckpoint).toISOString()}`);
+          }
+        } else if (subCmd === 'restore' && args[2]) {
+          const cp = store.load(args[2]);
+          if (cp) {
+            console.log(`[+] Checkpoint loaded: ${args[2]}`);
+            console.log(`    Run: ${cp.runId}`);
+            console.log(`    Node: ${cp.node}`);
+            console.log(`    State keys: ${Object.keys(cp.state || {}).join(', ')}`);
+          } else {
+            console.log(`[-] Checkpoint not found: ${args[2]}`);
+          }
+        } else {
+          console.log('Usage: nexus checkpoint list | nexus checkpoint restore <id>');
+        }
+      } catch (e) {
+        console.error(`[-] Checkpoint error: ${e.message}`);
+      }
+      break;
+    }
+
+    case 'obsidian': {
+      const subCmd = args[1];
+      try {
+        const { ObsidianIntegration } = require('../obsidian');
+        const config = loadConfig();
+        const obsConfig = config.obsidian || {};
+        const obs = new ObsidianIntegration(obsConfig);
+
+        if (subCmd === 'status') {
+          await obs.init();
+          const s = obs.getStatus();
+          console.log('========================================');
+          console.log('  NEXUS Obsidian Integration');
+          console.log('========================================');
+          console.log('  Initialized: ' + s.initialized);
+          if (s.bridge) {
+            console.log('  Available: ' + s.bridge.available);
+            console.log('  Host: ' + s.bridge.host + ':' + s.bridge.port);
+            console.log('  Base path: ' + s.bridge.basePath);
+            console.log('  Sync mode: ' + s.config.syncMode);
+            console.log('  Queue: ' + s.bridge.queueSize + ' pending');
+            console.log('  Stats: ' + s.bridge.stats.written + ' written, ' + s.bridge.stats.failed + ' failed');
+          }
+          if (s.eventWriter) {
+            console.log('  Notes created: ' + s.eventWriter.notesCreated);
+            console.log('  Tracked tasks: ' + s.eventWriter.trackedTasks);
+          }
+          console.log('========================================');
+
+        } else if (subCmd === 'sync') {
+          await obs.init();
+          const orch = new Orchestrator();
+          await orch.init();
+          const status = orch.getStatus();
+          const result = await obs.sync({
+            session: {
+              sessionId: status.sessionId,
+              providers: Object.keys(status.providers),
+              taskCount: status.taskCount,
+              successRate: parseFloat(status.successRate) || 0,
+              startTime: Date.now()
+            },
+            providers: Object.fromEntries(
+              Object.entries(status.providers).map(([id, p]) => [id, {
+                role: p.role, status: p.status, context: p.context,
+                costTier: p.costTier, strengths: p.strengths || [], weaknesses: p.weaknesses || []
+              }])
+            ),
+            evolution: orch.evolutionState
+          });
+          console.log('[+] Obsidian sync complete');
+          if (result.session) console.log('  Session note: ' + (result.session.ok ? 'written' : 'skipped'));
+          if (result.evolution) console.log('  Evolution: ' + result.evolution.synced + ' synced');
+          if (result.memory) {
+            console.log('  Memory -> Obsidian: ' + result.memory.memoryToObsidian);
+            console.log('  Obsidian hints: ' + result.memory.obsidianHints);
+          }
+
+        } else if (subCmd === 'init') {
+          await obs.init();
+          const config2 = loadConfig();
+          const result = await obs.initVault(config2.providers || {});
+          console.log('[+] Obsidian vault initialized');
+          console.log('  Folders: ' + (result.folders || []).join(', '));
+
+        } else if (subCmd === 'dashboard') {
+          await obs.init();
+          await obs.regenerateDashboard();
+          console.log('[+] Dashboard.md regenerated');
+
+        } else {
+          console.log('Usage: nexus obsidian <status|sync|init|dashboard>');
+          console.log('  status     Check REST API connection');
+          console.log('  sync       Sync session/evolution/memory to vault');
+          console.log('  init       Initialize vault folder structure');
+          console.log('  dashboard  Regenerate Dashboard.md');
+        }
+
+        await obs.destroy();
+      } catch (e) {
+        console.error('[-] Obsidian error: ' + e.message);
+      }
+      break;
+    }
+
+    case 'sync': {
+      const subCmd = args[1];
+      if (subCmd === 'configs') {
+        try {
+          const { ConfigSync } = require('../sync/config-sync');
+          const dryRun = args.includes('--dry-run');
+          const sync = new ConfigSync({ dryRun });
+          const result = sync.sync();
+
+          if (!result.synced) {
+            console.log(`[-] Sync failed: ${result.reason}`);
+            process.exit(1);
+          }
+
+          console.log('[+] Config sync complete');
+          if (result.gemini) {
+            console.log(`    Gemini: ${result.gemini.status || 'preview'} (${result.gemini.servers.length} servers)`);
+          }
+          if (result.codex) {
+            console.log(`    Codex: ${result.codex.status || 'preview'} (${result.codex.servers.length} servers)`);
+          }
+          if (result.skillLinks) {
+            result.skillLinks.forEach(l => {
+              console.log(`    Skill link: ${path.basename(path.dirname(l.link))}/${path.basename(l.link)} [${l.status}]`);
+            });
+          }
+          console.log(`    Skipped: ${result.skipped.length} servers`);
+        } catch (e) {
+          console.error(`[-] Config sync error: ${e.message}`);
+        }
+      } else if (subCmd === 'gemini') {
+        try {
+          const { GeminiSync } = require('../sync/gemini-sync');
+          const sync = new GeminiSync();
+          const result = sync.sync();
+          if (result.synced) {
+            console.log('[+] Gemini sync complete');
+            console.log(`    Settings: ${result.settings.path}`);
+            console.log(`    GEMINI.md: ${result.geminiMd.path}`);
+          } else {
+            console.log(`[-] Sync skipped: ${result.reason}`);
+          }
+        } catch (e) {
+          console.error(`[-] Gemini sync error: ${e.message}`);
+        }
+      } else {
+        console.log('Usage: nexus sync <configs|gemini> [--dry-run]');
+        console.log('  configs    Sync MCP servers from .claude.json to Gemini/Codex');
+        console.log('  gemini     Sync Architect.md to GEMINI.md and .gemini/settings.json');
+      }
+      break;
+    }
+
+    case 'team': {
+      const subCmd = args[1];
+      const hub = new A2AHub();
+
+      // Load TeamOrchestrator with config
+      let teamOrch = null;
+      try {
+        const { TeamOrchestrator } = require('../claude-features/team-orchestrator');
+        const cfg = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, '..', 'nexus.config.json'), 'utf8'));
+        const at = cfg.claude_features?.agent_teams || {};
+        teamOrch = new TeamOrchestrator({ enabled: at.enabled, maxTeamSize: at.max_members, timeoutMs: at.timeout_ms });
+        teamOrch.connectA2AHub(hub);
+      } catch { /* fallback to hub only */ }
+
+      if (subCmd === 'spawn') {
+        const goal = args.slice(2).join(' ') || 'general task';
+        if (teamOrch) {
+          // Use TeamOrchestrator + A2AHub bridge
+          const team = teamOrch.startTeam({
+            name: `cli-team-${Date.now()}`,
+            task: goal,
+            members: [
+              { role: 'lead', agentType: 'claude-code', subtask: goal },
+              { role: 'reviewer', agentType: 'gemini-cli', subtask: `Review: ${goal}` }
+            ]
+          });
+          if (team.started) {
+            const delegation = teamOrch.delegateViaA2AHub(team.teamId);
+            console.log('[+] Team spawned (Orchestrator + A2AHub):');
+            console.log(`    Team ID: ${team.teamId}`);
+            console.log(`    A2A delegated: ${delegation.delegated}`);
+            const status = teamOrch.getTeamStatus(team.teamId);
+            status.members.forEach(m => console.log(`    [${m.status}] ${m.role}: ${m.agentType}`));
+          } else {
+            console.log(`[-] Team start failed: ${team.reason}`);
+          }
+        } else {
+          // Fallback: A2AHub only
+          const result = hub.delegateToTeam({ goal });
+          console.log('[*] Team spawned (A2AHub):');
+          console.log(`    Team ID: ${result.teamId}`);
+          console.log(`    Members: ${result.members.join(', ')}`);
+          console.log(`    Status: ${result.status}`);
+        }
+      } else if (subCmd === 'status') {
+        // Combined status from both systems
+        const hubStatus = hub.getStatus();
+        console.log('[*] A2AHub Status:');
+        console.log(`    Agents: ${hubStatus.agents}`);
+        console.log(`    Queued tasks: ${hubStatus.queuedTasks}`);
+        console.log(`    Active teams: ${hubStatus.activeTeams}`);
+        hubStatus.agentList.forEach(a => console.log(`      ${a}`));
+
+        if (teamOrch) {
+          const orchStatus = teamOrch.getStatus();
+          console.log('[*] TeamOrchestrator Status:');
+          console.log(`    Enabled: ${orchStatus.enabled}`);
+          console.log(`    Total teams: ${orchStatus.totalTeams}`);
+          console.log(`    Active: ${orchStatus.activeTeams}`);
+          console.log(`    Max size: ${orchStatus.maxTeamSize}`);
+          console.log(`    A2AHub: ${orchStatus.a2aHubConnected ? 'connected' : 'disconnected'}`);
+          console.log(`    Hook events: ${orchStatus.hookListeners.join(', ')}`);
+        }
+      } else {
+        console.log('Usage: nexus team spawn "goal" | nexus team status');
+      }
+      break;
+    }
+
     default:
       console.log(`
 NEXUS - Network of Evolving eXtensible Unified Services
@@ -338,8 +599,13 @@ Commands:
   ecosystem         7-Layer ecosystem overview
   dashboard         Cost/quality observability dashboard
   gateway           MCP/A2A gateway status (L7)
+  monitor           Start live monitoring dashboard (port 7850)
+  checkpoint        Checkpoint management (list/restore)
+  team              Agent team management (spawn/status)
+  obsidian          Obsidian vault integration (status/sync/init/dashboard)
+  sync              Config sync across CLIs (configs/gemini)
 
-Version: 3.0.0
+Version: 3.0.0 (Phase 13)
 `);
   }
 }

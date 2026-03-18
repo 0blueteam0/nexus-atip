@@ -1,0 +1,446 @@
+{
+  "checkpoints": [
+    {
+      "id": "cp-run-1772692958601-vt8u-1-mmd3m8w9",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772692958601-vt8u",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772692958601
+    },
+    {
+      "id": "cp-run-1772692958601-vt8u-2-mmd3m8wi",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772692958601-vt8u",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1772692958601-vt8u-1-mmd3m8w9",
+      "branch": "main",
+      "createdAt": 1772692958610
+    },
+    {
+      "id": "cp-run-1772692958601-vt8u-3-mmd3m8wq",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772692958601-vt8u",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1772692958601-vt8u-2-mmd3m8wi",
+      "branch": "main",
+      "createdAt": 1772692958618
+    },
+    {
+      "id": "cp-undefined-undefined-mmd3m8yi",
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772692958682
+    },
+    {
+      "id": "cp-run-1772693188961-aqrz-1-mmd3r6n6",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693188961-aqrz",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772693188962
+    },
+    {
+      "id": "cp-run-1772693188961-aqrz-2-mmd3r6ng",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693188961-aqrz",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1772693188961-aqrz-1-mmd3r6n6",
+      "branch": "main",
+      "createdAt": 1772693188972
+    },
+    {
+      "id": "cp-run-1772693188961-aqrz-3-mmd3r6nt",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693188961-aqrz",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1772693188961-aqrz-2-mmd3r6ng",
+      "branch": "main",
+      "createdAt": 1772693188985
+    },
+    {
+      "id": "cp-test-run-1-1-mmd3r6ps",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772693189056
+    },
+    {
+      "id": "cp-run-1772693219963-oe7v-1-mmd3rukb",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693219963-oe7v",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772693219963
+    },
+    {
+      "id": "cp-run-1772693219963-oe7v-2-mmd3rukm",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693219963-oe7v",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1772693219963-oe7v-1-mmd3rukb",
+      "branch": "main",
+      "createdAt": 1772693219974
+    },
+    {
+      "id": "cp-run-1772693219963-oe7v-3-mmd3ruky",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772693219963-oe7v",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1772693219963-oe7v-2-mmd3rukm",
+      "branch": "main",
+      "createdAt": 1772693219986
+    },
+    {
+      "id": "cp-test-run-1-1-mmd3rumr",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772693220051
+    },
+    {
+      "id": "cp-run-1772694528796-kvf3-1-mmd4jwgs",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772694528796-kvf3",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772694528796
+    },
+    {
+      "id": "cp-run-1772694528796-kvf3-2-mmd4jwh1",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772694528796-kvf3",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1772694528796-kvf3-1-mmd4jwgs",
+      "branch": "main",
+      "createdAt": 1772694528805
+    },
+    {
+      "id": "cp-run-1772694528796-kvf3-3-mmd4jwha",
+      "graphId": "plan-execute-review",
+      "runId": "run-1772694528796-kvf3",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1772694528796-kvf3-2-mmd4jwh1",
+      "branch": "main",
+      "createdAt": 1772694528814
+    },
+    {
+      "id": "cp-test-run-1-1-mmd4jwiu",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1772694528870
+    },
+    {
+      "id": "cp-run-1773023273336-q6nf-1-mmika1dk",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023273336-q6nf",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773023273336
+    },
+    {
+      "id": "cp-run-1773023273336-q6nf-2-mmika1dv",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023273336-q6nf",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1773023273336-q6nf-1-mmika1dk",
+      "branch": "main",
+      "createdAt": 1773023273347
+    },
+    {
+      "id": "cp-run-1773023273336-q6nf-3-mmika1e5",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023273336-q6nf",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1773023273336-q6nf-2-mmika1dv",
+      "branch": "main",
+      "createdAt": 1773023273357
+    },
+    {
+      "id": "cp-test-run-1-1-mmika1gd",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773023273437
+    },
+    {
+      "id": "cp-run-1773023467666-8c8i-1-mmike7bn",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023467666-8c8i",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773023467667
+    },
+    {
+      "id": "cp-run-1773023467666-8c8i-2-mmike7c5",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023467666-8c8i",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1773023467666-8c8i-1-mmike7bn",
+      "branch": "main",
+      "createdAt": 1773023467685
+    },
+    {
+      "id": "cp-run-1773023467666-8c8i-3-mmike7ch",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773023467666-8c8i",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1773023467666-8c8i-2-mmike7c5",
+      "branch": "main",
+      "createdAt": 1773023467697
+    },
+    {
+      "id": "cp-test-run-1-1-mmike7eo",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773023467776
+    },
+    {
+      "id": "cp-run-1773130817013-l7p8-1-mmkcb2lx",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773130817013-l7p8",
+      "nodeId": "plan",
+      "step": 1,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "planned"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773130817013
+    },
+    {
+      "id": "cp-run-1773130817013-l7p8-2-mmkcb2m5",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773130817013-l7p8",
+      "nodeId": "execute",
+      "step": 2,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "executed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements"
+      },
+      "parentId": "cp-run-1773130817013-l7p8-1-mmkcb2lx",
+      "branch": "main",
+      "createdAt": 1773130817021
+    },
+    {
+      "id": "cp-run-1773130817013-l7p8-3-mmkcb2md",
+      "graphId": "plan-execute-review",
+      "runId": "run-1773130817013-l7p8",
+      "nodeId": "review",
+      "step": 3,
+      "state": {
+        "task": "Review the NEXUS orchestrator module for potential improvements",
+        "provider": "gemini-cli",
+        "plan": "Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "phase": "reviewed",
+        "result": "Executed: Plan for: Review the NEXUS orchestrator module for potential improvements",
+        "review": "approved"
+      },
+      "parentId": "cp-run-1773130817013-l7p8-2-mmkcb2m5",
+      "branch": "main",
+      "createdAt": 1773130817029
+    },
+    {
+      "id": "cp-test-run-1-1-mmkcb2o0",
+      "graphId": "test-graph",
+      "runId": "test-run-1",
+      "nodeId": "test-node",
+      "step": 1,
+      "state": {
+        "data": "test"
+      },
+      "parentId": null,
+      "branch": "main",
+      "createdAt": 1773130817088
+    }
+  ],
+  "branches": []
+}

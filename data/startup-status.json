@@ -1,8 +1,12 @@
 {
-  "startTime": "2026-02-06T18:37:27.825Z",
-  "docker": false,
+  "startTime": "2026-03-11T11:51:46.450Z",
+  "docker": true,
   "aiStackMonitor": true,
-  "planEcosystem": false,
-  "containers": {},
-  "endTime": "2026-02-06T18:38:58.945Z"
+  "planEcosystem": true,
+  "containers": {
+    "firecrawl-self-hosted": "started",
+    "searxng-crawl4ai-mcp": "started",
+    "plan-ecosystem": "started"
+  },
+  "endTime": "2026-03-11T11:51:49.474Z"
 }

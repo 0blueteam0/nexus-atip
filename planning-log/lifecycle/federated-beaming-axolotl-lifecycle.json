@@ -1,0 +1,164 @@
+{
+  "lifecycleId": "lc-federated-beaming-axolotl-1773181741116",
+  "planId": "federated-beaming-axolotl",
+  "planTitle": "A3AI 웹사이트 종합 분석 및 개선 방안",
+  "phases": {
+    "prd": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [
+    {
+      "id": "goal-1773181741116-asmb",
+      "title": "**모든 localhost 링크 제거/수정**",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-pib6",
+      "title": "**OG 메타데이터 수정**",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-onp6",
+      "title": "**숫자 카운터 버그 수정**",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-41op",
+      "title": "canonical URL 설정",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-0qlp",
+      "title": ".co.kr → .kr 리다이렉트",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-vnfs",
+      "title": "사이트맵 생성 및 제출",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-5n3q",
+      "title": "메타 태그 정비",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-wu3t",
+      "title": "디자인 시스템 구축",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-784k",
+      "title": "네비게이션 통일",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-pbtn",
+      "title": "제품 포트폴리오 페이지",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-2t08",
+      "title": "AIALBM 한국어화",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-edfn",
+      "title": "데모 환경 구축",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-0ag7",
+      "title": "API 문서 공개",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-ngof",
+      "title": "GitHub 저장소 정비",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    },
+    {
+      "id": "goal-1773181741116-wtbr",
+      "title": "성능 최적화",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.116Z"
+    }
+  ],
+  "createdAt": "2026-03-10T22:29:01.116Z",
+  "updatedAt": "2026-03-10T22:29:01.116Z"
+}

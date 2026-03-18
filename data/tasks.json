@@ -1,129 +1,414 @@
 {
   "tasks": [
     {
-      "id": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e",
-      "name": "consensus-engine.js FRAMEWORK_HOOKS 통합",
-      "description": "ProviderStreamHandler를 consensus-engine.js의 FRAMEWORK_HOOKS 시스템에 연결. 16개 이벤트(CoT, ToT, ReAct, Consensus)가 발생할 때 split-view 터미널에 자동으로 라우팅되도록 구현",
-      "notes": "provider-stream-handler.js에 이미 HOOK_TO_PROVIDER 매핑과 createHookHandler() 메서드 존재",
+      "id": "da95d19e-a7ce-4ddb-9765-187baa8f965a",
+      "name": "Context Elimination - CLAUDE.md Rewrite",
+      "description": "Rewrite CLAUDE.md from 12.5KB to ~3KB keeping only essential rules: Korean display protocol (3 lines), ASCII-only (2 lines), batch file rules (3 lines), portable environment paths (5 lines), minimal tool priority (10 lines Desktop Commander > Edit File Lines > Shrimp > Built-in), Observer server reference (5 lines pointing to http://localhost:3847). Remove: xAI 7-step process, RIPER+ workflow, Auto Plan Mode, FIC/ATOS/STL descriptions, new-features-v2 reference, all detailed MCP inventory, SuperClaude framework, skill registry, command registry, display settings. Similarly minimize .claude/CLAUDE.md to ~2KB keeping only skill-creator reference and FIC summary.",
+      "notes": "Backup already exists at command-center/backup-pre-F/. This is the most critical task - sub-agents currently fail with Prompt is too long due to 85KB context.",
       "status": "completed",
       "dependencies": [],
-      "createdAt": "2025-12-30T16:57:42.913Z",
-      "updatedAt": "2025-12-30T17:04:39.188Z",
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:21:51.225Z",
       "relatedFiles": [
         {
-          "path": "multi-ai-orchestration/consensus-engine.js",
+          "path": "CLAUDE.md",
           "type": "TO_MODIFY",
-          "description": "FRAMEWORK_HOOKS 정의 및 emitHook 함수"
+          "description": "Main instructions file, reduce from 12.5KB to ~3KB"
         },
         {
-          "path": "multi-ai-orchestration/provider-stream-handler.js",
+          "path": ".claude/CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "Project instructions, reduce from 6.9KB to ~2KB"
+        },
+        {
+          "path": "command-center/backup-pre-F/CLAUDE.md",
           "type": "REFERENCE",
-          "description": "createHookHandler 메서드 참조"
+          "description": "Backup of original CLAUDE.md"
         }
       ],
-      "implementationGuide": "1. consensus-engine.js에서 emitHook() 함수 확인\\n2. ProviderStreamHandler.createHookHandler() 활용\\n3. 모든 FRAMEWORK_HOOKS에 대해 registerHook() 호출\\n4. hook-integration.js 생성하여 연결 코드 분리",
-      "verificationCriteria": "모든 16개 FRAMEWORK_HOOKS 이벤트가 split-view 패널에 올바르게 라우팅되는지 확인",
-      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
-      "summary": "hook-integration.js 생성 완료: 17개 FRAMEWORK_HOOKS를 ProviderStreamHandler에 연결하는 브릿지 모듈 구현. setupHookIntegration()으로 모든 훅 등록, cleanupHookIntegration()으로 정리, getIntegrationStatus()로 상태 확인 가능. CoT/ToT/ReAct/Consensus 4개 카테고리 훅이 split-view 패널로 자동 라우팅됨.",
-      "completedAt": "2025-12-30T17:04:39.184Z"
+      "implementationGuide": "1. Read current CLAUDE.md (12,550 bytes) and .claude/CLAUDE.md (6,876 bytes)\\n2. Create new CLAUDE.md with sections: [KR] Korean Protocol, [*] ASCII Only, [BAT] Batch Rules, [ENV] Paths (Node/Python), [TOOL] Priority (P1-P4 condensed to 10 lines), [OBS] Observer Server (port 3847 reference), [AGENT] Agent Teams reference (.claude/agents/)\\n3. Create new .claude/CLAUDE.md with: skill-creator reference, academic paper skills summary (keep trigger keywords only)\\n4. Verify total size < 5KB",
+      "verificationCriteria": "Total size of CLAUDE.md + .claude/CLAUDE.md < 5,120 bytes. All essential rules preserved (Korean, ASCII, paths, tool priority). Sub-agent spawning no longer fails with Prompt is too long.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/.",
+      "summary": "CLAUDE.md: 12,550 -> 1,891 bytes. .claude/CLAUDE.md: 6,876 -> 548 bytes. Total: 19,426 -> 2,439 bytes (87% reduction). Sections: KR, ASCII, BAT, ENV, TOOL P1-P4, OBS Observer, AGENT Teams, MCP Gateway, SKILL. Backup at command-center/backup-pre-F/.",
+      "completedAt": "2026-03-16T05:21:51.219Z"
     },
     {
-      "id": "727b47f2-8732-45ca-bab2-70c59204dd2f",
-      "name": "stmux 프로덕션 런처 스크립트 생성",
-      "description": "blessed/stmux 기반 터미널 분할을 위한 프로덕션 배포 스크립트 작성. Windows ConPTY 호환, 2-4 패널 레이아웃 지원",
-      "notes": "stmux는 단순 설정으로 1-2시간 내 구현 가능",
+      "id": "bc97a3f1-eb6b-4b60-9247-405b4c325308",
+      "name": "Context Elimination - Rules Archive",
+      "description": "Archive 17 of 19 rules files. Keep only 2: environment.md (paths, minimal) and nexus-gateway.md (8 meta-tools reference). Move all others to .claude/rules/archived-F/ with a manifest. Remove archive/deprecated/ entirely.",
+      "notes": "Rules are auto-loaded by Claude Code from .claude/rules/. Moving to archived-F/ subfolder prevents auto-loading while preserving files.",
       "status": "completed",
       "dependencies": [
         {
-          "taskId": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e"
+          "taskId": "da95d19e-a7ce-4ddb-9765-187baa8f965a"
         }
       ],
-      "createdAt": "2025-12-30T16:57:42.913Z",
-      "updatedAt": "2025-12-30T17:18:36.657Z",
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:22:04.789Z",
       "relatedFiles": [
         {
-          "path": "multi-ai-orchestration/start-split-terminal.bat",
-          "type": "CREATE",
-          "description": "Windows 배치 런처"
+          "path": ".claude/rules/",
+          "type": "TO_MODIFY",
+          "description": "Rules directory - archive 17 of 19 files"
         },
         {
-          "path": "multi-ai-orchestration/split-terminal-config.json",
-          "type": "CREATE",
-          "description": "레이아웃 설정 파일"
+          "path": ".claude/rules/environment.md",
+          "type": "REFERENCE",
+          "description": "Keep - minimal paths info"
+        },
+        {
+          "path": ".claude/rules/nexus-gateway.md",
+          "type": "REFERENCE",
+          "description": "Keep - NEXUS Gateway meta-tools reference"
         }
       ],
-      "implementationGuide": "1. stmux npm 패키지 설치 확인\\n2. start-split-terminal.bat 배치 파일 생성\\n3. 레이아웃 옵션: horizontal(2열), vertical(2행), quad(4패널)\\n4. 각 패널에 Claude/Gemini/System 출력 연결",
-      "verificationCriteria": "배치 파일 실행 시 분할 터미널이 올바르게 생성되고 각 패널에 Provider 출력 표시",
-      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
-      "summary": "Task 2 완료: stmux 프로덕션 런처 스크립트 생성 완료. 모든 필수 파일 생성됨 - package.json (stmux/blessed 의존성), split-terminal-config.json (4개 레이아웃 설정), start-split-terminal.bat (Windows 배치 런처), split-terminal-launcher.js (메인 Node.js 오케스트레이터 396줄), panels/ 폴더 (claude/gemini/system/output 4개 패널 스크립트). CLI 인터페이스 지원 (--layout, --providers, --simple), stmux 자동 설치 기능, 폴백 심플 모드 포함.",
-      "completedAt": "2025-12-30T17:18:36.655Z"
+      "implementationGuide": "1. Create .claude/rules/archived-F/ directory\\n2. Move these 17 files to archived-F/: auto-plan-mode.md, design-anti-homogenization.md, development-workflow.md, memory-system.md, new-features-v2.md, planning-context.md, plan-protection.md, tiered-review.md, tool-priority.md, workspace-structure.md, archive/agentic-learning.md, archive/bottom-up-paradigm.md, archive/docker-workflow.md, archive/update-workflow.md, archive/deprecated/atos-system.md, archive/deprecated/fic-compaction.md, archive/deprecated/self-trigger.md\\n3. Keep only: environment.md (1,307 bytes), nexus-gateway.md (1,908 bytes)\\n4. Delete empty archive/ and archive/deprecated/ directories\\n5. Create archived-F/MANIFEST.md listing all archived files and reason",
+      "verificationCriteria": "Only 2 .md files remain in .claude/rules/ root (environment.md, nexus-gateway.md). Total rules size < 3,300 bytes. All 17 archived files exist in .claude/rules/archived-F/ with MANIFEST.md.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/.",
+      "summary": "17 rules archived to .claude/rules/archived-F/. 2 retained: environment.md (1,307 bytes), nexus-gateway.md (1,908 bytes). Total: 3,215 bytes. Removed empty archive/ and archive/deprecated/ dirs. All files preserved in archived-F/ subfolder which prevents Claude Code auto-loading.",
+      "completedAt": "2026-03-16T05:22:04.787Z"
     },
     {
-      "id": "a71a3edd-b8d0-46e9-8a16-f8f9560813f8",
-      "name": "추가 Provider 지원 (OpenAI, Anthropic API)",
-      "description": "OpenAI GPT-4, Anthropic Claude API 직접 호출 지원 추가. 기존 Gemini CLI 패턴을 확장하여 external-router.js에 통합",
-      "notes": "기존 gemini-bridge.js 패턴 참조하여 일관된 인터페이스 유지",
+      "id": "606dfce8-09ac-4bd2-b35b-efbda9abbc7e",
+      "name": "Context Elimination - Hooks Reduction",
+      "description": "Replace 30 enabled hooks with 3 HTTP hooks pointing to Observer server at localhost:3847. Keep: (1) observer-session-start: POST to /session/start on session-start, (2) observer-session-end: POST to /session/end on session-end, (3) observer-event: POST to /event on tool calls. Remove all ATOS, NEXUS, planning, dashboard, sync hooks.",
+      "notes": "HTTP hooks are supported in Claude Code v2.1.63+. The Observer server already has /session/start, /session/end, and /tool endpoints implemented.",
       "status": "completed",
       "dependencies": [
         {
-          "taskId": "0811b07a-cf00-4cac-9b56-c6c7e4d9218e"
+          "taskId": "da95d19e-a7ce-4ddb-9765-187baa8f965a"
         }
       ],
-      "createdAt": "2025-12-30T16:57:42.913Z",
-      "updatedAt": "2025-12-31T05:37:45.990Z",
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:22:22.000Z",
       "relatedFiles": [
         {
-          "path": "multi-ai-orchestration/external-router.js",
+          "path": ".claude-hooks.json",
           "type": "TO_MODIFY",
-          "description": "Provider 라우팅 로직"
+          "description": "Hooks config - reduce from 30 to 3"
         },
         {
-          "path": "multi-ai-orchestration/openai-bridge.js",
-          "type": "CREATE",
-          "description": "OpenAI API 브릿지"
+          "path": "command-center/backup-pre-F/.claude-hooks.json",
+          "type": "REFERENCE",
+          "description": "Backup of original hooks"
         },
         {
-          "path": "multi-ai-orchestration/anthropic-bridge.js",
-          "type": "CREATE",
-          "description": "Anthropic API 브릿지"
+          "path": "command-center/server/event-collector.js",
+          "type": "REFERENCE",
+          "description": "Observer endpoints that receive hook events"
         }
       ],
-      "implementationGuide": "1. external-router.js에 openai, anthropic 프로바이더 추가\\n2. API 키 환경변수 처리 (OPENAI_API_KEY, ANTHROPIC_API_KEY)\\n3. 응답 포맷 표준화 (success, response, type, timestamp)\\n4. PROVIDER_PATTERNS에 새 패턴 추가",
-      "verificationCriteria": "OpenAI와 Anthropic API 호출이 성공하고 split-view에 결과 표시",
-      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
-      "summary": "Task 3 \"추가 Provider 지원 (OpenAI, Anthropic API)\" 구현 완료. openai-bridge.js(416줄), anthropic-bridge.js(459줄) 완전 구현됨. external-router.js SERVICE_CONFIGS에 두 프로바이더 등록됨. provider-stream-handler.js PROVIDER_PATTERNS에 출력 라우팅 패턴 포함됨. isAvailable() 테스트 결과 API 키 미설정 시 올바르게 false 반환 확인. 환경변수(OPENAI_API_KEY, ANTHROPIC_API_KEY) 설정 시 즉시 사용 가능.",
-      "completedAt": "2025-12-31T05:37:45.981Z"
+      "implementationGuide": "1. Read current .claude-hooks.json (30 enabled hooks)\\n2. Create new .claude-hooks.json with 3 HTTP hooks:\\n   - observer-session-start: triggers on session-start, curl POST to http://localhost:3847/session/start\\n   - observer-session-end: triggers on session-end, curl POST to http://localhost:3847/session/end\\n   - observer-event: triggers on PostToolResult, curl POST to http://localhost:3847/tool with tool data\\n3. Keep memory-config section unchanged\\n4. Verify Observer server receives events",
+      "verificationCriteria": "Only 3 hooks in .claude-hooks.json. All 3 hooks point to localhost:3847. Observer server receives session-start event on new Claude session. No startup delay from removed hooks.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/.",
+      "summary": "Hooks reduced from 30 enabled to 3 HTTP hooks. observer-session-start (POST /session/start on session-start), observer-session-end (POST /session/end on session-end), observer-tool-track (POST /tool on PostToolResult with tool_name/success/duration). All curl to localhost:3847 with error suppression. memory-config section removed (Observer DB replaces it). Backup at command-center/backup-pre-F/.",
+      "completedAt": "2026-03-16T05:22:21.998Z"
     },
     {
-      "id": "f5e77693-8c7f-4993-89b3-6b128fcf305a",
-      "name": "실시간 스트리밍 청크 레벨 출력",
-      "description": "AI 응답을 청크 단위로 실시간 표시. 긴 응답도 점진적으로 패널에 표시되도록 스트리밍 구현",
-      "notes": "LiveOutputStreamer 기존 인프라 활용 가능",
-      "status": "completed",
+      "id": "0b0f1013-0831-43cf-9e91-abcc7aa8aa2e",
+      "name": "Verify Sub-agent Fix",
+      "description": "After Context Elimination, verify that sub-agents (Agent tool) no longer fail with Prompt is too long. Test by spawning an Explore agent and a research agent. Measure initial context token consumption.",
+      "notes": "진행 중: archived-F 규칙 15개(~66KB)를 .claude/rules/ 밖으로 이동 완료. tools/ 디렉토리를 .gitignore에 추가하고 git tracking에서 제거 완료. 남은 문제: git status 7,574줄 (tools/git/ 삭제 파일 7,084개) + deferred tools ~240개가 sub-agent 프롬프트를 초과시킴. 커밋으로 git status 정리 필요.",
+      "status": "pending",
       "dependencies": [
         {
-          "taskId": "727b47f2-8732-45ca-bab2-70c59204dd2f"
-        }
-      ],
-      "createdAt": "2025-12-30T16:57:42.913Z",
-      "updatedAt": "2025-12-30T23:57:34.247Z",
-      "relatedFiles": [
-        {
-          "path": "multi-ai-orchestration/live-output-streamer.js",
-          "type": "TO_MODIFY",
-          "description": "스트리밍 코어 로직"
+          "taskId": "da95d19e-a7ce-4ddb-9765-187baa8f965a"
         },
         {
-          "path": "multi-ai-orchestration/provider-stream-handler.js",
-          "type": "TO_MODIFY",
-          "description": "청크 처리 메서드"
+          "taskId": "bc97a3f1-eb6b-4b60-9247-405b4c325308"
+        },
+        {
+          "taskId": "606dfce8-09ac-4bd2-b35b-efbda9abbc7e"
         }
       ],
-      "implementationGuide": "1. StreamingOutputHandler 확장\\n2. processChunk() 메서드에 실시간 업데이트 로직 추가\\n3. blessed Box 위젯의 scrollable 속성 활용\\n4. 청크 버퍼링 및 디바운스 처리",
-      "verificationCriteria": "긴 응답이 청크 단위로 점진적으로 표시되며 스크롤 가능",
-      "analysisResult": "Multi-AI Split-View Terminal 확장: FRAMEWORK_HOOKS 통합, 프로덕션 런처, 추가 Provider 지원, 실시간 스트리밍 구현",
-      "summary": "실시간 스트리밍 청크 레벨 출력 구현 완료. unified-stream-pipeline.js 통합 레이어 생성, PROVIDER_PREFIXES 동기화, 6/6 통합 테스트 통과 (Pipeline 초기화, Provider 스트리밍, 청크 처리, FRAMEWORK_HOOKS 연동, Real Gemini 통합, Multi-Provider 컨센서스). 긴 응답이 청크 단위로 점진적 표시되며 스크롤 가능.",
-      "completedAt": "2025-12-30T23:57:34.245Z"
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:56:45.834Z",
+      "relatedFiles": [],
+      "implementationGuide": "1. Start new Claude Code session (or use current after context elimination)\\n2. Spawn Explore agent with simple prompt: find all .js files in command-center/server/\\n3. Spawn research agent with: search web for claude code agent teams\\n4. Both should complete without Prompt is too long error\\n5. Check context usage via /context command or statusline",
+      "verificationCriteria": "Explore agent completes successfully. Research agent completes successfully. No Prompt is too long errors. Initial context < 5,000 tokens.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "7699530d-9df1-45eb-a410-2938f9d6f4bf",
+      "name": "Frontend Integration - Pixel Agent Desk + Observer",
+      "description": "Configure Pixel Agent Desk (Electron app) to connect to Observer WebSocket at ws://localhost:3847/ws. Modify its config to point to the correct transcript paths and Observer endpoint. Test that pixel avatars appear when Claude Code is active.",
+      "notes": "Pixel Agent Desk is Electron 2.0.0, already installed with npm install. Observer broadcasts transcript_event and hook_event via WebSocket.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "606dfce8-09ac-4bd2-b35b-efbda9abbc7e"
+        }
+      ],
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:14:40.455Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/pixel-agent-desk/",
+          "type": "TO_MODIFY",
+          "description": "Electron app - configure WebSocket and paths"
+        },
+        {
+          "path": "command-center/server/broadcaster.js",
+          "type": "REFERENCE",
+          "description": "Observer WebSocket broadcaster"
+        }
+      ],
+      "implementationGuide": "1. Read Pixel Agent Desk config/source to find WebSocket connection settings\\n2. Update connection URL to ws://localhost:3847/ws\\n3. Update transcript watch paths to K:/PortableApps/genai/.claude/projects/\\n4. Start Pixel Agent Desk: cd command-center/pixel-agent-desk && npm start\\n5. Start Observer: cd command-center/server && node index.js\\n6. Run Claude Code session and verify pixel avatars respond to activity",
+      "verificationCriteria": "Pixel Agent Desk connects to Observer WebSocket without errors. Pixel avatars animate when Claude Code makes tool calls. Token usage displays in real-time.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "4bd49f1a-8df3-40c9-a39b-418b42c240b7",
+      "name": "Frontend Integration - Mission Control Dashboard",
+      "description": "Configure Mission Control (Next.js port 4000) to connect to Observer API at http://localhost:3847. Set up API proxy or direct fetch calls. Initialize SQLite database with seed data.",
+      "notes": "Mission Control uses better-sqlite3 for its own DB (mission-control.db). Observer uses separate DB (observer.db). They can share data via API calls.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "606dfce8-09ac-4bd2-b35b-efbda9abbc7e"
+        }
+      ],
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:14:40.455Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/mission-control/",
+          "type": "TO_MODIFY",
+          "description": "Next.js dashboard - configure API connection"
+        },
+        {
+          "path": "command-center/server/index.js",
+          "type": "REFERENCE",
+          "description": "Observer API endpoints"
+        }
+      ],
+      "implementationGuide": "1. Read Mission Control source to find API connection config\\n2. Create .env.local with OBSERVER_URL=http://localhost:3847\\n3. Initialize Mission Control DB: cd command-center/mission-control && npm run db:seed\\n4. Start Mission Control: npm run dev (port 4000)\\n5. Verify dashboard shows Observer data (agents, tools, routing stats)",
+      "verificationCriteria": "Mission Control starts on port 4000 without errors. Dashboard displays agent states from Observer. Tool usage statistics visible. Routing weights visible.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "31612174-016f-4eb8-a2e0-4bd6885e12b3",
+      "name": "Self-Evolution - Loop Schedules and Skill Factory",
+      "description": "Set up /loop 5-tier monitoring schedules and implement Skill Factory auto-generation logic. Create the skill auto-generation pipeline: pattern_candidates (occurrence>=3) -> skill-factory-agent generates SKILL.md -> deploy to .claude/skills/auto/.",
+      "notes": "/loop max 50 concurrent, 72h expiry. For permanent schedules, use CronCreate. Anthropic skill-creator reference at command-center/anthropic-skills/skills/skill-creator/SKILL.md.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "0b0f1013-0831-43cf-9e91-abcc7aa8aa2e"
+        }
+      ],
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:14:40.455Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/server/autonomous-router.js",
+          "type": "REFERENCE",
+          "description": "Pattern detection logic (getSkillCandidates)"
+        },
+        {
+          "path": "command-center/server/db.js",
+          "type": "REFERENCE",
+          "description": "pattern_candidates and skill_performance tables"
+        },
+        {
+          "path": ".claude/skills/auto/",
+          "type": "CREATE",
+          "description": "Auto-generated skills directory"
+        },
+        {
+          "path": "command-center/anthropic-skills/skills/skill-creator/SKILL.md",
+          "type": "REFERENCE",
+          "description": "Anthropic official skill template"
+        }
+      ],
+      "implementationGuide": "1. Set up /loop schedules in Claude Code session:\\n   /loop 5m check Observer health at localhost:3847/health\\n   /loop 30m check routing weights and suggest improvements\\n   /loop 2h check pattern candidates for skill generation\\n2. Create command-center/server/skill-factory.js module:\\n   - Query pattern_candidates where occurrence_count >= 3 and status = candidate\\n   - Generate SKILL.md template from tool chain pattern\\n   - Write to .claude/skills/auto/{skill-name}/SKILL.md\\n   - Update pattern_candidates status to deployed\\n   - Track in skill_performance table\\n3. Add /skills/generate endpoint to Observer API\\n4. Wire skill-factory-agent to use this endpoint",
+      "verificationCriteria": "/loop schedules running (visible in Claude Code session). Skill Factory generates valid SKILL.md from pattern candidates. Auto-generated skill loads via hot-reload. Observer /skills/generate endpoint returns generated skill info.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "d8871af4-6605-4fff-9e49-646e2bc18947",
+      "name": "Self-Evolution - Team Coordinator and Evolution Agent",
+      "description": "Implement Team Coordinator (prevent worktree conflicts when multiple code-agents work simultaneously) and Evolution Agent periodic optimization (routing weight tuning, stale skill cleanup, MCP discovery).",
+      "notes": "Team Coordinator is critical for Tier 3 (complex) tasks where multiple agents work in parallel. Evolution Agent runs in background via /loop or Cron.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "31612174-016f-4eb8-a2e0-4bd6885e12b3"
+        }
+      ],
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:14:40.455Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/server/team-coordinator.js",
+          "type": "CREATE",
+          "description": "New module for agent team conflict prevention"
+        },
+        {
+          "path": "command-center/server/index.js",
+          "type": "TO_MODIFY",
+          "description": "Add team and evolution endpoints"
+        },
+        {
+          "path": ".claude/agents/evolution-agent.md",
+          "type": "REFERENCE",
+          "description": "Evolution agent definition"
+        }
+      ],
+      "implementationGuide": "1. Create command-center/server/team-coordinator.js:\\n   - Track active worktrees per agent\\n   - Before dispatching code-agent, check for file path conflicts\\n   - If conflict detected, queue or reassign to different worktree\\n   - Expose POST /team/dispatch and GET /team/status endpoints\\n2. Add evolution endpoints to Observer:\\n   - POST /evolve/optimize: trigger routing weight optimization\\n   - POST /evolve/cleanup: remove stale auto-skills (unused 30+ days)\\n   - GET /evolve/report: system health report\\n3. Wire evolution-agent.md to call these endpoints periodically\\n4. Set up CronCreate for permanent 6h and 24h schedules",
+      "verificationCriteria": "Team Coordinator prevents two code-agents from modifying same file. Evolution Agent successfully optimizes routing weights. Stale skill cleanup works (skills unused 30+ days marked inactive). CronCreate schedules persist across sessions.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "df890821-fe83-42ac-94fd-07899d4093aa",
+      "name": "Integration Test and Documentation",
+      "description": "Run full end-to-end test of F Architecture: user input -> Observer detect -> autonomous route -> agent team dispatch -> tool execution -> learn outcome -> pattern detect -> skill generate. Update all plan files and memory.",
+      "notes": "This is the final verification and documentation task.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "7699530d-9df1-45eb-a410-2938f9d6f4bf"
+        },
+        {
+          "taskId": "4bd49f1a-8df3-40c9-a39b-418b42c240b7"
+        },
+        {
+          "taskId": "d8871af4-6605-4fff-9e49-646e2bc18947"
+        }
+      ],
+      "createdAt": "2026-03-16T05:14:40.455Z",
+      "updatedAt": "2026-03-16T05:14:40.455Z",
+      "relatedFiles": [
+        {
+          "path": "plans/autonomous-swarm-F.md",
+          "type": "TO_MODIFY",
+          "description": "F plan - update checkboxes"
+        },
+        {
+          "path": "plans/ACTIVE-PLAN.md",
+          "type": "TO_MODIFY",
+          "description": "Active plan reference"
+        },
+        {
+          "path": "projects/K--PortableApps-genai/memory/MEMORY.md",
+          "type": "TO_MODIFY",
+          "description": "Auto memory index"
+        },
+        {
+          "path": "command-center/start.bat",
+          "type": "CREATE",
+          "description": "One-click start script for all F components"
+        }
+      ],
+      "implementationGuide": "1. Full cycle test:\\n   a. Send task to Observer: POST /route with complex Korean task\\n   b. Verify tier 3 routing with agent team recommendation\\n   c. Record multiple tool outcomes via POST /route/outcome\\n   d. Verify Bayesian weights update correctly\\n   e. Trigger pattern detection with repeated tool chains\\n   f. Verify skill candidate appears in GET /skills/candidates\\n2. Update plans/autonomous-swarm-F.md checkboxes\\n3. Update plans/ACTIVE-PLAN.md to reference F plan\\n4. Update memory MEMORY.md with F architecture status\\n5. Create start script: command-center/start.bat\\n   - Start Observer server\\n   - Start Pixel Agent Desk\\n   - Start Mission Control",
+      "verificationCriteria": "Full E2E cycle completes without errors. All plan checkboxes updated. Memory updated. start.bat launches Observer + Pixel Agent Desk + Mission Control successfully.",
+      "analysisResult": "F Architecture (Self-Evolving Autonomous Swarm) implementation. Observer Server v1.0.0-F running on port 3847 with Autonomous Router (3-Tier Bayesian, Korean 8/8 pass), SQLite Learning Store (13 tables), 6 Agent Team definitions, 4 external frontend projects cloned and installed. Remaining work: Context Elimination (85KB->5KB), Frontend Integration, Self-Evolution (/loop + Skill Factory), Polish. All code under K:/PortableApps/genai/. Observer server at command-center/server/. Backup of original files at command-center/backup-pre-F/."
+    },
+    {
+      "id": "1ef9000b-487f-4980-a3a8-94a2df70d759",
+      "name": "Migration - Docker Health Check in Observer",
+      "description": "Add Docker status check to Observer server. On session start, check if Docker is running and if self-hosted MCP containers (firecrawl, searxng, crawl4ai) are up. Report status via WebSocket and /health endpoint. Previously handled by startup-orchestrator hook and docker-workflow rule.",
+      "notes": "Low priority. Only needed when using firecrawl or crawl4ai tools.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "606dfce8-09ac-4bd2-b35b-efbda9abbc7e"
+        }
+      ],
+      "createdAt": "2026-03-16T05:23:48.976Z",
+      "updatedAt": "2026-03-16T05:23:48.976Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/server/event-collector.js",
+          "type": "TO_MODIFY",
+          "description": "Add Docker check to session start"
+        },
+        {
+          "path": "command-center/REMOVED-FEATURES-MIGRATION.md",
+          "type": "REFERENCE",
+          "description": "Migration map"
+        }
+      ],
+      "implementationGuide": "1. Add docker check to event-collector.js _handleSessionStart method\\n2. Use child_process.execSync to run docker info and docker ps\\n3. Parse container status for firecrawl-api-1, searxng, crawl4ai\\n4. Include docker status in /health endpoint response\\n5. Broadcast docker_status event via WebSocket",
+      "verificationCriteria": "Observer /health endpoint includes docker status. WebSocket broadcasts docker_status on session start.",
+      "analysisResult": "Phase 1 Context Elimination completed. 5 TODO items remain from removed features that need migration to Observer/Agent/Skill systems. These are lower priority than existing Phase 2-4 tasks but should be tracked."
+    },
+    {
+      "id": "89bd15b1-766f-4d01-bb45-d8588ca916c5",
+      "name": "Migration - Design Anti-Homogenization Skill",
+      "description": "Convert the 292-line design anti-homogenization rule into an on-demand auto-generated skill at .claude/skills/auto/design-lint/SKILL.md. Triggers on CSS/design file edits. Checks for prohibited patterns (indigo/purple colors, glassmorphism overuse, emoji density).",
+      "notes": "This was previously a 292-line always-loaded rule. As a skill it only loads when design work is detected.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "31612174-016f-4eb8-a2e0-4bd6885e12b3"
+        }
+      ],
+      "createdAt": "2026-03-16T05:23:48.976Z",
+      "updatedAt": "2026-03-16T05:23:48.976Z",
+      "relatedFiles": [
+        {
+          "path": ".claude/rules/archived-F/design-anti-homogenization.md",
+          "type": "REFERENCE",
+          "description": "Original 292-line rule"
+        },
+        {
+          "path": ".claude/skills/auto/design-lint/SKILL.md",
+          "type": "CREATE",
+          "description": "New on-demand skill"
+        }
+      ],
+      "implementationGuide": "1. Read archived rule from .claude/rules/archived-F/design-anti-homogenization.md\\n2. Extract key patterns: prohibited colors, layouts, typography, emoji rules\\n3. Create .claude/skills/auto/design-lint/SKILL.md with frontmatter\\n4. Set triggers: design, CSS, Tailwind, UI, component, style\\n5. Include prohibited regex patterns and alternative suggestions",
+      "verificationCriteria": "Skill triggers on design-related prompts. Checks for prohibited color patterns. Does not load unless triggered.",
+      "analysisResult": "Phase 1 Context Elimination completed. 5 TODO items remain from removed features that need migration to Observer/Agent/Skill systems. These are lower priority than existing Phase 2-4 tasks but should be tracked."
+    },
+    {
+      "id": "515220b8-82b0-418c-b601-da3f68f66fa2",
+      "name": "Migration - Pixel Agent Desk Display Config",
+      "description": "Configure Pixel Agent Desk with display settings: 2560x1330 resolution, transcript paths for K-drive. Previously the display resolution was hardcoded in CLAUDE.md context rules.",
+      "notes": "Part of Frontend Integration task 5. Can be done alongside Pixel Agent Desk setup.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "7699530d-9df1-45eb-a410-2938f9d6f4bf"
+        }
+      ],
+      "createdAt": "2026-03-16T05:23:48.976Z",
+      "updatedAt": "2026-03-16T05:23:48.976Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/pixel-agent-desk/",
+          "type": "TO_MODIFY",
+          "description": "Electron app config"
+        }
+      ],
+      "implementationGuide": "1. Read Pixel Agent Desk config files for display/resolution settings\\n2. Set default window size to 2560x1330 or appropriate for pixel art\\n3. Configure transcript paths to K:/PortableApps/genai/.claude/projects/\\n4. Set Observer WebSocket URL to ws://localhost:3847/ws",
+      "verificationCriteria": "Pixel Agent Desk opens at correct resolution. Connects to Observer WebSocket. Shows K-drive transcript activity.",
+      "analysisResult": "Phase 1 Context Elimination completed. 5 TODO items remain from removed features that need migration to Observer/Agent/Skill systems. These are lower priority than existing Phase 2-4 tasks but should be tracked."
+    },
+    {
+      "id": "6e64d812-a6fe-4187-9d25-ba2ef7006373",
+      "name": "Migration - TeammateIdle Handler in Team Coordinator",
+      "description": "Implement TeammateIdle handling in the Team Coordinator. When Observer detects an idle teammate agent (via transcript monitoring), reassign pending work or notify the main session. Previously handled by nexus-teammate-idle hook.",
+      "notes": "Depends on Team Coordinator implementation in Phase 3.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d8871af4-6605-4fff-9e49-646e2bc18947"
+        }
+      ],
+      "createdAt": "2026-03-16T05:23:48.976Z",
+      "updatedAt": "2026-03-16T05:23:48.976Z",
+      "relatedFiles": [
+        {
+          "path": "command-center/server/team-coordinator.js",
+          "type": "CREATE",
+          "description": "Team Coordinator with idle detection"
+        }
+      ],
+      "implementationGuide": "1. Add idle detection to team-coordinator.js\\n2. Track last activity timestamp per agent from transcript events\\n3. If agent idle > 2 minutes with pending tasks, broadcast idle_agent event\\n4. Provide POST /team/reassign endpoint to manually reassign work\\n5. Log idle events to evolution_log table",
+      "verificationCriteria": "Idle agents detected within 2 minutes. Reassignment endpoint works. Events logged to DB.",
+      "analysisResult": "Phase 1 Context Elimination completed. 5 TODO items remain from removed features that need migration to Observer/Agent/Skill systems. These are lower priority than existing Phase 2-4 tasks but should be tracked."
     }
   ]
 }

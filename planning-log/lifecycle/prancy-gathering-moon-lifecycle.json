@@ -1,0 +1,124 @@
+{
+  "lifecycleId": "lc-prancy-gathering-moon-1770253991355",
+  "planId": "prancy-gathering-moon",
+  "planTitle": "Attention 메커니즘의 AI 보안 취약점 연구 계획",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.356Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.356Z",
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "implementation": {
+      "status": "completed",
+      "startedAt": "2026-02-05T01:13:11.356Z",
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "release": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 100
+    }
+  },
+  "overallProgress": 100,
+  "goalMapping": [
+    {
+      "id": "goal-1770253991356-y65n",
+      "title": "로컬 자료 탐색",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-lpa6",
+      "title": "OWASP LLM Top 10 리서치",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-fihn",
+      "title": "OWASP Agentic AI Top 10 리서치 (2024.12)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-k9wi",
+      "title": "MITRE ATLAS 리서치",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-iyd2",
+      "title": "Introduction 작성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-rw7l",
+      "title": "Background 작성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-z17k",
+      "title": "Security Analysis 작성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    },
+    {
+      "id": "goal-1770253991356-mva3",
+      "title": "Discussion & Conclusion 작성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.356Z"
+    }
+  ],
+  "createdAt": "2026-02-05T01:13:11.355Z",
+  "updatedAt": "2026-02-05T01:13:11.364Z"
+}

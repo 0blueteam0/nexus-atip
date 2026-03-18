@@ -55,7 +55,7 @@ def find_js_syntax_errors(filename):
     return errors, len(scripts)
 
 if __name__ == "__main__":
-    filename = "K:/PortableApps/Claude-Code/vite-app/index.html"
+    filename = "K:/PortableApps/genai/vite-app/index.html"
     errors, total_scripts = find_js_syntax_errors(filename)
     
     print(f"Found {total_scripts} script blocks")

@@ -1,7 +1,7 @@
 @echo off
 echo [*] Claude Code Portable Update Script
 echo [*] Checking current version...
-for /f "tokens=*" %%i in ('K:\PortableApps\Claude-Code\claude.bat --version 2^>nul') do set CURRENT_VERSION=%%i
+for /f "tokens=*" %%i in ('K:\PortableApps\genai\claude.bat --version 2^>nul') do set CURRENT_VERSION=%%i
 echo [*] Current: %CURRENT_VERSION%
 echo [*] Installing latest version...
 echo.

@@ -1,0 +1,46 @@
+{
+  "lifecycleId": "lc-test-plan-1770234449994",
+  "planId": "test-plan",
+  "planTitle": "test-plan",
+  "phases": {
+    "prd": {
+      "status": "in_progress",
+      "startedAt": "2026-02-04T19:47:29.994Z",
+      "completedAt": null,
+      "goals": [
+        "Goal 1",
+        "Goal 2"
+      ],
+      "prompts": [],
+      "progress": 50
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 8,
+  "goalMapping": [],
+  "createdAt": "2026-02-04T19:47:29.994Z",
+  "updatedAt": "2026-02-05T00:47:52.704Z"
+}

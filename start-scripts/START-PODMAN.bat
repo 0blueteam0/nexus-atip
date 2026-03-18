@@ -7,8 +7,8 @@ echo =====================================
 echo.
 
 REM Podman 환경 변수 설정
-set CONTAINERS_STORAGE_CONF=K:\PortableApps\Claude-Code\tools\podman\storage.conf
-set CONTAINERS_CONF=K:\PortableApps\Claude-Code\tools\podman\containers.conf
+set CONTAINERS_STORAGE_CONF=K:\PortableApps\genai\tools\podman\storage.conf
+set CONTAINERS_CONF=K:\PortableApps\genai\tools\podman\containers.conf
 
 REM Podman 머신 시작
 echo [*] Podman 머신 시작 중...
@@ -25,7 +25,7 @@ if %errorLevel% == 0 (
     if errorlevel 2 goto end
     if errorlevel 1 (
         echo [*] n8n 컨테이너 실행 중...
-        "C:\Program Files\RedHat\Podman\podman.exe" run -d --name n8n-portable -p 5678:5678 -v K:\PortableApps\Claude-Code\data\n8n:/home/node/.n8n docker.n8n.io/n8nio/n8n
+        "C:\Program Files\RedHat\Podman\podman.exe" run -d --name n8n-portable -p 5678:5678 -v K:\PortableApps\genai\data\n8n:/home/node/.n8n docker.n8n.io/n8nio/n8n
         echo [+] n8n 실행 완료! http://localhost:5678 접속 가능
     )
 ) else (

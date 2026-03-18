@@ -27,6 +27,14 @@ try {
   console.warn('[!] LoadTracker 로드 실패 - 중복 방지 비활성화');
 }
 
+// ComplexityDetector 로드 (Auto Plan Mode)
+let complexityDetector = null;
+try {
+  complexityDetector = require('./complexity-detector');
+} catch (err) {
+  // Silent fallback - complexity detection optional
+}
+
 // 경로 설정
 const BASE_PATH = path.resolve(__dirname);
 const TOOL_REGISTRY_FILE = path.join(BASE_PATH, 'tool-registry.json');
@@ -421,6 +429,12 @@ class ContextAnalyzer {
     // 6. 스킬 매칭
     const suggestedSkills = this.matchSkills(normalizedInput, intents);
 
+    // 7. 복잡도 분석 (Auto Plan Mode)
+    let complexity = null;
+    if (complexityDetector) {
+      complexity = complexityDetector.analyze(userInput);
+    }
+
     return {
       success: true,
       timestamp: new Date().toISOString(),
@@ -431,6 +445,7 @@ class ContextAnalyzer {
       suggestedTools: suggestedTools,
       suggestedWorkflows: suggestedWorkflows,
       suggestedSkills: suggestedSkills,
+      complexity: complexity,
       confidence: this.calculateConfidence(intents, suggestedTools)
     };
   }

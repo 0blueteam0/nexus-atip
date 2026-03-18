@@ -74,7 +74,7 @@ def check_syntax_errors(filename):
     return errors
 
 if __name__ == "__main__":
-    filename = "K:/PortableApps/Claude-Code/vite-app/index.html"
+    filename = "K:/PortableApps/genai/vite-app/index.html"
     errors = check_syntax_errors(filename)
     
     if errors:

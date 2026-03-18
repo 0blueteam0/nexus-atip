@@ -1,7 +1,12 @@
 {
-  "sessionId": "session-1770162031210",
+  "sessionId": "session-1773229915085",
   "phase": "idle",
   "activePlans": [
+    {
+      "name": "async-splashing-milner",
+      "progress": 0,
+      "file": "async-splashing-milner.md"
+    },
     {
       "name": "breezy-strolling-turing",
       "progress": 0,
@@ -13,9 +18,19 @@
       "file": "compiled-crafting-whisper.md"
     },
     {
+      "name": "composed-inventing-lerdorf",
+      "progress": 0,
+      "file": "composed-inventing-lerdorf.md"
+    },
+    {
       "name": "concurrent-exploring-locket",
       "progress": 0,
       "file": "concurrent-exploring-locket.md"
+    },
+    {
+      "name": "distributed-marinating-hippo",
+      "progress": 0,
+      "file": "distributed-marinating-hippo.md"
     },
     {
       "name": "dynamic-frolicking-wozniak",
@@ -23,14 +38,99 @@
       "file": "dynamic-frolicking-wozniak.md"
     },
     {
+      "name": "effervescent-pondering-parrot",
+      "progress": 0,
+      "file": "effervescent-pondering-parrot.md"
+    },
+    {
+      "name": "federated-beaming-axolotl",
+      "progress": 0,
+      "file": "federated-beaming-axolotl.md"
+    },
+    {
+      "name": "federated-kindling-quilt-agent-a0cb9ec",
+      "progress": 0,
+      "file": "federated-kindling-quilt-agent-a0cb9ec.md"
+    },
+    {
+      "name": "federated-kindling-quilt",
+      "progress": 0,
+      "file": "federated-kindling-quilt.md"
+    },
+    {
+      "name": "floofy-nibbling-tome",
+      "progress": 0,
+      "file": "floofy-nibbling-tome.md"
+    },
+    {
       "name": "floofy-sauteeing-alpaca",
       "progress": 0,
       "file": "floofy-sauteeing-alpaca.md"
     },
     {
+      "name": "foamy-launching-cook",
+      "progress": 0,
+      "file": "foamy-launching-cook.md"
+    },
+    {
+      "name": "glowing-cooking-snail",
+      "progress": 0,
+      "file": "glowing-cooking-snail.md"
+    },
+    {
+      "name": "graceful-swimming-minsky",
+      "progress": 0,
+      "file": "graceful-swimming-minsky.md"
+    },
+    {
+      "name": "idempotent-wiggling-harbor",
+      "progress": 0,
+      "file": "idempotent-wiggling-harbor.md"
+    },
+    {
+      "name": "lexical-spinning-flamingo",
+      "progress": 0,
+      "file": "lexical-spinning-flamingo.md"
+    },
+    {
       "name": "lucky-splashing-thompson",
       "progress": 0,
       "file": "lucky-splashing-thompson.md"
+    },
+    {
+      "name": "snoopy-petting-marble",
+      "progress": 0,
+      "file": "snoopy-petting-marble.md"
+    },
+    {
+      "name": "starry-juggling-cherny",
+      "progress": 0,
+      "file": "starry-juggling-cherny.md"
+    },
+    {
+      "name": "streamed-enchanting-bear",
+      "progress": 0,
+      "file": "streamed-enchanting-bear.md"
+    },
+    {
+      "name": "tranquil-foraging-stearns",
+      "progress": 0,
+      "file": "tranquil-foraging-stearns.md"
+    },
+    {
+      "name": "vectorized-hopping-whale",
+      "progress": 0,
+      "file": "vectorized-hopping-whale.md"
+    },
+    {
+      "name": "wiggly-floating-muffin",
+      "progress": 0,
+      "file": "wiggly-floating-muffin.md"
+    },
+    {
+      "name": "wise-jingling-frost",
+      "progress": 0,
+      "file": "wise-jingling-frost.md"
     },
     {
       "name": "wobbly-wandering-honey",
@@ -47,6 +147,18 @@
       "endTime": "2026-02-03T23:36:21.182Z",
       "violations": 0,
       "activePlans": 7
+    },
+    {
+      "sessionId": "session-1770162031210",
+      "endTime": "2026-03-10T22:28:31.738Z",
+      "violations": 2,
+      "activePlans": 7
+    },
+    {
+      "sessionId": "session-1773182374268",
+      "endTime": "2026-03-10T23:22:13.309Z",
+      "violations": 1,
+      "activePlans": 26
     }
   ]
 }

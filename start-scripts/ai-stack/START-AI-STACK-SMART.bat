@@ -3,8 +3,8 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 :: 환경 변수 설정
-set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages
-set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models
+set PYTHONUSERBASE=K:\PortableApps\genai\python-packages
+set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models
 set PATH=%PATH%;K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python
 
 echo ==========================================
@@ -95,7 +95,7 @@ if "%OLLAMA_STATUS%"=="RUNNING" (
 )
 
 echo [*] Ollama 시작...
-start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
 timeout /t 3 /nobreak >nul
 echo [+] 완료! http://127.0.0.1:11434
 pause
@@ -112,7 +112,7 @@ if "%FLOWISE_STATUS%"=="RUNNING" (
 )
 
 echo [*] Flowise 시작...
-start "Flowise" cmd /c "cd K:\PortableApps\Claude-Code && npx flowise start"
+start "Flowise" cmd /c "cd K:\PortableApps\genai && npx flowise start"
 echo [+] 완료! http://localhost:3000
 pause
 goto menu
@@ -141,7 +141,7 @@ if "%LITELLM_STATUS%"=="RUNNING" (
 )
 
 echo [*] LiteLLM 시작...
-start "LiteLLM" cmd /c "cd K:\PortableApps\Claude-Code && K:\PortableApps\tools\python\python.exe -m litellm --port 8000"
+start "LiteLLM" cmd /c "cd K:\PortableApps\genai && K:\PortableApps\tools\python\python.exe -m litellm --port 8000"
 echo [+] 완료! http://localhost:8000
 pause
 goto menu
@@ -153,7 +153,7 @@ echo.
 
 if "%OLLAMA_STATUS%"=="FREE" (
     echo [*] Ollama 시작...
-    start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+    start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
     timeout /t 2 /nobreak >nul
 ) else (
     echo [!] Ollama 이미 실행 중 - 스킵
@@ -161,7 +161,7 @@ if "%OLLAMA_STATUS%"=="FREE" (
 
 if "%FLOWISE_STATUS%"=="FREE" (
     echo [*] Flowise 시작...
-    start "Flowise" cmd /c "cd K:\PortableApps\Claude-Code && npx flowise start"
+    start "Flowise" cmd /c "cd K:\PortableApps\genai && npx flowise start"
     timeout /t 2 /nobreak >nul
 ) else (
     echo [!] Flowise 이미 실행 중 - 스킵

@@ -9,7 +9,7 @@ echo [*] 모델 저장 경로: %OLLAMA_MODELS%
 if "%OLLAMA_MODELS%"=="" (
     echo [!] 경고: OLLAMA_MODELS 환경 변수가 설정되지 않았습니다.
     echo [*] K-drive 경로로 설정 중...
-    set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models
+    set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models
 )
 echo.
 

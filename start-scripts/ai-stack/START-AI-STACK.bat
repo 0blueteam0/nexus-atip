@@ -9,8 +9,8 @@ echo.
 
 :: 환경 변수 설정
 echo [*] 환경 변수 설정 중...
-set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages
-set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models
+set PYTHONUSERBASE=K:\PortableApps\genai\python-packages
+set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models
 set PATH=%PATH%;K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python
 
 echo [+] 환경 변수 설정 완료
@@ -40,7 +40,7 @@ goto invalid
 :ollama
 echo.
 echo [*] Ollama 서버 시작 중...
-start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
 echo [+] Ollama 서버가 백그라운드에서 시작되었습니다
 echo [+] 서버 주소: http://127.0.0.1:11434
 echo.
@@ -63,7 +63,7 @@ echo.
 echo [*] 전체 스택 시작 중...
 echo.
 echo [1/2] Ollama 서버 시작...
-start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+start "Ollama Server" cmd /c "set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
 timeout /t 3 /nobreak >nul
 echo [+] Ollama 서버 시작됨 (http://127.0.0.1:11434)
 echo.
@@ -81,7 +81,7 @@ echo.
 echo [*] Python AI 환경 시작 중...
 echo [!] CrewAI, LiteLLM, Qdrant 라이브러리 사용 가능
 echo.
-start "Python AI REPL" cmd /k "set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages && python"
+start "Python AI REPL" cmd /k "set PYTHONUSERBASE=K:\PortableApps\genai\python-packages && python"
 echo [+] Python REPL이 열렸습니다
 echo.
 pause
@@ -94,9 +94,9 @@ echo.
 
 :: Ollama 확인
 echo [1] Ollama:
-if exist "K:\PortableApps\Claude-Code\ollama\ollama.exe" (
-    echo    [+] 설치됨 - K:/PortableApps/Claude-Code/ollama/
-    K:/PortableApps/Claude-Code/ollama/ollama.exe --version
+if exist "K:\PortableApps\genai\ollama\ollama.exe" (
+    echo    [+] 설치됨 - K:/PortableApps/genai/ollama/
+    K:/PortableApps/genai/ollama/ollama.exe --version
 ) else (
     echo    [-] 미설치
 )
@@ -104,7 +104,7 @@ echo.
 
 :: Python 패키지 확인
 echo [2] Python 패키지:
-set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages
+set PYTHONUSERBASE=K:\PortableApps\genai\python-packages
 python -m pip list --user | findstr /i "crewai qdrant litellm streamlit gradio"
 echo.
 

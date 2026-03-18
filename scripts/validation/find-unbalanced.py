@@ -68,4 +68,4 @@ def find_unbalanced_chars(filename):
         print(f"  {problem}")
 
 if __name__ == "__main__":
-    find_unbalanced_chars("K:/PortableApps/Claude-Code/vite-app/index.html")
+    find_unbalanced_chars("K:/PortableApps/genai/vite-app/index.html")

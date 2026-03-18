@@ -7,8 +7,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const CONFIG_FILE = path.join('K:', 'PortableApps', 'Claude-Code', '.claude.json');
-const BACKUP_DIR = path.join('K:', 'PortableApps', 'Claude-Code', 'backups', 'mcp-configs');
+const CONFIG_FILE = path.join('K:', 'PortableApps', 'genai', '.claude.json');
+const BACKUP_DIR = path.join('K:', 'PortableApps', 'genai', 'backups', 'mcp-configs');
 const MAX_BACKUPS = 10;
 
 // Create backup directory if not exists

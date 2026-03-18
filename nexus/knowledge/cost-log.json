@@ -1,0 +1,83 @@
+[
+  {
+    "provider": "ollama-cpu",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772688186180
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772688256260
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772692958659
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772693189029
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772693220019
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1772694528847
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1773023273403
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1773023467749
+  },
+  {
+    "provider": "gemini-cli",
+    "inputTokens": 1500,
+    "outputTokens": 800,
+    "totalTokens": 2300,
+    "costUsd": 0,
+    "taskType": "code_review",
+    "timestamp": 1773130817065
+  }
+]

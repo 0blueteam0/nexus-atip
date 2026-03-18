@@ -1,0 +1,180 @@
+{
+  "lifecycleId": "lc-starry-juggling-cherny-1773181741144",
+  "planId": "starry-juggling-cherny",
+  "planTitle": "Claude Code 에코시스템 확장 플랜",
+  "phases": {
+    "prd": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "mvp": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 0,
+  "goalMapping": [
+    {
+      "id": "goal-1773181741144-1k8a",
+      "title": "`new-features-v2.md` → v2.1.34까지 업데이트",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-niuu",
+      "title": "Agent Teams 섹션 추가",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-9rcx",
+      "title": "PDF pages 파라미터 문서화",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-0j2p",
+      "title": "`.claude/skills/vibe-coding/SKILL.md` 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-t43f",
+      "title": "프롬프트 템플릿 작성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-nn9e",
+      "title": "CLAUDE.md에 트리거 키워드 등록",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-zmum",
+      "title": "루트 `AGENTS.md` 템플릿 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-fmnu",
+      "title": "워크스페이스별 예제 작성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-niey",
+      "title": "문서화 (`documentation/guides/agents-md-guide.md`)",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-gehx",
+      "title": "`.claude/skills/python-c-binding/SKILL.md` 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-62rt",
+      "title": "`.claude/agents/native-binding-expert.md` 생성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-1go6",
+      "title": "예제 템플릿 작성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-5b12",
+      "title": "`documentation/guides/recommended-plugins.md` 작성",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-drdk",
+      "title": "CLAUDE.md에 참조 추가",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-662p",
+      "title": "새 스킬 테스트",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-36rn",
+      "title": "문서 정합성 확인",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    },
+    {
+      "id": "goal-1773181741144-r3en",
+      "title": "Git 커밋",
+      "phase": "implementation",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-03-10T22:29:01.144Z"
+    }
+  ],
+  "createdAt": "2026-03-10T22:29:01.144Z",
+  "updatedAt": "2026-03-10T22:29:01.144Z"
+}

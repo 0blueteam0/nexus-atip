@@ -26,6 +26,8 @@ const { getContainer } = require('./container');
 // Lazy-loaded bridge modules (to avoid circular deps / missing modules during early phases)
 let fileLock = null;
 let complexityDetector = null;
+let thinkingAdvisor = null;
+let teamOrchestrator = null;
 
 function getFileLock() {
   if (!fileLock) {
@@ -47,6 +49,41 @@ function getComplexityDetector() {
     }
   }
   return complexityDetector;
+}
+
+function getThinkingAdvisor() {
+  if (!thinkingAdvisor) {
+    try {
+      const { ThinkingAdvisor } = require('../claude-features/thinking-advisor');
+      thinkingAdvisor = new ThinkingAdvisor();
+    } catch {
+      thinkingAdvisor = null;
+    }
+  }
+  return thinkingAdvisor;
+}
+
+function getTeamOrchestrator(configOverride) {
+  if (!teamOrchestrator) {
+    try {
+      const { TeamOrchestrator } = require('../claude-features/team-orchestrator');
+      // Load config from nexus.config.json claude_features.agent_teams
+      let teamConfig = configOverride || {};
+      if (!configOverride) {
+        try {
+          const cfg = JSON.parse(fs.readFileSync(path.join(NEXUS_ROOT, 'nexus.config.json'), 'utf8'));
+          const at = cfg.claude_features?.agent_teams;
+          if (at) {
+            teamConfig = { enabled: at.enabled, maxTeamSize: at.max_members, timeoutMs: at.timeout_ms };
+          }
+        } catch { /* use defaults */ }
+      }
+      teamOrchestrator = new TeamOrchestrator(teamConfig);
+    } catch {
+      teamOrchestrator = null;
+    }
+  }
+  return teamOrchestrator;
 }
 
 const SESSION_STATE_PATH = path.join(NEXUS_ROOT, 'session-state.json');
@@ -164,7 +201,44 @@ class Orchestrator {
       decision = this._applyEvolutionWeights(decision, task.type, complexity);
     }
 
-    // 3b. Ensure selected provider is available (auto-fallback)
+    // 3b. Thinking advisor - recommend thinking mode for complex tasks
+    const advisor = getThinkingAdvisor();
+    if (advisor) {
+      try {
+        const thinking = advisor.advise({ prompt: task.prompt || task.type || '', complexity: complexity.score });
+        decision.thinkingMode = thinking.mode;
+        if (thinking.mode !== 'none') {
+          decision.reason += ` [thinking: ${thinking.mode}]`;
+          this.bus.emit('thinking:advised', { mode: thinking.mode, score: complexity.score });
+        }
+      } catch { /* thinking advisor is optional */ }
+    }
+
+    // 3c. Team routing - for complex tasks, consider Agent Teams
+    if (complexity.score >= 13 && task.options?.allowTeam !== false) {
+      const team = getTeamOrchestrator();
+      if (team && team._enabled) {
+        decision.teamMode = true;
+        decision.reason += ' [team eligible]';
+
+        // Auto-compose team based on routing decision
+        const teamMembers = this._composeTeamMembers(task, decision, complexity);
+        if (teamMembers.length > 0) {
+          const teamResult = team.startTeam({
+            name: `auto-${task.type || 'general'}-${Date.now()}`,
+            task: task.prompt || task.type,
+            members: teamMembers
+          });
+          if (teamResult.started) {
+            decision.teamId = teamResult.teamId;
+            decision.teamMembers = teamMembers.length;
+            decision.reason += ` [team:${teamResult.teamId}]`;
+          }
+        }
+      }
+    }
+
+    // 3d. Ensure selected provider is available (auto-fallback)
     decision = this._ensureAvailable(decision);
 
     // 4. Record routing decision
@@ -188,7 +262,19 @@ class Orchestrator {
    * Select provider based on config rules
    */
   _selectProvider(task, complexity) {
-    // Try complexity-based routing first
+    // 1. Try explicit task-type routing first (highest priority)
+    const taskRoute = getRoutingRule(this.config, task.type);
+    if (taskRoute) {
+      const fallbacks = [taskRoute.secondary, taskRoute.tertiary].filter(Boolean).filter(f => f !== '-');
+      return {
+        provider: taskRoute.primary,
+        fallbacks,
+        reason: `task_type: ${task.type}`,
+        strategy: 'task_match'
+      };
+    }
+
+    // 2. Then complexity-based routing (for unmatched task types)
     const complexRoute = getComplexityRoute(this.config, complexity.score);
     if (complexRoute?.provider) {
       const provider = complexRoute.provider;
@@ -204,18 +290,6 @@ class Orchestrator {
       };
     }
 
-    // Try task-type routing
-    const taskRoute = getRoutingRule(this.config, task.type);
-    if (taskRoute) {
-      const fallbacks = [taskRoute.secondary, taskRoute.tertiary].filter(Boolean).filter(f => f !== '-');
-      return {
-        provider: taskRoute.primary,
-        fallbacks,
-        reason: `task_type: ${task.type}`,
-        strategy: 'task_match'
-      };
-    }
-
     // Default routing
     return {
       provider: 'claude-code',
@@ -223,6 +297,43 @@ class Orchestrator {
       reason: 'default_fallback',
       strategy: 'default'
     };
+  }
+
+  /**
+   * Compose team members based on task, routing decision, and complexity
+   * @private
+   */
+  _composeTeamMembers(task, decision, complexity) {
+    const members = [];
+    const primary = decision.provider;
+    const fallbacks = decision.fallbacks || [];
+
+    // Primary agent always leads
+    members.push({
+      role: 'lead',
+      agentType: primary,
+      subtask: task.prompt || task.type
+    });
+
+    // For complex tasks, add reviewers from fallback chain
+    if (complexity.score >= 15 && fallbacks.length > 0) {
+      members.push({
+        role: 'reviewer',
+        agentType: fallbacks[0],
+        subtask: `Review and verify: ${task.prompt || task.type}`
+      });
+    }
+
+    // For very complex tasks, add a specialist
+    if (complexity.score >= 18 && fallbacks.length > 1) {
+      members.push({
+        role: 'specialist',
+        agentType: fallbacks[1],
+        subtask: `Deep analysis: ${task.prompt || task.type}`
+      });
+    }
+
+    return members;
   }
 
   /**

@@ -1,0 +1,1997 @@
+{
+  "generatedAt": "2026-03-12T19:34:36.231Z",
+  "counts": {
+    "commands": 43,
+    "agents": 125,
+    "hooks": 32,
+    "bridgedHooks": 20,
+    "degradedHooks": 5,
+    "unsupportedEnabledHooks": 10,
+    "runtimeSkills": 3
+  },
+  "commands": [
+    {
+      "id": "/analyze",
+      "scope": "sc",
+      "file": "sc/analyze.md",
+      "title": "/sc:analyze - Analyze Code",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/blue-green-deployment",
+      "scope": "library",
+      "file": "library/blue-green-deployment.md",
+      "title": "Blue-Green Deployment Strategy",
+      "description": "Implement blue-green deployment strategy with zero-downtime switching, health validation, and automatic rollback",
+      "argumentHint": "[strategy] | setup | deploy | switch | rollback | status",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/branch-cleanup",
+      "scope": "library",
+      "file": "library/branch-cleanup.md",
+      "title": "Git Branch Cleanup & Organization",
+      "description": "Use PROACTIVELY to clean up merged branches, stale remotes, and organize branch structure",
+      "argumentHint": "[--dry-run] | [--force] | [--remote-only] | [--local-only]",
+      "allowedTools": "Bash(git branch:*), Bash(git checkout:*), Bash(git push:*), Bash(git merge:*), Bash(gh:*), Read, Grep"
+    },
+    {
+      "id": "/build",
+      "scope": "sc",
+      "file": "sc/build.md",
+      "title": "/sc:build - Build Project",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/ci-pipeline",
+      "scope": "library",
+      "file": "library/ci-pipeline.md",
+      "title": "CI/CD Pipeline Manager",
+      "description": "Manage and automate CI/CD pipeline configuration with GitHub Actions, multi-environment support, and deployment strategies",
+      "argumentHint": "[pipeline-name] | setup | status | fix",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/ci-setup",
+      "scope": "library",
+      "file": "library/ci-setup.md",
+      "title": "CI/CD Pipeline Setup",
+      "description": "Setup comprehensive CI/CD pipeline with automated testing, building, and deployment",
+      "argumentHint": "[platform] | --github-actions | --gitlab-ci | --jenkins | --full-setup",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/clean",
+      "scope": "library",
+      "file": "library/clean.md",
+      "title": "clean",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/code-review",
+      "scope": "core",
+      "file": "core/code-review.md",
+      "title": "Code Quality Review",
+      "description": "Comprehensive code quality review with security, performance, and architecture analysis",
+      "argumentHint": "[file-path] | [commit-hash] | --full",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/commit",
+      "scope": "core",
+      "file": "core/commit.md",
+      "title": "Smart Git Commit",
+      "description": "Create well-formatted commits with conventional commit format and emoji",
+      "argumentHint": "[message] | --no-verify | --amend",
+      "allowedTools": "Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git diff:*), Bash(git log:*)"
+    },
+    {
+      "id": "/create-architecture-documentation",
+      "scope": "library",
+      "file": "library/create-architecture-documentation.md",
+      "title": "Architecture Documentation Generator",
+      "description": "Generate comprehensive architecture documentation with diagrams, ADRs, and interactive visualization",
+      "argumentHint": "[framework] | --c4-model | --arc42 | --adr | --plantuml | --full-suite",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/create-pr",
+      "scope": "core",
+      "file": "core/create-pr.md",
+      "title": "Create Pull Request Command",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/create-prd",
+      "scope": "library",
+      "file": "library/create-prd.md",
+      "title": "Create Product Requirements Document",
+      "description": "Create Product Requirements Document (PRD) for new features",
+      "argumentHint": "[feature-name] | --template | --interactive",
+      "allowedTools": "Read, Write, Edit, Grep, Glob"
+    },
+    {
+      "id": "/debug-error",
+      "scope": "core",
+      "file": "core/debug-error.md",
+      "title": "Systematically Debug and Fix Errors",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/dependency-audit",
+      "scope": "library",
+      "file": "library/dependency-audit.md",
+      "title": "Dependency Audit",
+      "description": "Audit dependencies for security vulnerabilities, license compliance, and update recommendations",
+      "argumentHint": "[scope] | --security | --licenses | --updates | --all",
+      "allowedTools": "Read, Bash, Grep"
+    },
+    {
+      "id": "/e2e-setup",
+      "scope": "library",
+      "file": "library/e2e-setup.md",
+      "title": "E2E Setup",
+      "description": "Configure comprehensive end-to-end testing suite with framework selection and CI integration",
+      "argumentHint": "[framework] | --cypress | --playwright | --webdriver | --puppeteer | --mobile",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/explain-code",
+      "scope": "library",
+      "file": "library/explain-code.md",
+      "title": "Analyze and Explain Code Functionality",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/fix-github-issue",
+      "scope": "library",
+      "file": "library/fix-github-issue.md",
+      "title": "fix-github-issue",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/fix-issue",
+      "scope": "core",
+      "file": "core/fix-issue.md",
+      "title": "Fix Issue Command",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/generate-tests",
+      "scope": "core",
+      "file": "core/generate-tests.md",
+      "title": "Generate Tests",
+      "description": "Generate comprehensive test suite with unit, integration, and edge case coverage",
+      "argumentHint": "[file-path] | [component-name]",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/init-project",
+      "scope": "core",
+      "file": "core/init-project.md",
+      "title": "Initialize New Project",
+      "description": "Initialize new project with essential structure, configuration, and development environment setup",
+      "argumentHint": "[project-type] [framework] | --react | --vue | --api | --cli",
+      "allowedTools": "Read, Write, Edit, Bash, Glob"
+    },
+    {
+      "id": "/migrate-to-typescript",
+      "scope": "library",
+      "file": "library/migrate-to-typescript.md",
+      "title": "Migrate to TypeScript",
+      "description": "Migrate JavaScript project to TypeScript with proper typing and tooling setup",
+      "argumentHint": "[migration-strategy] | --gradual | --complete | --strict | --incremental",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/migration-guide",
+      "scope": "library",
+      "file": "library/migration-guide.md",
+      "title": "Migration Guide Generator",
+      "description": "Create comprehensive migration guides with step-by-step procedures, validation, and rollback strategies",
+      "argumentHint": "[migration-type] | framework | database | cloud | architecture | --version-upgrade",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/milestone-tracker",
+      "scope": "library",
+      "file": "library/milestone-tracker.md",
+      "title": "Milestone Tracker",
+      "description": "Track and analyze project milestone progress with predictive analytics",
+      "argumentHint": "[time-period] | --sprint | --quarter | --all",
+      "allowedTools": "Bash, Read, Grep, Glob"
+    },
+    {
+      "id": "/nexus",
+      "scope": "core",
+      "file": "core/nexus.md",
+      "title": "/nexus - NEXUS Multi-AI Orchestration",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/optimize-api-performance",
+      "scope": "library",
+      "file": "library/optimize-api-performance.md",
+      "title": "Optimize API Performance",
+      "description": "Comprehensive API performance optimization with response time reduction, throughput improvement, and scalability enhancements",
+      "argumentHint": "[api-type] | --rest | --graphql | --grpc",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/optimize-bundle-size",
+      "scope": "library",
+      "file": "library/optimize-bundle-size.md",
+      "title": "Optimize Bundle Size",
+      "description": "Reduce and optimize bundle sizes through analysis, configuration, and code splitting strategies",
+      "argumentHint": "[build-tool] | --webpack | --vite | --rollup",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/optimize-database-performance",
+      "scope": "library",
+      "file": "library/optimize-database-performance.md",
+      "title": "Optimize Database Performance",
+      "description": "Optimize database queries, indexing, and performance for improved response times and scalability",
+      "argumentHint": "[database-type] | --postgresql | --mysql | --mongodb",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/performance-audit",
+      "scope": "library",
+      "file": "library/performance-audit.md",
+      "title": "Performance Audit",
+      "description": "Comprehensive performance audit with metrics, bottleneck identification, and optimization recommendations",
+      "argumentHint": "[target-area] | --frontend | --backend | --full",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/pr-review",
+      "scope": "core",
+      "file": "core/pr-review.md",
+      "title": "PR Review",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/prepare-release",
+      "scope": "library",
+      "file": "library/prepare-release.md",
+      "title": "Release Preparation",
+      "description": "Prepare and validate release packages with comprehensive testing, documentation, and automation",
+      "argumentHint": "[version-type] | patch | minor | major | --pre-release | --hotfix",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/refactor-code",
+      "scope": "library",
+      "file": "library/refactor-code.md",
+      "title": "Intelligently Refactor and Improve Code Quality",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/rollback-deploy",
+      "scope": "library",
+      "file": "library/rollback-deploy.md",
+      "title": "Deployment Rollback",
+      "description": "Rollback deployment to previous version with safety checks, database considerations, and monitoring",
+      "argumentHint": "[target-version] | --previous | --emergency | --validate-first | --with-db",
+      "allowedTools": "Read, Edit, Bash"
+    },
+    {
+      "id": "/secrets-scanner",
+      "scope": "library",
+      "file": "library/secrets-scanner.md",
+      "title": "Secrets Scanner",
+      "description": "Scan codebase for exposed secrets, credentials, and sensitive information",
+      "argumentHint": "[scope] | --api-keys | --passwords | --certificates | --fix",
+      "allowedTools": "Read, Bash, Grep, Glob"
+    },
+    {
+      "id": "/security-hardening",
+      "scope": "library",
+      "file": "library/security-hardening.md",
+      "title": "Security Hardening",
+      "description": "Harden application security configuration with comprehensive security controls",
+      "argumentHint": "[focus-area] | --headers | --auth | --encryption | --infrastructure",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/setup-development-environment",
+      "scope": "core",
+      "file": "core/setup-development-environment.md",
+      "title": "Setup Development Environment",
+      "description": "Setup comprehensive development environment with tools, configurations, and workflows",
+      "argumentHint": "[environment-type] | --local | --docker | --cloud | --full-stack",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/setup-linting",
+      "scope": "library",
+      "file": "library/setup-linting.md",
+      "title": "Setup Code Linting",
+      "description": "Configure comprehensive code linting and quality analysis tools with automated enforcement",
+      "argumentHint": "[language] | --javascript | --typescript | --python | --multi-language",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/test-coverage",
+      "scope": "library",
+      "file": "library/test-coverage.md",
+      "title": "Test Coverage",
+      "description": "Analyze and improve test coverage with comprehensive reporting and gap identification",
+      "argumentHint": "[coverage-type] | --line | --branch | --function | --statement | --report",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/todo",
+      "scope": "library",
+      "file": "library/todo.md",
+      "title": "Project Todo Manager",
+      "description": "Manage project todos in todos.md file",
+      "argumentHint": "[action] [task-description] | add | complete | remove | list",
+      "allowedTools": "Read, Write, Edit"
+    },
+    {
+      "id": "/ultra-think",
+      "scope": "library",
+      "file": "library/ultra-think.md",
+      "title": "Deep Analysis and Problem Solving Mode",
+      "description": "",
+      "argumentHint": "",
+      "allowedTools": ""
+    },
+    {
+      "id": "/update-dependencies",
+      "scope": "library",
+      "file": "library/update-dependencies.md",
+      "title": "Update Dependencies",
+      "description": "Update and modernize project dependencies with comprehensive testing and compatibility checks",
+      "argumentHint": "[update-strategy] | --patch | --minor | --major | --security-only",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/update-docs",
+      "scope": "library",
+      "file": "library/update-docs.md",
+      "title": "Documentation Update & Synchronization",
+      "description": "Systematically update project documentation with implementation status, API changes, and synchronized content",
+      "argumentHint": "[doc-type] | --implementation | --api | --architecture | --sync | --validate",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/workflow-orchestrator",
+      "scope": "library",
+      "file": "library/workflow-orchestrator.md",
+      "title": "Workflow Orchestrator",
+      "description": "Orchestrate complex automation workflows with task dependencies, scheduling, and cross-platform execution",
+      "argumentHint": "[workflow-name] | create | run | schedule | monitor",
+      "allowedTools": "Read, Write, Edit, Bash"
+    },
+    {
+      "id": "/write-tests",
+      "scope": "core",
+      "file": "core/write-tests.md",
+      "title": "Write Tests",
+      "description": "Write comprehensive unit and integration tests with proper mocking and coverage",
+      "argumentHint": "[target-file] | [test-type] | --unit | --integration | --e2e | --component",
+      "allowedTools": "Read, Write, Edit, Bash"
+    }
+  ],
+  "agents": [
+    {
+      "id": "3d-artist",
+      "file": "3d-artist.md",
+      "description": "3D art and asset creation specialist for game development. Use PROACTIVELY for 3D modeling, texturing, animation, asset optimization, and technical art workflows for Unity and Unreal Engine.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "academic-research-synthesizer",
+      "file": "academic-research-synthesizer.md",
+      "description": "Academic research synthesis specialist. Use PROACTIVELY for comprehensive research on academic topics, literature reviews, technical investigations, and well-cited analysis combining multiple sources.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "agent-expert",
+      "file": "agent-expert.md",
+      "description": "Use this agent when creating specialized Claude Code agents for the claude-code-templates components system. Specializes in agent design, prompt engineering, domain expertise modeling, and agent best practices. Examples: <example>Context: User wants to create a new specialized agent. user: 'I need to create an agent that specializes in React performance optimization' assistant: 'I'll use the agent-expert agent to create a comprehensive React performance agent with proper domain expertise and practical examples' <commentary>Since the user needs to create a specialized agent, use the agent-expert agent for proper agent structure and implementation.</commentary></example> <example>Context: User needs help with agent prompt design. user: 'How do I create an agent that can handle both frontend and backend security?' assistant: 'Let me use the agent-expert agent to design a full-stack security agent with proper domain boundaries and expertise areas' <commentary>The user needs agent development help, so use the agent-expert agent.</commentary></example>",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "api-documenter",
+      "file": "api-documenter.md",
+      "description": "Create OpenAPI/Swagger specs, generate SDKs, and write developer documentation. Handles versioning, examples, and interactive docs. Use PROACTIVELY for API documentation or client library generation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "haiku"
+    },
+    {
+      "id": "api-security-audit",
+      "file": "api-security-audit.md",
+      "description": "API security audit specialist. Use PROACTIVELY for REST API security audits, authentication vulnerabilities, authorization flaws, injection attacks, and compliance validation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "architect-reviewer",
+      "file": "architect-review.md",
+      "description": "Use this agent to review code for architectural consistency and patterns. Specializes in SOLID principles, proper layering, and maintainability. Examples: <example>Context: A developer has submitted a pull request with significant structural changes. user: 'Please review the architecture of this new feature.' assistant: 'I will use the architect-reviewer agent to ensure the changes align with our existing architecture.' <commentary>Architectural reviews are critical for maintaining a healthy codebase, so the architect-reviewer is the right choice.</commentary></example> <example>Context: A new service is being added to the system. user: 'Can you check if this new service is designed correctly?' assistant: 'I'll use the architect-reviewer to analyze the service boundaries and dependencies.' <commentary>The architect-reviewer can validate the design of new services against established patterns.</commentary></example>",
+      "tools": "",
+      "model": "opus"
+    },
+    {
+      "id": "architecture-modernizer",
+      "file": "architecture-modernizer.md",
+      "description": "Software architecture modernization specialist. Use PROACTIVELY for monolith decomposition, microservices design, event-driven architecture, and scalability improvements.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "atip-architect",
+      "file": "atip-architect.md",
+      "description": "ATIP Architect - designs modular architecture for NEXUS ATIP V2.0 using Claude Code agents, skills, MCP",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "atip-system-analyzer",
+      "file": "atip-system-analyzer.md",
+      "description": "ATIP System Analyzer - deep analysis of existing NEXUS ATIP V2.0 codebase for reimplementation",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "audio-mixer",
+      "file": "audio-mixer.md",
+      "description": "Multi-track audio mixing and mastering specialist. Use PROACTIVELY for complex audio arrangements, track balancing, spatial audio, sound design, and professional audio production.",
+      "tools": "Bash, Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "audio-quality-controller",
+      "file": "audio-quality-controller.md",
+      "description": "Audio quality enhancement and analysis specialist. Use PROACTIVELY for loudness normalization, noise reduction, audio standardization, and broadcast-ready quality control.",
+      "tools": "Bash, Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "backend-architect",
+      "file": "backend-architect.md",
+      "description": "Backend system architecture and API design specialist. Use PROACTIVELY for RESTful APIs, microservice boundaries, database schemas, scalability planning, and performance optimization.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "business-analyst",
+      "file": "business-analyst.md",
+      "description": "Business metrics analysis and reporting specialist. Use PROACTIVELY for KPI tracking, revenue analysis, growth projections, cohort analysis, and investor reporting. Expert in data-driven decision making.",
+      "tools": "Read, Write, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "c-pro",
+      "file": "c-pro.md",
+      "description": "Write efficient C code with proper memory management, pointer arithmetic, and system calls. Handles embedded systems, kernel modules, and performance-critical code. Use PROACTIVELY for C optimization, memory issues, or system programming.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "c-sharp-pro",
+      "file": "c-sharp-pro.md",
+      "description": "Write idiomatic C# code with modern language features, async patterns, and LINQ. Masters .NET ecosystem, Entity Framework Core, and ASP.NET Core. Use PROACTIVELY for C# optimization, refactoring, or complex .NET solutions.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "changelog-generator",
+      "file": "changelog-generator.md",
+      "description": "Changelog and release notes specialist. Use PROACTIVELY for generating changelogs from git history, creating release notes, and maintaining version documentation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "cloud-architect",
+      "file": "cloud-architect.md",
+      "description": "Cloud infrastructure design and optimization specialist for AWS/Azure/GCP. Use PROACTIVELY for infrastructure architecture, Terraform IaC, cost optimization, auto-scaling, and multi-region deployments.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "cloud-migration-specialist",
+      "file": "cloud-migration-specialist.md",
+      "description": "Cloud migration and infrastructure modernization specialist. Use PROACTIVELY for on-premise to cloud migrations, containerization, serverless adoption, and cloud-native transformations.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "code-reviewer",
+      "file": "code-reviewer.md",
+      "description": "Expert code review specialist for quality, security, and maintainability. Use PROACTIVELY after writing or modifying code to ensure high development standards.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "compliance-specialist",
+      "file": "compliance-specialist.md",
+      "description": "Security compliance and regulatory framework specialist. Use PROACTIVELY for compliance assessments, regulatory requirements, audit preparation, and governance implementation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "comprehensive-researcher",
+      "file": "comprehensive-researcher.md",
+      "description": "Comprehensive research specialist. Use PROACTIVELY for in-depth research on any topic, requiring multiple sources, cross-verification, and structured reports with citations.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "connection-agent",
+      "file": "connection-agent.md",
+      "description": "Obsidian vault connection specialist. Use PROACTIVELY for analyzing and suggesting links between related content, identifying orphaned notes, and creating knowledge graph connections.",
+      "tools": "Read, Grep, Bash, Write, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "content-curator",
+      "file": "content-curator.md",
+      "description": "Obsidian content curation and quality specialist. Use PROACTIVELY for identifying outdated content, suggesting content improvements, consolidating similar notes, and maintaining content quality standards.",
+      "tools": "Read, Write, Edit, Grep, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "content-marketer",
+      "file": "content-marketer.md",
+      "description": "Content marketing and SEO optimization specialist. Use PROACTIVELY for blog posts, social media content, email campaigns, content calendars, and SEO strategy. Expert in engagement-driven content.",
+      "tools": "Read, Write, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "context-manager",
+      "file": "context-manager.md",
+      "description": "Context management specialist for multi-agent workflows and long-running tasks. Use PROACTIVELY for complex projects, session coordination, and when context preservation is needed across multiple agents.",
+      "tools": "Read, Write, Edit, TodoWrite",
+      "model": "opus"
+    },
+    {
+      "id": "cpp-pro",
+      "file": "cpp-pro.md",
+      "description": "Write idiomatic C++ code with modern features, RAII, smart pointers, and STL algorithms. Handles templates, move semantics, and performance optimization. Use PROACTIVELY for C++ refactoring, memory safety, or complex C++ patterns.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "customer-support",
+      "file": "customer-support.md",
+      "description": "Customer support and documentation specialist. Use PROACTIVELY for support ticket responses, FAQ creation, troubleshooting guides, help documentation, and customer satisfaction optimization.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "data-scientist",
+      "file": "data-scientist.md",
+      "description": "Data analysis and statistical modeling specialist. Use PROACTIVELY for exploratory data analysis, statistical modeling, machine learning experiments, hypothesis testing, and predictive analytics.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "database-admin",
+      "file": "database-admin.md",
+      "description": "Database administration specialist for operations, backups, replication, and monitoring. Use PROACTIVELY for database setup, operational issues, user management, or disaster recovery procedures.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "database-architect",
+      "file": "database-architect.md",
+      "description": "Database architecture and design specialist. Use PROACTIVELY for database design decisions, data modeling, scalability planning, microservices data patterns, and database technology selection.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "debugger",
+      "file": "debugger.md",
+      "description": "Debugging specialist for errors, test failures, and unexpected behavior. Use PROACTIVELY when encountering issues, analyzing stack traces, or investigating system problems.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "dependency-manager",
+      "file": "dependency-manager.md",
+      "description": "Use this agent to manage project dependencies. Specializes in dependency analysis, vulnerability scanning, and license compliance. Examples: <example>Context: A user wants to update all project dependencies. user: 'Please update all the dependencies in this project.' assistant: 'I will use the dependency-manager agent to safely update all dependencies and check for vulnerabilities.' <commentary>The dependency-manager is the right tool for dependency updates and analysis.</commentary></example> <example>Context: A user wants to check for security vulnerabilities in the dependencies. user: 'Are there any known vulnerabilities in our dependencies?' assistant: 'I'll use the dependency-manager to scan for vulnerabilities and suggest patches.' <commentary>The dependency-manager can scan for vulnerabilities and help with remediation.</commentary></example>",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "detection-engineer",
+      "file": "detection-engineer.md",
+      "description": "Detection Engineer Agent - creates and manages security detection rules (Sigma, YARA, Suricata) for ATIP",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "document-structure-analyzer",
+      "file": "document-structure-analyzer.md",
+      "description": "Document structure analysis specialist. Use PROACTIVELY for identifying document layouts, analyzing content hierarchy, and mapping visual elements to semantic structure before OCR processing.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "documentation-expert",
+      "file": "documentation-expert.md",
+      "description": "Use this agent to create, improve, and maintain project documentation. Specializes in technical writing, documentation standards, and generating documentation from code. Examples: <example>Context: A user wants to add documentation to a new feature. user: 'Please help me document this new API endpoint.' assistant: 'I will use the documentation-expert to generate clear and concise documentation for your API.' <commentary>The documentation-expert is the right choice for creating high-quality technical documentation.</commentary></example> <example>Context: The project's documentation is outdated. user: 'Can you help me update our README file?' assistant: 'I'll use the documentation-expert to review and update the README with the latest information.' <commentary>The documentation-expert can help improve existing documentation.</commentary></example>",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "docusaurus-expert",
+      "file": "docusaurus-expert.md",
+      "description": "Docusaurus documentation specialist. Use PROACTIVELY for site configuration, content management, theming, build troubleshooting, and deployment setup.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "episode-orchestrator",
+      "file": "episode-orchestrator.md",
+      "description": "Episode workflow orchestrator. Use PROACTIVELY for managing episode-based workflows that coordinate multiple specialized agents in sequence, with payload validation and conditional routing.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "error-detective",
+      "file": "error-detective.md",
+      "description": "Log analysis and error pattern detection specialist. Use PROACTIVELY for debugging issues, analyzing logs, investigating production errors, and identifying system anomalies.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "fact-checker",
+      "file": "fact-checker.md",
+      "description": "Fact verification and source validation specialist. Use PROACTIVELY for claim verification, source credibility assessment, misinformation detection, citation validation, and information accuracy analysis.",
+      "tools": "Read, Write, Edit, WebSearch, WebFetch",
+      "model": "sonnet"
+    },
+    {
+      "id": "frontend-developer",
+      "file": "frontend-developer.md",
+      "description": "Frontend development specialist for React applications and responsive design. Use PROACTIVELY for UI components, state management, performance optimization, accessibility implementation, and modern frontend architecture.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "fullstack-developer",
+      "file": "fullstack-developer.md",
+      "description": "Full-stack development specialist covering frontend, backend, and database technologies. Use PROACTIVELY for end-to-end application development, API integration, database design, and complete feature implementation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "game-designer",
+      "file": "game-designer.md",
+      "description": "Game design specialist focusing on mechanics, balancing, player psychology, and system design. Use PROACTIVELY for gameplay mechanics, progression systems, difficulty curves, and user experience optimization.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "golang-pro",
+      "file": "golang-pro.md",
+      "description": "Write idiomatic Go code with goroutines, channels, and interfaces. Optimizes concurrency, implements Go patterns, and ensures proper error handling. Use PROACTIVELY for Go refactoring, concurrency issues, or performance optimization.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "graphql-architect",
+      "file": "graphql-architect.md",
+      "description": "GraphQL schema design and API architecture specialist. Use PROACTIVELY for GraphQL schema design, resolver optimization, federation, performance issues, and subscription implementation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "guest-outreach-coordinator",
+      "file": "guest-outreach-coordinator.md",
+      "description": "Podcast guest outreach and coordination specialist. Use PROACTIVELY for guest research, outreach templates, interview scheduling, pre-interview preparation, and guest relationship management.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "incident-responder",
+      "file": "incident-responder.md",
+      "description": "Handles production incidents with urgency and precision. Use IMMEDIATELY when production issues occur. Coordinates debugging, implements fixes, and documents post-mortems.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "javascript-pro",
+      "file": "javascript-pro.md",
+      "description": "Master modern JavaScript with ES6+, async patterns, and Node.js APIs. Handles promises, event loops, and browser/Node compatibility. Use PROACTIVELY for JavaScript optimization, async debugging, or complex JS patterns.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "legacy-modernizer",
+      "file": "legacy-modernizer.md",
+      "description": "Refactor legacy codebases, migrate outdated frameworks, and implement gradual modernization. Handles technical debt, dependency updates, and backward compatibility. Use PROACTIVELY for legacy system updates, framework migrations, or technical debt reduction.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "legal-advisor",
+      "file": "legal-advisor.md",
+      "description": "Legal documentation and compliance specialist. Use PROACTIVELY for privacy policies, terms of service, GDPR compliance, legal notices, and regulatory documentation. Expert in technology law and data protection.",
+      "tools": "Read, Write, WebSearch",
+      "model": "opus"
+    },
+    {
+      "id": "load-testing-specialist",
+      "file": "load-testing-specialist.md",
+      "description": "Load testing and stress testing specialist. Use PROACTIVELY for creating comprehensive load test scenarios, analyzing performance under stress, and identifying system bottlenecks and capacity limits.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "markdown-syntax-formatter",
+      "file": "markdown-syntax-formatter.md",
+      "description": "Markdown formatting specialist. Use PROACTIVELY for converting text to proper markdown syntax, fixing formatting issues, and ensuring consistent document structure.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "market-research-analyst",
+      "file": "market-research-analyst.md",
+      "description": "Market research and competitive analysis specialist. Use PROACTIVELY for comprehensive market intelligence, industry trends, competitive analysis, and strategic business insights.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "marketing-attribution-analyst",
+      "file": "marketing-attribution-analyst.md",
+      "description": "Marketing attribution and performance analysis specialist. Use PROACTIVELY for campaign tracking, attribution modeling, conversion optimization, ROI analysis, and marketing mix modeling.",
+      "tools": "Read, Write, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-deployment-orchestrator",
+      "file": "mcp-deployment-orchestrator.md",
+      "description": "MCP server deployment and operations specialist. Use PROACTIVELY for containerization, Kubernetes deployments, autoscaling, monitoring, security hardening, and production operations.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-expert",
+      "file": "mcp-expert.md",
+      "description": "Model Context Protocol (MCP) integration specialist for the cli-tool components system. Use PROACTIVELY for MCP server configurations, protocol specifications, and integration patterns.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-integration-engineer",
+      "file": "mcp-integration-engineer.md",
+      "description": "MCP server integration and orchestration specialist. Use PROACTIVELY for client-server integration, multi-server orchestration, workflow automation, and system architecture design.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-protocol-specialist",
+      "file": "mcp-protocol-specialist.md",
+      "description": "MCP protocol specification and standards specialist. Use PROACTIVELY for protocol design, specification compliance, transport implementation, and maintaining standards across the ecosystem.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-registry-navigator",
+      "file": "mcp-registry-navigator.md",
+      "description": "MCP registry discovery and integration specialist. Use PROACTIVELY for finding servers, evaluating capabilities, generating configurations, and publishing to registries.",
+      "tools": "Read, Write, Edit, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-security-auditor",
+      "file": "mcp-security-auditor.md",
+      "description": "MCP server security specialist. Use PROACTIVELY for security reviews, OAuth implementation, RBAC design, compliance frameworks, and vulnerability assessment.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-server-architect",
+      "file": "mcp-server-architect.md",
+      "description": "MCP server architecture and implementation specialist. Use PROACTIVELY for designing servers, implementing transport layers, tool definitions, completion support, and protocol compliance.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "mcp-testing-engineer",
+      "file": "mcp-testing-engineer.md",
+      "description": "MCP server testing and quality assurance specialist. Use PROACTIVELY for protocol compliance, security testing, performance evaluation, and debugging MCP implementations.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "metadata-agent",
+      "file": "metadata-agent.md",
+      "description": "Obsidian metadata management specialist. Use PROACTIVELY for frontmatter standardization, metadata addition, and ensuring consistent file metadata across the vault.",
+      "tools": "Read, MultiEdit, Bash, Glob, LS",
+      "model": "sonnet"
+    },
+    {
+      "id": "ml-engineer",
+      "file": "ml-engineer.md",
+      "description": "ML production systems and model deployment specialist. Use PROACTIVELY for ML pipelines, model serving, feature engineering, A/B testing, monitoring, and production ML infrastructure.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "mobile-developer",
+      "file": "mobile-developer.md",
+      "description": "Cross-platform mobile development specialist for React Native and Flutter. Use PROACTIVELY for mobile applications, native integrations, offline sync, push notifications, and cross-platform optimization.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "moc-agent",
+      "file": "moc-agent.md",
+      "description": "Obsidian Map of Content specialist. Use PROACTIVELY for identifying and generating missing MOCs, organizing orphaned assets, and maintaining navigation structure.",
+      "tools": "Read, Write, Bash, LS, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "model-evaluator",
+      "file": "model-evaluator.md",
+      "description": "AI model evaluation and benchmarking specialist. Use PROACTIVELY for model selection, performance comparison, cost analysis, and evaluation metric design. Expert in LLM capabilities and limitations.",
+      "tools": "Read, Write, Bash, WebSearch",
+      "model": "opus"
+    },
+    {
+      "id": "native-binding-expert",
+      "file": "native-binding-expert.md",
+      "description": "Python-C/C++ 바인딩 전문가 에이전트",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "nextjs-architecture-expert",
+      "file": "nextjs-architecture-expert.md",
+      "description": "Master of Next.js best practices, App Router, Server Components, and performance optimization. Use PROACTIVELY for Next.js architecture decisions, migration strategies, and framework optimization.",
+      "tools": "Read, Write, Edit, Bash, Grep, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "nexus-atip-orchestrator",
+      "file": "nexus-atip-orchestrator.md",
+      "description": "NEXUS ATIP V2.0 Orchestrator - coordinates all sub-agents for the Autonomous Threat Intelligence Platform reimplementation",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "nlp-engineer",
+      "file": "nlp-engineer.md",
+      "description": "Natural Language Processing and text analytics specialist. Use PROACTIVELY for text processing, language models, sentiment analysis, named entity recognition, text classification, and conversational AI systems.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "nosql-specialist",
+      "file": "nosql-specialist.md",
+      "description": "NoSQL database specialist for MongoDB, Redis, Cassandra, and document/key-value stores. Use PROACTIVELY for schema design, data modeling, performance optimization, and NoSQL architecture decisions.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "ocr-grammar-fixer",
+      "file": "ocr-grammar-fixer.md",
+      "description": "OCR text correction specialist. Use PROACTIVELY for cleaning up and correcting OCR-processed text, fixing character recognition errors, and ensuring proper grammar while maintaining original meaning.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "ocr-preprocessing-optimizer",
+      "file": "ocr-preprocessing-optimizer.md",
+      "description": "OCR preprocessing and image optimization specialist. Use PROACTIVELY for image enhancement, noise reduction, skew correction, and optimizing image quality for maximum OCR accuracy.",
+      "tools": "Read, Write, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "ocr-quality-assurance",
+      "file": "ocr-quality-assurance.md",
+      "description": "OCR pipeline validation specialist. Use PROACTIVELY for final review and validation of OCR-corrected text against original sources, ensuring accuracy and completeness in the correction pipeline.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "paper-pipeline",
+      "file": "paper-pipeline.md",
+      "description": "|",
+      "tools": "Read, Write, Edit, Bash, Grep, Glob, Task, WebSearch, WebFetch",
+      "model": "opus"
+    },
+    {
+      "id": "parallel-workflow",
+      "file": "parallel-workflow.md",
+      "description": "",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "payment-integration",
+      "file": "payment-integration.md",
+      "description": "Payment systems integration specialist. Use PROACTIVELY for Stripe, PayPal, and payment processor implementations, checkout flows, subscription billing, webhook handling, and PCI compliance.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "penetration-tester",
+      "file": "penetration-tester.md",
+      "description": "Penetration testing and ethical hacking specialist. Use PROACTIVELY for security assessments, vulnerability exploitation, network penetration, and security posture evaluation.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "performance-engineer",
+      "file": "performance-engineer.md",
+      "description": "Profile applications, optimize bottlenecks, and implement caching strategies. Handles load testing, CDN setup, and query optimization. Use PROACTIVELY for performance issues or optimization tasks.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "performance-profiler",
+      "file": "performance-profiler.md",
+      "description": "Performance analysis and optimization specialist. Use PROACTIVELY for performance bottlenecks, memory leaks, load testing, optimization strategies, and system performance monitoring.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "php-pro",
+      "file": "php-pro.md",
+      "description": "Write idiomatic PHP code with generators, iterators, SPL data structures, and modern OOP features. Use PROACTIVELY for high-performance PHP applications.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "podcast-content-analyzer",
+      "file": "podcast-content-analyzer.md",
+      "description": "Podcast content analysis specialist. Use PROACTIVELY for identifying viral moments, creating chapter markers, extracting SEO keywords, and scoring engagement potential from transcripts.",
+      "tools": "Read",
+      "model": "opus"
+    },
+    {
+      "id": "podcast-editor",
+      "file": "podcast-editor.md",
+      "description": "Podcast editing and post-production specialist. Use PROACTIVELY for audio editing guidance, show notes creation, chapter markers, timestamp management, and podcast publishing workflows.",
+      "tools": "Read, Write, Edit",
+      "model": "sonnet"
+    },
+    {
+      "id": "podcast-metadata-specialist",
+      "file": "podcast-metadata-specialist.md",
+      "description": "Podcast metadata and show notes specialist. Use PROACTIVELY for SEO-optimized titles, chapter markers, platform-specific descriptions, and comprehensive publishing metadata.",
+      "tools": "Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "podcast-transcriber",
+      "file": "podcast-transcriber.md",
+      "description": "Audio transcription specialist. Use PROACTIVELY for extracting accurate transcripts from media files with speaker identification, timestamps, and structured output.",
+      "tools": "Bash, Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "podcast-trend-scout",
+      "file": "podcast-trend-scout.md",
+      "description": "Podcast trend analysis specialist. Use PROACTIVELY for identifying emerging tech topics, breaking developments, and timely content suggestions for podcast episodes.",
+      "tools": "Read, Write, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "product-strategist",
+      "file": "product-strategist.md",
+      "description": "Product strategy and roadmap planning specialist. Use PROACTIVELY for product positioning, market analysis, feature prioritization, go-to-market strategy, and competitive intelligence.",
+      "tools": "Read, Write, WebSearch",
+      "model": "opus"
+    },
+    {
+      "id": "project-supervisor-orchestrator",
+      "file": "project-supervisor-orchestrator.md",
+      "description": "Project workflow orchestrator. Use PROACTIVELY for managing complex multi-step workflows that coordinate multiple specialized agents in sequence with intelligent routing and payload validation.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "prompt-engineer",
+      "file": "prompt-engineer.md",
+      "description": "Expert prompt optimization for LLMs and AI systems. Use PROACTIVELY when building AI features, improving agent performance, or crafting system prompts. Masters prompt patterns and techniques.",
+      "tools": "Read, Write, Edit",
+      "model": "opus"
+    },
+    {
+      "id": "python-pro",
+      "file": "python-pro.md",
+      "description": "Write idiomatic Python code with advanced features like decorators, generators, and async/await. Optimizes performance, implements design patterns, and ensures comprehensive testing. Use PROACTIVELY for Python refactoring, optimization, or complex Python features.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "react-performance-optimizer",
+      "file": "react-performance-optimizer.md",
+      "description": "Specialist in React performance patterns, bundle optimization, and Core Web Vitals. Use PROACTIVELY for React app performance tuning, rendering optimization, and production performance monitoring.",
+      "tools": "Read, Write, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "research-orchestrator",
+      "file": "research-orchestrator.md",
+      "description": "Use this agent when you need to coordinate a comprehensive research project that requires multiple specialized agents working in sequence. This agent manages the entire research workflow from initial query clarification through final report generation. <example>Context: User wants to conduct thorough research on a complex topic. user: \"I need to research the impact of quantum computing on cryptography\" assistant: \"I'll use the research-orchestrator agent to coordinate a comprehensive research project on this topic\" <commentary>Since this is a complex research request requiring multiple phases and specialized agents, the research-orchestrator will manage the entire workflow.</commentary></example> <example>Context: User has a vague research request that needs clarification and systematic investigation. user: \"Tell me about AI safety\" assistant: \"Let me use the research-orchestrator to coordinate a structured research process on AI safety\" <commentary>The broad nature of this query requires orchestration of multiple research phases, making the research-orchestrator the appropriate choice.</commentary></example>",
+      "tools": "Read, Write, Edit, Task, TodoWrite",
+      "model": "opus"
+    },
+    {
+      "id": "review-agent",
+      "file": "review-agent.md",
+      "description": "Obsidian vault quality assurance specialist. Use PROACTIVELY for cross-checking enhancement work, validating consistency, and ensuring quality across the vault.",
+      "tools": "Read, Grep, LS",
+      "model": "sonnet"
+    },
+    {
+      "id": "risk-manager",
+      "file": "risk-manager.md",
+      "description": "Risk management and portfolio analysis specialist. Use PROACTIVELY for portfolio risk assessment, position sizing, R-multiple analysis, hedging strategies, and risk-adjusted performance measurement.",
+      "tools": "Read, Write, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "rust-pro",
+      "file": "rust-pro.md",
+      "description": "Write idiomatic Rust with ownership patterns, lifetimes, and trait implementations. Masters async/await, safe concurrency, and zero-cost abstractions. Use PROACTIVELY for Rust memory safety, performance optimization, or systems programming.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "sales-automator",
+      "file": "sales-automator.md",
+      "description": "Sales automation and outreach specialist. Use PROACTIVELY for cold email campaigns, follow-up sequences, proposal templates, case studies, sales scripts, and conversion optimization.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "search-specialist",
+      "file": "search-specialist.md",
+      "description": "Expert web researcher using advanced search techniques and synthesis. Masters search operators, result filtering, and multi-source verification. Handles competitive analysis and fact-checking. Use PROACTIVELY for deep research, information gathering, or trend analysis.",
+      "tools": "",
+      "model": "haiku"
+    },
+    {
+      "id": "security-auditor",
+      "file": "security-auditor.md",
+      "description": "Review code for vulnerabilities, implement secure authentication, and ensure OWASP compliance. Handles JWT, OAuth2, CORS, CSP, and encryption. Use PROACTIVELY for security reviews, auth flows, or vulnerability fixes.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "opus"
+    },
+    {
+      "id": "seo-analyzer",
+      "file": "seo-analyzer.md",
+      "description": "SEO analysis and optimization specialist. Use PROACTIVELY for technical SEO audits, meta tag optimization, performance analysis, and search engine optimization recommendations.",
+      "tools": "Read, Write, WebFetch, Grep, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "seo-podcast-optimizer",
+      "file": "seo-podcast-optimizer.md",
+      "description": "SEO podcast optimization specialist. Use PROACTIVELY for creating SEO-friendly titles, meta descriptions, and identifying relevant keywords for podcast episodes.",
+      "tools": "Read, Write, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "shell-scripting-pro",
+      "file": "shell-scripting-pro.md",
+      "description": "Write robust shell scripts with proper error handling, POSIX compliance, and automation patterns. Masters bash/zsh features, process management, and system integration. Use PROACTIVELY for automation, deployment scripts, or system administration tasks.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "smart-contract-auditor",
+      "file": "smart-contract-auditor.md",
+      "description": "Use this agent when conducting security audits of smart contracts. Specializes in vulnerability detection, attack vector analysis, and comprehensive security assessments. Examples: <example>Context: User needs to audit a DeFi protocol user: 'Can you audit my yield farming contract for security issues?' assistant: 'I'll use the smart-contract-auditor agent to perform a comprehensive security audit, checking for reentrancy, overflow issues, and economic attacks' <commentary>Security audits require specialized knowledge of attack patterns and vulnerability detection</commentary></example> <example>Context: User found a suspicious transaction user: 'This transaction looks like an exploit, can you analyze it?' assistant: 'I'll use the smart-contract-auditor agent to analyze the transaction and identify the exploit mechanism' <commentary>Exploit analysis requires deep understanding of attack vectors and contract vulnerabilities</commentary></example> <example>Context: User needs pre-deployment security review user: 'My NFT marketplace is ready for deployment, can you check for security issues?' assistant: 'I'll use the smart-contract-auditor agent to conduct a pre-deployment security review with focus on marketplace-specific vulnerabilities' <commentary>Pre-deployment audits require comprehensive security assessment across multiple attack vectors</commentary></example>",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "social-media-clip-creator",
+      "file": "social-media-clip-creator.md",
+      "description": "Social media video clip optimization specialist. Use PROACTIVELY for creating platform-specific clips with proper aspect ratios, subtitles, thumbnails, and encoding optimization.",
+      "tools": "Bash, Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "sql-pro",
+      "file": "sql-pro.md",
+      "description": "Write complex SQL queries, optimize execution plans, and design normalized schemas. Masters CTEs, window functions, and stored procedures. Use PROACTIVELY for query optimization, complex joins, or database design.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "supabase-realtime-optimizer",
+      "file": "supabase-realtime-optimizer.md",
+      "description": "Supabase realtime performance specialist. Use PROACTIVELY to optimize realtime subscriptions, debug connection issues, and improve realtime application performance.",
+      "tools": "Read, Edit, Bash, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "supabase-schema-architect",
+      "file": "supabase-schema-architect.md",
+      "description": "Supabase database schema design specialist. Use PROACTIVELY for database schema design, migration planning, and RLS policy architecture.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "tag-agent",
+      "file": "tag-agent.md",
+      "description": "Obsidian tag taxonomy specialist. Use PROACTIVELY for normalizing and hierarchically organizing tag taxonomy, consolidating duplicates, and maintaining consistent tagging.",
+      "tools": "Read, MultiEdit, Bash, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "task-decomposition-expert",
+      "file": "task-decomposition-expert.md",
+      "description": "Complex goal breakdown specialist. Use PROACTIVELY for multi-step projects requiring different capabilities. Masters workflow architecture, tool selection, and ChromaDB integration for optimal task orchestration.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "technical-researcher",
+      "file": "technical-researcher.md",
+      "description": "Use this agent when you need to analyze code repositories, technical documentation, implementation details, or evaluate technical solutions. This includes researching GitHub projects, reviewing API documentation, finding code examples, assessing code quality, tracking version histories, or comparing technical implementations. <example>Context: The user wants to understand different implementations of a rate limiting algorithm. user: \"I need to implement rate limiting in my API. What are the best approaches?\" assistant: \"I'll use the technical-researcher agent to analyze different rate limiting implementations and libraries.\" <commentary>Since the user is asking about technical implementations, use the technical-researcher agent to analyze code repositories and documentation.</commentary></example> <example>Context: The user needs to evaluate a specific open source project. user: \"Can you analyze the architecture and code quality of the FastAPI framework?\" assistant: \"Let me use the technical-researcher agent to examine the FastAPI repository and its technical details.\" <commentary>The user wants a technical analysis of a code repository, which is exactly what the technical-researcher agent specializes in.</commentary></example>",
+      "tools": "Read, Write, Edit, WebSearch, WebFetch, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "technical-writer",
+      "file": "technical-writer.md",
+      "description": "Technical writing and content creation specialist. Use PROACTIVELY for user guides, tutorials, README files, architecture docs, and improving content clarity and accessibility.",
+      "tools": "Read, Write, Edit, Grep",
+      "model": "sonnet"
+    },
+    {
+      "id": "terraform-specialist",
+      "file": "terraform-specialist.md",
+      "description": "Terraform and Infrastructure as Code specialist. Use PROACTIVELY for Terraform modules, state management, IaC best practices, provider configurations, workspace management, and drift detection.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "test-automator",
+      "file": "test-automator.md",
+      "description": "Create comprehensive test suites with unit, integration, and e2e tests. Sets up CI pipelines, mocking strategies, and test data. Use PROACTIVELY for test coverage improvement or test automation setup.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "text-comparison-validator",
+      "file": "text-comparison-validator.md",
+      "description": "Text comparison and validation specialist. Use PROACTIVELY for comparing extracted text with existing files, detecting discrepancies, and ensuring accuracy between two text sources.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "ti-mcp-installer",
+      "file": "ti-mcp-installer.md",
+      "description": "Threat Intelligence MCP Installer - installs and configures external security MCP servers and skills",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "ti-research-agent",
+      "file": "ti-research-agent.md",
+      "description": "Threat Intelligence Research Agent - gathers CTI data, OSINT feeds, and threat landscape information",
+      "tools": "",
+      "model": ""
+    },
+    {
+      "id": "timestamp-precision-specialist",
+      "file": "timestamp-precision-specialist.md",
+      "description": "Frame-accurate timestamp extraction specialist. Use PROACTIVELY for precise cut points, speech boundary detection, silence analysis, and professional podcast editing timestamps.",
+      "tools": "Bash, Read, Write",
+      "model": "opus"
+    },
+    {
+      "id": "typescript-pro",
+      "file": "typescript-pro.md",
+      "description": "Write idiomatic TypeScript with advanced type system features, strict typing, and modern patterns. Masters generic constraints, conditional types, and type inference. Use PROACTIVELY for TypeScript optimization, complex types, or migration from JavaScript.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "unity-game-developer",
+      "file": "unity-game-developer.md",
+      "description": "Expert Unity game developer specializing in C# scripting, 3D graphics, mobile optimization, and complete game development workflows. Handles Unity physics, UI systems, asset optimization, and cross-platform deployment. Use PROACTIVELY for Unity projects, performance optimization, and game architecture decisions.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "unreal-engine-developer",
+      "file": "unreal-engine-developer.md",
+      "description": "Expert Unreal Engine developer specializing in C++ programming, Blueprint visual scripting, and AAA game development. Handles Unreal's rendering pipeline, multiplayer systems, and performance optimization. Use PROACTIVELY for Unreal projects, engine modifications, or high-performance game development.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    },
+    {
+      "id": "url-context-validator",
+      "file": "url-context-validator.md",
+      "description": "URL validation and contextual analysis specialist. Use PROACTIVELY for validating links not just for functionality but also for contextual appropriateness and alignment with surrounding content.",
+      "tools": "Read, Write, WebFetch, WebSearch",
+      "model": "sonnet"
+    },
+    {
+      "id": "url-link-extractor",
+      "file": "url-link-extractor.md",
+      "description": "URL and link extraction specialist. Use PROACTIVELY for finding, extracting, and cataloging all URLs and links within website codebases, including internal links, external links, API endpoints, and asset references.",
+      "tools": "Read, Write, Grep, Glob, LS",
+      "model": "sonnet"
+    },
+    {
+      "id": "vault-optimizer",
+      "file": "vault-optimizer.md",
+      "description": "Obsidian vault performance optimization specialist. Use PROACTIVELY for analyzing vault performance, optimizing file sizes, managing large attachments, and improving search indexing.",
+      "tools": "Read, Write, Bash, Glob, LS",
+      "model": "sonnet"
+    },
+    {
+      "id": "visual-analysis-ocr",
+      "file": "visual-analysis-ocr.md",
+      "description": "Visual analysis and OCR specialist. Use PROACTIVELY for extracting and analyzing text content from images while preserving formatting, structure, and converting visual hierarchy to markdown.",
+      "tools": "Read, Write",
+      "model": "sonnet"
+    },
+    {
+      "id": "web-accessibility-checker",
+      "file": "web-accessibility-checker.md",
+      "description": "Web accessibility compliance specialist. Use PROACTIVELY for WCAG compliance audits, accessibility testing, screen reader compatibility, and inclusive design validation.",
+      "tools": "Read, Write, Grep, Glob",
+      "model": "sonnet"
+    },
+    {
+      "id": "web-vitals-optimizer",
+      "file": "web-vitals-optimizer.md",
+      "description": "Core Web Vitals optimization specialist. Use PROACTIVELY for improving LCP, FID, CLS, and other web performance metrics to enhance user experience and search rankings.",
+      "tools": "Read, Write, Edit, Bash",
+      "model": "sonnet"
+    }
+  ],
+  "hooks": [
+    {
+      "id": "atos-init",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/index.js init",
+      "description": "ATOS 초기화 - 도구 레지스트리 로드 + Auto-Discovery 스캔 + 초기 추천 생성",
+      "priority": "high",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "atos-learn",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/feedback-loop.js",
+      "description": "ATOS 학습 - 세션 패턴 분석 + 사용 통계 영구 저장 + 지침 진화 트리거",
+      "priority": "medium",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "atos-recommend",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/recommendation-engine.js",
+      "description": "ATOS 추천 - 맥락 분석 후 도구/워크플로우 추천 삽입",
+      "priority": "medium",
+      "triggers": [
+        "before-response",
+        "user-input"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "before-response",
+        "user-input"
+      ]
+    },
+    {
+      "id": "atos-track",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/execution-monitor.js track",
+      "description": "ATOS 추적 - 도구 호출 통계 업데이트 + 체이닝 패턴 기록",
+      "priority": "low",
+      "triggers": [
+        "after-tool-call"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "after-tool-call"
+      ]
+    },
+    {
+      "id": "auto-cleanup",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/systems/auto-cleanup.js",
+      "description": "세션 종료 시 오래된 debug/shell-snapshots 자동 정리 (30일+)",
+      "priority": "low",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "bidirectional-sync",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/bidirectional-sync.js full",
+      "description": "Shrimp ↔ Planning ↔ Hub 양방향 동기화 (5분 주기 또는 태스크 완료 시, v3.0 Hub 우선)",
+      "priority": "medium",
+      "triggers": [
+        "task-complete",
+        "phase-change",
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": [
+        "task-complete",
+        "phase-change"
+      ]
+    },
+    {
+      "id": "context-detection",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/_ACTIVE/scripts/systems/context-monitor.js",
+      "description": "작업 컨텍스트 감지 시 도구 자동 추천",
+      "priority": "medium",
+      "triggers": [
+        "git",
+        "diff",
+        "compare",
+        "search",
+        "youtube",
+        "database"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "git",
+        "diff",
+        "compare",
+        "search",
+        "youtube",
+        "database"
+      ]
+    },
+    {
+      "id": "dashboard-agent-complete",
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"complete\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"status\\\": \\\"$AGENT_STATUS\\\"}\" || true",
+      "description": "Dashboard v3.0 - 에이전트 완료 자동 기록 (Phase 12)",
+      "priority": "low",
+      "triggers": [
+        "agent-complete"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "agent-complete",
+          "phase": "notify",
+          "mode": "degraded"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "degraded"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "dashboard-agent-start",
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/agent -H \"Content-Type: application/json\" -d \"{\\\"action\\\": \\\"start\\\", \\\"agentId\\\": \\\"$AGENT_ID\\\", \\\"type\\\": \\\"$AGENT_TYPE\\\", \\\"prompt\\\": \\\"$AGENT_PROMPT\\\"}\" || true",
+      "description": "Dashboard v3.0 - 에이전트 시작 자동 기록 (Phase 12)",
+      "priority": "low",
+      "triggers": [
+        "agent-spawn"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "agent-spawn",
+          "phase": "notify",
+          "mode": "degraded"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "degraded"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "dashboard-autostart",
+      "enabled": false,
+      "command": "docker compose -f K:/PortableApps/genai/dashboard/plan-ecosystem/docker-compose.yml up -d && start http://localhost:7847",
+      "description": "[DEPRECATED] startup-orchestrator로 통합됨",
+      "priority": "low",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "dashboard-prompt-record",
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/prompt -H \"Content-Type: application/json\" -d \"{\\\"prompt\\\": \\\"$USER_PROMPT\\\", \\\"activePlan\\\": \\\"$ACTIVE_PLAN\\\", \\\"toolsUsed\\\": $TOOLS_USED, \\\"agentsSpawned\\\": $AGENTS_SPAWNED, \\\"duration\\\": $RESPONSE_DURATION, \\\"success\\\": $RESPONSE_SUCCESS}\" 2>/dev/null || true",
+      "description": "Dashboard v3.0 - 프롬프트 자동 기록 + Lifecycle 연동 (Phase 8E)",
+      "priority": "low",
+      "triggers": [
+        "after-response"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "after-response",
+          "phase": "notify",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "dashboard-tool-track",
+      "enabled": true,
+      "command": "curl -s -X POST http://localhost:7847/api/hooks/tool -H \"Content-Type: application/json\" -d \"{\\\"tool\\\": \\\"$TOOL_NAME\\\", \\\"success\\\": $TOOL_SUCCESS, \\\"responseTime\\\": $TOOL_DURATION}\" || true",
+      "description": "Dashboard v3.0 - 도구 호출 자동 기록 (Phase 12)",
+      "priority": "low",
+      "triggers": [
+        "after-tool-call"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "after-tool-call",
+          "phase": "notify",
+          "mode": "degraded"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "degraded"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "date-validation",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/systems/date-validator-hook.js --check-recent",
+      "description": "파일 저장/커밋 시 하드코딩된 날짜 오류 감지",
+      "priority": "medium",
+      "triggers": [
+        "file-save",
+        "pre-commit"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "file-save",
+          "phase": "notify",
+          "mode": "degraded"
+        },
+        {
+          "trigger": "pre-commit",
+          "phase": "notify",
+          "mode": "degraded"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "degraded"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "design-lint",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/design-system/lint-design.js",
+      "description": "디자인 파일 수정 시 AI 동질화 패턴 자동 검사",
+      "priority": "medium",
+      "triggers": [
+        "PostToolResult"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "PostToolResult",
+          "phase": "notify",
+          "mode": "degraded"
+        }
+      ],
+      "bridgedPhases": [
+        "notify"
+      ],
+      "bridgeModes": [
+        "degraded"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "docker-check",
+      "enabled": false,
+      "command": "node K:/PortableApps/genai/systems/docker-checker.js",
+      "description": "[DEPRECATED] startup-orchestrator로 통합됨",
+      "priority": "highest",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "hub-sync",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/unified-task-system/cli.js sync",
+      "description": "세션 시작 시 UnifiedTaskHub 전체 동기화",
+      "priority": "medium",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "important-detection",
+      "enabled": true,
+      "command": "",
+      "description": "중요 키워드 감지 시 자동 저장",
+      "priority": "low",
+      "triggers": [
+        "결정",
+        "해결",
+        "성공",
+        "완료",
+        "중요"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "결정",
+        "해결",
+        "성공",
+        "완료",
+        "중요"
+      ]
+    },
+    {
+      "id": "lifecycle-sync",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/dashboard/plan-ecosystem/scripts/sync-lifecycle.js",
+      "description": "플랜 완료/Phase 변경 시 Lifecycle 자동 동기화 (Phase 8B)",
+      "priority": "medium",
+      "triggers": [
+        "plan-complete",
+        "phase-change"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "plan-complete",
+        "phase-change"
+      ]
+    },
+    {
+      "id": "nexus-init",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/nexus/core/session-start.js",
+      "description": "NEXUS 초기화 - 멀티AI 프로바이더 로드 + 진화 상태 복원 + 자동 리서치 체크",
+      "priority": "high",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "nexus-learn",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/nexus/core/session-end.js",
+      "description": "NEXUS 학습 - 가중치 조정 + 패턴 추출 + 진화 로그 + 개선 체크리스트",
+      "priority": "medium",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "nexus-subagent-track",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/nexus/hooks/subagent-tracker.js",
+      "description": "v2.1.71 SubagentStart hook - NEXUS 서브에이전트 추적 + Dashboard 연동",
+      "priority": "medium",
+      "triggers": [
+        "SubagentStart"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "SubagentStart"
+      ]
+    },
+    {
+      "id": "nexus-task-complete",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/nexus/hooks/task-complete-handler.js",
+      "description": "v2.1.71 TaskCompleted hook - NEXUS 태스크 완료 처리 + Obsidian 동기화",
+      "priority": "medium",
+      "triggers": [
+        "TaskCompleted"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "TaskCompleted"
+      ]
+    },
+    {
+      "id": "nexus-teammate-idle",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/nexus/hooks/teammate-idle-handler.js",
+      "description": "v2.1.71 TeammateIdle hook - NEXUS 유휴 팀원 감지 + 작업 재분배",
+      "priority": "low",
+      "triggers": [
+        "TeammateIdle"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "TeammateIdle"
+      ]
+    },
+    {
+      "id": "periodic-save",
+      "enabled": true,
+      "command": "",
+      "description": "1시간마다 자동 체크포인트",
+      "priority": "low",
+      "triggers": [],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "planning-persist",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/planning-system/checkpoint.js --auto-save",
+      "description": "세션 종료 시 플랜 상태 자동 저장",
+      "priority": "high",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "planning-restore",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/planning-system/restore.js --all",
+      "description": "세션 시작 시 활성/완료 플랜 상태 자동 출력",
+      "priority": "high",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "planning-workflow-end",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-end",
+      "description": "세션 종료 시 플래닝 워크플로우 실행 (검증 + 자동복원 + 상태저장)",
+      "priority": "highest",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "planning-workflow-start",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/planning-system/workflow.js session-start",
+      "description": "세션 시작 시 플래닝 워크플로우 실행 (스냅샷 + 상태 로드 + 규칙 출력)",
+      "priority": "highest",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "self-trigger",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/atos/self-trigger/index.js process",
+      "description": "Claude 출력에서 키워드 감지 -> 리소스 자동 로드 (Plan/Implement/Execute 단계별)",
+      "priority": "high",
+      "triggers": [
+        "before-response"
+      ],
+      "bridgeTargets": [],
+      "bridgedPhases": [],
+      "bridgeModes": [],
+      "unsupportedTriggers": [
+        "before-response"
+      ]
+    },
+    {
+      "id": "session-end",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/unified-task-system/session-persist.js",
+      "description": "세션 종료 시 후속조치 및 작업 상태 저장 (Unified Task System)",
+      "priority": "high",
+      "triggers": [
+        "session-end"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-end",
+          "phase": "session-end",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-end"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "session-start",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/unified-task-system/session-restore.js",
+      "description": "세션 시작 시 후속조치 및 이전 작업 상태 복원 (Unified Task System)",
+      "priority": "high",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    },
+    {
+      "id": "startup-orchestrator",
+      "enabled": true,
+      "command": "node K:/PortableApps/genai/systems/startup-orchestrator.js",
+      "description": "통합 시작 시스템: Docker + AI Stack Monitor (13579) + Plan Ecosystem (7847) + Self-hosted MCP",
+      "priority": "highest",
+      "triggers": [
+        "session-start"
+      ],
+      "bridgeTargets": [
+        {
+          "trigger": "session-start",
+          "phase": "session-start",
+          "mode": "exact"
+        }
+      ],
+      "bridgedPhases": [
+        "session-start"
+      ],
+      "bridgeModes": [
+        "exact"
+      ],
+      "unsupportedTriggers": []
+    }
+  ]
+}

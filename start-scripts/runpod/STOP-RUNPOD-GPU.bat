@@ -16,7 +16,7 @@ chcp 65001 >nul 2>&1
 
 REM Python 경로 설정
 set PYTHON_EXE=K:\PortableApps\tools\python\python.exe
-set RUNPOD_SCRIPTS=K:\PortableApps\Claude-Code\runpod\scripts
+set RUNPOD_SCRIPTS=K:\PortableApps\genai\runpod\scripts
 
 REM 인스턴스 ID 입력
 echo [*] 중지할 인스턴스 정보

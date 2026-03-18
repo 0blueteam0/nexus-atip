@@ -11,7 +11,7 @@ class UnifiedMemorySystem {
   constructor() {
     // 5개 분산 메모리 시스템
     this.memorySystems = {
-      shrimp: 'K:/PortableApps/genai/ShrimpData/Claude-Code/memory/',
+      shrimp: 'K:/PortableApps/genai/ShrimpData/genai/memory/',
       brain: 'K:/PortableApps/genai/brain/',
       archive: 'K:/PortableApps/genai/memory-archive/',
       claude: 'K:/PortableApps/genai/.claude/memory/',

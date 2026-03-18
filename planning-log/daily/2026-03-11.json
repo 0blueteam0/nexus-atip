@@ -1,0 +1,39 @@
+{
+  "date": "2026-03-11",
+  "sessions": [
+    {
+      "id": "session-1773181740697",
+      "start": "2026-03-11T07:29:01.161+09:00",
+      "plan": "floofy-sauteeing-alpaca",
+      "actions": [],
+      "end": "2026-03-11T07:39:34.695+09:00"
+    },
+    {
+      "id": "session-1773182374268",
+      "start": "2026-03-11T07:39:34.695+09:00",
+      "plan": "floofy-sauteeing-alpaca",
+      "actions": [],
+      "end": "2026-03-11T08:22:13.320+09:00"
+    },
+    {
+      "id": "session-1773184937764",
+      "start": "2026-03-11T08:22:18.296+09:00",
+      "plan": "floofy-sauteeing-alpaca",
+      "actions": [],
+      "end": "2026-03-11T20:51:55.521+09:00"
+    },
+    {
+      "id": "session-1773229915085",
+      "start": "2026-03-11T20:51:55.521+09:00",
+      "plan": "floofy-sauteeing-alpaca",
+      "actions": []
+    }
+  ],
+  "summary": {
+    "totalSessions": 4,
+    "totalActions": 0,
+    "plansWorkedOn": [],
+    "completedTasks": 0,
+    "completedPhases": 0
+  }
+}

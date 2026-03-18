@@ -1,3 +1,19 @@
+---
+name: ralph-wiggum-loop
+description: |
+  Ralph Wiggum autonomous coding loop.
+  Iterative self-improvement cycle with automated testing and refinement.
+user-invocable: true
+context: fork
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
+---
+
 # Ralph Wiggum Autonomous Loop Skill
 
 > **키워드**: "자율 루프", "autonomous loop", "반복 개선", "ralph wiggum", "자동 코딩"

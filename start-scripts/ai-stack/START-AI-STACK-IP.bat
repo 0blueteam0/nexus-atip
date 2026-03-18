@@ -11,8 +11,8 @@ echo ==========================================
 echo.
 
 :: 환경 변수 설정
-set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages
-set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models
+set PYTHONUSERBASE=K:\PortableApps\genai\python-packages
+set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models
 set PATH=%PATH%;K:\PortableApps\tools\nodejs;K:\PortableApps\tools\python
 
 echo [*] IP 할당 현황:
@@ -51,7 +51,7 @@ goto invalid
 :ollama
 echo.
 echo [*] Ollama 서버 시작 중... (IP: 127.0.0.2)
-start "Ollama@127.0.0.2" cmd /c "set OLLAMA_HOST=127.0.0.2:11434 && set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+start "Ollama@127.0.0.2" cmd /c "set OLLAMA_HOST=127.0.0.2:11434 && set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
 timeout /t 3 /nobreak >nul
 echo [+] Ollama 시작됨: http://127.0.0.2:11434
 goto end
@@ -79,7 +79,7 @@ goto end
 :litellm
 echo.
 echo [*] LiteLLM 프록시 시작 중... (IP: 127.0.0.5)
-start "LiteLLM@127.0.0.5" cmd /c "set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages && python -m litellm --host 127.0.0.5 --port 8000"
+start "LiteLLM@127.0.0.5" cmd /c "set PYTHONUSERBASE=K:\PortableApps\genai\python-packages && python -m litellm --host 127.0.0.5 --port 8000"
 timeout /t 3 /nobreak >nul
 echo [+] LiteLLM 시작됨: http://127.0.0.5:8000
 goto end
@@ -89,7 +89,7 @@ echo.
 echo [*] 모든 서비스 시작 중...
 echo.
 echo [1/4] Ollama 시작...
-start "Ollama@127.0.0.2" cmd /c "set OLLAMA_HOST=127.0.0.2:11434 && set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models && K:/PortableApps/Claude-Code/ollama/ollama.exe serve"
+start "Ollama@127.0.0.2" cmd /c "set OLLAMA_HOST=127.0.0.2:11434 && set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models && K:/PortableApps/genai/ollama/ollama.exe serve"
 timeout /t 3 /nobreak >nul
 echo [+] Ollama: http://127.0.0.2:11434
 
@@ -99,7 +99,7 @@ timeout /t 5 /nobreak >nul
 echo [+] Flowise: http://127.0.0.3:3000
 
 echo [3/4] LiteLLM 시작...
-start "LiteLLM@127.0.0.5" cmd /c "set PYTHONUSERBASE=K:\PortableApps\Claude-Code\python-packages && python -m litellm --host 127.0.0.5 --port 8000"
+start "LiteLLM@127.0.0.5" cmd /c "set PYTHONUSERBASE=K:\PortableApps\genai\python-packages && python -m litellm --host 127.0.0.5 --port 8000"
 timeout /t 3 /nobreak >nul
 echo [+] LiteLLM: http://127.0.0.5:8000
 

@@ -1,0 +1,26 @@
+{
+  "projects": [
+    {
+      "id": "project-1770257687244-1ytul9",
+      "name": "Task Management Ecosystem",
+      "description": "Dashboard v4.0 Migration Project",
+      "plans": [],
+      "goals": [],
+      "metrics": {
+        "overallProgress": 0,
+        "completedPlans": 0,
+        "activePlans": 0,
+        "totalTasks": 0,
+        "completedTasks": 0,
+        "activePhase": "planning"
+      },
+      "cycles": [],
+      "tags": [],
+      "status": "active",
+      "priority": "high",
+      "createdAt": "2026-02-05T02:14:47.244Z",
+      "updatedAt": "2026-02-05T04:55:16.631Z"
+    }
+  ],
+  "updatedAt": "2026-02-05T04:55:16.631Z"
+}

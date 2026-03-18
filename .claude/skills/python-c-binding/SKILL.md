@@ -1,14 +1,16 @@
 ---
+name: python-c-binding
 description: Python-C/C++ 바인딩 워크플로우 (pybind11 중심)
-keywords:
-  - pybind11
-  - Python C extension
-  - C++ binding
-  - native module
-  - 성능 최적화
-  - ctypes
-  - CFFI
+user-invocable: true
+context: fork
 memory: project
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
 ---
 
 # Python-C Binding Skill

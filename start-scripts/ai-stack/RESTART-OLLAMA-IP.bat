@@ -9,9 +9,9 @@ timeout /t 2 /nobreak >nul
 
 echo [*] Ollama 127.0.0.2:11434로 시작...
 set OLLAMA_HOST=127.0.0.2:11434
-set OLLAMA_MODELS=K:\PortableApps\Claude-Code\ollama-models
+set OLLAMA_MODELS=K:\PortableApps\genai\ollama-models
 
-start "Ollama@127.0.0.2" K:/PortableApps/Claude-Code/ollama/ollama.exe serve
+start "Ollama@127.0.0.2" K:/PortableApps/genai/ollama/ollama.exe serve
 
 echo [+] 완료!
 echo.

@@ -5,8 +5,8 @@ setlocal enabledelayedexpansion
 :: 안전한 Wrapper 방식 (원본 수정 없음)
 
 set "NODE_PATH=K:\PortableApps\tools\nodejs\node.exe"
-set "CLAUDE_CLI=K:\PortableApps\Claude-Code\node_modules\@anthropic-ai\claude-code\cli.js"
-set "FORMATTER=K:\PortableApps\Claude-Code\systems\claude-output-filter.js"
+set "CLAUDE_CLI=K:\PortableApps\genai\node_modules\@anthropic-ai\claude-code\cli.js"
+set "FORMATTER=K:\PortableApps\genai\systems\claude-output-filter.js"
 
 :: 임시 파일 생성
 set "TEMP_OUTPUT=%TEMP%\claude_output_%RANDOM%.txt"

@@ -3,7 +3,7 @@
     "session_id": "session-2025-08-13-001",
     "started_at": "2025-08-13T08:00:00Z",
     "agent_type": "Claude Sonnet 4",
-    "workspace": "K:\\PortableApps\\Claude-Code"
+    "workspace": "K:\\PortableApps\\genai"
   },
   "task_progress": {
     "active_tasks": ["task-001"],

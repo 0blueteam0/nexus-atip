@@ -85,14 +85,94 @@ class A2AHub {
   }
 
   /**
+   * Delegate task to a team of agents (TeammateTool pattern)
+   * @param {Object} options - { goal, members, timeout }
+   * @returns {{teamId, members, status}}
+   */
+  delegateToTeam(options) {
+    const { goal, members = [], timeout = 300000 } = options;
+    const teamId = `team-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+
+    // Resolve team members from registered agents
+    const resolvedMembers = members.length > 0
+      ? members.filter(m => this._agents.has(m))
+      : [...this._agents.keys()].filter(id => {
+          const a = this._agents.get(id);
+          return a && a.status === 'available';
+        });
+
+    if (resolvedMembers.length === 0) {
+      return { teamId, members: [], status: 'no_available_members' };
+    }
+
+    // Create team task entries
+    const teamTasks = resolvedMembers.map(agentId => ({
+      id: `${teamId}-${agentId}`,
+      teamId,
+      agentId,
+      task: { type: 'team_task', prompt: goal, context: { teamId, role: agentId } },
+      status: 'queued',
+      createdAt: Date.now(),
+      timeout
+    }));
+
+    this._taskQueue.push(...teamTasks);
+
+    // Update agent status
+    for (const id of resolvedMembers) {
+      const agent = this._agents.get(id);
+      if (agent) agent.status = 'busy';
+    }
+
+    return {
+      teamId,
+      members: resolvedMembers,
+      status: 'started',
+      taskCount: teamTasks.length
+    };
+  }
+
+  /**
+   * Complete a team member's task
+   * @param {string} teamId
+   * @param {string} agentId
+   * @param {Object} result
+   */
+  completeTeamTask(teamId, agentId, result) {
+    const task = this._taskQueue.find(t => t.teamId === teamId && t.agentId === agentId);
+    if (task) {
+      task.status = 'completed';
+      task.result = result;
+      task.completedAt = Date.now();
+    }
+
+    // Restore agent status
+    const agent = this._agents.get(agentId);
+    if (agent) agent.status = 'available';
+
+    // Check if all team tasks are done
+    const teamTasks = this._taskQueue.filter(t => t.teamId === teamId);
+    const allDone = teamTasks.every(t => t.status === 'completed' || t.status === 'failed');
+
+    return {
+      agentDone: true,
+      teamDone: allDone,
+      completedCount: teamTasks.filter(t => t.status === 'completed').length,
+      totalCount: teamTasks.length
+    };
+  }
+
+  /**
    * Get hub status
    * @returns {Object}
    */
   getStatus() {
+    const activeTeams = new Set(this._taskQueue.filter(t => t.teamId && t.status === 'queued').map(t => t.teamId));
     return {
       agents: this._agents.size,
       queuedTasks: this._taskQueue.filter(t => t.status === 'queued').length,
-      agentList: this.listAgents().map(a => `${a.id} (${a.capabilities.length} caps)`)
+      activeTeams: activeTeams.size,
+      agentList: this.listAgents().map(a => `${a.id} (${a.capabilities.length} caps, ${a.status})`)
     };
   }
 

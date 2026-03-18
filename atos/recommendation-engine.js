@@ -374,6 +374,19 @@ class RecommendationEngine {
     // 6. 체이닝 제안
     const chainingSuggestions = this.suggestChaining(topTools);
 
+    // 6.5 Plan Mode 추천 (complexity-detector 연동)
+    let planModeRecommendation = null;
+    if (analysis.complexity && analysis.complexity.action !== 'direct') {
+      const cd = require('./complexity-detector');
+      planModeRecommendation = {
+        action: analysis.complexity.action,
+        score: analysis.complexity.score,
+        level: analysis.complexity.level,
+        message: cd.getRecommendation(analysis.complexity, userInput),
+        reasons: analysis.complexity.reasons.filter(r => r.score > 0).map(r => r.signal)
+      };
+    }
+
     // 7. 결과 포맷팅
     const result = {
       success: true,
@@ -384,6 +397,7 @@ class RecommendationEngine {
         entityCount: Object.values(analysis.entities).flat().length
       },
       recommendations: {
+        planMode: planModeRecommendation,
         tools: this.formatToolRecommendations(topTools, mode),
         workflows: workflowRecommendations,
         skills: skillRecommendations,
@@ -942,6 +956,13 @@ class RecommendationEngine {
     output.push(`[*] 추출된 엔티티: ${result.analysis.entityCount}개`);
     output.push('');
 
+    // Plan Mode 추천 (최우선 표시)
+    if (result.recommendations.planMode) {
+      const pm = result.recommendations.planMode;
+      output.push(pm.message);
+      output.push('');
+    }
+
     // 도구 추천
     output.push('--- 추천 도구 ---');
     if (result.recommendations.tools.length === 0) {
@@ -1051,6 +1072,29 @@ function handleCLI() {
       break;
 
     default:
+      // Hook mode: read user prompt from stdin (UserPromptSubmit hook)
+      try {
+        const stdinData = require('fs').readFileSync(0, 'utf8').trim();
+        if (stdinData) {
+          const parsed = JSON.parse(stdinData);
+          const userPrompt = parsed.prompt || parsed.user_prompt || '';
+          if (userPrompt) {
+            // Run complexity detection only (lightweight for hook)
+            const cd = require('./complexity-detector');
+            const complexity = cd.analyze(userPrompt);
+            const rec = cd.getRecommendation(complexity, userPrompt);
+
+            if (rec) {
+              // Plan Mode recommendation detected - show it
+              console.log(rec);
+            }
+            // No output for direct actions (keep hook silent)
+            break;
+          }
+        }
+      } catch (e) {
+        // No stdin or parse error - show usage
+      }
       console.log('ATOS Recommendation Engine');
       console.log('');
       console.log('사용법: node recommendation-engine.js [command] [args]');

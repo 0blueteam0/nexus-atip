@@ -1,0 +1,506 @@
+# NEXUS Factory Floor - Pixel Game Redesign (Comprehensive)
+
+## Context
+현재 Factory Floor(`nexus/monitor/public/js/factory-floor.js`, 1033줄)는 8개 정적 존에 고정 스프라이트만 표시하는 단순 시각화. pixel-agents 프로젝트(github.com/pablodelucca/pixel-agents)처럼 **자율 이동하는 픽셀 캐릭터가 걸어다니고, 앉아서 타이핑하고, 말풍선을 띄우는 게임형 시각화**로 전면 재설계한다.
+
+**목표**: NEXUS의 4+N개 AI 에이전트가 **16개 방 + 3개 복도**를 돌아다니며, 모든 25+ 서브시스템의 실시간 이벤트에 반응하는 픽셀 아트 오피스 시뮬레이션
+
+**참조 분석**: ~73개 NEXUS 모듈 전수 분석 완료 (core, evolution, agent-framework, gateway, deep-agent, rag, obsidian, store, context, compound, policy, adapters, bridges, ports, harness, monitor, claude-features, self-evolution, knowledge)
+
+---
+
+## Phase 1: Sprite System (sprites.js 전면 재작성)
+
+### 1.1 캐릭터 스프라이트 (16x16, 7프레임 x 3방향)
+- **방향**: down(0), up(1), right(2) -- left는 right를 ctx.scale(-1,1) 플립
+- **프레임**: walk1, walk2, walk3 (걷기 3프레임), type1, type2 (타이핑 2프레임), read1, read2 (읽기 2프레임)
+- **5 캐릭터 팔레트**:
+  - claude-code: body=#e8a04e, accent=#f5c56d (orange) -- primary orchestrator
+  - gemini-cli: body=#4e8be8, accent=#6db5f5 (blue) -- collaborator
+  - codex-cli: body=#4ee86b, accent=#6df5a0 (green) -- specialist
+  - ollama-cpu: body=#8b4ee8, accent=#b56df5 (purple) -- local worker
+  - subagent: body=#888888, accent=#aaaaaa (grey) -- temporary spawns
+- 각 캐릭터별 `frames[direction][frameIndex]` = 16x16 pixel array
+- 현재 sprites.js(123줄)의 단일 프레임 구조를 multi-frame 구조로 확장
+
+### 1.2 타일 스프라이트 (8x8 타일, 12종)
+- **바닥**: floor_default(#1a1e24), floor_highlight(#222830), corridor(#1e2228), lobby(#1c2026)
+- **벽**: wall_top, wall_side, wall_corner_tl, wall_corner_tr, wall_corner_bl, wall_corner_br
+- **장식**: door(출입구), carpet(방 내부)
+
+### 1.3 가구 스프라이트 (8x8 ~ 16x16, 23종)
+- **공통**: desk(16x8), chair(8x8), monitor_on(8x8), monitor_off(8x8), plant(8x8)
+- **Orchestrator HQ**: command_console(16x8), status_board(16x8)
+- **Router Room**: router_table(16x8), routing_display(8x8)
+- **Agent Framework**: graph_board(16x8), node_display(8x8)
+- **Evolution Lab**: weight_scale(8x8), lab_equipment(8x8), microscope(8x8)
+- **RAG Pipeline**: vector_db(8x16), embedding_rack(8x16)
+- **Knowledge Vault**: bookshelf(8x16), archive_cabinet(8x8)
+- **A2A Hub**: round_table(16x16), communication_panel(8x8)
+- **MCP Gateway**: server_rack(8x16), gateway_console(16x8)
+- **Observatory**: dashboard_screen(16x8), telescope(8x8)
+- **Conveyor Belt**: conveyor_segment(8x8, 3프레임 애니메이션)
+
+### 파일: `nexus/monitor/public/assets/sprites.js` (전면 재작성, ~1000줄)
+
+---
+
+## Phase 2: Tile Map & Office Layout
+
+### 2.1 그리드 설정
+- **타일 크기**: 8px (렌더링 시 SCALE=3 적용 -> 화면상 24px)
+- **맵 크기**: 54x34 타일 (432x272 논리 픽셀 -> 1296x816 화면 픽셀)
+- **캔버스**: 1296x816
+
+### 2.2 16개 방 + 3개 복도 레이아웃 (54x34 그리드)
+
+```
++===============+==============+=============+=============+=============+
+| Orchestrator  | Router       | Evolution   | Pattern     | Observatory |
+| HQ            | Room         | Lab         | Library     |             |
+| (0,0)-(10,8) | (11,0)-(21,8)| (22,0)-(32,8)|(33,0)-(43,8)|(44,0)-(53,8)|
+| console x2    | router_table | lab_equip   | bookshelves | dashboards  |
+| status_board  | routing_disp | weight_scale| archives    | telescope   |
+| seats x4      | seats x2     | seats x2    | seats x2    | seats x2    |
++===============+==============+=============+=============+=============+
+|                    Task Pipeline (corridor 54x3)                       |
+|  (0,9)-(53,11)  conveyor belt animation  data flow particles          |
++===============+==============+=============+=============+=============+
+| Agent FW      | Graph Engine | RAG         | Knowledge   | Deep Agent  |
+| Lab           | Room         | Pipeline    | Vault       | Den         |
+| (0,12)-(10,20)|(11,12)-(21,20)|(22,12)-(32,20)|(33,12)-(43,20)|(44,12)-(53,20)|
+| graph_board   | node_display | vector_db   | bookshelf   | desk x2     |
+| node_display  | desks x2    | embed_rack  | archives    | monitors    |
+| seats x2      | seats x2    | seats x2    | seats x2    | seats x2    |
++===============+==============+=============+=============+=============+
+|                    Main Corridor (54x3)                                |
+|  (0,21)-(53,23)  wander zone  inter-agent meetings                   |
++===============+==============+=============+=============+=============+
+| A2A Hub       | MCP Gateway  | Compound AI | Context     | Policy &    |
+| (0,24)-(10,29)|(11,24)-(21,29)| Lab        | Store       | Harness     |
+|               |              |(22,24)-(32,29)|(33,24)-(43,29)|(44,24)-(53,29)|
+| round_table   | server_rack  | lab_equip   | store_rack  | policy_desk |
+| comm_panel    | gateway_cons | desks x2    | desks x2    | desks x2    |
+| seats x4      | seats x2     | seats x2    | seats x2    | seats x2    |
++===============+==============+=============+=============+=============+
+|                    Lobby / Common Area (54x4)                          |
+|  (0,30)-(53,33)  wander zone  plants  coffee breaks                  |
++================+==============+============+==============+============+
+```
+
+### 2.3 방-서브시스템 매핑 (25+ modules -> 16 rooms)
+
+| Room | NEXUS Modules | Key Files |
+|------|--------------|-----------|
+| Orchestrator HQ | core/orchestrator, core/session-start, core/cli | orchestrator.js(847줄) |
+| Router Room | core/router, adapters/ (6 files) | router.js, complexity-analyzer.js |
+| Task Pipeline | core/event-bus, bridges/ | event-bus.js(363줄) |
+| Agent FW Lab | agent-framework/ (2 files) | framework-adapter.js(277줄) |
+| Graph Engine | agent-framework/graph-engine | graph-engine.js(188줄) |
+| Evolution Lab | evolution/ (5 files) | weight-adjuster.js, pattern-learner.js |
+| Pattern Library | knowledge/ (3 files) | pattern-library.json, knowledge-index.js |
+| RAG Pipeline | rag/ (5 files) | indexer.js, retriever.js, embedder.js |
+| Knowledge Vault | knowledge/, obsidian/ (5 files) | obsidian-bridge.js |
+| A2A Hub | gateway/a2a-hub | a2a-hub.js(231줄) |
+| MCP Gateway | gateway/mcp-gateway, ports/ (2 files) | mcp-gateway.js |
+| Deep Agent Den | deep-agent/ (3 files) | planner.js, subagent-manager.js |
+| Compound AI Lab | compound/ (3 files) | loop-manager.js, step-executor.js |
+| Context Store | context/ (4 files), store/ (3 files) | context-fs.js, savepoint-store.js |
+| Policy & Harness | policy/ (4 files), harness/ (3 files) | approval-gate.js, test-runner.js |
+| Observatory | monitor/ (server + public) | monitor-server.js, all public/ |
+
+### 2.4 Walkability Matrix
+- `tileMap[y][x]` = 0(벽/가구), 1(걸을 수 있음), 2(의자/seat)
+- 문(door) 타일로 방 연결 (각 방 1-2개 출입구, 복도 면)
+- Task Pipeline은 중앙 복도 역할 (전 구간 walkable)
+
+### 2.5 Seat 시스템
+- 각 방에 2-4개 의자(seat) 배치
+- `seats[]` = `{ id, tileX, tileY, deskTileX, deskTileY, room, occupied, agentId }`
+- 에이전트가 seat에 도착하면 desk 방향을 바라보며 앉기
+
+### 파일: `nexus/monitor/public/js/tile-map.js` (신규, ~300줄)
+
+---
+
+## Phase 3: Character System (FSM + Pathfinding)
+
+### 3.1 FSM States (7 states)
+```
+SPAWNING -> IDLE -> WALKING -> SITTING -> TYPING/READING
+                 ^          |
+                 +----------+ (도착 또는 wander)
+
+DESPAWNING (matrix effect -> 제거)
+```
+
+| State | 설명 | 스프라이트 |
+|-------|------|-----------|
+| SPAWNING | Matrix 이펙트 재생 중 (0.5초) | 매트릭스 파티클 |
+| IDLE | 제자리 서있음 (약간 bob) | walk1 (down) |
+| WALKING | BFS 경로 따라 이동 | walk1->walk2->walk3 루프 |
+| SITTING | 의자에 앉아있음 | walk1 (desk 방향) |
+| TYPING | 타이핑 애니메이션 | type1<->type2 루프 |
+| READING | 읽기 애니메이션 | read1<->read2 루프 |
+| DESPAWNING | Matrix 이펙트 -> 제거 (0.5초) | 매트릭스 파티클 |
+
+### 3.2 BFS Pathfinding
+- `findPath(startX, startY, targetX, targetY)` -> `[{x,y}, ...]` 경로 배열
+- tileMap walkability 기반, 4방향 이동 (대각선 없음)
+- 다른 에이전트가 점유한 타일은 일시적 벽 처리
+- 경로 없으면 가장 가까운 walkable 타일로 대체
+
+### 3.3 Wander AI
+- IDLE 상태에서 3-8초 후 랜덤 walkable 타일 선택 -> WALKING
+- 홈 방(home room) 내에서 우선 wander, 20% 확률로 다른 방/복도 방문
+- 이벤트 수신 시 wander 중단 -> 해당 방으로 이동
+
+### 3.4 에이전트 속성 (확장)
+```js
+agent = {
+  id, name, palette,
+  tileX, tileY,          // 현재 위치 (타일 좌표)
+  pixelX, pixelY,        // 부드러운 이동용 서브픽셀 위치
+  direction,             // 0=down, 1=up, 2=right, 3=left
+  state,                 // FSM state
+  path: [],              // BFS 경로
+  pathIndex: 0,
+  currentSeat: null,
+  homeRoom: '',          // 기본 배치 방
+  animFrame: 0,
+  animTimer: 0,
+  stateTimer: 0,         // 현재 상태 지속 시간
+  bubble: null,          // { text, color, timer }
+  walkSpeed: 2,          // tiles per second
+  energy: 100,           // 0-100 에너지 바
+  mood: 'normal',        // normal, busy, happy, error
+  taskCount: 0,          // 처리한 작업 수
+  isTemporary: false,    // subagent 여부
+}
+```
+
+### 3.5 홈 방 배정
+| Agent | Home Room | 이유 |
+|-------|-----------|------|
+| claude-code | Orchestrator HQ | primary orchestrator, 전체 조율 |
+| gemini-cli | MCP Gateway | web search, multimodal, 외부 연결 |
+| codex-cli | Agent FW Lab | autonomous coding, sandboxed exec |
+| ollama-cpu | RAG Pipeline | local embedding, free inference |
+
+### 파일: `nexus/monitor/public/js/character.js` (신규, ~400줄)
+
+---
+
+## Phase 4: Rendering Pipeline (11-step)
+
+### 4.1 렌더링 순서
+```
+ 1. clearCanvas
+ 2. renderFloorTiles()       -- 8x8 타일 x SCALE
+ 3. renderWalls()            -- 벽 타일
+ 4. renderConveyorBelt()     -- Task Pipeline 컨베이어 애니메이션 (3프레임)
+ 5. renderDataParticles()    -- 컨베이어 위 데이터 플로우 파티클
+ 6. renderZSorted()          -- 가구 + 캐릭터 Y좌표 기준 통합 정렬
+ 7. renderBubbles()          -- 말풍선 (캐릭터 머리 위)
+ 8. renderRoomLabels()       -- 방 이름 라벨 (반투명 패널)
+ 9. renderMatrixEffects()    -- 스폰/디스폰 매트릭스 이펙트
+10. renderHUD()              -- 상태 표시 (에이전트 목록, 이벤트 카운트, 비용 미터)
+11. renderRoomGlow()         -- 활성 방 테두리 glow 이펙트
+```
+
+### 4.2 Z-Sort 통합
+- 가구와 캐릭터를 하나의 배열에 넣고 `tileY` 기준 정렬
+- 같은 Y면 tileX로 2차 정렬
+
+### 4.3 스프라이트 렌더링
+```js
+function drawSprite(ctx, spriteData, x, y, scale, flipX) {
+  // spriteData = { width, height, pixels: [...] }
+  // pixels는 palette index 배열, 0=투명
+  // flipX: ctx.save() -> ctx.scale(-1,1) -> 그리기 -> ctx.restore()
+}
+```
+
+### 4.4 카메라
+- 고정 뷰 (스크롤 없음) -- 전체 맵이 캔버스에 fit
+- SCALE = 3 (8px tile -> 24px on screen)
+
+### 4.5 말풍선
+- 캐릭터 머리 위 (tileY - 1 위치)
+- 배경: 반투명 검정 (#000000cc), 흰색 텍스트
+- 종류: 텍스트("routing..."), 아이콘(체크/X), 점("..." 대기)
+- 3초 후 자동 fade out
+
+### 4.6 방 라벨
+- 각 방 상단에 방 이름 텍스트 (ctx.fillText, 작은 폰트)
+- 반투명 배경 패널 (#00000088)
+
+### 파일: `nexus/monitor/public/js/renderer.js` (신규, ~350줄)
+
+---
+
+## Phase 5: Matrix Effect
+
+### 5.1 스폰 이펙트
+- 캐릭터 타일 위치에서 세로 8-16개 녹색 문자 파티클
+- 위에서 아래로 떨어지며 fade
+- 0.5초 동안 재생 -> 완료 시 캐릭터 IDLE로 전환
+- 색상: #39d353 (NEXUS accent-green)
+
+### 5.2 디스폰 이펙트
+- 캐릭터가 사라지면서 같은 위치에 역방향 매트릭스 파티클
+- 0.5초 -> 완료 시 캐릭터 객체 제거
+
+### 5.3 파티클 시스템
+```js
+particle = { x, y, char, speed, opacity, life }
+// char = random from "01アイウエオカキクケコサシスセソタチツテト"
+```
+
+### 파일: `nexus/monitor/public/js/matrix-effect.js` (신규, ~120줄)
+
+---
+
+## Phase 6: Event Integration (50+ event types)
+
+### 6.1 이벤트 큐
+```js
+const eventQueue = [];
+window.onNexusEvent = (type, data) => eventQueue.push({ type, data, time: Date.now() });
+// 매 프레임 processEvents()에서 큐 소비
+```
+
+### 6.2 이벤트 -> 행동 매핑 (Complete)
+
+#### System Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `system:init` | ALL | spawn point | 4 에이전트 순차 matrix spawn (0.5초 간격) |
+| `system:ready` | ALL | home rooms | 각 에이전트 홈 방 seat로 walk |
+| `system:shutdown` | ALL | spawn point | 역순 matrix despawn |
+| `monitor:started` | - | Observatory | 방 glow 활성화 |
+
+#### Task Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `task:received` | route target | Orchestrator HQ | walk, bubble("new task") |
+| `task:routed` | route target | target room | walk, sit, TYPING, bubble("routing to {provider}") |
+| `task:completed` | executor | home room | bubble("done!", green), 3초 후 홈으로 |
+| `task:failed` | executor | home room | bubble("failed!", red), mood=error, 3초 후 홈으로 |
+
+#### Graph Events (Agent Framework)
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `graph:start` | executor | Agent FW Lab | walk, sit, bubble("graph started") |
+| `graph:node:start` | executor | Graph Engine | TYPING, bubble("{nodeName}") |
+| `graph:node:end` | executor | Graph Engine | TYPING stop, bubble("node done") |
+| `graph:end` | executor | Agent FW Lab | bubble("graph complete", green) |
+| `graph:stream` | executor | Graph Engine | bubble("{chunk...}") rapid flicker |
+
+#### Evolution Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `evolution:weight` | claude-code | Evolution Lab | walk, READING, bubble("adjusting weights") |
+| `evolution:pattern` | claude-code | Pattern Library | walk, READING, bubble("new pattern!") |
+
+#### Provider Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `provider:health` | target agent | current room | mood 변경 (healthy=normal, degraded=busy, down=error) |
+
+#### Team Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `team:started` | ALL team members | A2A Hub | 여러 에이전트 모임, round_table 주위 |
+| `team:member:completed` | specific member | A2A Hub | bubble("part done") |
+| `team:completed` | ALL team members | home rooms | 각자 홈으로 복귀 |
+
+#### HITL Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `hitl:request` | executor | current room | TYPING stop, bubble("waiting...", amber) |
+| `hitl:approved` | executor | current room | bubble("approved!", green), TYPING resume |
+| `hitl:rejected` | executor | current room | bubble("rejected", red), mood=error |
+
+#### Deep Agent Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `deep-agent:plan:created` | claude-code | Deep Agent Den | walk, READING, bubble("plan ready") |
+| `deep-agent:subtask:completed` | executor | Deep Agent Den | bubble("subtask done") |
+
+#### Subagent Events
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `subagent:spawned` | new grey agent | target room | matrix spawn (grey palette) |
+| `subagent:completed` | grey agent | current room | bubble("done"), matrix despawn |
+
+#### Heartbeat
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `heartbeat` | idle agents | random | wander 트리거 (idle 에이전트만) |
+
+#### Additional Events (from full module analysis)
+| Event | Agent | Target Room | Action |
+|-------|-------|-------------|--------|
+| `rag:indexed` | ollama-cpu | RAG Pipeline | TYPING, bubble("indexing...") |
+| `rag:retrieved` | ollama-cpu | RAG Pipeline | READING, bubble("found {n} docs") |
+| `obsidian:synced` | claude-code | Knowledge Vault | bubble("vault synced") |
+| `compound:loop:start` | executor | Compound AI Lab | walk, TYPING |
+| `compound:loop:end` | executor | Compound AI Lab | bubble("loop done") |
+| `context:saved` | executor | Context Store | bubble("context saved") |
+| `context:restored` | executor | Context Store | bubble("restored") |
+| `policy:check` | executor | Policy & Harness | READING, bubble("policy check") |
+| `policy:approved` | executor | Policy & Harness | bubble("passed", green) |
+| `harness:test:start` | codex-cli | Policy & Harness | TYPING |
+| `harness:test:end` | codex-cli | Policy & Harness | bubble("tests done") |
+| `gateway:request` | gemini-cli | MCP Gateway | TYPING, bubble("gateway req") |
+| `gateway:response` | gemini-cli | MCP Gateway | bubble("response OK") |
+
+### 6.3 행동 우선순위
+- 현재 진행 중인 task 이벤트 > 새 이벤트
+- TYPING 중 다른 방 이동 요청: 현재 작업 완료 후 이동
+- 동시 다중 이벤트: 큐에서 순차 처리 (100ms 간격)
+
+### 파일: `nexus/monitor/public/js/event-handler.js` (신규, ~350줄)
+
+---
+
+## Phase 7: Creative Enhancements
+
+### 7.1 에너지 바
+- 각 에이전트 머리 위에 작은 에너지 바 (4px 높이)
+- TYPING/READING 시 에너지 감소, IDLE/wander 시 회복
+- 색상: green(>60%), yellow(30-60%), red(<30%)
+
+### 7.2 비용 미터 (HUD)
+- 화면 우측 상단에 코인 아이콘 + 비용 표시
+- nexus.config.json의 cost.budget 반영
+- 각 provider별 cost_tier 시각화 (free=초록, included=파랑, api=빨강)
+
+### 7.3 에이전트 간 인터랙션
+- 복도에서 두 에이전트가 만나면 잠시 멈춤 + 말풍선 교환
+- "hey!", "busy?", "nice work!" 등 랜덤 대화
+- 확률: 15%
+
+### 7.4 커피 브레이크
+- 에너지 < 20% 시 에이전트가 Lobby로 이동
+- plant 근처에서 잠시 서있다가 에너지 회복
+- bubble("coffee break")
+
+### 7.5 방 Glow 이펙트
+- 이벤트 발생 방에 테두리 glow (해당 에이전트 색상으로)
+- 1초 fade in -> 2초 유지 -> 1초 fade out
+
+### 7.6 미니맵 (HUD)
+- 화면 우하단에 작은 미니맵 (100x60px)
+- 방 윤곽선 + 에이전트 위치 점으로 표시
+- 에이전트 색상으로 구분
+
+### 7.7 앰비언트 애니메이션
+- plant 타일: 미세한 흔들림 (2프레임)
+- monitor_on: 화면 깜빡임 (3프레임)
+- server_rack: LED 깜빡임 (2프레임)
+
+### 7.8 컨베이어 데이터 파티클
+- Task Pipeline 복도에 작은 사각형 파티클이 좌->우로 흐름
+- task 이벤트 발생 시 파티클 속도 증가 + 색상 변경
+- idle 시 느린 기본 속도
+
+---
+
+## Phase 8: Game Loop & Integration
+
+### 8.1 메인 루프
+```js
+let lastTime = 0;
+function gameLoop(timestamp) {
+  const dt = Math.min((timestamp - lastTime) / 1000, 0.1); // cap 100ms
+  lastTime = timestamp;
+
+  processEvents();        // SSE 이벤트 큐 처리
+  updateCharacters(dt);   // FSM 업데이트, 이동, 애니메이션
+  updateEffects(dt);      // 매트릭스, 말풍선, 파티클 타이머
+  updateAmbient(dt);      // 앰비언트 애니메이션
+  render();               // 11-step 렌더링
+
+  requestAnimationFrame(gameLoop);
+}
+```
+
+### 8.2 factory-floor.js 재작성
+- 기존 1033줄 전면 교체
+- 모든 모듈 조합하는 진입점
+- `initFactoryFloor()` -> 타일맵 생성, 에이전트 초기화, 루프 시작
+- `window.onNexusEvent` 체인 연결 유지
+
+### 8.3 Agent Office 탭 흡수
+- Factory Floor가 에이전트 시각화를 완전히 대체
+- Agent Office 탭 제거, Factory Floor 하나로 통합
+
+### 파일: `nexus/monitor/public/js/factory-floor.js` (전면 재작성, ~150줄)
+
+---
+
+## Phase 9: HTML/CSS 조정
+
+### 9.1 index.html 변경
+- canvas 크기: `width="1296" height="816"` (from 1300x760)
+- Agent Office 탭 제거 (agent-canvas, agent-office.js 참조 제거)
+- 새 script 태그 추가 (tile-map.js, character.js, matrix-effect.js, renderer.js, event-handler.js)
+- script 로드 순서: sprites.js -> tile-map.js -> character.js -> matrix-effect.js -> renderer.js -> event-handler.js -> factory-floor.js
+
+### 9.2 style.css 변경
+- `#factory-canvas { max-height: 820px; }` (from 760px)
+- agent-canvas 관련 CSS 제거
+
+---
+
+## 수정 파일 요약
+
+| 파일 | 작업 | 크기 예상 |
+|------|------|----------|
+| `assets/sprites.js` | **전면 재작성** - 5 캐릭터 팔레트, 12 타일, 23 가구, 애니메이션 | ~1000줄 |
+| `js/tile-map.js` | **신규** - 54x34 그리드, walkability, seat, BFS, 16방 레이아웃 | ~300줄 |
+| `js/character.js` | **신규** - FSM 7 states, wander AI, 에이전트 관리, 에너지 | ~400줄 |
+| `js/matrix-effect.js` | **신규** - 스폰/디스폰 매트릭스 이펙트, 파티클 시스템 | ~120줄 |
+| `js/renderer.js` | **신규** - 11-step 렌더링, z-sort, 말풍선, HUD, glow, minimap | ~350줄 |
+| `js/event-handler.js` | **신규** - 50+ 이벤트 매핑, 이벤트큐, 행동 우선순위 | ~350줄 |
+| `js/factory-floor.js` | **전면 재작성** - 게임루프, 모듈 통합 | ~150줄 |
+| `index.html` | **수정** - script 태그 추가, Agent Office 탭 제거, canvas 크기 | 소폭 |
+| `css/style.css` | **수정** - 캔버스 크기 조정 | 소폭 |
+
+**총 예상**: ~2,700줄 (현재 ~1,400줄에서 구조화되며 확장)
+
+---
+
+## 구현 순서
+
+```
+1. sprites.js        -- 모든 스프라이트 데이터 정의
+2. tile-map.js       -- 맵 레이아웃, BFS
+3. character.js      -- FSM, 에이전트 로직
+4. matrix-effect.js  -- 이펙트 시스템
+5. renderer.js       -- 렌더링 파이프라인
+6. event-handler.js  -- 이벤트 통합
+7. factory-floor.js  -- 게임루프, 모듈 통합
+8. index.html/css    -- HTML/CSS 조정
+```
+
+각 단계는 이전 단계에 의존하므로 순차 실행.
+
+---
+
+## 검증 방법
+
+1. **시각 검증**: `http://localhost:7850` 접속 -> Factory Floor 탭
+2. **스프라이트 확인**: 4 에이전트가 각자 색상으로 걸어다니는지 확인
+3. **16 방 확인**: 모든 방에 가구가 배치되고 라벨이 표시되는지
+4. **이벤트 반응**: `node nexus/core/cli.js status` 실행 -> SSE 이벤트 -> 에이전트 반응
+5. **FSM 전환**: idle -> walk -> sit -> type 상태 정상 전환
+6. **매트릭스 이펙트**: 페이지 로드 시 4 에이전트 순차 스폰
+7. **말풍선**: 이벤트 수신 시 표시 및 3초 후 fade
+8. **BFS 경로**: 에이전트가 벽을 통과하지 않고 문으로 이동
+9. **컨베이어 벨트**: Task Pipeline에 파티클이 흐르는지
+10. **HUD**: 에너지 바, 비용 미터, 미니맵 표시
+11. **60fps**: 개발자 도구 Performance 탭에서 프레임 드롭 없는지
+12. **Subagent**: subagent:spawned 이벤트 시 회색 에이전트 matrix spawn

@@ -1,13 +1,16 @@
 ---
+name: vibe-coding
 description: 바이브 코딩 워크플로우 - AI 협업 기반 빠른 개발
-keywords:
-  - 바이브 코딩
-  - vibe coding
-  - 빠른 개발
-  - rapid prototyping
-  - AI 협업
-  - 프로토타입
+user-invocable: true
+context: fork
 memory: project
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash
 ---
 
 # Vibe Coding Skill

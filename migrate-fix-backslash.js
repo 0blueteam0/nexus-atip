@@ -28,7 +28,7 @@ function processFile(fp) {
 
     let newContent = content;
     // Single backslash: K:\PortableApps\Claude-Code
-    const pat1 = 'K:\\PortableApps\\Claude-Code';
+    const pat1 = 'K:\\PortableApps\\genai';
     const rep1 = 'K:\\PortableApps\\genai';
     // Forward slash (shouldn't be many left but just in case)
     const pat2 = 'K:/PortableApps/Claude-Code';

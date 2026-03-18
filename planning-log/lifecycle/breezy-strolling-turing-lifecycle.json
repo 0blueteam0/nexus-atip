@@ -1,0 +1,334 @@
+{
+  "lifecycleId": "lc-breezy-strolling-turing-1770253991168",
+  "planId": "breezy-strolling-turing",
+  "planTitle": "Plan Ecosystem Dashboard",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": "2026-02-05T01:13:11.300Z",
+      "completedAt": "2026-02-05T01:13:11.169Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "completed",
+      "startedAt": "2026-02-05T01:13:11.169Z",
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "implementation": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "release": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 100
+    }
+  },
+  "overallProgress": 100,
+  "goalMapping": [
+    {
+      "id": "goal-1770253991169-opx6",
+      "title": "`dashboard/plan-ecosystem/` 폴더 생성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-dkak",
+      "title": "`dashboard/plan-ecosystem/server.js` - Express 서버",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-54f9",
+      "title": "`dashboard/plan-ecosystem/package.json` - 의존성",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-gk5q",
+      "title": "`dashboard/plan-ecosystem/public/index.html` - 기본 UI",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-v00o",
+      "title": "`dashboard/plan-ecosystem/collectors/plan-collector.js`",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-y6co",
+      "title": "`dashboard/plan-ecosystem/collectors/log-collector.js`",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-4c3o",
+      "title": "GET /api/plans, /api/plans/:id, /api/logs, /api/stats",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-ae79",
+      "title": "플랜 목록, 상태별 필터, 진행률 표시",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-kwal",
+      "title": "chokidar 파일 감시",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-pqp2",
+      "title": "Socket.io WebSocket 연결",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-0ypa",
+      "title": "Activity 피드",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-fuo0",
+      "title": "플랜 목록에 생성일/수정일 표시",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-sv36",
+      "title": "상대 시간 표시 (예: \"2시간 전\")",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-s3qh",
+      "title": "날짜순 정렬 옵션",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-ubxi",
+      "title": "플랜 내용 분석 로직 추가",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-nwe2",
+      "title": "\"빈 플랜\" 경고 표시 (내용 부족 시)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-d07d",
+      "title": "구현 상태 표시 (Empty/Draft/Active/Complete)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-72so",
+      "title": "`.claude-hooks.json`에 SessionStart hook 추가",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-5xui",
+      "title": "서버 자동 시작 스크립트",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-id3j",
+      "title": "브라우저 자동 열기 (start http://localhost:3030)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-s4g5",
+      "title": "진행률 도넛 차트 (이미 구현됨)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-plyl",
+      "title": "일별/주별 활동 바 차트 추가",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-5dmu",
+      "title": "Fuse.js 퍼지 검색",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-oihh",
+      "title": "documentation/ 폴더 트리",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-aeys",
+      "title": "Markdown 프리뷰",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-lprk",
+      "title": "서버 시작 확인 (localhost:3030)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-a3mi",
+      "title": "날짜 표시 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-470v",
+      "title": "빈 플랜 탐지 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    },
+    {
+      "id": "goal-1770253991169-b9n2",
+      "title": "자동 시작 Hook 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "pending",
+      "progress": 0,
+      "createdAt": "2026-02-05T01:13:11.169Z"
+    }
+  ],
+  "createdAt": "2026-02-05T01:13:11.168Z",
+  "updatedAt": "2026-02-05T01:13:11.310Z"
+}

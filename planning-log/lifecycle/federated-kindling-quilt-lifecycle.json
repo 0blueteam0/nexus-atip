@@ -1,0 +1,244 @@
+{
+  "lifecycleId": "lc-federated-kindling-quilt-1770253991222",
+  "planId": "federated-kindling-quilt",
+  "planTitle": "Task Management Ecosystem - Option A Migration Plan",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.222Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "in_progress",
+      "startedAt": "2026-02-05T01:13:11.222Z",
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 77
+    },
+    "implementation": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 0
+    },
+    "release": {
+      "status": "pending",
+      "startedAt": null,
+      "completedAt": null,
+      "progress": 0
+    }
+  },
+  "overallProgress": 34,
+  "goalMapping": [
+    {
+      "id": "goal-1770253991222-vwbf",
+      "title": "Unified Task Hub 스키마 설계 (`unified-task-hub.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-kegk",
+      "title": "TaskMaster Adapter 구현 (`adapters/taskmaster-adapter.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-9re5",
+      "title": "Dashboard Bridge 구현 (`dashboard/dashboard-bridge.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-4nxb",
+      "title": "plan-ecosystem-dashboard 연동 테스트 (localhost:7847)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_1",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-q1th",
+      "title": "TaskMaster AI MCP 설정 확인 (`.claude.json`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-ktfx",
+      "title": "PRD 파싱 로직 구현 (`services/taskmaster-service.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-w5yk",
+      "title": "Shrimp-TaskMaster Bridge 작성 (`bridges/shrimp-taskmaster-bridge.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_2",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-oj6h",
+      "title": "BullMQ 설정 (포트 6380, `task-queue/config.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-43jc",
+      "title": "Queue Manager 구현 (`task-queue/queue-manager.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-2686",
+      "title": "RIPER+ 6 Phase 큐 동작 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_3",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-970j",
+      "title": "7/7 컴포넌트 기능 테스트 통과",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-p503",
+      "title": "5/5 E2E 테스트 통과",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-1q9e",
+      "title": "Redis 모드 + Dashboard 연결 확인",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_4",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-v93t",
+      "title": "session-restore.js를 신규 Hub 사용하도록 수정 (v3.0)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-o1ta",
+      "title": "session-persist.js를 신규 Hub 사용하도록 수정 (v3.0)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-tp4d",
+      "title": "Dashboard API 클라이언트 연동 (dashboard-bridge.js)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-km55",
+      "title": "기존 task-manager.js deprecated 처리 (경고 메시지 추가)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-o45a",
+      "title": "통합 CLI 진입점 생성 (`unified-task-system/cli.js`)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-3zu3",
+      "title": "Hook 업데이트 (`.claude-hooks.json` - hub-sync 추가)",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    },
+    {
+      "id": "goal-1770253991222-oo9h",
+      "title": "bidirectional-sync.js에 Hub 우선 사용 로직 추가",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.222Z"
+    }
+  ],
+  "createdAt": "2026-02-05T01:13:11.222Z",
+  "updatedAt": "2026-02-05T01:13:11.223Z"
+}

@@ -414,6 +414,106 @@
       "gemini_bridge": "multi-ai-orchestration/gemini-bridge.js"
     }
   },
+  "claude_features": {
+    "thinking": {
+      "auto_advise": true,
+      "think_threshold": 5,
+      "ultrathink_threshold": 8,
+      "default_model": "claude-opus-4-6"
+    },
+    "agent_teams": {
+      "enabled": true,
+      "max_members": 8,
+      "timeout_ms": 300000,
+      "auto_compose": true,
+      "complexity_threshold": 13,
+      "roles": {
+        "lead": { "description": "Primary executor, owns the task" },
+        "reviewer": { "description": "Cross-verifies output quality", "min_complexity": 15 },
+        "specialist": { "description": "Deep analysis for very complex tasks", "min_complexity": 18 }
+      },
+      "hook_events": ["SubagentStart", "TaskCompleted", "TeammateIdle"]
+    },
+    "memory_sync": {
+      "enabled": true,
+      "sync_patterns": true,
+      "sync_routing": true,
+      "memory_scope": "project"
+    },
+    "prompt_caching": {
+      "enabled": true,
+      "ttl_seconds": 3600,
+      "cache_system_prompts": true
+    },
+    "plugin_system": {
+      "auto_register": true,
+      "hooks_integration": true
+    },
+    "hook_server": {
+      "port": 7851,
+      "enabled": true
+    },
+    "remote_control": {
+      "enabled": false,
+      "allowed_commands": ["status", "route", "evolve"]
+    }
+  },
+  "deep_agent": {
+    "planner": {
+      "max_subtasks": 10,
+      "auto_decompose": true
+    },
+    "context_fs": {
+      "store_dir": "nexus/data/context-store",
+      "max_file_size_bytes": 1048576
+    },
+    "subagent": {
+      "max_concurrent": 5,
+      "timeout_ms": 120000,
+      "max_history": 50
+    }
+  },
+  "monitor": {
+    "port": 7850,
+    "sse_heartbeat_ms": 10000,
+    "event_buffer_size": 100,
+    "enabled": true
+  },
+  "obsidian": {
+    "port": 27124,
+    "host": "127.0.0.1",
+    "apiKey": "",
+    "vaultPath": "",
+    "basePath": "NEXUS",
+    "insecure": true,
+    "syncMode": "batch",
+    "enabled": true
+  },
+  "sync": {
+    "enabled": true,
+    "source": ".claude.json",
+    "targets": {
+      "gemini": ".gemini/settings.json",
+      "codex": ".codex/config.toml"
+    },
+    "portableServers": [
+      "desktop-commander",
+      "github",
+      "memory",
+      "sqlite-mcp",
+      "sequential-thinking",
+      "shrimp-task",
+      "edit-file-lines"
+    ],
+    "skillLinks": {
+      "gemini": ".gemini/skills -> .claude/skills",
+      "codex": ".agents/skills -> .claude/skills"
+    },
+    "hooks": {
+      "gemini": ["SessionStart", "SessionEnd", "BeforeTool", "AfterTool"],
+      "codex": ["notify"]
+    }
+  },
   "metadata": {
     "created": "2026-02-24",
     "author": "NEXUS Auto-Config",

@@ -1,0 +1,94 @@
+{
+  "lifecycleId": "lc-concurrent-discovering-torvalds-1770253991338",
+  "planId": "concurrent-discovering-torvalds",
+  "planTitle": "ATOS Plan Management System",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.338Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.338Z",
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "implementation": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.338Z",
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "release": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.338Z",
+      "progress": 100
+    }
+  },
+  "overallProgress": 100,
+  "goalMapping": [
+    {
+      "id": "goal-1770253991338-f77i",
+      "title": "Phase 1: plan-registry.json 생성 ✓",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.338Z"
+    },
+    {
+      "id": "goal-1770253991338-1niu",
+      "title": "Phase 2: watchers.json 업데이트 ✓",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.338Z"
+    },
+    {
+      "id": "goal-1770253991338-mak0",
+      "title": "Phase 3: 폴더 구조 생성 (completed/, archived/) ✓",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.338Z"
+    },
+    {
+      "id": "goal-1770253991338-032p",
+      "title": "Phase 4: auto-discovery.js 확장 (12개 함수 추가) ✓",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.338Z"
+    },
+    {
+      "id": "goal-1770253991338-1hux",
+      "title": "Phase 5: 기존 플랜 마이그레이션 (27개 플랜 등록) ✓",
+      "description": "",
+      "phase": "implementation",
+      "source": "phase_5",
+      "status": "completed",
+      "progress": 100,
+      "createdAt": "2026-02-05T01:13:11.338Z"
+    }
+  ],
+  "createdAt": "2026-02-05T01:13:11.338Z",
+  "updatedAt": "2026-02-05T01:13:11.348Z"
+}

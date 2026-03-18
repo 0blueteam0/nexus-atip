@@ -1,38 +1,80 @@
 /**
  * NEXUS Framework Adapter - AgentFrameworkPort Implementation
  *
- * Bridges agent frameworks (native graph engine, LangGraph, CrewAI)
- * to the NEXUS port system. Uses native engine by default,
- * Python frameworks when available.
+ * Bridges agent frameworks (native graph engine, LangGraph.js)
+ * to the NEXUS port system. Supports dual-engine architecture:
+ * - Native GraphEngine: always available, lightweight
+ * - LangGraph.js Engine: when @langchain/langgraph is installed
+ *
+ * Auto-selects the best engine based on availability and graph needs.
  *
  * @module nexus/agent-framework/framework-adapter
  */
 
 'use strict';
 
-const { execSync } = require('child_process');
 const { GraphEngine } = require('./graph-engine');
+const { LangGraphEngine, langGraphAvailable } = require('./langgraph-engine');
+const { CheckpointStore } = require('./checkpoint-store');
+const { HITLMiddleware } = require('./middleware/hitl');
+const { SummarizerMiddleware } = require('./middleware/summarizer');
+const { TracerMiddleware } = require('./middleware/tracer');
 
 class FrameworkAdapter {
   constructor(options = {}) {
+    // Native engine (always available)
     this.nativeEngine = new GraphEngine();
-    this._pythonAvailable = null;
-    this._langGraphAvailable = null;
+
+    // LangGraph engine (optional)
+    this.langGraphEngine = new LangGraphEngine();
+
+    // Middleware stack
+    this.checkpointStore = new CheckpointStore(options.checkpoint || {});
+    this.hitl = new HITLMiddleware(options.hitl || { autoApprove: true });
+    this.summarizer = new SummarizerMiddleware(options.summarizer || {});
+    this.tracer = new TracerMiddleware(options.tracer || {});
+
+    // Wire middleware to native engine
+    this.nativeEngine.setCheckpointStore(this.checkpointStore);
+    this.nativeEngine.setMiddleware('hitl', this.hitl);
+    this.nativeEngine.setMiddleware('summarizer', this.summarizer);
+    this.nativeEngine.setMiddleware('tracer', this.tracer);
+
+    // Preferred engine selection
+    this._preferLangGraph = options.preferLangGraph || false;
+
     this._registerBuiltinGraphs();
   }
 
   /**
    * Execute a graph definition
-   * @param {Object} graphDef - Graph definition or registered graph ID (string)
+   * @param {Object|string} graphDef - Graph definition or registered graph ID (string)
    * @param {Object} input - Input state
-   * @returns {Promise<{success, output, steps, framework, reason}>}
+   * @param {Object} [options] - { engine, runId, branch, resumeFromCheckpoint, threadId }
+   * @returns {Promise<{success, output, steps, framework, reason, runId}>}
    */
-  async executeGraph(graphDef, input) {
-    // If graphDef is a string, look up registered graph
+  async executeGraph(graphDef, input, options = {}) {
     const graphId = typeof graphDef === 'string' ? graphDef : graphDef.id;
+    const engineChoice = options.engine || this._selectEngine(graphId);
 
-    // Try native engine first
-    const result = await this.nativeEngine.execute(graphId, input);
+    // Try LangGraph if preferred and available
+    if (engineChoice === 'langgraph' && this.langGraphEngine.isAvailable()) {
+      const lgResult = await this.langGraphEngine.execute(graphId, input, {
+        threadId: options.threadId
+      });
+      if (lgResult.success) {
+        return { ...lgResult, reason: 'langgraph_execution' };
+      }
+      // Fall through to native on LangGraph failure
+    }
+
+    // Native engine execution (with full middleware)
+    const result = await this.nativeEngine.execute(graphId, input, {
+      runId: options.runId,
+      branch: options.branch,
+      resumeFromCheckpoint: options.resumeFromCheckpoint
+    });
+
     return {
       ...result,
       framework: 'nexus-native',
@@ -45,10 +87,19 @@ class FrameworkAdapter {
    * @returns {Array<{id, name, nodeCount, framework}>}
    */
   listGraphs() {
-    return this.nativeEngine.listGraphs().map(g => ({
+    const native = this.nativeEngine.listGraphs().map(g => ({
       ...g,
       framework: 'nexus-native'
     }));
+
+    const lg = this.langGraphEngine.isAvailable()
+      ? this.langGraphEngine.getStatus().graphIds.map(id => ({
+          id,
+          framework: 'langgraph'
+        }))
+      : [];
+
+    return [...native, ...lg];
   }
 
   /**
@@ -57,24 +108,53 @@ class FrameworkAdapter {
    */
   async getFrameworkStatus() {
     const frameworks = [
-      { name: 'nexus-native', available: true, version: '1.0.0' }
+      { name: 'nexus-native', available: true, version: '2.0.0' }
     ];
 
-    // Check Python availability
-    if (this._isPythonAvailable()) {
-      frameworks.push({ name: 'python', available: true });
-
-      // Check LangGraph
-      if (this._isLangGraphAvailable()) {
-        frameworks.push({ name: 'langgraph', available: true });
-      }
+    if (this.langGraphEngine.isAvailable()) {
+      frameworks.push({ name: 'langgraph', available: true, version: '1.0.x' });
     }
+
+    const middlewareStatus = {
+      checkpointing: this.checkpointStore.getStats(),
+      hitl: this.hitl.getStatus(),
+      summarizer: this.summarizer.getStatus(),
+      tracer: this.tracer.getStatus()
+    };
 
     return {
       available: true,
       frameworks,
-      graphs: this.nativeEngine.listGraphs().length
+      graphs: this.nativeEngine.listGraphs().length,
+      middleware: middlewareStatus
     };
+  }
+
+  /**
+   * Get checkpoint store for external access
+   */
+  getCheckpointStore() {
+    return this.checkpointStore;
+  }
+
+  /**
+   * Get tracer for external access
+   */
+  getTracer() {
+    return this.tracer;
+  }
+
+  /**
+   * Auto-select engine based on graph characteristics
+   */
+  _selectEngine(graphId) {
+    if (this._preferLangGraph && this.langGraphEngine.isAvailable()) {
+      const lgStatus = this.langGraphEngine.getStatus();
+      if (lgStatus.graphIds.includes(graphId)) {
+        return 'langgraph';
+      }
+    }
+    return 'native';
   }
 
   /**
@@ -146,28 +226,51 @@ class FrameworkAdapter {
         }
       ]
     });
-  }
 
-  _isPythonAvailable() {
-    if (this._pythonAvailable !== null) return this._pythonAvailable;
-    try {
-      execSync('python --version', { timeout: 5000, stdio: 'pipe' });
-      this._pythonAvailable = true;
-    } catch {
-      this._pythonAvailable = false;
-    }
-    return this._pythonAvailable;
-  }
-
-  _isLangGraphAvailable() {
-    if (this._langGraphAvailable !== null) return this._langGraphAvailable;
-    try {
-      execSync('python -c "import langgraph"', { timeout: 5000, stdio: 'pipe' });
-      this._langGraphAvailable = true;
-    } catch {
-      this._langGraphAvailable = false;
-    }
-    return this._langGraphAvailable;
+    // Deep Agent graph (Phase 8 new)
+    this.nativeEngine.register({
+      id: 'deep-agent-loop',
+      name: 'Deep Agent: Plan-Execute-Verify',
+      entrypoint: 'decompose',
+      maxSteps: 20,
+      nodes: [
+        {
+          id: 'decompose',
+          fn: async (state) => ({
+            subtasks: state.subtasks || [`Subtask for: ${state.task || 'unknown'}`],
+            currentSubtask: 0,
+            phase: 'decomposed'
+          }),
+          edges: 'execute_subtask'
+        },
+        {
+          id: 'execute_subtask',
+          fn: async (state) => {
+            const idx = state.currentSubtask || 0;
+            const subtask = (state.subtasks || [])[idx] || 'no subtask';
+            return {
+              results: [...(state.results || []), `Result of: ${subtask}`],
+              currentSubtask: idx + 1,
+              phase: 'executing'
+            };
+          },
+          edges: (state) => {
+            const idx = state.currentSubtask || 0;
+            const total = (state.subtasks || []).length;
+            if (idx < total) return 'execute_subtask';
+            return 'verify';
+          }
+        },
+        {
+          id: 'verify',
+          fn: async (state) => ({
+            verified: true,
+            phase: 'verified'
+          }),
+          edges: null
+        }
+      ]
+    });
   }
 }
 

@@ -1,5 +1,5 @@
 {
-  "lastSync": "2026-02-04T12:09:23.744Z",
+  "lastSync": "2026-03-10T23:22:14.184Z",
   "syncHistory": [
     {
       "timestamp": "2026-01-20T02:24:16.490Z",
@@ -21,6 +21,24 @@
     },
     {
       "timestamp": "2026-02-04T12:09:23.744Z",
+      "shrimpToPlan": 0,
+      "planToUnified": 0,
+      "changes": {
+        "shrimpToPlan": [],
+        "planToUnified": []
+      }
+    },
+    {
+      "timestamp": "2026-03-10T22:28:32.591Z",
+      "shrimpToPlan": 0,
+      "planToUnified": 0,
+      "changes": {
+        "shrimpToPlan": [],
+        "planToUnified": []
+      }
+    },
+    {
+      "timestamp": "2026-03-10T23:22:14.184Z",
       "shrimpToPlan": 0,
       "planToUnified": 0,
       "changes": {

@@ -1,0 +1,43 @@
+{
+  "lifecycleId": "lc-breezy-frolicking-finch-1770253991282",
+  "planId": "breezy-frolicking-finch",
+  "planTitle": "Plan Ecosystem Dashboard v3.0 - 완전 고도화",
+  "phases": {
+    "prd": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.282Z",
+      "goals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "mvp": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.282Z",
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "implementation": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.282Z",
+      "goals": [],
+      "implementedGoals": [],
+      "prompts": [],
+      "progress": 100
+    },
+    "release": {
+      "status": "completed",
+      "startedAt": null,
+      "completedAt": "2026-02-05T01:13:11.282Z",
+      "progress": 100
+    }
+  },
+  "overallProgress": 100,
+  "goalMapping": [],
+  "createdAt": "2026-02-05T01:13:11.282Z",
+  "updatedAt": "2026-02-05T01:13:11.291Z"
+}

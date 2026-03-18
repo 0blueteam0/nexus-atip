@@ -1,0 +1,25 @@
+{
+  "date": "2026-02-04",
+  "agents": [
+    {
+      "agentId": "agent-1770191082579-8guj",
+      "type": "Explore",
+      "prompt": "Dashboard 구조 탐색",
+      "startTime": "2026-02-04T07:44:42.625Z",
+      "endTime": null,
+      "status": "running",
+      "toolsUsed": 0,
+      "parentSession": null,
+      "runInBackground": false,
+      "result": null
+    }
+  ],
+  "stats": {
+    "total": 1,
+    "byType": {
+      "Explore": 1
+    },
+    "completed": 0,
+    "failed": 0
+  }
+}

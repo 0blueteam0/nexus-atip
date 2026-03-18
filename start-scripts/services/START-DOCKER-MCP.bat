@@ -32,12 +32,12 @@ echo [+] Docker 실행 중
 
 echo.
 echo [*] Firecrawl Self-hosted 시작... (포트 3002)
-cd /d K:\PortableApps\Claude-Code\mcp-servers\firecrawl-self-hosted
+cd /d K:\PortableApps\genai\mcp-servers\firecrawl-self-hosted
 docker compose up -d
 
 echo.
 echo [*] SearXNG + Crawl4AI 시작... (포트 8001, 8082, 6380)
-cd /d K:\PortableApps\Claude-Code\mcp-servers\searxng-crawl4ai-mcp
+cd /d K:\PortableApps\genai\mcp-servers\searxng-crawl4ai-mcp
 docker compose up -d
 
 echo.
@@ -48,5 +48,5 @@ echo.
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 echo.
 
-cd /d K:\PortableApps\Claude-Code
+cd /d K:\PortableApps\genai
 pause

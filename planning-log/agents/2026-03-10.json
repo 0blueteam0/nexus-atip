@@ -1,0 +1,49 @@
+{
+  "date": "2026-03-10",
+  "agents": [
+    {
+      "agentId": "codex-1773184588570",
+      "type": "codex-cli",
+      "prompt": "codex compat router verification",
+      "startTime": "2026-03-10T23:16:28.929Z",
+      "endTime": null,
+      "status": "running",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773184588570",
+      "runInBackground": false,
+      "result": null
+    },
+    {
+      "agentId": "codex-verify",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-verify",
+      "startTime": "2026-03-10T23:18:20.637Z",
+      "endTime": "2026-03-10T23:18:20.656Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-verify",
+      "runInBackground": false,
+      "result": null
+    },
+    {
+      "agentId": "codex-1773184991642",
+      "type": "codex-cli",
+      "prompt": "Codex turn codex-1773184991642",
+      "startTime": "2026-03-10T23:23:11.912Z",
+      "endTime": "2026-03-10T23:23:11.934Z",
+      "status": "completed",
+      "toolsUsed": 0,
+      "parentSession": "codex-1773184991642",
+      "runInBackground": false,
+      "result": null
+    }
+  ],
+  "stats": {
+    "total": 3,
+    "byType": {
+      "codex-cli": 3
+    },
+    "completed": 2,
+    "failed": 0
+  }
+}

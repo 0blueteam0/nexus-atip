@@ -1,0 +1,101 @@
+[
+  {
+    "provider": "ollama-cpu",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5607,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772688186188
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5528,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772688256267
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 7014,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772692958669
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5704,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772693189040
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5760,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772693220031
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5654,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1772694528857
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5909,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1773023273417
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 6016,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1773023467760
+  },
+  {
+    "provider": "gemini-cli",
+    "taskType": "code_review",
+    "success": true,
+    "latencyMs": 5897,
+    "completeness": 0.9,
+    "correctness": 0.85,
+    "relevance": 0.95,
+    "overallScore": 0.8875,
+    "timestamp": 1773130817075
+  }
+]

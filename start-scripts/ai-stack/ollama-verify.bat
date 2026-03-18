@@ -54,7 +54,7 @@ echo.
 
 :: 4. 모델 디렉토리 확인
 echo [*] 4/5: 모델 디렉토리 확인...
-if not exist "K:\PortableApps\Claude-Code\ollama-models" (
+if not exist "K:\PortableApps\genai\ollama-models" (
     echo [X] 실패: 모델 디렉토리가 존재하지 않습니다.
     set /a ERRORS+=1
 ) else (

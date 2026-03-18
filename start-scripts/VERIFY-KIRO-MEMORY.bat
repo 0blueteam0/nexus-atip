@@ -10,7 +10,7 @@ K:\PortableApps\tools\python-portable\python.exe -c "import mcp_server_enhanced;
 
 echo.
 echo [*] MCP 서버 연결 테스트...
-K:\PortableApps\Claude-Code\claude.bat mcp list | findstr "kiro-memory"
+K:\PortableApps\genai\claude.bat mcp list | findstr "kiro-memory"
 
 echo.
 echo [+] 검증 완료!

@@ -1,0 +1,43 @@
+{
+  "date": "2026-02-03",
+  "sessions": [
+    {
+      "id": "test-session-001",
+      "start": "2026-02-03T23:29:18.272Z",
+      "plan": "wobbly-wandering-honey",
+      "actions": [
+        {
+          "timestamp": "2026-02-03T23:29:25.855Z",
+          "type": "phase_update",
+          "target": "Phase 1",
+          "status": "completed",
+          "plan": "wobbly-wandering-honey"
+        },
+        {
+          "timestamp": "2026-02-03T23:29:32.611Z",
+          "type": "task_update",
+          "target": "1.1",
+          "status": "completed",
+          "plan": "wobbly-wandering-honey"
+        },
+        {
+          "timestamp": "2026-02-03T23:29:32.749Z",
+          "type": "task_update",
+          "target": "1.2",
+          "status": "completed",
+          "plan": "wobbly-wandering-honey"
+        }
+      ],
+      "end": "2026-02-03T23:29:40.516Z"
+    }
+  ],
+  "summary": {
+    "totalSessions": 1,
+    "totalActions": 3,
+    "plansWorkedOn": [
+      "wobbly-wandering-honey"
+    ],
+    "completedTasks": 2,
+    "completedPhases": 1
+  }
+}
