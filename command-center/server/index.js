@@ -42,6 +42,7 @@ const { TaskDecomposer } = require('./task-decomposer');
 const { AutonomyGuard } = require('./autonomy-guard');
 const { ObsidianBridge } = require('./obsidian-bridge');
 const { AntifragileEngine } = require('./antifragile');
+const { BenchmarkEngine } = require('./benchmark');
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -53,6 +54,7 @@ if (args.includes('--verbose')) process.env.VERBOSE = '1';
 const stateMachine = new AgentStateMachine();
 const broadcaster = new Broadcaster();
 const antifragile = new AntifragileEngine({ broadcaster });
+const benchmark = new BenchmarkEngine({ broadcaster });
 const router = new AutonomousRouter({ antifragile });
 const learner = new SelfLearningEngine({ antifragile });
 const coordinator = new TeamCoordinator(stateMachine, broadcaster);
@@ -441,6 +443,64 @@ app.post('/code-mode/execute', writeAuth, (req, res) => {
   res.json({ server, tool, args, irreversibility: irrev, status: 'ready_for_execution' });
 });
 
+// === Benchmark & Operational Metrics API ===
+app.get('/benchmark/live', (req, res) => {
+  res.json(benchmark.getLiveMetrics());
+});
+
+app.post('/benchmark/snapshot', writeAuth, (req, res) => {
+  const { label } = req.body;
+  const snapshot = benchmark.captureSnapshot(label);
+  // Auto-push to Obsidian if bridge available
+  if (obsidianBridge) {
+    try {
+      obsidianBridge.pushNote({
+        title: `Benchmark: ${snapshot.label}`,
+        content: _formatBenchmarkMarkdown(snapshot),
+        folder: '_Observer/Benchmarks',
+        tags: ['benchmark', 'metrics', 'savepoint'],
+        frontmatter: { git_hash: snapshot.git?.hash, timestamp: snapshot.timestamp }
+      });
+    } catch {}
+  }
+  res.json(snapshot);
+});
+
+app.get('/benchmark/compare', (req, res) => {
+  const { from, to } = req.query;
+  if (!from || !to) return res.status(400).json({ error: 'from and to labels required' });
+  res.json(benchmark.compare(from, to));
+});
+
+app.get('/benchmark/snapshots', (req, res) => {
+  res.json(benchmark.listSnapshots());
+});
+
+app.post('/benchmark/test-results', writeAuth, (req, res) => {
+  res.json(benchmark.recordTestResults(req.body));
+});
+
+function _formatBenchmarkMarkdown(snapshot) {
+  const lines = [
+    `# Benchmark Snapshot: ${snapshot.label}`,
+    `- **Timestamp**: ${snapshot.timestamp}`,
+    `- **Git**: \`${snapshot.git?.hash}\` - ${snapshot.git?.message}`,
+    `- **Branch**: ${snapshot.git?.branch}`,
+    ''
+  ];
+  for (const [cat, metrics] of Object.entries(snapshot)) {
+    if (typeof metrics !== 'object' || cat === 'label' || cat === 'timestamp' || cat === 'git') continue;
+    lines.push(`## ${cat.charAt(0).toUpperCase() + cat.slice(1)}`);
+    lines.push('| Metric | Value |');
+    lines.push('|--------|-------|');
+    for (const [key, val] of Object.entries(metrics)) {
+      lines.push(`| ${key} | ${val} |`);
+    }
+    lines.push('');
+  }
+  return lines.join('\n');
+}
+
 // === Prometheus-compatible Metrics ===
 app.get('/metrics', (req, res) => {
   const d = db.getDb();
@@ -562,6 +622,8 @@ app.get('/', (req, res) => {
       'GET /antifragile/status', 'GET /antifragile/trust/:tool',
       'POST /antifragile/assess', 'GET /antifragile/failures',
       'POST /code-mode/search', 'POST /code-mode/execute',
+      'GET /benchmark/live', 'POST /benchmark/snapshot', 'GET /benchmark/compare',
+      'GET /benchmark/snapshots', 'POST /benchmark/test-results',
       'GET /metrics', 'GET /health'
     ]
   });

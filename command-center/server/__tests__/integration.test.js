@@ -424,6 +424,57 @@ describe('Scoped Dispatch', () => {
   });
 });
 
+describe('Benchmark & Operational Metrics', () => {
+  it('should return live metrics', async () => {
+    const { status, data } = await api('/benchmark/live');
+    assert.equal(status, 200);
+    assert.ok(data.performance);
+    assert.ok(data.architecture);
+    assert.ok(data.learning);
+    assert.ok(data.safety);
+    assert.ok(data.context);
+    assert.ok(data.performance.uptimeSeconds > 0);
+  });
+
+  it('should capture a snapshot', async () => {
+    const { data } = await api('/benchmark/snapshot', {
+      method: 'POST',
+      body: JSON.stringify({ label: 'test-snapshot' })
+    });
+    assert.ok(data.label);
+    assert.ok(data.timestamp);
+    assert.ok(data.git);
+    assert.ok(data.performance);
+  });
+
+  it('should list snapshots', async () => {
+    const { data } = await api('/benchmark/snapshots');
+    assert.ok(Array.isArray(data));
+    assert.ok(data.length > 0);
+  });
+
+  it('should compare snapshots', async () => {
+    // Capture second snapshot
+    await api('/benchmark/snapshot', {
+      method: 'POST',
+      body: JSON.stringify({ label: 'test-snapshot-2' })
+    });
+    const { data } = await api('/benchmark/compare?from=test-snapshot&to=test-snapshot-2');
+    assert.equal(data.ok, true);
+    assert.ok(data.diff);
+    assert.ok(data.diff.summary);
+    assert.ok(data.diff.deltas.performance);
+  });
+
+  it('should record test results', async () => {
+    const { data } = await api('/benchmark/test-results', {
+      method: 'POST',
+      body: JSON.stringify({ pass: 49, fail: 0, durationMs: 360, suites: 17 })
+    });
+    assert.equal(data.ok, true);
+  });
+});
+
 describe('Metrics', () => {
   it('should return Prometheus format', async () => {
     const res = await fetch(`${BASE}/metrics`);
