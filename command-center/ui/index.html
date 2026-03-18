@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Center</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0f0f1a;
+      color: #c0c0d0;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      user-select: none;
+      image-rendering: pixelated;
+    }
+
+    #header {
+      height: 32px;
+      background: #16162a;
+      border-bottom: 2px solid #2a2a4a;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 12px;
+      gap: 16px;
+    }
+
+    #header .title {
+      color: #00ff88;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    #header .stat {
+      color: #8888aa;
+    }
+
+    #header .stat .val {
+      color: #ccccee;
+    }
+
+    #header .connection {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #header .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff4444;
+    }
+
+    #header .dot.connected {
+      background: #00ff88;
+    }
+
+    #game-container {
+      display: block;
+      position: absolute;
+      top: 32px;
+      left: 0;
+      right: 280px;
+      bottom: 0;
+      overflow: hidden;
+      image-rendering: pixelated;
+    }
+
+    #game-container canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    #detail-panel {
+      display: none;
+      position: fixed;
+      left: 10px;
+      bottom: 60px;
+      background: #1a1a32;
+      border: 1px solid #2a2a4a;
+      padding: 8px 12px;
+      font-size: 10px;
+      min-width: 180px;
+      z-index: 10;
+    }
+
+    #detail-panel .detail-header {
+      color: #00ff88;
+      font-weight: bold;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #2a2a4a;
+      padding-bottom: 3px;
+    }
+
+    #detail-panel .detail-row {
+      color: #8888aa;
+      padding: 1px 0;
+    }
+
+    #sidebar {
+      position: fixed;
+      right: 0;
+      top: 32px;
+      width: 280px;
+      height: calc(100vh - 32px);
+      background: #12122a;
+      border-left: 2px solid #2a2a4a;
+      overflow-y: auto;
+      padding: 8px;
+      font-size: 11px;
+    }
+
+    #sidebar h3 {
+      color: #00ff88;
+      font-size: 11px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #2a2a4a;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      margin-top: 10px;
+    }
+
+    #sidebar h3:first-child {
+      margin-top: 0;
+    }
+
+    .agent-card {
+      background: #1a1a32;
+      border: 1px solid #2a2a4a;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      border-radius: 2px;
+    }
+
+    .agent-card .name {
+      color: #aaaacc;
+      font-weight: bold;
+    }
+
+    .agent-card .state {
+      float: right;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 10px;
+    }
+
+    .state-idle { background: #333355; color: #8888aa; }
+    .state-thinking { background: #553355; color: #cc88cc; }
+    .state-coding { background: #335533; color: #88cc88; }
+    .state-searching { background: #555533; color: #cccc88; }
+    .state-testing { background: #335555; color: #88cccc; }
+    .state-waiting { background: #444444; color: #aaaaaa; }
+    .state-error { background: #553333; color: #cc8888; }
+
+    .agent-card .tool {
+      color: #666688;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .event-log {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .event-item {
+      color: #666688;
+      font-size: 10px;
+      padding: 2px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+
+    .event-item .time {
+      color: #555577;
+    }
+
+    .event-item .type {
+      color: #88aacc;
+    }
+
+    #mission-board {
+      margin-top: 8px;
+    }
+
+    .task-item {
+      padding: 3px 0;
+      color: #8888aa;
+      font-size: 10px;
+    }
+
+    .task-item.completed {
+      color: #555577;
+      text-decoration: line-through;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f0f1a; }
+    ::-webkit-scrollbar-thumb { background: #333355; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <span class="title">COMMAND CENTER</span>
+    <span class="stat">Session: <span class="val" id="session-time">00:00:00</span></span>
+    <span class="stat">Agents: <span class="val" id="agent-count">0</span></span>
+    <span class="stat">Events: <span class="val" id="event-count">0</span></span>
+    <div class="connection">
+      <div class="dot" id="ws-dot"></div>
+      <span id="ws-status">Disconnected</span>
+    </div>
+  </div>
+
+  <div id="game-container"></div>
+  <div id="detail-panel"></div>
+
+  <div id="sidebar">
+    <h3>// AGENTS</h3>
+    <div id="agent-list"></div>
+
+    <h3>// MISSION BOARD</h3>
+    <div id="mission-board"></div>
+
+    <h3>// EVENT LOG</h3>
+    <div class="event-log" id="event-log"></div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "pixi.js": "./node_modules/pixi.js/dist/pixi.mjs"
+    }
+  }
+  </script>
+  <script type="module" src="src/pixi-app.js"></script>
+</body>
+</html>

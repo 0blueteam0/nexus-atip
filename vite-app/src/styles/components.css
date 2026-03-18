@@ -1,0 +1,6630 @@
+/**
+ * NEXUS ATIP V2.0 - Component Styles
+ * Styles for reusable UI components
+ * Iteration 7: Global CSS Polish & Animations
+ */
+
+
+/* ===== NEXUS Design Tokens (Mattermost-inspired Professional Palette) ===== */
+:root {
+  /* Backgrounds - warm neutral darks, NOT blue-blacks */
+  --bg-base: #1B1D21;
+  --bg-surface: #1F2228;
+  --bg-card: #22252B;
+  --bg-elevated: #282C34;
+  --bg-sidebar: #1E2026;
+  --bg-hover: #2C3039;
+  --bg-active: #32363F;
+
+  /* Borders - subtle, low contrast */
+  --border-default: #33373F;
+  --border-subtle: #2A2D35;
+  --border-focus: #4A90D9;
+
+  /* Text - warm whites, not blue-tinted */
+  --text-primary: #E1E3E8;
+  --text-secondary: #A8ABB3;
+  --text-muted: #6D707A;
+  --text-disabled: #4A4D55;
+
+  /* Primary accent - muted blue (Mattermost-like) */
+  --accent-primary: #4A90D9;
+  --accent-primary-hover: #5B9EE4;
+  --accent-primary-subtle: rgba(74, 144, 217, 0.12);
+
+  /* Severity palette - softer, more professional */
+  --severity-critical: #E06C75;
+  --severity-critical-bg: rgba(224, 108, 117, 0.10);
+  --severity-high: #E5A54B;
+  --severity-high-bg: rgba(229, 165, 75, 0.10);
+  --severity-medium: #D4B84D;
+  --severity-medium-bg: rgba(212, 184, 77, 0.10);
+  --severity-low: #5CB87A;
+  --severity-low-bg: rgba(92, 184, 122, 0.10);
+  --severity-info: #4A90D9;
+  --severity-info-bg: rgba(74, 144, 217, 0.10);
+
+  /* Status */
+  --status-success: #5CB87A;
+  --status-warning: #E5A54B;
+  --status-error: #E06C75;
+  --status-info: #4A90D9;
+
+  /* Shadows - soft, no colored glows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.30);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.35);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.3);
+
+  /* Letter-spacing semantic tiers (Iteration 42) */
+  --ls-tight: -0.02em;
+  --ls-normal: 0.01em;
+  --ls-wide: 0.04em;
+  --ls-extra-wide: 0.08em;
+
+  /* Subtle overlay backgrounds (Iteration 43) - replace raw rgba(255,255,255,...) */
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --bg-subtler: rgba(255, 255, 255, 0.024);
+
+  /* Font-weight scale (Iteration 47) */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  /* Transition durations (Iteration 47) */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+
+  /* Border-radius scale (Iteration 44, extended Iteration 184/185) */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-full: 50%;
+
+  /* Spacing scale (Iteration 31, consolidated Iteration 185) */
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+
+  /* Opacity scale (Iteration 48) */
+  --opacity-dimmed: 0.35;
+  --opacity-muted: 0.6;
+  --opacity-soft: 0.8;
+  --opacity-subtle: 0.9;
+
+  /* Line-height scale (Iteration 48) */
+  --lh-tight: 1.2;
+  --lh-normal: 1.4;
+  --lh-relaxed: 1.6;
+
+  /* Table header accent (Iteration 48) */
+  --text-th: rgba(74, 144, 217, 0.7);
+}
+
+/* ===== Animations ===== */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: var(--shadow-sm); }
+  50% { box-shadow: var(--shadow-sm); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== Stat Card ===== */
+.stat-row {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stat-row--2 { grid-template-columns: repeat(2, 1fr); }
+.stat-row--3 { grid-template-columns: repeat(3, 1fr); }
+.stat-row--4 { grid-template-columns: repeat(4, 1fr); }
+
+.stat-card {
+  background: var(--bg-card, #22252B);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  animation: fade-in-up 0.4s ease both;
+}
+.stat-row .stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-row .stat-card:nth-child(2) { animation-delay: 0.06s; }
+.stat-row .stat-card:nth-child(3) { animation-delay: 0.12s; }
+.stat-row .stat-card:nth-child(4) { animation-delay: 0.18s; }
+
+.stat-card:hover {
+  border-color: var(--accent-primary, #4A90D9);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+}
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.stat-card__icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+.stat-card__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #A8ABB3);
+}
+.stat-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary, #4A90D9);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: none;
+}
+.stat-card__sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #A8ABB3);
+  margin-top: 0.3rem;
+}
+
+/* Severity accents */
+.stat-card--critical .stat-card__value { color: var(--severity-critical, #E06C75); }
+.stat-card--high .stat-card__value { color: var(--severity-high, #E5A54B); }
+.stat-card--medium .stat-card__value { color: var(--severity-medium, #D4B84D); }
+.stat-card--low .stat-card__value { color: var(--severity-low, #5CB87A); }
+
+/* Iteration 14: Severity-colored hover glow */
+.stat-card--critical:hover {
+  border-color: var(--severity-critical, #E06C75);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.stat-card--high:hover {
+  border-color: var(--severity-high, #E5A54B);
+  box-shadow: 0 0 14px rgba(229, 165, 75, 0.18), 0 4px 16px rgba(0,0,0,0.25);
+}
+.stat-card--medium:hover {
+  border-color: var(--severity-medium, #D4B84D);
+  box-shadow: 0 0 14px rgba(212, 184, 77, 0.15), 0 4px 16px rgba(0,0,0,0.25);
+}
+.stat-card--low:hover {
+  border-color: var(--severity-low, #5CB87A);
+  box-shadow: 0 0 14px rgba(92, 184, 122, 0.15), 0 4px 16px rgba(0,0,0,0.25);
+}
+
+/* ===== Badge ===== */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+.badge-critical {
+  background: var(--severity-critical-bg, rgba(224, 108, 117, 0.2));
+  color: var(--severity-critical, #E06C75);
+  border: 1px solid rgba(224, 108, 117, 0.3);
+}
+.badge-high {
+  background: var(--severity-high-bg, rgba(229, 165, 75, 0.2));
+  color: var(--severity-high, #E5A54B);
+  border: 1px solid rgba(229, 165, 75, 0.3);
+}
+.badge-medium {
+  background: var(--severity-medium-bg, rgba(212, 184, 77, 0.2));
+  color: var(--severity-medium, #D4B84D);
+  border: 1px solid rgba(212, 184, 77, 0.3);
+}
+.badge-low {
+  background: var(--severity-low-bg, rgba(92, 184, 122, 0.2));
+  color: var(--severity-low, #5CB87A);
+  border: 1px solid rgba(92, 184, 122, 0.3);
+}
+.badge-info {
+  background: var(--severity-info-bg, rgba(74, 144, 217, 0.2));
+  color: var(--severity-info, #4A90D9);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+}
+
+/* ===== Card ===== */
+.card {
+  background: var(--bg-card, #22252B);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  animation: fade-in-up 0.4s ease both;
+}
+.card:hover {
+  border-color: rgba(74, 144, 217, 0.3);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border-default, #33373F);
+  background: rgba(74, 144, 217, 0.02);
+}
+.card__header h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary, #E1E3E8);
+}
+.card__count {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.5rem;
+  background: rgba(74, 144, 217, 0.12);
+  color: var(--accent-primary, #4A90D9);
+  border: 1px solid rgba(74, 144, 217, 0.2);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-shadow: none;
+}
+
+/* ===== Data Table ===== */
+.table-wrap {
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.data-table th {
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #A8ABB3);
+  border-bottom: 1px solid var(--border-default, #33373F);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--bg-card, #22252B);
+  z-index: 1;
+}
+.data-table td {
+  padding: 0.5rem 0.8rem;
+  color: var(--text-secondary, #A8ABB3);
+  border-bottom: 1px solid rgba(51, 55, 63, 0.5);
+  transition: background 0.15s;
+}
+.data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+.data-table tbody tr:hover {
+  background: rgba(74, 144, 217, 0.06);
+}
+.data-table tbody tr:hover td {
+  color: var(--text-primary, #E1E3E8);
+}
+.table-empty {
+  padding: 2rem 1rem !important;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+.table-empty::before {
+  content: '---  ';
+  color: var(--accent-primary-subtle, rgba(74, 144, 217, 0.15));
+}
+.table-empty::after {
+  content: '  ---';
+  color: var(--accent-primary-subtle, rgba(74, 144, 217, 0.15));
+}
+/* Iteration 20: Reusable card-level empty state */
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+.table-overflow {
+  padding: 0.5rem 1rem;
+  font-size: 0.7rem;
+  color: var(--text-muted, #6D707A);
+  text-align: center;
+  border-top: 1px solid var(--border-default, #33373F);
+}
+.info-table__label {
+  font-weight: 600;
+  color: var(--text-secondary, #A8ABB3);
+  white-space: nowrap;
+  width: 30%;
+}
+
+/* ===== Toast ===== */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+  max-width: 360px;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  animation: toast-in 0.3s ease;
+  border: 1px solid;
+}
+.toast--fade {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.toast--info {
+  background: rgba(74, 144, 217, 0.15);
+  border-color: rgba(74, 144, 217, 0.3);
+  color: var(--status-info, #4A90D9);
+}
+.toast--success {
+  background: rgba(92, 184, 122, 0.15);
+  border-color: rgba(92, 184, 122, 0.3);
+  color: var(--status-success, #5CB87A);
+}
+.toast--warning {
+  background: rgba(212, 184, 77, 0.15);
+  border-color: rgba(212, 184, 77, 0.3);
+  color: var(--severity-medium, #D4B84D);
+}
+.toast--critical {
+  background: rgba(224, 108, 117, 0.15);
+  border-color: rgba(224, 108, 117, 0.3);
+  color: var(--status-error, #E06C75);
+}
+.toast__icon {
+  font-weight: bold;
+  flex-shrink: 0;
+}
+.toast__msg {
+  flex: 1;
+}
+.toast__close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 0;
+  line-height: 1;
+}
+.toast__close:hover { opacity: 1; }
+
+@keyframes toast-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== Header Bar ===== */
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.5rem;
+  background: var(--bg-card, #22252B);
+  border-bottom: 1px solid var(--border-default, #33373F);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
+}
+.header-bar__title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary, #E1E3E8);
+}
+.header-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.header-bar__clock {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent-primary, #4A90D9);
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: var(--sidebar-bg, #1B1D21);
+  border-right: 1px solid var(--border-default, #33373F);
+  display: flex;
+  flex-direction: column;
+}
+.sidebar__brand {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid var(--border-default, #33373F);
+  text-align: center;
+}
+.sidebar__logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--accent-primary, #4A90D9);
+}
+.sidebar__subtitle {
+  font-size: 0.65rem;
+  color: var(--text-muted, #6D707A);
+  letter-spacing: 0.1em;
+  margin-top: 0.2rem;
+}
+.sidebar__nav {
+  flex: 1;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+}
+.sidebar__footer {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--border-default, #33373F);
+  text-align: center;
+}
+.sidebar__version {
+  font-size: 0.6rem;
+  color: var(--text-muted, #6D707A);
+}
+
+.nav-section {
+  margin-bottom: 0.3rem;
+}
+.nav-section__title {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.5rem 0.8rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #6D707A);
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav-section__title:hover {
+  border-left-color: rgba(74, 144, 217, 0.4);
+  color: var(--accent-primary, #4A90D9);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-secondary, #A8ABB3);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, padding-left 0.2s;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  animation: slide-in-left 0.3s ease both;
+}
+.nav-item:hover {
+  background: rgba(74, 144, 217, 0.08);
+  color: var(--text-primary, #E1E3E8);
+  padding-left: 1.15rem;
+}
+.nav-item:hover .nav-item__icon {
+  opacity: 1;
+}
+.nav-item--active {
+  background: rgba(74, 144, 217, 0.12);
+  color: var(--accent-primary, #4A90D9);
+  border-left: 3px solid var(--accent-primary, #4A90D9);
+}
+.nav-item--active .nav-item__icon {
+  opacity: 1;
+}
+.nav-item__icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  width: 1.5rem;
+  text-align: center;
+}
+.nav-item__label {
+  white-space: nowrap;
+}
+
+/* ===== App Layout ===== */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  animation: fade-in 0.3s ease;
+}
+
+/* ===== View Error ===== */
+.view-error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted, #6D707A);
+  font-size: 1rem;
+}
+
+/* ===== MITRE ATT&CK Heatmap ===== */
+.mitre-heatmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+.mitre-cell {
+  background: rgba(74, 144, 217, 0.08);
+  border: 1px solid rgba(74, 144, 217, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 0.6rem;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: default;
+}
+.mitre-cell:hover {
+  background: rgba(74, 144, 217, 0.18);
+  border-color: var(--accent-primary, #4A90D9);
+  transform: translateY(-2px);
+}
+.mitre-cell span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-primary, #E1E3E8);
+  word-break: break-word;
+}
+
+/* ===== Scrollbar ===== */
+.app-content::-webkit-scrollbar {
+  width: 6px;
+}
+.app-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-content::-webkit-scrollbar-thumb {
+  background: rgba(74, 144, 217, 0.15);
+  border-radius: var(--radius-xs);
+}
+.app-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 144, 217, 0.3);
+}
+
+/* ===== Iteration 8: Micro-Interactions ===== */
+
+/* Card selected glow */
+.card--selected,
+.stat-card.card--selected {
+  border-color: rgba(74, 144, 217, 0.5) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Stat card value count-up transition */
+.stat-card__value[data-count-target] {
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+}
+
+/* Table row hover expand */
+.data-table tbody tr {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.data-table tbody tr:hover {
+  transform: scale(1.005);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Nav active slide indicator - enhanced existing border */
+.nav-item--active {
+  position: relative;
+  border-left-color: transparent !important;
+}
+.nav-item--active::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 3px;
+  background: var(--accent-primary, #4A90D9);
+  border-radius: 0 2px 2px 0;
+  box-shadow: var(--shadow-sm);
+  animation: nav-indicator-in 0.25s ease both;
+}
+@keyframes nav-indicator-in {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+/* Header timestamp pulse */
+@keyframes timestamp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.header-bar__clock {
+  animation: timestamp-pulse 4s ease-in-out infinite;
+}
+
+/* ===== Iteration 9: Quick Nav & View Transitions ===== */
+
+/* Scroll-to-top FAB */
+.scroll-top-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-card, #22252B);
+  border: 1px solid rgba(74, 144, 217, 0.3);
+  color: var(--accent-primary, #4A90D9);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+.scroll-top-fab.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll-top-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: rgba(74, 144, 217, 0.6);
+}
+
+/* Keyboard shortcut overlay */
+.kb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  animation: fade-in 0.2s ease;
+}
+.kb-overlay__card {
+  background: var(--bg-card, #22252B);
+  border: 1px solid rgba(74, 144, 217, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  min-width: 340px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.kb-overlay__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-primary, #4A90D9);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.kb-overlay__row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--text-secondary, #A8ABB3);
+}
+.kb-overlay__key {
+  display: inline-block;
+  background: rgba(74, 144, 217, 0.1);
+  border: 1px solid rgba(74, 144, 217, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1px 8px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--accent-primary, #4A90D9);
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Panel collapse/expand */
+.panel-header {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.panel-header__toggle {
+  font-size: 10px;
+  color: var(--text-secondary, #A8ABB3);
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+.panel-header__toggle.collapsed {
+  transform: rotate(-90deg);
+}
+.panel-body {
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  overflow: hidden;
+}
+.panel-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* View crossfade transition */
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.view-transition {
+  animation: view-enter 0.3s ease both;
+}
+
+/* Sparkline in stat card */
+.stat-card__sparkline {
+  margin-top: 6px;
+  opacity: 0.85;
+}
+.stat-card__sparkline svg {
+  display: block;
+}
+
+/* ===== Iteration 10: Sidebar Collapse ===== */
+.sidebar {
+  transition: width 0.25s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+.sidebar__toggle {
+  position: absolute;
+  top: 12px;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-primary, #4A90D9);
+  color: var(--bg-base, #181A1E);
+  border: 2px solid var(--bg-card, #22252B);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.sidebar:hover .sidebar__toggle,
+.sidebar__toggle:focus { opacity: 1; }
+
+.sidebar--collapsed {
+  width: 50px !important;
+}
+.sidebar--collapsed .sidebar__brand {
+  padding: 12px 4px;
+}
+.sidebar--collapsed .sidebar__logo {
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.sidebar--collapsed .sidebar__subtitle,
+.sidebar--collapsed .nav-section__title,
+.sidebar--collapsed .nav-item__label,
+.sidebar--collapsed .sidebar__footer { display: none; }
+.sidebar--collapsed .nav-item {
+  justify-content: center;
+  padding: 10px 4px;
+}
+.sidebar--collapsed .nav-item__icon {
+  margin-right: 0;
+  font-size: 14px;
+}
+.sidebar--collapsed .sidebar__toggle {
+  opacity: 1;
+  right: -12px;
+}
+
+/* ===== Iteration 10: Header Search ===== */
+.header-bar__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 24px;
+  max-width: 420px;
+}
+.header-search {
+  position: relative;
+  width: 100%;
+}
+.header-search__icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted, #6D707A);
+  font-size: 13px;
+  font-family: monospace;
+  pointer-events: none;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-xs);
+  padding: 1px 5px;
+  line-height: 1;
+}
+.header-search__input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-md);
+  color: var(--text-primary, #E1E3E8);
+  padding: 6px 12px 6px 32px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.header-search__input:focus {
+  border-color: var(--accent-primary, #4A90D9);
+  background: rgba(74,144,217,0.05);
+}
+.header-search__input::placeholder { color: var(--text-muted, #6D707A); }
+.header-search__results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-surface, #1F2228);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-md);
+  max-height: 260px;
+  overflow-y: auto;
+  display: none;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.header-search__results.active { display: block; }
+.search-result-item {
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary, #A8ABB3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  transition: background 0.15s;
+}
+.search-result-item:hover,
+.search-result-item.selected {
+  background: rgba(74,144,217,0.1);
+  color: var(--text-primary, #E1E3E8);
+}
+.search-result-item__icon {
+  color: var(--accent-primary, #4A90D9);
+  font-family: monospace;
+  font-size: 12px;
+  opacity: 0.7;
+}
+.search-result-item__section {
+  font-size: 11px;
+  color: var(--text-muted, #6D707A);
+  margin-left: auto;
+}
+
+/* ===== Iteration 10: Module Pulse Indicators ===== */
+.nav-item__pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-success, #5CB87A);
+  margin-left: auto;
+  flex-shrink: 0;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; box-shadow: 0 0 0 0 rgba(92,184,122,0.3); }
+  50% { opacity: 1; box-shadow: 0 0 4px 2px rgba(92,184,122,0.2); }
+}
+.sidebar--collapsed .nav-item__pulse {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+}
+.sidebar--collapsed .nav-item {
+  position: relative;
+}
+
+/* ===== Iteration 10: Stat Card Tooltips ===== */
+.stat-card {
+  position: relative;
+}
+.stat-card__tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  background: var(--bg-base, #1B1D21);
+  border: 1px solid var(--accent-primary, #4A90D9);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text-secondary, #A8ABB3);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 50;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+.stat-card:hover .stat-card__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ===== Iteration 10: Auto-refresh Timer ===== */
+.header-bar__refresh {
+  font-size: 11px;
+  color: var(--text-muted, #6D707A);
+  font-family: monospace;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+  user-select: none;
+}
+.header-bar__refresh:hover {
+  color: var(--accent-primary, #4A90D9);
+  background: rgba(74,144,217,0.08);
+}
+.header-bar__refresh.active {
+  color: var(--status-success, #5CB87A);
+}
+
+/* ===== Iteration 11: View Transitions & Notifications ===== */
+
+/* -- View fade-in transition -- */
+.view-transition {
+  animation: view-fade-in 0.35s ease-out both;
+}
+@keyframes view-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -- Notification bell -- */
+.header-bar__notif {
+  position: relative;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+  user-select: none;
+}
+.header-bar__notif:hover {
+  color: var(--accent-primary, #4A90D9);
+  background: rgba(74,144,217,0.08);
+}
+.notif-bell__icon { font-weight: bold; }
+.notif-bell__badge {
+  position: absolute;
+  top: -4px; right: -2px;
+  font-size: 0.6rem;
+  background: var(--status-error, #E06C75);
+  color: #fff;
+  border-radius: 50%;
+  min-width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.notif-bell__badge.has-notifs { opacity: 1; }
+.notif-bell__dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 300px;
+  max-height: 360px;
+  background: var(--bg-surface, #1F2228);
+  border: 1px solid rgba(74,144,217,0.15);
+  border-radius: var(--radius-md);
+  overflow-y: auto;
+  z-index: 999;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.notif-bell__dropdown.open { display: block; }
+.notif-bell__header {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-primary, #4A90D9);
+  border-bottom: 1px solid rgba(74,144,217,0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.notif-bell__list { padding: 4px 0; }
+.notif-bell__empty {
+  padding: 16px 12px;
+  text-align: center;
+  color: rgba(255,255,255,0.3);
+  font-size: 0.75rem;
+}
+.notif-bell__item {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.notif-bell__item:hover { background: rgba(74,144,217,0.06); }
+.notif-bell__item-title {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 2px;
+}
+.notif-bell__item-time {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+}
+.notif-bell__item--critical .notif-bell__item-title { color: var(--severity-critical, #E06C75); }
+.notif-bell__item--high .notif-bell__item-title { color: var(--severity-high, #E5A54B); }
+.notif-bell__item--medium .notif-bell__item-title { color: var(--severity-medium, #D4B84D); }
+
+/* -- Panel fullscreen toggle -- */
+.panel-fullscreen-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(74,144,217,0.06);
+  border: 1px solid rgba(74,144,217,0.12);
+  border-radius: var(--radius-xs);
+  color: rgba(255,255,255,0.3);
+  font-size: 0.65rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
+  z-index: 5;
+}
+.stat-card:hover .panel-fullscreen-btn,
+.data-panel:hover .panel-fullscreen-btn { opacity: 1; }
+.panel-fullscreen-btn:hover {
+  color: var(--accent-primary, #4A90D9);
+  background: rgba(74,144,217,0.12);
+}
+.panel--fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  overflow: auto !important;
+  background: var(--bg-surface, #1F2228) !important;
+}
+
+/* -- Breadcrumb bar -- */
+.breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 4px 16px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(74,144,217,0.05);
+}
+.breadcrumb__item {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.breadcrumb__item:hover { color: var(--accent-primary, #4A90D9); }
+.breadcrumb__sep { color: rgba(255,255,255,0.15); }
+.breadcrumb__root { color: rgba(74, 144, 217, 0.4); font-weight: 600; letter-spacing: 0.04em; }
+.breadcrumb__current { color: rgba(255,255,255,0.6); }
+
+/* -- Nav shortcut hints -- */
+.nav-item__shortcut {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.15);
+  margin-left: auto;
+  padding: 1px 4px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.nav-item:hover .nav-item__shortcut { opacity: 1; }
+.sidebar--collapsed .nav-item__shortcut { display: none; }
+
+/* ===== Sortable Table Headers (Iteration 12) ===== */
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.sortable-th:hover { color: var(--accent-primary, #4A90D9); }
+.sort-arrow { margin-left: 4px; font-size: 0.65rem; color: rgba(255,255,255,0.25); }
+.sort-asc .sort-arrow::after { content: '\25B2'; color: var(--accent-primary, #4A90D9); }
+.sort-desc .sort-arrow::after { content: '\25BC'; color: var(--accent-primary, #4A90D9); }
+
+/* ===== Sidebar Section Collapse ===== */
+.nav-section__chevron { font-size: 0.5rem; width: 10px; text-align: center; }
+.nav-section--collapsed .nav-section__items { display: none; }
+
+/* ===== Stat Card Trend Indicator ===== */
+.stat-card__trend {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--radius-lg);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.stat-card__trend--up {
+  background: rgba(92, 184, 122, 0.1);
+  color: var(--severity-low, #5CB87A);
+}
+.stat-card__trend--down {
+  background: rgba(224, 108, 117, 0.1);
+  color: var(--severity-critical, #E06C75);
+}
+.stat-card__trend--flat {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Status Footer Bar ===== */
+.status-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-lg);
+  padding: 0 16px;
+  background: linear-gradient(90deg,
+    rgba(27, 29, 33, 0.95) 0%,
+    rgba(30, 32, 38, 0.95) 50%,
+    rgba(27, 29, 33, 0.95) 100%);
+  border-top: 1px solid rgba(74, 144, 217, 0.06);
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.4);
+  z-index: 999;
+}
+.status-footer__item { display: flex; align-items: center; gap: var(--space-xs); }
+.status-footer__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted, #6D707A);
+}
+.status-footer__dot--ok { background: var(--status-success, #5CB87A); animation: footer-pulse 2s ease-in-out infinite; }
+.status-footer__dot--warn { background: var(--status-warning, #E5A54B); }
+.status-footer__dot--err { background: var(--status-error, #E06C75); }
+
+/* -- Adjust app-content for footer -- */
+.app-content { padding-bottom: 32px; }
+
+/* ===== Toast Notifications (Iteration 13) ===== */
+.toast-container {
+  position: fixed;
+  top: 60px;
+  right: 16px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  min-width: 240px;
+  max-width: 380px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  color: var(--text-primary, #E1E3E8);
+  background: rgba(31,34,40,0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  animation: toast-in 0.3s ease both;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.toast--info { border-left: 3px solid var(--status-info, #4A90D9); }
+.toast--success { border-left: 3px solid var(--status-success, #5CB87A); }
+.toast--warn { border-left: 3px solid var(--status-warning, #E5A54B); }
+.toast--error { border-left: 3px solid var(--status-error, #E06C75); }
+.toast--removing { animation: toast-out 0.25s ease both; }
+.toast__icon { font-size: 0.9rem; flex-shrink: 0; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ===== Table Inline Search (Iteration 13) ===== */
+.table-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 0;
+}
+.table-search__input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #A8ABB3);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.table-search__input:focus {
+  border-color: var(--accent-primary, #4A90D9);
+}
+.table-search__input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+.table-search__count {
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.3);
+  white-space: nowrap;
+}
+
+/* ===== Dashboard Card Navigate (Iteration 13) ===== */
+.stat-card[data-navigate] {
+  cursor: pointer;
+}
+.stat-card[data-navigate]:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+.stat-card[data-navigate]::after {
+  content: '\2192';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.15);
+  transition: color 0.2s, transform 0.2s;
+}
+.stat-card[data-navigate]:hover::after {
+  color: var(--accent-primary, #4A90D9);
+  transform: translateX(2px);
+}
+
+/* ===== Refresh Pulse (Iteration 13) ===== */
+@keyframes refresh-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+.refresh-active {
+  animation: refresh-pulse 0.6s ease;
+}
+
+/* ===== Iteration 15: Cross-View Visual Polish ===== */
+
+/* 15-1: Card header accent gradient underline */
+.card__header {
+  border-bottom: none;
+  background: linear-gradient(180deg, rgba(74, 144, 217, 0.04) 0%, transparent 100%);
+  position: relative;
+}
+.card__header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.3) 20%, rgba(74, 144, 217, 0.3) 80%, transparent);
+}
+
+/* 15-2: Panel grid rhythm - consistent two-column layout */
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.panel-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.panel-grid--1 { grid-template-columns: 1fr; }
+.panel-grid .card { margin-bottom: 0; }
+
+/* 15-3: Table header gradient border + improved typography */
+.data-table thead {
+  position: relative;
+}
+.data-table th {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(74, 144, 217, 0.7);
+  border-bottom: none;
+  padding-bottom: 0.7rem;
+}
+.data-table thead tr {
+  border-bottom: 1px solid transparent;
+  background-image: linear-gradient(var(--bg-card, #22252B), var(--bg-card, #22252B)),
+                     linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.25) 20%, rgba(74, 144, 217, 0.25) 80%, transparent);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* 15-4: Stat card subtle lift + inner glow on hover (all views) */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card--critical::before { background: linear-gradient(90deg, transparent, rgba(224, 108, 117, 0.5), transparent); }
+.stat-card--high::before { background: linear-gradient(90deg, transparent, rgba(229, 165, 75, 0.5), transparent); }
+.stat-card--medium::before { background: linear-gradient(90deg, transparent, rgba(212, 184, 77, 0.4), transparent); }
+.stat-card--low::before { background: linear-gradient(90deg, transparent, rgba(92, 184, 122, 0.4), transparent); }
+.stat-card--critical:hover::before,
+.stat-card--high:hover::before,
+.stat-card--medium:hover::before,
+.stat-card--low:hover::before { opacity: 1; }
+
+
+/* 15-6: Horizontal scroll indicator for wide tables */
+.table-wrap {
+  position: relative;
+}
+.table-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.table-wrap.has-scroll::after { opacity: 1; }
+
+/* 15-7: Card focus ring for accessibility */
+.card:focus-within {
+  border-color: rgba(74, 144, 217, 0.4);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 15-8: Info table polish */
+.info-table__label {
+  background: rgba(74, 144, 217, 0.03);
+  border-right: 1px solid rgba(74, 144, 217, 0.1);
+}
+
+/* Footer pulse keyframes (referenced by status-footer__dot--ok) */
+@keyframes footer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Iteration 16: Interaction Feedback & Empty State Polish ===== */
+
+/* 16-1: Staggered card entrance animation */
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stat-row .stat-card {
+  animation: card-enter 0.4s ease-out both;
+}
+.stat-row .stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-row .stat-card:nth-child(2) { animation-delay: 0.06s; }
+.stat-row .stat-card:nth-child(3) { animation-delay: 0.12s; }
+.stat-row .stat-card:nth-child(4) { animation-delay: 0.18s; }
+
+/* 16-2: Empty/zero value subtle dimming */
+.stat-card__value[data-count-target="0"] {
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+
+/* 16-3: Sidebar active indicator slide */
+.nav-item {
+  position: relative;
+}
+.nav-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--accent-primary, #4A90D9);
+  animation: nav-slide-in 0.25s ease-out;
+}
+@keyframes nav-slide-in {
+  from { top: 50%; bottom: 50%; opacity: 0; }
+  to { top: 15%; bottom: 15%; opacity: 1; }
+}
+
+/* 16-4: Table row click ripple */
+.data-table tbody tr {
+  position: relative;
+  transition: background 0.15s;
+}
+.data-table tbody tr:active {
+  background: rgba(74, 144, 217, 0.08);
+}
+
+/* 16-5: Badge hover micro-scale */
+.badge {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: default;
+}
+.badge:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 16-6: Panel collapse icon rotation */
+.card__header .panel-collapse-icon {
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+.card.panel-collapsed .panel-collapse-icon {
+  transform: rotate(-90deg);
+}
+
+/* 16-7: Card entrance for panels */
+.card {
+  animation: card-enter 0.35s ease-out both;
+}
+
+/* ===== Iteration 17: Cross-View Deep Polish ===== */
+
+/* 17-1: Second stat row subtle differentiation */
+.stat-row + .stat-row {
+  margin-top: 2px;
+}
+.stat-row + .stat-row .stat-card {
+  background: linear-gradient(135deg, rgba(27,29,33,0.95), rgba(34,37,43,0.9));
+}
+
+/* 17-2: Panel header hover hint (collapsible feedback) */
+.card__header {
+  transition: background 0.2s ease;
+  cursor: default;
+}
+.card__header:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.card__header h3 {
+  transition: color 0.2s ease;
+}
+.card__header:hover h3 {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* 17-4: Sparkline container hover glow */
+.stat-card svg {
+  transition: filter 0.25s ease;
+}
+.stat-card:hover svg {
+  filter: none;
+}
+
+/* 17-5: Panel grid gap refinement */
+.panel-grid {
+  gap: var(--space-xl);
+}
+.panel-grid > .card {
+  min-height: 0;
+}
+
+/* 17-6: Scrollbar track hover visibility */
+.app-content:hover::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+.app-content:hover::-webkit-scrollbar-thumb {
+  background: rgba(74, 144, 217, 0.2);
+}
+.app-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 144, 217, 0.35);
+}
+
+/* 17-7: Table overflow indicator polish */
+.table-overflow {
+  padding: 8px 16px;
+  font-size: 0.72rem;
+  color: rgba(74, 144, 217, 0.5);
+  text-align: center;
+  border-top: 1px dashed rgba(74, 144, 217, 0.1);
+  letter-spacing: 0.02em;
+}
+
+/* ===== Iteration 18: Interactive Data Enhancement ===== */
+
+/* 18-1: Stat card value number polish */
+.stat-card__value {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.stat-card__value[data-count-target] {
+  min-width: 2ch;
+}
+
+/* 18-2: Panel collapse icon smooth rotation */
+.card__header .collapse-icon,
+.card__header [data-collapse-toggle] {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
+}
+
+/* 18-3: Active nav item left bar gradient + thickness */
+.nav-item--active {
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(180deg, rgba(74, 144, 217, 0.9), rgba(0, 170, 255, 0.4)) 1;
+  padding-left: 13px;
+}
+.nav-item--active .nav-item__icon {
+  color: rgba(74, 144, 217, 0.95);
+  text-shadow: none;
+}
+
+/* 18-4: Sort arrow visual enhancement */
+.sortable-th .sort-arrow {
+  margin-left: 4px;
+  opacity: 0.25;
+  font-size: 0.65rem;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+.sortable-th:hover .sort-arrow {
+  opacity: 0.5;
+}
+.sortable-th.sort-asc .sort-arrow::after {
+  content: '\25B2';
+  color: rgba(74, 144, 217, 0.8);
+  opacity: 1;
+}
+.sortable-th.sort-desc .sort-arrow::after {
+  content: '\25BC';
+  color: rgba(74, 144, 217, 0.8);
+  opacity: 1;
+}
+.sortable-th.sort-asc .sort-arrow,
+.sortable-th.sort-desc .sort-arrow {
+  opacity: 1;
+}
+
+/* 18-5: Toast notification animation upgrade */
+.toast {
+  animation: toast-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.toast.toast--exit {
+  animation: toast-slide-out 0.3s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+@keyframes toast-slide-in {
+  0% { transform: translateX(100%) scale(0.95); opacity: 0; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+@keyframes toast-slide-out {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(110%) scale(0.9); opacity: 0; }
+}
+
+/* 18-6: Breadcrumb separator style upgrade */
+.breadcrumb__sep {
+  color: rgba(74, 144, 217, 0.25);
+  margin: 0 6px;
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
+.breadcrumb__item:last-child {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+/* ===== Iteration 19: Visual Depth & Micro-polish ===== */
+
+/* 19-1: Card hover 3D depth lift */
+.card {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 19-2: Sticky table header with frosted glass */
+.table-wrap {
+  max-height: 500px;
+  overflow-y: auto;
+}
+.data-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.data-table thead th {
+  background: rgba(30, 32, 38, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(74, 144, 217, 0.12);
+}
+
+/* 19-3: Sidebar brand subtle glow pulse */
+.sidebar__logo {
+  text-shadow: none;
+  transition: text-shadow 0.4s ease;
+}
+.sidebar:hover .sidebar__logo {
+  text-shadow: none;
+}
+
+/* 19-4: Panel card border gradient on hover */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(74, 144, 217, 0.0),
+    transparent);
+  transition: background 0.4s ease;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+}
+.card:hover::before {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(74, 144, 217, 0.35) 30%,
+    rgba(74, 144, 217, 0.35) 70%,
+    transparent 100%);
+}
+
+
+
+/* ===== Iteration 20: Accessibility & Motion Polish ===== */
+
+/* 20-1: Reduced motion — disable animations for vestibular disorders */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card:hover { transform: none; }
+  .view-content { animation: none; }
+  .toast { animation: none; }
+}
+
+/* 20-1b: Skip-to-content link (Iteration 18) */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 10000;
+  padding: 8px 16px;
+  background: var(--bg-elevated);
+  color: var(--accent-primary);
+  border: 2px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-to-content:focus {
+  top: 8px;
+}
+
+/* 20-2: Focus-visible keyboard navigation rings */
+.nav-item:focus-visible,
+.card:focus-visible,
+.stat-card:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgba(74, 144, 217, 0.7);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.sortable-th:focus-visible {
+  outline: 1px solid rgba(74, 144, 217, 0.5);
+  outline-offset: -1px;
+}
+
+/* 20-3: Custom selection color */
+::selection {
+  background: rgba(74, 144, 217, 0.25);
+  color: #fff;
+}
+::-moz-selection {
+  background: rgba(74, 144, 217, 0.25);
+  color: #fff;
+}
+
+/* 20-4: Responsive stat-row for medium viewports */
+@media (max-width: 1200px) {
+  .stat-row--4 { grid-template-columns: repeat(2, 1fr); }
+  .panel-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .sidebar { width: 50px; }
+  .sidebar .nav-item__label,
+  .sidebar .nav-section__title span:not(.nav-section__chevron),
+  .sidebar__subtitle,
+  .sidebar__version { display: none; }
+  .sidebar .sidebar__toggle { display: none; }
+}
+
+/* 20-5: Print stylesheet */
+@media print {
+  .sidebar, .header-bar, .status-footer,
+  .scroll-top-fab, .shortcut-overlay,
+  .notification-bell, .auto-refresh-indicator { display: none !important; }
+  .app-layout { display: block; }
+  .app-main { margin: 0; padding: 0; }
+  .app-content { overflow: visible; height: auto; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  .stat-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+  .data-table { font-size: 10pt; }
+  .data-table th, .data-table td { border: 1px solid #999; }
+  body { background: #fff; color: #000; }
+  .card, .stat-card { background: #fff; color: #000; }
+  .badge { border: 1px solid #666; }
+}
+
+/* 20-6: Scrollbar track hover reveal */
+.app-content::-webkit-scrollbar-track:hover {
+  background: rgba(74, 144, 217, 0.04);
+}
+.table-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-wrap::-webkit-scrollbar-thumb {
+  background: rgba(74, 144, 217, 0.15);
+  border-radius: var(--radius-xs);
+}
+.table-wrap::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 144, 217, 0.3);
+}
+
+/* ===== Iteration 21: Loading States & Typography Finesse ===== */
+
+/* 21-1: Skeleton shimmer placeholder for loading cards */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.8s infinite linear;
+  border-radius: var(--radius-md);
+}
+.skeleton--text { height: 14px; width: 70%; margin: 6px 0; }
+.skeleton--value { height: 28px; width: 50%; margin: 8px 0; }
+.skeleton--card { height: 100px; width: 100%; }
+
+/* 19: Skeleton View Layout (Iteration 19) */
+.skeleton-view {
+  padding: 20px;
+  animation: fadeIn 0.15s ease;
+}
+.skeleton-view__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  margin-bottom: 24px;
+}
+.skeleton-view__stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+.skeleton-view__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+}
+.skeleton-view__panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+@media (max-width: 1200px) {
+  .skeleton-view__stats { grid-template-columns: repeat(2, 1fr); }
+  .skeleton-view__content { grid-template-columns: 1fr; }
+}
+
+/* 21-2: Stat card icon styling — colored background circle */
+.stat-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(74, 144, 217, 0.12);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(74, 144, 217, 0.9);
+  flex-shrink: 0;
+  transition: transform 0.2s, background 0.2s;
+}
+.stat-card:hover .stat-card__icon {
+  transform: scale(1.1);
+  background: rgba(74, 144, 217, 0.2);
+}
+.stat-card--critical .stat-card__icon { background: var(--severity-critical-bg, rgba(224,108,117,0.15)); color: var(--severity-critical, #E06C75); }
+.stat-card--high .stat-card__icon { background: var(--severity-high-bg, rgba(229,165,75,0.15)); color: var(--severity-high, #E5A54B); }
+.stat-card--medium .stat-card__icon { background: var(--severity-medium-bg, rgba(212,184,77,0.15)); color: var(--severity-medium, #D4B84D); }
+.stat-card--low .stat-card__icon { background: var(--severity-low-bg, rgba(92,184,122,0.15)); color: var(--severity-low, #5CB87A); }
+
+/* 21-3: Typography — stat-card value letter-spacing & font-weight tuning */
+.stat-card__value {
+  letter-spacing: -0.02em;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.stat-card__label {
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+.stat-card__sub {
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* 21-4: Table cell text truncation with ellipsis */
+.data-table td {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.data-table td:hover {
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+}
+
+/* 21-5: Card header icon / count pill alignment polish */
+.card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.card__header h3 {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card__count {
+  flex-shrink: 0;
+}
+
+/* 21-6: Panel card subtle inner shadow for depth */
+.panel-grid .card {
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.panel-grid .card:hover {
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+
+/* 21-8: Code cell monospace styling in tables */
+.data-table code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.78rem;
+  padding: 1px 5px;
+  background: rgba(74, 144, 217, 0.06);
+  border: 1px solid rgba(74, 144, 217, 0.1);
+  border-radius: var(--radius-xs);
+  color: rgba(74, 144, 217, 0.9);
+}
+
+/* ===== Iteration 22: Interaction States & Visual Completeness ===== */
+
+/* 22-1: CSS-only tooltip for stat cards */
+.stat-card[title] {
+  position: relative;
+}
+.stat-card[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  padding: 6px 10px;
+  background: rgba(30, 32, 38, 0.95);
+  border: 1px solid rgba(74, 144, 217, 0.2);
+  border-radius: var(--radius-md);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+}
+.stat-card[title]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* 22-2: Interactive element base styles */
+.btn, [role="button"] {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.btn:active, [role="button"]:active {
+  transform: scale(0.97);
+}
+a.nav-item:focus-visible,
+.btn:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid rgba(74, 144, 217, 0.6);
+  outline-offset: 2px;
+}
+
+/* 22-3: Critical badge glow pulse */
+@keyframes badge-critical-pulse {
+  0%, 100% { box-shadow: var(--shadow-sm); }
+  50% { box-shadow: var(--shadow-sm); }
+}
+.badge--critical {
+  animation: badge-critical-pulse 2s ease-in-out infinite;
+}
+
+/* 22-4: Search/filter input field styling */
+.table-search,
+.header-bar input[type="text"],
+input.search-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 5px 10px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.table-search:focus,
+.header-bar input[type="text"]:focus,
+input.search-input:focus {
+  outline: none;
+  border-color: rgba(74, 144, 217, 0.4);
+  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.06);
+}
+.table-search::placeholder,
+input.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+}
+
+/* 22-5: Panel section divider */
+.panel-grid > .card + .card {
+  position: relative;
+}
+.panel-grid > .card + .card::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 144, 217, 0.08), transparent);
+  pointer-events: none;
+}
+
+/* 22-6: Notification bell badge */
+.notification-bell__count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-lg);
+  background: var(--status-error, #E06C75);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: badge-critical-pulse 2.5s ease-in-out infinite;
+}
+
+/* 22-7: Status footer separator */
+.status-footer__item + .status-footer__item::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+/* 22-8: Stat card value color tint by severity */
+.stat-card--critical .stat-card__value { color: var(--severity-critical, #E06C75); }
+.stat-card--high .stat-card__value { color: var(--severity-high, #E5A54B); }
+.stat-card--medium .stat-card__value { color: var(--severity-medium, #D4B84D); }
+.stat-card--low .stat-card__value { color: var(--severity-low, #5CB87A); }
+
+/* 22-9: Table row keyboard navigation hint */
+.data-table tbody tr:focus-within {
+  outline: 1px solid rgba(74, 144, 217, 0.3);
+  outline-offset: -1px;
+}
+
+/* 22-10: Card loading state */
+.card--loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.card--loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.03) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+  border-radius: inherit;
+}
+
+/* ===== Iteration 23: Card Stagger + Table Polish ===== */
+
+/* 23-1: Card stagger entry animation within views */
+.card:nth-child(1) { animation-delay: 0s; }
+.card:nth-child(2) { animation-delay: 0.06s; }
+.card:nth-child(3) { animation-delay: 0.08s; }
+.card:nth-child(4) { animation-delay: 0.10s; }
+.card:nth-child(5) { animation-delay: 0.12s; }
+.card:nth-child(6) { animation-delay: 0.14s; }
+.card:nth-child(n+7) { animation-delay: 0.16s; }
+
+/* 23-2: Panel grid card stagger */
+.panel-grid > .card:nth-child(1) { animation-delay: 0s; }
+.panel-grid > .card:nth-child(2) { animation-delay: 0.05s; }
+.panel-grid > .card:nth-child(3) { animation-delay: 0.10s; }
+
+/* 23-3: Enhanced table zebra striping */
+.data-table tbody tr:nth-child(odd) {
+  background: transparent;
+}
+.data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+.data-table tbody tr {
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.data-table tbody tr:hover {
+  background: rgba(74, 144, 217, 0.07);
+  box-shadow: inset 3px 0 0 var(--accent-primary, #4A90D9);
+}
+
+/* 23-4: Table row entry animation (subtle) */
+@keyframes table-row-fade {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
+}
+.data-table tbody tr {
+  animation: table-row-fade 0.3s ease both;
+}
+.data-table tbody tr:nth-child(1) { animation-delay: 0s; }
+.data-table tbody tr:nth-child(2) { animation-delay: 0.02s; }
+.data-table tbody tr:nth-child(3) { animation-delay: 0.04s; }
+.data-table tbody tr:nth-child(4) { animation-delay: 0.06s; }
+.data-table tbody tr:nth-child(5) { animation-delay: 0.08s; }
+.data-table tbody tr:nth-child(n+6) { animation-delay: 0.10s; }
+
+/* 23-5: Active/selected table row */
+.data-table tbody tr.row--selected,
+.data-table tbody tr[aria-selected="true"] {
+  background: rgba(74, 144, 217, 0.10);
+  box-shadow: inset 3px 0 0 var(--accent-primary, #4A90D9);
+}
+
+/* 23-6: View content transition wrapper */
+.app-content {
+  animation: fade-in 0.25s ease;
+}
+
+/* 23-7: Card group (two-column grid) stagger */
+.card-grid {
+  display: grid;
+  gap: 1rem;
+}
+.card-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+/* 23-8: Table caption styling */
+.data-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0.5rem 0.8rem;
+  color: var(--text-muted, #6D707A);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+/* 23-9: Hover left-accent on cards (subtle) */
+.card:hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-primary, #4A90D9);
+  border-radius: 8px 0 0 8px;
+  opacity: 0;
+  animation: fade-in 0.2s ease forwards;
+}
+.card {
+  position: relative;
+}
+
+/* ===== Iteration 24: SVG Charts + Dropdowns + Empty States ===== */
+
+/* 24-1: SVG chart containers inside cards */
+.card svg {
+  display: block;
+  max-width: 100%;
+  transition: opacity 0.2s ease;
+}
+.card:hover svg {
+  opacity: 0.95;
+}
+
+/* 24-2: Chart wrapper padding normalization */
+.card > div:has(svg) {
+  padding: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* 24-3: SVG text labels (inside charts) */
+.card svg text {
+  fill: var(--text-secondary, #A8ABB3);
+  font-family: inherit;
+}
+
+/* 24-4: Search result dropdown entrance animation */
+@keyframes dropdown-enter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.header-search__results.active {
+  animation: dropdown-enter 0.15s ease;
+}
+
+/* 24-5: Search result item keyboard/active state */
+.search-result-item:hover,
+.search-result-item.active {
+  background: var(--bg-hover, #2C3039);
+  color: var(--text-primary, #E1E3E8);
+}
+.search-result-item:active {
+  background: var(--bg-active, #32363F);
+}
+.search-result-item__icon {
+  color: var(--text-muted, #6D707A);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.search-result-item__match {
+  color: var(--accent-primary, #4A90D9);
+  font-weight: 600;
+}
+
+/* 24-6: Notification dropdown entrance */
+.notif-bell__dropdown.open {
+  animation: dropdown-enter 0.18s ease;
+}
+
+/* 24-7: Notification item unread indicator */
+.notif-bell__item--unread {
+  border-left: 3px solid var(--accent-primary, #4A90D9);
+  padding-left: 9px;
+}
+.notif-bell__item--unread .notif-bell__item-title {
+  color: var(--text-primary, #E1E3E8);
+  font-weight: 500;
+}
+
+/* 24-8: Enhanced empty state with icon area */
+.empty-state::before {
+  content: '---';
+  display: block;
+  font-size: 1.5rem;
+  color: var(--text-disabled, #4A4D55);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3em;
+}
+.empty-state--compact {
+  padding: 1rem;
+  font-size: 0.75rem;
+}
+
+/* 24-9: Generic inline progress bar component */
+.inline-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+.inline-progress__track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  min-width: 40px;
+}
+.inline-progress__fill {
+  height: 100%;
+  border-radius: var(--radius-xs);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.inline-progress__label {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #A8ABB3);
+  white-space: nowrap;
+  min-width: 2.5em;
+  text-align: right;
+}
+
+/* 24-10: Panel body enhance - will-change for smoother collapse */
+.panel-body {
+  will-change: max-height, opacity;
+}
+.panel-body:not(.collapsed) {
+  max-height: 2000px;
+}
+
+/* 24-11: Inline SVG chart axis lines */
+.card svg line[stroke] {
+  stroke-opacity: 0.6;
+}
+.card svg rect[fill] {
+  transition: opacity 0.15s ease;
+}
+.card svg rect[fill]:hover {
+  opacity: 0.85;
+}
+
+/* ===== Iteration 25: Inputs + Kbd Hints + Breadcrumbs + Refresh Timer ===== */
+
+/* 25-1: Panel filter/search input styling */
+.panel input[type="text"],
+.panel input[type="search"],
+.card input[type="text"],
+.card input[type="search"] {
+  background: var(--bg-base, #1B1D21);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary, #E1E3E8);
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+  width: 100%;
+  max-width: 240px;
+}
+.panel input[type="text"]:focus,
+.panel input[type="search"]:focus,
+.card input[type="text"]:focus,
+.card input[type="search"]:focus {
+  border-color: var(--accent-primary, #4A90D9);
+  box-shadow: 0 0 0 2px var(--accent-primary-subtle, rgba(74, 144, 217, 0.12));
+}
+.panel input[type="text"]::placeholder,
+.panel input[type="search"]::placeholder,
+.card input[type="text"]::placeholder,
+.card input[type="search"]::placeholder {
+  color: var(--text-disabled, #4A4D55);
+  transition: opacity 0.15s ease;
+}
+.panel input[type="text"]:focus::placeholder,
+.panel input[type="search"]:focus::placeholder,
+.card input[type="text"]:focus::placeholder,
+.card input[type="search"]:focus::placeholder {
+  opacity: 0.5;
+}
+
+/* 25-2: Keyboard shortcut hint badges */
+.kbd-hint,
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.3em;
+  padding: 1px 5px;
+  font-size: 0.65rem;
+  font-family: inherit;
+  line-height: 1.4;
+  color: var(--text-muted, #6D707A);
+  background: var(--bg-base, #1B1D21);
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 1px 0 var(--border-subtle, #2A2D35);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* 25-3: Header search "/" hint styling */
+.header-search__icon {
+  color: var(--text-disabled, #4A4D55);
+  font-size: 0.7rem;
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-xs);
+  padding: 0 4px;
+  line-height: 1.5;
+  transition: opacity 0.15s ease;
+}
+.header-search__input:focus ~ .header-search__icon,
+.header-search:focus-within .header-search__icon {
+  opacity: 0;
+}
+
+/* 25-4: Breadcrumb polish - hover, separator, active */
+.breadcrumb__item {
+  transition: color 0.12s ease;
+  cursor: pointer;
+}
+.breadcrumb__item:hover {
+  color: var(--accent-primary, #4A90D9);
+}
+.breadcrumb__sep {
+  color: var(--text-disabled, #4A4D55);
+  margin: 0 2px;
+  user-select: none;
+}
+.breadcrumb__current {
+  color: var(--text-primary, #E1E3E8);
+  font-weight: 500;
+}
+
+/* 25-5: Auto-refresh timer indicator */
+#auto-refresh-timer {
+  font-size: 0.7rem;
+  color: var(--text-muted, #6D707A);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+}
+#auto-refresh-timer:not(:empty) {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-xs);
+}
+#auto-refresh-timer.refreshing {
+  color: var(--accent-primary, #4A90D9);
+}
+
+/* 25-6: Notification badge counter pulse */
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.notif-bell__badge:not(:empty):not([data-count="0"]) {
+  animation: badge-pulse 0.3s ease;
+}
+.notif-bell__badge {
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.2s ease;
+}
+
+/* 25-7: Horizontal scroll fade indicators for tables */
+.table-wrap {
+  position: relative;
+}
+.table-wrap::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to right, transparent, var(--bg-card, #22252B));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.table-wrap--scroll-right::after {
+  opacity: 1;
+}
+
+/* 25-8: Version badge in sidebar footer */
+.sidebar__version {
+  font-size: 0.65rem;
+  color: var(--text-disabled, #4A4D55);
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-top: 1px solid var(--border-subtle, #2A2D35);
+  text-align: center;
+  transition: color 0.2s ease;
+}
+.sidebar__version:hover {
+  color: var(--text-muted, #6D707A);
+}
+
+/* 25-9: Select dropdown styling (for filter selects) */
+.panel select,
+.card select {
+  appearance: none;
+  background: var(--bg-base, #1B1D21) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236D707A'/%3E%3C/svg%3E") no-repeat right 8px center;
+  border: 1px solid var(--border-default, #33373F);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary, #E1E3E8);
+  padding: 5px 24px 5px 8px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  outline: none;
+}
+.panel select:focus,
+.card select:focus {
+  border-color: var(--accent-primary, #4A90D9);
+  box-shadow: 0 0 0 2px var(--accent-primary-subtle, rgba(74, 144, 217, 0.12));
+}
+.panel select option,
+.card select option {
+  background: var(--bg-elevated, #282C34);
+  color: var(--text-primary, #E1E3E8);
+}
+
+/* 25-10: Sidebar brand logo subtle glow on hover */
+.sidebar__logo {
+  transition: text-shadow 0.3s ease;
+}
+.sidebar__logo:hover {
+  text-shadow: 0 0 12px rgba(74, 144, 217, 0.25);
+}
+
+/* 25-11: Footer status bar items spacing */
+.status-footer__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-variant-numeric: tabular-nums;
+}
+.status-footer__item + .status-footer__item {
+  margin-left: 12px;
+}
+
+/* ===== Iteration 26: Micro-interactions + Table Empty + Sidebar Collapse + Layout Polish ===== */
+
+/* 26-1: Table empty state - centered icon + fade entrance */
+@keyframes empty-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.table-empty {
+  animation: empty-fade 0.25s ease;
+}
+
+/* 26-2: Sidebar toggle button refined */
+.sidebar__toggle {
+  background: var(--bg-elevated, #282C34);
+  border: 1px solid var(--border-subtle, #2A2D35);
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
+}
+.sidebar__toggle:hover {
+  background: var(--bg-hover, #2C3039);
+  border-color: var(--border-default, #33373F);
+}
+.sidebar__toggle:active {
+  background: var(--bg-active, #32363F);
+}
+
+/* 26-3: Sidebar collapse transition smoothing */
+.sidebar {
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar--collapsed {
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 26-4: App content area - smoother margin transition when sidebar collapses */
+.app-layout {
+  transition: grid-template-columns 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 26-5: Data panel hover - subtle border lift */
+.data-panel {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.data-panel:hover {
+  border-color: var(--border-default, #33373F);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.3));
+}
+
+/* 26-6: Card header h3 - letter-spacing consistency */
+.card__header h3,
+.panel__title,
+.collapsible-section__title {
+  letter-spacing: 0.04em;
+}
+
+/* 26-7: Stat card sparkline area - contain overflow */
+.stat-card svg {
+  display: block;
+  max-height: 40px;
+  margin-top: 4px;
+}
+
+/* 26-8: Smooth view transition for main content area */
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.app-content > .view-content,
+.app-content > div:first-child {
+  animation: view-enter 0.2s ease;
+}
+
+/* 26-9: Table header row sticky enhancement - z-index + shadow */
+.table-wrap table thead tr {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.table-wrap table thead tr::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border-default, #33373F);
+}
+
+/* 26-10: Sidebar brand area - bottom separator */
+.sidebar__brand {
+  border-bottom: 1px solid var(--border-subtle, #2A2D35);
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+}
+
+/* 26-11: Status footer dot - subtle shadow glow */
+.status-footer__dot--ok {
+  box-shadow: 0 0 4px rgba(92, 184, 122, 0.3);
+}
+.status-footer__dot--warn {
+  box-shadow: 0 0 4px rgba(229, 165, 75, 0.3);
+}
+.status-footer__dot--err {
+  box-shadow: 0 0 4px rgba(224, 108, 117, 0.3);
+}
+
+/* 26-12: Card grid gap consistency across views */
+.stat-row--4,
+.stat-row--3,
+.stat-row--2 {
+  gap: var(--space-xl);
+}
+.two-col,
+.three-col {
+  gap: var(--space-xl);
+}
+
+/* =============================================
+   Iteration 27 - Micro-polish & Inline Standardization
+   1. Inline code element standardization
+   2. Nav section chevron rotation transition
+   3. Notification dropdown slide animation
+   4. Nested scrollbar dark theme (panels/cards)
+   5. Stat card value tabular-nums
+   6. MITRE cell hover count enhancement
+   7. Focus-within states for interactive cards
+   8. Progress bar segment styling
+   9. Table action link styling
+   10. Sidebar nav item icon transition
+   11. Header search focus expand
+   12. Card subtitle muted styling
+   ============================================= */
+
+/* 27-1: Inline code element standardization */
+.code-value,
+.code-id,
+.code-tool,
+.code-tag,
+.code-ref {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.82em;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.code-value {
+  color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+.code-id {
+  color: var(--severity-high);
+  background: rgba(229, 165, 75, 0.1);
+}
+.code-tool {
+  color: var(--severity-critical);
+  background: rgba(224, 108, 117, 0.1);
+}
+.code-tag {
+  color: #5CB87A;
+  background: rgba(92, 184, 122, 0.1);
+}
+.code-ref {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 27-2: Nav section chevron rotation transition */
+.nav-section__chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.nav-section--collapsed .nav-section__chevron {
+  transform: rotate(-90deg);
+}
+
+/* 27-3: Notification dropdown slide animation */
+.notif-bell__dropdown {
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.15s ease;
+  pointer-events: none;
+}
+.notif-bell:hover .notif-bell__dropdown,
+.notif-bell--open .notif-bell__dropdown {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.notif-bell__list {
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.notif-bell__empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 16px;
+  font-size: 0.85rem;
+}
+
+/* 27-4: Nested scrollbar dark theme for panels/cards with overflow */
+.panel-body,
+.card-body,
+.notif-bell__list,
+.mitre-heatmap {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+.panel-body::-webkit-scrollbar,
+.card-body::-webkit-scrollbar,
+.notif-bell__list::-webkit-scrollbar,
+.mitre-heatmap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.panel-body::-webkit-scrollbar-track,
+.card-body::-webkit-scrollbar-track,
+.notif-bell__list::-webkit-scrollbar-track,
+.mitre-heatmap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panel-body::-webkit-scrollbar-thumb,
+.card-body::-webkit-scrollbar-thumb,
+.notif-bell__list::-webkit-scrollbar-thumb,
+.mitre-heatmap::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-xs);
+}
+.panel-body::-webkit-scrollbar-thumb:hover,
+.card-body::-webkit-scrollbar-thumb:hover,
+.notif-bell__list::-webkit-scrollbar-thumb:hover,
+.mitre-heatmap::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* 27-5: Stat card value tabular-nums for number alignment */
+.stat-card__value,
+.stat-card__number,
+.stat-card .value {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* 27-6: MITRE cell hover count enhancement */
+.mitre-cell {
+  position: relative;
+  cursor: default;
+}
+.mitre-cell:hover {
+  filter: brightness(1.2);
+  z-index: 2;
+  box-shadow: 0 0 0 1px var(--border-focus);
+}
+.mitre-cell .cell-count,
+.mitre-cell .count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 0.75rem;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+.mitre-cell:hover .cell-count,
+.mitre-cell:hover .count {
+  opacity: 1;
+}
+
+/* 27-7: Focus-within states for interactive cards */
+.card:focus-within,
+.panel:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 1px rgba(74, 144, 217, 0.15);
+}
+
+/* 27-8: Progress bar segment styling */
+.progress-bar,
+.bar-segment {
+  border-radius: 2px;
+  min-width: 3px;
+  transition: width 0.4s ease;
+}
+.progress-container,
+.bar-container {
+  display: flex;
+  height: 8px;
+  background: var(--bg-base);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  gap: 1px;
+}
+
+/* 27-9: Table action link styling */
+.table-wrap a,
+.data-table a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.table-wrap a:hover,
+.data-table a:hover {
+  color: var(--accent-primary-hover);
+  border-bottom-color: var(--accent-primary-hover);
+}
+
+/* 27-10: Sidebar nav item icon transition */
+.nav-item__icon {
+  transition: transform 0.15s ease;
+}
+.nav-item:hover .nav-item__icon {
+  transform: scale(1.1);
+}
+.nav-item--active .nav-item__icon {
+  color: var(--accent-primary);
+}
+
+/* 27-11: Header search focus expand */
+.header-search__input {
+  transition: width 0.25s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.header-search__input:focus {
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.2);
+}
+.header-search__results {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+}
+
+/* 27-12: Card subtitle muted styling */
+.card-subtitle,
+.panel-subtitle,
+.stat-card__label {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* =============================================
+   Iteration 28 - SVG, Layout & Accessibility Polish
+   1. SVG chart text rendering optimization
+   2. Card body inner padding normalization
+   3. Card count badge refinement
+   4. Table numeric cell tabular-nums
+   5. Monospace timestamp / date fields
+   6. Text truncation utility class
+   7. Legend dot + label pattern
+   8. Responsive stat-row auto-fill
+   9. High-contrast mode support
+   10. Forced-colors mode fallback
+   11. Scroll-margin for anchor targets
+   12. Container-type preparation for cards
+   ============================================= */
+
+/* 28-1: SVG chart text rendering optimization */
+.card svg,
+.panel svg {
+  shape-rendering: geometricPrecision;
+}
+.card svg text,
+.panel svg text {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  paint-order: stroke fill;
+}
+
+/* 28-2: Card body inner padding normalization */
+.card > div:not(.card__header):not(.card__footer),
+.card > section {
+  padding-inline: 1rem;
+}
+.card > div:last-child:not(.card__header) {
+  padding-bottom: 0.8rem;
+}
+
+/* 28-3: Card count badge refinement */
+.card__count {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* 28-4: Table numeric cell tabular-nums */
+td:nth-child(n) {
+  font-variant-numeric: tabular-nums;
+}
+.table-wrap td,
+.data-table td {
+  font-feature-settings: 'tnum' 1;
+}
+
+/* 28-5: Monospace timestamp / date fields */
+td time,
+td .date,
+td .timestamp,
+td [data-date] {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.76rem;
+  letter-spacing: -0.02em;
+  color: var(--text-secondary);
+}
+
+/* 28-6: Text truncation utility class */
+.truncate,
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 28-7: Legend dot + label pattern */
+.legend-item,
+.legend-dot-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* 28-8: Responsive stat-row auto-fill */
+.stat-row--auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+.card-grid--auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.75rem;
+}
+
+/* 28-9: High-contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --border-default: #555;
+    --border-subtle: #444;
+    --text-primary: #fff;
+    --text-secondary: #ccc;
+    --text-muted: #999;
+    --bg-hover: #3a3e48;
+  }
+  .card,
+  .panel {
+    border-width: 2px;
+  }
+  .nav-item--active {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: -2px;
+  }
+  .stat-card__value,
+  .stat-card__number {
+    font-weight: 800;
+  }
+}
+
+/* 28-10: Forced-colors mode fallback */
+@media (forced-colors: active) {
+  .card,
+  .panel,
+  .stat-card {
+    border: 1px solid CanvasText;
+  }
+  .nav-item--active {
+    border-left: 3px solid Highlight;
+  }
+  .badge,
+  .status-badge,
+  .severity-badge {
+    border: 1px solid CanvasText;
+  }
+  .sidebar {
+    border-right: 1px solid CanvasText;
+  }
+  .header-bar {
+    border-bottom: 1px solid CanvasText;
+  }
+  .btn,
+  button {
+    border: 1px solid ButtonText;
+  }
+}
+
+/* 28-11: Scroll-margin for anchor targets */
+[id] {
+  scroll-margin-top: 1rem;
+}
+.card[id],
+.panel[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+/* 28-12: Container-type preparation for cards */
+.card,
+.panel {
+  container-type: inline-size;
+}
+@container (max-width: 300px) {
+  .stat-card__value,
+  .stat-card__number {
+    font-size: 1.2rem;
+  }
+  .card__header h3 {
+    font-size: 0.78rem;
+  }
+}
+@container (max-width: 200px) {
+  .card__count {
+    display: none;
+  }
+}
+
+/* ===== Iteration 29: Panel Toggle, Tooltip, Stat Icon, Scroll Shadow, Sort Indicator,
+   Collapse Refine, Card Divider, Filter Icon, Active Nav Glow, Loading Spinner ===== */
+
+/* 29-1) Panel toggle button visual affordance */
+.panel__toggle,
+.panel-toggle,
+[data-action="toggle-panel"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+.panel__toggle:hover,
+.panel-toggle:hover,
+[data-action="toggle-panel"]:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+.panel__toggle:active,
+.panel-toggle:active,
+[data-action="toggle-panel"]:active {
+  background: var(--bg-active);
+}
+.panel__toggle.collapsed,
+.panel-toggle.collapsed {
+  color: var(--text-muted);
+}
+
+/* 29-2) CSS-only tooltip system via [data-tooltip] */
+[data-tooltip] {
+  position: relative;
+}
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  font-size: 0.7rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 9999;
+}
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+[data-tooltip=""]::after {
+  display: none;
+}
+
+/* 29-3) Stat card icon container polish */
+.stat-card .stat-card__icon,
+.stat-card [style*="border-radius:50%"],
+.stat-card [style*="border-radius: 50%"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px;
+  font-size: 0.75rem;
+}
+
+/* 29-4) Scroll shadow at top when content is scrolled */
+.app-content {
+  background:
+    linear-gradient(var(--bg-base) 30%, transparent) center top / 100% 40px,
+    linear-gradient(transparent, var(--bg-base) 70%) center bottom / 100% 40px,
+    radial-gradient(farthest-side at 50% 0, rgba(0,0,0,0.18), transparent) center top / 100% 12px,
+    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,0.18), transparent) center bottom / 100% 12px;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+}
+
+/* 29-5) Table column sort indicator */
+th[data-sort],
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 18px !important;
+}
+th[data-sort]::after,
+th.sortable::after {
+  content: '\25B4\25BE';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.55rem;
+  letter-spacing: -2px;
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+th[data-sort]:hover::after,
+th.sortable:hover::after {
+  opacity: 1;
+  color: var(--text-secondary);
+}
+th[data-sort].sort-asc::after,
+th.sortable.sort-asc::after {
+  content: '\25B4';
+  color: var(--accent-primary);
+  opacity: 1;
+}
+th[data-sort].sort-desc::after,
+th.sortable.sort-desc::after {
+  content: '\25BE';
+  color: var(--accent-primary);
+  opacity: 1;
+}
+
+/* 29-6) Panel collapse refined animation */
+.panel-body {
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              padding 0.25s ease;
+  will-change: max-height, opacity;
+}
+.panel-body.collapsed {
+  max-height: 0 !important;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+/* 29-7) Card section divider */
+.card__divider,
+.card hr {
+  border: none;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 8px 0;
+}
+
+/* 29-8) Filter input with search icon prefix */
+.panel-filter,
+input[type="text"][placeholder*="filter" i],
+input[type="text"][placeholder*="search" i],
+input[type="search"] {
+  padding-left: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236D707A' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='6' cy='6' r='4.5'/%3E%3Cline x1='9.5' y1='9.5' x2='13' y2='13'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  background-size: 13px 13px;
+}
+
+/* 29-9) Active nav indicator glow enhancement */
+.nav-item--active {
+  position: relative;
+}
+.nav-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--accent-primary);
+  box-shadow: 0 0 6px rgba(74, 144, 217, 0.3);
+}
+
+/* 29-10) Loading spinner utility */
+@keyframes spin-rotate {
+  to { transform: rotate(360deg); }
+}
+.spinner,
+.loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-default);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin-rotate 0.7s linear infinite;
+}
+.spinner--sm { width: 14px; height: 14px; border-width: 1.5px; }
+.spinner--lg { width: 26px; height: 26px; border-width: 3px; }
+
+/* ===== Iteration 30: Fullscreen Btn, Scroll FAB, Button Reset, Chart Container,
+   Input Focus Ring, Breadcrumb Hover, Notif Dropdown, Sidebar Footer Sep,
+   Stat Trend Arrow, View Cross-fade ===== */
+
+/* 30-1) Panel fullscreen button affordance */
+.panel-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+.panel-fullscreen-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+}
+.panel-fullscreen-btn:active {
+  background: var(--bg-active);
+  color: var(--text-primary);
+}
+
+/* 30-2) Scroll-to-top floating action button */
+.scroll-top-fab {
+  position: fixed;
+  bottom: 56px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s ease;
+  pointer-events: none;
+  z-index: 900;
+}
+.scroll-top-fab.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.scroll-top-fab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-primary);
+}
+
+/* 30-3) Button base reset for consistent styling */
+button:not(.nav-item):not(.sidebar__toggle):not(.panel-fullscreen-btn):not(.scroll-top-fab):not(.panel__toggle):not(.panel-toggle) {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+button[type="submit"],
+button.btn,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+button[type="submit"]:hover,
+button.btn:hover,
+.btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-focus);
+}
+.btn--primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: var(--accent-primary-hover);
+  border-color: var(--accent-primary-hover);
+}
+
+/* 30-4) SVG chart container containment */
+.chart-container,
+.panel-body > svg,
+.card-body > svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+svg[width][height] {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 30-5) Input focus ring animation */
+@keyframes focus-ring-expand {
+  from {
+    box-shadow: 0 0 0 0 rgba(74, 144, 217, 0.4);
+  }
+  to {
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+  }
+}
+input[type="text"]:focus,
+input[type="search"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  border-color: var(--border-focus);
+  outline: none;
+  animation: focus-ring-expand 0.2s ease forwards;
+}
+
+/* 30-6) Breadcrumb interactive hover */
+.breadcrumb__item[data-view] {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.breadcrumb__item[data-view]:hover {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* 30-7) Notification dropdown scrollable polish */
+.notif-bell__list {
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.notif-bell__dropdown {
+  max-height: 340px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.notif-bell__header {
+  flex-shrink: 0;
+}
+
+/* 30-8) Sidebar footer top separator */
+.sidebar__footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+/* 30-9) Stat card trend arrow coloring */
+.stat-card [style*="color: #5CB87A"],
+.stat-card [style*="color:#5CB87A"],
+.stat-card [style*="color: var(--severity-low)"] {
+  font-weight: 600;
+}
+.stat-card [style*="color: #E06C75"],
+.stat-card [style*="color:#E06C75"],
+.stat-card [style*="color: var(--severity-critical)"] {
+  font-weight: 600;
+}
+.stat-card__trend,
+.stat-card .trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* 30-10) View cross-fade transition enhancement */
+@keyframes view-cross-fade {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  50% {
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+  }
+}
+.app-content > .view-container,
+.app-content > [class*="view"] {
+  animation: view-cross-fade 0.3s ease both;
+}
+
+/* ===== Iteration 31: Radius Tokens, Empty Placeholder, Uppercase Spacing,
+   Nav Icon Hover, Focus-visible Expansion, Spacing Tokens, Font-weight Utility,
+   Panel Margin Normalize, Inline Style Overrides, Code Block Line Numbers ===== */
+
+/* 31-1) Border-radius design tokens — consolidated to main :root (Iteration 185) */
+
+/* 31-2) Empty container placeholder */
+.panel-body:empty,
+.card-body:empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  color: var(--text-disabled);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+.panel-body:empty::before {
+  content: "No data available";
+}
+.card-body:empty::before {
+  content: "No content";
+}
+
+/* 31-3) Uppercase letter-spacing for readability */
+[style*="text-transform: uppercase"],
+.nav-section__title,
+.stat-card__label,
+.panel__title,
+.table th,
+.badge,
+.status-badge,
+.breadcrumb__current,
+.sidebar__subtitle {
+  letter-spacing: 0.04em;
+}
+
+/* 31-4) Nav icon opacity hover transition */
+.nav-item__icon {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.nav-item:hover .nav-item__icon {
+  opacity: 1;
+  transform: scale(1.08);
+}
+.nav-item--active .nav-item__icon {
+  opacity: 1;
+}
+
+/* 31-5) Focus-visible expansion to interactive elements */
+button:focus-visible,
+.btn:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+.panel__toggle:focus-visible,
+.panel-toggle:focus-visible,
+.panel-fullscreen-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--accent-primary-subtle);
+}
+.nav-section__title:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+.scroll-top-fab:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 31-6) Spacing design tokens — consolidated to main :root (Iteration 185) */
+
+/* 31-7) Font weight utility classes */
+.text-medium {
+  font-weight: 500;
+}
+.text-semibold {
+  font-weight: 600;
+}
+.text-bold {
+  font-weight: 700;
+}
+
+/* 31-8) Panel margin-bottom normalize */
+.panel,
+.card,
+.data-panel {
+  margin-bottom: var(--space-lg);
+}
+.panel:last-child,
+.card:last-child,
+.data-panel:last-child {
+  margin-bottom: 0;
+}
+
+/* 31-9) Override remaining inline margin/padding */
+.stat-row > [style*="margin"] {
+  margin: 0 !important;
+}
+.stat-row > [style*="padding"] {
+  padding: 0 !important;
+}
+
+/* 31-10) Code block line number gutter */
+pre code,
+.code-block {
+  counter-reset: line;
+  tab-size: 4;
+}
+.code-block .line::before,
+pre code .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2.5em;
+  margin-right: 1em;
+  padding-right: 0.5em;
+  text-align: right;
+  color: var(--text-disabled);
+  border-right: 1px solid var(--border-subtle);
+  font-size: 0.7rem;
+  user-select: none;
+}
+
+/* ===== Iteration 32: Smooth Scroll, Content-visibility, Contain, Cursor Class,
+   Position-relative Class, Word-break Utility, Aspect-ratio Icons, Gap Normalize,
+   Inline maxHeight Override, Table Row Clickable Class ===== */
+
+/* 32-1) Smooth scroll for app-content */
+.app-content {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-content {
+    scroll-behavior: auto;
+  }
+}
+
+/* 32-2) Content-visibility for off-screen panels (render perf) */
+.panel,
+.card,
+.data-panel {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 200px;
+}
+
+/* 32-3) Contain property for layout isolation */
+.stat-card {
+  contain: layout style;
+}
+.table-wrap {
+  contain: layout;
+}
+
+/* 32-4) Cursor utility class (replace inline cursor:pointer) */
+.clickable,
+tr[onclick],
+tr[data-id],
+[data-action] {
+  cursor: pointer;
+}
+
+/* 32-5) Position-relative utility (replace inline position:relative) */
+.pos-relative,
+.stat-card,
+.card {
+  position: relative;
+}
+
+/* 32-6) Word-break utility for long hashes/URLs */
+.break-all {
+  word-break: break-all;
+}
+.break-word {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.code-value,
+.code-id,
+.code-ref,
+td .monospace,
+td code {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+/* 32-7) Aspect-ratio for icon containers */
+.nav-item__icon,
+.stat-card__icon,
+.sidebar__logo {
+  aspect-ratio: 1;
+}
+
+/* 32-8) Gap token normalization */
+.stat-row {
+  gap: var(--space-md);
+}
+.card-grid {
+  gap: var(--space-lg);
+}
+.panel-header {
+  gap: var(--space-sm);
+}
+
+/* 32-9) Override inline max-height on card__count */
+.card__count.panel-body[style*="max-height"] {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* 32-10) Table row clickable hover enhancement */
+tr.clickable-row,
+tr[style*="cursor: pointer"],
+tr[style*="cursor:pointer"] {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+tr.clickable-row:hover,
+tr[style*="cursor: pointer"]:hover,
+tr[style*="cursor:pointer"]:hover {
+  background: var(--bg-hover);
+}
+tr.clickable-row:active,
+tr[style*="cursor: pointer"]:active,
+tr[style*="cursor:pointer"]:active {
+  background: var(--bg-active);
+}
+
+/* =============================================
+   ITERATION 33 - Accessibility & Utility Classes
+   1. SVG chart a11y defaults
+   2. Scroll-panel utility
+   3. Text truncation combo class
+   4. Vertical-align utilities
+   5. Writing-mode rotated labels
+   6. Display utilities
+   7. Table caption & scope visual hints
+   8. Text shadow readability on dark bg
+   9. Panel header hover highlight
+   10. Line-height utilities
+   ============================================= */
+
+/* 33-1: SVG chart accessibility defaults */
+svg[role="img"]:not([aria-label]) {
+  outline: 1px dashed var(--severity-medium);
+  outline-offset: 2px;
+}
+svg[role="img"][aria-label] {
+  outline: none;
+}
+svg:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+svg text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 33-2: Scroll-panel utility */
+.scroll-panel,
+[data-scroll-panel] {
+  padding: var(--space-md);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-muted) transparent;
+}
+.scroll-panel::-webkit-scrollbar {
+  height: 5px;
+}
+.scroll-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-panel::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: var(--radius-full);
+}
+
+/* 33-3: Text truncation combo class */
+.truncate,
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 33-4: Vertical-align utilities */
+.align-top { vertical-align: top; }
+.align-middle { vertical-align: middle; }
+.align-bottom { vertical-align: bottom; }
+.align-baseline { vertical-align: baseline; }
+[style*="vertical-align: middle"],
+[style*="vertical-align:middle"] {
+  vertical-align: middle;
+}
+
+/* 33-5: Writing-mode rotated labels */
+.text-vertical,
+.writing-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+.text-vertical-lr {
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+}
+[style*="writing-mode"] {
+  text-rendering: geometricPrecision;
+}
+
+/* 33-6: Display utilities */
+.d-flex { display: flex; }
+.d-inline-flex { display: inline-flex; }
+.d-inline-block { display: inline-block; }
+.d-grid { display: grid; }
+.d-none { display: none; }
+.d-block { display: block; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+
+/* 33-7: Table caption & scope visual hints */
+table caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--space-sm) var(--space-md);
+  letter-spacing: 0.02em;
+}
+th[scope="col"] {
+  border-bottom: 2px solid var(--border-default);
+}
+th[scope="row"] {
+  font-weight: 500;
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-subtle);
+}
+table:not([role="presentation"]) th:not([scope]) {
+  position: relative;
+}
+
+/* 33-8: Subtle text shadow for readability */
+.text-glow {
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+.stat-card__value,
+.stat-card [style*="font-size: 2"],
+.stat-card [style*="font-size:2"] {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.header-bar__title {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* 33-9: Panel header hover highlight */
+.collapsible-section .panel-header:hover,
+.panel-header:hover,
+[class*="panel"] > [class*="header"]:hover {
+  background: var(--bg-hover);
+  transition: background 0.15s ease;
+}
+.collapsible-section .panel-header:active,
+.panel-header:active {
+  background: var(--bg-active);
+}
+.panel-header {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+/* 33-10: Line-height utilities */
+.leading-tight { line-height: 1.2; }
+.leading-normal { line-height: 1.5; }
+.leading-relaxed { line-height: 1.65; }
+.leading-loose { line-height: 2; }
+
+/* =============================================
+   ITERATION 34 - Shadow Depth & Visual Polish
+   1. Card subtle shadow system
+   2. Stat-card shadow + lift
+   3. Panel shadow depth
+   4. Table header rounding
+   5. Table wrapper shadow
+   6. Form input consistent styling
+   7. Card inner separator refinement
+   8. Severity badge micro-shadow
+   9. Header bar bottom shadow
+   10. Content area subtle gradient bg
+   ============================================= */
+
+/* 34-1: Card subtle shadow system */
+[class*="card"]:not([class*="__"]):not([class*="sparkline"]) {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+[class*="card"]:not([class*="__"]):not([class*="sparkline"]):hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+/* 34-2: Stat-card shadow + subtle lift */
+.stat-card {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22), 0 0 1px rgba(255, 255, 255, 0.03);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.stat-card:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 34-3: Panel shadow depth */
+.collapsible-section,
+[class*="panel"]:not([class*="__"]) {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+.collapsible-section:hover,
+[class*="panel"]:not([class*="__"]):hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+}
+
+/* 34-4: Table header rounding */
+table thead tr:first-child th:first-child {
+  border-top-left-radius: var(--radius-md);
+}
+table thead tr:first-child th:last-child {
+  border-top-right-radius: var(--radius-md);
+}
+table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--radius-md);
+}
+table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--radius-md);
+}
+.sortable-th {
+  border-radius: 0;
+}
+table thead tr:first-child .sortable-th:first-child {
+  border-top-left-radius: var(--radius-md);
+}
+table thead tr:first-child .sortable-th:last-child {
+  border-top-right-radius: var(--radius-md);
+}
+
+/* 34-5: Table wrapper shadow */
+table {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* 34-6: Form input consistent styling */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+select,
+textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.82rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.15);
+  outline: none;
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* 34-7: Card inner separator refinement */
+[class*="card"] > [class*="header"] + [class*="body"],
+[class*="card"] > [class*="header"] + [class*="content"],
+[class*="card"] > [class*="header"] + div:not([class*="header"]) {
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* 34-8: Severity badge micro-shadow */
+[class*="badge"][style*="background"],
+.status-badge,
+[class*="severity"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 34-9: Header bar bottom shadow */
+.header-bar {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 10;
+}
+
+/* 34-10: Content area subtle top inset shadow */
+.app-content,
+main {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* =============================================
+   ITERATION 35 - Structural Polish & Consistency
+   ============================================= */
+
+/* 35-1: Sidebar structural border-radius */
+.sidebar {
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.sidebar__footer {
+  border-radius: 0 0 var(--radius-lg) 0;
+}
+
+/* 35-2: Header bar & breadcrumb border-radius */
+.header-bar {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.breadcrumb-bar {
+  border-radius: var(--radius-sm);
+}
+
+/* 35-3: Notification dropdown items border-radius */
+.notif-bell__header {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+.notif-bell__item {
+  border-radius: var(--radius-xs);
+}
+.notif-bell__item + .notif-bell__item {
+  margin-top: 1px;
+}
+
+/* 35-4: Nav section title border-radius on hover */
+.nav-section__title {
+  border-radius: var(--radius-sm);
+  margin: 0 var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* 35-5: Sidebar toggle icon low-contrast fix */
+.sidebar__toggle-icon {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.sidebar__toggle:hover .sidebar__toggle-icon,
+.sidebar__toggle:focus-visible .sidebar__toggle-icon {
+  color: var(--text-primary);
+}
+
+/* 35-6: Stat card value border-radius */
+.stat-card__value,
+.stat-card .stat-value {
+  border-radius: var(--radius-sm);
+}
+
+/* 35-7: Gap value normalization (7px/8.4px -> 8px token) */
+.stat-row,
+.stat-row--4,
+.stat-row--3,
+.card-grid,
+.card-grid--2,
+.card-grid--3 {
+  gap: var(--space-md);
+}
+
+/* 35-8: H2 heading letter-spacing consistency with H3 */
+h2,
+.view-section h2,
+.panel-section h2,
+.header-bar__title {
+  letter-spacing: 0.01em;
+}
+
+/* 35-9: Sidebar brand border consistency */
+.sidebar__brand {
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0 var(--radius-lg) 0 0;
+}
+
+/* 35-10: Version badge subtle background */
+.sidebar__version {
+  border-radius: var(--radius-full);
+  background: var(--bg-hover);
+  padding: var(--space-xs) var(--space-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================
+   ITERATION 36 - Micro-Spacing & Readability Polish
+   ============================================= */
+
+/* 36-1: Panel header breathing room (was 0px padding) */
+.panel-header,
+.panel-section__header {
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* 36-2: Sidebar logo subtle text-shadow for depth */
+.sidebar__logo {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* 36-3: Panel header text-shadow consistency with header-bar__title */
+.panel-header__title,
+.panel-section__title {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 36-4: stat-card internal spacing normalization (7px -> 8px, 4.2px -> 4px) */
+.stat-card__header,
+.stat-card .stat-header {
+  margin-bottom: var(--space-md);
+}
+.stat-card__sub,
+.stat-card .stat-sub,
+.stat-card .stat-label {
+  margin-top: var(--space-xs);
+}
+.stat-card__content,
+.stat-card .stat-content {
+  gap: var(--space-sm);
+}
+
+/* 36-5: Breadcrumb font size normalization (9.8px -> 10px) */
+.breadcrumb-bar,
+.breadcrumb__item,
+.breadcrumb__sep,
+.breadcrumb__current {
+  font-size: 10px;
+}
+
+/* 36-6: Footer items color strength increase (0.4 -> 0.5 opacity) */
+.status-footer__item,
+.status-footer__label,
+.status-footer__value {
+  color: var(--text-muted);
+}
+
+/* 36-7: stat-card gap normalization (6px -> token) */
+.stat-card {
+  gap: var(--space-sm);
+}
+
+/* 36-8: Panel header hover subtle highlight enhancement */
+.panel-header:hover,
+.panel-section__header:hover {
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+}
+
+/* =============================================
+   ITERATION 37 - Font-Size & Spacing Normalization
+   ============================================= */
+
+/* 37-1: stat-card padding normalization (16.8px -> 16px token) */
+.stat-card {
+  padding: var(--space-xl);
+}
+
+/* 37-2: Font-size normalization batch - fractional -> integer */
+.stat-card__icon {
+  font-size: 11px;
+}
+.stat-card__label {
+  font-size: 11px;
+}
+.stat-card__trend {
+  font-size: 10px;
+}
+.stat-card__sub {
+  font-size: 11px;
+}
+.panel-header,
+.panel-section__header {
+  font-size: 12px;
+}
+.panel-fullscreen-btn {
+  font-size: 10px;
+}
+.card__count {
+  font-size: 10px;
+}
+.table-search,
+.data-table {
+  font-size: 11px;
+}
+.table-search__input {
+  font-size: 11px;
+}
+.table-search__count,
+.sort-arrow {
+  font-size: 9px;
+}
+.sortable-th {
+  font-size: 10px;
+}
+
+/* 37-3: card__count panel-body padding normalization (2.1px 7px -> 2px 8px) */
+.card__count.panel-body,
+.card__count {
+  padding: 2px var(--space-md);
+}
+
+/* 37-4: Sort arrow opacity increase (0.25 -> 0.35 for readability) */
+.sort-arrow {
+  opacity: 0.35;
+}
+.sortable-th:hover .sort-arrow,
+.sortable-th.sort-active .sort-arrow {
+  opacity: 0.7;
+}
+
+/* 37-5: stat-card line-height normalization (fractional -> clean) */
+.stat-card,
+.stat-card__header {
+  line-height: 1.4;
+}
+.stat-card__trend {
+  line-height: 1.1;
+}
+.stat-card__sub {
+  line-height: 1.4;
+}
+
+/* =============================================
+   ITERATION 38 - Specificity Fix & Fractional Cleanup
+   ============================================= */
+
+/* 38-1: panel-header font-size - higher specificity to beat .card__header h3 (0,1,1) */
+.app-content .panel-header,
+.app-content .panel-section__header {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* 38-2: sortable-th - higher specificity to beat .data-table th (0,1,1) */
+.data-table .sortable-th {
+  font-size: 10px;
+  padding: 8px 12px 10px 12px;
+}
+
+/* 38-3: badge font-size & padding normalization (9.8px->10px, 2.1px->2px) */
+.badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  line-height: 1.4;
+}
+
+/* 38-4: data-table th base padding normalization (0.6rem 0.8rem -> tokens) */
+.data-table th {
+  font-size: 11px;
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* 38-5: data-table td padding normalization (7px 11.2px -> 7px 12px) */
+.data-table td {
+  padding: 7px var(--space-lg);
+}
+
+/* 38-6: card__header padding normalization (11.2px 14px -> 12px 14px) */
+.card__header {
+  padding: var(--space-lg) 14px;
+}
+
+/* 38-7: sort-arrow font-size specificity fix */
+.data-table .sort-arrow {
+  font-size: 9px;
+}
+
+/* =============================================
+   ITERATION 39 - Line-height & Border Normalization
+   ============================================= */
+
+/* 39-1: stat-card__icon font-size 10.5px -> 11px (inline style override) */
+.stat-card .stat-card__icon {
+  font-size: 11px !important;
+  line-height: 11px;
+}
+
+/* 39-2: stat-card line-height 19.6px -> 20px (px, not ratio) */
+.stat-card {
+  line-height: 20px;
+}
+
+/* 39-3: stat-card__label / stat-card__sub line-height 15.4px -> 16px */
+.stat-card__label,
+.stat-card__sub {
+  line-height: 16px;
+}
+
+/* 39-4: stat-card__value line-height 30.8px -> 32px */
+.stat-card__value {
+  line-height: 32px;
+}
+
+/* 39-5: stat-card__header line-height 19.6px -> 20px */
+.stat-card__header {
+  line-height: 20px;
+}
+
+/* 39-6: stat-row line-height 22.4px -> 22px */
+.stat-row {
+  line-height: 22px;
+}
+
+/* 39-7: card line-height 22.4px -> 22px */
+.card {
+  line-height: 22px;
+}
+
+/* 39-8: card__header h3 line-height 16.8px -> 17px (higher specificity) */
+.app-content .card__header h3 {
+  line-height: 17px;
+}
+
+/* 39-9: border 0.8px -> 1px (must override inline border SHORTHAND, not just border-width) */
+.stat-card,
+.card,
+.panel-fullscreen-btn,
+.table-search,
+.table-search__input,
+.card__count.panel-body {
+  border: 1px solid var(--border-default) !important;
+}
+
+/* 39-10: chart wrapper div inline padding:0.6rem (8.4px) -> 8px override */
+.card > div[style*="padding"] {
+  padding: var(--space-md) !important;
+}
+
+/* =============================================
+   ITERATION 40 - Table Polish & Accessibility
+   ============================================= */
+
+/* 40-1: Table row hover for better row tracking */
+.app-content table tbody tr:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* 40-2: Table data row bottom border for row separation */
+.app-content table tbody tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* 40-3: Custom ::selection matching dark theme */
+::selection {
+  background-color: var(--accent-primary);
+  color: #fff;
+}
+
+/* 40-4: focus-visible ring for keyboard navigation accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* 40-5: Progress bar text contrast - light text on colored bars */
+.app-content div[style*="background"][style*="width"] {
+  color: #fff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* 40-6: Table row transition for smooth hover feedback */
+.app-content table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* =============================================
+   ITERATION 41 - Transition Performance & Polish
+   ============================================= */
+
+/* 41-1: Override quantum-theme transition:all on .btn/.btn-icon with specific properties */
+.btn {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.btn-icon {
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease !important;
+}
+
+/* 41-2: Override quantum-theme transition:all on .mitre-cell/.graph-node */
+.mitre-cell {
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.graph-node {
+  transition: transform 0.2s ease, opacity 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+/* 41-3: SVG text overflow protection - prevent layout shift */
+svg text {
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* 41-4: Stat-card label/icon → color-based approach (revised Iter 43) */
+.stat-card__label {
+  color: var(--text-secondary) !important;
+  opacity: 1 !important;
+}
+.stat-card__icon {
+  opacity: 0.78 !important;
+}
+
+/* 41-5: Table header sticky for scrollable table containers */
+.app-content div[style*="overflow"] table thead,
+.table-wrap table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--bg-elevated);
+}
+.app-content div[style*="overflow"] table thead th,
+.table-wrap table thead th {
+  background-color: var(--bg-elevated);
+}
+
+/* 41-6: Scrollbar styling for overflow containers */
+.app-content div[style*="overflow"]::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.app-content div[style*="overflow"]::-webkit-scrollbar-track,
+.table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-content div[style*="overflow"]::-webkit-scrollbar-thumb,
+.table-wrap::-webkit-scrollbar-thumb {
+  background-color: var(--border-default);
+  border-radius: var(--radius-full);
+}
+.app-content div[style*="overflow"]::-webkit-scrollbar-thumb:hover,
+.table-wrap::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
+
+/* =============================================
+   ITERATION 42 - Consistency & Accessibility
+   ============================================= */
+
+/* 42-1: Gap 7px -> 8px normalization (0.5rem at 14px base = 7px fractional artifact) */
+.stat-card__header {
+  gap: var(--space-md) !important;
+}
+.stat-card__header + * {
+  margin-top: 0;
+}
+
+/* 42-2: Focus-visible keyboard accessibility for all interactive elements */
+.app-content button:focus-visible,
+.app-content a:focus-visible,
+.app-content input:focus-visible,
+.app-content select:focus-visible,
+.app-content textarea:focus-visible,
+.app-content [role="button"]:focus-visible,
+.app-content [tabindex]:focus-visible {
+  outline: 2px solid var(--accent-primary, #4A90D9) !important;
+  outline-offset: 2px !important;
+}
+.sidebar .nav-item:focus-visible {
+  outline: 2px solid var(--accent-primary, #4A90D9) !important;
+  outline-offset: -2px !important;
+}
+
+/* 42-3: Shadow depth consistency - panels and tables use same base shadow */
+.collapsible-section,
+[class*="panel"]:not([class*="__"]) {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+}
+table {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* 42-4: Letter-spacing normalization - consolidate scattered em values */
+/* 0.05em, 0.06em -> var(--ls-wide) = 0.04em */
+.nav-section__title,
+.stat-card__label,
+.panel-header__title,
+.breadcrumb__root {
+  letter-spacing: var(--ls-wide) !important;
+}
+/* -0.02em, -0.01em -> var(--ls-tight) */
+.stat-card__value,
+h2 {
+  letter-spacing: var(--ls-tight) !important;
+}
+/* 0.02em, 0.03em -> var(--ls-normal) = 0.01em */
+.card h3,
+.panel-header {
+  letter-spacing: var(--ls-normal) !important;
+}
+/* 0.08em, 0.1em -> var(--ls-extra-wide) for small uppercase text */
+.data-table th,
+.table-header th {
+  letter-spacing: var(--ls-extra-wide) !important;
+}
+
+/* 42-5: Panel header bottom separator - subtle visual boundary */
+.panel-header {
+  border-bottom: 1px solid var(--border-subtle, #2A2D35) !important;
+  padding-bottom: var(--space-sm, 6px) !important;
+  margin-bottom: var(--space-xs, 4px) !important;
+}
+
+/* 42-6: Empty text elements - prevent layout gaps from empty spans/divs */
+.app-content span:empty:not([class*="icon"]):not([class*="badge"]):not([class*="dot"]):not([class*="indicator"]) {
+  display: none;
+}
+
+/* =============================================
+   ITERATION 43 - Token Purity & Transition Scoping
+   ============================================= */
+
+/* 43-1: Scope transition:all on stat-card children (144 elements affected) */
+.stat-card__header {
+  transition: gap 0.15s ease !important;
+}
+.stat-card__label {
+  transition: color 0.15s ease !important;
+}
+.stat-card__value {
+  transition: color 0.15s ease !important;
+}
+.stat-card__trend {
+  transition: color 0.15s ease, opacity 0.15s ease !important;
+}
+.stat-card__sub {
+  transition: color 0.15s ease !important;
+}
+.stat-card__sparkline {
+  transition: opacity 0.15s ease !important;
+}
+
+/* 43-2: Scope transition:all on stat-row, table-search, table-wrap, data-table */
+.stat-row,
+.stat-row--2,
+.stat-row--3,
+.stat-row--4 {
+  transition: gap 0.15s ease !important;
+}
+.table-search {
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+.table-search__count {
+  transition: color 0.15s ease !important;
+}
+.table-wrap {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.data-table {
+  transition: none !important;
+}
+
+/* 43-3: White rgba → token replacement */
+.card__count,
+.panel-body {
+  background: var(--bg-subtle) !important;
+}
+.table-search {
+  background: var(--bg-subtle) !important;
+}
+.table-search__input {
+  background: transparent !important;
+}
+
+/* 43-4: Fractional line-height fix - 22.4px → 22px */
+.collapsible-section .collapsible-section__title {
+  line-height: 22px !important;
+}
+
+/* 43-5: Transition timing normalization - 0.3s outliers → 0.2s */
+.stat-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+
+/* ===== Iteration 44: Design Token Consolidation (Shadow + Radius) ===== */
+
+/* 44-1: box-shadow token override - inline shadows → design tokens */
+.stat-card,
+.card,
+.panel {
+  box-shadow: var(--shadow-sm) !important;
+}
+.stat-card:hover,
+.card:hover,
+.panel:hover {
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* 44-2: border-radius 10px outlier → 8px (matches card parent) */
+.card__count,
+.panel-body {
+  border-radius: var(--radius-lg) !important;
+}
+
+/* 44-3: table TR striping → --bg-subtler token (replaces inline rgba) */
+.data-table tbody tr:nth-child(even),
+.data-table tr:nth-child(even) {
+  background: var(--bg-subtler) !important;
+}
+.data-table tbody tr:nth-child(odd),
+.data-table tr:nth-child(odd) {
+  background: transparent !important;
+}
+
+/* 44-4: border-radius tokenization - consolidate inline values */
+.stat-card {
+  border-radius: var(--radius-lg) !important;
+}
+.badge,
+.tag,
+.chip {
+  border-radius: var(--radius-sm) !important;
+}
+.btn,
+.table-search__input,
+.header-search__input {
+  border-radius: var(--radius-md) !important;
+}
+.collapsible-section {
+  border-radius: var(--radius-lg) !important;
+}
+
+/* =============================================
+   ITERATION 45 - Micro-polish: opacity, cursor,
+   font-size floor, letter-spacing breadth
+   ============================================= */
+
+/* 45-1: Broaden letter-spacing token application */
+.stat-card__label,
+.nav-section__title,
+.breadcrumb-bar,
+.header-bar__clock {
+  letter-spacing: var(--ls-wide) !important;
+}
+.stat-card__value,
+.collapsible-section__title {
+  letter-spacing: var(--ls-tight) !important;
+}
+.data-table th,
+.table-search__input::placeholder {
+  letter-spacing: var(--ls-extra-wide) !important;
+}
+
+/* 45-2: Normalize stat-card icon opacity from 0.78 → 0.8 */
+.stat-card__icon {
+  opacity: 0.8 !important;
+}
+
+/* 45-3: Table row pointer cursor via CSS (replaces inline cursor:pointer) */
+.data-table tbody tr {
+  cursor: pointer;
+}
+
+/* 45-4: Minimum font-size floor — bump 9px elements to 10px */
+.sidebar__version,
+.breadcrumb__sep,
+.notif-bell__badge,
+.tag--small,
+.chip--small {
+  font-size: 10px !important;
+}
+
+/* =============================================
+   ITERATION 46 - Focus rings, input borders,
+   zebra stripes, section line-height
+   ============================================= */
+
+/* 46-1: Focus-visible ring polish — uniform box-shadow focus indicator */
+.nav-item:focus-visible,
+.stat-card:focus-visible,
+.data-table tbody tr:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--border-focus) !important;
+}
+
+/* 46-2: Input field border unification */
+.table-search__input {
+  border-color: var(--border-default) !important;
+}
+.table-search__input:focus {
+  border-color: var(--border-focus) !important;
+}
+
+/* 46-3: Table zebra-stripe subtlety */
+.data-table tbody tr:nth-child(even) {
+  background-color: var(--bg-subtler) !important;
+}
+.data-table tbody tr:nth-child(even):hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* 46-4: Collapsible section title line-height */
+.collapsible-section__title,
+.nav-section__title {
+  line-height: 1.4 !important;
+}
+
+/* =============================================
+   ITERATION 47 - Transition unification, panel
+   padding, button radius, font-weight tokens
+   ============================================= */
+
+/* 47-1: Transition timing unification — use tokens */
+.nav-item,
+.stat-card,
+.tag,
+.badge,
+.chip,
+.breadcrumb__item,
+.sidebar__toggle,
+.notif-bell__icon {
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast) !important;
+}
+.data-table tbody tr,
+.collapsible-section__title,
+.panel {
+  transition: background-color var(--transition-fast) !important;
+}
+input,
+select,
+textarea {
+  transition: border-color var(--transition-base), box-shadow var(--transition-base) !important;
+}
+
+/* 47-2: Panel inner padding harmonization */
+.collapsible-section__header {
+  padding: 6px 8px !important;
+}
+
+/* 47-3: Button border-radius normalization — use --radius-sm token */
+button:not([class*="toggle"]):not([class*="circular"]):not(.sidebar__toggle) {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 47-4: Font-weight semantic tokens */
+.stat-card__label,
+.breadcrumb__current,
+.nav-section__title {
+  font-weight: var(--fw-medium) !important;
+}
+.stat-card__value,
+.header-bar__title,
+.collapsible-section__title {
+  font-weight: var(--fw-bold) !important;
+}
+
+/* =============================================
+   ITERATION 48 - Sort arrow visibility, table
+   header color token, opacity/line-height tokens,
+   collapsible header bg consistency
+   ============================================= */
+
+/* 48-1: Sort arrow visibility boost — inactive arrows more legible */
+.sort-arrow {
+  opacity: var(--opacity-dimmed) !important;
+  color: var(--text-muted) !important;
+  transition: opacity var(--transition-fast), color var(--transition-fast) !important;
+}
+.sort-arrow.active,
+.sortable-th:hover .sort-arrow {
+  opacity: var(--opacity-soft) !important;
+  color: var(--accent-primary) !important;
+}
+
+/* 48-2: Table header text color tokenization */
+.sortable-th,
+.data-table thead th {
+  color: var(--text-th) !important;
+}
+.sortable-th:hover {
+  color: var(--accent-primary) !important;
+}
+
+/* 48-3: Table search text colors — use tokens */
+.table-search {
+  color: var(--text-primary) !important;
+}
+.table-search__count {
+  color: var(--text-muted) !important;
+}
+
+/* 48-4: Collapsible section header background consistency */
+.collapsible-section__header {
+  background-color: var(--bg-surface) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+/* =============================================
+   ITERATION 49 - Transition performance cleanup,
+   SVG transition:all removal, table structural
+   transition scoping, panel-header hover refinement
+   ============================================= */
+
+/* 49-1: Remove transition:all from SVG child elements — perf win */
+.stat-card__sparkline svg *,
+.card svg text,
+.card svg path,
+.card svg polyline,
+.card svg line,
+.card svg circle,
+.card svg polygon,
+.card svg rect {
+  transition: none !important;
+}
+
+/* 49-2: Remove transition:all from table structural elements */
+.data-table thead,
+.data-table tbody,
+.data-table tr {
+  transition: none !important;
+}
+.data-table tbody tr {
+  transition: background-color var(--transition-fast) !important;
+}
+
+/* 49-3: Panel header — add background transition for smoother hover */
+.panel-header {
+  transition: color var(--transition-base), background-color var(--transition-fast) !important;
+}
+.panel-header:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* 49-4: Sortable th — use transition token instead of hardcoded 0.2s */
+.sortable-th {
+  transition: color var(--transition-fast), background-color var(--transition-fast) !important;
+}
+
+/* =============================================
+   ITERATION 50 - Scroll UX, status footer polish,
+   breadcrumb cursor, notification badge zero-state,
+   status footer border visibility
+   ============================================= */
+
+/* 50-1: Smooth scroll on main content area for view transitions */
+.app-content {
+  scroll-behavior: smooth !important;
+}
+
+/* 50-2: Status footer items — hover brightening + pointer for interactive feel */
+.status-footer__item {
+  cursor: default;
+  transition: color var(--transition-fast) !important;
+}
+.status-footer__item:hover {
+  color: var(--text-primary) !important;
+}
+
+/* 50-3: Breadcrumb clickable items — pointer cursor for navigation affordance */
+.breadcrumb__item[data-view] {
+  cursor: pointer !important;
+}
+.breadcrumb__item[data-view]:hover {
+  color: var(--accent-primary) !important;
+}
+
+/* 50-4: Notification badge zero-state — dim when showing "0" */
+.notif-bell__badge:empty,
+.notif-bell__badge[data-count="0"] {
+  opacity: var(--opacity-dimmed) !important;
+}
+
+/* 50-5: Status footer border-top — slightly more visible */
+.status-footer {
+  border-top: 1px solid rgba(74, 144, 217, 0.10) !important;
+}
+
+/* =============================================
+   ITERATION 51 - Focus-visible a11y, scrollbar
+   theming, notif-bell a11y, sidebar defensive
+   overflow, 9px floor bump
+   ============================================= */
+
+/* 51-1: Focus-visible ring on all interactive elements for keyboard a11y */
+.sidebar__toggle:focus-visible,
+.nav-section__title:focus-visible,
+.nav-item:focus-visible,
+.header-search__input:focus-visible,
+.stat-card:focus-visible,
+.panel-fullscreen-btn:focus-visible,
+.panel-header__toggle:focus-visible,
+.header-bar__notif:focus-visible,
+.skip-to-content:focus-visible {
+  outline: 2px solid var(--accent-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* 51-2: Notification bell — ensure interactive styling for a11y */
+.header-bar__notif {
+  position: relative !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 51-3: Sidebar — defensive overflow for long nav lists */
+.sidebar__nav {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--border-default) transparent !important;
+}
+
+/* 51-4: App-content — dark-themed custom scrollbar */
+.app-content {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--border-default) transparent !important;
+}
+.app-content::-webkit-scrollbar {
+  width: 8px;
+}
+.app-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-content::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-sm);
+}
+.app-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* 51-5: 9px font-size floor — bump to 10px for readability */
+.status-footer,
+.status-footer__item {
+  font-size: 10px !important;
+}
+
+/* =============================================
+   ITERATION 52 - Sort arrow visibility, breadcrumb
+   padding, section title size, panel header
+   breathing room, stat card gap
+   ============================================= */
+
+/* 52-1: Sort arrow opacity floor -- bump from 0.35 to 0.45 */
+.sort-arrow {
+  opacity: var(--opacity-dimmed) !important;  /* 0.45 floor via next rule */
+  min-width: 12px !important;
+}
+th .sort-arrow,
+td .sort-arrow {
+  opacity: 0.45 !important;
+}
+
+/* 52-2: Breadcrumb bar -- increase vertical padding for better proportions */
+.breadcrumb-bar {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+/* 52-3: Nav section title font-size -- bump from 9px to 10px */
+.nav-section__title {
+  font-size: 10px !important;
+}
+
+/* 52-4: Panel header -- increase vertical padding for breathing room */
+.panel-header {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* 52-5: Stat row gap -- widen from 8px to 12px for card separation */
+[style*="grid-template-columns"][style*="gap: 8px"],
+[style*="grid-template-columns"][style*="gap:8px"] {
+  gap: 12px !important;
+}
+
+/* =============================================
+   ITERATION 53 - Filter input sizing, panel header
+   letter-spacing & margin, search input height,
+   filter input background
+   ============================================= */
+
+/* 53-1: Filter inputs -- taller height & more padding for usability */
+input[style*="background: transparent"][style*="border"],
+input[style*="background:transparent"][style*="border"],
+.filter-input,
+select[style*="background: transparent"] {
+  min-height: 30px !important;
+  padding: 6px 10px !important;
+  font-size: 11.5px !important;
+}
+
+/* 53-2: Panel header letter-spacing -- widen for uppercase readability */
+.panel-header,
+[style*="letter-spacing"][style*="text-transform: uppercase"],
+[style*="letter-spacing"][style*="text-transform:uppercase"] {
+  letter-spacing: 0.5px !important;
+}
+
+/* 53-3: Panel header margin-bottom -- more separation from content */
+.panel-header {
+  margin-bottom: 8px !important;
+}
+
+/* 53-4: Header search input -- slightly taller for proportion */
+.header-search__input,
+#header-search-input {
+  min-height: 32px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+/* 53-5: Filter inputs -- subtle background instead of fully transparent */
+input[style*="background: transparent"],
+input[style*="background:transparent"],
+select[style*="background: transparent"],
+select[style*="background:transparent"] {
+  background: var(--bg-elevated) !important;
+}
+
+/* =============================================
+   ITERATION 54 - SVG label size, code padding,
+   th font-size, td padding balance,
+   panel expand button touch target
+   ============================================= */
+
+/* 54-1: SVG <text> labels -- bump from 9px to 10px for legibility */
+svg text {
+  font-size: 10px !important;
+}
+
+/* 54-2: Inline <code> elements -- slightly more vertical padding */
+code {
+  padding: 2px 6px !important;
+}
+
+/* 54-3: Table header font-size -- nudge from 10px to 10.5px */
+th {
+  font-size: 10.5px !important;
+}
+
+/* 54-4: Table cell vertical padding -- balance 7px to 8px */
+td {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* 54-5: Panel expand/collapse [+] buttons -- larger touch target */
+button[style*="font-size: 10px"],
+button[style*="font-size:10px"] {
+  min-width: 24px !important;
+  min-height: 24px !important;
+  padding: 2px 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* =============================================
+   ITERATION 55 - Stat value line-height fix,
+   panel vertical gap, scrollbar styling,
+   stat card padding, table row hover
+   ============================================= */
+
+/* 55-1: Stat card value line-height -- was 22px for 25px font, increase to 1.2 */
+[style*="font-size: 2"][style*="font-weight: 700"],
+[style*="font-size:2"][style*="font-weight:700"],
+[style*="font-size: 1.8"][style*="font-weight: 700"],
+[style*="font-size:1.8"][style*="font-weight:700"] {
+  line-height: 1.2 !important;
+}
+
+/* 55-2: Panel vertical gap -- add margin-bottom between stacked panels */
+div[style*="border-radius"][style*="background"] + div[style*="border-radius"][style*="background"] {
+  margin-top: 10px !important;
+}
+
+/* 55-3: Custom scrollbar for table-wrap overflow areas */
+.table-wrap::-webkit-scrollbar,
+div[style*="overflow"][style*="max-height"]::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+.table-wrap::-webkit-scrollbar-track,
+div[style*="overflow"][style*="max-height"]::-webkit-scrollbar-track {
+  background: var(--bg-surface) !important;
+  border-radius: var(--radius-xs) !important;
+}
+.table-wrap::-webkit-scrollbar-thumb,
+div[style*="overflow"][style*="max-height"]::-webkit-scrollbar-thumb {
+  background: var(--border-default) !important;
+  border-radius: var(--radius-xs) !important;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover,
+div[style*="overflow"][style*="max-height"]::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
+}
+
+/* 55-4: Stat card padding increase -- 11px to 14px for breathing room */
+div[style*="padding: 12px"][style*="border-radius"],
+div[style*="padding:12px"][style*="border-radius"],
+div[style*="padding: 10px"][style*="border-radius"][style*="background"] {
+  padding: 14px !important;
+}
+
+/* 55-5: Table row hover -- subtle highlight on hover */
+tr:hover td {
+  background: var(--bg-hover) !important;
+  transition: background var(--transition-fast) !important;
+}
+
+/* =============================================
+   ITERATION 56 - Heatmap grid gap, panel inner
+   padding (rem fix), button padding fix,
+   progress bar height, badge line-height
+   ============================================= */
+
+/* 56-1: Heatmap grid gap -- increase from 2px to 3px for cell separation */
+div[style*="display: grid"][style*="gap: 2px"],
+div[style*="display:grid"][style*="gap:2px"],
+div[style*="display: grid"][style*="gap:2"] {
+  gap: 3px !important;
+}
+
+/* 56-2: Panel inner padding -- target 0.6rem panels, bump to 14px */
+div[style*="padding:0.6rem"][style*="border-radius"],
+div[style*="padding: 0.6rem"][style*="border-radius"],
+div[style*="padding:0.5rem"][style*="border-radius"] {
+  padding: 14px !important;
+}
+
+/* 56-3: Expand/collapse buttons -- fix padding (style uses 10px without space) */
+button[style*="font-size:10px"],
+button[style*="font-size: 10px"],
+button[style*="fontSize"] {
+  min-width: 24px !important;
+  min-height: 24px !important;
+  padding: 2px 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 56-4: Progress/distribution bars -- slightly taller for readability */
+div[style*="height:"][style*="border-radius: 3px"][style*="background"],
+div[style*="height:"][style*="border-radius:3px"][style*="background"] {
+  min-height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* 56-5: Badge/tag line-height -- tighten for better vertical centering */
+span[style*="border-radius"][style*="padding"][style*="font-size"] {
+  line-height: 1.3 !important;
+  vertical-align: middle !important;
+}
+
+/* =============================================
+   ITERATION 57 - Fullscreen btn padding fix,
+   panel header font-size, td line-height,
+   table wrapper scrollbar, stat card left accent
+   ============================================= */
+
+/* 57-1: Panel fullscreen button -- override padding:0, increase touch target */
+.panel-fullscreen-btn {
+  padding: 2px 4px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  font-size: 0.7rem !important;
+  line-height: 1 !important;
+}
+
+/* 57-2: Panel header h3 -- bump from 12px to 13px for better section hierarchy */
+h3.panel-header,
+.panel-header h3,
+.app-content h3.panel-header {
+  font-size: 13px !important;
+  line-height: var(--lh-normal) !important;
+}
+
+/* 57-3: Table cell line-height -- tighten from 2.0x to ~1.5x for compact rows */
+.app-content td {
+  line-height: 1.5 !important;
+}
+
+/* 57-4: Table wrapper overflow scrollbar -- targets padding:1rem;overflow-x:auto divs */
+div[style*="padding:1rem"][style*="overflow"]::-webkit-scrollbar,
+div[style*="padding: 1rem"][style*="overflow"]::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+div[style*="padding:1rem"][style*="overflow"]::-webkit-scrollbar-track,
+div[style*="padding: 1rem"][style*="overflow"]::-webkit-scrollbar-track {
+  background: var(--bg-surface) !important;
+  border-radius: var(--radius-xs) !important;
+}
+div[style*="padding:1rem"][style*="overflow"]::-webkit-scrollbar-thumb,
+div[style*="padding: 1rem"][style*="overflow"]::-webkit-scrollbar-thumb {
+  background: var(--border-default) !important;
+  border-radius: var(--radius-xs) !important;
+}
+div[style*="padding:1rem"][style*="overflow"]::-webkit-scrollbar-thumb:hover,
+div[style*="padding: 1rem"][style*="overflow"]::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
+}
+
+/* 57-5: Stat card severity left border accent */
+.stat-card--critical {
+  border-left: 2px solid var(--severity-critical) !important;
+}
+.stat-card--high {
+  border-left: 2px solid var(--severity-high) !important;
+}
+.stat-card--medium {
+  border-left: 2px solid var(--severity-medium) !important;
+}
+.stat-card--low {
+  border-left: 2px solid var(--severity-low) !important;
+}
+
+/* =============================================
+   ITERATION 58 - Grade badge readability,
+   stacked bar rounding, nav section spacing,
+   breadcrumb border, stat card padding
+   ============================================= */
+
+/* 58-1: Grade badges (A+, A, B+ etc) -- bump from 0.62rem to 0.68rem */
+span[style*="font-size:0.62rem"] {
+  font-size: 0.68rem !important;
+  padding: 0.1rem 0.35rem !important;
+}
+
+/* 58-2: Stacked bar segments -- add subtle rounding to first/last child */
+div[style*="display:flex"][style*="height:24px"] > div:first-child,
+div[style*="display:flex"][style*="height: 24px"] > div:first-child {
+  border-radius: 2px 0 0 2px !important;
+}
+div[style*="display:flex"][style*="height:24px"] > div:last-child,
+div[style*="display:flex"][style*="height: 24px"] > div:last-child {
+  border-radius: 0 2px 2px 0 !important;
+}
+
+/* 58-3: Nav section title -- add top margin for visual grouping (not first) */
+.nav-section + .nav-section > .nav-section__title {
+  margin-top: 6px !important;
+}
+
+/* 58-4: Breadcrumb bar -- subtle bottom border for separation */
+.breadcrumb-bar {
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+/* 58-5: Stat card padding -- tighten from 16px to 14px */
+.stat-card {
+  padding: 14px !important;
+}
+
+/* =============================================
+   ITERATION 59 - Chart label readability,
+   table header sizing, panel toggle touch target,
+   legend count size, th color opacity
+   ============================================= */
+
+/* 59-1: Chart bar % labels + legend % -- bump from 0.65rem to 0.7rem */
+span[style*="font-size:0.65rem"] {
+  font-size: 0.7rem !important;
+}
+div[style*="font-size:0.65rem"] {
+  font-size: 0.7rem !important;
+}
+
+/* 59-2: Table header font size -- bump from 10.5px to 11px */
+.app-content th {
+  font-size: 11px !important;
+}
+
+/* 59-3: Panel header toggle chevron -- add padding + min touch target */
+.panel-header__toggle {
+  padding: 2px 4px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* 59-4: Legend count spans -- bump from 0.72rem to 0.75rem */
+span[style*="font-size:0.72rem"] {
+  font-size: 0.75rem !important;
+}
+
+/* 59-5: Table header color -- increase opacity from 0.7 to 0.85 */
+.app-content th {
+  color: rgba(74, 144, 217, 0.85) !important;
+}
+
+/* =============================================
+   ITERATION 60 - Fullscreen btn font, SVG text
+   readability, card header density, table header
+   border, SVG chart responsiveness
+   ============================================= */
+
+/* 60-1: Fullscreen button font-size -- bump from 9.8px to 10.5px */
+.panel-fullscreen-btn {
+  font-size: 10.5px !important;
+}
+
+/* 60-2: SVG chart text elements -- bump from 10px to 10.5px */
+.app-content svg text {
+  font-size: 10.5px !important;
+}
+
+/* 60-3: SOAR card header padding -- tighten vertical 12px->10px */
+.card__header {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+/* 60-4: Table header bottom border for visual separation */
+.app-content thead tr {
+  border-bottom: 2px solid var(--border-default) !important;
+}
+
+/* 60-5: SVG charts -- responsive width */
+.app-content svg[viewBox] {
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* =============================================
+   ITERATION 61 - Stat label readability, breadcrumb
+   size, notif badge size, table header spacing
+   ============================================= */
+
+/* 61-1: Stat card label text -- bump from 11px to 11.5px */
+.stat-card div[style*="font-size: 11px"],
+.stat-card div[style*="font-size:11px"] {
+  font-size: 11.5px !important;
+}
+
+/* 61-2: Stat card delta indicators (arrows) -- bump from 10px to 10.5px */
+.stat-card span[style*="font-size: 10px"],
+.stat-card span[style*="font-size:10px"],
+.stat-card div[style*="font-size: 10px"],
+.stat-card div[style*="font-size:10px"] {
+  font-size: 10.5px !important;
+}
+
+/* 61-3: Breadcrumb bar font-size -- bump from 10px to 10.5px */
+.breadcrumb-bar {
+  font-size: 10.5px !important;
+}
+.breadcrumb__sep,
+.breadcrumb__item,
+.breadcrumb__current {
+  font-size: 10.5px !important;
+}
+
+/* 61-4: Notification badge -- slightly larger (14px -> 16px) */
+.notif-bell__badge {
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 16px !important;
+}
+
+/* 61-5: Table header bottom padding -- more breathing room */
+.app-content th {
+  padding-bottom: 12px !important;
+}
+
+/* =============================================
+   ITERATION 62 - Chevron size, table cell line-height,
+   fullscreen btn padding, chart labels, th contrast
+   ============================================= */
+
+/* 62-1: Panel collapse chevron (▼/▶) -- bump from 10px to 10.5px */
+.panel-header__toggle {
+  font-size: 10.5px !important;
+}
+
+/* 62-2: Table cell line-height -- increase for readability */
+.app-content td {
+  line-height: 1.6 !important;
+}
+
+/* 62-3: Fullscreen button [+] -- larger click target */
+.panel-fullscreen-btn {
+  padding: 3px 6px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+}
+
+/* 62-4: Muted 10px text in chart areas -- bump to 10.5px */
+.app-content span[style*="font-size: 10px"],
+.app-content span[style*="font-size:10px"] {
+  font-size: 10.5px !important;
+}
+
+/* 62-5: Table header color -- slightly brighter for contrast */
+.app-content th {
+  color: var(--text-primary) !important;
+  opacity: 0.85;
+}
+
+/* =============================================
+   ITERATION 63 - Cross-view rem-based font normalization
+   Fixes inline rem units computing to sub-10px sizes
+   Affects: Threats, Malware, DarkWeb, Indicators, Prediction
+   ============================================= */
+
+/* 63-1: Ultra-tiny rem fonts (0.45-0.55rem = 6.3-7.7px) → 9px min */
+.app-content [style*="font-size:0.45rem"],
+.app-content [style*="font-size: 0.45rem"] {
+  font-size: 9px !important;
+}
+.app-content [style*="font-size:0.5rem"],
+.app-content [style*="font-size: 0.5rem"] {
+  font-size: 9px !important;
+}
+.app-content [style*="font-size:0.55rem"],
+.app-content [style*="font-size: 0.55rem"] {
+  font-size: 9.5px !important;
+}
+
+/* 63-1b: Missed rem values (0.58rem = 8.1px, 0.68rem = 9.5px) */
+.app-content [style*="font-size:0.58rem"],
+.app-content [style*="font-size: 0.58rem"] {
+  font-size: 10px !important;
+}
+.app-content [style*="font-size:0.68rem"],
+.app-content [style*="font-size: 0.68rem"] {
+  font-size: 10.5px !important;
+}
+
+/* 63-2: Small rem fonts (0.6rem = 8.4px) → 10px */
+.app-content [style*="font-size:0.6rem"],
+.app-content [style*="font-size: 0.6rem"] {
+  font-size: 10px !important;
+}
+
+/* 63-3: Below-comfort rem fonts (0.65rem = 9.1px) → 10.5px */
+.app-content [style*="font-size:0.65rem"],
+.app-content [style*="font-size: 0.65rem"] {
+  font-size: 10.5px !important;
+}
+
+/* 63-4: Near-threshold rem fonts (0.7rem = 9.8px) → 11px */
+.app-content [style*="font-size:0.7rem"],
+.app-content [style*="font-size: 0.7rem"] {
+  font-size: 11px !important;
+}
+
+/* 63-5: th/td rem padding normalization (0.3rem = 4.2px → 6px 8px) */
+.app-content th[style*="padding:0.3rem"] {
+  padding: 6px 8px !important;
+}
+.app-content td[style*="padding:0.3rem"] {
+  padding: 8px 10px !important;
+}
+
+/* =============================================
+   ITERATION 64 - Missed rem values + line-height normalization
+   Targets: 0.52rem, 0.62rem gaps; 0.55rem bump; LH fixes
+   Affects: All 11 views (cross-view)
+   ============================================= */
+
+/* 64-1: 0.52rem (7.3px) → 9px [Malware 30, Feeds 4] */
+.app-content [style*="font-size:0.52rem"],
+.app-content [style*="font-size: 0.52rem"] {
+  font-size: 9px !important;
+}
+
+/* 64-2: 0.62rem (8.68px) → 10px [Feeds 50, Malware 24, Detection 3] */
+.app-content [style*="font-size:0.62rem"],
+.app-content [style*="font-size: 0.62rem"] {
+  font-size: 10px !important;
+}
+
+/* 64-3: 0.55rem bump 9.5px → 10px (override Iter 63) */
+.app-content [style*="font-size:0.55rem"],
+.app-content [style*="font-size: 0.55rem"] {
+  font-size: 10px !important;
+}
+
+/* 64-4: stat-card__icon line-height 1.00 → 1.3 (all views, ~44/view) */
+.stat-card__icon {
+  line-height: 1.3 !important;
+}
+
+/* 64-5: panel-fullscreen-btn line-height 1.00 → 1.3 (all views, ~8/view) */
+.panel-fullscreen-btn {
+  line-height: 1.3 !important;
+}
+
+/* 64-6: stat-card__value line-height 1.14 → 1.2 (all views, ~8/view) */
+.stat-card__value {
+  line-height: 1.2 !important;
+}
+
+/* 64-7: table-search__count 9px → 10px */
+.table-search__count {
+  font-size: 10px !important;
+}
+
+/* 64-8: sort-arrow 9px → 10px */
+.sort-arrow {
+  font-size: 10px !important;
+}
+
+/* =============================================
+   ITERATION 65 - Sub-10px complete elimination
+   Bumps all 9px minimums to 10px floor
+   Overrides: Iter 63 (0.45, 0.5rem) + Iter 64 (0.52rem)
+   ============================================= */
+
+/* 65-1: 0.45rem 9px → 10px (Prediction 24) */
+.app-content [style*="font-size:0.45rem"],
+.app-content [style*="font-size: 0.45rem"] {
+  font-size: 10px !important;
+}
+
+/* 65-2: 0.5rem 9px → 10px (DarkWeb 120, Malware 14, Prediction 10) */
+.app-content [style*="font-size:0.5rem"],
+.app-content [style*="font-size: 0.5rem"] {
+  font-size: 10px !important;
+}
+
+/* 65-3: 0.52rem 9px → 10px (Malware 30, Feeds 4) */
+.app-content [style*="font-size:0.52rem"],
+.app-content [style*="font-size: 0.52rem"] {
+  font-size: 10px !important;
+}
+
+/* =============================================
+   ITERATION 66 - Spacing & touch-target improvements
+   Focus: tight padding, tiny gaps, subtle border-radius
+   Audit: Dashboard (367el), Detection (1315el)
+   ============================================= */
+
+/* 66-1: stat-card__trend vertical padding 1px → 3px, line-height 11px → 14px */
+.stat-card__trend {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  line-height: 14px !important;
+}
+
+/* 66-2: panel-header__toggle touch target - padding 2px/4px → 4px/6px */
+.panel-header__toggle {
+  padding: 4px 6px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+}
+
+/* 66-3: badge vertical padding 2px → 3px */
+.badge,
+[class*="badge"] {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+/* 66-4: inline padding:0.1rem (1.4px) → 4px minimum */
+.app-content [style*="padding:0.1rem"],
+.app-content [style*="padding: 0.1rem"] {
+  padding: 4px !important;
+}
+
+/* 66-5: inline padding:0.15rem (2.1px) → 4px minimum */
+.app-content [style*="padding:0.15rem"],
+.app-content [style*="padding: 0.15rem"] {
+  padding: 4px !important;
+}
+
+/* 66-6: inline gap:2px → 4px minimum */
+.app-content [style*="gap:2px"],
+.app-content [style*="gap: 2px"] {
+  gap: 4px !important;
+}
+
+/* 66-7: inline gap:1px → 3px */
+.app-content [style*="gap:1px"],
+.app-content [style*="gap: 1px"] {
+  gap: 3px !important;
+}
+
+/* 66-8: inline border-radius:1px → 3px for visibility */
+.app-content [style*="border-radius:1px"],
+.app-content [style*="border-radius: 1px"] {
+  border-radius: var(--radius-xs) !important;
+}
+
+/* 66-9: inline gap:0.25rem (3.5px) → 4px */
+.app-content [style*="gap:0.25rem"],
+.app-content [style*="gap: 0.25rem"] {
+  gap: 4px !important;
+}
+
+/* ===== Iteration 67: Tiny dimension improvements ===== */
+
+/* 67-1: inline height:5px → 8px (36 sparkline/progress tracks too thin) */
+.app-content [style*="height:5px"],
+.app-content [style*="height: 5px"] {
+  height: 8px !important;
+}
+
+/* 67-2: inline height:8px → 10px (111 mini bar segments too small) */
+.app-content [style*="height:8px"],
+.app-content [style*="height: 8px"] {
+  height: 10px !important;
+}
+
+/* 67-3: inline width:4px → 6px (34 narrow bar indicators) */
+.app-content [style*="width:4px"],
+.app-content [style*="width: 4px"] {
+  width: 6px !important;
+}
+
+/* 67-4: inline width:5px → 6px (2 thin bars in Detection) */
+.app-content [style*="width:5px"],
+.app-content [style*="width: 5px"] {
+  width: 6px !important;
+}
+
+/* ===== Iteration 68: Sub-8px dimension refinements ===== */
+
+/* 68-1: inline height:6px → 8px (244 progress tracks/sparkline bars across 7 views) */
+.app-content [style*="height:6px"],
+.app-content [style*="height: 6px"] {
+  height: 8px !important;
+}
+
+/* 68-2: inline height:7px → 10px (26 mini progress bars in Malware) */
+.app-content [style*="height:7px"],
+.app-content [style*="height: 7px"] {
+  height: 10px !important;
+}
+
+/* 68-3: inline width:6px → 8px (44 severity indicator dots in Threats/Dark Web) */
+.app-content [style*="width:6px"],
+.app-content [style*="width: 6px"] {
+  width: 8px !important;
+}
+
+/* 68-4: inline padding:2px 6px → 3px 6px (10 tight badge labels in Prediction) */
+.app-content [style*="padding:2px 6px"],
+.app-content [style*="padding: 2px 6px"] {
+  padding: 3px 6px !important;
+}
+
+/* ===== Iteration 69: Micro-dimension polish (margin, radius, legend heights) ===== */
+
+/* 69-1: margin-right:2px → 3px (63 severity dot spacing elements across Threats/Prediction) */
+.app-content [style*="margin-right:2px"],
+.app-content [style*="margin-right: 2px"] {
+  margin-right: 3px !important;
+}
+
+/* 69-2: border-radius:1px on solid-bg indicators → 2px (67 colored dots/legends, excludes rgba chart cells) */
+.app-content [style*="border-radius:1px"][style*="background:#"],
+.app-content [style*="border-radius: 1px"][style*="background:#"],
+.app-content [style*="border-radius:1px"][style*="background: #"],
+.app-content [style*="border-radius: 1px"][style*="background: #"] {
+  border-radius: 2px !important;
+}
+
+/* 69-3: height:3px → 5px for legend dots (31 elements, excludes min-height:3px chart bars) */
+.app-content [style*="height:3px"]:not([style*="min-height:3px"]),
+.app-content [style*="height: 3px"]:not([style*="min-height: 3px"]):not([style*="min-height:3px"]) {
+  height: 5px !important;
+}
+
+/* 69-4: height:4px → 6px (15 progress indicators across Malware/Graph) */
+.app-content [style*="height:4px"],
+.app-content [style*="height: 4px"] {
+  height: 6px !important;
+}
+
+/* ===== Iteration 70: Micro-spacing density polish (padding, gap, margin, line-height) ===== */
+
+/* 70-1: padding:4px → 5px (110 chart axis labels across Prediction/Detection/Feeds) */
+.app-content [style*="padding:4px"],
+.app-content [style*="padding: 4px"] {
+  padding: 5px !important;
+}
+
+/* 70-2: gap:3px → 5px (45 flex layouts in Feeds/Prediction, excludes dense chart grids) */
+.app-content [style*="gap:3px"],
+.app-content [style*="gap: 3px"] {
+  gap: 5px !important;
+}
+
+/* 70-3: gap:4px → 6px (19 flex containers in Detection/Prediction/Feeds) */
+.app-content [style*="gap:4px"],
+.app-content [style*="gap: 4px"] {
+  gap: 6px !important;
+}
+
+/* 70-4: margin-bottom:2px → 4px (8 Feeds layout rows, excludes dense grids with gap:2px) */
+.app-content [style*="margin-bottom:2px"]:not([style*="gap:2px"]),
+.app-content [style*="margin-bottom: 2px"]:not([style*="gap: 2px"]):not([style*="gap:2px"]) {
+  margin-bottom: 4px !important;
+}
+
+/* 70-5: line-height:1 on bold stat numbers → 1.15 (4 Prediction 1.3rem stat elements) */
+.app-content [style*="line-height:1;"][style*="font-weight:700"],
+.app-content [style*="line-height: 1;"][style*="font-weight:700"],
+.app-content [style*="line-height:1;"][style*="font-weight: 700"],
+.app-content [style*="line-height: 1;"][style*="font-weight: 700"] {
+  line-height: 1.15 !important;
+}
+
+/* ===== Iteration 71: Badge/tag chip touch-target & spacing polish ===== */
+
+/* 71-1: padding:2px 6px → 3px 7px (10 Prediction status/severity badge chips) */
+.app-content [style*="padding:2px 6px"],
+.app-content [style*="padding: 2px 6px"] {
+  padding: 3px 7px !important;
+}
+
+/* 71-2: padding:1px 5px → 2px 6px (6 Feeds source tag chips) */
+.app-content [style*="padding:1px 5px"],
+.app-content [style*="padding: 1px 5px"] {
+  padding: 2px 6px !important;
+}
+
+/* 71-3: margin:1px → 2px (6 Feeds tag chip spacing) */
+.app-content [style*="margin:1px;"],
+.app-content [style*="margin: 1px;"] {
+  margin: 2px !important;
+}
+
+/* ===== Iteration 72: WCAG contrast boost for text-muted labels ===== */
+/* #6D707A on bg-card (#22252B) = 3.20:1 (FAIL AA). Boosted to #8B8E96 = 4.76:1 (PASS AA) */
+.app-content [style*="color:#6D707A"],
+.app-content [style*="color: #6D707A"],
+.app-content [style*="color:#6d707a"],
+.app-content [style*="color: #6d707a"] {
+  color: #8B8E96 !important;
+}
+
+/* ===== Iteration 73: Hover feedback for 339 clickable table rows ===== */
+/* TR elements with cursor:pointer across all 11 views lack hover state */
+/* Adds subtle bg highlight + smooth transition for interactive affordance */
+.app-content tr[style*="cursor:pointer"],
+.app-content tr[style*="cursor: pointer"] {
+  transition: background-color 0.15s ease !important;
+}
+.app-content tr[style*="cursor:pointer"]:hover,
+.app-content tr[style*="cursor: pointer"]:hover {
+  background-color: var(--bg-hover) !important;
+}
+/* 73-2: Active/pressed state for tactile feedback */
+.app-content tr[style*="cursor:pointer"]:active,
+.app-content tr[style*="cursor: pointer"]:active {
+  background-color: var(--bg-active) !important;
+}
+
+/* ===== Iteration 74: Hover feedback for 192 collapsible section headers ===== */
+/* H3 panel headers (▼/▶ chevron + title) have cursor:pointer from JS but no hover state */
+/* Targets H3 inside .app-content panels that act as collapse toggles */
+/* 74-1: Smooth transition for background + left-border accent */
+.app-content .panel h3,
+.app-content .card h3,
+.app-content div > h3 {
+  transition: background-color 0.15s ease, border-left-color 0.15s ease !important;
+  border-left: 3px solid transparent !important;
+  padding-left: 8px !important;
+  margin-left: -3px !important;
+  border-radius: var(--radius-sm) !important;
+}
+/* 74-2: Hover highlight - only on headers that are clickable (cursor:pointer from JS) */
+.app-content h3:hover {
+  background-color: var(--bg-hover) !important;
+  border-left-color: var(--accent-primary) !important;
+}
+/* 74-3: Active/pressed state */
+.app-content h3:active {
+  background-color: var(--bg-active) !important;
+}
+
+/* ===== Iteration 75: Hover elevation for 144 stat cards ===== */
+/* Stat cards (text-align:center + border-radius inline) lack hover feedback */
+/* Adds subtle lift + glow shadow on hover for tactile interactivity */
+
+/* 75-1: Base transition for transform + box-shadow */
+.app-content div[style*="text-align:center"][style*="border-radius"],
+.app-content div[style*="text-align: center"][style*="border-radius"] {
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+/* 75-2: Hover - lift 2px + subtle glow shadow */
+.app-content div[style*="text-align:center"][style*="border-radius"]:hover,
+.app-content div[style*="text-align: center"][style*="border-radius"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 75-3: Active/pressed - sink back down */
+.app-content div[style*="text-align:center"][style*="border-radius"]:active,
+.app-content div[style*="text-align: center"][style*="border-radius"]:active {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+/* ===== Iteration 76: Sticky table headers for scrollable tables ===== */
+/* 7 tables across 4 views (threats, indicators, graph, mitre) overflow 500px containers */
+/* Sticky headers keep column labels visible during vertical scroll */
+
+/* 76-1: Make thead th sticky at top of scroll container */
+.app-content thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 2 !important;
+  background-color: var(--bg-elevated) !important;
+}
+
+/* 76-2: Bottom shadow line on sticky header for visual separation */
+.app-content thead th::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 1px !important;
+  background: var(--border-default) !important;
+}
+
+/* ===== Iteration 77: Filter input font & comfort normalization ===== */
+/* 26 filter/search inputs across 9 views hardcode fontFamily:"Arial" inline */
+/* Normalize to design-system font stack with slightly improved padding */
+
+/* 77-1: Override inline Arial font on all filter/search inputs */
+.app-content input[style*="fontFamily"] {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+}
+
+/* 77-2: Also catch inputs with placeholder containing "Filter" or "Search" */
+.app-content input[placeholder*="Filter"],
+.app-content input[placeholder*="Search"],
+.app-content input[placeholder*="filter"],
+.app-content input[placeholder*="search"] {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  padding: 5px 10px !important;
+  color: var(--text-primary) !important;
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-default) !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* 77-3: Focus state for filter inputs */
+.app-content input[placeholder*="Filter"]:focus,
+.app-content input[placeholder*="Search"]:focus,
+.app-content input[placeholder*="filter"]:focus,
+.app-content input[placeholder*="search"]:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 1px var(--border-focus) !important;
+  outline: none !important;
+}
+
+/* 77-4: Placeholder text styling */
+.app-content input[placeholder*="Filter"]::placeholder,
+.app-content input[placeholder*="Search"]::placeholder,
+.app-content input[placeholder*="filter"]::placeholder,
+.app-content input[placeholder*="search"]::placeholder {
+  color: var(--text-muted) !important;
+  font-style: normal !important;
+}
+
+/* ===== Iteration 78: Tiny text readability boost (absolute px) ===== */
+/* Root font-size=14px, so rem values compute smaller than expected */
+/* 0.55rem=7.7px, 0.58rem=8.1px, 0.6rem=8.4px -- all below 9px */
+/* Bump to 10.5px absolute for guaranteed readability */
+
+/* 78-1: Override the three tiniest rem values to 10.5px */
+.app-content [style*="font-size:0.55rem"],
+.app-content [style*="font-size: 0.55rem"],
+.app-content [style*="font-size:0.58rem"],
+.app-content [style*="font-size: 0.58rem"],
+.app-content [style*="font-size:0.6rem"],
+.app-content [style*="font-size: 0.6rem"] {
+  font-size: 10.5px !important;
+}
+
+/* 78-2: Also catch sub-10px absolute sizes */
+.app-content [style*="font-size:8px"],
+.app-content [style*="font-size: 8px"],
+.app-content [style*="font-size:9px"],
+.app-content [style*="font-size: 9px"] {
+  font-size: 10.5px !important;
+}
+
+/* ===== Iteration 79: Badge/tag padding & radius normalization ===== */
+/* 568 badge elements across 5 views with 3-12 unique padding patterns */
+/* Normalize small badge padding to consistent 0.15rem 0.4rem (2.1px 5.6px) */
+/* Standardize border-radius from inline 3px to var(--radius-sm) = 4px */
+
+/* 79-1: Normalize the tightest vertical padding badges */
+.app-content [style*="padding:0.1rem 0.3rem"],
+.app-content [style*="padding: 0.1rem 0.3rem"],
+.app-content [style*="padding:0.1rem 0.4rem"],
+.app-content [style*="padding: 0.1rem 0.4rem"],
+.app-content [style*="padding:0.1rem 0.35rem"],
+.app-content [style*="padding: 0.1rem 0.35rem"] {
+  padding: 0.15rem 0.4rem !important;
+}
+
+/* 79-2: Normalize near-zero vertical padding badges */
+.app-content [style*="padding:0.05rem"],
+.app-content [style*="padding: 0.05rem"],
+.app-content [style*="padding:0.08rem"],
+.app-content [style*="padding: 0.08rem"] {
+  padding: 0.15rem 0.4rem !important;
+}
+
+/* 79-3: Standardize 3px border-radius to design token (4px) */
+.app-content [style*="border-radius:3px"],
+.app-content [style*="border-radius: 3px"] {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 79-4: Catch malware view's padding:0.25rem 0 (no horiz padding) */
+.app-content [style*="padding:0.25rem 0;"],
+.app-content [style*="padding: 0.25rem 0;"],
+.app-content [style*="padding:0.25rem 0\""],
+.app-content [style*="padding: 0.25rem 0\""] {
+  padding: 0.25rem 0.3rem !important;
+}
+
+/* ===== Iteration 80: Non-token inline text color normalization ===== */
+/* 213 elements across 7 views use shorthand hex grays instead of design tokens */
+/* Maps: #fff→--text-primary, #ddd→--text-secondary, #888/#666/#555→--text-muted */
+
+/* 80-1: Pure white text → softer design-token primary (reduces harsh glare) */
+.app-content [style*="color:#fff"],
+.app-content [style*="color: #fff"],
+.app-content [style*="color:#FFF"],
+.app-content [style*="color: #FFF"],
+.app-content [style*="color:#ffffff"],
+.app-content [style*="color: #ffffff"],
+.app-content [style*="color:#FFFFFF"],
+.app-content [style*="color: #FFFFFF"] {
+  color: var(--text-primary) !important;
+}
+
+/* 80-2: #ddd text → design-token secondary text (57 elements, darkweb) */
+.app-content [style*="color:#ddd"],
+.app-content [style*="color: #ddd"],
+.app-content [style*="color:#DDD"],
+.app-content [style*="color: #DDD"] {
+  color: var(--text-secondary) !important;
+}
+
+/* 80-3: #888 text → design-token muted text (27 elements, darkweb) */
+.app-content [style*="color:#888"],
+.app-content [style*="color: #888"] {
+  color: var(--text-muted) !important;
+}
+
+/* 80-4: #555/#666/#666688 → design-token muted text (55 elements, indicators/graph/mitre) */
+.app-content [style*="color:#555"],
+.app-content [style*="color: #555"],
+.app-content [style*="color:#666"],
+.app-content [style*="color: #666"] {
+  color: var(--text-muted) !important;
+}
+
+/* ===== Iteration 81: border-radius 3px → design token normalization ===== */
+/* 1,145+ elements across 8 views use inline 3px instead of --radius-sm (4px) */
+
+/* 81-1: General 3px → --radius-sm */
+.app-content [style*="border-radius:3px"],
+.app-content [style*="border-radius: 3px"] {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 81-2: Compound top-only rounding (must cascade AFTER 81-1) */
+.app-content [style*="border-radius:3px 3px 0 0"],
+.app-content [style*="border-radius: 3px 3px 0 0"] {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+}
+
+/* 81-3: Compound bottom-only rounding */
+.app-content [style*="border-radius:0 0 3px 3px"],
+.app-content [style*="border-radius: 0 0 3px 3px"] {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+}
+
+/* ===== Iteration 82: remaining border-radius → design token normalization ===== */
+/* 4px(553) → --radius-sm, 6px(54) → --radius-md, 5px(46) → --radius-sm */
+/* 2px(291) left intentional (tight/micro elements), 1px(241) left intentional (hairline) */
+/* 50%(44) left intentional (circles), compound 2px(24) left intentional */
+
+/* 82-1: 4px → --radius-sm (exact token match) */
+.app-content [style*="border-radius:4px"],
+.app-content [style*="border-radius: 4px"] {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* 82-2: 6px → --radius-md (exact token match) */
+.app-content [style*="border-radius:6px"],
+.app-content [style*="border-radius: 6px"] {
+  border-radius: var(--radius-md) !important;
+}
+
+/* 82-3: 5px → --radius-sm (nearest token) */
+.app-content [style*="border-radius:5px"],
+.app-content [style*="border-radius: 5px"] {
+  border-radius: var(--radius-sm) !important;
+}
+
+/* ===== Iteration 83: background hex → severity/accent design token normalization ===== */
+/* 571 elements use hardcoded background: hex instead of design token vars */
+/* Trailing-semicolon selectors avoid alpha variant collisions (e.g. #4a90d922) */
+
+/* 83-1: #4a90d9 → --accent-primary (151 elements) */
+.app-content [style*="background:#4a90d9;" i],
+.app-content [style*="background: #4a90d9;" i] {
+  background: var(--accent-primary) !important;
+}
+
+/* 83-2: #5cb87a → --severity-low (128 elements) */
+.app-content [style*="background:#5cb87a;" i],
+.app-content [style*="background: #5cb87a;" i] {
+  background: var(--severity-low) !important;
+}
+
+/* 83-3: #e5a54b → --severity-high (117 elements) */
+.app-content [style*="background:#e5a54b;" i],
+.app-content [style*="background: #e5a54b;" i] {
+  background: var(--severity-high) !important;
+}
+
+/* 83-4: #e06c75 → --severity-critical (112 elements) */
+.app-content [style*="background:#e06c75;" i],
+.app-content [style*="background: #e06c75;" i] {
+  background: var(--severity-critical) !important;
+}
+
+/* 83-5: #d4b84d → --severity-medium (63 elements) */
+.app-content [style*="background:#d4b84d;" i],
+.app-content [style*="background: #d4b84d;" i] {
+  background: var(--severity-medium) !important;
+}
+
+/* ===== Iteration 84: inline color hex → design token normalization ===== */
+/* 2,207 elements use hardcoded color: hex instead of design token vars */
+/* Zero background-color: usage in codebase, so substring selectors are safe */
+
+/* 84-1: #6d707a → --text-muted (501 elements) */
+.app-content [style*="color:#6d707a" i],
+.app-content [style*="color: #6d707a" i] {
+  color: var(--text-muted) !important;
+}
+
+/* 84-2: #4a90d9 → --accent-primary (382 elements) */
+.app-content [style*="color:#4a90d9" i],
+.app-content [style*="color: #4a90d9" i] {
+  color: var(--accent-primary) !important;
+}
+
+/* 84-3: #e06c75 → --severity-critical (280 elements) */
+.app-content [style*="color:#e06c75" i],
+.app-content [style*="color: #e06c75" i] {
+  color: var(--severity-critical) !important;
+}
+
+/* 84-4: #e5a54b → --severity-high (273 elements) */
+.app-content [style*="color:#e5a54b" i],
+.app-content [style*="color: #e5a54b" i] {
+  color: var(--severity-high) !important;
+}
+
+/* 84-5: #5cb87a → --severity-low (270 elements) */
+.app-content [style*="color:#5cb87a" i],
+.app-content [style*="color: #5cb87a" i] {
+  color: var(--severity-low) !important;
+}
+
+/* 84-6: #e1e3e8 → --text-primary (251 elements) */
+.app-content [style*="color:#e1e3e8" i],
+.app-content [style*="color: #e1e3e8" i] {
+  color: var(--text-primary) !important;
+}
+
+/* 84-7: #d4b84d → --severity-medium (159 elements) */
+.app-content [style*="color:#d4b84d" i],
+.app-content [style*="color: #d4b84d" i] {
+  color: var(--severity-medium) !important;
+}
+
+/* 84-8: #a8abb3 → --text-secondary (91 elements) */
+.app-content [style*="color:#a8abb3" i],
+.app-content [style*="color: #a8abb3" i] {
+  color: var(--text-secondary) !important;
+}
+
+/* ===== Iteration 85: font-size scale consolidation (sub-pixel) ===== */
+/* 731 elements with fractional rem values consolidated to nearest 0.05rem step */
+/* Max delta: 0.02rem = 0.28px at 14px root — visually imperceptible */
+
+/* 85-1: 0.52rem → 0.5rem (34 elements, delta 0.28px) */
+.app-content [style*="font-size:0.52rem" i],
+.app-content [style*="font-size: 0.52rem" i] {
+  font-size: 0.5rem !important;
+}
+
+/* 85-2: 0.58rem → 0.6rem (103 elements, delta 0.28px) */
+.app-content [style*="font-size:0.58rem" i],
+.app-content [style*="font-size: 0.58rem" i] {
+  font-size: 0.6rem !important;
+}
+
+/* 85-3: 0.62rem → 0.6rem (77 elements, delta 0.28px) */
+.app-content [style*="font-size:0.62rem" i],
+.app-content [style*="font-size: 0.62rem" i] {
+  font-size: 0.6rem !important;
+}
+
+/* 85-4: 0.68rem → 0.7rem (156 elements, delta 0.28px) */
+.app-content [style*="font-size:0.68rem" i],
+.app-content [style*="font-size: 0.68rem" i] {
+  font-size: 0.7rem !important;
+}
+
+/* 85-5: 0.72rem → 0.7rem (333 elements, delta 0.28px) */
+.app-content [style*="font-size:0.72rem" i],
+.app-content [style*="font-size: 0.72rem" i] {
+  font-size: 0.7rem !important;
+}
+
+/* 85-6: 0.78rem → 0.8rem (28 elements, delta 0.28px) */
+.app-content [style*="font-size:0.78rem" i],
+.app-content [style*="font-size: 0.78rem" i] {
+  font-size: 0.8rem !important;
+}
+
+/* ===== Iteration 86: spacing scale consolidation ===== */
+/* Gap pixel → clean {2px, 4px, 6px} scale */
+/* Padding/margin near-duplicates → consolidated to nearest token step */
+/* Max delta: 1px (gap) / 0.7px (padding/margin) — visually imperceptible */
+
+/* 86-1: gap 3px → 2px (38 elements, delta 1px) */
+.app-content [style*="gap:3px" i],
+.app-content [style*="gap: 3px" i] {
+  gap: 2px !important;
+}
+
+/* 86-2: gap 5px → 4px (8 elements, delta 1px) */
+.app-content [style*="gap:5px" i],
+.app-content [style*="gap: 5px" i] {
+  gap: 4px !important;
+}
+
+/* 86-3: padding 0.1rem 0.35rem → 0.1rem 0.3rem (21 elements, delta 0.7px horiz) */
+.app-content [style*="padding:0.1rem 0.35rem" i],
+.app-content [style*="padding: 0.1rem 0.35rem" i] {
+  padding: 0.1rem 0.3rem !important;
+}
+
+/* 86-4: padding 0.05rem 0.2rem → 0.05rem 0.25rem (8 elements, delta 0.7px horiz) */
+.app-content [style*="padding:0.05rem 0.2rem" i],
+.app-content [style*="padding: 0.05rem 0.2rem" i] {
+  padding: 0.05rem 0.25rem !important;
+}
+
+/* 86-5: padding 0.05rem 0.25rem → 0.05rem 0.3rem (16 elements, delta 0.7px horiz) */
+.app-content [style*="padding:0.05rem 0.25rem" i],
+.app-content [style*="padding: 0.05rem 0.25rem" i] {
+  padding: 0.05rem 0.3rem !important;
+}
+
+/* 86-6: margin-bottom 0.35rem → 0.3rem (8 elements, delta 0.7px) */
+.app-content [style*="margin-bottom:0.35rem" i],
+.app-content [style*="margin-bottom: 0.35rem" i] {
+  margin-bottom: 0.3rem !important;
+}
+
+/* 86-7: margin-bottom 3px → 2px (2 elements, delta 1px) */
+.app-content [style*="margin-bottom:3px" i],
+.app-content [style*="margin-bottom: 3px" i] {
+  margin-bottom: 2px !important;
+}
+
+/* ===== Iteration 87: near-duplicate spacing & letter-spacing consolidation ===== */
+/* 87-1: gap 0.15rem → 0.2rem (17 elements, delta 0.7px) */
+.app-content [style*="gap:0.15rem" i],
+.app-content [style*="gap: 0.15rem" i] {
+  gap: 0.2rem !important;
+}
+/* 87-2: gap 0.25rem → 0.3rem (31 elements, delta 0.7px) */
+.app-content [style*="gap:0.25rem" i],
+.app-content [style*="gap: 0.25rem" i] {
+  gap: 0.3rem !important;
+}
+/* 87-3: margin-bottom 0.45rem → 0.5rem (31 elements, delta 0.7px) */
+.app-content [style*="margin-bottom:0.45rem" i],
+.app-content [style*="margin-bottom: 0.45rem" i] {
+  margin-bottom: 0.5rem !important;
+}
+/* 87-4: margin-bottom 0.25rem → 0.3rem (21 elements, delta 0.7px) */
+.app-content [style*="margin-bottom:0.25rem" i],
+.app-content [style*="margin-bottom: 0.25rem" i] {
+  margin-bottom: 0.3rem !important;
+}
+/* 87-5: margin-top 0.15rem → 0.2rem (19 elements, delta 0.7px) */
+.app-content [style*="margin-top:0.15rem" i],
+.app-content [style*="margin-top: 0.15rem" i] {
+  margin-top: 0.2rem !important;
+}
+/* 87-6: margin-top 0.25rem → 0.3rem (8 elements, delta 0.7px) */
+.app-content [style*="margin-top:0.25rem" i],
+.app-content [style*="margin-top: 0.25rem" i] {
+  margin-top: 0.3rem !important;
+}
+/* 87-7: margin-right 3px → 2px (49 elements, delta 1px) */
+.app-content [style*="margin-right:3px" i],
+.app-content [style*="margin-right: 3px" i] {
+  margin-right: 2px !important;
+}
+/* 87-8: letter-spacing 0.03em → 0.05em (25 elements, delta ~0.3px) */
+.app-content [style*="letter-spacing:0.03em" i],
+.app-content [style*="letter-spacing: 0.03em" i] {
+  letter-spacing: 0.05em !important;
+}
+/* 87-9: letter-spacing 0.04em → 0.05em (3 elements, delta ~0.15px) */
+.app-content [style*="letter-spacing:0.04em" i],
+.app-content [style*="letter-spacing: 0.04em" i] {
+  letter-spacing: 0.05em !important;
+}
+
+/* ===== Iteration 88: border-radius, opacity, border-bottom consolidation ===== */
+/* 88-1: border-radius 5px → 4px (46 elements, delta 1px, aligns to --radius-sm) */
+.app-content [style*="border-radius:5px" i],
+.app-content [style*="border-radius: 5px" i] {
+  border-radius: var(--radius-sm) !important;
+}
+/* 88-2: opacity 0.85 → 0.8 (10 elements, delta 0.05) */
+.app-content [style*="opacity:0.85" i],
+.app-content [style*="opacity: 0.85" i] {
+  opacity: 0.8 !important;
+}
+/* 88-3: border-bottom rgba(51,55,63,0.2) → rgba(51,55,63,0.3) (8 elements, delta opacity +0.1) */
+.app-content [style*="border-bottom:1px solid rgba(51,55,63,0.2)" i],
+.app-content [style*="border-bottom: 1px solid rgba(51,55,63,0.2)" i] {
+  border-bottom: 1px solid rgba(51,55,63,0.3) !important;
+}
+
+/* ===== Iteration 89: padding near-duplicate consolidation ===== */
+/* 89-1: padding 0.1rem 0.35rem → 0.1rem 0.4rem (29 elements, delta 0.05rem = 0.7px right) */
+.app-content [style*="padding:0.1rem 0.35rem" i],
+.app-content [style*="padding: 0.1rem 0.35rem" i] {
+  padding: 0.1rem 0.4rem !important;
+}
+/* 89-2: padding 0.12rem 0.4rem → 0.1rem 0.4rem (18 elements, delta 0.02rem = 0.28px top/bottom) */
+.app-content [style*="padding:0.12rem 0.4rem" i],
+.app-content [style*="padding: 0.12rem 0.4rem" i] {
+  padding: 0.1rem 0.4rem !important;
+}
+/* 89-3: padding 0.35rem → 0.3rem (6 elements, delta 0.05rem = 0.7px) */
+.app-content [style*="padding:0.35rem" i],
+.app-content [style*="padding: 0.35rem" i] {
+  padding: 0.3rem !important;
+}
+/* 89-4: padding 0.35rem 0.5rem → 0.3rem 0.5rem (4 elements, delta 0.05rem = 0.7px top) */
+.app-content [style*="padding:0.35rem 0.5rem" i],
+.app-content [style*="padding: 0.35rem 0.5rem" i] {
+  padding: 0.3rem 0.5rem !important;
+}
+
+/* ===== Iteration 90: focus-visible + card elevation polish ===== */
+/* 90-1: focus-visible outline for all interactive elements (a11y) */
+.app-content a:focus-visible,
+.app-content button:focus-visible,
+.app-content input:focus-visible,
+.app-content select:focus-visible,
+.app-content textarea:focus-visible,
+.app-content [tabindex]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+/* 90-2: sidebar nav focus-visible */
+.sidebar .nav-item:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+/* 90-3: header interactive focus-visible */
+.header-bar button:focus-visible,
+.header-bar input:focus-visible,
+.header-bar [tabindex]:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+/* 90-4: subtle card elevation via box-shadow */
+.app-content .stat-card,
+.app-content .view-card,
+.app-content .panel,
+.app-content [style*="background:var(--bg-card)"] {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+/* 90-5: card hover lift */
+.app-content .stat-card:hover,
+.app-content .view-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+
+/* ===== Iteration 91: input focus + smooth UX polish ===== */
+/* 91-1: filter input focus glow */
+.app-content input:focus,
+.app-content select:focus,
+.app-content textarea:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.15) !important;
+  outline: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+/* 91-2: header search input focus */
+.header-search__input:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.15) !important;
+}
+/* 91-3: smooth scroll for content area */
+.app-content {
+  scroll-behavior: smooth;
+}
+/* 91-4: input transition for unfocus */
+.app-content input,
+.app-content select,
+.app-content textarea {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* 91-5: table container subtle inner shadow for depth */
+.app-content .data-table {
+  box-shadow: inset 0 -1px 0 var(--border-subtle);
+}
+
+/* ===== Iteration 92: scrollbar + transitions + selection polish ===== */
+/* 92-1: webkit custom scrollbar (dark theme) */
+.app-content::-webkit-scrollbar {
+  width: 8px;
+}
+.app-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-content::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-sm);
+}
+.app-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+/* 92-2: card transition includes box-shadow for smooth hover lift */
+.app-content .stat-card,
+.app-content .view-card {
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.2s !important;
+}
+/* 92-3: progress bar rounded ends */
+.app-content [style*="border-radius:2px"][style*="background:linear-gradient"] {
+  border-radius: var(--radius-sm) !important;
+}
+/* 92-4: text selection colors (dark theme) */
+.app-content ::selection {
+  background: rgba(74, 144, 217, 0.3);
+  color: var(--text-primary);
+}
+/* 92-5: sidebar active nav left accent bar */
+.sidebar .nav-item--active {
+  border-left: 3px solid var(--accent-primary) !important;
+  padding-left: calc(0.6rem - 3px) !important;
+}
+
+/* ===== Iteration 93: table rows + button hover/active polish ===== */
+/* 93-1: table row hover highlight */
+.app-content tr:hover td {
+  background: rgba(74, 144, 217, 0.06) !important;
+}
+/* 93-2: table row alternating stripe (even rows) */
+.app-content tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.015);
+}
+.app-content tbody tr:nth-child(even):hover td {
+  background: rgba(74, 144, 217, 0.06) !important;
+}
+/* 93-3: generic button hover feedback (content area) */
+.app-content button:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-focus) !important;
+}
+/* 93-4: button active/pressed feedback */
+.app-content button:active {
+  transform: scale(0.96);
+  background: var(--bg-active) !important;
+}
+/* 93-5: breadcrumb separator muted color + current item accent */
+.breadcrumb__sep {
+  color: var(--text-disabled) !important;
+  margin: 0 2px;
+}
+.breadcrumb__current {
+  color: var(--accent-primary) !important;
+  font-weight: 500;
+}
+
+/* ===== Iteration 94: sidebar polish + badge pulse + clock tnum ===== */
+/* 94-1: sidebar section title hover highlight */
+.nav-section__title:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-secondary) !important;
+}
+/* 94-2: NEXUS logo subtle accent glow */
+.sidebar__logo {
+  text-shadow: 0 0 12px rgba(74, 144, 217, 0.35), 0 0 4px rgba(74, 144, 217, 0.15) !important;
+}
+/* 94-3: notification badge pulse when content present */
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 108, 117, 0.5); }
+  50% { box-shadow: 0 0 0 4px rgba(224, 108, 117, 0); }
+}
+.notif-bell__badge:not(:empty) {
+  animation: badge-pulse 2s ease-in-out infinite !important;
+}
+/* 94-4: clock tabular-nums for stable width digits */
+#header-clock {
+  font-variant-numeric: tabular-nums !important;
+}
+/* 94-5: sidebar active nav icon accent color */
+.nav-item--active .nav-item__icon {
+  color: var(--accent-primary) !important;
+}
+
+/* ===== Iteration 95: breadcrumb + sidebar toggle + filter input + version + notif dropdown ===== */
+/* 95-1: breadcrumb root clickable cursor + hover underline */
+.breadcrumb__root,
+.breadcrumb-bar [data-view] {
+  cursor: pointer !important;
+  transition: color 0.15s ease, text-decoration 0.15s ease !important;
+}
+.breadcrumb__root:hover,
+.breadcrumb-bar [data-view]:hover {
+  color: var(--accent-primary) !important;
+  text-decoration: underline !important;
+}
+/* 95-2: sidebar toggle hover feedback */
+.sidebar__toggle:hover {
+  background: var(--bg-active) !important;
+  border-color: var(--border-default) !important;
+}
+/* 95-3: filter/search input comfort padding + placeholder color */
+.app-content input.table-search__input {
+  padding: 6px 12px !important;
+}
+.app-content input.table-search__input::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.7 !important;
+}
+/* 95-4: sidebar version subtle letter-spacing + opacity */
+.sidebar__version {
+  letter-spacing: 0.5px !important;
+  opacity: 0.6 !important;
+}
+/* 95-5: notification dropdown refined corners + shadow */
+.notif-bell__dropdown {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ===== Iteration 96: stat-card hover + card header separator + breadcrumb + TLP badge ===== */
+/* 96-1: stat card hover lift with transform */
+.app-content .stat-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3) !important;
+}
+.app-content .stat-card {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+/* 96-2: card header subtle bottom separator */
+.card__header {
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding-bottom: 12px !important;
+  margin-bottom: 12px !important;
+}
+/* 96-3: breadcrumb separator wider spacing */
+.breadcrumb__sep {
+  margin: 0 6px !important;
+}
+/* 96-4: TLP badge (badge-low) refinement */
+.header-bar__right .badge {
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  padding: 2px 10px !important;
+  font-size: 0.7rem !important;
+}
+/* 96-5: stat card subtle visible border */
+.app-content .stat-card {
+  border: 1px solid var(--border-subtle) !important;
+}
+
+/* ===== Iteration 97: nav active weight + sidebar brand spacing + section titles + table header border + nav icon opacity ===== */
+/* 97-1: active nav item bolder for emphasis */
+.sidebar .nav-item--active {
+  font-weight: 600 !important;
+}
+/* 97-2: sidebar brand bottom margin for breathing room */
+.sidebar__brand {
+  margin-bottom: 8px !important;
+}
+/* 97-3: nav section title stronger weight */
+.nav-section__title {
+  font-weight: 600 !important;
+}
+/* 97-4: table header bottom border tokenized */
+.data-table thead tr,
+.table-wrap table thead tr {
+  border-bottom: 2px solid var(--border-default) !important;
+}
+/* 97-5: inactive nav icon consistent muted opacity */
+.nav-item:not(.nav-item--active) .nav-item__icon {
+  opacity: 0.55 !important;
+}
+
+/* ===== Iteration 99: cross-view stat-card background consistency ===== */
+/* 99-1: override gradient on 2nd+ stat-row cards with solid bg-card */
+.stat-row + .stat-row .stat-card {
+  background: var(--bg-card) !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .stat-row--4 { grid-template-columns: repeat(2, 1fr); }
+  .sidebar { width: 180px; }
+  .header-bar__center { display: none; }
+}
+@media (max-width: 480px) {
+  .stat-row--4,
+  .stat-row--3,
+  .stat-row--2 { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}

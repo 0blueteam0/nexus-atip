@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 2: Timeline Flow Interface</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(180deg, #0a0f1b 0%, #1a1f2e 100%);
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Time Control Bar */
+        .time-control {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(10, 15, 27, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+        
+        .time-slider {
+            flex: 1;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            position: relative;
+            margin: 0 30px;
+            cursor: pointer;
+        }
+        
+        .time-track {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        
+        .time-progress {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, #00ff88, #00bbff);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .time-markers {
+            position: absolute;
+            top: -20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        
+        .time-current {
+            position: absolute;
+            bottom: -20px;
+            left: 75%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            color: #00ff88;
+        }
+        
+        /* Timeline Container */
+        .timeline-container {
+            flex: 1;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .timeline-lanes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+        }        
+        /* Timeline Lanes */
+        .timeline-lane {
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            min-height: 120px;
+        }
+        
+        .lane-header {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .lane-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .lane-count {
+            margin-left: auto;
+            background: rgba(0, 255, 136, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #00ff88;
+        }
+        
+        .lane-content {
+            margin-left: 200px;
+            height: 100%;
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        /* News Events on Timeline */
+        .timeline-event {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            top: 50%;
+            transform: translateY(-50%);
+            min-width: 150px;
+            height: 80px;
+        }
+        
+        .timeline-event:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #00ff88;
+            transform: translateY(-50%) scale(1.05);
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .event-critical {
+            border-left: 4px solid #ff0040;
+        }
+        
+        .event-high {
+            border-left: 4px solid #ff8000;
+        }
+        
+        .event-medium {
+            border-left: 4px solid #ffff00;
+        }
+        
+        .event-low {
+            border-left: 4px solid #00ff88;
+        }
+        
+        .event-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .event-source {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+        
+        .event-time {
+            font-size: 10px;
+            opacity: 0.5;
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+        }
+        
+        /* Right Sidebar - Details Panel */
+        .details-panel {
+            position: fixed;
+            right: 0;
+            top: 80px;
+            bottom: 40px;
+            width: 400px;
+            background: rgba(10, 15, 27, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .details-header {
+            margin-bottom: 20px;
+        }
+        
+        .details-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .details-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .details-content {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .details-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .tag {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        
+        /* Bottom Status */
+        .status-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(10, 15, 27, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+        }
+        
+        .status-live {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .playback-controls {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .control-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Time Control Bar -->
+    <div class="time-control">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <h2 style="font-size: 18px; font-weight: 600;">Timeline View</h2>
+            <select style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 5px; color: #e0e0e0;">
+                <option>Last 24 Hours</option>
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+                <option>Custom Range</option>
+            </select>
+        </div>
+        
+        <div class="time-slider">
+            <div class="time-markers">
+                <span>00:00</span>
+                <span>06:00</span>
+                <span>12:00</span>
+                <span>18:00</span>
+                <span>23:59</span>
+            </div>
+            <div class="time-track">
+                <div class="time-progress"></div>
+            </div>
+            <div class="time-current">18:45</div>
+        </div>
+        
+        <div class="playback-controls">
+            <button class="control-btn">⏮</button>
+            <button class="control-btn">▶</button>
+            <button class="control-btn">⏭</button>
+        </div>
+    </div>
+    
+    <!-- Timeline Container -->
+    <div class="timeline-container">
+        <div class="timeline-lanes">
+            <!-- Critical Lane -->
+            <div class="timeline-lane">
+                <div class="lane-header">
+                    <span class="lane-title">Critical Threats</span>
+                    <span class="lane-count">12</span>
+                </div>
+                <div class="lane-content">
+                    <div class="timeline-event event-critical" style="left: 150px;">
+                        <div class="event-title">Ransomware Zero-Day</div>
+                        <div class="event-source">CISA</div>
+                        <div class="event-time">02:30</div>
+                    </div>
+                    <div class="timeline-event event-critical" style="left: 400px;">
+                        <div class="event-title">Healthcare Breach</div>
+                        <div class="event-source">HHS</div>
+                        <div class="event-time">08:15</div>
+                    </div>
+                    <div class="timeline-event event-critical" style="left: 750px;">
+                        <div class="event-title">Supply Chain Attack</div>
+                        <div class="event-source">Mandiant</div>
+                        <div class="event-time">14:22</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- High Lane -->
+            <div class="timeline-lane">
+                <div class="lane-header">
+                    <span class="lane-title">High Priority</span>
+                    <span class="lane-count">34</span>
+                </div>
+                <div class="lane-content">
+                    <div class="timeline-event event-high" style="left: 50px;">
+                        <div class="event-title">APT29 Campaign</div>
+                        <div class="event-source">CrowdStrike</div>
+                        <div class="event-time">00:45</div>
+                    </div>
+                    <div class="timeline-event event-high" style="left: 300px;">
+                        <div class="event-title">Exchange Vuln</div>
+                        <div class="event-source">Microsoft</div>
+                        <div class="event-time">06:30</div>
+                    </div>
+                    <div class="timeline-event event-high" style="left: 550px;">
+                        <div class="event-title">Linux Kernel Bug</div>
+                        <div class="event-source">Ubuntu</div>
+                        <div class="event-time">11:10</div>
+                    </div>
+                    <div class="timeline-event event-high" style="left: 900px;">
+                        <div class="event-title">IoT Botnet</div>
+                        <div class="event-source">Fortinet</div>
+                        <div class="event-time">17:45</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Medium Lane -->
+            <div class="timeline-lane">
+                <div class="lane-header">
+                    <span class="lane-title">Medium Priority</span>
+                    <span class="lane-count">156</span>
+                </div>
+                <div class="lane-content">
+                    <div class="timeline-event event-medium" style="left: 100px;">
+                        <div class="event-title">Patch Tuesday</div>
+                        <div class="event-source">Microsoft</div>
+                        <div class="event-time">03:00</div>
+                    </div>
+                    <div class="timeline-event event-medium" style="left: 250px;">
+                        <div class="event-title">Chrome Update</div>
+                        <div class="event-source">Google</div>
+                        <div class="event-time">05:30</div>
+                    </div>
+                    <div class="timeline-event event-medium" style="left: 450px;">
+                        <div class="event-title">AWS Advisory</div>
+                        <div class="event-source">Amazon</div>
+                        <div class="event-time">09:15</div>
+                    </div>
+                    <div class="timeline-event event-medium" style="left: 650px;">
+                        <div class="event-title">Java Updates</div>
+                        <div class="event-source">Oracle</div>
+                        <div class="event-time">13:20</div>
+                    </div>
+                    <div class="timeline-event event-medium" style="left: 850px;">
+                        <div class="event-title">OpenSSL Fix</div>
+                        <div class="event-source">OpenSSL</div>
+                        <div class="event-time">16:40</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Research Lane -->
+            <div class="timeline-lane">
+                <div class="lane-header">
+                    <span class="lane-title">Research & Reports</span>
+                    <span class="lane-count">89</span>
+                </div>
+                <div class="lane-content">
+                    <div class="timeline-event event-low" style="left: 200px;">
+                        <div class="event-title">Threat Report Q1</div>
+                        <div class="event-source">Kaspersky</div>
+                        <div class="event-time">07:00</div>
+                    </div>
+                    <div class="timeline-event event-low" style="left: 500px;">
+                        <div class="event-title">Malware Analysis</div>
+                        <div class="event-source">Trend Micro</div>
+                        <div class="event-time">12:30</div>
+                    </div>
+                    <div class="timeline-event event-low" style="left: 800px;">
+                        <div class="event-title">Industry Stats</div>
+                        <div class="event-source">Gartner</div>
+                        <div class="event-time">15:45</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Details Panel -->
+    <div class="details-panel">
+        <div class="details-header">
+            <div class="details-title">Supply Chain Attack Detected</div>
+            <div class="details-meta">
+                <span>🔴 Critical</span>
+                <span>14:22</span>
+                <span>Mandiant</span>
+            </div>
+        </div>
+        <div class="details-content">
+            <p>A sophisticated supply chain attack has been discovered targeting software development tools. The attack leverages compromised npm packages to inject malicious code into build processes.</p>
+            <br>
+            <p>Over 200 organizations have been potentially affected, with indicators suggesting state-sponsored involvement. Immediate action required to audit development dependencies.</p>
+        </div>
+        <div class="details-tags">
+            <span class="tag">Supply Chain</span>
+            <span class="tag">npm</span>
+            <span class="tag">APT</span>
+            <span class="tag">Critical Infrastructure</span>
+        </div>
+    </div>
+    
+    <!-- Status Footer -->
+    <div class="status-footer">
+        <div class="status-live">
+            <span class="live-dot"></span>
+            <span>LIVE - Streaming</span>
+        </div>
+        <span style="margin-left: 20px; opacity: 0.7;">291 new events in last hour</span>
+        <span style="margin-left: auto; opacity: 0.7;">Timeline: Feb 1, 2025 • 18:45 KST</span>
+    </div>
+</body>
+</html>

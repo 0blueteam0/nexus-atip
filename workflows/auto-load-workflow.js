@@ -75,7 +75,7 @@ class WorkflowAutoLoader {
 
     // 열린 프로젝트 확인
     getOpenProjects() {
-        return ['NEXUS', 'Claude-Code'];
+        return ['NEXUS', 'genai'];
     }
 
     // 메모리에 저장

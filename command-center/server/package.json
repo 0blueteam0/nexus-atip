@@ -1,0 +1,16 @@
+{
+  "name": "swarm-commander",
+  "version": "1.0.0",
+  "description": "Autonomous Swarm Commander - Observer server for F architecture",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js --dev"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "chokidar": "^4.0.3",
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  }
+}

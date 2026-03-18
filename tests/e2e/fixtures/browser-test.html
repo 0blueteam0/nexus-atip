@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>브라우저 테스트 - 2560x1330</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .test-container {
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        .screen-info {
+            background: rgba(0, 168, 255, 0.1);
+            border: 1px solid rgba(0, 168, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #00a8ff, #7c3aed);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 168, 255, 0.3);
+        }
+        
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(132, 204, 22, 0.1);
+            border: 1px solid #84cc16;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .error {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Playwright 브라우저 테스트</h1>
+        <p>화면 크기: 2560x1330 정확도 검증</p>
+        
+        <div class="screen-info">
+            <h3>현재 화면 정보</h3>
+            <p><strong>창 크기:</strong> <span id="windowSize">측정 중...</span></p>
+            <p><strong>뷰포트:</strong> <span id="viewport">측정 중...</span></p>
+            <p><strong>해상도:</strong> <span id="resolution">측정 중...</span></p>
+            <p><strong>타겟:</strong> 2560 x 1330</p>
+        </div>
+        
+        <div class="buttons">
+            <button class="test-button" onclick="testClick('버튼1')">테스트 버튼 1</button>
+            <button class="test-button" onclick="testClick('버튼2')">테스트 버튼 2</button>
+            <button class="test-button" onclick="testClick('버튼3')">테스트 버튼 3</button>
+            <button class="test-button" onclick="takeScreenshot()">스크린샷 준비</button>
+            <button class="test-button" onclick="checkConsole()">콘솔 테스트</button>
+        </div>
+        
+        <div id="result" class="result">
+            <p id="resultText"></p>
+        </div>
+        
+        <div class="screen-info">
+            <h3>✅ 테스트 항목</h3>
+            <p id="sizeTest">❌ 화면 크기 검증</p>
+            <p id="buttonTest">⏳ 버튼 클릭 테스트</p>
+            <p id="consoleTest">⏳ 콘솔 에러 검증</p>
+            <p id="screenshotTest">⏳ 스크린샷 촬영</p>
+        </div>
+    </div>
+
+    <script>
+        // 화면 정보 업데이트
+        function updateScreenInfo() {
+            document.getElementById('windowSize').textContent = 
+                `${window.outerWidth} x ${window.outerHeight}`;
+            document.getElementById('viewport').textContent = 
+                `${window.innerWidth} x ${window.innerHeight}`;
+            document.getElementById('resolution').textContent = 
+                `${screen.width} x ${screen.height}`;
+                
+            // 크기 검증
+            const isCorrectSize = (window.innerWidth === 2560 && window.innerHeight === 1330);
+            const sizeElement = document.getElementById('sizeTest');
+            if (isCorrectSize) {
+                sizeElement.textContent = '✅ 화면 크기 검증 - 정확함 (2560x1330)';
+                sizeElement.style.color = '#84cc16';
+            } else {
+                sizeElement.textContent = `❌ 화면 크기 검증 - 불일치 (${window.innerWidth}x${window.innerHeight})`;
+                sizeElement.style.color = '#dc2626';
+            }
+        }
+        
+        // 버튼 클릭 테스트
+        function testClick(buttonName) {
+            console.log(`✅ ${buttonName} 클릭됨`);
+            showResult(`${buttonName} 클릭 성공!`, false);
+            document.getElementById('buttonTest').textContent = '✅ 버튼 클릭 테스트 - 통과';
+            document.getElementById('buttonTest').style.color = '#84cc16';
+        }
+        
+        // 콘솔 테스트
+        function checkConsole() {
+            console.log('✅ 콘솔 테스트 실행');
+            console.warn('⚠️ 테스트 경고 메시지');
+            console.error('❌ 테스트 에러 메시지');
+            showResult('콘솔 메시지 생성 완료', false);
+            document.getElementById('consoleTest').textContent = '✅ 콘솔 에러 검증 - 완료';
+            document.getElementById('consoleTest').style.color = '#84cc16';
+        }
+        
+        // 스크린샷 준비
+        function takeScreenshot() {
+            showResult('스크린샷 촬영 준비 완료', false);
+            document.getElementById('screenshotTest').textContent = '✅ 스크린샷 촬영 - 준비 완료';
+            document.getElementById('screenshotTest').style.color = '#84cc16';
+            
+            // Playwright가 스크린샷 촬영할 수 있도록 body에 클래스 추가
+            document.body.classList.add('screenshot-ready');
+        }
+        
+        // 결과 표시
+        function showResult(message, isError = false) {
+            const result = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            
+            result.style.display = 'block';
+            resultText.textContent = message;
+            
+            if (isError) {
+                result.classList.add('error');
+            } else {
+                result.classList.remove('error');
+            }
+            
+            setTimeout(() => {
+                result.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 초기화
+        updateScreenInfo();
+        setInterval(updateScreenInfo, 1000);
+        
+        // 페이지 로드 완료
+        console.log('🚀 브라우저 테스트 페이지 로드 완료');
+        console.log('📱 현재 화면 크기:', window.innerWidth, 'x', window.innerHeight);
+        console.log('🎯 목표 화면 크기: 2560 x 1330');
+    </script>
+</body>
+</html>

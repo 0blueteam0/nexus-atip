@@ -1,0 +1,27 @@
+{
+  "name": "multi-ai-mcp",
+  "version": "1.0.0",
+  "description": "Multi-AI Orchestration MCP Server - Claude + Gemini collaborative tools",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js --test"
+  },
+  "keywords": [
+    "mcp",
+    "multi-ai",
+    "orchestration",
+    "gemini",
+    "claude"
+  ],
+  "author": "K-Drive Portable",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "mcp": {
+    "name": "multi-ai-orchestration",
+    "description": "Multi-AI collaborative tools: Gemini bridge, consensus engine, crawlers, image generation"
+  }
+}

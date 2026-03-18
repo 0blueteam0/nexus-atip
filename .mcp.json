@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "e2b": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@e2b/mcp-server"
+      ],
+      "env": {
+        "E2B_API_KEY": "${E2B_API_KEY}"
+      }
+    }
+  }
+}

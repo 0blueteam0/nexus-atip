@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "description": "On-demand rule loading index",
+  "lastUpdated": "2025-12-31",
+  "rules": {
+    "environment": {
+      "path": "./environment.md",
+      "triggers": ["환경", "경로", "K드라이브", "Git", "path", "node", "python"],
+      "alwaysApply": true,
+      "size": "small"
+    },
+    "memory-system": {
+      "path": "./memory-system.md",
+      "triggers": ["메모리", "세션", "후속조치", "memory", "session", "persist"],
+      "alwaysApply": false,
+      "size": "medium"
+    },
+    "new-features-v2": {
+      "path": "./new-features-v2.md",
+      "triggers": ["LSP", "Extended Thinking", "Rewind", "새 기능", "feature"],
+      "alwaysApply": false,
+      "size": "small"
+    },
+    "tool-priority": {
+      "path": "./tool-priority.md",
+      "triggers": ["도구", "MCP", "Desktop Commander", "Edit File Lines", "tool"],
+      "alwaysApply": false,
+      "size": "medium"
+    }
+  },
+  "archive": {
+    "path": "./archive/",
+    "description": "Deprecated rules - load only when explicitly referenced",
+    "rules": ["atos-system", "bottom-up-paradigm", "docker-workflow", "fic-compaction", "agentic-learning", "update-workflow", "self-trigger"]
+  }
+}

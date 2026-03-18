@@ -1,0 +1,68 @@
+{
+  "version": "1.0.0",
+  "description": "AI 개발 스택 - IP 기반 서비스 할당",
+  "services": {
+    "ollama": {
+      "ip": "127.0.0.2",
+      "port": 11434,
+      "url": "http://127.0.0.2:11434",
+      "description": "로컬 LLM 추론 엔진",
+      "start_command": "set OLLAMA_HOST=127.0.0.2:11434 && K:/PortableApps/genai/ollama/ollama.exe serve"
+    },
+    "flowise": {
+      "ip": "127.0.0.3",
+      "port": 3000,
+      "url": "http://127.0.0.3:3000",
+      "description": "로우코드 LLM 워크플로우",
+      "start_command": "set HOST=127.0.0.3 && set PORT=3000 && npx flowise start"
+    },
+    "qdrant": {
+      "ip": "127.0.0.4",
+      "port": 6333,
+      "url": "http://127.0.0.4:6333",
+      "description": "벡터 데이터베이스",
+      "start_command": "python -m qdrant_client.local --host 127.0.0.4 --port 6333"
+    },
+    "litellm": {
+      "ip": "127.0.0.5",
+      "port": 8000,
+      "url": "http://127.0.0.5:8000",
+      "description": "통합 LLM 프록시",
+      "start_command": "litellm --host 127.0.0.5 --port 8000"
+    },
+    "streamlit": {
+      "ip": "127.0.0.6",
+      "port": 8501,
+      "url": "http://127.0.0.6:8501",
+      "description": "Python 웹 프레임워크",
+      "start_command": "streamlit run app.py --server.address 127.0.0.6 --server.port 8501"
+    },
+    "gradio": {
+      "ip": "127.0.0.7",
+      "port": 7860,
+      "url": "http://127.0.0.7:7860",
+      "description": "AI 데모 인터페이스",
+      "start_command": "python app.py (내부적으로 127.0.0.7:7860 사용)"
+    },
+    "crewai_api": {
+      "ip": "127.0.0.8",
+      "port": 8080,
+      "url": "http://127.0.0.8:8080",
+      "description": "CrewAI REST API (커스텀)",
+      "start_command": "python crewai_server.py --host 127.0.0.8 --port 8080"
+    }
+  },
+  "advantages": [
+    "포트 충돌 완전 불가능 (IP 격리)",
+    "서비스 명확한 식별 (IP로 구분)",
+    "동시 실행 100% 보장",
+    "디버깅 용이 (IP별 로그)",
+    "방화벽 규칙 세밀 제어"
+  ],
+  "notes": [
+    "127.0.0.0/8 대역은 Windows에서 자동 라우팅",
+    "별도 네트워크 설정 불필요",
+    "재부팅 후에도 유지됨",
+    "모든 loopback IP는 외부 접근 불가 (보안)"
+  ]
+}

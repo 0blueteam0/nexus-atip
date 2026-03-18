@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hunt Query Test</title>
+</head>
+<body>
+    <button onclick="testHuntQuery()">Test Hunt Query</button>
+    <div id="detailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999;">
+        <div style="background:white; margin:50px auto; padding:20px; width:90%; max-width:1200px; border-radius:10px;">
+            <h2 id="modalTitle"></h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    <div id="notification" style="position:fixed; top:20px; right:20px; padding:15px; background:#333; color:white; display:none; border-radius:5px;"></div>
+    
+    <style>
+        #detailModal.active { display: block !important; }
+        #notification.show { display: block !important; }
+    </style>
+    
+    <script>
+        function testHuntQuery() {
+            console.log('Testing Hunt Query...');
+            try {
+                generateHuntQuery();
+                console.log('Hunt Query generated successfully');
+            } catch(e) {
+                console.error('Error:', e);
+                alert('Error: ' + e.message + '\n\nStack: ' + e.stack);
+            }
+        }
+        
+        function showModal(title, content) {
+            console.log('showModal called with title:', title);
+            const modal = document.getElementById('detailModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        function showNotification(text, type) {
+            console.log('Notification:', text, type);
+            const notification = document.getElementById('notification');
+            notification.textContent = text;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+        
+        // Complete generateHuntQuery with all required functions
+        function generateHuntQuery() {
+            console.log('generateHuntQuery called');
+            const nlInterface = `
+                <div style="padding: 20px;">
+                    <h3>ULTRATHINK Hunt Query Test</h3>
+                    <p>If you see this, the modal is working!</p>
+                    <select id="platformSelect">
+                        <option value="kql">KQL</option>
+                        <option value="splunk">Splunk</option>
+                    </select>
+                    <textarea id="nlQueryInput" placeholder="Test query..."></textarea>
+                    <br><br>
+                    <button onclick="processUltraThinkQuery()">Process Query</button>
+                    <button onclick="closeModal()">Close</button>
+                    <div id="huntResults" style="display:none;">Results will appear here</div>
+                    <div id="queryHistory" style="display:none;">History</div>
+                </div>
+            `;
+            showModal('ULTRATHINK Hunt Query Test', nlInterface);
+        }
+        
+        // Main query processor - MUST be in global scope
+        function processUltraThinkQuery() {
+            console.log('processUltraThinkQuery clicked!');
+            alert('Process Query clicked - Functions are working!');
+            
+            const resultsDiv = document.getElementById('huntResults');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '<p style="color:green;">✓ Button click works! Functions are accessible.</p>';
+        }
+    </script>
+</body>
+</html>

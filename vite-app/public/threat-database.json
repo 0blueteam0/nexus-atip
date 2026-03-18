@@ -1,0 +1,2399 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-08-30",
+    "source": "NEXUS Threat Intelligence Platform",
+    "classification": "PUBLIC"
+  },
+  "threatActors": {
+    "APT28": {
+      "id": "apt28",
+      "name": "APT28",
+      "aliases": ["Fancy Bear", "Sofacy", "Pawn Storm", "Sednit", "STRONTIUM", "Tsar Team"],
+      "origin": "Russia",
+      "attribution": {
+        "organization": "GRU (Main Intelligence Directorate)",
+        "confidence": 0.95
+      },
+      "motivation": "Espionage, Information Operations",
+      "firstSeen": "2004",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "X-Agent",
+          "type": "RAT",
+          "version": "4.0",
+          "capabilities": ["keylogging", "screenshot", "file_exfiltration", "remote_shell"],
+          "detection": "Yara: APT28_XAgent_*",
+          "description": "Cross-platform modular RAT"
+        },
+        {
+          "name": "X-Tunnel",
+          "type": "Network Tool",
+          "version": "3.0",
+          "capabilities": ["proxy", "port_forwarding", "vpn"],
+          "ports": [443, 8443, 8080],
+          "description": "Network tunneling tool"
+        },
+        {
+          "name": "Sofacy/SOURFACE",
+          "type": "Backdoor",
+          "version": "2.0",
+          "capabilities": ["downloader", "command_execution", "persistence"],
+          "detection": "Snort: 1:39823",
+          "description": "First-stage backdoor"
+        },
+        {
+          "name": "CHOPSTICK",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["c2_communication", "file_operations"],
+          "detection": "ET TROJAN APT28",
+          "description": "Simple backdoor"
+        },
+        {
+          "name": "Zebrocy",
+          "type": "Dropper",
+          "version": "7.0",
+          "capabilities": ["payload_delivery", "anti_analysis"],
+          "languages": ["AutoIt", "Delphi", "VB.NET", "Go", "Python"],
+          "description": "Multi-language dropper family"
+        },
+        {
+          "name": "LoJax",
+          "type": "UEFI Rootkit",
+          "version": "1.0",
+          "capabilities": ["firmware_persistence", "stealth"],
+          "description": "First UEFI rootkit in the wild"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Spearphishing research via social media",
+          "OSINT gathering on targets",
+          "Domain spoofing preparation",
+          "LinkedIn profiling"
+        ],
+        "weaponization": [
+          "Macro-enabled Office documents",
+          "DLL sideloading payloads",
+          "Weaponized PDFs",
+          "OAuth phishing apps"
+        ],
+        "delivery": [
+          "Spearphishing emails with attachments",
+          "Watering hole attacks",
+          "Compromised legitimate websites",
+          "Social media messages"
+        ],
+        "exploitation": [
+          "CVE-2020-0688 (Exchange)",
+          "CVE-2021-26855 (ProxyLogon)",
+          "CVE-2019-1367 (IE Scripting)",
+          "CVE-2020-1472 (Zerologon)",
+          "CVE-2021-34473 (ProxyShell)"
+        ],
+        "installation": [
+          "Registry run keys persistence",
+          "Scheduled tasks",
+          "Service creation",
+          "WMI event subscriptions",
+          "UEFI implants"
+        ],
+        "commandControl": [
+          "HTTPS C2 channels",
+          "DNS tunneling",
+          "Social media dead drops",
+          "Compromised infrastructure",
+          "Tor hidden services"
+        ],
+        "actionsOnObjectives": [
+          "Credential harvesting (Mimikatz)",
+          "Email collection",
+          "Document exfiltration",
+          "Lateral movement via RDP/SMB",
+          "Long-term persistent access"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1566.002", "name": "Spearphishing Link", "tactic": "Initial Access"},
+        {"id": "T1055", "name": "Process Injection", "tactic": "Defense Evasion"},
+        {"id": "T1003.001", "name": "LSASS Memory", "tactic": "Credential Access"},
+        {"id": "T1071.001", "name": "Web Protocols", "tactic": "Command and Control"},
+        {"id": "T1027", "name": "Obfuscated Files or Information", "tactic": "Defense Evasion"},
+        {"id": "T1547.001", "name": "Registry Run Keys", "tactic": "Persistence"},
+        {"id": "T1021.001", "name": "Remote Desktop Protocol", "tactic": "Lateral Movement"},
+        {"id": "T1018", "name": "Remote System Discovery", "tactic": "Discovery"},
+        {"id": "T1041", "name": "Exfiltration Over C2 Channel", "tactic": "Exfiltration"},
+        {"id": "T1542.001", "name": "System Firmware", "tactic": "Persistence"},
+        {"id": "T1588.002", "name": "Tool", "tactic": "Resource Development"}
+      ],
+      "iocs": {
+        "domains": [
+          "nato-news.com",
+          "worldpoliticsreviews.com",
+          "nato-hq.com",
+          "defence-news.org",
+          "militarytechcooperations.org",
+          "euronews24.info",
+          "ukrainedefence.news",
+          "otan-news.org",
+          "world-nato.org",
+          "pentagon-info.com"
+        ],
+        "ips": [
+          "185.220.101.45",
+          "91.218.67.128",
+          "95.216.13.196",
+          "185.99.133.72",
+          "193.23.244.244",
+          "91.235.234.202",
+          "176.31.112.10",
+          "185.106.120.27"
+        ],
+        "hashes": {
+          "md5": [
+            "3b4e0460aa4b173c072249de3f9dbc64",
+            "9f6a1aa32e5cf3c177dfcf4d4c874cd5",
+            "e5511d218245b6e11e2b07f5da58f039"
+          ],
+          "sha256": [
+            "a93205e8444534e35d27dfc921ee08eb51ec3e2a45e7cbd3f68e8f9a7d8a3c19",
+            "bd334d7649f416e3fb9b52a5a7f0e3ea38f0e5b58c2a67ba8e6e5e3c5e2a4567",
+            "f9e4c8e7e5a4b8c2d5f6a3b9e1c7d4e8a2b5c9d1e4f7a2b8c5d9e2f5a8b1c4d7"
+          ]
+        },
+        "emails": [
+          "john.smith@defense-ministry.org",
+          "sarah.johnson@nato-desk.com",
+          "michael.brown@european-council.eu"
+        ],
+        "mutexes": [
+          "Global\\AppConf",
+          "Local\\XAgentMutex",
+          "Global\\SofacyMain"
+        ],
+        "registryKeys": [
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\AdobeUpdater",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\WinDefend",
+          "HKCU\\Software\\Classes\\CLSID\\{E28F2431-478A-45C2-B3E4-56F8A9C17DE5}"
+        ],
+        "filePaths": [
+          "C:\\ProgramData\\Microsoft\\DeviceSync\\devicesync.exe",
+          "C:\\Windows\\System32\\wuapihost.exe",
+          "%APPDATA%\\Microsoft\\Network\\msnet.exe"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "VM detection via CPUID",
+          "Sleep timers (>10 minutes)",
+          "Mouse movement detection",
+          "Checking for analysis tools"
+        ],
+        "antivirus": [
+          "Polymorphic code",
+          "Process hollowing",
+          "In-memory execution",
+          "Code signing with stolen certificates"
+        ],
+        "network": [
+          "Domain fronting",
+          "Fast flux DNS",
+          "Tor communication",
+          "HTTPS mimicry"
+        ],
+        "forensics": [
+          "Timestomping",
+          "Log deletion",
+          "File wiping",
+          "Anti-memory forensics"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Operation Armageddon",
+          "date": "2022-03",
+          "targets": ["Ukrainian Government", "Energy Sector"],
+          "description": "Targeted Ukrainian infrastructure during conflict"
+        },
+        {
+          "name": "Operation Ghost",
+          "date": "2023-06",
+          "targets": ["NATO Members", "Defense Contractors"],
+          "description": "Intelligence gathering on NATO expansion"
+        },
+        {
+          "name": "Election Interference",
+          "date": "2024-01",
+          "targets": ["Political Organizations", "Think Tanks"],
+          "description": "Information operations targeting democratic processes"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Government", "Defense", "Energy", "Media", "Think Tanks"],
+        "countries": ["Ukraine", "United States", "Germany", "France", "Poland", "United Kingdom"],
+        "dataStolen": ["Emails", "Documents", "Credentials", "Military Plans"]
+      }
+    },
+    "APT29": {
+      "id": "apt29",
+      "name": "APT29",
+      "aliases": ["Cozy Bear", "The Dukes", "YTTRIUM", "CozyDuke", "Dark Halo", "UNC2452", "Nobelium"],
+      "origin": "Russia",
+      "attribution": {
+        "organization": "SVR (Foreign Intelligence Service)",
+        "confidence": 0.9
+      },
+      "motivation": "Strategic Intelligence Collection",
+      "firstSeen": "2008",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "SUNBURST",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["supply_chain_attack", "stealth", "c2_communication"],
+          "detection": "FireEye: SUNBURST.Backdoor",
+          "description": "SolarWinds supply chain backdoor"
+        },
+        {
+          "name": "TEARDROP",
+          "type": "Loader",
+          "version": "1.0",
+          "capabilities": ["memory_only", "cobalt_strike_loader"],
+          "detection": "Yara: TEARDROP_*",
+          "description": "In-memory dropper"
+        },
+        {
+          "name": "WellMess",
+          "type": "RAT",
+          "version": "2.0",
+          "capabilities": ["cross_platform", "golang", "encrypted_comms"],
+          "detection": "Snort: 1:56789",
+          "description": "Cross-platform RAT"
+        },
+        {
+          "name": "WellMail",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["email_c2", "persistence"],
+          "detection": "ET TROJAN WellMail",
+          "description": "Email-based backdoor"
+        },
+        {
+          "name": "GoldMax",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["delayed_c2", "anti_analysis"],
+          "detection": "Microsoft: Trojan:Win64/GoldMax",
+          "description": "Second-stage backdoor"
+        },
+        {
+          "name": "EnvyScout",
+          "type": "Dropper",
+          "version": "1.0",
+          "capabilities": ["html_smuggling", "iso_delivery"],
+          "description": "HTML/ISO dropper"
+        },
+        {
+          "name": "BoomBox",
+          "type": "Downloader",
+          "version": "1.0",
+          "capabilities": ["shellcode_loader", "encrypted_payload"],
+          "description": "Shellcode downloader"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Supply chain analysis",
+          "Cloud service enumeration",
+          "GitHub repository scanning",
+          "Azure AD reconnaissance"
+        ],
+        "weaponization": [
+          "Supply chain compromise",
+          "ISO files with LNK files",
+          "HTML smuggling",
+          "Signed binaries"
+        ],
+        "delivery": [
+          "Compromised software updates",
+          "Spearphishing with ISO attachments",
+          "Trusted relationship abuse",
+          "Cloud service compromise"
+        ],
+        "exploitation": [
+          "CVE-2020-0609 (RDP Gateway)",
+          "CVE-2019-0604 (SharePoint)",
+          "CVE-2021-26855 (Exchange ProxyLogon)",
+          "CVE-2021-27065 (Exchange ProxyLogon)",
+          "Golden SAML attacks"
+        ],
+        "installation": [
+          "Scheduled tasks",
+          "Registry autostart",
+          "DLL hijacking",
+          "Cloud persistence (Azure)",
+          "Service creation"
+        ],
+        "commandControl": [
+          "DNS over HTTPS",
+          "Legitimate cloud services",
+          "Compromised infrastructure",
+          "Email-based C2",
+          "OneDrive/Dropbox abuse"
+        ],
+        "actionsOnObjectives": [
+          "Email theft",
+          "Source code theft",
+          "Cloud resource access",
+          "Long-term persistence",
+          "Supply chain positioning"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1195.002", "name": "Supply Chain Compromise", "tactic": "Initial Access"},
+        {"id": "T1078.004", "name": "Cloud Accounts", "tactic": "Initial Access"},
+        {"id": "T1027.006", "name": "HTML Smuggling", "tactic": "Defense Evasion"},
+        {"id": "T1606.002", "name": "SAML Tokens", "tactic": "Credential Access"},
+        {"id": "T1550.001", "name": "Application Access Token", "tactic": "Defense Evasion"},
+        {"id": "T1553.002", "name": "Code Signing", "tactic": "Defense Evasion"},
+        {"id": "T1574.002", "name": "DLL Side-Loading", "tactic": "Persistence"},
+        {"id": "T1071.004", "name": "DNS", "tactic": "Command and Control"},
+        {"id": "T1567.002", "name": "Exfiltration to Cloud Storage", "tactic": "Exfiltration"},
+        {"id": "T1098", "name": "Account Manipulation", "tactic": "Persistence"},
+        {"id": "T1136.003", "name": "Cloud Account", "tactic": "Persistence"},
+        {"id": "T1484.002", "name": "Domain Trust Modification", "tactic": "Defense Evasion"},
+        {"id": "T1562.001", "name": "Disable or Modify Tools", "tactic": "Defense Evasion"},
+        {"id": "T1070.001", "name": "Clear Windows Event Logs", "tactic": "Defense Evasion"}
+      ],
+      "iocs": {
+        "domains": [
+          "avsvmcloud.com",
+          "digitalcollege.org",
+          "freescanonline.com",
+          "deftsecurity.com",
+          "thedoccloud.com",
+          "websitetheme.com",
+          "highdatabase.com",
+          "incomeupdate.com",
+          "zupertech.com",
+          "panhardware.com",
+          "databasegalore.com",
+          "webcodez.com"
+        ],
+        "ips": [
+          "13.59.205.66",
+          "54.193.127.66",
+          "54.215.192.52",
+          "34.203.203.23",
+          "139.99.115.204",
+          "5.252.177.25",
+          "204.188.205.176",
+          "51.89.125.18",
+          "167.114.213.199"
+        ],
+        "hashes": {
+          "md5": [
+            "b91ce2fa41029f6955bff20079468448",
+            "ce77d116a074dab7a22a0fd4f2c1ab475",
+            "32519b85c0b422e4656de6e6c41878e95"
+          ],
+          "sha256": [
+            "ce77d116a074dab7a22a0fd4f2c1ab475f28e252fea3899b7e346e5e3c5c31c7",
+            "32519b85c0b422e4656de6e6c41878e95fd95026267daab4215ee59c107d6c77",
+            "d0d626deb3f9484e649294a8dfa814c5568f846d5aa02d4cdad5035544cfdf8e"
+          ]
+        },
+        "emails": [
+          "admin@nobelium.net",
+          "support@cozycloud.net",
+          "noreply@svr-ops.ru"
+        ],
+        "mutexes": [
+          "Global\\CozyMutex",
+          "Local\\DukeMain",
+          "Global\\SolarWindsOrion"
+        ],
+        "registryKeys": [
+          "HKLM\\SOFTWARE\\Microsoft\\Cryptography\\OID\\EncodingType",
+          "HKCU\\Software\\Microsoft\\Office\\16.0\\Common\\Identity",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\Solar"
+        ],
+        "filePaths": [
+          "C:\\Windows\\SysWOW64\\netsetupsvc.dll",
+          "C:\\Windows\\System32\\configsecuritypolicy.exe",
+          "C:\\ProgramData\\SolarWinds\\Orion\\SolarWinds.Orion.Core.BusinessLayer.dll"
+        ],
+        "userAgents": [
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SolarWindsOrion/2020.2",
+          "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 Chrome/90.0.4430"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Domain age checking",
+          "Execution delay (12-14 days)",
+          "Legitimate process checking",
+          "Network connectivity verification"
+        ],
+        "antivirus": [
+          "Living off the land",
+          "Signed binaries",
+          "Memory-only payloads",
+          "Supply chain hiding"
+        ],
+        "network": [
+          "DNS over HTTPS",
+          "Legitimate cloud services",
+          "CDN fronting",
+          "Encrypted channels"
+        ],
+        "forensics": [
+          "Event log clearing",
+          "Timestomping",
+          "Self-deletion",
+          "Memory-only operations"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "SolarWinds/SUNBURST",
+          "date": "2020-03",
+          "targets": ["Fortune 500", "Government Agencies", "Tech Companies"],
+          "description": "Largest supply chain attack in history"
+        },
+        {
+          "name": "SolarWinds Post-Exploitation",
+          "date": "2021-01",
+          "targets": ["Cloud Service Providers", "Think Tanks"],
+          "description": "Follow-on targeting after initial compromise"
+        },
+        {
+          "name": "Nobel Prize Phishing",
+          "date": "2021-05",
+          "targets": ["European Governments", "NGOs"],
+          "description": "Credential harvesting campaign"
+        },
+        {
+          "name": "TeamCity Exploitation",
+          "date": "2023-09",
+          "targets": ["Software Development Companies"],
+          "description": "Supply chain positioning"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Technology", "Government", "Healthcare", "Energy", "Finance"],
+        "countries": ["United States", "United Kingdom", "Canada", "Germany", "Japan"],
+        "dataStolen": ["Source Code", "Emails", "Cloud Credentials", "Security Tools Config"]
+      }
+    },
+    "Lazarus": {
+      "id": "lazarus",
+      "name": "Lazarus Group",
+      "aliases": ["Hidden Cobra", "Guardians of Peace", "ZINC", "Labyrinth Chollima", "APT38", "BlueNoroff", "Stardust Chollima"],
+      "origin": "North Korea",
+      "attribution": {
+        "organization": "RGB (Reconnaissance General Bureau)",
+        "confidence": 0.85
+      },
+      "motivation": "Financial Gain, Espionage, Destructive Attacks",
+      "firstSeen": "2009",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "DTrack",
+          "type": "RAT",
+          "version": "3.0",
+          "capabilities": ["keylogging", "screen_capture", "file_listing", "process_listing"],
+          "detection": "Kaspersky: HEUR:Trojan.Win32.Dtrack",
+          "description": "Modular RAT for espionage"
+        },
+        {
+          "name": "HOPLIGHT",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["proxy_functionality", "file_operations", "system_info"],
+          "detection": "US-CERT: Hidden Cobra HOPLIGHT",
+          "description": "Proxy-aware backdoor"
+        },
+        {
+          "name": "MATA Framework",
+          "type": "Multi-platform Framework",
+          "version": "2.0",
+          "capabilities": ["windows", "linux", "macos", "orchestration"],
+          "detection": "Kaspersky: Mata.Framework",
+          "description": "Cross-platform attack framework"
+        },
+        {
+          "name": "AppleJeus",
+          "type": "Cryptocurrency Stealer",
+          "version": "3.0",
+          "capabilities": ["crypto_wallet_theft", "trading_app_trojan"],
+          "detection": "Kaspersky: Trojan.AppleJeus",
+          "description": "Fake cryptocurrency trading applications"
+        },
+        {
+          "name": "WannaCry",
+          "type": "Ransomware",
+          "version": "2.0",
+          "capabilities": ["encryption", "worm_spreading", "bitcoin_demand"],
+          "detection": "Multiple: WannaCrypt0r",
+          "description": "Global ransomware worm"
+        },
+        {
+          "name": "FASTCash",
+          "type": "ATM Malware",
+          "version": "2.0",
+          "capabilities": ["atm_cashout", "switch_compromise"],
+          "detection": "US-CERT: FASTCash Campaign",
+          "description": "ATM cash-out malware"
+        },
+        {
+          "name": "Hermes Ransomware",
+          "type": "Ransomware",
+          "version": "2.1",
+          "capabilities": ["file_encryption", "shadow_copy_deletion"],
+          "detection": "Multiple: Hermes.Ransomware",
+          "description": "Ransomware used in targeted attacks"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "LinkedIn research on employees",
+          "Job posting websites monitoring",
+          "Cryptocurrency exchange research",
+          "SWIFT network analysis"
+        ],
+        "weaponization": [
+          "Fake job offers (Word/PDF)",
+          "Trojanized cryptocurrency apps",
+          "Supply chain compromise",
+          "Watering hole preparation"
+        ],
+        "delivery": [
+          "Spearphishing with job offers",
+          "Strategic web compromises",
+          "Fake cryptocurrency trading apps",
+          "Social media messaging"
+        ],
+        "exploitation": [
+          "CVE-2017-0144 (EternalBlue)",
+          "CVE-2021-44228 (Log4j)",
+          "CVE-2022-22947 (Spring Cloud Gateway)",
+          "CVE-2021-21972 (VMware vCenter)",
+          "Zero-day exploits"
+        ],
+        "installation": [
+          "Service installation",
+          "Scheduled tasks",
+          "Registry persistence",
+          "Bootkit installation",
+          "Living off the land"
+        ],
+        "commandControl": [
+          "HTTP/HTTPS C2",
+          "Compromised websites",
+          "Cloud storage services",
+          "Tor hidden services",
+          "Social media platforms"
+        ],
+        "actionsOnObjectives": [
+          "Cryptocurrency theft",
+          "SWIFT transaction manipulation",
+          "Destructive wiping",
+          "Data exfiltration",
+          "Ransomware deployment"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1189", "name": "Drive-by Compromise", "tactic": "Initial Access"},
+        {"id": "T1204.002", "name": "Malicious File", "tactic": "Execution"},
+        {"id": "T1055", "name": "Process Injection", "tactic": "Defense Evasion"},
+        {"id": "T1490", "name": "Inhibit System Recovery", "tactic": "Impact"},
+        {"id": "T1486", "name": "Data Encrypted for Impact", "tactic": "Impact"},
+        {"id": "T1561.002", "name": "Disk Structure Wipe", "tactic": "Impact"},
+        {"id": "T1087", "name": "Account Discovery", "tactic": "Discovery"},
+        {"id": "T1003", "name": "OS Credential Dumping", "tactic": "Credential Access"},
+        {"id": "T1021.002", "name": "SMB/Windows Admin Shares", "tactic": "Lateral Movement"},
+        {"id": "T1078", "name": "Valid Accounts", "tactic": "Defense Evasion"},
+        {"id": "T1102", "name": "Web Service", "tactic": "Command and Control"},
+        {"id": "T1583.001", "name": "Domains", "tactic": "Resource Development"},
+        {"id": "T1588.001", "name": "Malware", "tactic": "Resource Development"},
+        {"id": "T1650", "name": "Acquire Access", "tactic": "Resource Development"},
+        {"id": "T1657", "name": "Financial Theft", "tactic": "Impact"}
+      ],
+      "iocs": {
+        "domains": [
+          "bankofamerica.com.se",
+          "bitcoin-go.org",
+          "cyptian.com",
+          "dorusio.com",
+          "goldmansachs.com.co",
+          "jobworld.or.kr",
+          "trading-platform.info",
+          "swift-network.org",
+          "crypto-exchange.top",
+          "financial-update.net",
+          "job-seekers.xyz",
+          "blockchain-wallet.cc"
+        ],
+        "ips": [
+          "175.45.176.79",
+          "210.202.40.35",
+          "61.106.56.141",
+          "119.193.196.64",
+          "202.131.233.89",
+          "14.140.116.172",
+          "185.142.236.226",
+          "185.142.239.140"
+        ],
+        "hashes": {
+          "md5": [
+            "5ff465afaabcbf0150d1a3ab2c2e74f3",
+            "9b0f724459637cec5e9576c8332bca16",
+            "7f8a7e38fa7e3a6c2b8c4d6e5f1a2b3c"
+          ],
+          "sha256": [
+            "24c4ff891c89d6b91a8e17141bfb0dfdb18b6f0dfec42a3cb49c17191b2e6c3e",
+            "7f8ce2f50b8a6d6f88e50a4f5e5d3c2b9a1e7c6d4f8b5a9c2e7d1f4a8b6c3e9d2f",
+            "a9b8c7d6e5f4a3b2c1d9e8f7a6b5c4d3e2f1a9b8c7d6e5f4a3b2c1d9e8f7a6b5"
+          ]
+        },
+        "bitcoinAddresses": [
+          "12t9YDPgwueZ9NyMgw519p7AA8isjr6SMw",
+          "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94",
+          "115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn"
+        ],
+        "mutexes": [
+          "Global\\MsWinZonesCacheCounterMutexA",
+          "Global\\TaskSchedulerMutex",
+          "Local\\MATA_MUTEX"
+        ],
+        "registryKeys": [
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\Windows32",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\doc",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mswindrv"
+        ],
+        "filePaths": [
+          "C:\\Windows\\System32\\tasksche.exe",
+          "C:\\ProgramData\\Microsoft\\Crypto\\svchost.exe",
+          "C:\\Users\\Public\\Libraries\\update.exe",
+          "%TEMP%\\~DFD3B4.tmp"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Environment fingerprinting",
+          "Time acceleration detection",
+          "User interaction requirements",
+          "System uptime checking"
+        ],
+        "antivirus": [
+          "Multi-stage droppers",
+          "Code obfuscation",
+          "Packing with custom packers",
+          "Anti-debugging techniques"
+        ],
+        "network": [
+          "Compromised legitimate sites",
+          "Multi-hop proxies",
+          "Encrypted communications",
+          "Blockchain C2"
+        ],
+        "forensics": [
+          "Secure deletion",
+          "Log wiping",
+          "Timestamp manipulation",
+          "Disk wiping capabilities"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Operation Troy",
+          "date": "2013-03",
+          "targets": ["South Korean Banks", "Media"],
+          "description": "Destructive attacks on South Korea"
+        },
+        {
+          "name": "Sony Pictures Attack",
+          "date": "2014-11",
+          "targets": ["Sony Pictures Entertainment"],
+          "description": "Destructive attack and data leak"
+        },
+        {
+          "name": "WannaCry",
+          "date": "2017-05",
+          "targets": ["Global", "Healthcare", "Critical Infrastructure"],
+          "description": "Global ransomware pandemic"
+        },
+        {
+          "name": "FASTCash",
+          "date": "2018-10",
+          "targets": ["Banks", "ATM Networks"],
+          "description": "ATM cash-out scheme"
+        },
+        {
+          "name": "Operation AppleJeus",
+          "date": "2023-07",
+          "targets": ["Cryptocurrency Firms", "FinTech"],
+          "description": "Cryptocurrency theft campaign"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Financial", "Cryptocurrency", "Media", "Government", "Defense", "Healthcare"],
+        "countries": ["South Korea", "United States", "Japan", "India", "Bangladesh", "Vietnam"],
+        "dataStolen": ["Cryptocurrency", "Financial Data", "PII", "Corporate Secrets", "SWIFT Credentials"]
+      }
+    },
+    "APT1": {
+      "id": "apt1",
+      "name": "APT1",
+      "aliases": ["Comment Crew", "Comment Group", "Comment Panda", "PLA Unit 61398", "Byzantine Hades", "Shanghai Group"],
+      "origin": "China",
+      "attribution": {
+        "organization": "PLA Unit 61398",
+        "confidence": 0.95
+      },
+      "motivation": "Economic Espionage, Intellectual Property Theft",
+      "firstSeen": "2006",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "WEBC2",
+          "type": "Backdoor",
+          "version": "4.0",
+          "capabilities": ["http_c2", "file_operations", "command_execution"],
+          "detection": "Mandiant: APT1.WEBC2",
+          "description": "HTTP-based backdoor"
+        },
+        {
+          "name": "BISCUIT",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["persistence", "dl_execute", "proxy"],
+          "detection": "FireEye: Backdoor.APT.BISCUIT",
+          "description": "Also known as bdldr"
+        },
+        {
+          "name": "CALENDAR",
+          "type": "Backdoor",
+          "version": "2.0",
+          "capabilities": ["mail_c2", "steganography"],
+          "detection": "Mandiant: CALENDAR.APT1",
+          "description": "Email-based C2"
+        },
+        {
+          "name": "SEASALT",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["reverse_shell", "file_transfer"],
+          "detection": "APT1.SEASALT",
+          "description": "Reverse shell backdoor"
+        },
+        {
+          "name": "GLOOXMAIL",
+          "type": "Trojan",
+          "version": "1.0",
+          "capabilities": ["credential_theft", "keylogging"],
+          "detection": "Trojan.Glooxmail",
+          "description": "Credential stealer"
+        },
+        {
+          "name": "MANITSME",
+          "type": "Utility",
+          "version": "1.0",
+          "capabilities": ["port_scanning", "network_enum"],
+          "description": "Network reconnaissance tool"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Spear phishing research",
+          "Public website reconnaissance",
+          "Employee social media research",
+          "Technology stack identification"
+        ],
+        "weaponization": [
+          "ZIP archives with executables",
+          "Malicious Office documents",
+          "Compiled HTML Help files",
+          "PDF exploits"
+        ],
+        "delivery": [
+          "Spear phishing emails",
+          "Strategic web compromises",
+          "Secondary victim compromise",
+          "Supply chain attacks"
+        ],
+        "exploitation": [
+          "CVE-2012-0158 (Office)",
+          "CVE-2013-3893 (IE)",
+          "CVE-2014-1761 (Word RTF)",
+          "CVE-2012-4792 (IE Zero-day)",
+          "CVE-2013-3906 (Graphics Component)"
+        ],
+        "installation": [
+          "Service creation",
+          "Registry Run keys",
+          "DLL search order hijacking",
+          "Scheduled tasks",
+          "Startup folder"
+        ],
+        "commandControl": [
+          "HTTP/HTTPS protocols",
+          "Custom encryption",
+          "Gmail accounts",
+          "Compromised websites",
+          "DNS tunneling"
+        ],
+        "actionsOnObjectives": [
+          "Intellectual property theft",
+          "Email harvesting",
+          "Database dumping",
+          "Source code theft",
+          "Long-term access maintenance"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1059.003", "name": "Windows Command Shell", "tactic": "Execution"},
+        {"id": "T1547.001", "name": "Registry Run Keys", "tactic": "Persistence"},
+        {"id": "T1574.001", "name": "DLL Search Order Hijacking", "tactic": "Persistence"},
+        {"id": "T1071.001", "name": "Web Protocols", "tactic": "Command and Control"},
+        {"id": "T1560", "name": "Archive Collected Data", "tactic": "Collection"},
+        {"id": "T1005", "name": "Data from Local System", "tactic": "Collection"},
+        {"id": "T1114.001", "name": "Local Email Collection", "tactic": "Collection"},
+        {"id": "T1083", "name": "File and Directory Discovery", "tactic": "Discovery"},
+        {"id": "T1046", "name": "Network Service Scanning", "tactic": "Discovery"},
+        {"id": "T1135", "name": "Network Share Discovery", "tactic": "Discovery"},
+        {"id": "T1057", "name": "Process Discovery", "tactic": "Discovery"}
+      ],
+      "iocs": {
+        "domains": [
+          "apple.com.hk.blogdns.com",
+          "bbc.com.podzone.org",
+          "cnn.com.dnsrd.com",
+          "download.microsoft.com.mincrosaft.com",
+          "facebook.com.facebookdns.com",
+          "gmail.com.maildetect.com",
+          "news.yahoo.com.changeip.org",
+          "twitter.com.twitterdns.net",
+          "update.microsoft.com.microsoftupdate.net",
+          "windowsupdate.microsoft.com.msupdates.com"
+        ],
+        "ips": [
+          "58.246.0.0/16",
+          "141.108.2.168",
+          "192.94.69.180",
+          "209.131.40.11",
+          "173.194.65.100",
+          "74.125.228.0/24",
+          "61.135.158.0/24",
+          "202.106.185.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "3f4e8b31cb1e8e5d0e1f4c2b8a9d7e6b",
+            "7c2a2173c9603ea26e8f5b3a5c6d4e8f",
+            "a9b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3"
+          ],
+          "sha256": [
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "d7a8a8e9f6c5b4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9",
+            "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2"
+          ]
+        },
+        "emails": [
+          "john.wang@gmail.com",
+          "li.zhang2011@yahoo.com",
+          "chen_wei88@hotmail.com"
+        ],
+        "mutexes": [
+          "Global\\APT1_MUTEX",
+          "Local\\WEBC2_MTX",
+          "Global\\BISCUIT_SYNC"
+        ],
+        "registryKeys": [
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\SystemUpdate",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\RpcSrv"
+        ],
+        "filePaths": [
+          "C:\\Windows\\System32\\svchost.dll",
+          "C:\\Documents and Settings\\All Users\\Application Data\\Microsoft\\update.exe",
+          "C:\\RECYCLER\\S-1-5-21-1482476501-1645434524-1801446348-1003\\winlogon.exe"
+        ],
+        "certificates": [
+          "Thawte Code Signing CA",
+          "VeriSign Class 3 Code Signing",
+          "DigiCert Code Signing CA"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Checking for VM artifacts",
+          "Sleep delays",
+          "Mouse movement detection",
+          "CPU core counting"
+        ],
+        "antivirus": [
+          "Custom packers",
+          "Polymorphic code",
+          "Living off the land",
+          "Signed binaries"
+        ],
+        "network": [
+          "Domain generation algorithms",
+          "Fast flux DNS",
+          "Proxy chains",
+          "Encrypted channels"
+        ],
+        "forensics": [
+          "File timestomping",
+          "Log deletion",
+          "Prefetch file deletion",
+          "MFT manipulation"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Operation Shady RAT",
+          "date": "2011-08",
+          "targets": ["Government", "Defense Contractors", "Energy"],
+          "description": "5-year campaign targeting 70+ organizations"
+        },
+        {
+          "name": "Operation Aurora",
+          "date": "2009-12",
+          "targets": ["Google", "Adobe", "Tech Companies"],
+          "description": "Zero-day attacks on major tech companies"
+        },
+        {
+          "name": "Operation Beebus",
+          "date": "2013-02",
+          "targets": ["Defense", "Aerospace", "Energy"],
+          "description": "Targeted US defense contractors"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Technology", "Financial", "Energy", "Manufacturing", "Legal", "Healthcare"],
+        "countries": ["United States", "United Kingdom", "Canada", "Japan", "Taiwan"],
+        "dataStolen": ["Intellectual Property", "Trade Secrets", "Emails", "Business Plans", "Source Code"]
+      }
+    },
+    "Carbanak": {
+      "id": "carbanak",
+      "name": "Carbanak",
+      "aliases": ["Anunak", "FIN7", "Carbon Spider", "Gold Niagara", "ITG14"],
+      "origin": "Eastern Europe",
+      "attribution": {
+        "organization": "Cybercriminal Group",
+        "confidence": 0.8
+      },
+      "motivation": "Financial Crime",
+      "firstSeen": "2013",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "Carbanak Backdoor",
+          "type": "RAT",
+          "version": "2.0",
+          "capabilities": ["video_capture", "keylogging", "persistence", "lateral_movement"],
+          "detection": "Kaspersky: Backdoor.Win32.Carbanak",
+          "description": "Custom backdoor based on Carberp"
+        },
+        {
+          "name": "PILLOWMINT",
+          "type": "POS Malware",
+          "version": "1.0",
+          "capabilities": ["memory_scraping", "credit_card_theft"],
+          "detection": "FireEye: PILLOWMINT.POSMEM",
+          "description": "Point-of-sale malware"
+        },
+        {
+          "name": "HALFBAKED",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["screenshot", "vncserver", "reverse_shell"],
+          "detection": "Mandiant: HALFBAKED.Backdoor",
+          "description": "VNC-based backdoor"
+        },
+        {
+          "name": "BABYMETAL",
+          "type": "Downloader",
+          "version": "1.0",
+          "capabilities": ["powershell_download", "fileless"],
+          "detection": "CrowdStrike: CarbonSpider.Downloader",
+          "description": "PowerShell downloader"
+        },
+        {
+          "name": "SQLRat",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["sql_c2", "dnstunnel"],
+          "description": "SQL and DNS-based backdoor"
+        },
+        {
+          "name": "Harpy",
+          "type": "Reconnaissance",
+          "version": "1.0",
+          "capabilities": ["network_scanning", "credential_harvesting"],
+          "description": "Network reconnaissance tool"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Restaurant chain research",
+          "Hotel industry targeting",
+          "Bank employee profiling",
+          "POS vendor analysis"
+        ],
+        "weaponization": [
+          "Malicious Word documents",
+          "CHM files with JavaScript",
+          "LNK files in archives",
+          "Malicious RTF documents"
+        ],
+        "delivery": [
+          "Spear phishing to HR departments",
+          "Fake resumes and CVs",
+          "Business email compromise",
+          "Watering hole attacks"
+        ],
+        "exploitation": [
+          "CVE-2017-0199 (Office/WordPad)",
+          "CVE-2017-11882 (Office Equation Editor)",
+          "CVE-2018-8174 (VBScript Engine)",
+          "CVE-2017-8570 (Composite Moniker)",
+          "CVE-2017-8759 (.NET Framework)"
+        ],
+        "installation": [
+          "Scheduled tasks",
+          "Registry persistence",
+          "Service installation",
+          "COM hijacking",
+          "DLL side-loading"
+        ],
+        "commandControl": [
+          "DNS tunneling",
+          "HTTPS C2",
+          "Google Docs for C2",
+          "Compromised websites",
+          "Tor hidden services"
+        ],
+        "actionsOnObjectives": [
+          "ATM cash out",
+          "SWIFT transaction manipulation",
+          "POS data theft",
+          "Money mule operations",
+          "Cryptocurrency mining"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1055.001", "name": "Dynamic-link Library Injection", "tactic": "Defense Evasion"},
+        {"id": "T1543.003", "name": "Windows Service", "tactic": "Persistence"},
+        {"id": "T1056.001", "name": "Keylogging", "tactic": "Collection"},
+        {"id": "T1113", "name": "Screen Capture", "tactic": "Collection"},
+        {"id": "T1021.004", "name": "SSH", "tactic": "Lateral Movement"},
+        {"id": "T1110", "name": "Brute Force", "tactic": "Credential Access"},
+        {"id": "T1040", "name": "Network Sniffing", "tactic": "Credential Access"},
+        {"id": "T1572", "name": "Protocol Tunneling", "tactic": "Command and Control"},
+        {"id": "T1090", "name": "Proxy", "tactic": "Command and Control"},
+        {"id": "T1650", "name": "Acquire Access", "tactic": "Resource Development"},
+        {"id": "T1657", "name": "Financial Theft", "tactic": "Impact"}
+      ],
+      "iocs": {
+        "domains": [
+          "comfortsecure.com",
+          "glotno.com",
+          "kudoc.info",
+          "modelcar.org",
+          "securityupdated.com",
+          "servicegreen.net",
+          "systeminfor.com",
+          "tempuri.org",
+          "updatesoft.com",
+          "verification-service.org"
+        ],
+        "ips": [
+          "5.45.72.0/24",
+          "31.184.198.0/24",
+          "46.166.160.0/24",
+          "91.218.114.0/24",
+          "103.69.91.0/24",
+          "146.185.221.0/24",
+          "185.174.172.0/24",
+          "195.123.233.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "f7a3e0f4a8b2c1d9e8f6a5b4c3d2e1f0",
+            "8b9c7d6e5f4a3b2c1d0e9f8a7b6c5d4e",
+            "2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d"
+          ],
+          "sha256": [
+            "8f6a7b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7",
+            "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a",
+            "9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e"
+          ]
+        },
+        "emails": [
+          "hr@company.com",
+          "jobs@restaurant.com",
+          "recruitment@hotel.com"
+        ],
+        "mutexes": [
+          "Global\\CARBANAK",
+          "Local\\FIN7_MUTEX",
+          "Global\\ANUNAK_MTX"
+        ],
+        "registryKeys": [
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\AdobeFlash",
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\SystemUpdate",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\WinDefends"
+        ],
+        "filePaths": [
+          "C:\\Windows\\System32\\com\\svchost.exe",
+          "C:\\ProgramData\\Adobe\\AdobeUpdate.exe",
+          "C:\\Users\\Public\\Documents\\msword.exe"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Domain age checking",
+          "System uptime verification",
+          "User interaction requirements",
+          "Environment fingerprinting"
+        ],
+        "antivirus": [
+          "Fileless techniques",
+          "Living off the land",
+          "Process hollowing",
+          "Code obfuscation"
+        ],
+        "network": [
+          "DNS over HTTPS",
+          "Domain fronting",
+          "Legitimate service abuse",
+          "Multi-stage C2"
+        ],
+        "forensics": [
+          "Self-deletion",
+          "Event log clearing",
+          "Timestomping",
+          "Anti-forensics techniques"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Hospitality Sector Campaign",
+          "date": "2016-2018",
+          "targets": ["Hotels", "Restaurants", "Casinos"],
+          "description": "POS malware deployment in hospitality"
+        },
+        {
+          "name": "Bank Heist Operations",
+          "date": "2013-2016",
+          "targets": ["Banks", "Payment Processors"],
+          "description": "$1 billion stolen from 100+ financial institutions"
+        },
+        {
+          "name": "SEC Filings Campaign",
+          "date": "2017",
+          "targets": ["Law Firms", "Capital Management"],
+          "description": "Insider trading intelligence gathering"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Financial", "Hospitality", "Retail", "Restaurant", "Healthcare"],
+        "countries": ["United States", "United Kingdom", "Australia", "Canada", "France"],
+        "dataStolen": ["Credit Cards", "Banking Credentials", "Financial Data", "PII", "Corporate Data"]
+      }
+    },
+    "FIN7": {
+      "id": "fin7",
+      "name": "FIN7",
+      "aliases": ["Carbanak Group", "Navigator Group", "Gold Niagara", "Carbon Spider"],
+      "origin": "Eastern Europe",
+      "attribution": {
+        "organization": "Financially Motivated Group",
+        "confidence": 0.85
+      },
+      "motivation": "Financial Crime",
+      "firstSeen": "2015",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "GRIFFON",
+          "type": "JavaScript Backdoor",
+          "version": "4.0",
+          "capabilities": ["javascript_rat", "powershell_execution", "persistence"],
+          "detection": "CrowdStrike: GRIFFON.JavaScript",
+          "description": "JavaScript implant"
+        },
+        {
+          "name": "BOOSTWRITE",
+          "type": "Loader",
+          "version": "2.0",
+          "capabilities": ["memory_injection", "anti_analysis"],
+          "detection": "FireEye: BOOSTWRITE.Loader",
+          "description": "In-memory loader"
+        },
+        {
+          "name": "DICELOADER",
+          "type": "Dropper",
+          "version": "1.0",
+          "capabilities": ["lure_document", "payload_delivery"],
+          "detection": "Morphisec: DICELOADER",
+          "description": "Document-based dropper"
+        },
+        {
+          "name": "TIRION",
+          "type": "Loader",
+          "version": "1.0",
+          "capabilities": ["dll_loading", "anti_sandbox"],
+          "detection": "Microsoft: Trojan:Win32/Tirion",
+          "description": "DLL loader"
+        },
+        {
+          "name": "POWERSOURCE",
+          "type": "PowerShell Framework",
+          "version": "3.0",
+          "capabilities": ["powershell_empire", "lateral_movement"],
+          "description": "PowerShell post-exploitation"
+        },
+        {
+          "name": "BIRDDOG",
+          "type": "Downloader",
+          "version": "1.0",
+          "capabilities": ["staged_download", "evasion"],
+          "description": "Multi-stage downloader"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Restaurant chain websites",
+          "LinkedIn employee research",
+          "SEC filing analysis",
+          "Vendor portal discovery"
+        ],
+        "weaponization": [
+          "Malicious Office macros",
+          "JavaScript in RTF",
+          "LNK files in archives",
+          "Fake software updates"
+        ],
+        "delivery": [
+          "Phishing with fake orders",
+          "Fake complaints/reservations",
+          "Business proposal lures",
+          "USB drops"
+        ],
+        "exploitation": [
+          "CVE-2017-0199",
+          "CVE-2017-11882",
+          "CVE-2018-8174",
+          "DDE exploitation",
+          "Macro execution"
+        ],
+        "installation": [
+          "Scheduled tasks",
+          "Registry autostart",
+          "COM hijacking",
+          "Service installation",
+          "WMI persistence"
+        ],
+        "commandControl": [
+          "HTTPS C2",
+          "DNS tunneling",
+          "Cloud storage abuse",
+          "Legitimate service tunneling",
+          "Multi-tier infrastructure"
+        ],
+        "actionsOnObjectives": [
+          "POS RAM scraping",
+          "Credit card harvesting",
+          "Network reconnaissance",
+          "Lateral movement to POS",
+          "Data staging and exfiltration"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.002", "name": "Spearphishing Link", "tactic": "Initial Access"},
+        {"id": "T1059.007", "name": "JavaScript", "tactic": "Execution"},
+        {"id": "T1059.001", "name": "PowerShell", "tactic": "Execution"},
+        {"id": "T1547.001", "name": "Registry Run Keys", "tactic": "Persistence"},
+        {"id": "T1053.005", "name": "Scheduled Task", "tactic": "Persistence"},
+        {"id": "T1055", "name": "Process Injection", "tactic": "Defense Evasion"},
+        {"id": "T1140", "name": "Deobfuscate/Decode Files", "tactic": "Defense Evasion"},
+        {"id": "T1027.010", "name": "Command Obfuscation", "tactic": "Defense Evasion"},
+        {"id": "T1087", "name": "Account Discovery", "tactic": "Discovery"},
+        {"id": "T1010", "name": "Application Window Discovery", "tactic": "Discovery"},
+        {"id": "T1217", "name": "Browser Bookmark Discovery", "tactic": "Discovery"},
+        {"id": "T1482", "name": "Domain Trust Discovery", "tactic": "Discovery"},
+        {"id": "T1567", "name": "Exfiltration Over Web Service", "tactic": "Exfiltration"}
+      ],
+      "iocs": {
+        "domains": [
+          "ns1.suppservone.com",
+          "ns2.suppservone.com",
+          "update.microsofthelpservice.com",
+          "secure.paychekservice.com",
+          "portal.fedextracking.net",
+          "mail.outlookservices.net",
+          "update.adobeflashupdate.com",
+          "secure.bankofamericaservice.com",
+          "portal.wellsfargoservices.com",
+          "update.javaupdate.net"
+        ],
+        "ips": [
+          "89.45.67.0/24",
+          "109.230.199.0/24",
+          "162.244.34.0/24",
+          "185.180.197.0/24",
+          "195.123.245.0/24",
+          "5.188.87.0/24",
+          "91.223.16.0/24",
+          "185.174.137.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "4f3c2e1b0a9d8e7f6c5b4a3d2e1f0a9b",
+            "7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a",
+            "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d"
+          ],
+          "sha256": [
+            "5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d",
+            "3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b",
+            "1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f"
+          ]
+        },
+        "emails": [
+          "orders@restaurant-supplier.com",
+          "complaints@customer-service.net",
+          "reservations@booking-system.com"
+        ],
+        "mutexes": [
+          "Global\\FIN7_MUTEX",
+          "Local\\GRIFFON_MTX",
+          "Global\\CARBANAK_SYNC"
+        ],
+        "registryKeys": [
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\GoogleUpdate",
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellServiceObjects",
+          "HKCU\\Software\\Classes\\CLSID\\{AB8902B5-09CA-4bb6-B78D-A8F59079A8D5}"
+        ],
+        "filePaths": [
+          "C:\\Users\\Public\\Libraries\\RecordedTV\\msword.exe",
+          "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\AdobeUpdate.lnk",
+          "C:\\Windows\\Temp\\~temp32.exe"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Time delays",
+          "User activity checks",
+          "Domain age verification",
+          "Geolocation checks"
+        ],
+        "antivirus": [
+          "JavaScript obfuscation",
+          "PowerShell encoding",
+          "Living off the land",
+          "Fileless execution"
+        ],
+        "network": [
+          "HTTPS encryption",
+          "Domain generation",
+          "CDN abuse",
+          "Legitimate service tunneling"
+        ],
+        "forensics": [
+          "Memory-only execution",
+          "Log deletion",
+          "Timestomping",
+          "Self-deletion"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Bateleur Operation",
+          "date": "2020-2021",
+          "targets": ["US Companies", "Law Firms"],
+          "description": "Ransomware operations"
+        },
+        {
+          "name": "Hospitality Breach",
+          "date": "2017-2019",
+          "targets": ["Hotels", "Restaurants"],
+          "description": "Mass POS compromise"
+        },
+        {
+          "name": "Supply Chain Attack",
+          "date": "2021",
+          "targets": ["IT Companies", "MSPs"],
+          "description": "Targeting managed service providers"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Hospitality", "Retail", "Restaurant", "Gaming", "Financial Services"],
+        "countries": ["United States", "United Kingdom", "Australia", "France", "Germany"],
+        "dataStolen": ["Payment Cards", "Customer PII", "Financial Records", "Corporate Data"]
+      }
+    },
+    "CobaltGroup": {
+      "id": "cobalt_group",
+      "name": "Cobalt Group",
+      "aliases": ["Cobalt Gang", "Cobalt Spider", "GOLD KINGSWOOD", "ITG11"],
+      "origin": "Eastern Europe",
+      "attribution": {
+        "organization": "Cybercriminal Syndicate",
+        "confidence": 0.75
+      },
+      "motivation": "Financial Crime, ATM Jackpotting",
+      "firstSeen": "2016",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "CobaltStrike",
+          "type": "Post-Exploitation Framework",
+          "version": "4.5",
+          "capabilities": ["c2", "lateral_movement", "persistence", "credential_theft"],
+          "detection": "Multiple vendors detect CobaltStrike",
+          "description": "Commercial penetration testing tool"
+        },
+        {
+          "name": "ATMJackpot",
+          "type": "ATM Malware",
+          "version": "2.0",
+          "capabilities": ["atm_control", "cash_dispensing"],
+          "detection": "Custom Yara rules",
+          "description": "ATM jackpotting malware"
+        },
+        {
+          "name": "More_eggs",
+          "type": "JavaScript Backdoor",
+          "version": "6.0",
+          "capabilities": ["javascript_rat", "modular_plugins"],
+          "detection": "TrendMicro: JS_MOREEGGS",
+          "description": "JavaScript backdoor framework"
+        },
+        {
+          "name": "SpicyOmelette",
+          "type": "Loader",
+          "version": "1.0",
+          "capabilities": ["payload_delivery", "anti_analysis"],
+          "detection": "Kaspersky: HEUR:Trojan.Win32.SpicyOmelette",
+          "description": "Shellcode loader"
+        },
+        {
+          "name": "TerraLoader",
+          "type": "Loader",
+          "version": "1.0",
+          "capabilities": ["staged_loading", "evasion"],
+          "description": "Multi-stage loader"
+        },
+        {
+          "name": "SilverTerrier Tools",
+          "type": "Toolkit",
+          "version": "1.0",
+          "capabilities": ["various_tools", "custom_malware"],
+          "description": "Custom toolkit collection"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Bank employee LinkedIn research",
+          "SWIFT network research",
+          "ATM vendor analysis",
+          "Partner bank identification"
+        ],
+        "weaponization": [
+          "Weaponized Word documents",
+          "Malicious PDFs",
+          "Exploit kits",
+          "Supply chain implants"
+        ],
+        "delivery": [
+          "Spear phishing to bank employees",
+          "Watering hole on banking sites",
+          "Supply chain compromise",
+          "Physical USB drops"
+        ],
+        "exploitation": [
+          "CVE-2017-11882",
+          "CVE-2017-0199",
+          "CVE-2018-8174",
+          "CVE-2018-4878 (Flash)",
+          "ThreadKit exploits"
+        ],
+        "installation": [
+          "Registry persistence",
+          "Scheduled tasks",
+          "Service installation",
+          "DLL hijacking",
+          "Cobalt Strike beacons"
+        ],
+        "commandControl": [
+          "HTTPS C2",
+          "DNS beaconing",
+          "Gmail dead drops",
+          "Compromised infrastructure",
+          "Cobalt Strike teamservers"
+        ],
+        "actionsOnObjectives": [
+          "ATM jackpotting",
+          "SWIFT fraud",
+          "Card processing system compromise",
+          "Money mule transfers",
+          "Cryptocurrency theft"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1189", "name": "Drive-by Compromise", "tactic": "Initial Access"},
+        {"id": "T1059.007", "name": "JavaScript", "tactic": "Execution"},
+        {"id": "T1053", "name": "Scheduled Task/Job", "tactic": "Persistence"},
+        {"id": "T1055", "name": "Process Injection", "tactic": "Defense Evasion"},
+        {"id": "T1036", "name": "Masquerading", "tactic": "Defense Evasion"},
+        {"id": "T1497", "name": "Virtualization/Sandbox Evasion", "tactic": "Defense Evasion"},
+        {"id": "T1087", "name": "Account Discovery", "tactic": "Discovery"},
+        {"id": "T1135", "name": "Network Share Discovery", "tactic": "Discovery"},
+        {"id": "T1650", "name": "Acquire Access", "tactic": "Resource Development"},
+        {"id": "T1657", "name": "Financial Theft", "tactic": "Impact"},
+        {"id": "T1565", "name": "Data Manipulation", "tactic": "Impact"}
+      ],
+      "iocs": {
+        "domains": [
+          "secure-banking.net",
+          "swift-network.com",
+          "atm-update.org",
+          "bank-portal.info",
+          "financial-services.biz",
+          "payment-gateway.cc",
+          "swift-codes.net",
+          "banking-secure.com",
+          "atm-software.net",
+          "financial-update.org"
+        ],
+        "ips": [
+          "31.184.234.0/24",
+          "46.183.221.0/24",
+          "89.39.105.0/24",
+          "146.185.253.0/24",
+          "185.147.14.0/24",
+          "195.123.241.0/24",
+          "91.234.254.0/24",
+          "178.162.197.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c",
+            "8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a",
+            "2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a"
+          ],
+          "sha256": [
+            "4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f",
+            "2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e",
+            "0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b"
+          ]
+        },
+        "emails": [
+          "info@secure-bank.com",
+          "support@swift-transfer.net",
+          "admin@financial-dept.org"
+        ],
+        "mutexes": [
+          "Global\\COBALT_MUTEX",
+          "Local\\MORE_EGGS_MTX",
+          "Global\\ATM_JACK"
+        ],
+        "registryKeys": [
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\\SecurityUpdate",
+          "HKCU\\Software\\Microsoft\\Office\\Outlook\\Security",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\CobaltService"
+        ],
+        "filePaths": [
+          "C:\\ProgramData\\Microsoft\\Windows\\Templates\\normal.dot",
+          "C:\\Windows\\System32\\atmdisp.exe",
+          "C:\\Users\\Public\\Documents\\swift_update.exe"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "VM detection",
+          "Analysis tool detection",
+          "Time acceleration checks",
+          "User interaction requirements"
+        ],
+        "antivirus": [
+          "Obfuscated JavaScript",
+          "Process injection",
+          "Living off the land",
+          "Signed binaries"
+        ],
+        "network": [
+          "Domain fronting",
+          "Fast flux",
+          "Legitimate service abuse",
+          "Encrypted channels"
+        ],
+        "forensics": [
+          "Memory-only payloads",
+          "Log wiping",
+          "Timestomping",
+          "Anti-forensics"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "ATM Jackpotting Wave",
+          "date": "2016-2018",
+          "targets": ["Banks in Europe", "Banks in CIS"],
+          "description": "Mass ATM compromise across Europe"
+        },
+        {
+          "name": "SWIFT Heist",
+          "date": "2017",
+          "targets": ["Banks", "Financial Institutions"],
+          "description": "Attempted theft via SWIFT network"
+        },
+        {
+          "name": "Supply Chain Banking",
+          "date": "2019",
+          "targets": ["Banking Software Vendors"],
+          "description": "Targeting banking supply chain"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Banking", "Financial Services", "Payment Processing", "ATM Networks"],
+        "countries": ["Russia", "Romania", "Netherlands", "Spain", "Malaysia", "Taiwan"],
+        "dataStolen": ["Banking Credentials", "SWIFT Codes", "ATM Access", "Financial Data"]
+      }
+    },
+    "DarkHydrus": {
+      "id": "darkhydrus",
+      "name": "DarkHydrus",
+      "aliases": ["LazyMeerkat", "SectorD02"],
+      "origin": "Middle East",
+      "attribution": {
+        "organization": "Unknown State Actor",
+        "confidence": 0.7
+      },
+      "motivation": "Espionage, Government Interests",
+      "firstSeen": "2016",
+      "lastActive": "2023",
+      "tools": [
+        {
+          "name": "RogueRobin",
+          "type": "Trojan",
+          "version": "2.0",
+          "capabilities": ["c2_communication", "screenshot", "keylogging"],
+          "detection": "PaloAlto: Trojan.RogueRobin",
+          "description": "C# and PowerShell trojan"
+        },
+        {
+          "name": "Phishery",
+          "type": "Credential Harvester",
+          "version": "1.0",
+          "capabilities": ["credential_theft", "document_tracking"],
+          "detection": "Generic phishing detection",
+          "description": "Basic auth credential harvester"
+        },
+        {
+          "name": "PowerShell Empire",
+          "type": "Post-Exploitation",
+          "version": "3.0",
+          "capabilities": ["full_post_exploitation", "lateral_movement"],
+          "description": "Open-source framework"
+        },
+        {
+          "name": "DarkHydrus Dropper",
+          "type": "Dropper",
+          "version": "1.0",
+          "capabilities": ["payload_delivery", "persistence"],
+          "description": "Custom dropper"
+        },
+        {
+          "name": "DNS Tunneler",
+          "type": "C2 Tool",
+          "version": "1.0",
+          "capabilities": ["dns_tunneling", "data_exfiltration"],
+          "description": "DNS-based C2 channel"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Government agency research",
+          "Social media profiling",
+          "Public document analysis",
+          "Infrastructure mapping"
+        ],
+        "weaponization": [
+          "Weaponized Excel documents",
+          "Malicious templates",
+          "PowerShell payloads",
+          "HTA files"
+        ],
+        "delivery": [
+          "Spear phishing emails",
+          "Credential harvesting pages",
+          "Watering holes",
+          "Cloud storage links"
+        ],
+        "exploitation": [
+          "CVE-2017-11882",
+          "CVE-2017-0199",
+          "Template injection",
+          "Macro execution",
+          "DDE exploitation"
+        ],
+        "installation": [
+          "Registry persistence",
+          "Scheduled tasks",
+          "WMI subscriptions",
+          "Startup folder",
+          "Office add-ins"
+        ],
+        "commandControl": [
+          "DNS tunneling",
+          "HTTPS C2",
+          "Google Drive abuse",
+          "Paste sites",
+          "Compromised WordPress"
+        ],
+        "actionsOnObjectives": [
+          "Document theft",
+          "Email collection",
+          "Credential harvesting",
+          "Long-term monitoring",
+          "Strategic intelligence"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1566.002", "name": "Spearphishing Link", "tactic": "Initial Access"},
+        {"id": "T1059.001", "name": "PowerShell", "tactic": "Execution"},
+        {"id": "T1547.001", "name": "Registry Run Keys", "tactic": "Persistence"},
+        {"id": "T1071.004", "name": "DNS", "tactic": "Command and Control"},
+        {"id": "T1027", "name": "Obfuscated Files", "tactic": "Defense Evasion"},
+        {"id": "T1055", "name": "Process Injection", "tactic": "Defense Evasion"},
+        {"id": "T1057", "name": "Process Discovery", "tactic": "Discovery"},
+        {"id": "T1083", "name": "File and Directory Discovery", "tactic": "Discovery"},
+        {"id": "T1005", "name": "Data from Local System", "tactic": "Collection"},
+        {"id": "T1041", "name": "Exfiltration Over C2", "tactic": "Exfiltration"}
+      ],
+      "iocs": {
+        "domains": [
+          "0ffice365.com",
+          "0utlook.com",
+          "microsoft-update.com",
+          "windows-update.com",
+          "sharepoint-online.com",
+          "one-drive.com",
+          "office-365.org",
+          "microsoft-security.net",
+          "outlook-web.com",
+          "exchange-online.net"
+        ],
+        "ips": [
+          "185.161.211.0/24",
+          "185.174.101.0/24",
+          "185.193.38.0/24",
+          "91.235.116.0/24",
+          "176.126.85.0/24",
+          "185.203.118.0/24",
+          "45.142.212.0/24",
+          "185.225.17.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d",
+            "5c4d3e2f1a0b9c8d7e6b5a4f3e2d1c0b",
+            "7e6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f"
+          ],
+          "sha256": [
+            "1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d",
+            "9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b",
+            "7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f"
+          ]
+        },
+        "emails": [
+          "noreply@outlook-support.com",
+          "admin@microsoft-help.net",
+          "security@windows-defender.org"
+        ],
+        "mutexes": [
+          "Global\\DarkHydrus",
+          "Local\\RogueRobin",
+          "Global\\DNSTunnel"
+        ],
+        "registryKeys": [
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\OneDrive",
+          "HKLM\\SOFTWARE\\Microsoft\\Office\\Outlook\\Addins\\SecurityAddin",
+          "HKCU\\Software\\Classes\\ms-settings\\shell\\open\\command"
+        ],
+        "filePaths": [
+          "C:\\Users\\Public\\Libraries\\update.exe",
+          "C:\\ProgramData\\Microsoft\\Office\\msword.exe",
+          "C:\\Windows\\Temp\\~df394.tmp"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Geolocation checks",
+          "Language checks",
+          "Domain joined checks",
+          "User activity verification"
+        ],
+        "antivirus": [
+          "PowerShell obfuscation",
+          "Living off the land",
+          "Fileless execution",
+          "Process injection"
+        ],
+        "network": [
+          "DNS tunneling",
+          "HTTPS encryption",
+          "Cloud service abuse",
+          "Domain fronting"
+        ],
+        "forensics": [
+          "Log deletion",
+          "Timestomping",
+          "Memory-only payloads",
+          "Anti-forensics"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Government Credential Harvesting",
+          "date": "2018",
+          "targets": ["Government Agencies", "NGOs"],
+          "description": "Credential phishing campaign"
+        },
+        {
+          "name": "Energy Sector Campaign",
+          "date": "2019",
+          "targets": ["Energy Companies", "Utilities"],
+          "description": "Long-term espionage"
+        },
+        {
+          "name": "Cloud Services Abuse",
+          "date": "2020",
+          "targets": ["Technology Companies", "Cloud Providers"],
+          "description": "Leveraging cloud infrastructure"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Government", "Energy", "Technology", "Telecommunications", "Finance"],
+        "countries": ["United States", "Israel", "Saudi Arabia", "UAE", "Turkey"],
+        "dataStolen": ["Credentials", "Documents", "Emails", "Strategic Intelligence"]
+      }
+    },
+    "OilRig": {
+      "id": "oilrig",
+      "name": "OilRig",
+      "aliases": ["APT34", "Helix Kitten", "COBALT GYPSY", "IRN2", "Greenbug"],
+      "origin": "Iran",
+      "attribution": {
+        "organization": "Iranian Government",
+        "confidence": 0.85
+      },
+      "motivation": "Espionage, Regional Interests",
+      "firstSeen": "2014",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "TONEDEAF",
+          "type": "Backdoor",
+          "version": "2.0",
+          "capabilities": ["http_c2", "file_upload_download", "command_execution"],
+          "detection": "FireEye: Backdoor.MSIL.TONEDEAF",
+          "description": ".NET backdoor"
+        },
+        {
+          "name": "VALUEVAULT",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["powershell_based", "dns_c2"],
+          "detection": "Unit42: VALUEVAULT",
+          "description": "PowerShell backdoor"
+        },
+        {
+          "name": "REMEXI",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["screenshot", "keylogging", "browser_password_theft"],
+          "detection": "CrowdStrike: HELIX.KITTEN.REMEXI",
+          "description": "Multi-function backdoor"
+        },
+        {
+          "name": "QUADAGENT",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["powershell_rat", "scheduled_tasks"],
+          "detection": "Unit42: PowerShell.QUADAGENT",
+          "description": "PowerShell RAT"
+        },
+        {
+          "name": "POWRUNER",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["powershell_backdoor", "persistence"],
+          "detection": "Symantec: Trojan.Powruner",
+          "description": "PowerShell backdoor"
+        },
+        {
+          "name": "BONDUPDATER",
+          "type": "Trojan",
+          "version": "1.0",
+          "capabilities": ["downloader", "powershell_execution"],
+          "detection": "FireEye: Trojan.BONDUPDATER",
+          "description": "PowerShell-based trojan"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "LinkedIn profiling",
+          "GitHub repository scanning",
+          "Public website analysis",
+          "Supply chain mapping"
+        ],
+        "weaponization": [
+          "Macro-enabled documents",
+          "HTA files",
+          "SCR files in archives",
+          "Malicious templates"
+        ],
+        "delivery": [
+          "Spear phishing with attachments",
+          "Watering hole attacks",
+          "Compromised websites",
+          "Social engineering calls"
+        ],
+        "exploitation": [
+          "CVE-2017-11882",
+          "CVE-2017-0199",
+          "CVE-2018-8414",
+          "Macro execution",
+          "PowerShell execution"
+        ],
+        "installation": [
+          "Scheduled tasks",
+          "Registry persistence",
+          "Service installation",
+          "WMI event subscriptions",
+          "COM hijacking"
+        ],
+        "commandControl": [
+          "DNS tunneling",
+          "HTTPS C2",
+          "Email-based C2",
+          "Cloud storage abuse",
+          "Compromised websites"
+        ],
+        "actionsOnObjectives": [
+          "Credential harvesting",
+          "Email collection",
+          "Document exfiltration",
+          "Network reconnaissance",
+          "Long-term access"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1566.001", "name": "Spearphishing Attachment", "tactic": "Initial Access"},
+        {"id": "T1566.002", "name": "Spearphishing Link", "tactic": "Initial Access"},
+        {"id": "T1059.001", "name": "PowerShell", "tactic": "Execution"},
+        {"id": "T1547.001", "name": "Registry Run Keys", "tactic": "Persistence"},
+        {"id": "T1053.005", "name": "Scheduled Task", "tactic": "Persistence"},
+        {"id": "T1071.004", "name": "DNS", "tactic": "Command and Control"},
+        {"id": "T1027", "name": "Obfuscated Files", "tactic": "Defense Evasion"},
+        {"id": "T1003.001", "name": "LSASS Memory", "tactic": "Credential Access"},
+        {"id": "T1555.003", "name": "Credentials from Web Browsers", "tactic": "Credential Access"},
+        {"id": "T1056.001", "name": "Keylogging", "tactic": "Collection"},
+        {"id": "T1113", "name": "Screen Capture", "tactic": "Collection"},
+        {"id": "T1041", "name": "Exfiltration Over C2", "tactic": "Exfiltration"}
+      ],
+      "iocs": {
+        "domains": [
+          "msoffice-update.com",
+          "office365-management.com",
+          "sharepoint-management.com",
+          "windows-updates.com",
+          "chrome-update.com",
+          "firefox-update.com",
+          "adobe-update.net",
+          "java-update.org",
+          "outlook-exchange.com",
+          "onedrive-service.com"
+        ],
+        "ips": [
+          "185.15.247.0/24",
+          "185.36.100.0/24",
+          "185.161.210.0/24",
+          "185.236.76.0/24",
+          "31.192.105.0/24",
+          "80.82.78.0/24",
+          "185.140.249.0/24",
+          "45.147.229.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "9e8f7a6b5c4d3e2f1a0b9c8d7e6b5a4f",
+            "3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b",
+            "5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d"
+          ],
+          "sha256": [
+            "8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e",
+            "6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c",
+            "4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a"
+          ]
+        },
+        "emails": [
+          "hr@company-careers.com",
+          "info@job-portal.net",
+          "admin@corporate-services.org"
+        ],
+        "mutexes": [
+          "Global\\OilRig",
+          "Local\\TONEDEAF",
+          "Global\\APT34_MUTEX"
+        ],
+        "registryKeys": [
+          "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\SystemUpdate",
+          "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication",
+          "HKCU\\Software\\Classes\\Folder\\shell\\open\\command"
+        ],
+        "filePaths": [
+          "C:\\ProgramData\\WindowsUpdate\\update.exe",
+          "C:\\Users\\Public\\Documents\\mshelp.exe",
+          "C:\\Windows\\Temp\\dns_updater.exe"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "Sleep timers",
+          "Environment checks",
+          "User interaction requirements",
+          "System fingerprinting"
+        ],
+        "antivirus": [
+          "PowerShell obfuscation",
+          "Base64 encoding",
+          "Living off the land",
+          "Process injection"
+        ],
+        "network": [
+          "DNS tunneling",
+          "HTTPS encryption",
+          "Legitimate service abuse",
+          "Proxy usage"
+        ],
+        "forensics": [
+          "Log clearing",
+          "Timestomping",
+          "Self-deletion",
+          "Memory-only execution"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Shamoon 3",
+          "date": "2018-12",
+          "targets": ["Energy Sector", "Oil & Gas"],
+          "description": "Destructive attacks on energy sector"
+        },
+        {
+          "name": "QUADAGENT Campaign",
+          "date": "2018",
+          "targets": ["Government", "Financial"],
+          "description": "PowerShell-based espionage"
+        },
+        {
+          "name": "LinkedIn Campaign",
+          "date": "2019",
+          "targets": ["Energy", "Government"],
+          "description": "Social engineering via LinkedIn"
+        },
+        {
+          "name": "Supply Chain Attack",
+          "date": "2020",
+          "targets": ["IT Service Providers"],
+          "description": "Targeting IT supply chain"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Energy", "Government", "Financial", "Telecommunications", "Chemical"],
+        "countries": ["United States", "Israel", "Saudi Arabia", "UAE", "Turkey", "Qatar"],
+        "dataStolen": ["Credentials", "Documents", "Emails", "Network Architecture", "Strategic Plans"]
+      }
+    },
+    "Turla": {
+      "id": "turla",
+      "name": "Turla",
+      "aliases": ["Snake", "Uroburos", "Venomous Bear", "Waterbug", "WhiteBear", "IRON HUNTER", "Krypton"],
+      "origin": "Russia",
+      "attribution": {
+        "organization": "FSB (Federal Security Service)",
+        "confidence": 0.9
+      },
+      "motivation": "Espionage, Intelligence Collection",
+      "firstSeen": "2008",
+      "lastActive": "2024",
+      "tools": [
+        {
+          "name": "Snake/Uroburos",
+          "type": "Rootkit",
+          "version": "3.0",
+          "capabilities": ["kernel_rootkit", "network_injection", "peer_to_peer"],
+          "detection": "BAE: Snake.Rootkit",
+          "description": "Sophisticated kernel rootkit"
+        },
+        {
+          "name": "Carbon",
+          "type": "Backdoor",
+          "version": "2.0",
+          "capabilities": ["modular_framework", "orchestrator", "plugin_system"],
+          "detection": "ESET: Win32/Turla.Carbon",
+          "description": "Modular backdoor framework"
+        },
+        {
+          "name": "Gazer",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["encrypted_c2", "video_capture", "password_stealing"],
+          "detection": "Kaspersky: Backdoor.Win32.Gazer",
+          "description": "Second-stage backdoor"
+        },
+        {
+          "name": "Mosquito",
+          "type": "Backdoor",
+          "version": "1.0",
+          "capabilities": ["javascript_backdoor", "metasploit_delivery"],
+          "detection": "ESET: JS/Turla.Mosquito",
+          "description": "JavaScript backdoor"
+        },
+        {
+          "name": "LightNeuron",
+          "type": "Email Backdoor",
+          "version": "1.0",
+          "capabilities": ["exchange_backdoor", "email_interception"],
+          "detection": "ESET: LightNeuron",
+          "description": "Microsoft Exchange backdoor"
+        },
+        {
+          "name": "Penguin Turla",
+          "type": "Linux Backdoor",
+          "version": "2.0",
+          "capabilities": ["linux_backdoor", "ssh_hijacking"],
+          "detection": "Kaspersky: Linux.Turla.Penguin",
+          "description": "Linux backdoor"
+        },
+        {
+          "name": "ComRAT v4",
+          "type": "Remote Access Tool",
+          "version": "4.0",
+          "capabilities": ["gmail_c2", "onedrive_c2", "mail_slot_ipc"],
+          "detection": "ESET: Win32/ComRAT",
+          "description": "Advanced RAT"
+        }
+      ],
+      "killChain": {
+        "reconnaissance": [
+          "Satellite communication research",
+          "Government infrastructure mapping",
+          "Supply chain analysis",
+          "Diplomatic target research"
+        ],
+        "weaponization": [
+          "Watering hole preparation",
+          "Zero-day development",
+          "Supply chain implants",
+          "Hijacked satellite links"
+        ],
+        "delivery": [
+          "Watering hole attacks",
+          "Spear phishing",
+          "Physical media",
+          "Supply chain compromise"
+        ],
+        "exploitation": [
+          "Zero-day exploits",
+          "CVE-2019-1069",
+          "CVE-2020-0688",
+          "Kernel exploits",
+          "Satellite hijacking"
+        ],
+        "installation": [
+          "Kernel rootkit installation",
+          "Bootkit persistence",
+          "Registry modifications",
+          "Service installation",
+          "Firmware implants"
+        ],
+        "commandControl": [
+          "Satellite-based C2",
+          "Email-based C2",
+          "Social media C2",
+          "Compromised web servers",
+          "P2P networks"
+        ],
+        "actionsOnObjectives": [
+          "Long-term espionage",
+          "Document exfiltration",
+          "Email monitoring",
+          "Lateral movement",
+          "Strategic positioning"
+        ]
+      },
+      "mitreAttackTechniques": [
+        {"id": "T1014", "name": "Rootkit", "tactic": "Defense Evasion"},
+        {"id": "T1542.003", "name": "Bootkit", "tactic": "Persistence"},
+        {"id": "T1570", "name": "Lateral Tool Transfer", "tactic": "Lateral Movement"},
+        {"id": "T1090.001", "name": "Internal Proxy", "tactic": "Command and Control"},
+        {"id": "T1505.005", "name": "Terminal Services DLL", "tactic": "Persistence"},
+        {"id": "T1078.002", "name": "Domain Accounts", "tactic": "Defense Evasion"},
+        {"id": "T1036.005", "name": "Match Legitimate Name", "tactic": "Defense Evasion"},
+        {"id": "T1027.002", "name": "Software Packing", "tactic": "Defense Evasion"},
+        {"id": "T1573.001", "name": "Symmetric Cryptography", "tactic": "Command and Control"},
+        {"id": "T1021.004", "name": "SSH", "tactic": "Lateral Movement"},
+        {"id": "T1008", "name": "Fallback Channels", "tactic": "Command and Control"},
+        {"id": "T1105", "name": "Ingress Tool Transfer", "tactic": "Command and Control"},
+        {"id": "T1095", "name": "Non-Application Layer Protocol", "tactic": "Command and Control"},
+        {"id": "T1571", "name": "Non-Standard Port", "tactic": "Command and Control"}
+      ],
+      "iocs": {
+        "domains": [
+          "space-delivery.com",
+          "satellite-update.com",
+          "gov-mn.info",
+          "state-gov.us",
+          "nato-int.com",
+          "pentagon-news.com",
+          "diplo-news.com",
+          "embassy-news.net",
+          "foreign-ministry.org",
+          "satellite-comms.net",
+          "space-station.info",
+          "orbital-news.com"
+        ],
+        "ips": [
+          "88.198.13.116",
+          "62.75.143.100",
+          "94.242.222.100",
+          "185.106.122.0/24",
+          "31.41.44.0/24",
+          "185.183.107.0/24",
+          "45.124.132.0/24",
+          "193.23.181.0/24"
+        ],
+        "hashes": {
+          "md5": [
+            "14f1c4ce32e2b5e2a07c6e88f1a7a3b9",
+            "3bf63c0c0ea6f11a8e5c4d2a9b7e8f5c",
+            "8a9b7c6d5e4f3a2b1c0d9e8f7a6b5c4d"
+          ],
+          "sha256": [
+            "7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d",
+            "5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c",
+            "3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a"
+          ]
+        },
+        "emails": [
+          "admin@state-department.com",
+          "info@embassy-service.org",
+          "support@diplomatic-mail.net"
+        ],
+        "mutexes": [
+          "Global\\Turla_Snake",
+          "Local\\Carbon_Framework",
+          "Global\\Uroburos"
+        ],
+        "registryKeys": [
+          "HKLM\\SYSTEM\\CurrentControlSet\\Services\\atapi\\Parameters",
+          "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Shell",
+          "HKLM\\SYSTEM\\CurrentControlSet\\Control\\arbiters\\AllocationOrder"
+        ],
+        "filePaths": [
+          "C:\\Windows\\System32\\drivers\\atapi.sys",
+          "C:\\Windows\\System32\\svchost.dat",
+          "C:\\Windows\\System32\\com\\cache.dat",
+          "C:\\Windows\\System32\\wship6.dll"
+        ],
+        "certificates": [
+          "Sysprint AG",
+          "Ultimate Computer Support Ltd",
+          "Solid Loop Ltd"
+        ]
+      },
+      "evasionTechniques": {
+        "sandbox": [
+          "VM detection bypasses",
+          "Analysis environment detection",
+          "Time-based evasion",
+          "Geolocation checks"
+        ],
+        "antivirus": [
+          "Kernel-level operation",
+          "Rootkit capabilities",
+          "Code signing",
+          "Living off the land"
+        ],
+        "network": [
+          "Satellite communication abuse",
+          "Encrypted channels",
+          "Legitimate service abuse",
+          "P2P communication"
+        ],
+        "forensics": [
+          "Anti-forensics techniques",
+          "Memory wiping",
+          "Log manipulation",
+          "Timestamp forgery"
+        ]
+      },
+      "campaigns": [
+        {
+          "name": "Epic Turla",
+          "date": "2014",
+          "targets": ["Government", "Military", "Research"],
+          "description": "Large-scale espionage campaign"
+        },
+        {
+          "name": "Satellite Turla",
+          "date": "2015",
+          "targets": ["Government", "Embassies"],
+          "description": "Hijacking satellite communications"
+        },
+        {
+          "name": "Mosquito Campaign",
+          "date": "2018",
+          "targets": ["Diplomatic Entities", "Military"],
+          "description": "Targeted attacks using Mosquito backdoor"
+        },
+        {
+          "name": "LightNeuron",
+          "date": "2019",
+          "targets": ["Government Email Systems"],
+          "description": "Exchange server compromise"
+        },
+        {
+          "name": "ComRAT v4",
+          "date": "2020",
+          "targets": ["Government", "Military"],
+          "description": "Updated ComRAT deployments"
+        }
+      ],
+      "victimology": {
+        "sectors": ["Government", "Military", "Diplomatic", "Defense", "Aerospace", "Energy"],
+        "countries": ["United States", "Germany", "France", "Poland", "Ukraine", "Belgium"],
+        "dataStolen": ["Classified Documents", "Diplomatic Cables", "Military Plans", "Research Data"]
+      }
+    }
+  }
+}

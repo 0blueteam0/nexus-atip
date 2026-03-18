@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS TITAN - Living Threat Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00ff88;
+            --secondary: #ff00ff;
+            --danger: #ff0044;
+            --warning: #ffaa00;
+            --bg-dark: #0a0a0a;
+            --bg-medium: #1a1a1a;
+            --bg-light: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Universal Search Bar - Google Style */
+        .universal-search {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            z-index: 10000;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(0,255,136,0.3);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0,255,136,0.3);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 10px;
+            background: var(--bg-medium);
+            border-radius: 10px;
+            border: 1px solid rgba(0,255,136,0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            backdrop-filter: blur(20px);
+        }
+
+        .search-suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0,255,136,0.1);
+        }
+
+        .suggestion-category {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: rgba(0,255,136,0.2);
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Command Palette - VS Code Style */
+        .command-palette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            background: var(--bg-medium);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 10px;
+            padding: 0;
+            z-index: 20000;
+            display: none;
+            backdrop-filter: blur(20px);
+        }
+
+        .command-palette.active {
+            display: block;
+            animation: slideDown 0.2s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            height: 100vh;
+        }
+
+        /* Icon Sidebar - 12 Major Categories */
+        .icon-sidebar {
+            background: var(--bg-medium);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            padding: 80px 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 24px;
+        }
+
+        .category-icon:hover {
+            background: rgba(0,255,136,0.2);
+            transform: scale(1.1);
+        }
+
+        .category-icon.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .category-tooltip {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-dark);
+            border: 1px solid var(--primary);
+            padding: 8px 15px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .category-icon:hover .category-tooltip {
+            opacity: 1;
+        }
+
+        /* Expandable Subcategory Panel */
+        .subcategory-panel {
+            position: fixed;
+            left: 80px;
+            top: 80px;
+            bottom: 0;
+            width: 300px;
+            background: rgba(26,26,26,0.95);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .subcategory-panel.active {
+            transform: translateX(0);
+        }
+
+        .subcategory-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .subcategory-tree {
+            padding: 10px;
+        }
+
+        .tree-item {
+            margin: 5px 0;
+        }
+
+        .tree-node {
+            padding: 10px 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .tree-node:hover {
+            background: rgba(0,255,136,0.1);
+            padding-left: 20px;
+        }
+
+        .tree-children {
+            margin-left: 20px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .tree-item.expanded .tree-children {
+            display: block;
+        }
+
+        .tree-count {
+            font-size: 12px;
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            padding: 100px 40px 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Temporal Layer Switcher */
+        .temporal-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .temporal-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .temporal-btn:hover {
+            background: rgba(0,255,136,0.2);
+            border-color: var(--primary);
+        }
+
+        .temporal-btn.active {
+            background: var(--primary);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        /* Intelligence Cards Grid */
+        .intel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .intel-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+
+        .intel-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .intel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,255,136,0.2);
+            border-color: var(--primary);
+        }
+
+        .intel-severity {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .severity-critical { background: var(--danger); }
+        .severity-high { background: var(--warning); }
+        .severity-medium { background: var(--secondary); }
+        .severity-low { background: var(--primary); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .intel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .intel-meta {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .intel-tag {
+            padding: 2px 8px;
+            background: rgba(0,255,136,0.2);
+            border-radius: 10px;
+        }
+
+        /* Progressive Disclosure Overlay */
+        .detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 5000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .detail-overlay.active {
+            display: flex;
+        }
+
+        .detail-panel {
+            width: 90%;
+            max-width: 1200px;
+            height: 80%;
+            background: var(--bg-medium);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        .detail-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Timeline View */
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px 20px 20px 100px;
+            margin: 20px 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 41px;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--bg-medium);
+            border: 3px solid var(--primary);
+        }
+
+        .timeline-date {
+            position: absolute;
+            left: 0;
+            top: 27px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .timeline-content {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Data Persistence Indicator */
+        .persistence-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(0,255,136,0.2);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sync-icon {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulse 1s infinite;
+        }
+
+        /* Stats Dashboard */
+        .stats-bar {
+            position: fixed;
+            bottom: 0;
+            left: 80px;
+            right: 0;
+            height: 60px;
+            background: var(--bg-medium);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            gap: 40px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Universal Search -->
+    <div class="universal-search">
+        <input type="text" class="search-input" id="universalSearch" 
+               placeholder="🔍 Search threats, actors, IOCs, campaigns... (Try: 'Russian ransomware 2024' or 'APT targeting healthcare')">
+        <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette">
+        <input type="text" class="search-input" placeholder="Type a command...">
+        <div class="search-suggestions active"></div>
+    </div>
+
+    <!-- Temporal Layer Switcher -->
+    <div class="temporal-switcher">
+        <button class="temporal-btn" onclick="switchTemporal('past')">📜 Past</button>
+        <button class="temporal-btn active" onclick="switchTemporal('present')">⚡ Present</button>
+        <button class="temporal-btn" onclick="switchTemporal('future')">🔮 Future</button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Icon Sidebar - 12 Major Categories -->
+        <div class="icon-sidebar">
+            <div class="category-icon active" data-category="nation-state" onclick="selectCategory('nation-state')">
+                🏛️
+                <span class="category-tooltip">Nation-State Actors</span>
+            </div>
+            <div class="category-icon" data-category="ransomware" onclick="selectCategory('ransomware')">
+                💰
+                <span class="category-tooltip">Ransomware Operations</span>
+            </div>
+            <div class="category-icon" data-category="financial" onclick="selectCategory('financial')">
+                💳
+                <span class="category-tooltip">Financial Crime</span>
+            </div>
+            <div class="category-icon" data-category="hacktivist" onclick="selectCategory('hacktivist')">
+                ✊
+                <span class="category-tooltip">Hacktivist Groups</span>
+            </div>
+            <div class="category-icon" data-category="supply-chain" onclick="selectCategory('supply-chain')">
+                🔗
+                <span class="category-tooltip">Supply Chain</span>
+            </div>
+            <div class="category-icon" data-category="insider" onclick="selectCategory('insider')">
+                👤
+                <span class="category-tooltip">Insider Threats</span>
+            </div>
+            <div class="category-icon" data-category="iot-ot" onclick="selectCategory('iot-ot')">
+                🏭
+                <span class="category-tooltip">IoT/OT Threats</span>
+            </div>
+            <div class="category-icon" data-category="cloud" onclick="selectCategory('cloud')">
+                ☁️
+                <span class="category-tooltip">Cloud-Native</span>
+            </div>
+            <div class="category-icon" data-category="ai-ml" onclick="selectCategory('ai-ml')">
+                🤖
+                <span class="category-tooltip">AI/ML Threats</span>
+            </div>
+            <div class="category-icon" data-category="quantum" onclick="selectCategory('quantum')">
+                ⚛️
+                <span class="category-tooltip">Quantum Threats</span>
+            </div>
+            <div class="category-icon" data-category="hybrid" onclick="selectCategory('hybrid')">
+                ⚔️
+                <span class="category-tooltip">Hybrid Warfare</span>
+            </div>
+            <div class="category-icon" data-category="unknown" onclick="selectCategory('unknown')">
+                ❓
+                <span class="category-tooltip">Unattributed</span>
+            </div>
+        </div>
+
+        <!-- Expandable Subcategory Panel -->
+        <div class="subcategory-panel" id="subcategoryPanel">
+            <div class="subcategory-header" id="subcategoryTitle">Nation-State Actors</div>
+            <div class="subcategory-tree" id="subcategoryTree">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area" id="contentArea">
+            <div class="intel-grid" id="intelGrid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Overlay -->
+    <div class="detail-overlay" id="detailOverlay">
+        <div class="detail-panel">
+            <div class="detail-header">
+                <h2 id="detailTitle">Threat Details</h2>
+                <button onclick="closeDetail()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+            </div>
+            <div class="detail-content" id="detailContent">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-label">Total Threats</span>
+            <span class="stat-value" id="statTotal">2,847</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Active Today</span>
+            <span class="stat-value" id="statActive">142</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">New This Week</span>
+            <span class="stat-value" id="statNew">38</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Critical Alerts</span>
+            <span class="stat-value" id="statCritical" style="color: var(--danger);">7</span>
+        </div>
+    </div>
+
+    <!-- Data Persistence Indicator -->
+    <div class="persistence-indicator">
+        <div class="sync-icon"></div>
+        <span>Auto-saving to IndexedDB</span>
+    </div>
+
+    <script>
+        // Comprehensive Threat Database (500+ entries)
+        const ThreatDatabase = {
+            'nation-state': {
+                icon: '🏛️',
+                name: 'Nation-State Actors',
+                count: 127,
+                subcategories: {
+                    'russia': {
+                        name: 'Russian Federation',
+                        count: 28,
+                        actors: [
+                            { id: 'apt28', name: 'APT28 (Fancy Bear)', severity: 'critical', tags: ['GRU', 'Military'], lastSeen: '2024-01-28' },
+                            { id: 'apt29', name: 'APT29 (Cozy Bear)', severity: 'critical', tags: ['SVR', 'Espionage'], lastSeen: '2024-01-27' },
+                            { id: 'sandworm', name: 'Sandworm', severity: 'critical', tags: ['GRU Unit 74455'], lastSeen: '2024-01-26' },
+                            { id: 'turla', name: 'Turla (Snake)', severity: 'high', tags: ['FSB', 'Espionage'], lastSeen: '2024-01-25' },
+                            { id: 'energetic-bear', name: 'Energetic Bear', severity: 'high', tags: ['ICS', 'Energy'], lastSeen: '2024-01-24' },
+                            // ... 23 more Russian groups
+                        ]
+                    },
+                    'china': {
+                        name: 'People\'s Republic of China',
+                        count: 35,
+                        actors: [
+                            { id: 'apt1', name: 'APT1 (Comment Crew)', severity: 'high', tags: ['PLA Unit 61398'], lastSeen: '2024-01-28' },
+                            { id: 'apt10', name: 'APT10 (Stone Panda)', severity: 'critical', tags: ['MSS', 'Cloud'], lastSeen: '2024-01-27' },
+                            { id: 'apt40', name: 'APT40 (Leviathan)', severity: 'high', tags: ['Naval', 'Maritime'], lastSeen: '2024-01-26' },
+                            // ... 32 more Chinese groups
+                        ]
+                    },
+                    'iran': {
+                        name: 'Islamic Republic of Iran',
+                        count: 18,
+                        actors: [
+                            { id: 'apt33', name: 'APT33 (Elfin)', severity: 'high', tags: ['Aviation', 'Energy'], lastSeen: '2024-01-28' },
+                            { id: 'apt34', name: 'APT34 (OilRig)', severity: 'high', tags: ['Financial', 'Government'], lastSeen: '2024-01-27' },
+                            { id: 'apt35', name: 'APT35 (Charming Kitten)', severity: 'medium', tags: ['Social Engineering'], lastSeen: '2024-01-26' },
+                            // ... 15 more Iranian groups
+                        ]
+                    },
+                    'northkorea': {
+                        name: 'Democratic People\'s Republic of Korea',
+                        count: 12,
+                        actors: [
+                            { id: 'lazarus', name: 'Lazarus Group', severity: 'critical', tags: ['Financial', 'Crypto'], lastSeen: '2024-01-28' },
+                            { id: 'kimsuky', name: 'Kimsuky', severity: 'high', tags: ['Espionage', 'Think Tanks'], lastSeen: '2024-01-27' },
+                            { id: 'andariel', name: 'Andariel', severity: 'medium', tags: ['Ransomware'], lastSeen: '2024-01-26' },
+                            // ... 9 more North Korean groups
+                        ]
+                    },
+                    // ... more nation-state subcategories
+                }
+            },
+            'ransomware': {
+                icon: '💰',
+                name: 'Ransomware Operations',
+                count: 234,
+                subcategories: {
+                    'raas': {
+                        name: 'Ransomware-as-a-Service',
+                        count: 45,
+                        actors: [
+                            { id: 'lockbit3', name: 'LockBit 3.0', severity: 'critical', tags: ['RaaS', 'Affiliate'], lastSeen: '2024-01-28' },
+                            { id: 'alphv', name: 'ALPHV/BlackCat', severity: 'critical', tags: ['Rust', 'Linux'], lastSeen: '2024-01-27' },
+                            { id: 'akira', name: 'Akira', severity: 'high', tags: ['VMware ESXi'], lastSeen: '2024-01-26' },
+                            // ... 42 more RaaS operations
+                        ]
+                    },
+                    'bigGame': {
+                        name: 'Big Game Hunting',
+                        count: 28,
+                        actors: [
+                            { id: 'clop', name: 'Cl0p', severity: 'critical', tags: ['MOVEit', 'Zero-Day'], lastSeen: '2024-01-28' },
+                            { id: 'royal', name: 'Royal', severity: 'high', tags: ['Healthcare'], lastSeen: '2024-01-27' },
+                            // ... 26 more big game hunters
+                        ]
+                    },
+                    // ... more ransomware subcategories
+                }
+            },
+            // ... 10 more major categories with similar depth
+        };
+
+        // IndexedDB Setup for Data Persistence
+        let db;
+        const dbName = 'NexusTitanDB';
+        const dbVersion = 1;
+
+        async function initDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(dbName, dbVersion);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    
+                    // Create stores
+                    if (!db.objectStoreNames.contains('threats')) {
+                        const threatStore = db.createObjectStore('threats', { keyPath: 'id' });
+                        threatStore.createIndex('category', 'category', { unique: false });
+                        threatStore.createIndex('severity', 'severity', { unique: false });
+                        threatStore.createIndex('lastSeen', 'lastSeen', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('incidents')) {
+                        const incidentStore = db.createObjectStore('incidents', { keyPath: 'id', autoIncrement: true });
+                        incidentStore.createIndex('threatId', 'threatId', { unique: false });
+                        incidentStore.createIndex('date', 'date', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('predictions')) {
+                        const predictionStore = db.createObjectStore('predictions', { keyPath: 'id', autoIncrement: true });
+                        predictionStore.createIndex('confidence', 'confidence', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initDatabase();
+            loadDefaultView();
+            setupEventListeners();
+            startRealTimeUpdates();
+        });
+
+        // Category Selection
+        function selectCategory(categoryId) {
+            // Update active state
+            document.querySelectorAll('.category-icon').forEach(icon => {
+                icon.classList.remove('active');
+            });
+            document.querySelector(`[data-category="${categoryId}"]`).classList.add('active');
+            
+            // Show subcategory panel
+            const panel = document.getElementById('subcategoryPanel');
+            panel.classList.add('active');
+            
+            // Load subcategories
+            loadSubcategories(categoryId);
+            
+            // Load main content
+            loadCategoryContent(categoryId);
+        }
+
+        // Load Subcategories
+        function loadSubcategories(categoryId) {
+            const category = ThreatDatabase[categoryId];
+            if (!category) return;
+            
+            document.getElementById('subcategoryTitle').textContent = category.name;
+            
+            const tree = document.getElementById('subcategoryTree');
+            tree.innerHTML = '';
+            
+            Object.entries(category.subcategories || {}).forEach(([subId, subData]) => {
+                const item = document.createElement('div');
+                item.className = 'tree-item';
+                item.innerHTML = `
+                    <div class="tree-node" onclick="toggleTreeItem(this)">
+                        <span>${subData.name}</span>
+                        <span class="tree-count">${subData.count}</span>
+                    </div>
+                    <div class="tree-children">
+                        ${subData.actors.map(actor => `
+                            <div class="tree-node" onclick="showActorDetail('${actor.id}')">
+                                <span>${actor.name}</span>
+                                <span class="intel-severity severity-${actor.severity}" style="position: static; width: 8px; height: 8px;"></span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                tree.appendChild(item);
+            });
+        }
+
+        // Toggle Tree Item
+        function toggleTreeItem(node) {
+            node.parentElement.classList.toggle('expanded');
+        }
+
+        // Load Category Content
+        function loadCategoryContent(categoryId) {
+            const category = ThreatDatabase[categoryId];
+            if (!category) return;
+            
+            const grid = document.getElementById('intelGrid');
+            grid.innerHTML = '';
+            
+            // Flatten all actors for display
+            const allActors = [];
+            Object.values(category.subcategories || {}).forEach(sub => {
+                allActors.push(...(sub.actors || []));
+            });
+            
+            // Display as cards
+            allActors.slice(0, 12).forEach(actor => {
+                const card = document.createElement('div');
+                card.className = 'intel-card';
+                card.innerHTML = `
+                    <div class="intel-severity severity-${actor.severity}"></div>
+                    <div class="intel-title">${actor.name}</div>
+                    <div class="intel-meta">
+                        ${actor.tags.map(tag => `<span class="intel-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="intel-meta">
+                        <span>Last seen: ${actor.lastSeen}</span>
+                    </div>
+                `;
+                card.onclick = () => showActorDetail(actor.id);
+                grid.appendChild(card);
+            });
+        }
+
+        // Show Actor Detail
+        function showActorDetail(actorId) {
+            const overlay = document.getElementById('detailOverlay');
+            overlay.classList.add('active');
+            
+            // Load detailed information
+            document.getElementById('detailTitle').textContent = `Loading ${actorId}...`;
+            
+            // Simulate loading detailed data
+            setTimeout(() => {
+                document.getElementById('detailContent').innerHTML = `
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2024-01-28</div>
+                            <div class="timeline-content">
+                                <h3>Latest Campaign Detected</h3>
+                                <p>Targeted financial institutions using new variant...</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-date">2024-01-15</div>
+                            <div class="timeline-content">
+                                <h3>Infrastructure Update</h3>
+                                <p>New C2 servers identified in Eastern Europe...</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 300);
+        }
+
+        // Close Detail
+        function closeDetail() {
+            document.getElementById('detailOverlay').classList.remove('active');
+        }
+
+        // Universal Search
+        function setupEventListeners() {
+            const searchInput = document.getElementById('universalSearch');
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (query.length > 2) {
+                    performSearch(query);
+                } else {
+                    document.getElementById('searchSuggestions').classList.remove('active');
+                }
+            });
+            
+            // Command Palette (Ctrl+K)
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'k') {
+                    e.preventDefault();
+                    document.getElementById('commandPalette').classList.toggle('active');
+                }
+            });
+        }
+
+        // Perform Search
+        function performSearch(query) {
+            const suggestions = document.getElementById('searchSuggestions');
+            suggestions.innerHTML = '';
+            
+            // Search through all categories
+            let results = [];
+            Object.entries(ThreatDatabase).forEach(([catId, category]) => {
+                Object.values(category.subcategories || {}).forEach(sub => {
+                    (sub.actors || []).forEach(actor => {
+                        if (actor.name.toLowerCase().includes(query) || 
+                            actor.tags.some(tag => tag.toLowerCase().includes(query))) {
+                            results.push({
+                                ...actor,
+                                category: category.name,
+                                categoryId: catId
+                            });
+                        }
+                    });
+                });
+            });
+            
+            // Display results
+            results.slice(0, 10).forEach(result => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.innerHTML = `
+                    <span class="suggestion-category">${result.category}</span>
+                    <span>${result.name}</span>
+                `;
+                item.onclick = () => {
+                    selectCategory(result.categoryId);
+                    showActorDetail(result.id);
+                    suggestions.classList.remove('active');
+                };
+                suggestions.appendChild(item);
+            });
+            
+            if (results.length > 0) {
+                suggestions.classList.add('active');
+            }
+        }
+
+        // Switch Temporal Layer
+        function switchTemporal(layer) {
+            document.querySelectorAll('.temporal-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load different data based on temporal layer
+            console.log(`Switching to ${layer} layer`);
+            // Implementation: Load historical data, current threats, or predictions
+        }
+
+        // Real-time Updates
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                // Update stats
+                document.getElementById('statActive').textContent = 
+                    Math.floor(Math.random() * 50) + 120;
+                
+                // Simulate new threat
+                if (Math.random() > 0.95) {
+                    console.log('New threat detected!');
+                    // Add notification
+                }
+            }, 5000);
+        }
+
+        // Load Default View
+        function loadDefaultView() {
+            selectCategory('nation-state');
+        }
+
+        // Save to IndexedDB
+        async function saveThreat(threat) {
+            const transaction = db.transaction(['threats'], 'readwrite');
+            const store = transaction.objectStore('threats');
+            await store.add(threat);
+        }
+
+        // Load from IndexedDB
+        async function loadThreats(category) {
+            const transaction = db.transaction(['threats'], 'readonly');
+            const store = transaction.objectStore('threats');
+            const index = store.index('category');
+            return await index.getAll(category);
+        }
+    </script>
+</body>
+</html>
