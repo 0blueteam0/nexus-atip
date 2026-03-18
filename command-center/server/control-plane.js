@@ -18,12 +18,13 @@ const ALLOWED_TYPES = new Set([
 ]);
 
 class ControlPlane {
-  constructor({ stateMachine, broadcaster, coordinator, scheduler, claudeBridge }) {
+  constructor({ stateMachine, broadcaster, coordinator, scheduler, claudeBridge, antifragile }) {
     this.stateMachine = stateMachine;
     this.broadcaster = broadcaster;
     this.coordinator = coordinator;
     this.scheduler = scheduler; // set after scheduler init
     this.claudeBridge = claudeBridge; // set after bridge init
+    this.antifragile = antifragile;
     this.authToken = process.env.OBSERVER_AUTH_TOKEN || null;
   }
 
@@ -139,11 +140,31 @@ class ControlPlane {
   }
 
   /**
-   * Execute a claimed command
+   * Execute a claimed command (with antifragile irreversibility gate)
    */
   executeCommand(command) {
     try {
       const payload = typeof command.payload === 'string' ? JSON.parse(command.payload) : command.payload;
+
+      // Antifragile gate: score irreversibility before executing
+      if (this.antifragile && process.env.ENABLE_ANTIFRAGILE_GATE === '1') {
+        const irrev = this.antifragile.scoreIrreversibility({
+          toolName: command.command_type,
+          command: JSON.stringify(payload)
+        });
+        if (irrev.approval === 'block') {
+          this.failCommand(command.id, `Antifragile gate: blocked (${irrev.level}, score=${irrev.score})`, false, 'antifragile');
+          return { ok: false, error: `blocked by antifragile gate: ${irrev.description}`, irreversibility: irrev };
+        }
+        if (irrev.approval === 'manual') {
+          // Record for manual review instead of auto-executing
+          this._recordEvent(command.id, 'antifragile_review', 'antifragile', `level=${irrev.level}, score=${irrev.score}`);
+          this.broadcaster.broadcast(EVENT_TYPES.CONTROL_COMMAND_CREATED, {
+            type: 'antifragile_review_required', commandId: command.id, irreversibility: irrev
+          });
+        }
+      }
+
       let result;
 
       switch (command.command_type) {

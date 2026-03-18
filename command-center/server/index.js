@@ -41,6 +41,7 @@ const { SkillFactory } = require('./skill-factory');
 const { TaskDecomposer } = require('./task-decomposer');
 const { AutonomyGuard } = require('./autonomy-guard');
 const { ObsidianBridge } = require('./obsidian-bridge');
+const { AntifragileEngine } = require('./antifragile');
 
 // Parse CLI args
 const args = process.argv.slice(2);
@@ -51,8 +52,9 @@ if (args.includes('--verbose')) process.env.VERBOSE = '1';
 // Initialize components
 const stateMachine = new AgentStateMachine();
 const broadcaster = new Broadcaster();
-const router = new AutonomousRouter();
-const learner = new SelfLearningEngine();
+const antifragile = new AntifragileEngine({ broadcaster });
+const router = new AutonomousRouter({ antifragile });
+const learner = new SelfLearningEngine({ antifragile });
 const coordinator = new TeamCoordinator(stateMachine, broadcaster);
 const auth = new Auth();
 const alertsEngine = new AlertsEngine({ broadcaster });
@@ -60,13 +62,13 @@ const autonomyGuard = new AutonomyGuard({ broadcaster });
 const obsidianBridge = new ObsidianBridge({ broadcaster });
 const claudeBridge = new ClaudeRemoteBridge({ broadcaster });
 const skillFactory = new SkillFactory({ broadcaster, claudeBridge, autonomyGuard });
-const taskDecomposer = new TaskDecomposer({ claudeBridge, broadcaster, autonomyGuard });
+const taskDecomposer = new TaskDecomposer({ claudeBridge, broadcaster, autonomyGuard, router });
 const evolutionAgent = new EvolutionAgent({ learner, router, broadcaster });
 const memorySync = new MemorySync({ broadcaster });
-const controlPlane = new ControlPlane({ stateMachine, broadcaster, coordinator: null, scheduler: null });
+const controlPlane = new ControlPlane({ stateMachine, broadcaster, coordinator: null, scheduler: null, antifragile });
 const scheduler = new Scheduler({ controlPlane, learner, router, coordinator: null, broadcaster, evolutionAgent, memorySync });
 const watcher = new TranscriptWatcher(stateMachine, broadcaster, db, router, learner);
-const collector = new EventCollector(stateMachine, broadcaster, db, router);
+const collector = new EventCollector(stateMachine, broadcaster, db, router, antifragile);
 
 // Wire up circular references after all components created
 controlPlane.coordinator = coordinator;
@@ -394,6 +396,51 @@ app.get('/obsidian/search', readAuth, (req, res) => {
   res.json(obsidianBridge.search(req.query));
 });
 
+// === Antifragile Engine API ===
+app.get('/antifragile/status', (req, res) => {
+  res.json(antifragile.getStatus());
+});
+
+app.get('/antifragile/trust/:tool', (req, res) => {
+  res.json(antifragile.getTrustScore(req.params.tool));
+});
+
+app.post('/antifragile/assess', (req, res) => {
+  const { toolName, command, targetFiles } = req.body;
+  if (!toolName) return res.status(400).json({ error: 'toolName required' });
+  const irrev = antifragile.scoreIrreversibility({ toolName, command, targetFiles });
+  const authority = antifragile.checkAuthority(toolName, irrev.level);
+  res.json({ ...irrev, authority });
+});
+
+app.get('/antifragile/failures', (req, res) => {
+  const { intent } = req.query;
+  res.json(antifragile.getFailureStats(intent || 'all'));
+});
+
+// === Code Mode API (NEXUS JIT Discovery) ===
+app.post('/code-mode/search', (req, res) => {
+  const { query } = req.body;
+  if (!query) return res.status(400).json({ error: 'query required' });
+  // Lightweight proxy: analyze intent then return relevant tools from router + defaults
+  const routeResult = router.analyzeIntent(query);
+  res.json({
+    query,
+    intent: routeResult.intent,
+    tools: routeResult.tools,
+    tier: routeResult.tier,
+    confidence: routeResult.confidence
+  });
+});
+
+app.post('/code-mode/execute', writeAuth, (req, res) => {
+  const { server, tool, args } = req.body;
+  if (!server || !tool) return res.status(400).json({ error: 'server and tool required' });
+  // Thin wrapper: record the intent for learning, delegate actual execution to caller
+  const irrev = antifragile.scoreIrreversibility({ toolName: tool, command: JSON.stringify(args) });
+  res.json({ server, tool, args, irreversibility: irrev, status: 'ready_for_execution' });
+});
+
 // === Prometheus-compatible Metrics ===
 app.get('/metrics', (req, res) => {
   const d = db.getDb();
@@ -512,6 +559,9 @@ app.get('/', (req, res) => {
       'GET /autonomy/audit', 'GET /autonomy/limits', 'GET /autonomy/stats',
       'POST /obsidian/sync', 'POST /obsidian/push', 'GET /obsidian/status', 'GET /obsidian/search',
       'GET /alerts', 'GET /alerts/rules', 'POST /alerts/test/:ruleId',
+      'GET /antifragile/status', 'GET /antifragile/trust/:tool',
+      'POST /antifragile/assess', 'GET /antifragile/failures',
+      'POST /code-mode/search', 'POST /code-mode/execute',
       'GET /metrics', 'GET /health'
     ]
   });

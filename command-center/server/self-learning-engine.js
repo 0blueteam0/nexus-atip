@@ -39,7 +39,8 @@ const INTENT_CLUSTERS = {
 };
 
 class SelfLearningEngine {
-  constructor() {
+  constructor({ antifragile } = {}) {
+    this.antifragile = antifragile || null;
     this.learningLog = [];
     this.maxLogSize = 100;
     this.decayCounter = 0;
@@ -74,7 +75,17 @@ class SelfLearningEngine {
     });
     if (this.learningLog.length > this.maxLogSize) this.learningLog.shift();
 
-    // 5. Log evolution event
+    // 5. Record failure in antifragile engine (enriched memory)
+    if (!success && this.antifragile) {
+      this.antifragile.recordFailure({
+        toolName, intent,
+        error: `Tool failed (duration: ${durationMs}ms)`,
+        context: { source: 'self-learning-engine' },
+        nearMiss: durationMs != null && durationMs > SLOW_THRESHOLD_MS
+      });
+    }
+
+    // 6. Log evolution event
     db.logEvolution('learn', `${toolName}/${intent}: ${success ? 'success' : 'fail'}`,
       { tool: toolName, intent }, { success, durationMs }, success ? 0.01 : -0.01);
   }

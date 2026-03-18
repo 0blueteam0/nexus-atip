@@ -27,11 +27,12 @@ const DESTRUCTIVE_PATTERNS = [
 ];
 
 class EventCollector {
-  constructor(stateMachine, broadcaster, db, router) {
+  constructor(stateMachine, broadcaster, db, router, antifragile) {
     this.stateMachine = stateMachine;
     this.broadcaster = broadcaster;
     this.db = db;
     this._router = router || null;
+    this._antifragile = antifragile || null;
     this.sessionId = null;
     this.verbose = process.env.VERBOSE === '1';
   }
@@ -293,7 +294,28 @@ class EventCollector {
       }
     }
 
-    // 2. Context Hints: provide routing hints for high-confidence intents
+    // 2. Antifragile no-op check: if recent failure rate is high, recommend inaction
+    if (this._antifragile && process.env.ENABLE_ANTIFRAGILE_GATE === '1') {
+      const intent = this._inferToolIntent(toolName);
+      const noOp = this._antifragile.evaluateNoOp({
+        intent: intent || 'unknown',
+        currentState: this.stateMachine.getAll().main?.state || 'active',
+        recentFailures: null
+      });
+      if (!noOp.shouldAct) {
+        this.db.recordEvent('antifragile:no_op', 'iatrogenics-check', {
+          tool: toolName, reason: noOp.reason, confidence: noOp.confidence
+        });
+        return {
+          hookSpecificOutput: {
+            hookEventName: 'PreToolUse',
+            additionalContext: `[Antifragile] Iatrogenics warning: ${noOp.reason} (confidence: ${noOp.confidence})`
+          }
+        };
+      }
+    }
+
+    // 3. Context Hints: provide routing hints for high-confidence intents
     if (HOOK_CONTEXT_HINTS && this._router) {
       try {
         const intent = this._inferToolIntent(toolName);
@@ -370,6 +392,15 @@ class EventCollector {
         };
 
       case 'PostToolUseFailure':
+        // Record failure in antifragile engine for enriched learning
+        if (this._antifragile) {
+          this._antifragile.recordFailure({
+            toolName: data.tool_name,
+            intent: this._inferToolIntent(data.tool_name) || 'unknown',
+            error: data.tool_response?.error || data.error || 'tool use failure',
+            context: { session_id: data.session_id, agent_id: data.agent_id }
+          });
+        }
         return {
           type: 'tool_result',
           agentId: data.agent_id || 'main',

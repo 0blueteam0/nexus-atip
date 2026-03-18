@@ -310,6 +310,120 @@ describe('Obsidian Bridge', () => {
   });
 });
 
+describe('Antifragile Engine', () => {
+  it('should return antifragile status', async () => {
+    const { status, data } = await api('/antifragile/status');
+    assert.equal(status, 200);
+    assert.ok(Array.isArray(data.principles));
+    assert.ok(data.principles.includes('no-op'));
+    assert.ok(data.principles.includes('barbell'));
+    assert.equal(data.barbellExplorationRate, 0.10);
+  });
+
+  it('should return trust score for a tool', async () => {
+    const { status, data } = await api('/antifragile/trust/desktop-commander');
+    assert.equal(status, 200);
+    assert.ok(data.score !== undefined);
+    assert.ok(data.confidence);
+  });
+
+  it('should assess irreversibility', async () => {
+    const { data } = await api('/antifragile/assess', {
+      method: 'POST',
+      body: JSON.stringify({ toolName: 'Read', command: 'cat file.txt' })
+    });
+    assert.equal(data.level, 'trivial');
+    assert.equal(data.approval, 'none');
+    assert.ok(data.authority);
+    assert.equal(data.authority.allowed, true);
+  });
+
+  it('should score destructive commands as critical', async () => {
+    const { data } = await api('/antifragile/assess', {
+      method: 'POST',
+      body: JSON.stringify({ toolName: 'Bash', command: 'rm -rf /tmp/data' })
+    });
+    assert.equal(data.level, 'critical');
+    assert.ok(data.score >= 0.7);
+  });
+
+  it('should return failure stats', async () => {
+    const { data } = await api('/antifragile/failures?intent=file_operation');
+    assert.ok(data.total !== undefined);
+    assert.ok(Array.isArray(data.tools));
+    assert.ok(Array.isArray(data.lessons));
+  });
+});
+
+describe('Code Mode', () => {
+  it('should search for tools by query', async () => {
+    const { status, data } = await api('/code-mode/search', {
+      method: 'POST',
+      body: JSON.stringify({ query: 'search for files in directory' })
+    });
+    assert.equal(status, 200);
+    assert.ok(data.intent);
+    assert.ok(Array.isArray(data.tools));
+    assert.ok(data.tools.length > 0);
+  });
+
+  it('should require query parameter', async () => {
+    const { status } = await api('/code-mode/search', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+    assert.equal(status, 400);
+  });
+
+  it('should return irreversibility for execute', async () => {
+    const { data } = await api('/code-mode/execute', {
+      method: 'POST',
+      body: JSON.stringify({ server: 'desktop-commander', tool: 'read_file', args: { path: '/tmp/test' } })
+    });
+    assert.ok(data.irreversibility);
+    assert.equal(data.status, 'ready_for_execution');
+  });
+});
+
+describe('Routing with Barbell', () => {
+  it('should include barbell strategy in route response', async () => {
+    const { data } = await api('/route', {
+      method: 'POST',
+      body: JSON.stringify({ task: 'read and edit a configuration file' })
+    });
+    assert.ok(data.intent);
+    // barbell field should exist (may be null if < 2 tools)
+    assert.ok('barbell' in data);
+  });
+
+  it('should flag unknown intents for code-mode discovery', async () => {
+    const { data } = await api('/route', {
+      method: 'POST',
+      body: JSON.stringify({ task: 'xyzzy frobnicate the quantum flux capacitor' })
+    });
+    assert.equal(data.intent, 'unknown');
+    assert.equal(data.confidence, 0);
+  });
+});
+
+describe('Scoped Dispatch', () => {
+  it('should create plan with tool scopes when enabled', async () => {
+    const { data } = await api('/decompose/plan', {
+      method: 'POST',
+      body: JSON.stringify({
+        description: 'Scoped test plan',
+        subtasks: [
+          { description: 'search for security vulnerabilities', agentType: 'review-agent' },
+          { description: 'edit the configuration file', agentType: 'code-agent', dependsOn: [0] }
+        ]
+      })
+    });
+    assert.equal(data.ok, true);
+    assert.ok(data.planId);
+    assert.equal(data.subtaskCount, 2);
+  });
+});
+
 describe('Metrics', () => {
   it('should return Prometheus format', async () => {
     const res = await fetch(`${BASE}/metrics`);

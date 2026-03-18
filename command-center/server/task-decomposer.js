@@ -10,10 +10,11 @@ const crypto = require('crypto');
 const db = require('./db');
 
 class TaskDecomposer {
-  constructor({ claudeBridge, broadcaster, autonomyGuard }) {
+  constructor({ claudeBridge, broadcaster, autonomyGuard, router }) {
     this.claudeBridge = claudeBridge;
     this.broadcaster = broadcaster;
     this.autonomyGuard = autonomyGuard;
+    this.router = router || null;
   }
 
   /**
@@ -55,13 +56,22 @@ class TaskDecomposer {
       }
     });
 
+    // Compute scoped tool context per subtask using router (CA-MCP pattern)
+    const toolScopes = {};
+    if (this.router && process.env.ENABLE_SCOPED_DISPATCH === '1') {
+      subtasks.forEach((st, i) => {
+        const routeResult = this.router.analyzeIntent(st.description);
+        toolScopes[i] = routeResult.tools.map(t => t.name || t).slice(0, 10);
+      });
+    }
+
     d.prepare(`
       INSERT INTO decomposition_plans (id, parent_task_id, description, subtasks, dag_edges, total_subtasks)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(planId, parentTaskId || null, description, JSON.stringify(subtasks),
            JSON.stringify(edges), subtasks.length);
 
-    // Create run records for each subtask
+    // Create run records for each subtask (with tool scope)
     const insertRun = d.prepare(`
       INSERT INTO decomposition_runs (id, plan_id, subtask_index, subtask_description, status)
       VALUES (?, ?, ?, ?, 'pending')
@@ -71,6 +81,16 @@ class TaskDecomposer {
       const runId = `drun-${planId}-${i}`;
       insertRun.run(runId, planId, i, st.description);
     });
+
+    // Store tool scopes in plan metadata for dispatch
+    if (Object.keys(toolScopes).length > 0) {
+      try {
+        d.prepare(`UPDATE decomposition_plans SET subtasks = ? WHERE id = ?`)
+          .run(JSON.stringify(subtasks.map((st, i) => ({
+            ...st, toolScope: toolScopes[i] || []
+          }))), planId);
+      } catch { /* column may not exist in older schemas */ }
+    }
 
     return { ok: true, planId, subtaskCount: subtasks.length, edges };
   }
@@ -103,12 +123,17 @@ class TaskDecomposer {
 
       if (allDepsComplete) {
         const st = subtasks[run.subtask_index];
-        const result = this.claudeBridge.dispatch({
+        const dispatchOpts = {
           prompt: st.description,
           agentType: st.agentType || 'general',
           commandId: null,
           timeoutSec: st.timeout || 300
-        });
+        };
+        // CA-MCP: pass scoped tool list if available
+        if (st.toolScope && st.toolScope.length > 0 && process.env.ENABLE_SCOPED_DISPATCH === '1') {
+          dispatchOpts.allowedTools = st.toolScope;
+        }
+        const result = this.claudeBridge.dispatch(dispatchOpts);
 
         if (result.ok) {
           d.prepare(`

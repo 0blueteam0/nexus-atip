@@ -75,7 +75,7 @@ class ClaudeRemoteBridge {
   /**
    * Dispatch a task to Claude Code
    */
-  dispatch({ prompt, agentType, commandId, timeoutSec, cwd }) {
+  dispatch({ prompt, agentType, commandId, timeoutSec, cwd, allowedTools }) {
     const d = db.getDb();
 
     // Guard: max concurrent
@@ -85,7 +85,10 @@ class ClaudeRemoteBridge {
 
     const taskId = `ctask-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
     const agent = agentType || 'general';
-    const tools = AGENT_CAPABILITIES[agent] || AGENT_CAPABILITIES.general;
+    // CA-MCP: use scoped tools if provided, otherwise fall back to agent capabilities
+    const tools = (allowedTools && allowedTools.length > 0)
+      ? allowedTools
+      : (AGENT_CAPABILITIES[agent] || AGENT_CAPABILITIES.general);
     const timeout = timeoutSec || DEFAULT_TIMEOUT_SEC;
 
     // Create task record

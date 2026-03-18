@@ -100,7 +100,8 @@ const DEFAULT_TOOLS = {
 };
 
 class AutonomousRouter {
-  constructor() {
+  constructor({ antifragile } = {}) {
+    this.antifragile = antifragile || null;
     this.recentToolChain = [];
     this.maxChainLength = 10;
   }
@@ -117,7 +118,12 @@ class AutonomousRouter {
     }
 
     if (matches.length === 0) {
-      return { intent: 'unknown', tier: 1, confidence: 0, agents: [], tools: [] };
+      // Code Mode JIT: for unknown intents, flag for dynamic discovery
+      return {
+        intent: 'unknown', tier: 1, confidence: 0, agents: [], tools: [],
+        codeModeHint: process.env.ENABLE_CODE_MODE_ROUTING === '1'
+          ? 'Use POST /code-mode/search for dynamic tool discovery' : null
+      };
     }
 
     // Pick highest tier match
@@ -143,12 +149,19 @@ class AutonomousRouter {
       ? Math.min(0.99, 0.5 + learnedTools[0].weight * 0.5)
       : 0.5;
 
+    // Apply barbell strategy if antifragile is available
+    let barbell = null;
+    if (this.antifragile && tools.length >= 2) {
+      barbell = this.antifragile.applyBarbell(tools, best.intent);
+    }
+
     return {
       intent: best.intent,
       tier: best.tier,
       confidence,
       agents: best.agents,
       tools,
+      barbell: barbell ? { strategy: barbell.strategy, recommended: barbell.recommended?.name } : null,
       allMatches: matches.map(m => m.intent)
     };
   }
