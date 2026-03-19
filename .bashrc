@@ -1,19 +1,26 @@
 #!/bin/bash
 # Bash configuration for Claude Code
+# Auto-detect drive letter (K: home, J: external)
 
-# Create /k mapping to K:
-if [ ! -d "/k" ]; then
-    # Try to create symlink
-    ln -s /cygdrive/k /k 2>/dev/null || \
-    ln -s /mnt/k /k 2>/dev/null || \
-    ln -s K:/ /k 2>/dev/null
+# Detect which drive we're on
+if [ -d "/j/PortableApps/genai" ] && [ "$CLAUDE_HOME" = "J:\\PortableApps\\genai" -o "$CLAUDE_HOME" = "J:/PortableApps/genai" ]; then
+    DRV_LETTER="k"
+elif [ -d "/j/PortableApps/genai" ] && [ "$CLAUDE_HOME" = "J:\\PortableApps\\genai" -o "$CLAUDE_HOME" = "J:/PortableApps/genai" ]; then
+    DRV_LETTER="j"
+elif [ -d "/j/PortableApps/genai" ]; then
+    DRV_LETTER="k"
+elif [ -d "/j/PortableApps/genai" ]; then
+    DRV_LETTER="j"
+else
+    DRV_LETTER="k"
 fi
 
-# Export paths
-export PATH="/k/PortableApps/tools/nodejs:/k/PortableApps/tools/git/bin:$PATH"
-export CLAUDE_HOME="/k/PortableApps/genai"
-export TEMP="/k/PortableApps/genai/temp"
-export TMP="/k/PortableApps/genai/temp"
+# Export paths (drive-agnostic)
+export PATH="/${DRV_LETTER}/PortableApps/tools/nodejs/npm-global:/${DRV_LETTER}/PortableApps/tools/nodejs:/${DRV_LETTER}/PortableApps/tools/git/bin:$PATH"
+export CLAUDE_HOME="/${DRV_LETTER}/PortableApps/genai"
+export TEMP="/${DRV_LETTER}/PortableApps/genai/temp"
+export TMP="/${DRV_LETTER}/PortableApps/genai/temp"
 
-# Alias for K drive
+# Alias for drive
 alias k:='cd /k'
+alias j:='cd /j'

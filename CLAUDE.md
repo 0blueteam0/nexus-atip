@@ -15,9 +15,9 @@ chcp 65001 >nul 2>&1
 ```
 
 ## [ENV] Portable Paths
-- Windows: K:\PortableApps\genai
-- Node.js: K:\PortableApps\tools\nodejs\node.exe
-- Python: K:\PortableApps\tools\python-portable\python.exe
+- Windows: J:\PortableApps\genai
+- Node.js: J:\PortableApps\tools\nodejs\node.exe
+- Python: J:\PortableApps\tools\python-portable\python.exe
 
 ## [TOOL] Tool Priority
 | P | Tool | Use |

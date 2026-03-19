@@ -1,0 +1,29 @@
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                                                                      
+                                                                                        
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                                                                      
+                                                                                        
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                                                                      
+                                                                                        
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                                                                      
+                                                                                        
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                                                                      
+                                                                                        
+⚠ Skipped loading 1 skill(s) due to invalid SKILL.md files.                             
+                                                                                        
+⚠ K:\PortableApps\genai\.claude\skills\mcp2cli\SKILL.md: missing YAML frontmatter       
+  delimited by ---                               

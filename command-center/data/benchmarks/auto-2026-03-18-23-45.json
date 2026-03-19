@@ -1,0 +1,50 @@
+{
+  "label": "auto-2026-03-18-23-45",
+  "timestamp": "2026-03-18T23:45:51.333Z",
+  "git": {
+    "hash": "1516ef5",
+    "message": "feat(F-arch): Eval runner for regression detection + benchmark comparison",
+    "branch": "main"
+  },
+  "performance": {
+    "testPassCount": 49,
+    "testFailCount": 0,
+    "testDurationMs": 360,
+    "uptimeSeconds": 196,
+    "memoryRssMb": 49.1,
+    "memoryHeapMb": 9.6,
+    "avgToolLatencyMs": 0,
+    "toolCallsLastHour": 0
+  },
+  "architecture": {
+    "dbTableCount": 34,
+    "schedulerScheduleCount": 5,
+    "controlCommandsTotal": 43,
+    "evolutionRecommendationsTotal": 0,
+    "decompositionPlansTotal": 20
+  },
+  "learning": {
+    "routingWeightCount": 4,
+    "uniqueIntents": 2,
+    "uniqueTools": 4,
+    "avgWeight": 0.151,
+    "maxWeight": 0.232,
+    "minWeight": 0.093,
+    "evolutionLogEntries": 26
+  },
+  "safety": {
+    "antifragileFailures": 4,
+    "nearMisses": 0,
+    "blockedDestructive": 3,
+    "noOpDecisions": 0
+  },
+  "context": {
+    "totalToolCalls": 2,
+    "toolSuccessRate": 50,
+    "totalEvents": 894,
+    "totalSessions": 27,
+    "claudeTasksTotal": 1,
+    "claudeTasksCompleted": 1,
+    "claudeTasksFailed": 0
+  }
+}

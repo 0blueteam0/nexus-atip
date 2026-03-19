@@ -1,23 +1,6 @@
 {
-  "lastCheck": "2026-03-16T05:25:55.365Z",
-  "dockerRunning": true,
-  "containers": {
-    "suspicious_jepsen": "running",
-    "plan-ecosystem-dashboard": "running",
-    "searxng-crawl4ai-mcp-mcp-server-1": "stopped",
-    "crawl4ai": "running",
-    "searxng": "running",
-    "n8n-automation": "running",
-    "firecrawl-api-1": "running",
-    "firecrawl-playwright-service-1": "running",
-    "firecrawl-redis-1": "running",
-    "firecrawl-nuq-postgres-1": "running",
-    "firecrawl-simple-api-1": "running",
-    "firecrawl-simple-puppeteer-service-1": "running",
-    "firecrawl-simple-redis-1": "running",
-    "searxng-crawl4ai-mcp-redis-1": "running",
-    "redis-security": "running",
-    "ubuntu-server": "running"
-  },
+  "lastCheck": "2026-03-18T23:44:05.778Z",
+  "dockerRunning": false,
+  "containers": {},
   "checkBy": "docker-checker.js"
 }

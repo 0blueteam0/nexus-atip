@@ -1,0 +1,50 @@
+{
+  "label": "v2.2-scheduler-shrimp-obsidian",
+  "timestamp": "2026-03-18T21:16:39.652Z",
+  "git": {
+    "hash": "87c63d7",
+    "message": "feat(F-arch): Scheduler auto-benchmark + Shrimp-Observer task bridge + Obsidian savepoints",
+    "branch": "main"
+  },
+  "performance": {
+    "testPassCount": 49,
+    "testFailCount": 0,
+    "testDurationMs": 360,
+    "uptimeSeconds": 390,
+    "memoryRssMb": 64.9,
+    "memoryHeapMb": 11.7,
+    "avgToolLatencyMs": 0,
+    "toolCallsLastHour": 0
+  },
+  "architecture": {
+    "dbTableCount": 34,
+    "schedulerScheduleCount": 5,
+    "controlCommandsTotal": 41,
+    "evolutionRecommendationsTotal": 0,
+    "decompositionPlansTotal": 18
+  },
+  "learning": {
+    "routingWeightCount": 4,
+    "uniqueIntents": 2,
+    "uniqueTools": 4,
+    "avgWeight": 0.166,
+    "maxWeight": 0.255,
+    "minWeight": 0.102,
+    "evolutionLogEntries": 25
+  },
+  "safety": {
+    "antifragileFailures": 3,
+    "nearMisses": 0,
+    "blockedDestructive": 3,
+    "noOpDecisions": 0
+  },
+  "context": {
+    "totalToolCalls": 2,
+    "toolSuccessRate": 50,
+    "totalEvents": 837,
+    "totalSessions": 25,
+    "claudeTasksTotal": 1,
+    "claudeTasksCompleted": 1,
+    "claudeTasksFailed": 0
+  }
+}

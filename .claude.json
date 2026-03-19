@@ -1,5 +1,5 @@
 {
-  "numStartups": 151,
+  "numStartups": 153,
   "installMethod": "global",
   "autoUpdates": true,
   "hasSeenTasksHint": true,
@@ -21,7 +21,7 @@
     "todo-list": 137,
     "ide-upsell-external-terminal": 16,
     "# for memory": 99,
-    "install-github-app": 142,
+    "install-github-app": 152,
     "permissions": 146,
     "drag-and-drop-images": 148,
     "double-esc": 23,
@@ -32,8 +32,8 @@
     "custom-agents": 139,
     "ide-hotkey": 25,
     "terminal-setup": 128,
-    "shift-enter": 142,
-    "plan-mode-for-complex-tasks": 148,
+    "shift-enter": 152,
+    "plan-mode-for-complex-tasks": 153,
     "shift-enter-setup": 127,
     "double-esc-code-restore": 149,
     "tab-toggle-thinking": 77,
@@ -45,7 +45,7 @@
     "config-thinking-mode": 108,
     "guest-passes": 151,
     "frontend-design-plugin": 142,
-    "install-slack-app": 142,
+    "install-slack-app": 153,
     "btw-side-question": 101,
     "desktop-app": 147,
     "web-app": 147,
@@ -55,8 +55,8 @@
     "feedback-command": 139,
     "color-when-multi-clauding": 147
   },
-  "promptQueueUseCount": 1791,
-  "btwUseCount": 20,
+  "promptQueueUseCount": 1804,
+  "btwUseCount": 22,
   "cachedStatsigGates": {
     "tengu_disable_bypass_permissions_mode": false,
     "tengu_tool_pear": false,
@@ -85,41 +85,125 @@
     }
   },
   "cachedGrowthBookFeatures": {
+    "tengu_vscode_cc_auth": false,
+    "tengu_birthday_hat": false,
+    "tengu_auto_mode_config": {
+      "enabled": "disabled",
+      "twoStageClassifier": true
+    },
+    "tengu_turnip_cathedral": false,
+    "tengu_streaming_tool_execution2": true,
+    "tengu_immediate_model_command": false,
+    "tengu_log_datadog_events": true,
+    "tengu_silver_lantern": false,
+    "tengu_bad_survey_transcript_ask_config": {
+      "probability": 0
+    },
+    "tengu_disable_bypass_permissions_mode": false,
+    "tengu_mcp_elicitation": true,
+    "tengu_chair_sermon": false,
+    "tengu_sumi": true,
+    "tengu_coral_whistle": false,
+    "tengu_thinkback": false,
+    "tengu_ccr_bridge_multi_session": true,
+    "tengu_tool_search_unsupported_models": [
+      "haiku"
+    ],
+    "tengu_coral_fern": false,
+    "tengu_cork_lantern": false,
+    "tengu_grey_step2": {
+      "enabled": true,
+      "dialogTitle": "We recommend medium effort for Opus",
+      "dialogDescription": "Effort determines how long Claude thinks for when completing your task. We recommend medium effort for most tasks to balance speed and intelligence and maximize rate limits. Use ultrathink to trigger high effort when needed."
+    },
+    "tengu_streaming_text": true,
+    "tengu_good_survey_transcript_ask_config": {
+      "probability": 0
+    },
+    "tengu_frond_boric": {},
+    "tengu_swann_brevity": "focused",
+    "tengu_tide_elm": "off",
+    "tengu_herring_clock": false,
+    "tengu_grey_step": true,
+    "tengu_blue_coaster": false,
+    "tengu_bramble_lintel": 1,
+    "tengu_token_saver": true,
+    "tengu_walrus_canteen": false,
+    "tengu_copper_wren": false,
+    "tengu_onyx_plover": {
+      "enabled": false,
+      "minHours": 24,
+      "minSessions": 3
+    },
+    "tengu_penguins_enabled": true,
+    "tengu_c4w_usage_limit_notifications_enabled": true,
+    "tengu_pewter_gull": false,
+    "tengu_penguin_mode_promo": {
+      "discountPercent": 0,
+      "endDate": "Feb 16"
+    },
+    "tengu_event_sampling_config": {},
+    "tengu_harbor": true,
+    "tengu_system_prompt_global_cache": true,
+    "tengu_crystal_beam": {
+      "budgetTokens": 0
+    },
+    "tengu_year_end_2025_campaign_promo": false,
+    "tengu_log_segment_events": false,
+    "tengu_prompt_suggestion": true,
+    "tengu_defer_all_bn4": false,
+    "tengu_pid_based_version_locking": true,
+    "tengu_worktree_mode": true,
+    "tengu_desktop_upsell": {
+      "enable_shortcut_tip": false,
+      "enable_startup_dialog": false
+    },
+    "tengu_quiet_hollow": true,
+    "tengu_glacier_2xr": false,
     "tengu_sm_config": {
       "minimumMessageTokensToInit": 150000,
       "minimumTokensBetweenUpdate": 40000,
       "toolCallsBetweenUpdates": 10
     },
-    "tengu_bridge_min_version": {
-      "minVersion": "0.0.0"
-    },
-    "tengu_streaming_tool_execution2": true,
-    "tengu_trace_lantern": false,
-    "tengu_marble_anvil": true,
-    "tengu_attribution_header": true,
-    "tengu_copper_wren": false,
-    "tengu_cache_plum_violet": true,
-    "tengu_plank_river_frost": "user_intent",
-    "tengu_quartz_lantern": true,
-    "tengu_marble_whisper": true,
-    "tengu_olive_hinge": "",
-    "tengu_compact_cache_prefix": true,
-    "tengu_amber_wren": {
-      "targetedRangeNudge": false
-    },
-    "tengu_snippet_save": false,
-    "tengu_collage_kaleidoscope": true,
-    "tengu_auto_mode_config": {
-      "enabled": "disabled",
-      "twoStageClassifier": true
-    },
-    "tengu_hawthorn_window": 200000,
-    "tengu_vscode_onboarding": false,
-    "tengu_bergotte_lantern": false,
-    "tengu_cork_lantern": false,
     "tengu_summarize_tool_results": true,
-    "tengu_kv7_prompt_sort": false,
-    "tengu_ccr_bridge": true,
+    "tengu_bridge_poll_interval_config": {
+      "poll_interval_ms_not_at_capacity": 2000,
+      "poll_interval_ms_at_capacity": 600000,
+      "heartbeat_interval_ms": 0,
+      "multisession_poll_interval_ms_not_at_capacity": 5000,
+      "multisession_poll_interval_ms_at_capacity": 60000,
+      "multisession_poll_interval_ms_partial_capacity": 5000,
+      "non_exclusive_heartbeat_interval_ms": 180000,
+      "session_keepalive_interval_ms": 0,
+      "session_keepalive_interval_v2_ms": 0
+    },
+    "tengu_plank_river_frost": "user_intent",
+    "tengu_claudeai_mcp_connectors": true,
+    "tengu_bergotte_lantern": false,
+    "tengu_max_version_config": {},
+    "tengu_marble_whisper2": true,
+    "tengu_marble_sandcastle": false,
+    "tengu_marble_whisper": true,
+    "tengu_frozen_nest": false,
+    "tengu_cache_plum_violet": true,
+    "tengu_react_vulnerability_warning": false,
+    "tengu_plum_vx3": true,
+    "tengu_version_config": {
+      "minVersion": "1.0.24"
+    },
+    "tengu_brief_tool_enabled": false,
+    "tengu_swinburne_dune": true,
+    "tengu_grey_wool": true,
+    "tengu_permission_explainer": true,
+    "tengu_slate_ridge": true,
+    "tengu_collage_kaleidoscope": true,
+    "tengu_ant_attribution_header_new": true,
+    "tengu_pr_status_cli": true,
+    "tengu_scratch": false,
+    "tengu_scarf_coffee": false,
+    "tengu_cork_m4q": true,
+    "tengu_session_memory": false,
+    "tengu_native_installation": false,
     "tengu_feedback_survey_config": {
       "minTimeBeforeFeedbackMs": 600000,
       "minTimeBetweenFeedbackMs": 100000000,
@@ -132,74 +216,49 @@
       ],
       "probability": 0.01
     },
-    "tengu_system_prompt_global_cache": true,
-    "tengu_tangerine_ladder_boost": true,
-    "tengu_bridge_poll_interval_ms": 0,
-    "tengu_code_diff_cli": true,
-    "tengu_pewter_gull": false,
-    "tengu-top-of-feed-tip": {
-      "tip": "",
-      "color": ""
-    },
-    "tengu_cobalt_raccoon": false,
-    "tengu_pewter_kestrel": {
-      "global": 50000,
-      "Bash": 30000,
-      "PowerShell": 30000,
-      "Grep": 20000,
-      "Snip": 1000,
-      "StrReplaceBasedEditTool": 30000,
-      "BashSearchTool": 20000
-    },
-    "tengu_event_sampling_config": {},
-    "tengu_frozen_nest": false,
-    "tengu_disable_bypass_permissions_mode": false,
-    "tengu_tool_pear": false,
-    "tengu_vscode_cc_auth": false,
-    "tengu_hawthorn_steeple": false,
-    "tengu_chomp_inflection": false,
-    "tengu_max_version_config": {},
-    "tengu_penguin_mode_promo": {
-      "discountPercent": 0,
-      "endDate": "Feb 16"
-    },
-    "tengu_immediate_model_command": false,
-    "tengu_prompt_suggestion": true,
-    "tengu_destructive_command_warning": false,
-    "tengu_plum_vx3": true,
-    "tengu_red_coaster": false,
-    "tengu_defer_all_bn4": false,
-    "tengu_copper_bridge": true,
+    "tengu_sm_compact": false,
+    "tengu_marble_anvil": true,
+    "tengu_attribution_header": true,
+    "tengu_snippet_save": false,
+    "ccr_auto_permission_mode": false,
+    "tengu_olive_hinge": "",
     "tengu_vinteuil_phrase": true,
-    "tengu_ccr_bridge_multi_session": true,
-    "tengu_bramble_lintel": 1,
-    "tengu_miraculo_the_bard": false,
-    "tengu_silver_lantern": false,
-    "tengu_bridge_poll_interval_config": {
-      "poll_interval_ms_not_at_capacity": 2000,
-      "poll_interval_ms_at_capacity": 600000,
-      "heartbeat_interval_ms": 0,
-      "multisession_poll_interval_ms_not_at_capacity": 5000,
-      "multisession_poll_interval_ms_at_capacity": 60000,
-      "multisession_poll_interval_ms_partial_capacity": 5000,
-      "non_exclusive_heartbeat_interval_ms": 180000,
-      "session_keepalive_interval_ms": 0,
-      "session_keepalive_interval_v2_ms": 0
-    },
+    "tengu_sotto_voce": true,
+    "tengu_bridge_poll_interval_ms": 0,
+    "tengu_cobalt_frost": true,
+    "tengu_birch_mist": true,
+    "tengu_pebble_leaf_prune": false,
+    "tengu_oboe": true,
     "tengu_sm_compact_config": {
       "minTokens": 2000,
       "maxTokens": 20000,
       "minTextBlockMessages": 5
     },
-    "tengu_log_datadog_events": true,
-    "tengu_coral_whistle": false,
-    "tengu_quiet_fern": true,
+    "tengu_prompt_cache_1h_config": {
+      "allowlist": [
+        "repl_main_thread*",
+        "sdk",
+        "auto_mode"
+      ]
+    },
+    "auto_migrate_to_native": false,
+    "tengu_passport_quail": false,
+    "tengu_vscode_review_upsell": false,
     "tengu_amber_quartz": true,
-    "tengu_amber_prism": true,
-    "tengu_marble_fox": false,
-    "tengu_penguins_enabled": true,
+    "tengu_workout2": true,
+    "tengu_kairos_cron": true,
+    "tengu_compact_cache_prefix": true,
+    "tengu_post_compact_survey": false,
     "tengu_hayate": false,
-    "tengu_swinburne_dune": true,
+    "tengu_cobalt_raccoon": false,
+    "tengu_trace_lantern": false,
+    "tengu_bridge_min_version": {
+      "minVersion": "0.0.0"
+    },
+    "tengu_red_coaster": false,
+    "tengu_marble_fox": false,
+    "tengu_vscode_onboarding": false,
+    "tengu_amber_flint": true,
     "tengu_harbor_ledger": [
       {
         "marketplace": "claude-experimental-channels",
@@ -218,124 +277,66 @@
         "plugin": "fakechat"
       }
     ],
-    "tengu_tool_search_unsupported_models": [
-      "haiku"
-    ],
-    "tengu_permission_explainer": true,
-    "tengu_pebble_leaf_prune": false,
-    "tengu_post_compact_survey": false,
-    "tengu_worktree_mode": true,
-    "tengu_streaming_text": true,
-    "tengu_glacier_2xr": false,
-    "tengu_ant_attribution_header_new": true,
-    "tengu_good_survey_transcript_ask_config": {
+    "tengu_moth_copse": false,
+    "tengu_negative_interaction_transcript_ask_config": {
       "probability": 0
     },
-    "tengu_desktop_upsell": {
-      "enable_shortcut_tip": false,
-      "enable_startup_dialog": false
+    "tengu_keybinding_customization_release": true,
+    "tengu_amber_wren": {
+      "targetedRangeNudge": false
     },
-    "ccr_auto_permission_mode": false,
-    "tengu_herring_clock": false,
-    "tengu_tide_elm": "off",
-    "tengu_kairos_cron": true,
-    "tengu_session_memory": false,
-    "tengu_coral_fern": false,
+    "tengu_gha_plugin_code_review": false,
+    "tengu_kv7_prompt_sort": false,
+    "tengu_amber_prism": true,
+    "tengu_quiet_fern": true,
+    "tengu_chomp_inflection": false,
+    "tengu_mulberry_fog": false,
+    "tengu_tool_pear": false,
+    "tengu_pewter_ledger": "OFF",
+    "tengu_opus_default_pro_plan": false,
+    "tengu_ccr_bridge": true,
+    "tengu_accept_with_feedback": true,
+    "tengu_file_write_optimization": true,
+    "tengu_copper_bridge": true,
+    "tengu_turtle_carbon": true,
+    "tengu_destructive_command_warning": false,
+    "tengu_hawthorn_window": 200000,
+    "tengu_tool_result_persistence": false,
+    "tengu_tangerine_ladder_boost": true,
     "tengu_1p_event_batch_config": {
       "scheduledDelayMillis": 10000,
       "maxExportBatchSize": 400,
       "maxQueueSize": 8192,
       "path": "/api/event_logging/v2/batch"
     },
-    "tengu_slate_ridge": true,
-    "tengu_marble_whisper2": true,
-    "tengu_pid_based_version_locking": true,
-    "tengu_cork_m4q": true,
-    "tengu_workout2": true,
-    "tengu_grey_step": true,
-    "tengu_cobalt_frost": true,
-    "tengu_turnip_cathedral": false,
-    "tengu_ccr_bundle_seed_enabled": false,
-    "tengu_copper_lantern": false,
-    "tengu_swann_brevity": "focused",
-    "tengu_blue_coaster": false,
-    "tengu_birch_mist": true,
-    "tengu_frond_boric": {},
-    "tengu_bad_survey_transcript_ask_config": {
-      "probability": 0
+    "tengu_slate_nexus": true,
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
     },
-    "tengu_mulberry_fog": false,
+    "tengu_copper_lantern": false,
+    "tengu_miraculo_the_bard": false,
+    "tengu_quartz_lantern": true,
+    "tengu_ccr_bundle_max_bytes": 104857600,
+    "tengu_orchid_trellis": false,
     "tengu-off-switch": {
       "activated": false
     },
-    "tengu_sotto_voce": true,
-    "tengu_onyx_plover": {
-      "enabled": false,
-      "minHours": 24,
-      "minSessions": 3
-    },
-    "tengu_marble_sandcastle": false,
-    "tengu_scarf_coffee": false,
-    "tengu_tool_result_persistence": false,
-    "tengu_crystal_beam": {
-      "budgetTokens": 0
-    },
-    "tengu_grey_step2": {
-      "enabled": true,
-      "dialogTitle": "We recommend medium effort for Opus",
-      "dialogDescription": "Effort determines how long Claude thinks for when completing your task. We recommend medium effort for most tasks to balance speed and intelligence and maximize rate limits. Use ultrathink to trigger high effort when needed."
-    },
-    "tengu_amber_flint": true,
+    "tengu_code_diff_cli": true,
     "tengu_mcp_tool_search": true,
     "tengu_brass_pebble": false,
-    "tengu_cobalt_compass": true,
-    "tengu_pr_status_cli": true,
-    "tengu_passport_quail": false,
-    "tengu_gha_plugin_code_review": false,
-    "tengu_year_end_2025_campaign_promo": false,
-    "auto_migrate_to_native": false,
-    "tengu_moth_copse": false,
-    "tengu_oboe": true,
-    "tengu_slate_nexus": true,
-    "tengu_birthday_hat": false,
-    "tengu_walrus_canteen": false,
-    "tengu_brief_tool_enabled": false,
-    "tengu_prompt_cache_1h_config": {
-      "allowlist": [
-        "repl_main_thread*",
-        "sdk",
-        "auto_mode"
-      ]
+    "tengu_hawthorn_steeple": false,
+    "tengu_pewter_kestrel": {
+      "global": 50000,
+      "Bash": 30000,
+      "PowerShell": 30000,
+      "Grep": 20000,
+      "Snip": 1000,
+      "StrReplaceBasedEditTool": 30000,
+      "BashSearchTool": 20000
     },
-    "tengu_vscode_review_upsell": false,
-    "tengu_version_config": {
-      "minVersion": "1.0.24"
-    },
-    "tengu_grey_wool": true,
-    "tengu_opus_default_pro_plan": false,
-    "tengu_react_vulnerability_warning": false,
-    "tengu_ccr_bundle_max_bytes": 104857600,
-    "tengu_chair_sermon": false,
-    "tengu_c4w_usage_limit_notifications_enabled": true,
-    "tengu_claudeai_mcp_connectors": true,
-    "tengu_pewter_ledger": "OFF",
-    "tengu_thinkback": false,
-    "tengu_keybinding_customization_release": true,
-    "tengu_orchid_trellis": false,
-    "tengu_harbor": true,
-    "tengu_mcp_elicitation": true,
-    "tengu_negative_interaction_transcript_ask_config": {
-      "probability": 0
-    },
-    "tengu_accept_with_feedback": true,
-    "tengu_scratch": false,
-    "tengu_native_installation": false,
-    "tengu_sumi": true,
-    "tengu_sm_compact": false,
-    "tengu_turtle_carbon": true,
-    "tengu_quiet_hollow": true,
-    "tengu_file_write_optimization": true,
-    "tengu_log_segment_events": false
+    "tengu_ccr_bundle_seed_enabled": false,
+    "tengu_cobalt_compass": true
   },
   "hasSeenStashHint": true,
   "mcpServers": {
@@ -350,9 +351,9 @@
     },
     "filesystem": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
+        "J:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-filesystem\\dist\\index.js"
       ],
       "env": {
         "ALLOWED_DIRECTORIES": "K:\\"
@@ -360,19 +361,19 @@
     },
     "memory": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
+        "J:\\PortableApps\\genai\\node_modules\\@modelcontextprotocol\\server-memory\\dist\\index.js"
       ]
     },
     "shrimp-task": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
+        "J:\\PortableApps\\genai\\node_modules\\mcp-shrimp-task-manager\\dist\\index.js"
       ],
       "env": {
-        "TASK_DATA_PATH": "K:\\PortableApps\\genai\\ShrimpData",
+        "TASK_DATA_PATH": "J:\\PortableApps\\genai\\ShrimpData",
         "LANG": "ko_KR.UTF-8",
         "LANGUAGE": "ko",
         "LC_ALL": "ko_KR.UTF-8",
@@ -393,21 +394,21 @@
     },
     "deep-research-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/deep-research-mcp/index.js"
+        "J:/PortableApps/genai/mcp-servers/deep-research-mcp/index.js"
       ]
     },
     "multi-ai-orchestration": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/multi-ai-mcp/index.js"
+        "J:/PortableApps/genai/mcp-servers/multi-ai-mcp/index.js"
       ]
     },
     "firecrawl": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "command": "J:/PortableApps/tools/nodejs/npx.cmd",
       "args": [
         "firecrawl-mcp"
       ],
@@ -418,9 +419,9 @@
     },
     "scrapegraph-local": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/scrapegraph-local-mcp/server.py"
+        "J:/PortableApps/genai/mcp-servers/scrapegraph-local-mcp/server.py"
       ],
       "env": {
         "OLLAMA_MODEL": "llama3.2",
@@ -429,11 +430,11 @@
     },
     "searxng-crawl4ai": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
         "fixed-mcp-server.js"
       ],
-      "cwd": "K:/PortableApps/genai/mcp-servers/searxng-crawl4ai-mcp",
+      "cwd": "J:/PortableApps/genai/mcp-servers/searxng-crawl4ai-mcp",
       "env": {
         "SEARXNG_URL": "http://localhost:8082",
         "CRAWL4AI_URL": "http://localhost:8001"
@@ -451,20 +452,20 @@
     },
     "git-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
+        "J:\\PortableApps\\genai\\node_modules\\@cyanheads\\git-mcp-server\\dist\\index.js"
       ],
       "env": {
-        "GIT_REPOSITORY_PATH": "K:\\PortableApps\\genai"
+        "GIT_REPOSITORY_PATH": "J:\\PortableApps\\genai"
       }
     },
     "sqlite-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "command": "J:/PortableApps/tools/nodejs/npx.cmd",
       "args": [
         "mcp-server-sqlite-npx",
-        "K:/PortableApps/genai/data/sqlite/claude.db"
+        "J:/PortableApps/genai/data/sqlite/claude.db"
       ]
     },
     "websearch": {
@@ -493,15 +494,15 @@
     },
     "edit-file-lines": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\mcp-servers\\mcp-edit-file-lines\\build\\index.js",
-        "K:\\PortableApps\\genai"
+        "J:\\PortableApps\\genai\\mcp-servers\\mcp-edit-file-lines\\build\\index.js",
+        "J:\\PortableApps\\genai"
       ]
     },
     "kiro-memory": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
         "-m",
         "mcp_server_enhanced"
@@ -512,7 +513,7 @@
         "PYTHONUTF8": "1",
         "LANG": "ko_KR.UTF-8",
         "LC_ALL": "ko_KR.UTF-8",
-        "KIRO_DB_PATH": "K:/PortableApps/genai/data/kiro-memory/mcp_memory.db"
+        "KIRO_DB_PATH": "J:/PortableApps/genai/data/kiro-memory/mcp_memory.db"
       }
     },
     "context7": {
@@ -526,7 +527,7 @@
     },
     "one-search": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/npx.cmd",
+      "command": "J:/PortableApps/tools/nodejs/npx.cmd",
       "args": [
         "one-search-mcp"
       ],
@@ -546,9 +547,9 @@
     },
     "desktop-commander": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\desktop-commander-mcp\\dist\\index.js"
+        "J:\\PortableApps\\genai\\desktop-commander-mcp\\dist\\index.js"
       ]
     },
     "supabase": {
@@ -567,9 +568,9 @@
     },
     "n8n": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:\\PortableApps\\genai\\node_modules\\@illuminaresolutions\\n8n-mcp-server\\build\\index.js"
+        "J:\\PortableApps\\genai\\node_modules\\@illuminaresolutions\\n8n-mcp-server\\build\\index.js"
       ],
       "env": {
         "N8N_API_KEY": "${N8N_API_KEY}",
@@ -578,9 +579,9 @@
     },
     "sequential-thinking": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/node.exe",
+      "command": "J:/PortableApps/tools/nodejs/node.exe",
       "args": [
-        "K:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+        "J:/PortableApps/genai/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
       ],
       "env": {
         "NODE_ENV": "production"
@@ -591,7 +592,7 @@
       "command": "cmd",
       "args": [
         "/c",
-        "K:/PortableApps/tools/uv/uvx.exe",
+        "J:/PortableApps/tools/uv/uvx.exe",
         "jupyter-mcp-server@latest"
       ],
       "env": {
@@ -602,13 +603,13 @@
     },
     "image-recognition": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
         "-m",
         "image_recognition_server.server"
       ],
       "env": {
-        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/mcp-image-recognition/src",
+        "PYTHONPATH": "J:/PortableApps/genai/mcp-servers/mcp-image-recognition/src",
         "VISION_PROVIDER": "anthropic",
         "ENABLE_OCR": "true",
         "TESSERACT_CMD": "K:/tools/tesseract.exe",
@@ -618,33 +619,33 @@
     },
     "paddleocr-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src/server.py"
+        "J:/PortableApps/genai/mcp-servers/paddleocr-mcp/src/server.py"
       ],
       "env": {
-        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/paddleocr-mcp/src",
+        "PYTHONPATH": "J:/PortableApps/genai/mcp-servers/paddleocr-mcp/src",
         "PYTHONIOENCODING": "utf-8:replace",
         "PYTHONUTF8": "1"
       }
     },
     "marker-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/marker-mcp/src/server.py"
+        "J:/PortableApps/genai/mcp-servers/marker-mcp/src/server.py"
       ],
       "env": {
-        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/marker-mcp/src",
+        "PYTHONPATH": "J:/PortableApps/genai/mcp-servers/marker-mcp/src",
         "PYTHONIOENCODING": "utf-8:replace",
         "PYTHONUTF8": "1"
       }
     },
     "llm-council": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/python-portable/python.exe",
+      "command": "J:/PortableApps/tools/python-portable/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/llm-council-mcp/server.py"
+        "J:/PortableApps/genai/mcp-servers/llm-council-mcp/server.py"
       ],
       "env": {
         "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
@@ -668,7 +669,7 @@
         "/c",
         "npx",
         "@llmindset/mcp-hfspace",
-        "--work-dir=K:/PortableApps/genai/Downloads",
+        "--work-dir=J:/PortableApps/genai/Downloads",
         "black-forest-labs/FLUX.1-schnell",
         "Qwen/Qwen2.5-72B-Instruct"
       ],
@@ -691,11 +692,11 @@
     },
     "paper-search-mcp": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/uv/uv.exe",
+      "command": "J:/PortableApps/tools/uv/uv.exe",
       "args": [
         "run",
         "--directory",
-        "K:/PortableApps/genai/mcp-servers/paper-search-mcp",
+        "J:/PortableApps/genai/mcp-servers/paper-search-mcp",
         "-m",
         "paper_search_mcp.server"
       ],
@@ -706,7 +707,7 @@
     },
     "serena": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/uv/uvx.exe",
+      "command": "J:/PortableApps/tools/uv/uvx.exe",
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
@@ -720,9 +721,9 @@
     },
     "vibekanban": {
       "type": "stdio",
-      "command": "K:/PortableApps/genai/mcp-servers/vibekanban/.venv/Scripts/python.exe",
+      "command": "J:/PortableApps/genai/mcp-servers/vibekanban/.venv/Scripts/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/vibekanban/kanban_mcp_server.py"
+        "J:/PortableApps/genai/mcp-servers/vibekanban/kanban_mcp_server.py"
       ],
       "env": {
         "PYTHONIOENCODING": "utf-8",
@@ -762,9 +763,9 @@
         "-m",
         "ocr_mcp.server"
       ],
-      "cwd": "K:/PortableApps/genai/mcp-servers/ocr-mcp",
+      "cwd": "J:/PortableApps/genai/mcp-servers/ocr-mcp",
       "env": {
-        "PYTHONPATH": "K:/PortableApps/genai/mcp-servers/ocr-mcp/src",
+        "PYTHONPATH": "J:/PortableApps/genai/mcp-servers/ocr-mcp/src",
         "PYTHONIOENCODING": "utf-8:replace",
         "PYTHONUTF8": "1",
         "OCR_DEFAULT_ENGINE": "tesseract"
@@ -772,9 +773,9 @@
     },
     "pal": {
       "type": "stdio",
-      "command": "K:/PortableApps/genai/mcp-servers/pal-mcp-server/.pal_venv/Scripts/python.exe",
+      "command": "J:/PortableApps/genai/mcp-servers/pal-mcp-server/.pal_venv/Scripts/python.exe",
       "args": [
-        "K:/PortableApps/genai/mcp-servers/pal-mcp-server/server.py"
+        "J:/PortableApps/genai/mcp-servers/pal-mcp-server/server.py"
       ],
       "env": {
         "GEMINI_API_KEY": "${GEMINI_API_KEY}",
@@ -782,19 +783,19 @@
         "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
         "DISABLED_TOOLS": "analyze,refactor,testgen,secaudit,docgen,tracer",
         "DEFAULT_MODEL": "auto",
-        "PATH": "K:/PortableApps/tools/nodejs/npm-global;K:/PortableApps/genai/.local/bin;K:/PortableApps/tools/nodejs;K:/PortableApps/tools/nodejs-v20-backup;K:/PortableApps/tools/git/bin;${PATH}"
+        "PATH": "J:/PortableApps/tools/nodejs/npm-global;J:/PortableApps/genai/.local/bin;J:/PortableApps/tools/nodejs;J:/PortableApps/tools/nodejs-v20-backup;J:/PortableApps/tools/git/bin;${PATH}"
       }
     },
     "nexus-gateway": {
       "command": "node",
       "args": [
-        "K:/PortableApps/genai/nexus/gateway/mcp-gateway/index.js"
+        "J:/PortableApps/genai/nexus/gateway/mcp-gateway/index.js"
       ],
       "env": {}
     },
     "codex": {
       "type": "stdio",
-      "command": "K:/PortableApps/tools/nodejs/npm-global/codex.cmd",
+      "command": "J:/PortableApps/tools/nodejs/npm-global/codex.cmd",
       "args": [
         "mcp-server"
       ],
@@ -805,7 +806,7 @@
   "gitBashPath": "K:\\tools\\git\\bin\\bash.exe",
   "userID": "c4c10b6644c2d667dffe707a92908a2c7784320f4bc2364c35ab54fd6ba7b91b",
   "projects": {
-    "K:\\PortableApps\\genai": {
+    "J:\\PortableApps\\genai": {
       "allowedTools": [],
       "hasCompletedProjectOnboarding": true,
       "lastTotalWebSearchRequests": 0,
@@ -849,7 +850,7 @@
         }
       }
     },
-    "K:/PortableApps/genai": {
+    "J:/PortableApps/genai": {
       "allowedTools": [],
       "mcpContextUris": [],
       "mcpServers": {},
@@ -910,7 +911,7 @@
       },
       "exampleFiles": []
     },
-    "K:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server": {
+    "J:\\PortableApps\\genai\\mcp-servers\\pal-mcp-server": {
       "allowedTools": [],
       "mcpContextUris": [],
       "mcpServers": {},
@@ -921,7 +922,7 @@
       "hasClaudeMdExternalIncludesApproved": false,
       "hasClaudeMdExternalIncludesWarningShown": false
     },
-    "K:/PortableApps/genai/command-center/mission-control": {
+    "J:/PortableApps/genai/command-center/mission-control": {
       "allowedTools": [],
       "mcpContextUris": [],
       "mcpServers": {
@@ -943,12 +944,12 @@
     }
   },
   "fallbackAvailableWarningThreshold": 0.5,
-  "changelogLastFetched": 1773793057218,
+  "changelogLastFetched": 1773877351472,
   "firstStartTime": "2025-08-27T08:05:58.945Z",
   "claudeCodeFirstTokenDate": "2025-07-23T03:27:24.018678Z",
   "hasCompletedOnboarding": true,
   "lastOnboardingVersion": "2.1.42",
-  "lastReleaseNotesSeen": "2.1.78",
+  "lastReleaseNotesSeen": "2.1.79",
   "subscriptionNoticeCount": 1,
   "hasAvailableSubscription": false,
   "s1mAccessCache": {
@@ -983,9 +984,9 @@
   "opus45MigrationComplete": true,
   "githubRepoPaths": {
     "0blueteam0/nexus-atip": [
-      "K:\\PortableApps\\genai",
-      "K:\\PortableApps\\genai\\multi-ai-orchestration",
-      "K:\\PortableApps\\genai"
+      "J:\\PortableApps\\genai",
+      "J:\\PortableApps\\genai\\multi-ai-orchestration",
+      "J:\\PortableApps\\genai"
     ]
   },
   "passesEligibilityCache": {
