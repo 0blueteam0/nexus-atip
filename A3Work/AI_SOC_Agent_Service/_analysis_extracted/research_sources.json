@@ -1,0 +1,249 @@
+{
+  "semantic_scholar": [
+    {
+      "query": "security operations center alert triage machine learning",
+      "papers": [
+        {
+          "paperId": "872e6519b01e73044be94428c079bb9e0186db7e",
+          "externalIds": {
+            "DOI": "10.55041/ijsrem61191",
+            "CorpusId": 287788845
+          },
+          "url": "https://www.semanticscholar.org/paper/872e6519b01e73044be94428c079bb9e0186db7e",
+          "title": "MCP-Driven RAG Architecture for Automated Alert Triage in Security Operations Centers",
+          "venue": "INTERNATIONAL JOURNAL OF SCIENTIFIC RESEARCH IN ENGINEERING AND MANAGEMENT",
+          "year": 2026,
+          "citationCount": 0,
+          "openAccessPdf": {
+            "url": "",
+            "status": null,
+            "license": null,
+            "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.55041/ijsrem61191?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.55041/ijsrem61191, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+          },
+          "authors": [
+            {
+              "authorId": "2431827053",
+              "name": "Payal Kuvar"
+            },
+            {
+              "authorId": "2426078076",
+              "name": "Tisha Patel"
+            }
+          ],
+          "abstract": "Abstract\nSecurity Operations Centers (SOCs) are the first line of defense against cyber threats, but they are becoming more and more overwhelmed by the large number and complexity of alerts that modern enterprise infrastructure generates. Surveys of the industry show that false-positive rates in enterprise SIEM deployments often go over 60%. This constant noise makes analysts tired, lowers the quality of decisions, and gives attackers chances to work without being seen. Rule-based correlation engines, supervised machine learning classifiers, and SOAR platforms are some of the current solutions. They only solve part of the problem, and they all have a major flaw: they can't automatically add new threat intelligence, and none of them give clear reasons for triage decisions. This paper presents a unified architecture that integrates the Model Context Protocol (MCP) with a Retrieval-Augmented Generation (RAG) pipeline to facilitate intelligent, explainable, and real-time alert triage in Security Operations Center (SOC) settings. Anthropic released MCP as an open standard in November 2024 [10]. It is a standardized JSON-RPC 2.0 integration layer that links an LLM reasoning engine to CVE databases, the MITRE ATT&CK knowledge base, curated incident repositories, and live threat intelligence feeds. RAG gives the model relevant external context at inference time without having to retrain it. The LLM then makes structured triage decisions and gives analysts step-by-step reasoning chains that they can check, change, and learn from.\n\nA proof-of-concept implementation was evaluated using the CICIDS2017 benchmark dataset [7] through a reproducible simulation pipeline that produced a corpus of 47,312 synthetic SIEM alerts. Important Caveat: All performance metrics reported in this paper are from the proof-of-concept implementation within a simulation pipeline running on 2017-era network traffic and are not production performance claims. The 61.4% simulation-generated baseline FPR was generated within the simulation itself and was not validated against an actual SIEM deployment. All reported improvements over baselines should be understood relative to this simulation-generated FPR only. Within these limits, the proposed system achieved a FPR, TPR, and a mean triage latency of 3.91 ± 0.52 seconds. All gains over three baseline configurations are statistically significant (p < 0.001 via two-proportion z-test). The overall score in the explainability assessment from three certified SOC analysts was 4.6/5.0, which is not generalizable outside of this group and should be considered only as an initial indication of explainability until further, larger studies (n >= 30) are completed. Component-level latency is discussed based on profiling and attributed to the use ofMCPresponse caching(meancache-hit rate 62.3%)andstructuredcontext prompt compression.The RAG-only baseline did not utilize equivalent caching, thus partially confounding comparison. Contemporary attack dataset evaluation was prioritized as a target for future work."
+        },
+        {
+          "paperId": "f358dc058c90f0e4f8afe2f45785767e4a49294e",
+          "externalIds": {
+            "DOI": "10.55640/ijdsml-05-02-04",
+            "CorpusId": 280369417
+          },
+          "url": "https://www.semanticscholar.org/paper/f358dc058c90f0e4f8afe2f45785767e4a49294e",
+          "title": "AI-optimized SOC playbook for Ransomware Investigation",
+          "venue": "International journal of data science and machine learning",
+          "year": 2025,
+          "citationCount": 1,
+          "openAccessPdf": {
+            "url": "",
+            "status": null,
+            "license": null,
+            "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.55640/ijdsml-05-02-04?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.55640/ijdsml-05-02-04, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+          },
+          "authors": [
+            {
+              "authorId": "2357822536",
+              "name": "P. R. Rajgopal"
+            }
+          ],
+          "abstract": "In today’s fast-evolving threat landscape, ransomware attacks have become more sophisticated, faster, and more destructive leaving traditional Security Operations Center (SOC) response strategies struggling to keep pace. Traditional SOC workflows struggle to match the speed and complexity of modern ransomware attacks. Manual processes like alert triage, incident scoping, and containment often consume critical hours giving adversaries ample opportunity to encrypt data, exfiltrate assets, and demand ransoms. AI-optimized SOC playbooks are redefining this paradigm by automating the entire investigation lifecycle. Leveraging machine learning, LLMs, and real-time telemetry analysis, these systems rapidly identify high-fidelity threats, enrich alerts with contextual intelligence, and scope incidents with minimal analyst input reducing response time from hours to mere minutes.\n\nGenerative AI further accelerates this shift by auto-generating attack summaries, mapping indicators to known threat tactics, and recommending or initiating containment actions such as isolation or credential revocation. These playbooks evolve continuously by learning from analyst feedback and past events, improving both accuracy and efficiency over time. The result is a measurable reduction in mean-time-to-detect (MTTD) and mean-time-to-respond (MTTR), while empowering SOC analysts to focus on strategic analysis over repetitive triage. As ransomware campaigns grow faster and more autonomous, adopting AI-driven SOC playbooks has become a mission-critical step for organizations seeking proactive, resilient security operations."
+        },
+        {
+          "paperId": "7cf964f0b10b98825660372450f5eeefae7449a5",
+          "externalIds": {
+            "DBLP": "journals/dtrap/Ghadermazi0J24",
+            "DOI": "10.1145/3644393",
+            "CorpusId": 267514665
+          },
+          "url": "https://www.semanticscholar.org/paper/7cf964f0b10b98825660372450f5eeefae7449a5",
+          "title": "A Machine Learning and Optimization Framework for Efficient Alert Management in a Cybersecurity Operations Center",
+          "venue": "DTRAP",
+          "year": 2024,
+          "citationCount": 9,
+          "openAccessPdf": {
+            "url": "https://dl.acm.org/doi/pdf/10.1145/3644393",
+            "status": "GOLD",
+            "license": null,
+            "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1145/3644393?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1145/3644393, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+          },
+          "authors": [
+            {
+              "authorId": "2143290745",
+              "name": "Jalal Ghadermazi"
+            },
+            {
+              "authorId": "2112444868",
+              "name": "Ankit Shah"
+            },
+            {
+              "authorId": "2283052281",
+              "name": "Sushil Jajodia"
+            }
+          ],
+          "abstract": "Cybersecurity operations centers (CSOCs) protect organizations by monitoring network traffic and detecting suspicious activities in the form of alerts. The security response team within CSOCs is responsible for investigating and mitigating alerts. However, an imbalance between alert volume and available analysts creates a backlog, putting the network at risk of exploitation. Recent research has focused on improving the alert-management process by triaging alerts, optimizing analyst scheduling, and reducing analyst workload through systematic discarding of alerts. However, these works overlook the delays caused in alert investigations by several factors, including: (i) false or benign alerts contributing to the backlog; (ii) analysts experiencing cognitive burden from repeatedly reviewing unrelated alerts; and (iii) analysts being assigned to alerts that do not match well with their expertise. We propose a novel framework that considers these factors and utilizes machine learning and mathematical optimization methods to dynamically improve throughput during work shifts. The framework achieves efficiency by automating the identification and removal of a portion of benign alerts, forming clusters of similar alerts, and assigning analysts to alerts with matching attributes. Experiments conducted using real-world CSOC data demonstrate a 60.16% reduction in the alert backlog for an 8-h work shift compared to currently employed approach."
+        },
+        {
+          "paperId": "4ce0b8e29abc109468cdee7cfac24f9b6005ca7f",
+          "externalIds": {
+            "DOI": "10.23919/FRUCT67853.2025.11239212",
+            "CorpusId": 283100514
+          },
+          "url": "https://www.semanticscholar.org/paper/4ce0b8e29abc109468cdee7cfac24f9b6005ca7f",
+          "title": "Multitenant Cybersecurity Operations Center Designed as an Open Cloud Service with Machine Learning Elements",
+          "venue": "Conference of the Open Innovations Association",
+          "year": 2025,
+          "citationCount": 0,
+          "openAccessPdf": {
+            "url": "",
+            "status": null,
+            "license": null,
+            "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.23919/FRUCT67853.2025.11239212?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.23919/FRUCT67853.2025.11239212, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+          },
+          "authors": [
+            {
+              "authorId": "2342160621",
+              "name": "Ivana Gabrišová"
+            },
+            {
+              "authorId": "2248424209",
+              "name": "Gabriel Koman"
+            }
+          ],
+          "abstract": "Security Operations Centres increasingly operate in cloud environments and must serve multiple tenants while processing vast, heterogeneous telemetry. Signature- and rule based defences alone struggle with novel attack behaviours, alert volume, and dispersed context. This paper synthesises how open, cloud-based architectures combined with machine learning can support a multitenant Security Operations Centre designed as a managed service. A parametric keyword search using \"Elastic Stack\" or \"OpenSearch\" with cybersecurity keywords was conducted, and thirteen selected case studies were retained and analysed across architecture, methods, telemetry, and operating practices.Across studies, a recurring foundation appears: an open telemetry plane based on the Elastic technology stack, container orchestration for horizontal scale and tenant isolation, and optional streaming with Apache Kafka and Apache Spark for real-time workloads. Standard components include containerised honeypots with malware enrichment, intrusion detection engines such as Suricata at the edge for prevention and network security monitoring, and automated remediation through rule engines with explicit safety rails (rate limits, blast-radius caps, canary actions, and rollback). Observed learning approaches include gradient-boosted decision trees for labelled network flow records, deep learning for sequence-rich traffic, principal component analysis with local outlier factor for unlabelled system and application logs, streaming combinations of clustering and nearest-neighbour classification, and evolutionary ensembles for user behaviour analytics. Key implications include selecting methods based on data reality and explainability needs, placing computation to meet latency and burst constraints, and enforcing tenant-scoped alerting and case management. The paper offers a practical blueprint for building transparent, scalable, and tenant aware Security Operations Centres using open technologies and machine learning."
+        },
+        {
+          "paperId": "9aab0844e780405a2071ed0178c4cec032f7a60c",
+          "externalIds": {
+            "DOI": "10.63282/3050-9262.ijaidsml-v6i1p131",
+            "CorpusId": 287801087
+          },
+          "url": "https://www.semanticscholar.org/paper/9aab0844e780405a2071ed0178c4cec032f7a60c",
+          "title": "Cognitive Load Reduction in On-Call Rotations via Predictive Alert Severity Scoring Using Machine Learning in Financial Cloud Operations",
+          "venue": "International Journal of Artificial Intelligence, Data Science, and Machine Learning",
+          "year": 2025,
+          "citationCount": 1,
+          "openAccessPdf": {
+            "url": "",
+            "status": null,
+            "license": null,
+            "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.63282/3050-9262.ijaidsml-v6i1p131?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.63282/3050-9262.ijaidsml-v6i1p131, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+          },
+          "authors": [
+            {
+              "authorId": "2431612973",
+              "name": "Ajay Devineni"
+            }
+          ],
+          "abstract": "Alert fatigue in cloud-native site reliability engineering represents a systemic threat to both operational reliability and engineer wellbeing. In high-availability financial services environments, on-call engineers receive hundreds of automated alerts per month from integrated observability platforms, of which a substantial fraction are non-actionable noise. This paper presents an ML-driven alert severity scoring framework deployed in production across six credit union banking applications, designed to reduce the cognitive load of on-call engineers by intelligently triaging PagerDuty alert streams before human engagement. The framework trains a gradient-boosted classifier on over 50,000 historical alert events sourced from Dynatrace Davis AI and PagerDuty, engineering 17 features capturing service dependency depth, deployment recency, historical false positive rates, time-of-day patterns, and cross-source metric correlations. Evaluated through a 30-day shadow validation protocol against actual engineer triage decisions, the classifier achieved 89.3% severity classification accuracy with a 2.1% P1 miss rate. Live deployment produced a 34% reduction in actionable alert volume, a 41% reduction in after-hours pages, and a 28% improvement in P1 mean time to acknowledge. A structured engineer wellbeing measurement program documented improvement in post-shift satisfaction scores from 5.8 to 7.4 out of 10 following system activation. This paper presents the feature engineering methodology, the shadow validation protocol, the deployment architecture within a SOC 2 regulated banking environment, and the case for treating engineer wellbeing as a first-class reliability metric."
+        }
+      ]
+    },
+    {
+      "query": "large language model security operations center agent",
+      "papers": []
+    },
+    {
+      "query": "intrusion detection dataset CICIDS2017 UNSW-NB15 survey",
+      "papers": []
+    },
+    {
+      "query": "graph neural network intrusion detection logs",
+      "papers": []
+    },
+    {
+      "query": "alert correlation security operations machine learning",
+      "papers": []
+    }
+  ],
+  "web_sources": [
+    {
+      "url": "https://www.unb.ca/cic/datasets/ids-2017.html",
+      "output": "ERROR\r\nURLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)>",
+      "exit_code": 0
+    },
+    {
+      "url": "https://www.unb.ca/cic/datasets/ids-2018.html",
+      "output": "ERROR\r\nURLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1006)>",
+      "exit_code": 0
+    },
+    {
+      "url": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
+      "output": "200\r\nThe UNSW-NB15 Dataset | UNSW Research\r\n<!DOCTYPE html> <html lang=\"en\" dir=\"ltr\" prefix=\"content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# \">   <head>     <meta charset=\"utf-8\" /> <script async src=\"https://www.googletagmanage",
+      "exit_code": 0
+    },
+    {
+      "url": "https://research.unsw.edu.au/projects/bot-iot-dataset",
+      "output": "200\r\nThe Bot-IoT Dataset | UNSW Research\r\n<!DOCTYPE html> <html lang=\"en\" dir=\"ltr\" prefix=\"content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# \">   <head>     <meta charset=\"utf-8\" /> <script async src=\"https://www.googletagmanage",
+      "exit_code": 0
+    },
+    {
+      "url": "https://research.unsw.edu.au/projects/toniot-datasets",
+      "output": "200\r\nThe TON_IoT Datasets | UNSW Research\r\n<!DOCTYPE html> <html lang=\"en\" dir=\"ltr\" prefix=\"content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# \">   <head>     <meta charset=\"utf-8\" /> <script async src=\"https://www.googletagmanage",
+      "exit_code": 0
+    },
+    {
+      "url": "https://csr.lanl.gov/data/cyber1/",
+      "output": "200\r\nComprehensive, Multi-Source Cyber-Security Events - Cyber Security Research\r\n<!DOCTYPE html> <html lang=\"en\">  <head>            <meta charset=\"utf-8\">   <meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\">   <title>Comprehensive, Multi-Source Cyber-Security Events - Cyber Security Research</title>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">      <link rel=\"icon\" href=\"/images/ARCS.png\">             <link rel=\"stylesheet\" href=\"/css/style.min.9ec3ab6fae0d65946720071de9f9fbdc1f2b5c3b62d19f7612d7bc53632a28d2.css\">           </head>  <body class=",
+      "exit_code": 0
+    },
+    {
+      "url": "https://kilthub.cmu.edu/articles/dataset/Insider_Threat_Test_Dataset/12841247",
+      "output": "202",
+      "exit_code": 0
+    },
+    {
+      "url": "https://github.com/OTRF/Security-Datasets",
+      "output": "200\r\nGitHub - OTRF/Security-Datasets: Re-play Security Events · GitHub\r\n      <!DOCTYPE html> <html   lang=\"en\"      data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"   data-a11y-animated-images=\"system\" data-a11y-link-underlines=\"true\"      >       <head>     <meta charset=\"utf-8\">   <link rel=\"dns-prefetch\" href=\"https://github.githubassets.com\">   <link rel=\"dns-prefetch\" href=\"https://avatars.githubusercontent.com\">   <link rel=\"dns-prefetch\" href=\"https://github-cloud.s3.amazonaws.com\">   <link rel=\"dns-prefetch\" href=\"https://user-images.g",
+      "exit_code": 0
+    },
+    {
+      "url": "https://github.com/splunk/botsv3",
+      "output": "200\r\nGitHub - splunk/botsv3: Splunk Boss of the SOC version 3 dataset. · GitHub\r\n      <!DOCTYPE html> <html   lang=\"en\"      data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"   data-a11y-animated-images=\"system\" data-a11y-link-underlines=\"true\"      >       <head>     <meta charset=\"utf-8\">   <link rel=\"dns-prefetch\" href=\"https://github.githubassets.com\">   <link rel=\"dns-prefetch\" href=\"https://avatars.githubusercontent.com\">   <link rel=\"dns-prefetch\" href=\"https://github-cloud.s3.amazonaws.com\">   <link rel=\"dns-prefetch\" href=\"https://user-images.g",
+      "exit_code": 0
+    },
+    {
+      "url": "https://github.com/redcanaryco/atomic-red-team",
+      "output": "200\r\nGitHub - redcanaryco/atomic-red-team: Small and highly portable detection tests based on MITRE&#39;s ATT&amp;CK. · GitHub\r\n      <!DOCTYPE html> <html   lang=\"en\"      data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"   data-a11y-animated-images=\"system\" data-a11y-link-underlines=\"true\"      >       <head>     <meta charset=\"utf-8\">   <link rel=\"dns-prefetch\" href=\"https://github.githubassets.com\">   <link rel=\"dns-prefetch\" href=\"https://avatars.githubusercontent.com\">   <link rel=\"dns-prefetch\" href=\"https://github-cloud.s3.amazonaws.com\">   <link rel=\"dns-prefetch\" href=\"https://user-images.g",
+      "exit_code": 0
+    },
+    {
+      "url": "https://github.com/mitre/caldera",
+      "output": "200\r\nGitHub - apache/caldera: Automated Adversary Emulation Platform · GitHub\r\n      <!DOCTYPE html> <html   lang=\"en\"      data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"   data-a11y-animated-images=\"system\" data-a11y-link-underlines=\"true\"      >       <head>     <meta charset=\"utf-8\">   <link rel=\"dns-prefetch\" href=\"https://github.githubassets.com\">   <link rel=\"dns-prefetch\" href=\"https://avatars.githubusercontent.com\">   <link rel=\"dns-prefetch\" href=\"https://github-cloud.s3.amazonaws.com\">   <link rel=\"dns-prefetch\" href=\"https://user-images.g",
+      "exit_code": 0
+    },
+    {
+      "url": "https://github.com/SigmaHQ/sigma",
+      "output": "200\r\nGitHub - SigmaHQ/sigma: Main Sigma Rule Repository · GitHub\r\n      <!DOCTYPE html> <html   lang=\"en\"      data-color-mode=\"auto\" data-light-theme=\"light\" data-dark-theme=\"dark\"   data-a11y-animated-images=\"system\" data-a11y-link-underlines=\"true\"      >       <head>     <meta charset=\"utf-8\">   <link rel=\"dns-prefetch\" href=\"https://github.githubassets.com\">   <link rel=\"dns-prefetch\" href=\"https://avatars.githubusercontent.com\">   <link rel=\"dns-prefetch\" href=\"https://github-cloud.s3.amazonaws.com\">   <link rel=\"dns-prefetch\" href=\"https://user-images.g",
+      "exit_code": 0
+    },
+    {
+      "url": "https://attack.mitre.org/",
+      "output": "200\r\nMITRE ATT&CK&reg;\r\n <!DOCTYPE html> <html lang='en'>  <head>     <script src=https://cmp.osano.com/AzyhULTdPkqmy4aDN/83f786b4-d60d-4938-b70a-73afd166380a/osano.js></script>     <style>         .osano-cm-widget{display: none;}     </style>         <script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-62667723-1\"></script>         <script>             window.dataLayer = window.dataLayer || [];             function gtag(){dataLayer.push(arguments);}             gtag('js', new Date());             gtag('co",
+      "exit_code": 0
+    },
+    {
+      "url": "https://d3fend.mitre.org/",
+      "output": "200\r\nD3FEND Matrix | MITRE D3FEND™\r\n<!DOCTYPE html> <html lang=\"en\">  <head>   <meta charset=\"utf-8\" />   <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />   <meta name=\"theme-color\" content=\"#333333\" />    <link rel=\"stylesheet\" href=\"./global-d3fend.css\" />   <link rel=\"icon\" type=\"image/png\" href=\"./favicon.ico\" />    <!-- This contains the contents of the <svelte:head> component, if     the current page has one -->   <link href=\"./_app/immutable/entry/start.B1GJfl7k.js\" rel=\"modulepreload\"> \t\t<link href=\"",
+      "exit_code": 0
+    },
+    {
+      "url": "https://www.elastic.co/security-labs/introducing-elastic-ai-assistant",
+      "output": "ERROR\r\nHTTPError: HTTP Error 404: Not Found",
+      "exit_code": 0
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/automation/automation-rules",
+      "output": "ERROR\r\nHTTPError: HTTP Error 404: Not Found",
+      "exit_code": 0
+    }
+  ]
+}

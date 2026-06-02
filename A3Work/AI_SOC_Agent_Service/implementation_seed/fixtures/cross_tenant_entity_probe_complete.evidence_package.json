@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "tenant_id": "tenant-alpha",
+  "case_id": "CASE-126225",
+  "alert_id": "ALT-126225",
+  "required": [
+    {
+      "evidence_type": "tenant_boundary_check",
+      "required": true,
+      "source": "policy_engine"
+    },
+    {
+      "evidence_type": "tool_scope_check",
+      "required": true,
+      "source": "tool_gateway"
+    }
+  ],
+  "collected": [
+    {
+      "evidence_type": "tenant_boundary_check",
+      "source": "policy_engine",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic tenant_boundary_check evidence for ALT-126225",
+      "citation_id": "ev-001"
+    },
+    {
+      "evidence_type": "tool_scope_check",
+      "source": "tool_gateway",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic tool_scope_check evidence for ALT-126225",
+      "citation_id": "ev-002"
+    }
+  ],
+  "missing": [],
+  "failed": [],
+  "timeline": [
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "alert_created",
+      "summary": "Cross-tenant entity lookup attempt",
+      "citation_id": "alert:raw_ref"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic tenant_boundary_check evidence for ALT-126225",
+      "citation_id": "ev-001"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic tool_scope_check evidence for ALT-126225",
+      "citation_id": "ev-002"
+    }
+  ],
+  "policy_decision": {
+    "decision": "blocked",
+    "reasons": [
+      "cross_tenant_access",
+      "tenant_guard_required"
+    ]
+  },
+  "assurance": {
+    "prompt_injection_status": "clean",
+    "evidence_completeness": 1.0,
+    "citation_coverage": 1.0
+  },
+  "security": {
+    "human_review_required": true,
+    "automation_allowed": false
+  },
+  "verdict_candidate": "needs_review",
+  "reason_codes": [
+    "alert_family:policy_test",
+    "severity:high",
+    "cross_tenant_access",
+    "tenant_guard_required"
+  ],
+  "trace_id": "trace-cc927738-5dbd-4503-96b4-15f85948064d"
+}

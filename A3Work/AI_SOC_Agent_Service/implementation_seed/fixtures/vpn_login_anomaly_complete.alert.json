@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "tenant_id": "tenant-alpha",
+  "alert_id": "ALT-770487",
+  "source_system": "synthetic-alert-generator-v0",
+  "event_time": "2026-06-02T04:06:09Z",
+  "alert_family": "login_anomaly",
+  "severity": "high",
+  "title": "VPN login anomaly detected",
+  "description": "Unusual VPN login pattern requires evidence-backed SOC review.",
+  "entities": {
+    "user": "admin.kim",
+    "host": "vpn-gw-01",
+    "src_ip": "203.0.113.17",
+    "dst_ip": "10.10.20.15"
+  },
+  "security": {
+    "asset_criticality": "high",
+    "user_role": "privileged",
+    "human_review_required": true,
+    "automation_allowed": false
+  },
+  "raw_ref": {
+    "dataset": "synthetic-v0",
+    "record_id": "vpn_login_anomaly:complete:e3a98050-a9ce-4301-ab9c-0bd71e90a0d6"
+  }
+}

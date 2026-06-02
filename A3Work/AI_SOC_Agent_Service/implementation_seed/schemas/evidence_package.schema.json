@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/ai-soc-agent/evidence_package.schema.json",
+  "title": "Evidence Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "case_id",
+    "alert_id",
+    "required",
+    "collected",
+    "missing",
+    "failed",
+    "timeline",
+    "policy_decision",
+    "assurance",
+    "security",
+    "verdict_candidate",
+    "reason_codes",
+    "trace_id"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "case_id": { "type": "string", "minLength": 1 },
+    "alert_id": { "type": "string", "minLength": 1 },
+    "required": { "type": "array", "items": { "$ref": "#/$defs/evidenceRequirement" } },
+    "collected": { "type": "array", "items": { "$ref": "#/$defs/evidenceItem" } },
+    "missing": { "type": "array", "items": { "$ref": "#/$defs/missingEvidence" } },
+    "failed": { "type": "array", "items": { "$ref": "#/$defs/failedEvidence" } },
+    "timeline": { "type": "array", "items": { "$ref": "#/$defs/timelineEvent" } },
+    "policy_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reasons"],
+      "properties": {
+        "decision": { "type": "string", "enum": ["allowed", "blocked", "review_required"] },
+        "reasons": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt_injection_status", "evidence_completeness", "citation_coverage"],
+      "properties": {
+        "prompt_injection_status": { "type": "string", "enum": ["clean", "suspected", "quarantined"] },
+        "evidence_completeness": { "type": "number", "minimum": 0, "maximum": 1 },
+        "citation_coverage": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["human_review_required", "automation_allowed"],
+      "properties": {
+        "human_review_required": { "type": "boolean" },
+        "automation_allowed": { "type": "boolean" }
+      }
+    },
+    "verdict_candidate": {
+      "type": "string",
+      "enum": ["benign_candidate", "suspicious", "true_positive_candidate", "needs_review", "insufficient_evidence"]
+    },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "trace_id": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "evidenceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "required", "source"],
+      "properties": {
+        "evidence_type": { "type": "string" },
+        "required": { "type": "boolean" },
+        "source": { "type": "string" }
+      }
+    },
+    "evidenceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "source", "collected_at", "summary", "citation_id"],
+      "properties": {
+        "evidence_type": { "type": "string" },
+        "source": { "type": "string" },
+        "collected_at": { "type": "string", "format": "date-time" },
+        "summary": { "type": "string" },
+        "citation_id": { "type": "string" }
+      }
+    },
+    "missingEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "reason", "next_step"],
+      "properties": {
+        "evidence_type": { "type": "string" },
+        "reason": { "type": "string" },
+        "next_step": { "type": "string" }
+      }
+    },
+    "failedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "tool", "error"],
+      "properties": {
+        "evidence_type": { "type": "string" },
+        "tool": { "type": "string" },
+        "error": { "type": "string" }
+      }
+    },
+    "timelineEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_time", "event_type", "summary", "citation_id"],
+      "properties": {
+        "event_time": { "type": "string", "format": "date-time" },
+        "event_type": { "type": "string" },
+        "summary": { "type": "string" },
+        "citation_id": { "type": "string" }
+      }
+    }
+  }
+}

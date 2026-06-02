@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "tenant_id": "tenant-alpha",
+  "case_id": "CASE-877572",
+  "alert_id": "ALT-877572",
+  "required": [
+    {
+      "evidence_type": "vpn_login_log",
+      "required": true,
+      "source": "siem"
+    },
+    {
+      "evidence_type": "iam_user_context",
+      "required": true,
+      "source": "iam"
+    },
+    {
+      "evidence_type": "cmdb_asset_context",
+      "required": true,
+      "source": "cmdb"
+    },
+    {
+      "evidence_type": "prior_login_pattern",
+      "required": true,
+      "source": "siem"
+    }
+  ],
+  "collected": [
+    {
+      "evidence_type": "vpn_login_log",
+      "source": "siem",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic vpn_login_log evidence for ALT-877572",
+      "citation_id": "ev-001"
+    },
+    {
+      "evidence_type": "iam_user_context",
+      "source": "iam",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic iam_user_context evidence for ALT-877572",
+      "citation_id": "ev-002"
+    },
+    {
+      "evidence_type": "cmdb_asset_context",
+      "source": "cmdb",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic cmdb_asset_context evidence for ALT-877572",
+      "citation_id": "ev-003"
+    },
+    {
+      "evidence_type": "prior_login_pattern",
+      "source": "siem",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic prior_login_pattern evidence for ALT-877572",
+      "citation_id": "ev-004"
+    }
+  ],
+  "missing": [],
+  "failed": [],
+  "timeline": [
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "alert_created",
+      "summary": "VPN login anomaly with hostile ticket note",
+      "citation_id": "alert:raw_ref"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic vpn_login_log evidence for ALT-877572",
+      "citation_id": "ev-001"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic iam_user_context evidence for ALT-877572",
+      "citation_id": "ev-002"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic cmdb_asset_context evidence for ALT-877572",
+      "citation_id": "ev-003"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic prior_login_pattern evidence for ALT-877572",
+      "citation_id": "ev-004"
+    }
+  ],
+  "policy_decision": {
+    "decision": "allowed",
+    "reasons": [
+      "read_only_evidence_collection"
+    ]
+  },
+  "assurance": {
+    "prompt_injection_status": "quarantined",
+    "evidence_completeness": 1.0,
+    "citation_coverage": 1.0
+  },
+  "security": {
+    "human_review_required": true,
+    "automation_allowed": false
+  },
+  "verdict_candidate": "needs_review",
+  "reason_codes": [
+    "alert_family:login_anomaly",
+    "severity:medium",
+    "read_only_evidence_collection",
+    "prompt_injection_quarantine"
+  ],
+  "trace_id": "trace-5af07855-fb99-46e2-ae02-9f4b28c0ef03"
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "tenant_id": "tenant-alpha",
+  "alert_id": "ALT-126225",
+  "source_system": "synthetic-alert-generator-v0",
+  "event_time": "2026-06-02T04:06:09Z",
+  "alert_family": "policy_test",
+  "severity": "high",
+  "title": "Cross-tenant entity lookup attempt",
+  "description": "Synthetic policy test for tenant isolation guard.",
+  "entities": {
+    "user": "analyst.lee",
+    "host": "vpn-gw-01",
+    "src_ip": "203.0.113.17",
+    "dst_ip": "10.10.20.15",
+    "cross_tenant_ref": "tenant-beta:host:db-77"
+  },
+  "security": {
+    "asset_criticality": "high",
+    "user_role": "standard",
+    "human_review_required": true,
+    "automation_allowed": false
+  },
+  "raw_ref": {
+    "dataset": "synthetic-v0",
+    "record_id": "cross_tenant_entity_probe:complete:53d4799e-a130-43ac-ac94-f578904483b3"
+  }
+}

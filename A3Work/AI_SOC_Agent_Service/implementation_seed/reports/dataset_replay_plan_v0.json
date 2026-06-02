@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-02T07:13:05Z",
+  "manifest_id": "ai-soc-agent-datasets-v0",
+  "manifest_path": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\datasets\\dataset_manifest.json",
+  "execution_mode": "metadata_only_no_download",
+  "summary": {
+    "total_sources": 6,
+    "enabled_sources": 5,
+    "public_sources": 4,
+    "synthetic_sources": 1,
+    "dataset_readiness": {
+      "ready_local_fixture": 1,
+      "metadata_stub": 4,
+      "manual_review_required": 1
+    }
+  },
+  "sources": [
+    {
+      "source_id": "synthetic-v0",
+      "display_name": "AI SOC Agent Synthetic Fixtures v0",
+      "source_type": "synthetic",
+      "adapter": "local_fixture_adapter",
+      "ingestion_status": "ready_local_fixture",
+      "download_allowed": false,
+      "candidate_tasks": [
+        "evidence_completeness_gate",
+        "missing_evidence_reasoning",
+        "tenant_isolation_policy",
+        "prompt_injection_quarantine"
+      ],
+      "case_template_count": 1,
+      "limitations": [
+        "Synthetic only; does not measure parser robustness on raw third-party logs."
+      ]
+    },
+    {
+      "source_id": "otrf-security-datasets",
+      "display_name": "OTRF Security Datasets",
+      "source_type": "public",
+      "adapter": "otrf_metadata_stub_adapter",
+      "ingestion_status": "metadata_stub",
+      "download_allowed": false,
+      "candidate_tasks": [
+        "attack_timeline_reconstruction",
+        "evidence_retrieval",
+        "mitre_mapping"
+      ],
+      "case_template_count": 1,
+      "limitations": [
+        "Metadata-only in this seed; raw event normalization adapter is not implemented yet."
+      ]
+    },
+    {
+      "source_id": "splunk-bots-v3",
+      "display_name": "Splunk Boss of the SOC v3",
+      "source_type": "public",
+      "adapter": "bots_v3_metadata_stub_adapter",
+      "ingestion_status": "metadata_stub",
+      "download_allowed": false,
+      "candidate_tasks": [
+        "multi_step_triage",
+        "query_planning",
+        "case_summary_generation"
+      ],
+      "case_template_count": 1,
+      "limitations": [
+        "Dataset is often distributed as Splunk-ready data; adapter must avoid assuming local Splunk availability."
+      ]
+    },
+    {
+      "source_id": "unsw-nb15",
+      "display_name": "UNSW-NB15 Network Intrusion Dataset",
+      "source_type": "public",
+      "adapter": "unsw_nb15_metadata_stub_adapter",
+      "ingestion_status": "metadata_stub",
+      "download_allowed": false,
+      "candidate_tasks": [
+        "anomaly_scoring_baseline",
+        "network_alert_enrichment",
+        "threshold_calibration"
+      ],
+      "case_template_count": 1,
+      "limitations": [
+        "Feature-table dataset; weak fit for natural language SOC evidence unless wrapped with synthetic context."
+      ]
+    },
+    {
+      "source_id": "lanl-auth",
+      "display_name": "LANL Authentication Dataset",
+      "source_type": "public",
+      "adapter": "lanl_auth_metadata_stub_adapter",
+      "ingestion_status": "metadata_stub",
+      "download_allowed": false,
+      "candidate_tasks": [
+        "identity_anomaly_detection",
+        "peer_baseline",
+        "login_chain_reconstruction"
+      ],
+      "case_template_count": 1,
+      "limitations": [
+        "Large-scale temporal dataset; requires sampling and privacy-aware case construction."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/ai-soc-agent/dataset_manifest.schema.json",
+  "title": "Dataset Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "generated_by",
+    "execution_policy",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "generated_by": { "type": "string", "minLength": 1 },
+    "execution_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["download_allowed", "production_connection_allowed", "notes"],
+      "properties": {
+        "download_allowed": { "type": "boolean", "const": false },
+        "production_connection_allowed": { "type": "boolean", "const": false },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "display_name",
+        "source_type",
+        "enabled",
+        "download_allowed",
+        "adapter",
+        "ingestion_status",
+        "license_notes",
+        "coverage",
+        "candidate_tasks",
+        "case_templates",
+        "limitations"
+      ],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "display_name": { "type": "string", "minLength": 1 },
+        "source_type": { "type": "string", "enum": ["synthetic", "public"] },
+        "enabled": { "type": "boolean" },
+        "download_allowed": { "type": "boolean", "const": false },
+        "adapter": { "type": "string", "minLength": 1 },
+        "ingestion_status": {
+          "type": "string",
+          "enum": ["ready_local_fixture", "metadata_stub", "manual_review_required"]
+        },
+        "license_notes": { "type": "string" },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domains", "log_types", "mitre_tactics"],
+          "properties": {
+            "domains": { "type": "array", "items": { "type": "string" } },
+            "log_types": { "type": "array", "items": { "type": "string" } },
+            "mitre_tactics": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "candidate_tasks": { "type": "array", "items": { "type": "string" } },
+        "case_templates": { "type": "array", "items": { "$ref": "#/$defs/caseTemplate" } },
+        "limitations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "caseTemplate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template_id", "scenario", "expected_evidence", "expected_guardrails"],
+      "properties": {
+        "template_id": { "type": "string", "minLength": 1 },
+        "scenario": { "type": "string", "minLength": 1 },
+        "expected_evidence": { "type": "array", "items": { "type": "string" } },
+        "expected_guardrails": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

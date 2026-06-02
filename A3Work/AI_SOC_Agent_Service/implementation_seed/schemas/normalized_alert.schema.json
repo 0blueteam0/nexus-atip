@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/ai-soc-agent/normalized_alert.schema.json",
+  "title": "Normalized Alert",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "alert_id",
+    "source_system",
+    "event_time",
+    "alert_family",
+    "severity",
+    "title",
+    "description",
+    "entities",
+    "security",
+    "raw_ref"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "tenant_id": { "type": "string", "minLength": 1 },
+    "alert_id": { "type": "string", "minLength": 1 },
+    "source_system": { "type": "string", "minLength": 1 },
+    "event_time": { "type": "string", "format": "date-time" },
+    "alert_family": {
+      "type": "string",
+      "enum": ["login_anomaly", "malware", "phishing", "waf_attack", "ips_attack", "cloud_activity", "data_exfil_candidate", "policy_test"]
+    },
+    "severity": { "type": "string", "enum": ["critical", "high", "medium", "low", "informational"] },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "entities": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "user": { "type": "string" },
+        "host": { "type": "string" },
+        "src_ip": { "type": "string" },
+        "dst_ip": { "type": "string" },
+        "ioc": { "type": "string" },
+        "external_note": { "type": "string" }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_criticality", "user_role", "human_review_required", "automation_allowed"],
+      "properties": {
+        "asset_criticality": { "type": "string", "enum": ["critical", "high", "medium", "low"] },
+        "user_role": { "type": "string", "enum": ["privileged", "standard", "service", "unknown"] },
+        "human_review_required": { "type": "boolean" },
+        "automation_allowed": { "type": "boolean" }
+      }
+    },
+    "raw_ref": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["dataset", "record_id"],
+      "properties": {
+        "dataset": { "type": "string" },
+        "record_id": { "type": "string" }
+      }
+    }
+  }
+}

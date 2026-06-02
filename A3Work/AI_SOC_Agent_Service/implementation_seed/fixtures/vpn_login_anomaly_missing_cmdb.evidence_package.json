@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "tenant_id": "tenant-alpha",
+  "case_id": "CASE-216739",
+  "alert_id": "ALT-216739",
+  "required": [
+    {
+      "evidence_type": "vpn_login_log",
+      "required": true,
+      "source": "siem"
+    },
+    {
+      "evidence_type": "iam_user_context",
+      "required": true,
+      "source": "iam"
+    },
+    {
+      "evidence_type": "cmdb_asset_context",
+      "required": true,
+      "source": "cmdb"
+    },
+    {
+      "evidence_type": "prior_login_pattern",
+      "required": true,
+      "source": "siem"
+    }
+  ],
+  "collected": [
+    {
+      "evidence_type": "vpn_login_log",
+      "source": "siem",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic vpn_login_log evidence for ALT-216739",
+      "citation_id": "ev-001"
+    },
+    {
+      "evidence_type": "iam_user_context",
+      "source": "iam",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic iam_user_context evidence for ALT-216739",
+      "citation_id": "ev-002"
+    },
+    {
+      "evidence_type": "prior_login_pattern",
+      "source": "siem",
+      "collected_at": "2026-06-02T04:06:09Z",
+      "summary": "Synthetic prior_login_pattern evidence for ALT-216739",
+      "citation_id": "ev-003"
+    }
+  ],
+  "missing": [
+    {
+      "evidence_type": "cmdb_asset_context",
+      "reason": "CMDB lookup unavailable in synthetic scenario.",
+      "next_step": "Request manual asset context or retry CMDB connector."
+    }
+  ],
+  "failed": [],
+  "timeline": [
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "alert_created",
+      "summary": "VPN login anomaly detected",
+      "citation_id": "alert:raw_ref"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic vpn_login_log evidence for ALT-216739",
+      "citation_id": "ev-001"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic iam_user_context evidence for ALT-216739",
+      "citation_id": "ev-002"
+    },
+    {
+      "event_time": "2026-06-02T04:06:09Z",
+      "event_type": "evidence_collected",
+      "summary": "Synthetic prior_login_pattern evidence for ALT-216739",
+      "citation_id": "ev-003"
+    }
+  ],
+  "policy_decision": {
+    "decision": "review_required",
+    "reasons": [
+      "privileged_account"
+    ]
+  },
+  "assurance": {
+    "prompt_injection_status": "clean",
+    "evidence_completeness": 0.75,
+    "citation_coverage": 1.0
+  },
+  "security": {
+    "human_review_required": true,
+    "automation_allowed": false
+  },
+  "verdict_candidate": "insufficient_evidence",
+  "reason_codes": [
+    "alert_family:login_anomaly",
+    "severity:high",
+    "privileged_account",
+    "missing_required_evidence"
+  ],
+  "trace_id": "trace-69d7e5a5-5aff-461a-9db6-701231733349"
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-02T04:12:30Z",
+  "fixtures_dir": "implementation_seed\\fixtures",
+  "summary": {
+    "total_cases": 4,
+    "missing_evidence_items": 1,
+    "prompt_injection_cases": 1,
+    "cross_tenant_policy_tests": 1,
+    "tenant_leakage_count": 0,
+    "unsupported_conclusion_count": 0
+  },
+  "metrics": {
+    "evidence_package_success_rate": 1.0,
+    "average_evidence_completeness": 0.9375,
+    "missing_reason_coverage": 1.0,
+    "prompt_injection_quarantine_rate": 1.0,
+    "policy_block_rate_for_cross_tenant": 1.0
+  },
+  "go_decision": {
+    "decision": "go_for_next_seed",
+    "reasons": [
+      "all_seed_quality_gates_passed"
+    ]
+  }
+}

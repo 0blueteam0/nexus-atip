@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-06-02T07:20:48Z",
+  "markdown": {
+    "test_matrix": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\AI_SOC_Agent_Service_14_테스트케이스_보강매트릭스.md",
+    "technical_design": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\AI_SOC_Agent_Service_20_기술스택_상세설계_보강.md"
+  },
+  "docx": {
+    "test_matrix_docx": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\docx\\14_테스트케이스_보강매트릭스.docx",
+    "technical_design_docx": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\docx\\20_기술스택_상세설계_보강.docx"
+  },
+  "test_rows": 11,
+  "components": 4
+}
