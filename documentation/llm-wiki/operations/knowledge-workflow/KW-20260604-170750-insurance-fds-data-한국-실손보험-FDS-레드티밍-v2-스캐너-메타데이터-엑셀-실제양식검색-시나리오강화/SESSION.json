@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260604-170750-insurance-fds-data-한국-실손보험-FDS-레드티밍-v2-스캐너-메타데이터-엑셀-실제양식검색-시나리오강화",
+  "project": "insurance-fds-data",
+  "task": "한국-실손보험-FDS-레드티밍-v2-스캐너-메타데이터-엑셀-실제양식검색-시나리오강화",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260604-170750-insurance-fds-data-한국-실손보험-FDS-레드티밍-v2-스캐너-메타데이터-엑셀-실제양식검색-시나리오강화",
+  "created_at": "2026-06-04T17:07:50+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

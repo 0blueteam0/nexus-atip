@@ -1,0 +1,81 @@
+{
+  "artifact_version": "insurance-fds-public-image-search-and-template-notes-v1",
+  "created_at": "2026-06-04T17:28:00+09:00",
+  "purpose_ko": "한국 실손보험 FDS 정상 이미지 도메인 적응 및 AF 레드팀 합성을 위한 실제 공개 이미지/양식 탐색 전략",
+  "automatic_search_result": {
+    "bing_browser_dom": {
+      "status": "usable",
+      "evidence": "브라우저 DOM에서 진료비 계산서·영수증, 진료비 세부산정내역 표준서식, 약제비 영수증, 보험금 청구서류 후보 URL을 추출함",
+      "curated_source_file": "data/insurance-fds-generated/public-real-candidates-v1/source_catalog/bing_browser_curated_candidates.json",
+      "downloaded_curated_count": 11
+    },
+    "google_images": {
+      "status": "blocked_or_unstable_in_browser_tool",
+      "evidence": "browser_navigate에서 UTF-8 decode error 발생",
+      "manual_followup": "아래 query_set을 Google Images에서 수동 교차검증"
+    },
+    "yandex_images": {
+      "status": "not_automated_in_this_run",
+      "manual_followup": "아래 query_set을 Yandex Images에서 수동 교차검증"
+    },
+    "first_automatic_bing_batch": {
+      "status": "rejected_as_noisy",
+      "path": "data/insurance-fds-generated/public-real-candidates-v1",
+      "reason_ko": "실손보험 영수증 같은 넓은 질의는 해외 음식/상품/무관 이미지가 섞였으므로 FDS 학습 후보로 부적절. curated 배치로 대체."
+    }
+  },
+  "manual_google_yandex_query_set": [
+    "실손보험 영수증 진료비 계산서 이미지",
+    "실손보험 제출서류 진료비 영수증",
+    "실비보험 진료비영수증 약제비영수증 샘플",
+    "진료비 계산서 영수증 표준서식 이미지",
+    "진료비 세부산정내역서 표준서식 2018",
+    "진료비 세부산정내역서 표준서식 2020",
+    "병원비 영수증 실손보험 청구",
+    "병원 진료비 계산서 영수증 실손의료비",
+    "약제비 영수증 실손보험 청구",
+    "약국 약제비 영수증 보험 청구",
+    "보험금 청구서 실손의료보험 양식",
+    "손해보험 보험금청구서 실손 PDF",
+    "생명보험 보험금청구서 실손 PDF",
+    "진료확인서 실손보험 청구 서류",
+    "처방전 약제비 영수증 실비보험"
+  ],
+  "korean_document_type_targets": [
+    {
+      "document_type": "진료비 계산서·영수증",
+      "fds_value": "금액 수식, 본인부담금, 비급여, 진료일자, 영수증번호, 병원명 탐지",
+      "real_image_status": "curated candidates downloaded"
+    },
+    {
+      "document_type": "진료비 세부산정내역서",
+      "fds_value": "line item 과청구, 비급여 업코딩, 총액 재계산, 표 구조 변조 탐지",
+      "real_image_status": "curated candidates downloaded"
+    },
+    {
+      "document_type": "약제비 영수증/처방전",
+      "fds_value": "고가 약품 삽입, 처방전-약국 영수증 cross-document mismatch 탐지",
+      "real_image_status": "curated candidates downloaded"
+    },
+    {
+      "document_type": "보험금 청구서/개인정보동의서",
+      "fds_value": "피보험자명, 계좌, 서명동의, 청구유형, 보험사 양식 버전 차이 탐지",
+      "real_image_status": "curated candidates downloaded"
+    }
+  ],
+  "year_template_drift_notes": [
+    {
+      "period": "2018 전후",
+      "note_ko": "진료비 계산서·영수증 및 세부산정내역 표준서식 제정/개정 관련 공개 이미지가 검색됨. 구서식/신서식 필드 유무 차이를 template_version_classifier 라벨로 관리해야 함."
+    },
+    {
+      "period": "2020-2024",
+      "note_ko": "실손보험 청구 앱/모바일 청구 안내가 증가하여 휴대폰 촬영본, 모바일 스캔앱 crop, EXIF 누락 패턴이 중요해짐."
+    },
+    {
+      "period": "2024-2026",
+      "note_ko": "보험사 앱 자동청구/간편청구 문서 업로드 흐름에서는 원본 EXIF가 제거되거나 재인코딩될 수 있어 missing EXIF를 hard fraud로 보지 않고 channel feature로 처리해야 함."
+    }
+  ],
+  "privacy_and_license_gate_ko": "실제 공개 이미지 후보는 개인정보/저작권 검토 전에는 quarantine이다. 본 작업의 NO_REAL_DERIVED/AF_REAL_DERIVED는 FDS 내부 평가용 derivative이며 외부 재배포나 최종 학습 편입 전에는 수동 검수/마스킹/라이선스 확인이 필요하다."
+}
