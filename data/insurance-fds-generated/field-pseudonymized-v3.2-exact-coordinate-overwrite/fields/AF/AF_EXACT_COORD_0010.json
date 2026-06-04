@@ -1,0 +1,233 @@
+{
+  "dataset_id": "AF_EXACT_COORD_0010",
+  "dataset_version": "insurance-fds-field-pseudonymized-v3.2-exact-coordinate-overwrite",
+  "prefix": "AF",
+  "document_type": "medical_detail_statement",
+  "document_name_ko": "진료비 세부산정내역서",
+  "image_path": "images/AF/AF_EXACT_COORD_0010.png",
+  "quality_profile": "paired_pristine_exact_coordinate",
+  "pseudonymization_policy": {
+    "strategy": "replace_sensitive_values_with_domain_consistent_fake_values",
+    "masking_used": false,
+    "real_pii_retained": false,
+    "notes_ko": "성명/연락처/기관명/계좌/영수증번호 등 민감값은 검은 마스킹이 아니라 가명값으로 대체했다."
+  },
+  "source_lineage": {
+    "source_family": "standard_template_synthetic_adversarial",
+    "paired_no_dataset_id": "NO_EXACT_COORD_0010",
+    "paired_no_image_path": "images/NO/NO_EXACT_COORD_0010.png",
+    "paired_no_field_json_path": "fields/NO/NO_EXACT_COORD_0010.json",
+    "coordinate_policy": "same_source_image_same_bbox_text_overwrite"
+  },
+  "fields": {
+    "provider_name": {
+      "label": "의료기관명",
+      "bbox": [
+        330,
+        185,
+        830,
+        227
+      ],
+      "value_type": "provider",
+      "sensitive": true,
+      "fds_features": [
+        "provider_registry_match"
+      ],
+      "value": "가명튼튼재활의학과",
+      "pseudonymized": true
+    },
+    "patient_name": {
+      "label": "환자 성명",
+      "bbox": [
+        330,
+        270,
+        560,
+        312
+      ],
+      "value_type": "person_name",
+      "sensitive": true,
+      "fds_features": [
+        "cross_document_consistency",
+        "field_ocr_confidence",
+        "layout_cell_alignment"
+      ],
+      "value": "가명최지우",
+      "pseudonymized": true
+    },
+    "visit_date": {
+      "label": "진료일자",
+      "bbox": [
+        700,
+        270,
+        930,
+        312
+      ],
+      "value_type": "date",
+      "sensitive": false,
+      "fds_features": [
+        "receipt_detail_date_mismatch"
+      ],
+      "value": "2026-05-04",
+      "pseudonymized": false
+    },
+    "diagnosis_name": {
+      "label": "진단명",
+      "bbox": [
+        330,
+        350,
+        720,
+        392
+      ],
+      "value_type": "diagnosis",
+      "sensitive": false,
+      "fds_features": [
+        "diagnosis_treatment_consistency"
+      ],
+      "value": "두통",
+      "pseudonymized": false
+    },
+    "kcd_code": {
+      "label": "질병분류기호",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "value_type": "kcd",
+      "sensitive": false,
+      "fds_features": [
+        "kcd_diagnosis_pair_check"
+      ],
+      "value": "M51.2",
+      "pseudonymized": false
+    },
+    "exam_fee": {
+      "label": "검사료",
+      "bbox": [
+        805,
+        610,
+        1015,
+        650
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "line_item_total_check"
+      ],
+      "value": "21,150",
+      "pseudonymized": false
+    },
+    "procedure_fee": {
+      "label": "처치료",
+      "bbox": [
+        805,
+        690,
+        1015,
+        730
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "line_item_total_check"
+      ],
+      "value": "29,609",
+      "pseudonymized": false
+    },
+    "therapy_fee": {
+      "label": "도수/물리치료",
+      "bbox": [
+        805,
+        770,
+        1015,
+        810
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "noncovered_therapy_outlier"
+      ],
+      "value": "92,000",
+      "pseudonymized": false
+    },
+    "detail_total_amount": {
+      "label": "세부내역 합계",
+      "bbox": [
+        805,
+        1030,
+        1015,
+        1072
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "receipt_detail_total_mismatch"
+      ],
+      "value": "176,600",
+      "pseudonymized": false
+    }
+  },
+  "tamper_evidence": [
+    {
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "field_key": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "paired_no_bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "original_pseudonymized_value": "R51",
+      "mutated_pseudonymized_value": "M51.2",
+      "detector_features": [
+        "kcd_diagnosis_pair_check",
+        "treatment_diagnosis_mismatch",
+        "same_bbox_value_rewrite"
+      ],
+      "evidence_type": "same_source_image_same_bbox_text_overwrite",
+      "coordinate_policy": "same_bbox_as_paired_no_original_field",
+      "overlay_or_shifted_box_used": false,
+      "severity": "high"
+    }
+  ],
+  "fds_feature_groups": {
+    "document": [
+      "template_version",
+      "layout_cell_alignment",
+      "quality_profile"
+    ],
+    "field": [
+      "cross_document_consistency",
+      "diagnosis_treatment_consistency",
+      "field_ocr_confidence",
+      "kcd_diagnosis_pair_check",
+      "layout_cell_alignment",
+      "line_item_total_check",
+      "noncovered_therapy_outlier",
+      "provider_registry_match",
+      "receipt_detail_date_mismatch",
+      "receipt_detail_total_mismatch"
+    ],
+    "cross_document": [
+      "patient_name_bundle_consistency",
+      "date_sequence",
+      "amount_reconciliation"
+    ],
+    "image_forensic": [
+      "compression_profile",
+      "blur_score_proxy",
+      "scanner_streak_proxy",
+      "cell_text_rewrite_region"
+    ]
+  },
+  "created_at": "2026-06-04T11:27:50.570417+00:00",
+  "paired_no_dataset_id": "NO_EXACT_COORD_0010",
+  "paired_no_image_path": "images/NO/NO_EXACT_COORD_0010.png",
+  "paired_no_field_json_path": "fields/NO/NO_EXACT_COORD_0010.json"
+}

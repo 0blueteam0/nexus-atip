@@ -1,21 +1,45 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T11:16:56.741Z",
+  "updatedAt": "2026-06-04T11:31:49.443Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher",
+      "id": "2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset",
       "from": "codex",
       "to": "claude",
-      "title": "hermes-codex-launcher",
+      "title": "Insurance FDS v3.2 exact-coordinate AF dataset",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-04T11:16:56.581Z",
-      "paths": [],
-      "docs": []
+      "createdAt": "2026-06-04T11:31:49.108Z",
+      "paths": [
+        "scripts/insurance_fds_exact_coordinate_pipeline.py",
+        "tests/test_insurance_fds_exact_coordinate_pipeline.py",
+        "data/insurance-fds-generated/field-pseudonymized-v3.2-exact-coordinate-overwrite"
+      ],
+      "docs": [
+        "documentation/reports/INSURANCE_FDS_EXACT_COORDINATE_V3_2_REPORT.ko.md"
+      ]
     }
   },
   "entries": [
+    {
+      "id": "2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset",
+      "from": "codex",
+      "to": "claude",
+      "title": "Insurance FDS v3.2 exact-coordinate AF dataset",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T11:31:49.108Z",
+      "paths": [
+        "scripts/insurance_fds_exact_coordinate_pipeline.py",
+        "tests/test_insurance_fds_exact_coordinate_pipeline.py",
+        "data/insurance-fds-generated/field-pseudonymized-v3.2-exact-coordinate-overwrite"
+      ],
+      "docs": [
+        "documentation/reports/INSURANCE_FDS_EXACT_COORDINATE_V3_2_REPORT.ko.md"
+      ]
+    },
     {
       "id": "2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher",
       "from": "codex",

@@ -1,0 +1,198 @@
+{
+  "dataset_id": "NO_EXACT_COORD_0011",
+  "dataset_version": "insurance-fds-field-pseudonymized-v3.2-exact-coordinate-overwrite",
+  "prefix": "NO",
+  "document_type": "pharmacy_receipt",
+  "document_name_ko": "약제비 계산서·영수증",
+  "image_path": "images/NO/NO_EXACT_COORD_0011.png",
+  "quality_profile": "paired_pristine_exact_coordinate",
+  "pseudonymization_policy": {
+    "strategy": "replace_sensitive_values_with_domain_consistent_fake_values",
+    "masking_used": false,
+    "real_pii_retained": false,
+    "notes_ko": "성명/연락처/기관명/계좌/영수증번호 등 민감값은 검은 마스킹이 아니라 가명값으로 대체했다."
+  },
+  "source_lineage": {
+    "source_family": "standard_template_synthetic",
+    "coordinate_policy": "canonical_template_original_field_coordinates"
+  },
+  "fields": {
+    "pharmacy_name": {
+      "label": "약국명",
+      "bbox": [
+        330,
+        195,
+        830,
+        237
+      ],
+      "value_type": "provider",
+      "sensitive": true,
+      "fds_features": [
+        "pharmacy_registry_match"
+      ],
+      "value": "가명온누리약국",
+      "pseudonymized": true
+    },
+    "patient_name": {
+      "label": "수진자명",
+      "bbox": [
+        330,
+        290,
+        560,
+        332
+      ],
+      "value_type": "person_name",
+      "sensitive": true,
+      "fds_features": [
+        "cross_document_consistency",
+        "field_ocr_confidence",
+        "layout_cell_alignment"
+      ],
+      "value": "가명최지우",
+      "pseudonymized": true
+    },
+    "dispense_date": {
+      "label": "조제일자",
+      "bbox": [
+        700,
+        290,
+        930,
+        332
+      ],
+      "value_type": "date",
+      "sensitive": false,
+      "fds_features": [
+        "prescription_dispense_sequence"
+      ],
+      "value": "2026-05-04",
+      "pseudonymized": false
+    },
+    "prescription_no": {
+      "label": "처방전번호",
+      "bbox": [
+        330,
+        360,
+        680,
+        402
+      ],
+      "value_type": "receipt_no",
+      "sensitive": true,
+      "fds_features": [
+        "prescription_duplicate_check"
+      ],
+      "value": "FAKE-RX-20260003",
+      "pseudonymized": true
+    },
+    "drug_name_1": {
+      "label": "약품명1",
+      "bbox": [
+        205,
+        610,
+        625,
+        650
+      ],
+      "value_type": "drug",
+      "sensitive": false,
+      "fds_features": [
+        "drug_price_outlier"
+      ],
+      "value": "가명아세트정",
+      "pseudonymized": false
+    },
+    "drug_amount_1": {
+      "label": "약제비1",
+      "bbox": [
+        805,
+        610,
+        1015,
+        650
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "drug_line_total_check"
+      ],
+      "value": "9,100",
+      "pseudonymized": false
+    },
+    "drug_name_2": {
+      "label": "약품명2",
+      "bbox": [
+        205,
+        690,
+        625,
+        730
+      ],
+      "value_type": "drug",
+      "sensitive": false,
+      "fds_features": [
+        "drug_price_outlier"
+      ],
+      "value": "가명위장약캡슐",
+      "pseudonymized": false
+    },
+    "drug_amount_2": {
+      "label": "약제비2",
+      "bbox": [
+        805,
+        690,
+        1015,
+        730
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "drug_line_total_check"
+      ],
+      "value": "7,050",
+      "pseudonymized": false
+    },
+    "pharmacy_total_amount": {
+      "label": "약제비 합계",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "prescription_pharmacy_total_check"
+      ],
+      "value": "16,150",
+      "pseudonymized": false
+    }
+  },
+  "tamper_evidence": [],
+  "fds_feature_groups": {
+    "document": [
+      "template_version",
+      "layout_cell_alignment",
+      "quality_profile"
+    ],
+    "field": [
+      "cross_document_consistency",
+      "drug_line_total_check",
+      "drug_price_outlier",
+      "field_ocr_confidence",
+      "layout_cell_alignment",
+      "pharmacy_registry_match",
+      "prescription_dispense_sequence",
+      "prescription_duplicate_check",
+      "prescription_pharmacy_total_check"
+    ],
+    "cross_document": [
+      "patient_name_bundle_consistency",
+      "date_sequence",
+      "amount_reconciliation"
+    ],
+    "image_forensic": [
+      "compression_profile",
+      "blur_score_proxy",
+      "scanner_streak_proxy",
+      "cell_text_rewrite_region"
+    ]
+  },
+  "created_at": "2026-06-04T11:27:50.627396+00:00"
+}

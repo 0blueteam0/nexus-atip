@@ -1,0 +1,1124 @@
+{
+  "version": "insurance-fds-field-pseudonymized-v3.2-exact-coordinate-overwrite",
+  "created_at": "2026-06-04T11:27:52.878781+00:00",
+  "counts": {
+    "NO": 32,
+    "AF": 32
+  },
+  "coordinate_contract": {
+    "af_generation_method": "copy_paired_no_image_then_overwrite_target_field_bbox_only",
+    "no_af_bbox_must_match": true,
+    "shifted_box_or_new_coordinate_layout_allowed": false
+  },
+  "schemas": {
+    "medical_receipt": {
+      "name_ko": "진료비 계산서·영수증",
+      "fields": {
+        "provider_name": {
+          "label": "의료기관명",
+          "bbox": [
+            330,
+            195,
+            740,
+            237
+          ],
+          "value_type": "provider",
+          "sensitive": true,
+          "fds_features": [
+            "provider_registry_match"
+          ]
+        },
+        "business_no": {
+          "label": "사업자등록번호",
+          "bbox": [
+            900,
+            195,
+            1120,
+            237
+          ],
+          "value_type": "provider_id",
+          "sensitive": true,
+          "fds_features": [
+            "provider_id_format"
+          ]
+        },
+        "patient_name": {
+          "label": "환자 성명",
+          "bbox": [
+            330,
+            288,
+            560,
+            330
+          ],
+          "value_type": "person_name",
+          "sensitive": true,
+          "fds_features": [
+            "cross_document_consistency",
+            "field_ocr_confidence",
+            "layout_cell_alignment"
+          ]
+        },
+        "patient_birth": {
+          "label": "생년월일",
+          "bbox": [
+            700,
+            288,
+            930,
+            330
+          ],
+          "value_type": "birth_date",
+          "sensitive": true,
+          "fds_features": [
+            "age_diagnosis_plausibility"
+          ]
+        },
+        "visit_date": {
+          "label": "진료일자",
+          "bbox": [
+            330,
+            360,
+            560,
+            402
+          ],
+          "value_type": "date",
+          "sensitive": false,
+          "fds_features": [
+            "claim_time_vs_visit_time_delta"
+          ]
+        },
+        "receipt_no": {
+          "label": "영수증번호",
+          "bbox": [
+            700,
+            360,
+            1050,
+            402
+          ],
+          "value_type": "receipt_no",
+          "sensitive": true,
+          "fds_features": [
+            "duplicate_receipt_no"
+          ]
+        },
+        "covered_amount": {
+          "label": "급여 본인부담",
+          "bbox": [
+            805,
+            645,
+            1015,
+            687
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "amount_formula_check"
+          ]
+        },
+        "noncovered_amount": {
+          "label": "비급여",
+          "bbox": [
+            805,
+            715,
+            1015,
+            757
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "noncovered_outlier"
+          ]
+        },
+        "total_medical_amount": {
+          "label": "총진료비",
+          "bbox": [
+            805,
+            785,
+            1015,
+            827
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "amount_formula_check",
+            "amount_outlier"
+          ]
+        },
+        "claimable_amount": {
+          "label": "청구가능금액",
+          "bbox": [
+            805,
+            855,
+            1015,
+            897
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "policy_limit_check"
+          ]
+        },
+        "issue_date": {
+          "label": "발급일자",
+          "bbox": [
+            760,
+            1350,
+            1020,
+            1392
+          ],
+          "value_type": "date",
+          "sensitive": false,
+          "fds_features": [
+            "issue_after_claim_violation"
+          ]
+        }
+      }
+    },
+    "medical_detail_statement": {
+      "name_ko": "진료비 세부산정내역서",
+      "fields": {
+        "provider_name": {
+          "label": "의료기관명",
+          "bbox": [
+            330,
+            185,
+            830,
+            227
+          ],
+          "value_type": "provider",
+          "sensitive": true,
+          "fds_features": [
+            "provider_registry_match"
+          ]
+        },
+        "patient_name": {
+          "label": "환자 성명",
+          "bbox": [
+            330,
+            270,
+            560,
+            312
+          ],
+          "value_type": "person_name",
+          "sensitive": true,
+          "fds_features": [
+            "cross_document_consistency",
+            "field_ocr_confidence",
+            "layout_cell_alignment"
+          ]
+        },
+        "visit_date": {
+          "label": "진료일자",
+          "bbox": [
+            700,
+            270,
+            930,
+            312
+          ],
+          "value_type": "date",
+          "sensitive": false,
+          "fds_features": [
+            "receipt_detail_date_mismatch"
+          ]
+        },
+        "diagnosis_name": {
+          "label": "진단명",
+          "bbox": [
+            330,
+            350,
+            720,
+            392
+          ],
+          "value_type": "diagnosis",
+          "sensitive": false,
+          "fds_features": [
+            "diagnosis_treatment_consistency"
+          ]
+        },
+        "kcd_code": {
+          "label": "질병분류기호",
+          "bbox": [
+            900,
+            350,
+            1080,
+            392
+          ],
+          "value_type": "kcd",
+          "sensitive": false,
+          "fds_features": [
+            "kcd_diagnosis_pair_check"
+          ]
+        },
+        "exam_fee": {
+          "label": "검사료",
+          "bbox": [
+            805,
+            610,
+            1015,
+            650
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "line_item_total_check"
+          ]
+        },
+        "procedure_fee": {
+          "label": "처치료",
+          "bbox": [
+            805,
+            690,
+            1015,
+            730
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "line_item_total_check"
+          ]
+        },
+        "therapy_fee": {
+          "label": "도수/물리치료",
+          "bbox": [
+            805,
+            770,
+            1015,
+            810
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "noncovered_therapy_outlier"
+          ]
+        },
+        "detail_total_amount": {
+          "label": "세부내역 합계",
+          "bbox": [
+            805,
+            1030,
+            1015,
+            1072
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "receipt_detail_total_mismatch"
+          ]
+        }
+      }
+    },
+    "pharmacy_receipt": {
+      "name_ko": "약제비 계산서·영수증",
+      "fields": {
+        "pharmacy_name": {
+          "label": "약국명",
+          "bbox": [
+            330,
+            195,
+            830,
+            237
+          ],
+          "value_type": "provider",
+          "sensitive": true,
+          "fds_features": [
+            "pharmacy_registry_match"
+          ]
+        },
+        "patient_name": {
+          "label": "수진자명",
+          "bbox": [
+            330,
+            290,
+            560,
+            332
+          ],
+          "value_type": "person_name",
+          "sensitive": true,
+          "fds_features": [
+            "cross_document_consistency",
+            "field_ocr_confidence",
+            "layout_cell_alignment"
+          ]
+        },
+        "dispense_date": {
+          "label": "조제일자",
+          "bbox": [
+            700,
+            290,
+            930,
+            332
+          ],
+          "value_type": "date",
+          "sensitive": false,
+          "fds_features": [
+            "prescription_dispense_sequence"
+          ]
+        },
+        "prescription_no": {
+          "label": "처방전번호",
+          "bbox": [
+            330,
+            360,
+            680,
+            402
+          ],
+          "value_type": "receipt_no",
+          "sensitive": true,
+          "fds_features": [
+            "prescription_duplicate_check"
+          ]
+        },
+        "drug_name_1": {
+          "label": "약품명1",
+          "bbox": [
+            205,
+            610,
+            625,
+            650
+          ],
+          "value_type": "drug",
+          "sensitive": false,
+          "fds_features": [
+            "drug_price_outlier"
+          ]
+        },
+        "drug_amount_1": {
+          "label": "약제비1",
+          "bbox": [
+            805,
+            610,
+            1015,
+            650
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "drug_line_total_check"
+          ]
+        },
+        "drug_name_2": {
+          "label": "약품명2",
+          "bbox": [
+            205,
+            690,
+            625,
+            730
+          ],
+          "value_type": "drug",
+          "sensitive": false,
+          "fds_features": [
+            "drug_price_outlier"
+          ]
+        },
+        "drug_amount_2": {
+          "label": "약제비2",
+          "bbox": [
+            805,
+            690,
+            1015,
+            730
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "drug_line_total_check"
+          ]
+        },
+        "pharmacy_total_amount": {
+          "label": "약제비 합계",
+          "bbox": [
+            805,
+            920,
+            1015,
+            962
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "prescription_pharmacy_total_check"
+          ]
+        }
+      }
+    },
+    "insurance_claim_form": {
+      "name_ko": "실손의료보험 보험금청구서",
+      "fields": {
+        "claimant_name": {
+          "label": "청구인",
+          "bbox": [
+            330,
+            250,
+            560,
+            292
+          ],
+          "value_type": "person_name",
+          "sensitive": true,
+          "fds_features": [
+            "claimant_policyholder_match"
+          ]
+        },
+        "insured_name": {
+          "label": "피보험자",
+          "bbox": [
+            700,
+            250,
+            930,
+            292
+          ],
+          "value_type": "person_name",
+          "sensitive": true,
+          "fds_features": [
+            "claimant_patient_mismatch"
+          ]
+        },
+        "claimant_phone": {
+          "label": "연락처",
+          "bbox": [
+            330,
+            325,
+            590,
+            367
+          ],
+          "value_type": "phone",
+          "sensitive": true,
+          "fds_features": [
+            "phone_reuse_graph"
+          ]
+        },
+        "bank_token": {
+          "label": "수령계좌토큰",
+          "bbox": [
+            700,
+            325,
+            1050,
+            367
+          ],
+          "value_type": "account_token",
+          "sensitive": true,
+          "fds_features": [
+            "account_reuse_graph"
+          ]
+        },
+        "accident_date": {
+          "label": "사고/발병일",
+          "bbox": [
+            330,
+            430,
+            560,
+            472
+          ],
+          "value_type": "date",
+          "sensitive": false,
+          "fds_features": [
+            "policy_waiting_period_check"
+          ]
+        },
+        "claim_amount": {
+          "label": "청구금액",
+          "bbox": [
+            805,
+            520,
+            1015,
+            562
+          ],
+          "value_type": "amount",
+          "sensitive": false,
+          "fds_features": [
+            "receipt_claim_amount_match"
+          ]
+        },
+        "document_bundle_id": {
+          "label": "제출서류묶음ID",
+          "bbox": [
+            330,
+            620,
+            720,
+            662
+          ],
+          "value_type": "bundle_id",
+          "sensitive": true,
+          "fds_features": [
+            "cross_document_bundle_link"
+          ]
+        }
+      }
+    }
+  },
+  "records": [
+    {
+      "dataset_id": "NO_EXACT_COORD_0001",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0001.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0001.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0001"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0001",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0001.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0001.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0001",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0002",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0002.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0002.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0002"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0002",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0002.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0002.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0002",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0003",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0003.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0003.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0003"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0003",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0003.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0003.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0003",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0004",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0004.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0004.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0004"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0004",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0004.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0004.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0004",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0005",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0005.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0005.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0005"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0005",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0005.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0005.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0005",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0006",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0006.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0006.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0006"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0006",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0006.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0006.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0006",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0007",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0007.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0007.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0007"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0007",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0007.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0007.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0007",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0008",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0008.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0008.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0008"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0008",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0008.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0008.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0008",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0009",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0009.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0009.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0009"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0009",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0009.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0009.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0009",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0010",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0010.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0010.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0010"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0010",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0010.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0010.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0010",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0011",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0011.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0011.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0011"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0011",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0011.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0011.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0011",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0012",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0012.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0012.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0012"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0012",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0012.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0012.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0012",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0013",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0013.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0013.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0013"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0013",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0013.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0013.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0013",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0014",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0014.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0014.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0014"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0014",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0014.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0014.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0014",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0015",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0015.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0015.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0015"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0015",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0015.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0015.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0015",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0016",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0016.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0016.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0016"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0016",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0016.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0016.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0016",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0017",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0017.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0017.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0017"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0017",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0017.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0017.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0017",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0018",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0018.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0018.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0018"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0018",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0018.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0018.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0018",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0019",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0019.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0019.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0019"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0019",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0019.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0019.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0019",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0020",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0020.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0020.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0020"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0020",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0020.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0020.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0020",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0021",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0021.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0021.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0021"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0021",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0021.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0021.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0021",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0022",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0022.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0022.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0022"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0022",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0022.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0022.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0022",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0023",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0023.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0023.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0023"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0023",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0023.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0023.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0023",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0024",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0024.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0024.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0024"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0024",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0024.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0024.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0024",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0025",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0025.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0025.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0025"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0025",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0025.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0025.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0025",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0026",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0026.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0026.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0026"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0026",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0026.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0026.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0026",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0027",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0027.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0027.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0027"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0027",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0027.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0027.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0027",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0028",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0028.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0028.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0028"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0028",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0028.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0028.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0028",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0029",
+      "prefix": "NO",
+      "document_type": "medical_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0029.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0029.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0029"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0029",
+      "prefix": "AF",
+      "document_type": "medical_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0029.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0029.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0029",
+      "scenario_id": "AF_AMOUNT_INFLATION",
+      "tampered_field": "total_medical_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0030",
+      "prefix": "NO",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/NO/NO_EXACT_COORD_0030.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0030.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0030"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0030",
+      "prefix": "AF",
+      "document_type": "medical_detail_statement",
+      "image_path": "images/AF/AF_EXACT_COORD_0030.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0030.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0030",
+      "scenario_id": "AF_KCD_DIAGNOSIS_SWAP",
+      "tampered_field": "kcd_code"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0031",
+      "prefix": "NO",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/NO/NO_EXACT_COORD_0031.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0031.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0031"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0031",
+      "prefix": "AF",
+      "document_type": "pharmacy_receipt",
+      "image_path": "images/AF/AF_EXACT_COORD_0031.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0031.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0031",
+      "scenario_id": "AF_PHARMACY_AMOUNT_INFLATION",
+      "tampered_field": "pharmacy_total_amount"
+    },
+    {
+      "dataset_id": "NO_EXACT_COORD_0032",
+      "prefix": "NO",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/NO/NO_EXACT_COORD_0032.png",
+      "field_json_path": "fields/NO/NO_EXACT_COORD_0032.json",
+      "paired_dataset_id": "AF_EXACT_COORD_0032"
+    },
+    {
+      "dataset_id": "AF_EXACT_COORD_0032",
+      "prefix": "AF",
+      "document_type": "insurance_claim_form",
+      "image_path": "images/AF/AF_EXACT_COORD_0032.png",
+      "field_json_path": "fields/AF/AF_EXACT_COORD_0032.json",
+      "paired_dataset_id": "NO_EXACT_COORD_0032",
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "tampered_field": "claim_amount"
+    }
+  ]
+}

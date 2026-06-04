@@ -1,0 +1,613 @@
+{
+  "version": "insurance-fds-field-pseudonymized-v3.2-exact-coordinate-overwrite",
+  "pairs": [
+    {
+      "pair_id": "PAIR_EXACT_COORD_0001",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0001",
+      "no_dataset_id": "NO_EXACT_COORD_0001",
+      "af_dataset_id": "AF_EXACT_COORD_0001",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0001.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0001.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0001.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0001.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0002",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0001",
+      "no_dataset_id": "NO_EXACT_COORD_0002",
+      "af_dataset_id": "AF_EXACT_COORD_0002",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0002.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0002.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0002.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0002.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0003",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0001",
+      "no_dataset_id": "NO_EXACT_COORD_0003",
+      "af_dataset_id": "AF_EXACT_COORD_0003",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0003.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0003.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0003.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0003.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0004",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0001",
+      "no_dataset_id": "NO_EXACT_COORD_0004",
+      "af_dataset_id": "AF_EXACT_COORD_0004",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0004.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0004.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0004.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0004.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0005",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0002",
+      "no_dataset_id": "NO_EXACT_COORD_0005",
+      "af_dataset_id": "AF_EXACT_COORD_0005",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0005.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0005.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0005.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0005.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0006",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0002",
+      "no_dataset_id": "NO_EXACT_COORD_0006",
+      "af_dataset_id": "AF_EXACT_COORD_0006",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0006.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0006.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0006.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0006.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0007",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0002",
+      "no_dataset_id": "NO_EXACT_COORD_0007",
+      "af_dataset_id": "AF_EXACT_COORD_0007",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0007.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0007.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0007.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0007.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0008",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0002",
+      "no_dataset_id": "NO_EXACT_COORD_0008",
+      "af_dataset_id": "AF_EXACT_COORD_0008",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0008.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0008.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0008.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0008.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0009",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0003",
+      "no_dataset_id": "NO_EXACT_COORD_0009",
+      "af_dataset_id": "AF_EXACT_COORD_0009",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0009.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0009.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0009.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0009.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0010",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0003",
+      "no_dataset_id": "NO_EXACT_COORD_0010",
+      "af_dataset_id": "AF_EXACT_COORD_0010",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0010.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0010.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0010.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0010.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0011",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0003",
+      "no_dataset_id": "NO_EXACT_COORD_0011",
+      "af_dataset_id": "AF_EXACT_COORD_0011",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0011.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0011.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0011.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0011.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0012",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0003",
+      "no_dataset_id": "NO_EXACT_COORD_0012",
+      "af_dataset_id": "AF_EXACT_COORD_0012",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0012.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0012.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0012.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0012.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0013",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0004",
+      "no_dataset_id": "NO_EXACT_COORD_0013",
+      "af_dataset_id": "AF_EXACT_COORD_0013",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0013.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0013.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0013.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0013.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0014",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0004",
+      "no_dataset_id": "NO_EXACT_COORD_0014",
+      "af_dataset_id": "AF_EXACT_COORD_0014",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0014.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0014.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0014.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0014.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0015",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0004",
+      "no_dataset_id": "NO_EXACT_COORD_0015",
+      "af_dataset_id": "AF_EXACT_COORD_0015",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0015.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0015.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0015.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0015.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0016",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0004",
+      "no_dataset_id": "NO_EXACT_COORD_0016",
+      "af_dataset_id": "AF_EXACT_COORD_0016",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0016.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0016.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0016.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0016.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0017",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0005",
+      "no_dataset_id": "NO_EXACT_COORD_0017",
+      "af_dataset_id": "AF_EXACT_COORD_0017",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0017.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0017.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0017.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0017.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0018",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0005",
+      "no_dataset_id": "NO_EXACT_COORD_0018",
+      "af_dataset_id": "AF_EXACT_COORD_0018",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0018.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0018.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0018.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0018.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0019",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0005",
+      "no_dataset_id": "NO_EXACT_COORD_0019",
+      "af_dataset_id": "AF_EXACT_COORD_0019",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0019.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0019.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0019.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0019.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0020",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0005",
+      "no_dataset_id": "NO_EXACT_COORD_0020",
+      "af_dataset_id": "AF_EXACT_COORD_0020",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0020.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0020.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0020.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0020.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0021",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0006",
+      "no_dataset_id": "NO_EXACT_COORD_0021",
+      "af_dataset_id": "AF_EXACT_COORD_0021",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0021.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0021.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0021.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0021.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0022",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0006",
+      "no_dataset_id": "NO_EXACT_COORD_0022",
+      "af_dataset_id": "AF_EXACT_COORD_0022",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0022.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0022.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0022.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0022.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0023",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0006",
+      "no_dataset_id": "NO_EXACT_COORD_0023",
+      "af_dataset_id": "AF_EXACT_COORD_0023",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0023.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0023.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0023.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0023.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0024",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0006",
+      "no_dataset_id": "NO_EXACT_COORD_0024",
+      "af_dataset_id": "AF_EXACT_COORD_0024",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0024.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0024.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0024.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0024.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0025",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0007",
+      "no_dataset_id": "NO_EXACT_COORD_0025",
+      "af_dataset_id": "AF_EXACT_COORD_0025",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0025.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0025.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0025.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0025.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0026",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0007",
+      "no_dataset_id": "NO_EXACT_COORD_0026",
+      "af_dataset_id": "AF_EXACT_COORD_0026",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0026.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0026.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0026.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0026.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0027",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0007",
+      "no_dataset_id": "NO_EXACT_COORD_0027",
+      "af_dataset_id": "AF_EXACT_COORD_0027",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0027.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0027.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0027.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0027.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0028",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0007",
+      "no_dataset_id": "NO_EXACT_COORD_0028",
+      "af_dataset_id": "AF_EXACT_COORD_0028",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0028.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0028.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0028.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0028.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0029",
+      "document_type": "medical_receipt",
+      "case_id": "PSEUDO-CLAIM-0008",
+      "no_dataset_id": "NO_EXACT_COORD_0029",
+      "af_dataset_id": "AF_EXACT_COORD_0029",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0029.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0029.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0029.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0029.json",
+      "tampered_field": "total_medical_amount",
+      "bbox": [
+        805,
+        785,
+        1015,
+        827
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0030",
+      "document_type": "medical_detail_statement",
+      "case_id": "PSEUDO-CLAIM-0008",
+      "no_dataset_id": "NO_EXACT_COORD_0030",
+      "af_dataset_id": "AF_EXACT_COORD_0030",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0030.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0030.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0030.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0030.json",
+      "tampered_field": "kcd_code",
+      "bbox": [
+        900,
+        350,
+        1080,
+        392
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0031",
+      "document_type": "pharmacy_receipt",
+      "case_id": "PSEUDO-CLAIM-0008",
+      "no_dataset_id": "NO_EXACT_COORD_0031",
+      "af_dataset_id": "AF_EXACT_COORD_0031",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0031.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0031.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0031.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0031.json",
+      "tampered_field": "pharmacy_total_amount",
+      "bbox": [
+        805,
+        920,
+        1015,
+        962
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    },
+    {
+      "pair_id": "PAIR_EXACT_COORD_0032",
+      "document_type": "insurance_claim_form",
+      "case_id": "PSEUDO-CLAIM-0008",
+      "no_dataset_id": "NO_EXACT_COORD_0032",
+      "af_dataset_id": "AF_EXACT_COORD_0032",
+      "no_image_path": "images/NO/NO_EXACT_COORD_0032.png",
+      "af_image_path": "images/AF/AF_EXACT_COORD_0032.png",
+      "no_field_json_path": "fields/NO/NO_EXACT_COORD_0032.json",
+      "af_field_json_path": "fields/AF/AF_EXACT_COORD_0032.json",
+      "tampered_field": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "coordinate_policy": "AF overwrites the exact same field bbox on the paired NO source image"
+    }
+  ]
+}

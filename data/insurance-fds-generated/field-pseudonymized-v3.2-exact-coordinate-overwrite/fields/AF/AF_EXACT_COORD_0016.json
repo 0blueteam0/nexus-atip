@@ -1,0 +1,196 @@
+{
+  "dataset_id": "AF_EXACT_COORD_0016",
+  "dataset_version": "insurance-fds-field-pseudonymized-v3.2-exact-coordinate-overwrite",
+  "prefix": "AF",
+  "document_type": "insurance_claim_form",
+  "document_name_ko": "실손의료보험 보험금청구서",
+  "image_path": "images/AF/AF_EXACT_COORD_0016.png",
+  "quality_profile": "paired_pristine_exact_coordinate",
+  "pseudonymization_policy": {
+    "strategy": "replace_sensitive_values_with_domain_consistent_fake_values",
+    "masking_used": false,
+    "real_pii_retained": false,
+    "notes_ko": "성명/연락처/기관명/계좌/영수증번호 등 민감값은 검은 마스킹이 아니라 가명값으로 대체했다."
+  },
+  "source_lineage": {
+    "source_family": "standard_template_synthetic_adversarial",
+    "paired_no_dataset_id": "NO_EXACT_COORD_0016",
+    "paired_no_image_path": "images/NO/NO_EXACT_COORD_0016.png",
+    "paired_no_field_json_path": "fields/NO/NO_EXACT_COORD_0016.json",
+    "coordinate_policy": "same_source_image_same_bbox_text_overwrite"
+  },
+  "fields": {
+    "claimant_name": {
+      "label": "청구인",
+      "bbox": [
+        330,
+        250,
+        560,
+        292
+      ],
+      "value_type": "person_name",
+      "sensitive": true,
+      "fds_features": [
+        "claimant_policyholder_match"
+      ],
+      "value": "가명한유진",
+      "pseudonymized": true
+    },
+    "insured_name": {
+      "label": "피보험자",
+      "bbox": [
+        700,
+        250,
+        930,
+        292
+      ],
+      "value_type": "person_name",
+      "sensitive": true,
+      "fds_features": [
+        "claimant_patient_mismatch"
+      ],
+      "value": "가명정민재",
+      "pseudonymized": true
+    },
+    "claimant_phone": {
+      "label": "연락처",
+      "bbox": [
+        330,
+        325,
+        590,
+        367
+      ],
+      "value_type": "phone",
+      "sensitive": true,
+      "fds_features": [
+        "phone_reuse_graph"
+      ],
+      "value": "010-FAKE-1004",
+      "pseudonymized": true
+    },
+    "bank_token": {
+      "label": "수령계좌토큰",
+      "bbox": [
+        700,
+        325,
+        1050,
+        367
+      ],
+      "value_type": "account_token",
+      "sensitive": true,
+      "fds_features": [
+        "account_reuse_graph"
+      ],
+      "value": "TEST-ACCOUNT-TOKEN-0004",
+      "pseudonymized": true
+    },
+    "accident_date": {
+      "label": "사고/발병일",
+      "bbox": [
+        330,
+        430,
+        560,
+        472
+      ],
+      "value_type": "date",
+      "sensitive": false,
+      "fds_features": [
+        "policy_waiting_period_check"
+      ],
+      "value": "2026-04-05",
+      "pseudonymized": false
+    },
+    "claim_amount": {
+      "label": "청구금액",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "value_type": "amount",
+      "sensitive": false,
+      "fds_features": [
+        "receipt_claim_amount_match"
+      ],
+      "value": "287,500",
+      "pseudonymized": false
+    },
+    "document_bundle_id": {
+      "label": "제출서류묶음ID",
+      "bbox": [
+        330,
+        620,
+        720,
+        662
+      ],
+      "value_type": "bundle_id",
+      "sensitive": true,
+      "fds_features": [
+        "cross_document_bundle_link"
+      ],
+      "value": "BUNDLE-FAKE-0004",
+      "pseudonymized": true
+    }
+  },
+  "tamper_evidence": [
+    {
+      "scenario_id": "AF_CLAIM_AMOUNT_MISMATCH",
+      "field_key": "claim_amount",
+      "bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "paired_no_bbox": [
+        805,
+        520,
+        1015,
+        562
+      ],
+      "original_pseudonymized_value": "68,810",
+      "mutated_pseudonymized_value": "287,500",
+      "detector_features": [
+        "receipt_claim_amount_match",
+        "policy_limit_check",
+        "same_bbox_value_rewrite"
+      ],
+      "evidence_type": "same_source_image_same_bbox_text_overwrite",
+      "coordinate_policy": "same_bbox_as_paired_no_original_field",
+      "overlay_or_shifted_box_used": false,
+      "severity": "high"
+    }
+  ],
+  "fds_feature_groups": {
+    "document": [
+      "template_version",
+      "layout_cell_alignment",
+      "quality_profile"
+    ],
+    "field": [
+      "account_reuse_graph",
+      "claimant_patient_mismatch",
+      "claimant_policyholder_match",
+      "cross_document_bundle_link",
+      "phone_reuse_graph",
+      "policy_waiting_period_check",
+      "receipt_claim_amount_match"
+    ],
+    "cross_document": [
+      "patient_name_bundle_consistency",
+      "date_sequence",
+      "amount_reconciliation"
+    ],
+    "image_forensic": [
+      "compression_profile",
+      "blur_score_proxy",
+      "scanner_streak_proxy",
+      "cell_text_rewrite_region"
+    ]
+  },
+  "created_at": "2026-06-04T11:27:51.189046+00:00",
+  "paired_no_dataset_id": "NO_EXACT_COORD_0016",
+  "paired_no_image_path": "images/NO/NO_EXACT_COORD_0016.png",
+  "paired_no_field_json_path": "fields/NO/NO_EXACT_COORD_0016.json"
+}
