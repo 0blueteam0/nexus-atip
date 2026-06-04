@@ -1,0 +1,25 @@
+{
+  "data_moats": [
+    "camera_capture_domain_randomization",
+    "tamper_mask_supervision",
+    "cross_document_consistency_labels",
+    "submission_channel_metadata",
+    "stable_diffusion_img2img_control_contracts",
+    "ocr_roundtrip_quality_buckets"
+  ],
+  "differentiation_point": "정상/위조 여부만 학습하지 않고, 실제 모바일 제출 채널의 촬영 도메인 랜덤화와 필드/문서/이미지 포렌식 마스크를 결합해 OCR-KIE-FDS-세그멘테이션을 동시에 고도화한다.",
+  "recommended_next_tools": [
+    "ComfyUI local/cloud for SDXL img2img batches",
+    "PaddleOCR or Tesseract for OCR roundtrip scoring",
+    "LayoutLM/Donut/TrOCR style document AI baselines",
+    "ELA/noise residual/copy-move feature extractors for AF image labels"
+  ],
+  "safety_controls": [
+    "no_real_pii",
+    "no_real_hospital_logo_or_seal",
+    "synthetic_namespace_required",
+    "human_review_before_production_training",
+    "model_license_record_required"
+  ],
+  "strategy_version": "insurance-fds-image-data-moat-v1"
+}

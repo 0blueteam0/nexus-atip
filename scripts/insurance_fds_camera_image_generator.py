@@ -43,9 +43,11 @@ CAMERA_PROFILES = [
     "smartphone_oblique",
     "mobile_scan_app",
     "low_light_gallery_reupload",
+    "scanner_flatbed_300dpi",
+    "scanner_adf_200dpi",
 ]
 BACKGROUND_SURFACES = ["warm_wood_desk", "gray_office_table", "blue_fabric", "clipboard_board"]
-SUBMISSION_CHANNELS = ["mobile_camera_upload", "mobile_scan_app", "mixed_camera_gallery"]
+SUBMISSION_CHANNELS = ["mobile_camera_upload", "mobile_scan_app", "mixed_camera_gallery", "scanner_upload"]
 
 
 @dataclass(frozen=True)
@@ -88,8 +90,10 @@ def collect_structured_documents(source_root: Path, max_documents: int | None) -
     """
 
     by_prefix = {
-        "NO": sorted((source_root / "structured" / "NO").glob("NO_STRUCTURED_JSON_*.json")),
-        "AF": sorted((source_root / "structured" / "AF").glob("AF_STRUCTURED_JSON_*.json")),
+        "NO": sorted((source_root / "structured" / "NO").glob("NO_STRUCTURED_JSON_*.json"))
+        + sorted((source_root / "structured" / "NO").glob("NO_KO_REALISTIC_FORM_*.json")),
+        "AF": sorted((source_root / "structured" / "AF").glob("AF_STRUCTURED_JSON_*.json"))
+        + sorted((source_root / "structured" / "AF").glob("AF_KO_REALISTIC_FORM_*.json")),
     }
     interleaved: list[Path] = []
     max_len = max(len(paths) for paths in by_prefix.values())
@@ -135,11 +139,17 @@ def render_document_page(document: dict[str, Any]) -> Image.Image:
 
     prefix = document["document_label"]
     fields = document["fields"]
-    document_type = fields.get("document_type", "unknown_document")
+    document_type = fields.get("document_type", document.get("document_type", "unknown_document"))
 
     draw.rectangle([24, 24, RENDER_PAGE_SIZE[0] - 24, RENDER_PAGE_SIZE[1] - 24], outline="#303030", width=2)
-    draw.text((54, 44), f"SYNTHETIC INSURANCE CLAIM DOCUMENT / {document_type.upper()}", fill="#111111", font=title_font)
-    draw.text((54, 92), f"label={prefix}  claim_group={document.get('claim_group_id')}  pii=synthetic_no_real_pii", fill="#666666", font=small_font)
+    if document.get("language") == "ko-KR":
+        title = f"합성 실손보험 청구서류 / {document_type}"
+        meta_line = f"라벨={prefix}  청구그룹={document.get('claim_group_id')}  개인정보=synthetic_no_real_pii"
+    else:
+        title = f"SYNTHETIC INSURANCE CLAIM DOCUMENT / {document_type.upper()}"
+        meta_line = f"label={prefix}  claim_group={document.get('claim_group_id')}  pii=synthetic_no_real_pii"
+    draw.text((54, 44), title, fill="#111111", font=title_font)
+    draw.text((54, 92), meta_line, fill="#666666", font=small_font)
     draw.line((54, 128, RENDER_PAGE_SIZE[0] - 54, 128), fill="#444444", width=2)
 
     scale_x = RENDER_PAGE_SIZE[0] / LOGICAL_PAGE_SIZE[0]
@@ -154,17 +164,21 @@ def render_document_page(document: dict[str, Any]) -> Image.Image:
 
     # 세부 항목은 실제 진료비 세부산정내역서/영수증의 표 구조를 모델이 보게 하기 위한 합성 표다.
     table_top = 610
-    draw.text((54, table_top - 34), "Synthetic line items", fill="#222222", font=body_font)
+    table_title = "합성 진료비 세부 항목" if document.get("language") == "ko-KR" else "Synthetic line items"
+    draw.text((54, table_top - 34), table_title, fill="#222222", font=body_font)
     draw.rectangle([54, table_top, RENDER_PAGE_SIZE[0] - 54, table_top + 170], outline="#333333", width=2)
     draw.line([54, table_top + 42, RENDER_PAGE_SIZE[0] - 54, table_top + 42], fill="#333333", width=1)
-    draw.text((72, table_top + 10), "item_ref", fill="#222222", font=small_font)
-    draw.text((520, table_top + 10), "benefit", fill="#222222", font=small_font)
-    draw.text((700, table_top + 10), "amount", fill="#222222", font=small_font)
+    draw.text((72, table_top + 10), "항목/item", fill="#222222", font=small_font)
+    draw.text((520, table_top + 10), "급여/benefit", fill="#222222", font=small_font)
+    draw.text((700, table_top + 10), "금액/amount", fill="#222222", font=small_font)
     for row_index, item in enumerate(fields.get("line_items", [])):
         y = table_top + 54 + row_index * 34
-        draw.text((72, y), item.get("item_ref", ""), fill="#222222", font=small_font)
-        draw.text((520, y), item.get("benefit_type", ""), fill="#222222", font=small_font)
-        draw.text((700, y), f"{item.get('amount', 0):,}", fill="#222222", font=small_font)
+        item_name = item.get("item_ref", item.get("항목명", ""))
+        benefit = item.get("benefit_type", item.get("급여구분", ""))
+        amount = item.get("amount", item.get("금액", 0))
+        draw.text((72, y), str(item_name), fill="#222222", font=small_font)
+        draw.text((520, y), str(benefit), fill="#222222", font=small_font)
+        draw.text((700, y), f"{amount:,}", fill="#222222", font=small_font)
 
     # 실제 직인/서명 대신 synthetic placeholder를 명확히 표시한다.
     draw.ellipse([760, 1130, 930, 1300], outline="#9a3333", width=4)
@@ -228,6 +242,51 @@ def positive_pixels(mask: Image.Image) -> int:
     return mask.width * mask.height - histogram[0]
 
 
+def capture_metadata_for(profile: str, rng: random.Random) -> dict[str, Any]:
+    """스캐너와 휴대폰 제출본의 metadata feature를 synthetic하게 만든다.
+
+    실제 EXIF/스캐너 메타데이터는 보험사 앱 제출 채널에서 누락되거나 재인코딩될 수 있으므로,
+    여기서는 원천 메타데이터와 제출 후 관측 메타데이터를 분리해 FDS 학습 feature로 남긴다.
+    """
+
+    if profile == "scanner_flatbed_300dpi":
+        return {
+            "capture_type": "scanner_flatbed",
+            "scanner.dpi": 300,
+            "scanner.color_mode": rng.choice(["RGB", "grayscale"]),
+            "scanner.page_size": "A4",
+            "file.pdf_producer": rng.choice(["Synthetic TWAIN PDF", "Synthetic Scan Utility"]),
+            "observed_metadata_loss": rng.choice(["none", "pdf_reexported"]),
+        }
+    if profile == "scanner_adf_200dpi":
+        return {
+            "capture_type": "scanner_adf",
+            "scanner.dpi": 200,
+            "scanner.adf_feed_order": rng.choice(["single_page", "multi_page_sequence"]),
+            "scanner.duplex": rng.choice([False, True]),
+            "scanner.streak_noise": rng.choice(["none", "micro_vertical_streak"]),
+            "observed_metadata_loss": rng.choice(["none", "app_pdf_recompressed"]),
+        }
+    if profile == "mobile_scan_app":
+        return {
+            "capture_type": "mobile_scan_app",
+            "app.crop_polygon": "synthetic_four_corner_crop",
+            "app.perspective_correction": True,
+            "app.filter": rng.choice(["document_bw", "color_boost", "natural"]),
+            "file.jpeg_quality": rng.randint(78, 94),
+            "observed_metadata_loss": "exif_stripped_by_scan_app",
+        }
+    return {
+        "capture_type": "smartphone_camera",
+        "EXIF.Make": rng.choice(["Samsung", "Apple", "LG", "Xiaomi"]),
+        "EXIF.Model": rng.choice(["synthetic_midrange", "synthetic_flagship", "synthetic_budget"]),
+        "EXIF.DateTimeOriginal": f"2026:05:{rng.randint(10, 28):02d} {rng.randint(8, 22):02d}:{rng.randint(0, 59):02d}:00",
+        "EXIF.FocalLength": rng.choice(["4.2mm", "5.1mm", "6.8mm"]),
+        "EXIF.ISOSpeedRatings": rng.choice([80, 100, 200, 400, 800]),
+        "observed_metadata_loss": rng.choice(["none", "messenger_reupload_stripped", "insurance_app_reencoded"]),
+    }
+
+
 def compose_camera_capture(
     document_page: Image.Image,
     tamper_mask: Image.Image,
@@ -240,11 +299,12 @@ def compose_camera_capture(
     recipe = {
         "illumination": rng.choice(["soft_window_light", "fluorescent_office", "low_light_warm", "scan_app_flattened"]),
         "perspective": profile,
-        "shadow": rng.choice(["left_edge_soft_shadow", "bottom_corner_shadow", "minimal_scan_shadow"]),
+        "shadow": rng.choice(["subtle_contact_shadow", "very_soft_edge_falloff", "minimal_scan_shadow"]),
         "background_surface": surface,
-        "compression_quality": rng.randint(58, 92),
-        "motion_blur_radius": round(rng.choice([0, 0.4, 0.7, 1.1]), 2),
-        "scanner_noise": rng.choice(["none", "low_iso_noise", "paper_texture_noise"]),
+        "compression_quality": rng.randint(72, 96),
+        "motion_blur_radius": round(rng.choice([0, 0.2, 0.4, 0.7]), 2),
+        "scanner_noise": rng.choice(["none", "low_iso_noise", "paper_texture_noise", "adf_streak_micro_noise"]),
+        "capture_metadata": capture_metadata_for(profile, rng),
         "phone_capture_simulation": {
             "device_class": rng.choice(["budget_phone", "midrange_phone", "flagship_phone"]),
             "orientation": rng.choice(["portrait", "slight_clockwise", "slight_counterclockwise"]),
@@ -260,12 +320,16 @@ def compose_camera_capture(
         "smartphone_oblique": rng.uniform(-8.0, 8.0),
         "mobile_scan_app": rng.uniform(-0.8, 0.8),
         "low_light_gallery_reupload": rng.uniform(-5.5, 5.5),
+        "scanner_flatbed_300dpi": rng.uniform(-0.25, 0.25),
+        "scanner_adf_200dpi": rng.uniform(-1.2, 1.2),
     }
     scale_by_profile = {
         "smartphone_topdown": rng.uniform(0.82, 0.90),
         "smartphone_oblique": rng.uniform(0.76, 0.86),
         "mobile_scan_app": rng.uniform(0.88, 0.94),
         "low_light_gallery_reupload": rng.uniform(0.76, 0.88),
+        "scanner_flatbed_300dpi": rng.uniform(0.90, 0.96),
+        "scanner_adf_200dpi": rng.uniform(0.86, 0.92),
     }
     angle = angle_by_profile[profile]
     scale = scale_by_profile[profile]
@@ -282,6 +346,9 @@ def compose_camera_capture(
         page = ImageEnhance.Sharpness(page).enhance(1.35)
     if profile == "low_light_gallery_reupload":
         page = ImageEnhance.Brightness(page).enhance(0.82)
+    if profile.startswith("scanner_"):
+        page = ImageEnhance.Contrast(page).enhance(1.08)
+        page = ImageEnhance.Sharpness(page).enhance(1.18)
 
     page = page.rotate(angle, expand=True, fillcolor="#f8f8ee", resample=Image.Resampling.BICUBIC)
     mask = mask.rotate(angle, expand=True, fillcolor=0, resample=Image.Resampling.NEAREST)
@@ -289,11 +356,16 @@ def compose_camera_capture(
     left = (CANVAS_SIZE[0] - page.width) // 2 + rng.randint(-30, 30)
     top = (CANVAS_SIZE[1] - page.height) // 2 + rng.randint(-25, 25)
 
-    shadow = Image.new("RGBA", CANVAS_SIZE, (0, 0, 0, 0))
-    shadow_draw = ImageDraw.Draw(shadow)
-    shadow_draw.rectangle([left + 18, top + 22, left + page.width + 18, top + page.height + 22], fill=(0, 0, 0, 70))
-    shadow = shadow.filter(ImageFilter.GaussianBlur(radius=24))
-    canvas = Image.alpha_composite(canvas.convert("RGBA"), shadow).convert("RGB")
+    if not profile.startswith("scanner_"):
+        shadow = Image.new("RGBA", CANVAS_SIZE, (0, 0, 0, 0))
+        shadow_draw = ImageDraw.Draw(shadow)
+        shadow_draw.rounded_rectangle(
+            [left + 6, top + 9, left + page.width + 8, top + page.height + 11],
+            radius=18,
+            fill=(0, 0, 0, rng.randint(18, 34)),
+        )
+        shadow = shadow.filter(ImageFilter.GaussianBlur(radius=rng.randint(18, 34)))
+        canvas = Image.alpha_composite(canvas.convert("RGBA"), shadow).convert("RGB")
     canvas.paste(page, (left, top))
     mask_canvas.paste(mask, (left, top))
 
@@ -399,7 +471,7 @@ def generate_camera_dataset(source_root: Path, output_root: Path, variants_per_d
     for document_path in documents:
         document = read_json(document_path)
         prefix = document["document_label"]
-        document_type = document["fields"].get("document_type", "unknown")
+        document_type = document["fields"].get("document_type", document.get("document_type", "unknown"))
         page = render_document_page(document)
         base_mask = build_tamper_mask(document) if prefix == "AF" else Image.new("L", RENDER_PAGE_SIZE, 0)
 
@@ -418,6 +490,7 @@ def generate_camera_dataset(source_root: Path, output_root: Path, variants_per_d
             image.save(image_path)
             mask.save(mask_path)
 
+            submission_channel = "scanner_upload" if profile.startswith("scanner_") else rng.choice(SUBMISSION_CHANNELS[:3])
             items.append(
                 RenderedCameraItem(
                     item_id=item_id,
@@ -427,7 +500,7 @@ def generate_camera_dataset(source_root: Path, output_root: Path, variants_per_d
                     image_relative_path=str(image_rel).replace("\\", "/"),
                     mask_relative_path=str(mask_rel).replace("\\", "/"),
                     camera_profile=profile,
-                    submission_channel=rng.choice(SUBMISSION_CHANNELS),
+                    submission_channel=submission_channel,
                     degradation_recipe=recipe,
                     tamper_labels=tamper_labels_for(document),
                     tamper_mask_policy=(

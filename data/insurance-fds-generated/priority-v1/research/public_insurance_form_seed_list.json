@@ -1,0 +1,102 @@
+{
+  "created_at": "2026-06-04T07:58:40.787485+00:00",
+  "seed_list_version": "insurance-public-form-seeds-v1",
+  "seeds": [
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 청구 필요서류와 소비자 안내 기준",
+      "prefix_candidate": "NO_PUBLIC_REQUIREMENT_GUIDE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_001",
+      "source_hint": "금융감독원 보험금 청구서류 안내"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "보험금 청구서 공통 필드와 서명/동의 구조",
+      "prefix_candidate": "NO_PUBLIC_TEMPLATE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_002",
+      "source_hint": "생명보험협회/손해보험협회 보험금 청구서 양식"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 청구에서 진료비 계산서·영수증 원본 구조 이해",
+      "prefix_candidate": "NO_PUBLIC_REQUIREMENT_GUIDE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_003",
+      "source_hint": "국민건강보험공단 진료비 영수증 제도 안내"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 청구의 세부 항목/급여·비급여 line item 구조",
+      "prefix_candidate": "NO_PUBLIC_REQUIREMENT_GUIDE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_004",
+      "source_hint": "건강보험심사평가원 진료비 세부산정내역서 안내"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 청구서, 개인정보 동의, 계좌 정보 필드",
+      "prefix_candidate": "NO_PUBLIC_TEMPLATE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_005",
+      "source_hint": "주요 손해보험사 실손보험 보험금 청구서 PDF"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 통원/입원/처방/약제비 상황별 필요서류",
+      "prefix_candidate": "NO_PUBLIC_REQUIREMENT_GUIDE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_006",
+      "source_hint": "주요 생명보험사 실손보험 청구 필요서류 안내"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 청구에서 진단명, 질병분류기호, 진료기간, 발급일 필드",
+      "prefix_candidate": "NO_PUBLIC_TEMPLATE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_007",
+      "source_hint": "병원 진단서/진료확인서 표준 항목 안내"
+    },
+    {
+      "collection_method_priority": [
+        "Firecrawl localhost:3002",
+        "public web search",
+        "manual PDF sample inspection"
+      ],
+      "korean_relevance": "실손 보험금 처방·조제·약제비 청구의 중복/과청구 feature seed",
+      "prefix_candidate": "NO_PUBLIC_TEMPLATE",
+      "safety_note": "공개 양식/안내문만 사용하고 실제 환자·의료기관 정보가 있는 원본은 수집하지 않는다.",
+      "seed_id": "PUBLIC_SEED_008",
+      "source_hint": "약제비 계산서·영수증/처방전 교부번호 안내"
+    }
+  ]
+}

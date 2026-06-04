@@ -1,0 +1,92 @@
+{
+  "coverage_matrix": [
+    {
+      "af_recipe_ids": [
+        "AF_PRICE_DIGIT_SWAP",
+        "AF_TOTAL_RECOMPUTE_MISMATCH"
+      ],
+      "defensive_detector_targets": [
+        "field_consistency",
+        "cross_document_consistency",
+        "image_tamper_mask",
+        "metadata_anomaly_graph"
+      ],
+      "fk_case_id": "FK_CASE_ABSTRACT_001",
+      "fraud_intent": "가격변조",
+      "required_no_anchor": "동일 claim_group의 NO 정본 또는 공개 양식 기반 정상 pair"
+    },
+    {
+      "af_recipe_ids": [
+        "AF_DIAGNOSIS_NAME_SWAP",
+        "AF_KCD_CODE_INCONSISTENCY"
+      ],
+      "defensive_detector_targets": [
+        "field_consistency",
+        "cross_document_consistency",
+        "image_tamper_mask",
+        "metadata_anomaly_graph"
+      ],
+      "fk_case_id": "FK_CASE_ABSTRACT_002",
+      "fraud_intent": "진단명변조",
+      "required_no_anchor": "동일 claim_group의 NO 정본 또는 공개 양식 기반 정상 pair"
+    },
+    {
+      "af_recipe_ids": [
+        "AF_DUPLICATE_RECEIPT_REUSE",
+        "AF_DEVICE_REUSE_CLUSTER"
+      ],
+      "defensive_detector_targets": [
+        "field_consistency",
+        "cross_document_consistency",
+        "image_tamper_mask",
+        "metadata_anomaly_graph"
+      ],
+      "fk_case_id": "FK_CASE_ABSTRACT_003",
+      "fraud_intent": "중복청구",
+      "required_no_anchor": "동일 claim_group의 NO 정본 또는 공개 양식 기반 정상 pair"
+    },
+    {
+      "af_recipe_ids": [
+        "AF_OVERCLAIM_LINE_ITEM_INSERT",
+        "AF_BENEFIT_TYPE_UPCODE"
+      ],
+      "defensive_detector_targets": [
+        "field_consistency",
+        "cross_document_consistency",
+        "image_tamper_mask",
+        "metadata_anomaly_graph"
+      ],
+      "fk_case_id": "FK_CASE_ABSTRACT_004",
+      "fraud_intent": "과청구",
+      "required_no_anchor": "동일 claim_group의 NO 정본 또는 공개 양식 기반 정상 pair"
+    }
+  ],
+  "created_at": "2026-06-04T07:58:40.787485+00:00",
+  "fk_case_abstracts": [
+    {
+      "abstracted_pattern": "영수증/세부산정내역서 금액 또는 본인부담금 자리수·쉼표·단위 변조",
+      "fk_case_id": "FK_CASE_ABSTRACT_001",
+      "fraud_intent": "가격변조",
+      "source_policy": "언론·판례·감사보고서 수준의 공개 정보에서 일반 패턴만 추상화. 실제 위조물 원본/개인정보는 포함하지 않음."
+    },
+    {
+      "abstracted_pattern": "진단명/질병분류기호를 보장성이 높은 항목으로 바꾸는 텍스트 변조",
+      "fk_case_id": "FK_CASE_ABSTRACT_002",
+      "fraud_intent": "진단명변조",
+      "source_policy": "언론·판례·감사보고서 수준의 공개 정보에서 일반 패턴만 추상화. 실제 위조물 원본/개인정보는 포함하지 않음."
+    },
+    {
+      "abstracted_pattern": "같은 진료일·의료기관·영수증번호를 여러 보험/여러 청구건으로 재사용",
+      "fk_case_id": "FK_CASE_ABSTRACT_003",
+      "fraud_intent": "중복청구",
+      "source_policy": "언론·판례·감사보고서 수준의 공개 정보에서 일반 패턴만 추상화. 실제 위조물 원본/개인정보는 포함하지 않음."
+    },
+    {
+      "abstracted_pattern": "실제 항목보다 비급여/검사/처치 line item을 늘리거나 단가를 높임",
+      "fk_case_id": "FK_CASE_ABSTRACT_004",
+      "fraud_intent": "과청구",
+      "source_policy": "언론·판례·감사보고서 수준의 공개 정보에서 일반 패턴만 추상화. 실제 위조물 원본/개인정보는 포함하지 않음."
+    }
+  ],
+  "taxonomy_version": "insurance-fds-fk-af-coverage-v1"
+}

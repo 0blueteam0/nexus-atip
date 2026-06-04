@@ -1,0 +1,115 @@
+{
+  "claim_group_id": "KOCLAIM0003",
+  "document_label": "AF",
+  "document_type": "실손보험_보험금청구_위변조_합성AF",
+  "field_annotations": [
+    {
+      "bbox": [
+        90,
+        250,
+        260,
+        38
+      ],
+      "field_ref": "fields.진단명"
+    },
+    {
+      "bbox": [
+        380,
+        250,
+        190,
+        38
+      ],
+      "field_ref": "fields.질병분류기호"
+    },
+    {
+      "bbox": [
+        90,
+        380,
+        210,
+        38
+      ],
+      "field_ref": "fields.본인부담금"
+    },
+    {
+      "bbox": [
+        380,
+        380,
+        210,
+        38
+      ],
+      "field_ref": "fields.청구금액"
+    },
+    {
+      "bbox": [
+        90,
+        455,
+        360,
+        38
+      ],
+      "field_ref": "fields.영수증번호"
+    }
+  ],
+  "fields": {
+    "line_items": [
+      {
+        "금액": 18000,
+        "급여구분": "급여",
+        "항목명": "진찰료"
+      },
+      {
+        "금액": 30632,
+        "급여구분": "비급여",
+        "항목명": "검사료"
+      },
+      {
+        "금액": 24068,
+        "급여구분": "급여",
+        "항목명": "처치료"
+      }
+    ],
+    "계좌번호": "000-합성-000000",
+    "보험상품유형": "실손의료보험",
+    "본인부담금": 109400,
+    "비급여금액": 38290,
+    "사업자등록번호": "000-00-1003",
+    "생년월일": "1983-04-13",
+    "영수증번호": "SYN-RCPT-KOCLAIM0003",
+    "의료기관명": "합성안심병원03",
+    "중복청구참조": "SYN-RCPT-KOCLAIM0003",
+    "진단명": "알레르기 비염",
+    "진료일자": "2026-05-13",
+    "질병분류기호": "S33.5",
+    "청구금액": 109400,
+    "청구유형": "검사",
+    "총진료비": 136750,
+    "피보험자명": "합성피보험자03"
+  },
+  "forensic_annotations": {
+    "mask_layers": [
+      {
+        "bbox": [
+          90,
+          520,
+          500,
+          120
+        ],
+        "field_ref": "fields.line_items",
+        "label": "중복청구"
+      }
+    ],
+    "notes": "방어적 학습용 tamper localization 후보. 실제 위조 기법 재현이 아니라 바뀐 필드 위치 라벨이다."
+  },
+  "language": "ko-KR",
+  "pii_status": "synthetic_no_real_pii",
+  "tamper_evidence": {
+    "changed_fields": {
+      "중복청구참조": {
+        "from": null,
+        "recipe": "동일 영수증번호 재사용",
+        "to": "SYN-RCPT-KOCLAIM0003"
+      }
+    },
+    "fk_case_id": "FK_CASE_ABSTRACT_003",
+    "scenario": "중복청구"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "artifacts": {
+    "capture_metadata_mapping": "metadata/scanner_phone_metadata_mapping.json",
+    "comfyui_smoke": "validation/comfyui_smoke_report.json",
+    "fk_taxonomy": "labels/fk_case_taxonomy_and_af_coverage.json",
+    "huggingface_candidates": "research/huggingface_dataset_candidates.json",
+    "korean_pairs": "structured/korean_claim_pair_manifest.json",
+    "ocr_roundtrip": "validation/ocr_roundtrip_report.json",
+    "public_form_seeds": "research/public_insurance_form_seed_list.json"
+  },
+  "camera_root": "data\\insurance-fds-generated\\camera-v1",
+  "created_at": "2026-06-04T07:58:42.883874+00:00",
+  "priority_manifest_version": "insurance-fds-priority-pipeline-v1",
+  "quality_notes_ko": [
+    "그림자는 기존보다 데이터 라벨/메타데이터 중심으로 다루고, 실제 이미지 다양화는 scanner/phone profile별로 분리한다.",
+    "한국어 실손 청구 필드명과 금액/진단명/질병분류기호/중복 영수증번호 feature를 명시했다.",
+    "HF 공개 데이터는 직접 한국 실손 데이터가 아니라 OCR·문서이해 사전학습 후보로 분리했다."
+  ],
+  "source_root": "data\\insurance-fds-generated\\demo-v1"
+}

@@ -1,0 +1,108 @@
+{
+  "capture_profiles": [
+    {
+      "capture_type": "scanner_flatbed",
+      "fds_features": [
+        "dpi_consistency",
+        "flat_background",
+        "page_edge_parallelism",
+        "pdf_creation_tool_consistency"
+      ],
+      "korean_submission_notes": "병원/약국 원본 영수증을 가정용/사무용 스캐너로 평판 스캔한 제출본. 그림자보다 DPI·용지 모서리·PDF producer 일관성이 중요하다.",
+      "metadata_fields": [
+        "scanner.dpi",
+        "scanner.color_mode",
+        "scanner.page_size",
+        "scanner.twain_driver",
+        "file.pdf_producer"
+      ]
+    },
+    {
+      "capture_type": "scanner_adf",
+      "fds_features": [
+        "vertical_streak_detection",
+        "multi_page_sequence_consistency",
+        "skew_angle_cluster"
+      ],
+      "korean_submission_notes": "여러 장의 진료비영수증/세부산정내역서/처방전 사본을 자동급지 스캔한 제출본. 페이지 순서와 동일 장비 흔적이 핵심이다.",
+      "metadata_fields": [
+        "scanner.dpi",
+        "scanner.adf_feed_order",
+        "scanner.duplex",
+        "scanner.streak_noise",
+        "file.page_count"
+      ]
+    },
+    {
+      "capture_type": "smartphone_camera",
+      "fds_features": [
+        "claim_time_vs_capture_time_delta",
+        "device_reuse_graph",
+        "lens_perspective",
+        "lighting_gradient",
+        "gallery_reupload_signature"
+      ],
+      "korean_submission_notes": "실손보험 앱에서 가장 흔한 휴대폰 촬영 제출본. 촬영 시각, 단말 재사용, 청구일과 촬영일 차이, EXIF 누락/변형 패턴을 본다.",
+      "metadata_fields": [
+        "EXIF.Make",
+        "EXIF.Model",
+        "EXIF.DateTimeOriginal",
+        "EXIF.FocalLength",
+        "EXIF.ISOSpeedRatings",
+        "EXIF.ExposureTime",
+        "EXIF.GPSInfo"
+      ]
+    },
+    {
+      "capture_type": "mobile_scan_app",
+      "fds_features": [
+        "auto_crop_boundary",
+        "contrast_boost_signature",
+        "flattened_shadow",
+        "scan_app_watermark_absence_or_presence"
+      ],
+      "korean_submission_notes": "모바일 스캔 앱이 문서를 자동 보정한 제출본. 실제 카메라보다 모서리 직선화와 대비 증가가 강하다.",
+      "metadata_fields": [
+        "app.crop_polygon",
+        "app.perspective_correction",
+        "app.filter",
+        "app.watermark",
+        "file.jpeg_quality"
+      ]
+    }
+  ],
+  "created_at": "2026-06-04T07:58:27.768480+00:00",
+  "field_mapping": {
+    "mobile_scan_app": [
+      "app.crop_polygon",
+      "app.perspective_correction",
+      "app.filter",
+      "file.jpeg_quality"
+    ],
+    "scanner_adf": [
+      "scanner.dpi",
+      "scanner.adf_feed_order",
+      "scanner.duplex",
+      "scanner.streak_noise"
+    ],
+    "scanner_flatbed": [
+      "scanner.dpi",
+      "scanner.color_mode",
+      "scanner.page_size",
+      "file.pdf_producer"
+    ],
+    "smartphone_camera": [
+      "EXIF.Make",
+      "EXIF.Model",
+      "EXIF.DateTimeOriginal",
+      "EXIF.FocalLength",
+      "EXIF.ISOSpeedRatings"
+    ]
+  },
+  "labeling_policy": {
+    "AF": "정본 pair를 기준으로 방어적 탐지 학습을 위해 만든 합성 위변조/중복/과청구 샘플",
+    "FK": "실제 사례를 직접 복제하지 않고 언론·판례·감사보고서에서 추상화한 실제 발생형 위조/이상청구 case abstract",
+    "NO": "정본 또는 공개 양식 기반 정상 제출/정상 촬영 조건"
+  },
+  "mapping_version": "insurance-fds-capture-metadata-v1"
+}

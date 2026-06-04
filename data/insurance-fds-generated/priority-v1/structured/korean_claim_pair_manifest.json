@@ -1,0 +1,30 @@
+{
+  "created_at": "2026-06-04T07:58:40.809186+00:00",
+  "pair_manifest_version": "insurance-fds-korean-golden-tampered-pairs-v1",
+  "pairs": [
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "pair_id": "KO_PAIR_0001",
+      "tamper_scenario": "가격변조"
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "pair_id": "KO_PAIR_0002",
+      "tamper_scenario": "진단명변조"
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "pair_id": "KO_PAIR_0003",
+      "tamper_scenario": "중복청구"
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "pair_id": "KO_PAIR_0004",
+      "tamper_scenario": "과청구"
+    }
+  ]
+}

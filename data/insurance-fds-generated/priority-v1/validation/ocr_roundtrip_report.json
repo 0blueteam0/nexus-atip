@@ -1,0 +1,83 @@
+{
+  "camera_manifest_checked": "data\\insurance-fds-generated\\camera-v1\\manifests\\camera_image_manifest.json",
+  "created_at": "2026-06-04T07:58:40.833197+00:00",
+  "engine_probe": {
+    "pytesseract": "optional_not_required",
+    "tesseract": "not_found"
+  },
+  "report_version": "insurance-fds-ocr-roundtrip-v1",
+  "samples": [
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "expected_korean_tokens": [
+        "실손의료보험",
+        "진료일자",
+        "진단명",
+        "청구금액"
+      ],
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "ocr_quality_bucket": "ocr_engine_unavailable",
+      "pair_id": "KO_PAIR_0001",
+      "roundtrip_feature_targets": [
+        "token_presence",
+        "amount_consistency",
+        "diagnosis_code_consistency",
+        "receipt_number_reuse"
+      ]
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "expected_korean_tokens": [
+        "실손의료보험",
+        "진료일자",
+        "진단명",
+        "청구금액"
+      ],
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "ocr_quality_bucket": "ocr_engine_unavailable",
+      "pair_id": "KO_PAIR_0002",
+      "roundtrip_feature_targets": [
+        "token_presence",
+        "amount_consistency",
+        "diagnosis_code_consistency",
+        "receipt_number_reuse"
+      ]
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "expected_korean_tokens": [
+        "실손의료보험",
+        "진료일자",
+        "진단명",
+        "청구금액"
+      ],
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "ocr_quality_bucket": "ocr_engine_unavailable",
+      "pair_id": "KO_PAIR_0003",
+      "roundtrip_feature_targets": [
+        "token_presence",
+        "amount_consistency",
+        "diagnosis_code_consistency",
+        "receipt_number_reuse"
+      ]
+    },
+    {
+      "af_file": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "expected_korean_tokens": [
+        "실손의료보험",
+        "진료일자",
+        "진단명",
+        "청구금액"
+      ],
+      "no_file": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "ocr_quality_bucket": "ocr_engine_unavailable",
+      "pair_id": "KO_PAIR_0004",
+      "roundtrip_feature_targets": [
+        "token_presence",
+        "amount_consistency",
+        "diagnosis_code_consistency",
+        "receipt_number_reuse"
+      ]
+    }
+  ]
+}

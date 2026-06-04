@@ -1,0 +1,1829 @@
+{
+  "generation_seed": 20260604,
+  "items": [
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:20 21:59:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 82,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V01.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:14 17:42:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 80,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 81,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V02.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 88,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.2,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V03.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:27 09:14:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 200,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 91,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V04.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V04",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:27 22:34:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Apple",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 90,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.4,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V05.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V05",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "multi_page_sequence",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 82,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0001_V06.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0001_V06",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0001_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:14 11:31:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 83,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V01.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V01",
+      "mask_positive_pixel_count": 9931,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:25 19:09:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 94,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V02.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V02",
+      "mask_positive_pixel_count": 8947,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "document_bw",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 81,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 88,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V03.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V03",
+      "mask_positive_pixel_count": 12788,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": true,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 74,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V04.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V04",
+      "mask_positive_pixel_count": 10846,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "document_bw",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 80,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 77,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V05.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V05",
+      "mask_positive_pixel_count": 11750,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "none",
+          "scanner.adf_feed_order": "multi_page_sequence",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 84,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.4,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0001_V06.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0001_V06",
+      "mask_positive_pixel_count": 11453,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0001_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0001.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:20 11:10:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Apple",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 95,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V01.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:10 10:08:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 75,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V02.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "color_boost",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 79,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 85,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.2,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V03.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 86,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.2,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V04.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V04",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "color_boost",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 78,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 73,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V05.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V05",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:11 21:55:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 200,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 88,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0002_V06.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0002_V06",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0002_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:13 15:47:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 75,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V01.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V01",
+      "mask_positive_pixel_count": 22132,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:19 10:33:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "Apple",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 96,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V02.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V02",
+      "mask_positive_pixel_count": 19371,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:17 10:00:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 95,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V03.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V03",
+      "mask_positive_pixel_count": 23113,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_flatbed_300dpi",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "capture_type": "scanner_flatbed",
+          "file.pdf_producer": "Synthetic TWAIN PDF",
+          "observed_metadata_loss": "pdf_reexported",
+          "scanner.color_mode": "RGB",
+          "scanner.dpi": 300,
+          "scanner.page_size": "A4"
+        },
+        "compression_quality": 78,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.4,
+        "perspective": "scanner_flatbed_300dpi",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V04.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V04",
+      "mask_positive_pixel_count": 28599,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "natural",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 81,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 78,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V05.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V05",
+      "mask_positive_pixel_count": 26016,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:17 09:58:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 82,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": true,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0002_V06.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0002_V06",
+      "mask_positive_pixel_count": 22350,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0002_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0002.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:17 22:30:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 76,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V01.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:11 13:44:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 85,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V02.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "document_bw",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 85,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 73,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V03.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:21 21:18:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 80,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 76,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V04.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V04",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:10 17:28:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 200,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 75,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V05.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V05",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:15 08:07:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 73,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0003_V06.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0003_V06",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0003_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:22 16:54:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 88,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V01.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V01",
+      "mask_positive_pixel_count": 85971,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:11 15:45:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 88,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V02.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V02",
+      "mask_positive_pixel_count": 77212,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "app.crop_polygon": "synthetic_four_corner_crop",
+          "app.filter": "document_bw",
+          "app.perspective_correction": true,
+          "capture_type": "mobile_scan_app",
+          "file.jpeg_quality": 93,
+          "observed_metadata_loss": "exif_stripped_by_scan_app"
+        },
+        "compression_quality": 78,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.2,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V03.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V03",
+      "mask_positive_pixel_count": 83354,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_flatbed_300dpi",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "capture_type": "scanner_flatbed",
+          "file.pdf_producer": "Synthetic Scan Utility",
+          "observed_metadata_loss": "none",
+          "scanner.color_mode": "RGB",
+          "scanner.dpi": 300,
+          "scanner.page_size": "A4"
+        },
+        "compression_quality": 83,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.4,
+        "perspective": "scanner_flatbed_300dpi",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V04.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V04",
+      "mask_positive_pixel_count": 89082,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "none",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": true,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 75,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V05.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V05",
+      "mask_positive_pixel_count": 86854,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:21 19:51:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 84,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0003_V06.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0003_V06",
+      "mask_positive_pixel_count": 81920,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0003_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0003.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:25 14:44:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 91,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V01.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:14 20:09:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 200,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 80,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V02.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:14 10:14:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 100,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 72,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V03.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:10 14:47:00",
+          "EXIF.FocalLength": "4.2mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_flagship",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 96,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V04.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V04",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 87,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V05.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V05",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:18 22:28:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 400,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "messenger_reupload_stripped"
+        },
+        "compression_quality": 91,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_진료비영수증_세부내역_합성정본",
+      "image_relative_path": "images/NO/NO_KO_REALISTIC_FORM_0004_V06.png",
+      "item_id": "NO_KO_REALISTIC_FORM_0004_V06",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_KO_REALISTIC_FORM_0004_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:18 08:06:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 80,
+          "EXIF.Make": "Samsung",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 81,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V01.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V01",
+      "mask_positive_pixel_count": 78521,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:14 14:18:00",
+          "EXIF.FocalLength": "5.1mm",
+          "EXIF.ISOSpeedRatings": 200,
+          "EXIF.Make": "Xiaomi",
+          "EXIF.Model": "synthetic_midrange",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "none"
+        },
+        "compression_quality": 96,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "adf_streak_micro_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V02.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V02",
+      "mask_positive_pixel_count": 66741,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_flatbed_300dpi",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "capture_metadata": {
+          "capture_type": "scanner_flatbed",
+          "file.pdf_producer": "Synthetic Scan Utility",
+          "observed_metadata_loss": "pdf_reexported",
+          "scanner.color_mode": "grayscale",
+          "scanner.dpi": 300,
+          "scanner.page_size": "A4"
+        },
+        "compression_quality": 86,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "scanner_flatbed_300dpi",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "very_soft_edge_falloff"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V03.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V03",
+      "mask_positive_pixel_count": 96849,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "multi_page_sequence",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "micro_vertical_streak"
+        },
+        "compression_quality": 96,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V04.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V04",
+      "mask_positive_pixel_count": 81778,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V04_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "capture_metadata": {
+          "EXIF.DateTimeOriginal": "2026:05:18 22:24:00",
+          "EXIF.FocalLength": "6.8mm",
+          "EXIF.ISOSpeedRatings": 800,
+          "EXIF.Make": "LG",
+          "EXIF.Model": "synthetic_budget",
+          "capture_type": "smartphone_camera",
+          "observed_metadata_loss": "insurance_app_reencoded"
+        },
+        "compression_quality": 78,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V05.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V05",
+      "mask_positive_pixel_count": 83640,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V05_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "scanner_adf_200dpi",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "capture_metadata": {
+          "capture_type": "scanner_adf",
+          "observed_metadata_loss": "app_pdf_recompressed",
+          "scanner.adf_feed_order": "single_page",
+          "scanner.dpi": 200,
+          "scanner.duplex": false,
+          "scanner.streak_noise": "none"
+        },
+        "compression_quality": 87,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.2,
+        "perspective": "scanner_adf_200dpi",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "subtle_contact_shadow"
+      },
+      "document_type": "실손보험_보험금청구_위변조_합성AF",
+      "image_relative_path": "images/AF/AF_KO_REALISTIC_FORM_0004_V06.png",
+      "item_id": "AF_KO_REALISTIC_FORM_0004_V06",
+      "mask_positive_pixel_count": 82486,
+      "mask_relative_path": "masks/AF/AF_KO_REALISTIC_FORM_0004_V06_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_KO_REALISTIC_FORM_0004.json",
+      "submission_channel": "scanner_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    }
+  ],
+  "manifest_version": "insurance-fds-camera-image-manifest-v1",
+  "source_root": "data/insurance-fds-generated/priority-v1",
+  "summary": {
+    "camera_profiles": [
+      "low_light_gallery_reupload",
+      "mobile_scan_app",
+      "scanner_adf_200dpi",
+      "scanner_flatbed_300dpi",
+      "smartphone_oblique",
+      "smartphone_topdown"
+    ],
+    "document_count": 8,
+    "image_count": 48,
+    "prefix_counts": {
+      "AF": 24,
+      "NO": 24
+    },
+    "safety": "all samples are synthetic_no_real_pii and do not contain real hospital identity assets"
+  }
+}
