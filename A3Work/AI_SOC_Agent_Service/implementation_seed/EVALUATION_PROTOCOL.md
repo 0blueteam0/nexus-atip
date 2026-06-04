@@ -32,14 +32,20 @@ PoC/MVP의 목표는 자동 대응 성공률이 아니라 Evidence Package 품�
 - `scripts/dataset_registry.py`
 - `scripts/public_dataset_adapter.py`
 - `scripts/doc_addendum_generator.py`
+- `scripts/execution_plan2_generator.py`
 - `scripts/replay_runner.py`
 - `tests/test_synthetic_alert_generator.py`
 - `tests/test_replay_runner.py`
 - `tests/test_dataset_registry.py`
+- `tests/test_dataset_metadata_spec_v2.py`
+- `tests/test_execution_plan2_generator.py`
 - `fixtures/*.json`
 - `reports/replay_metrics_v0.json`
 - `reports/dataset_replay_plan_v0.json`
+- `reports/dataset_case_spec_plan_v0.json`
+- `reports/dataset_source_metadata_spec_v2.json`
 - `reports/replay_metrics_v1.json`
+- `reports/execution_plan2_summary.json`
 - `reports/doc_addendum_generator_v0.stdout.json`
 
 ## 4. MVP 필수 지표
@@ -74,14 +80,16 @@ python implementation_seed/scripts/replay_runner.py --fixtures implementation_se
 python implementation_seed/scripts/dataset_registry.py
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --dataset-manifest implementation_seed/datasets/dataset_manifest.json --out implementation_seed/reports/replay_metrics_v1.json
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
+python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
 ```
 
-`dataset_registry.py`는 다음 두 리포트를 함께 생성한다.
+`dataset_registry.py`는 다음 세 리포트를 함께 생성한다.
 
 - `reports/dataset_replay_plan_v0.json`: source별 metadata-only replay 준비도
 - `reports/dataset_case_spec_plan_v0.json`: public dataset adapter 구현 전 case spec 목록
+- `reports/dataset_source_metadata_spec_v2.json`: public source별 access/raw/normalization/evaluation contract
 
-## 6.1 Dataset manifest v0
+## 6.1 Dataset manifest v0 + metadata spec #2
 
 현재 구현은 공개데이터셋을 다운로드하지 않고 metadata-only registry로 등록한다. 목적은 다음 단계의 raw adapter 구현 전, 어떤 데이터셋이 어떤 SOC 평가 목적에 연결되는지와 어떤 guardrail이 필요한지 명시적으로 고정하는 것이다.
 

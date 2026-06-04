@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260604-124544-AI_SOC_Agent_Service-Continue-public-dataset-metadata-spec-2-and-AI-security-monitoring-agent-executi",
+  "project": "AI_SOC_Agent_Service",
+  "task": "Continue public dataset metadata spec #2 and AI security monitoring agent execution plan #2",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260604-124544-AI_SOC_Agent_Service-Continue-public-dataset-metadata-spec-2-and-AI-security-monitoring-agent-executi",
+  "created_at": "2026-06-04T12:45:44+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-02T07:13:05Z",
+  "generated_at": "2026-06-04T03:52:43Z",
   "manifest_id": "ai-soc-agent-datasets-v0",
   "manifest_path": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\datasets\\dataset_manifest.json",
   "execution_mode": "metadata_only_no_download",
@@ -16,6 +16,27 @@
       "adapter_mode": "metadata_stub",
       "requires_manual_ingestion": true,
       "download_allowed": false,
+      "metadata_spec_version": "2.0",
+      "access_gate": {
+        "download_requires_approval": true,
+        "license_review_required": true,
+        "redistribution_review_required": true,
+        "pii_or_sensitive_risk": "medium"
+      },
+      "normalization_contract": {
+        "target_schemas": [
+          "normalized_alert",
+          "evidence_package"
+        ],
+        "required_mappings": [
+          "timestamp",
+          "tenant_id",
+          "entity_context",
+          "evidence_items",
+          "citation_or_source_ref"
+        ],
+        "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+      },
       "template_id": "otrf-windows-attack-emulation",
       "scenario": "Windows attack emulation logs converted into evidence packages for timeline and MITRE mapping.",
       "expected_evidence": [
@@ -42,6 +63,27 @@
       "adapter_mode": "metadata_stub",
       "requires_manual_ingestion": true,
       "download_allowed": false,
+      "metadata_spec_version": "2.0",
+      "access_gate": {
+        "download_requires_approval": true,
+        "license_review_required": true,
+        "redistribution_review_required": true,
+        "pii_or_sensitive_risk": "medium"
+      },
+      "normalization_contract": {
+        "target_schemas": [
+          "normalized_alert",
+          "evidence_package"
+        ],
+        "required_mappings": [
+          "timestamp",
+          "tenant_id",
+          "entity_context",
+          "evidence_items",
+          "citation_or_source_ref"
+        ],
+        "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+      },
       "template_id": "bots-v3-investigation-chain",
       "scenario": "Multi-step SOC investigation converted to bounded evidence requests and final evidence-backed summary.",
       "expected_evidence": [
@@ -69,6 +111,27 @@
       "adapter_mode": "metadata_stub",
       "requires_manual_ingestion": true,
       "download_allowed": false,
+      "metadata_spec_version": "2.0",
+      "access_gate": {
+        "download_requires_approval": true,
+        "license_review_required": true,
+        "redistribution_review_required": true,
+        "pii_or_sensitive_risk": "low"
+      },
+      "normalization_contract": {
+        "target_schemas": [
+          "normalized_alert",
+          "evidence_package"
+        ],
+        "required_mappings": [
+          "timestamp",
+          "tenant_id",
+          "entity_context",
+          "evidence_items",
+          "citation_or_source_ref"
+        ],
+        "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+      },
       "template_id": "unsw-flow-anomaly-triage",
       "scenario": "Network flow anomaly mapped to alert severity and supporting flow evidence.",
       "expected_evidence": [
@@ -95,6 +158,27 @@
       "adapter_mode": "metadata_stub",
       "requires_manual_ingestion": true,
       "download_allowed": false,
+      "metadata_spec_version": "2.0",
+      "access_gate": {
+        "download_requires_approval": true,
+        "license_review_required": true,
+        "redistribution_review_required": true,
+        "pii_or_sensitive_risk": "high"
+      },
+      "normalization_contract": {
+        "target_schemas": [
+          "normalized_alert",
+          "evidence_package"
+        ],
+        "required_mappings": [
+          "timestamp",
+          "tenant_id",
+          "entity_context",
+          "evidence_items",
+          "citation_or_source_ref"
+        ],
+        "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+      },
       "template_id": "lanl-auth-lateral-movement",
       "scenario": "Authentication chain anomaly converted into identity evidence package.",
       "expected_evidence": [

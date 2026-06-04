@@ -22,9 +22,19 @@
       "ingestion_status": "ready_local_fixture",
       "license_notes": "Generated local controlled fixtures; safe for unit and replay tests.",
       "coverage": {
-        "domains": ["soc-triage", "policy-guardrail", "prompt-injection"],
-        "log_types": ["normalized_alert", "evidence_package"],
-        "mitre_tactics": ["Initial Access", "Defense Evasion"]
+        "domains": [
+          "soc-triage",
+          "policy-guardrail",
+          "prompt-injection"
+        ],
+        "log_types": [
+          "normalized_alert",
+          "evidence_package"
+        ],
+        "mitre_tactics": [
+          "Initial Access",
+          "Defense Evasion"
+        ]
       },
       "candidate_tasks": [
         "evidence_completeness_gate",
@@ -36,11 +46,74 @@
         {
           "template_id": "synthetic-vpn-login-anomaly",
           "scenario": "VPN login anomaly with IAM, SIEM, CMDB, and prior login evidence.",
-          "expected_evidence": ["vpn_login_log", "iam_user_context", "cmdb_asset_context", "prior_login_pattern"],
-          "expected_guardrails": ["human_review_for_privileged_user", "no_automated_response"]
+          "expected_evidence": [
+            "vpn_login_log",
+            "iam_user_context",
+            "cmdb_asset_context",
+            "prior_login_pattern"
+          ],
+          "expected_guardrails": [
+            "human_review_for_privileged_user",
+            "no_automated_response"
+          ]
         }
       ],
-      "limitations": ["Synthetic only; does not measure parser robustness on raw third-party logs."]
+      "limitations": [
+        "Synthetic only; does not measure parser robustness on raw third-party logs."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "local://implementation_seed/fixtures",
+        "reference_urls": [
+          "local://implementation_seed/fixtures"
+        ],
+        "access_review": {
+          "download_requires_approval": false,
+          "license_review_required": false,
+          "redistribution_review_required": false,
+          "pii_or_sensitive_risk": "low"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "json"
+          ],
+          "expected_time_fields": [
+            "alert.generated_at",
+            "evidence.collected_at"
+          ],
+          "expected_entity_fields": [
+            "user",
+            "host",
+            "tenant_id"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "evidence_package_success_rate",
+            "missing_reason_coverage",
+            "tenant_leakage_count"
+          ],
+          "excluded_uses": [
+            "production_detection_claims",
+            "autonomous_response"
+          ]
+        }
+      }
     },
     {
       "source_id": "otrf-security-datasets",
@@ -52,20 +125,103 @@
       "ingestion_status": "metadata_stub",
       "license_notes": "Review upstream repository license and dataset-specific restrictions before download.",
       "coverage": {
-        "domains": ["windows-enterprise", "attack-emulation", "threat-hunting"],
-        "log_types": ["windows_event", "sysmon", "security_events"],
-        "mitre_tactics": ["Execution", "Persistence", "Privilege Escalation", "Lateral Movement"]
+        "domains": [
+          "windows-enterprise",
+          "attack-emulation",
+          "threat-hunting"
+        ],
+        "log_types": [
+          "windows_event",
+          "sysmon",
+          "security_events"
+        ],
+        "mitre_tactics": [
+          "Execution",
+          "Persistence",
+          "Privilege Escalation",
+          "Lateral Movement"
+        ]
       },
-      "candidate_tasks": ["attack_timeline_reconstruction", "evidence_retrieval", "mitre_mapping"],
+      "candidate_tasks": [
+        "attack_timeline_reconstruction",
+        "evidence_retrieval",
+        "mitre_mapping"
+      ],
       "case_templates": [
         {
           "template_id": "otrf-windows-attack-emulation",
           "scenario": "Windows attack emulation logs converted into evidence packages for timeline and MITRE mapping.",
-          "expected_evidence": ["windows_event_log", "process_tree", "account_context"],
-          "expected_guardrails": ["citation_required", "no_unverified_conclusion"]
+          "expected_evidence": [
+            "windows_event_log",
+            "process_tree",
+            "account_context"
+          ],
+          "expected_guardrails": [
+            "citation_required",
+            "no_unverified_conclusion"
+          ]
         }
       ],
-      "limitations": ["Metadata-only in this seed; raw event normalization adapter is not implemented yet."]
+      "limitations": [
+        "Metadata-only in this seed; raw event normalization adapter is not implemented yet."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "https://github.com/OTRF/Security-Datasets",
+        "reference_urls": [
+          "https://github.com/OTRF/Security-Datasets"
+        ],
+        "access_review": {
+          "download_requires_approval": true,
+          "license_review_required": true,
+          "redistribution_review_required": true,
+          "pii_or_sensitive_risk": "medium"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "json",
+            "evtx",
+            "csv"
+          ],
+          "expected_time_fields": [
+            "TimeCreated",
+            "UtcTime",
+            "EventTime"
+          ],
+          "expected_entity_fields": [
+            "user",
+            "host",
+            "process",
+            "process_guid"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "timeline_completeness",
+            "mitre_mapping_coverage",
+            "citation_coverage"
+          ],
+          "excluded_uses": [
+            "malware_attribution",
+            "autonomous_response"
+          ]
+        }
+      }
     },
     {
       "source_id": "splunk-bots-v3",
@@ -77,20 +233,105 @@
       "ingestion_status": "metadata_stub",
       "license_notes": "Requires explicit user approval and review of Splunk BOTS access terms before download.",
       "coverage": {
-        "domains": ["soc-investigation", "multi-stage-incident", "siem-search"],
-        "log_types": ["splunk_index", "web_log", "endpoint_log", "network_log"],
-        "mitre_tactics": ["Initial Access", "Discovery", "Command and Control", "Exfiltration"]
+        "domains": [
+          "soc-investigation",
+          "multi-stage-incident",
+          "siem-search"
+        ],
+        "log_types": [
+          "splunk_index",
+          "web_log",
+          "endpoint_log",
+          "network_log"
+        ],
+        "mitre_tactics": [
+          "Initial Access",
+          "Discovery",
+          "Command and Control",
+          "Exfiltration"
+        ]
       },
-      "candidate_tasks": ["multi_step_triage", "query_planning", "case_summary_generation"],
+      "candidate_tasks": [
+        "multi_step_triage",
+        "query_planning",
+        "case_summary_generation"
+      ],
       "case_templates": [
         {
           "template_id": "bots-v3-investigation-chain",
           "scenario": "Multi-step SOC investigation converted to bounded evidence requests and final evidence-backed summary.",
-          "expected_evidence": ["siem_search_result", "host_context", "network_indicator_context"],
-          "expected_guardrails": ["bounded_query_scope", "citation_required", "human_review_before_action"]
+          "expected_evidence": [
+            "siem_search_result",
+            "host_context",
+            "network_indicator_context"
+          ],
+          "expected_guardrails": [
+            "bounded_query_scope",
+            "citation_required",
+            "human_review_before_action"
+          ]
         }
       ],
-      "limitations": ["Dataset is often distributed as Splunk-ready data; adapter must avoid assuming local Splunk availability."]
+      "limitations": [
+        "Dataset is often distributed as Splunk-ready data; adapter must avoid assuming local Splunk availability."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "https://bots.splunk.com/",
+        "reference_urls": [
+          "https://bots.splunk.com/"
+        ],
+        "access_review": {
+          "download_requires_approval": true,
+          "license_review_required": true,
+          "redistribution_review_required": true,
+          "pii_or_sensitive_risk": "medium"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "splunk_index",
+            "csv",
+            "json"
+          ],
+          "expected_time_fields": [
+            "_time",
+            "timestamp"
+          ],
+          "expected_entity_fields": [
+            "src_ip",
+            "dest_ip",
+            "host",
+            "user",
+            "indicator"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "case_summary_quality",
+            "bounded_query_coverage",
+            "citation_coverage"
+          ],
+          "excluded_uses": [
+            "production_siem_query_execution",
+            "autonomous_response"
+          ]
+        }
+      }
     },
     {
       "source_id": "unsw-nb15",
@@ -102,20 +343,99 @@
       "ingestion_status": "metadata_stub",
       "license_notes": "Review academic dataset terms before use.",
       "coverage": {
-        "domains": ["network-intrusion", "flow-classification"],
-        "log_types": ["network_flow", "connection_feature"],
-        "mitre_tactics": ["Reconnaissance", "Command and Control"]
+        "domains": [
+          "network-intrusion",
+          "flow-classification"
+        ],
+        "log_types": [
+          "network_flow",
+          "connection_feature"
+        ],
+        "mitre_tactics": [
+          "Reconnaissance",
+          "Command and Control"
+        ]
       },
-      "candidate_tasks": ["anomaly_scoring_baseline", "network_alert_enrichment", "threshold_calibration"],
+      "candidate_tasks": [
+        "anomaly_scoring_baseline",
+        "network_alert_enrichment",
+        "threshold_calibration"
+      ],
       "case_templates": [
         {
           "template_id": "unsw-flow-anomaly-triage",
           "scenario": "Network flow anomaly mapped to alert severity and supporting flow evidence.",
-          "expected_evidence": ["network_flow_features", "baseline_score", "peer_comparison"],
-          "expected_guardrails": ["ml_score_not_verdict", "human_review_for_high_severity"]
+          "expected_evidence": [
+            "network_flow_features",
+            "baseline_score",
+            "peer_comparison"
+          ],
+          "expected_guardrails": [
+            "ml_score_not_verdict",
+            "human_review_for_high_severity"
+          ]
         }
       ],
-      "limitations": ["Feature-table dataset; weak fit for natural language SOC evidence unless wrapped with synthetic context."]
+      "limitations": [
+        "Feature-table dataset; weak fit for natural language SOC evidence unless wrapped with synthetic context."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
+        "reference_urls": [
+          "https://research.unsw.edu.au/projects/unsw-nb15-dataset"
+        ],
+        "access_review": {
+          "download_requires_approval": true,
+          "license_review_required": true,
+          "redistribution_review_required": true,
+          "pii_or_sensitive_risk": "low"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "csv",
+            "feature_table"
+          ],
+          "expected_time_fields": [
+            "stime",
+            "ltime",
+            "dur"
+          ],
+          "expected_entity_fields": [
+            "srcip",
+            "dstip",
+            "sport",
+            "dsport",
+            "proto"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "anomaly_score_calibration",
+            "severity_prior_quality",
+            "false_positive_review_rate"
+          ],
+          "excluded_uses": [
+            "soc_case_summary_without_context",
+            "autonomous_response"
+          ]
+        }
+      }
     },
     {
       "source_id": "lanl-auth",
@@ -127,20 +447,98 @@
       "ingestion_status": "metadata_stub",
       "license_notes": "Review access and redistribution restrictions before download.",
       "coverage": {
-        "domains": ["enterprise-authentication", "lateral-movement", "identity-analytics"],
-        "log_types": ["authentication_event", "kerberos_like_auth"],
-        "mitre_tactics": ["Credential Access", "Lateral Movement"]
+        "domains": [
+          "enterprise-authentication",
+          "lateral-movement",
+          "identity-analytics"
+        ],
+        "log_types": [
+          "authentication_event",
+          "kerberos_like_auth"
+        ],
+        "mitre_tactics": [
+          "Credential Access",
+          "Lateral Movement"
+        ]
       },
-      "candidate_tasks": ["identity_anomaly_detection", "peer_baseline", "login_chain_reconstruction"],
+      "candidate_tasks": [
+        "identity_anomaly_detection",
+        "peer_baseline",
+        "login_chain_reconstruction"
+      ],
       "case_templates": [
         {
           "template_id": "lanl-auth-lateral-movement",
           "scenario": "Authentication chain anomaly converted into identity evidence package.",
-          "expected_evidence": ["auth_event_sequence", "user_peer_group", "host_peer_group"],
-          "expected_guardrails": ["no_account_lock_without_approval", "insufficient_evidence_when_context_missing"]
+          "expected_evidence": [
+            "auth_event_sequence",
+            "user_peer_group",
+            "host_peer_group"
+          ],
+          "expected_guardrails": [
+            "no_account_lock_without_approval",
+            "insufficient_evidence_when_context_missing"
+          ]
         }
       ],
-      "limitations": ["Large-scale temporal dataset; requires sampling and privacy-aware case construction."]
+      "limitations": [
+        "Large-scale temporal dataset; requires sampling and privacy-aware case construction."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "https://csr.lanl.gov/data/cyber1/",
+        "reference_urls": [
+          "https://csr.lanl.gov/data/cyber1/"
+        ],
+        "access_review": {
+          "download_requires_approval": true,
+          "license_review_required": true,
+          "redistribution_review_required": true,
+          "pii_or_sensitive_risk": "high"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "txt",
+            "csv",
+            "temporal_auth_log"
+          ],
+          "expected_time_fields": [
+            "time"
+          ],
+          "expected_entity_fields": [
+            "user",
+            "computer",
+            "source_computer",
+            "destination_computer"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "identity_chain_reconstruction",
+            "peer_baseline_explainability",
+            "missing_context_reason_coverage"
+          ],
+          "excluded_uses": [
+            "account_lockout_decision",
+            "autonomous_response"
+          ]
+        }
+      }
     },
     {
       "source_id": "cert-insider-threat",
@@ -152,20 +550,102 @@
       "ingestion_status": "manual_review_required",
       "license_notes": "Requires explicit review because insider-threat datasets can include sensitive behavioral assumptions.",
       "coverage": {
-        "domains": ["insider-threat", "ueba", "entity-behavior"],
-        "log_types": ["user_activity", "device", "file", "email_like_metadata"],
-        "mitre_tactics": ["Collection", "Exfiltration"]
+        "domains": [
+          "insider-threat",
+          "ueba",
+          "entity-behavior"
+        ],
+        "log_types": [
+          "user_activity",
+          "device",
+          "file",
+          "email_like_metadata"
+        ],
+        "mitre_tactics": [
+          "Collection",
+          "Exfiltration"
+        ]
       },
-      "candidate_tasks": ["ueba_explanation", "risk_score_calibration", "behavioral_evidence_summary"],
+      "candidate_tasks": [
+        "ueba_explanation",
+        "risk_score_calibration",
+        "behavioral_evidence_summary"
+      ],
       "case_templates": [
         {
           "template_id": "cert-insider-risk-review",
           "scenario": "Insider-risk signals summarized with explicit uncertainty and human review requirement.",
-          "expected_evidence": ["user_activity_sequence", "policy_context", "historical_baseline"],
-          "expected_guardrails": ["no_employee_accusation", "uncertainty_required", "human_review_required"]
+          "expected_evidence": [
+            "user_activity_sequence",
+            "policy_context",
+            "historical_baseline"
+          ],
+          "expected_guardrails": [
+            "no_employee_accusation",
+            "uncertainty_required",
+            "human_review_required"
+          ]
         }
       ],
-      "limitations": ["High risk of overclaiming intent; use only for explanation guardrail tests after policy review."]
+      "limitations": [
+        "High risk of overclaiming intent; use only for explanation guardrail tests after policy review."
+      ],
+      "metadata_spec": {
+        "spec_version": "2.0",
+        "source_url": "https://resources.sei.cmu.edu/library/asset-view.cfm?assetid=508099",
+        "reference_urls": [
+          "https://resources.sei.cmu.edu/library/asset-view.cfm?assetid=508099"
+        ],
+        "access_review": {
+          "download_requires_approval": true,
+          "license_review_required": true,
+          "redistribution_review_required": true,
+          "pii_or_sensitive_risk": "high"
+        },
+        "raw_data_profile": {
+          "expected_formats": [
+            "csv",
+            "relational_activity_logs"
+          ],
+          "expected_time_fields": [
+            "date",
+            "timestamp"
+          ],
+          "expected_entity_fields": [
+            "user",
+            "device",
+            "file",
+            "email_like_metadata"
+          ],
+          "volume_notes": "metadata-only estimate; raw volume and sampling must be verified after approval"
+        },
+        "normalization_contract": {
+          "target_schemas": [
+            "normalized_alert",
+            "evidence_package"
+          ],
+          "required_mappings": [
+            "timestamp",
+            "tenant_id",
+            "entity_context",
+            "evidence_items",
+            "citation_or_source_ref"
+          ],
+          "unsupported_fields_handling": "record as missing evidence or adapter limitation; never infer unsupported facts"
+        },
+        "evaluation_use": {
+          "primary_metrics": [
+            "uncertainty_statement_coverage",
+            "policy_context_coverage",
+            "human_review_acceptance"
+          ],
+          "excluded_uses": [
+            "employee_accusation",
+            "disciplinary_recommendation",
+            "autonomous_response"
+          ]
+        }
+      }
     }
   ]
 }

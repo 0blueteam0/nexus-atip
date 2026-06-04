@@ -135,6 +135,57 @@ class DatasetRegistry:
             fp.write("\n")
         return plan
 
+    def build_source_metadata_spec_report(self) -> dict[str, Any]:
+        """Build public dataset metadata spec v2 report for access and adapter planning."""
+        public_sources = [source for source in self.list_sources() if source["source_type"] == "public"]
+        report_sources = [self._source_to_metadata_spec_item(source) for source in public_sources]
+        high_or_medium = [
+            item for item in report_sources if item["access_gate"]["pii_or_sensitive_risk"] in {"medium", "high"}
+        ]
+        return {
+            "schema_version": "2.0",
+            "generated_at": utc_now(),
+            "manifest_id": self.manifest["manifest_id"],
+            "manifest_path": str(self.manifest_path),
+            "execution_mode": "metadata_only_no_download",
+            "summary": {
+                "public_sources": len(public_sources),
+                "download_requires_approval": sum(
+                    1 for item in report_sources if item["access_gate"]["download_requires_approval"]
+                ),
+                "license_review_required": sum(
+                    1 for item in report_sources if item["access_gate"]["license_review_required"]
+                ),
+                "high_or_medium_risk_sources": len(high_or_medium),
+            },
+            "sources": report_sources,
+        }
+
+    def write_source_metadata_spec_report(self, out_path: Path) -> dict[str, Any]:
+        """Write public dataset metadata spec v2 report to JSON and return it."""
+        report = self.build_source_metadata_spec_report()
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("w", encoding="utf-8") as fp:
+            json.dump(report, fp, ensure_ascii=False, indent=2)
+            fp.write("\n")
+        return report
+
+    @staticmethod
+    def _source_to_metadata_spec_item(source: dict[str, Any]) -> dict[str, Any]:
+        metadata_spec = source["metadata_spec"]
+        return {
+            "source_id": source["source_id"],
+            "display_name": source["display_name"],
+            "source_url": metadata_spec["source_url"],
+            "reference_urls": metadata_spec["reference_urls"],
+            "access_gate": metadata_spec["access_review"],
+            "raw_data_profile": metadata_spec["raw_data_profile"],
+            "normalization_contract": metadata_spec["normalization_contract"],
+            "evaluation_use": metadata_spec["evaluation_use"],
+            "candidate_tasks": source["candidate_tasks"],
+            "limitations": source["limitations"],
+        }
+
     @staticmethod
     def _source_to_plan_item(source: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -161,9 +212,21 @@ def main() -> int:
     registry = DatasetRegistry()
     replay_out_path = ROOT / "reports" / "dataset_replay_plan_v0.json"
     case_spec_out_path = ROOT / "reports" / "dataset_case_spec_plan_v0.json"
+    metadata_spec_out_path = ROOT / "reports" / "dataset_source_metadata_spec_v2.json"
     replay_plan = registry.write_replay_plan(replay_out_path)
     case_spec_plan = registry.write_case_spec_plan(case_spec_out_path)
-    print(json.dumps({"replay_plan": replay_plan, "case_spec_plan": case_spec_plan}, ensure_ascii=False, indent=2))
+    metadata_spec_report = registry.write_source_metadata_spec_report(metadata_spec_out_path)
+    print(
+        json.dumps(
+            {
+                "replay_plan": replay_plan,
+                "case_spec_plan": case_spec_plan,
+                "metadata_spec_report": metadata_spec_report,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
     return 0
 
 

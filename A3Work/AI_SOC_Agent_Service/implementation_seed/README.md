@@ -21,6 +21,9 @@
 - `reports/dataset_case_spec_plan_v0.json`: public dataset adapter 구현 전 metadata-only case spec plan
 - `reports/replay_metrics_v1.json`: dataset plan 포함 Replay Runner 결과 리포트
 - `reports/doc_addendum_generator_v0.stdout.json`: 14/20 보강 문서 생성 결과
+- `reports/dataset_source_metadata_spec_v2.json`: 공개데이터셋 metadata spec #2 리포트(access/raw/normalization/evaluation contract)
+- `reports/execution_plan2_summary.json`: AI 보안관제 에이전트 실행계획 #2 생성 요약
+- `scripts/execution_plan2_generator.py`: 실행계획 #2 markdown+docx 생성기
 - `EVALUATION_PROTOCOL.md`: 평가 프로토콜 v0.1
 
 ## 실행
@@ -33,6 +36,7 @@ python implementation_seed/scripts/replay_runner.py --fixtures implementation_se
 python implementation_seed/scripts/dataset_registry.py
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --dataset-manifest implementation_seed/datasets/dataset_manifest.json --out implementation_seed/reports/replay_metrics_v1.json
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
+python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
 ```
 
 ## 원칙

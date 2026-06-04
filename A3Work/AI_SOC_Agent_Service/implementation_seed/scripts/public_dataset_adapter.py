@@ -23,12 +23,16 @@ class PublicDatasetAdapter:
         return [self._template_to_spec(template) for template in self.source["case_templates"]]
 
     def _template_to_spec(self, template: dict[str, Any]) -> dict[str, Any]:
+        metadata_spec = self.source["metadata_spec"]
         return {
             "source_id": self.source["source_id"],
             "adapter": self.source["adapter"],
             "adapter_mode": "metadata_stub",
             "requires_manual_ingestion": True,
             "download_allowed": self.source["download_allowed"],
+            "metadata_spec_version": metadata_spec["spec_version"],
+            "access_gate": metadata_spec["access_review"],
+            "normalization_contract": metadata_spec["normalization_contract"],
             "template_id": template["template_id"],
             "scenario": template["scenario"],
             "expected_evidence": template["expected_evidence"],
