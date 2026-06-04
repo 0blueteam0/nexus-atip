@@ -1,0 +1,87 @@
+{
+  "out_path": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\otrf_adapter_contract_v1.json",
+  "contract": {
+    "schema_version": "1.0",
+    "contract_id": "otrf_adapter_contract_v1",
+    "generated_at": "2026-06-04T04:37:12Z",
+    "source_id": "otrf-security-datasets",
+    "display_name": "OTRF Security Datasets",
+    "execution_mode": "contract_only_no_download",
+    "download_allowed": false,
+    "approval_gates": {
+      "download_requires_approval": true,
+      "license_review_required": true,
+      "redistribution_review_required": true,
+      "pii_or_sensitive_risk": "medium"
+    },
+    "source_url": "https://github.com/OTRF/Security-Datasets",
+    "reference_urls": [
+      "https://github.com/OTRF/Security-Datasets"
+    ],
+    "target_schemas": [
+      "normalized_alert",
+      "evidence_package"
+    ],
+    "field_mapping_contract": {
+      "candidate_time_fields": [
+        "TimeCreated",
+        "UtcTime",
+        "EventTime"
+      ],
+      "candidate_entity_fields": [
+        "user",
+        "host",
+        "process",
+        "process_guid"
+      ],
+      "required_mappings": [
+        "timestamp",
+        "tenant_id",
+        "entity_context",
+        "evidence_items",
+        "citation_or_source_ref"
+      ],
+      "citation_requirement": "every normalized evidence item must preserve source_ref or citation_id"
+    },
+    "case_contracts": [
+      {
+        "template_id": "otrf-windows-attack-emulation",
+        "scenario": "Windows attack emulation logs converted into evidence packages for timeline and MITRE mapping.",
+        "expected_evidence": [
+          "windows_event_log",
+          "process_tree",
+          "account_context"
+        ],
+        "expected_guardrails": [
+          "citation_required",
+          "no_unverified_conclusion"
+        ],
+        "candidate_tasks": [
+          "attack_timeline_reconstruction",
+          "evidence_retrieval",
+          "mitre_mapping"
+        ],
+        "mapping_status": "not_implemented_contract_only"
+      }
+    ],
+    "unsupported_fields_policy": "record_as_missing_evidence_or_adapter_limitation",
+    "evaluation_metrics": [
+      "timeline_completeness",
+      "mitre_mapping_coverage",
+      "citation_coverage"
+    ],
+    "excluded_uses": [
+      "malware_attribution",
+      "autonomous_response"
+    ],
+    "safety_invariants": [
+      "no_raw_dataset_access",
+      "no_download_without_explicit_approval",
+      "no_license_bypass",
+      "no_pii_or_sensitive_data_commit",
+      "no_autonomous_response",
+      "human_review_before_operational_use"
+    ],
+    "next_implementation_step": "write parser interface tests against tiny local fixtures before approved dataset access"
+  }
+}

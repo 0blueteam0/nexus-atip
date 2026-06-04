@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "graph_id": "ai_soc_investigation_langgraph_seed_v1",
+  "runtime_target": "langgraph_stategraph_compatible",
+  "requires_langgraph_install_for_seed_tests": false,
+  "state_contract": {
+    "input_fields": [
+      "evidence_package",
+      "visited_nodes"
+    ],
+    "required_output_fields": [
+      "case_id",
+      "timeline_event_count",
+      "human_review_required",
+      "automation_allowed",
+      "response_action",
+      "review_brief"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "ingest_evidence_package",
+      "role": "input_normalizer",
+      "description": "Load case, alert, tenant, and existing reason code fields from an Evidence Package."
+    },
+    {
+      "id": "validate_evidence_contract",
+      "role": "contract_gate",
+      "description": "Check required Evidence Package sections before investigation proceeds."
+    },
+    {
+      "id": "investigate_timeline",
+      "role": "timeline_investigator",
+      "description": "Summarize timeline coverage without inventing missing events."
+    },
+    {
+      "id": "map_mitre_context",
+      "role": "context_mapper",
+      "description": "Derive conservative MITRE context hints from reason codes and evidence types."
+    },
+    {
+      "id": "assess_guardrails",
+      "role": "safety_gate",
+      "description": "Enforce human review and no autonomous response."
+    },
+    {
+      "id": "draft_human_review_brief",
+      "role": "analyst_brief_writer",
+      "description": "Draft a bounded human-review brief with citations and missing-evidence notes."
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "ingest_evidence_package",
+      "condition": "evidence_package_present"
+    },
+    {
+      "from": "ingest_evidence_package",
+      "to": "validate_evidence_contract",
+      "condition": "always"
+    },
+    {
+      "from": "validate_evidence_contract",
+      "to": "investigate_timeline",
+      "condition": "contract_checked"
+    },
+    {
+      "from": "investigate_timeline",
+      "to": "map_mitre_context",
+      "condition": "timeline_summarized"
+    },
+    {
+      "from": "map_mitre_context",
+      "to": "assess_guardrails",
+      "condition": "context_mapped"
+    },
+    {
+      "from": "assess_guardrails",
+      "to": "draft_human_review_brief",
+      "condition": "always_requires_human_review"
+    },
+    {
+      "from": "draft_human_review_brief",
+      "to": "END",
+      "condition": "brief_ready"
+    }
+  ],
+  "safety_invariants": [
+    "no_autonomous_response",
+    "no_production_soc_connection",
+    "no_cross_tenant_context_expansion",
+    "citation_required_for_case_claims",
+    "missing_evidence_must_remain_missing",
+    "human_review_required"
+  ]
+}

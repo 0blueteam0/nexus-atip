@@ -24,12 +24,19 @@
 - `reports/dataset_source_metadata_spec_v2.json`: 공개데이터셋 metadata spec #2 리포트(access/raw/normalization/evaluation contract)
 - `reports/execution_plan2_summary.json`: AI 보안관제 에이전트 실행계획 #2 생성 요약
 - `scripts/execution_plan2_generator.py`: 실행계획 #2 markdown+docx 생성기
+- `scripts/otrf_contract_builder.py`: OTRF adapter 구현 전 contract-only report 생성기(no download)
+- `scripts/langgraph_agent_composition.py`: LangGraph 기반 AI SOC investigation agent graph seed
+- `reports/otrf_adapter_contract_v1.json`: OTRF Security Datasets raw 접근 전 adapter contract report
+- `reports/langgraph_agent_composition_v1.json`: LangGraph-compatible node/edge/state/safety spec
+- `reports/langgraph_seed_run_v1.json`: local Evidence Package fixture로 실행한 LangGraph seed 결과
 - `EVALUATION_PROTOCOL.md`: 평가 프로토콜 v0.1
 
 ## 실행
 
 ```bash
 cd J:/PortableApps/genai/A3Work/AI_SOC_Agent_Service
+python -m ensurepip --upgrade
+python -m pip install langgraph
 python -m unittest discover -s implementation_seed/tests -v
 python implementation_seed/scripts/synthetic_alert_generator.py --out implementation_seed/fixtures --seed 42
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --out implementation_seed/reports/replay_metrics_v0.json
@@ -37,6 +44,8 @@ python implementation_seed/scripts/dataset_registry.py
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --dataset-manifest implementation_seed/datasets/dataset_manifest.json --out implementation_seed/reports/replay_metrics_v1.json
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
 python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
+python implementation_seed/scripts/otrf_contract_builder.py > implementation_seed/reports/otrf_contract_builder.stdout.json
+python implementation_seed/scripts/langgraph_agent_composition.py > implementation_seed/reports/langgraph_agent_composition.stdout.json
 ```
 
 ## 원칙

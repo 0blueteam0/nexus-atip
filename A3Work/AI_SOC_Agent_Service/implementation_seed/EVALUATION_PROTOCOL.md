@@ -33,12 +33,16 @@ PoC/MVP의 목표는 자동 대응 성공률이 아니라 Evidence Package 품�
 - `scripts/public_dataset_adapter.py`
 - `scripts/doc_addendum_generator.py`
 - `scripts/execution_plan2_generator.py`
+- `scripts/otrf_contract_builder.py`
+- `scripts/langgraph_agent_composition.py`
 - `scripts/replay_runner.py`
 - `tests/test_synthetic_alert_generator.py`
 - `tests/test_replay_runner.py`
 - `tests/test_dataset_registry.py`
 - `tests/test_dataset_metadata_spec_v2.py`
 - `tests/test_execution_plan2_generator.py`
+- `tests/test_otrf_contract_builder.py`
+- `tests/test_langgraph_agent_composition.py`
 - `fixtures/*.json`
 - `reports/replay_metrics_v0.json`
 - `reports/dataset_replay_plan_v0.json`
@@ -74,6 +78,8 @@ PoC/MVP의 목표는 자동 대응 성공률이 아니라 Evidence Package 품�
 
 ```bash
 cd J:/PortableApps/genai/A3Work/AI_SOC_Agent_Service
+python -m ensurepip --upgrade
+python -m pip install langgraph
 python -m unittest discover -s implementation_seed/tests -v
 python implementation_seed/scripts/synthetic_alert_generator.py --out implementation_seed/fixtures --seed 42
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --out implementation_seed/reports/replay_metrics_v0.json
@@ -81,6 +87,8 @@ python implementation_seed/scripts/dataset_registry.py
 python implementation_seed/scripts/replay_runner.py --fixtures implementation_seed/fixtures --dataset-manifest implementation_seed/datasets/dataset_manifest.json --out implementation_seed/reports/replay_metrics_v1.json
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
 python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
+python implementation_seed/scripts/otrf_contract_builder.py > implementation_seed/reports/otrf_contract_builder.stdout.json
+python implementation_seed/scripts/langgraph_agent_composition.py > implementation_seed/reports/langgraph_agent_composition.stdout.json
 ```
 
 `dataset_registry.py`는 다음 세 리포트를 함께 생성한다.
@@ -107,6 +115,28 @@ python implementation_seed/scripts/execution_plan2_generator.py > implementation
 - 공개데이터셋 adapter는 `metadata_stub`만 생성한다.
 - 실제 다운로드/크롤링/원시 로그 파싱은 명시 승인과 라이선스 검토 이후 별도 adapter로 구현한다.
 - ML score는 verdict가 아니라 evidence signal로만 사용한다.
+
+## 6.2 OTRF contract + LangGraph agent composition seed
+
+이번 단계는 OTRF Security Datasets를 실제 다운로드하지 않고, raw adapter 구현 전 검토 가능한 contract와 LangGraph 기반 조사 에이전트 seed를 추가한다.
+
+OTRF contract 원칙:
+- `execution_mode=contract_only_no_download`를 유지한다.
+- `download_requires_approval`, `license_review_required`, `redistribution_review_required` gate를 보존한다.
+- 시간 필드 후보(`TimeCreated`, `UtcTime`, `EventTime`)와 엔티티 필드 후보(`user`, `host`, `process`, `process_guid`)를 adapter contract로 고정한다.
+- unsupported field는 추론하지 않고 `missing evidence` 또는 `adapter limitation`으로 남긴다.
+
+LangGraph seed 원칙:
+- 실제 `langgraph.graph.StateGraph`를 compile/invoke한다.
+- 입력은 이미 생성된 Evidence Package fixture로 제한한다.
+- 노드 흐름은 `ingest_evidence_package -> validate_evidence_contract -> investigate_timeline -> map_mitre_context -> assess_guardrails -> draft_human_review_brief`이다.
+- 출력은 human-review brief와 safety state이며, `response_action=none`, `automation_allowed=false`를 강제한다.
+- 운영 SOC/SIEM/EDR/SOAR/IAM/CMDB connector를 호출하지 않는다.
+
+생성 리포트:
+- `reports/otrf_adapter_contract_v1.json`
+- `reports/langgraph_agent_composition_v1.json`
+- `reports/langgraph_seed_run_v1.json`
 
 ## 7. Go/Hold/No-Go 초안
 

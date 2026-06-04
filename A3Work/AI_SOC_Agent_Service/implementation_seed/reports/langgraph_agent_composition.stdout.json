@@ -1,0 +1,50 @@
+{
+  "spec_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\langgraph_agent_composition_v1.json",
+  "run_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\langgraph_seed_run_v1.json",
+  "result": {
+    "graph_id": "ai_soc_investigation_langgraph_seed_v1",
+    "case_id": "CASE-770487",
+    "visited_nodes": [
+      "ingest_evidence_package",
+      "validate_evidence_contract",
+      "investigate_timeline",
+      "map_mitre_context",
+      "assess_guardrails",
+      "draft_human_review_brief"
+    ],
+    "final_state": {
+      "contract_valid": true,
+      "timeline_event_count": 5,
+      "reason_codes": [
+        "alert_family:login_anomaly",
+        "severity:high",
+        "privileged_account"
+      ],
+      "human_review_required": true,
+      "automation_allowed": false,
+      "response_action": "none",
+      "review_brief": {
+        "case_id": "CASE-770487",
+        "alert_id": "ALT-770487",
+        "tenant_id": "tenant-alpha",
+        "contract_valid": true,
+        "contract_errors": [],
+        "timeline_summary": "5 timeline events supplied from alert_created to evidence_collected.",
+        "mitre_context": [
+          "Credential Access or Privilege Escalation review recommended",
+          "Initial Access / Valid Accounts review recommended"
+        ],
+        "collected_evidence_count": 4,
+        "missing_evidence_count": 0,
+        "citation_ids": [
+          "ev-001",
+          "ev-002",
+          "ev-003",
+          "ev-004"
+        ],
+        "recommended_next_step": "human_analyst_review",
+        "response_action": "none"
+      }
+    }
+  }
+}
