@@ -1,25 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T03:56:21.735Z",
+  "updatedAt": "2026-06-04T07:44:13.676Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-04T03-56-21-538Z-codex-to-claude-system-ai-soc-agent-service",
+      "id": "2026-06-04T07-44-13-469Z-codex-to-claude-system-insurance-fds-camera-image-data",
       "from": "codex",
       "to": "claude",
-      "title": "AI_SOC_Agent_Service",
+      "title": "insurance-fds-camera-image-data",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T03-56-21-538Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T07-44-13-469Z-codex-to-claude-system-insurance-fds-camera-image-data.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-04T03:56:21.538Z",
-      "paths": [
-        "A3Work/AI_SOC_Agent_Service/implementation_seed/datasets/dataset_manifest.json,A3Work/AI_SOC_Agent_Service/implementation_seed/schemas/dataset_manifest.schema.json,A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/dataset_registry.py,A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/public_dataset_adapter.py,A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/execution_plan2_generator.py,A3Work/AI_SOC_Agent_Service/implementation_seed/reports/dataset_source_metadata_spec_v2.json,A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_24_AI보안관제_에이전트_실행계획_2.md,A3Work/AI_SOC_Agent_Service/docx/24_AI보안관제_에이전트_실행계획_2.docx"
-      ],
-      "docs": [
-        "A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_24_AI보안관제_에이전트_실행계획_2.md,A3Work/AI_SOC_Agent_Service/docx/24_AI보안관제_에이전트_실행계획_2.docx"
-      ]
+      "createdAt": "2026-06-04T07:44:13.469Z",
+      "paths": [],
+      "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-04T07-44-13-469Z-codex-to-claude-system-insurance-fds-camera-image-data",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-camera-image-data",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T07-44-13-469Z-codex-to-claude-system-insurance-fds-camera-image-data.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T07:44:13.469Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-04T03-56-21-538Z-codex-to-claude-system-ai-soc-agent-service",
       "from": "codex",

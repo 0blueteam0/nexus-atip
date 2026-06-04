@@ -1,10 +1,10 @@
 # codex -> claude 인수인계
 
-- 생성시각: 2026-06-04T03:56:20.893Z
+- 생성시각: 2026-06-04T07:44:12.602Z
 - 보낸 쪽: codex
 - 받는 쪽: claude
 - 프로젝트: K드라이브 Claude Code 통합 프로젝트
-- Git: main @ 0703638
+- Git: main @ fc59462
 
 ## 현재 작업 상태
 
@@ -44,11 +44,11 @@
 
 ## 최근 시스템 산출물 인수인계
 
+- 2026-06-04T03:56:21.538Z AI_SOC_Agent_Service docs=A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_24_AI보안관제_에이전트_실행계획_2.md,A3Work/AI_SOC_Agent_Service/docx/24_AI보안관제_에이전트_실행계획_2.docx
 - 2026-06-04T03:36:16.147Z Hermes Codex Launcher
 - 2026-06-04T01:56:31.489Z SchoolWork
 - 2026-06-04T01:46:30.050Z SchoolWork
 - 2026-06-02T07:24:03.800Z AI_SOC_Agent_Service docs=A3Work/AI_SOC_Agent_Service/docx/14_테스트케이스_보강매트릭스.docx,A3Work/AI_SOC_Agent_Service/docx/20_기술스택_상세설계_보강.docx
-- 2026-06-02T07:16:13.426Z AI_SOC_Agent_Service docs=A3Work/AI_SOC_Agent_Service/docx/23_구현Seed_Replay_데이터셋CaseSpec_상세.docx
 
 ## Resume Context
 

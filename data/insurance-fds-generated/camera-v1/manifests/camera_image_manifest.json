@@ -1,0 +1,1414 @@
+{
+  "generation_seed": 20260604,
+  "items": [
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 78,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0049_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 79,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0049_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "mobile_scan_app",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 74,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 1.1,
+        "perspective": "mobile_scan_app",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0049_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0049_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 91,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0049_V01",
+      "mask_positive_pixel_count": 12936,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 78,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0049_V02",
+      "mask_positive_pixel_count": 12191,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 83,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": true,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0049_V03",
+      "mask_positive_pixel_count": 12908,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0049_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0049.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 77,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0058_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 91,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0058_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 67,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.4,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_CLAIM_FORM_0058_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_CLAIM_FORM_0058_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 72,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0058_V01",
+      "mask_positive_pixel_count": 12881,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 84,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0058_V02",
+      "mask_positive_pixel_count": 13310,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 91,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "claim_form",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_CLAIM_FORM_0058_V03",
+      "mask_positive_pixel_count": 13555,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_CLAIM_FORM_0058_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_CLAIM_FORM_0058.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 90,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 68,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 67,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 68,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01",
+      "mask_positive_pixel_count": 13684,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 91,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02",
+      "mask_positive_pixel_count": 13168,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 65,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03",
+      "mask_positive_pixel_count": 11905,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0017_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0017.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 62,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 74,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 84,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 90,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01",
+      "mask_positive_pixel_count": 14124,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 67,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02",
+      "mask_positive_pixel_count": 13281,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 85,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 1.1,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_detail_statement",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03",
+      "mask_positive_pixel_count": 13216,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_DETAIL_STATEMENT_0026_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_DETAIL_STATEMENT_0026.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 60,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 85,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 86,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 79,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01",
+      "mask_positive_pixel_count": 14996,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 90,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02",
+      "mask_positive_pixel_count": 12022,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 89,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03",
+      "mask_positive_pixel_count": 12854,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0001_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0001.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 92,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 77,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 73,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 83,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01",
+      "mask_positive_pixel_count": 13443,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 64,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02",
+      "mask_positive_pixel_count": 11201,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "low_light_gallery_reupload",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 84,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.7,
+        "perspective": "low_light_gallery_reupload",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": true,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "medical_receipt",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03",
+      "mask_positive_pixel_count": 11645,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_MEDICAL_RECEIPT_0010_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_MEDICAL_RECEIPT_0010.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 58,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0033_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 66,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0033_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 69,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0033_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0033_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 61,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0033_V01",
+      "mask_positive_pixel_count": 12936,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 80,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0033_V02",
+      "mask_positive_pixel_count": 11244,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 83,
+        "illumination": "fluorescent_office",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0033_V03",
+      "mask_positive_pixel_count": 12879,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0033_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0033.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 77,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "paper_texture_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V01.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0042_V01",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mobile_scan_app",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "blue_fabric",
+        "compression_quality": 77,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "bottom_corner_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V02.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0042_V02",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "gray_office_table",
+        "compression_quality": 70,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_clockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V03.png",
+      "item_id": "NO_CAMERA_IMAGE_PRESCRIPTION_0042_V03",
+      "mask_positive_pixel_count": 0,
+      "mask_relative_path": "masks/NO/NO_CAMERA_IMAGE_PRESCRIPTION_0042_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "NO",
+      "source_document_relative_path": "structured/NO/NO_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [],
+      "tamper_mask_policy": "blank_mask_for_normal_sample"
+    },
+    {
+      "camera_profile": "smartphone_topdown",
+      "degradation_recipe": {
+        "background_surface": "clipboard_board",
+        "compression_quality": 64,
+        "illumination": "soft_window_light",
+        "motion_blur_radius": 1.1,
+        "perspective": "smartphone_topdown",
+        "phone_capture_simulation": {
+          "device_class": "flagship_phone",
+          "gallery_reupload": false,
+          "orientation": "portrait"
+        },
+        "scanner_noise": "none",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V01.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0042_V01",
+      "mask_positive_pixel_count": 13746,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V01_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mobile_camera_upload",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 63,
+        "illumination": "scan_app_flattened",
+        "motion_blur_radius": 0.7,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "budget_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "low_iso_noise",
+        "shadow": "left_edge_soft_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V02.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0042_V02",
+      "mask_positive_pixel_count": 11921,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V02_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    },
+    {
+      "camera_profile": "smartphone_oblique",
+      "degradation_recipe": {
+        "background_surface": "warm_wood_desk",
+        "compression_quality": 86,
+        "illumination": "low_light_warm",
+        "motion_blur_radius": 0.4,
+        "perspective": "smartphone_oblique",
+        "phone_capture_simulation": {
+          "device_class": "midrange_phone",
+          "gallery_reupload": false,
+          "orientation": "slight_counterclockwise"
+        },
+        "scanner_noise": "none",
+        "shadow": "minimal_scan_shadow"
+      },
+      "document_type": "prescription",
+      "image_relative_path": "images/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V03.png",
+      "item_id": "AF_CAMERA_IMAGE_PRESCRIPTION_0042_V03",
+      "mask_positive_pixel_count": 13026,
+      "mask_relative_path": "masks/AF/AF_CAMERA_IMAGE_PRESCRIPTION_0042_V03_MASK.png",
+      "pii_status": "synthetic_no_real_pii",
+      "prefix": "AF",
+      "source_document_relative_path": "structured/AF/AF_STRUCTURED_JSON_PRESCRIPTION_0042.json",
+      "submission_channel": "mixed_camera_gallery",
+      "tamper_labels": [
+        "AF_COMPRESSION_REGION_ANOMALY"
+      ],
+      "tamper_mask_policy": "projected_from_structured_forensic_annotations"
+    }
+  ],
+  "manifest_version": "insurance-fds-camera-image-manifest-v1",
+  "source_root": "data/insurance-fds-generated/demo-v1",
+  "summary": {
+    "camera_profiles": [
+      "low_light_gallery_reupload",
+      "mobile_scan_app",
+      "smartphone_oblique",
+      "smartphone_topdown"
+    ],
+    "document_count": 16,
+    "image_count": 48,
+    "prefix_counts": {
+      "AF": 24,
+      "NO": 24
+    },
+    "safety": "all samples are synthetic_no_real_pii and do not contain real hospital identity assets"
+  }
+}
