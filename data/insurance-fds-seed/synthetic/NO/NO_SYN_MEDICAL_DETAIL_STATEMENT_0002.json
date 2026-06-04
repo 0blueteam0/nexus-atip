@@ -1,0 +1,46 @@
+{
+  "dataset_id": "NO_SYN_MEDPKG_0002",
+  "file_name": "NO_SYN_MEDICAL_DETAIL_STATEMENT_0002.json",
+  "prefix": "NO",
+  "source_id": "SYN_MEDICAL_CLAIM_PACKAGE",
+  "document_type": "medical_detail_statement",
+  "label": "normal_synthetic_seed",
+  "pii_status": "synthetic_only",
+  "created_or_collected_at": "2026-06-04T15:52:15.792423+09:00",
+  "issuer_fake_id": "FAKE-HOSP-001",
+  "patient_fake_id": "FAKE-PAT-001",
+  "service_period": {
+    "from": "2026-05-20",
+    "to": "2026-05-20"
+  },
+  "line_items": [
+    {
+      "category": "exam",
+      "code": "FAKE-EDI-XRAY",
+      "name": "X-ray",
+      "benefit_type": "covered",
+      "unit_price": 20000,
+      "quantity": 1,
+      "days": 1,
+      "amount": 20000
+    },
+    {
+      "category": "therapy",
+      "code": "FAKE-NONCOV-PT",
+      "name": "manual therapy seed",
+      "benefit_type": "noncovered",
+      "unit_price": 40000,
+      "quantity": 1,
+      "days": 1,
+      "amount": 40000
+    }
+  ],
+  "line_total": 60000,
+  "receipt_total_ref": 120000,
+  "consistency_checks": {
+    "line_sum_ok": true,
+    "service_period_ok": true
+  },
+  "source_url": "local://synthetic-template",
+  "license_note": "internal synthetic seed"
+}

@@ -1,0 +1,28 @@
+{
+  "dataset_id": "AF_SYN_TAMPER_0001",
+  "file_name": "AF_SYN_MEDICAL_RECEIPT_AMOUNT_MISMATCH_0001.json",
+  "prefix": "AF",
+  "source_id": "SYN_MEDICAL_CLAIM_PACKAGE",
+  "document_type": "medical_receipt",
+  "label": "amount_inconsistency",
+  "pii_status": "synthetic_only",
+  "created_or_collected_at": "2026-06-04T15:52:15.792423+09:00",
+  "issuer_fake_id": "FAKE-HOSP-001",
+  "patient_fake_id": "FAKE-PAT-001",
+  "receipt_no": "R-FDS-20260604-0001-AF",
+  "visit_date": "2026-05-20",
+  "issue_date": "2026-05-20",
+  "covered_amount": 50000,
+  "noncovered_amount": 40000,
+  "patient_share": 190000,
+  "total_amount": 120000,
+  "defensive_label": {
+    "tampered_fields": [
+      "patient_share"
+    ],
+    "expected_rule": "total_amount must reconcile with charge components",
+    "mask_hint": "field_bbox_placeholder_only"
+  },
+  "source_url": "local://synthetic-template",
+  "license_note": "internal synthetic seed; not a real document"
+}

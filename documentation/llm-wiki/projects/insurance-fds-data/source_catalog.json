@@ -1,0 +1,69 @@
+{
+  "created_at": "2026-06-04T15:52:15.792423+09:00",
+  "sources": [
+    {
+      "prefix": "NO",
+      "source_id": "HF_UNIQUEDATA_OCR_RECEIPTS",
+      "url": "https://huggingface.co/datasets/UniqueData/ocr-receipts-text-detection",
+      "type": "normal_receipt_ocr",
+      "license_note": "cc-by-nc-nd-4.0 tag verified via HF API; commercial/legal review required",
+      "fds_value": "영수증 OCR/텍스트 박스/금액 필드 추출 baseline"
+    },
+    {
+      "prefix": "NO",
+      "source_id": "HF_CORD_DERIVATIVES",
+      "url": "https://github.com/clovaai/cord",
+      "type": "normal_receipt_kie",
+      "license_note": "CORD 원천 CC-BY-4.0; 파생 데이터셋별 확인 필요",
+      "fds_value": "정상 영수증 KIE, 항목-합계 정합성 사전학습"
+    },
+    {
+      "prefix": "NO",
+      "source_id": "HF_INVOICES_DONUT",
+      "url": "https://huggingface.co/datasets/katanaml-org/invoices-donut-data-v1",
+      "type": "normal_invoice_ocr",
+      "license_note": "MIT tag verified via HF API",
+      "fds_value": "인보이스/청구서 이미지-JSON 추출 baseline"
+    },
+    {
+      "prefix": "NO",
+      "source_id": "KNIA_SILSON_DOC_STANDARD",
+      "url": "https://consumer.knia.or.kr/m/consumer/insurance-guide/0202.do",
+      "type": "claim_required_documents_standard",
+      "license_note": "공개 안내 페이지; 원문 재배포보다 링크/요약 권장",
+      "fds_value": "실손 청구 패키지 구성, 구간별 필요서류 검증"
+    },
+    {
+      "prefix": "NO",
+      "source_id": "SILSON24",
+      "url": "https://www.silson24.or.kr/claim/web/",
+      "type": "official_claim_digitization_service",
+      "license_note": "보험개발원 운영 공개 서비스; 동적 페이지 세부 텍스트 추가 확인 필요",
+      "fds_value": "전자 전송 대상 서류/채널/무결성 요구사항 아이디어"
+    },
+    {
+      "prefix": "FK",
+      "source_id": "HF_DOCTAMPER",
+      "url": "https://huggingface.co/datasets/Capstone-S21/DocTamper",
+      "type": "document_tamper_detection",
+      "license_note": "Apache-2.0 tag reported by delegated verification; re-verify before download",
+      "fds_value": "문서 변조 영역 탐지/segmentation baseline"
+    },
+    {
+      "prefix": "FK",
+      "source_id": "HF_COPYMOVE",
+      "url": "https://huggingface.co/datasets/TheAnalyzer/CopyMoveForgeryDataset",
+      "type": "copy_move_forgery",
+      "license_note": "MIT tag reported by delegated verification; re-verify before download",
+      "fds_value": "도장/금액/날짜 영역 복제 흔적 탐지"
+    },
+    {
+      "prefix": "AF",
+      "source_id": "SYN_MEDICAL_CLAIM_PACKAGE",
+      "url": "local://data/insurance-fds-seed/synthetic",
+      "type": "synthetic_medical_claim_documents",
+      "license_note": "내부 생성 합성 데이터; 실제 PII/실제 기관명 금지",
+      "fds_value": "실손 의료영수증/세부내역서/처방전 교차정합성 및 변조 라벨 학습"
+    }
+  ]
+}

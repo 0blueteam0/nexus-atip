@@ -1,0 +1,25 @@
+{
+  "dataset_id": "AF_SYN_TAMPER_0002",
+  "file_name": "AF_SYN_CROSSDOC_DATE_VIOLATION_0002.json",
+  "prefix": "AF",
+  "source_id": "SYN_MEDICAL_CLAIM_PACKAGE",
+  "document_type": "claim_package",
+  "label": "date_sequence_violation",
+  "pii_status": "synthetic_only",
+  "created_or_collected_at": "2026-06-04T15:52:15.792423+09:00",
+  "claim_form": {
+    "loss_or_onset_date": "2026-05-22",
+    "claim_date": "2026-05-21"
+  },
+  "medical_receipt": {
+    "visit_date": "2026-05-20",
+    "issue_date": "2026-05-20"
+  },
+  "defensive_label": {
+    "rule": "visit_date precedes claimed onset/loss date",
+    "severity_seed": "medium",
+    "explainability": "교차 문서 날짜 역전"
+  },
+  "source_url": "local://synthetic-template",
+  "license_note": "internal synthetic seed; not a real document"
+}

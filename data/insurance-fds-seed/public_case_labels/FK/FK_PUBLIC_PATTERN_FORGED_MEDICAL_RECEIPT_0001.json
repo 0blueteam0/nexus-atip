@@ -1,0 +1,19 @@
+{
+  "dataset_id": "FK_PUBLIC_PATTERN_0001",
+  "file_name": "FK_PUBLIC_PATTERN_FORGED_MEDICAL_RECEIPT_0001.json",
+  "prefix": "FK",
+  "source_id": "PUBLIC_CASE_PATTERN",
+  "document_type": "case_pattern",
+  "label": "forged_or_altered_receipt_reported_pattern",
+  "pii_status": "no_pii_case_abstraction",
+  "created_or_collected_at": "2026-06-04T15:52:15.792423+09:00",
+  "description_ko": "공개 보도/수사/판례에서 반복적으로 언급되는 방어적 패턴: 진료비 영수증 또는 진단서의 금액·날짜·진단명 변경 의심. 실제 문서나 수행 절차는 저장하지 않음.",
+  "defensive_features": [
+    "amount_formula_error",
+    "issuer_identity_mismatch",
+    "date_sequence_violation",
+    "duplicate_receipt_or_document_no"
+  ],
+  "source_url": "to-be-filled-with-verified-public-case-url",
+  "license_note": "case abstraction only; needs verified citation before production use"
+}

@@ -1,0 +1,28 @@
+{
+  "dataset_id": "NO_SYN_MEDPKG_0001",
+  "file_name": "NO_SYN_MEDICAL_RECEIPT_0001.json",
+  "prefix": "NO",
+  "source_id": "SYN_MEDICAL_CLAIM_PACKAGE",
+  "document_type": "medical_receipt",
+  "label": "normal_synthetic_seed",
+  "pii_status": "synthetic_only",
+  "created_or_collected_at": "2026-06-04T15:52:15.792423+09:00",
+  "issuer_fake_id": "FAKE-HOSP-001",
+  "patient_fake_id": "FAKE-PAT-001",
+  "receipt_no": "R-FDS-20260604-0001",
+  "visit_date": "2026-05-20",
+  "issue_date": "2026-05-20",
+  "department": "orthopedics",
+  "covered_amount": 50000,
+  "noncovered_amount": 40000,
+  "patient_share": 90000,
+  "total_amount": 120000,
+  "payment_method": "card_masked",
+  "consistency_checks": {
+    "amount_formula_ok": true,
+    "date_order_ok": true,
+    "issuer_known_fake": true
+  },
+  "source_url": "local://synthetic-template",
+  "license_note": "internal synthetic seed"
+}

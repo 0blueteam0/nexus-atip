@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.1",
+  "naming_policy": {
+    "NO": "정상 공개/합법 문서 또는 정상 라벨 데이터",
+    "FK": "공개 위조/변조/사기 라벨 또는 실제 공개 사례 기반 라벨. 실제 사기 절차/PII는 제외",
+    "AF": "인공/합성 데이터. 모든 인물/기관/계좌/식별자는 가상값"
+  },
+  "required_common_fields": [
+    "dataset_id",
+    "file_name",
+    "prefix",
+    "source_id",
+    "document_type",
+    "label",
+    "source_url",
+    "license_note",
+    "pii_status",
+    "created_or_collected_at"
+  ],
+  "document_fields": {
+    "medical_receipt": [
+      "issuer_fake_id",
+      "patient_fake_id",
+      "receipt_no",
+      "visit_date",
+      "issue_date",
+      "department",
+      "covered_amount",
+      "noncovered_amount",
+      "patient_share",
+      "total_amount",
+      "payment_method"
+    ],
+    "medical_detail_statement": [
+      "issuer_fake_id",
+      "patient_fake_id",
+      "service_period",
+      "line_items",
+      "line_total",
+      "receipt_total_ref"
+    ],
+    "prescription": [
+      "issuer_fake_id",
+      "patient_fake_id",
+      "prescription_no",
+      "diagnosis_code",
+      "prescribed_at",
+      "drug_lines",
+      "days"
+    ],
+    "claim_form": [
+      "policy_fake_id",
+      "claim_fake_id",
+      "claim_type",
+      "loss_or_onset_date",
+      "claim_amount",
+      "payee_account_token",
+      "signature_present"
+    ]
+  },
+  "tamper_labels": [
+    "none",
+    "amount_inconsistency",
+    "date_sequence_violation",
+    "cross_document_mismatch",
+    "duplicate_receipt_no",
+    "layout_or_font_anomaly",
+    "copy_move_region",
+    "issuer_identity_mismatch"
+  ]
+}
