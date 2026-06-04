@@ -1,0 +1,19 @@
+flowchart TD
+  %% AI SOC offline replay feedback graph: local LLM first, demo OAuth fallback contract only
+  START --> load_replay_inputs
+  %% condition: START -> load_replay_inputs: artifacts present
+  load_replay_inputs --> evaluate_replay_quality
+  %% condition: load_replay_inputs -> evaluate_replay_quality: inputs loaded
+  evaluate_replay_quality --> evaluate_graph_assurance
+  %% condition: evaluate_replay_quality -> evaluate_graph_assurance: quality summarized
+  evaluate_graph_assurance --> select_llm_backend_policy
+  %% condition: evaluate_graph_assurance -> select_llm_backend_policy: assurance summarized
+  select_llm_backend_policy --> rank_next_module_improvements
+  %% condition: select_llm_backend_policy -> rank_next_module_improvements: llm policy declared
+  rank_next_module_improvements --> END
+  %% condition: rank_next_module_improvements -> END: feedback ready
+  classDef llm fill:#302b1d,stroke:#ffd43b,color:#ffffff,stroke-width:2px
+  classDef safety fill:#3b1d1d,stroke:#ff6b6b,color:#ffffff,stroke-width:2px
+  class select_llm_backend_policy llm
+  class rank_next_module_improvements safety
+  %% invariant: no live LLM call; no SOC connector; response_action=none

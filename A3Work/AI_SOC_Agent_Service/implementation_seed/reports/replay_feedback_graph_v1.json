@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "graph_id": "ai_soc_replay_feedback_langgraph_seed_v1",
+  "runtime_target": "langgraph_stategraph_compatible",
+  "module_id": "replay_evaluation_agent",
+  "state_contract": {
+    "input_fields": [
+      "replay_metrics",
+      "langgraph_run",
+      "module_catalog",
+      "visited_nodes"
+    ],
+    "required_output_fields": [
+      "go_decision",
+      "module_improvement_ranking",
+      "llm_backend_contract",
+      "safety_summary"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "load_replay_inputs",
+      "role": "offline_input_loader",
+      "module_id": "replay_evaluation_agent",
+      "description": "Load replay metrics, LangGraph run assurance, and module catalog artifacts."
+    },
+    {
+      "id": "evaluate_replay_quality",
+      "role": "quality_gate_evaluator",
+      "module_id": "replay_evaluation_agent",
+      "description": "Summarize replay quality metrics and current go/hold/no-go decision."
+    },
+    {
+      "id": "evaluate_graph_assurance",
+      "role": "graph_assurance_evaluator",
+      "module_id": "replay_evaluation_agent",
+      "description": "Check LangGraph path and module ownership assurance from the run report."
+    },
+    {
+      "id": "select_llm_backend_policy",
+      "role": "llm_backend_policy_gate",
+      "module_id": "replay_evaluation_agent",
+      "description": "Declare local LLM first policy and demo OAuth fallback contract without live LLM calls."
+    },
+    {
+      "id": "rank_next_module_improvements",
+      "role": "next_seed_planner",
+      "module_id": "replay_evaluation_agent",
+      "description": "Rank module improvement candidates for the next foreground seed increment."
+    }
+  ],
+  "edges": [
+    {
+      "from": "START",
+      "to": "load_replay_inputs",
+      "condition": "artifacts_present"
+    },
+    {
+      "from": "load_replay_inputs",
+      "to": "evaluate_replay_quality",
+      "condition": "inputs_loaded"
+    },
+    {
+      "from": "evaluate_replay_quality",
+      "to": "evaluate_graph_assurance",
+      "condition": "quality_summarized"
+    },
+    {
+      "from": "evaluate_graph_assurance",
+      "to": "select_llm_backend_policy",
+      "condition": "assurance_summarized"
+    },
+    {
+      "from": "select_llm_backend_policy",
+      "to": "rank_next_module_improvements",
+      "condition": "llm_policy_declared"
+    },
+    {
+      "from": "rank_next_module_improvements",
+      "to": "END",
+      "condition": "feedback_ready"
+    }
+  ],
+  "safety_invariants": [
+    "no_autonomous_response",
+    "no_soc_connector_call",
+    "no_live_llm_call_in_default_tests",
+    "local_llm_first_demo_oauth_fallback_allowed",
+    "demo_oauth_fallback_requires_redacted_or_synthetic_inputs",
+    "human_review_required_before_next_seed_expansion"
+  ]
+}

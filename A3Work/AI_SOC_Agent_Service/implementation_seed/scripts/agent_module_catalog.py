@@ -112,8 +112,12 @@ def build_agent_module_catalog() -> dict[str, Any]:
             'inputs': ['fixtures', 'dataset_manifest', 'langgraph_run_reports'],
             'outputs': ['metrics', 'go_decision', 'assurance_summary'],
             'langgraph_nodes': [],
-            'candidate_backends': ['replay_runner', 'dataset_registry'],
-            'safety_gates': ['tenant_leakage_count_zero', 'unsupported_conclusion_count_zero'],
+            'candidate_backends': ['replay_runner', 'dataset_registry', 'offline_replay_feedback_langgraph'],
+            'safety_gates': [
+                'tenant_leakage_count_zero',
+                'unsupported_conclusion_count_zero',
+                'local_llm_first_demo_oauth_fallback_contract_only',
+            ],
             'human_review_touchpoint': True,
         },
     ]

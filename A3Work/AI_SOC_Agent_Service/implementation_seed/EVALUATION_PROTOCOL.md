@@ -168,6 +168,24 @@ LangGraph seed 원칙:
 
 `reports/langgraph_agent_composition_v1.mmd`는 JSON spec과 동일한 node/edge 흐름을 Mermaid `flowchart TD`로 내보낸다. 조건은 comment로 보존하고, `validate_evidence_contract`, `assess_guardrails`, `draft_human_review_brief`는 contract/safety/review class로 표시하여 reviewer가 graph 흐름과 안전 gate를 빠르게 확인할 수 있게 한다.
 
+## 6.4 Replay feedback graph + LLM backend 전환 정책
+
+`replay_evaluation_agent`는 이제 별도 offline LangGraph feedback graph로 실행된다. 이 graph는 replay metrics, LangGraph seed run, module catalog를 입력으로 받아 다음 foreground increment의 go/hold/no-go와 module improvement ranking을 만든다.
+
+LLM backend 정책:
+- 운영/온프레미스 목표 backend는 `local_on_prem_llm`이다.
+- 데모 환경에서는 로컬 모델 준비 전까지 `oauth_current_session_model`을 fallback backend로 둘 수 있다.
+- 현재 대화의 GPT-5.5 계열 모델은 demo fallback 후보로만 취급한다.
+- 기본 테스트와 artifact 생성에서는 `selected_for_seed=none_dry_run`이며 live LLM call을 하지 않는다.
+- demo fallback은 redacted/synthetic 입력, human review, no autonomous response, no SOC connector 조건에서만 허용된다.
+- 나중에 온프레미스 local LLM이 준비되면 adapter boundary(`module_backend_contract`) 아래에서 demo OAuth backend를 교체한다.
+
+생성 리포트:
+- `reports/replay_feedback_graph_v1.json`
+- `reports/replay_feedback_graph_v1.mmd`
+- `reports/replay_feedback_report_v1.json`
+- `reports/replay_feedback_graph.stdout.json`
+
 ## 7. Go/Hold/No-Go 초안
 
 Go:

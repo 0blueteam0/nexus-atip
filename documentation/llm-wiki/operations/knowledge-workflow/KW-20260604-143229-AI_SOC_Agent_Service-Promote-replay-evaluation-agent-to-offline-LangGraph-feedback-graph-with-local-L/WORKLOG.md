@@ -1,0 +1,21 @@
+# Worklog
+
+- Started knowledge workflow session for replay feedback LangGraph work.
+- Loaded TDD and systematic debugging skills.
+- Wrote failing test first for `replay_feedback_graph` import/API expectations.
+- Verified RED with `ModuleNotFoundError: No module named 'replay_feedback_graph'`.
+- Implemented offline LangGraph StateGraph with nodes:
+  - `load_replay_inputs`
+  - `evaluate_replay_quality`
+  - `evaluate_graph_assurance`
+  - `select_llm_backend_policy`
+  - `rank_next_module_improvements`
+- Added local-first LLM backend contract:
+  - default backend: `local_on_prem_llm`
+  - demo fallback backend: `oauth_current_session_model`
+  - candidate demo model: `gpt-5.5`
+  - selected_for_seed: `none_dry_run`
+- Generated JSON/Mermaid/report artifacts.
+- Updated README and EVALUATION_PROTOCOL.
+- User clarified future development style: many multi-agent LangGraph workflows incrementally, with detailed Korean comments for code. Saved this as durable user preference and applied detailed Korean comments to the new workflow code.
+- Re-ran targeted syntax/tests/artifact generation after comment updates.

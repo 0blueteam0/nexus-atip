@@ -1,0 +1,117 @@
+{
+  "spec_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\replay_feedback_graph_v1.json",
+  "mermaid_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\replay_feedback_graph_v1.mmd",
+  "report_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\replay_feedback_report_v1.json",
+  "result": {
+    "schema_version": "1.0",
+    "graph_id": "ai_soc_replay_feedback_langgraph_seed_v1",
+    "visited_nodes": [
+      "load_replay_inputs",
+      "evaluate_replay_quality",
+      "evaluate_graph_assurance",
+      "select_llm_backend_policy",
+      "rank_next_module_improvements"
+    ],
+    "go_decision": {
+      "decision": "go_for_next_seed",
+      "reasons": [
+        "all_seed_quality_gates_passed"
+      ]
+    },
+    "replay_quality": {
+      "total_cases": 4,
+      "tenant_leakage_count": 0,
+      "unsupported_conclusion_count": 0,
+      "metrics": {
+        "evidence_package_success_rate": 1.0,
+        "average_evidence_completeness": 0.9375,
+        "missing_reason_coverage": 1.0,
+        "prompt_injection_quarantine_rate": 1.0,
+        "policy_block_rate_for_cross_tenant": 1.0
+      }
+    },
+    "graph_assurance_summary": {
+      "visited_path_matches_spec": true,
+      "all_langgraph_nodes_have_module_owner": true,
+      "missing_required_nodes": [],
+      "missing_module_owner": []
+    },
+    "llm_backend_contract": {
+      "schema_version": "1.0",
+      "default_backend": "local_on_prem_llm",
+      "demo_fallback_backend": "oauth_current_session_model",
+      "demo_fallback_models": [
+        "gpt-5.5",
+        "current_hermes_oauth_model"
+      ],
+      "selected_for_seed": "none_dry_run",
+      "execution_mode": "contract_only_no_live_call_by_default",
+      "allowed_demo_use": [
+        "non-production analyst brief style rehearsal",
+        "offline replay feedback wording draft",
+        "module improvement ideation from redacted deterministic reports"
+      ],
+      "forbidden_demo_use": [
+        "production SOC decisioning",
+        "tenant-sensitive raw log upload",
+        "autonomous response action recommendation",
+        "training or fine-tuning on customer data without approval"
+      ],
+      "demo_fallback_constraints": [
+        "redacted_or_synthetic_inputs_only",
+        "no_training_data_retention_assumption",
+        "human_review_required",
+        "no_live_call_in_default_tests",
+        "local_llm_replacement_required_before_on_prem_production"
+      ],
+      "replacement_plan": {
+        "local_llm_replaces_demo_oauth": true,
+        "target_environment": "on_premise_local_model",
+        "adapter_boundary": "module_backend_contract",
+        "expected_local_backends": [
+          "ollama_openai_compatible",
+          "vllm_openai_compatible",
+          "llama_cpp_server"
+        ]
+      }
+    },
+    "module_improvement_ranking": [
+      {
+        "module_id": "replay_evaluation_agent",
+        "priority": 1,
+        "reason": "Promote offline go/hold/no-go feedback into a first-class graph before adding live model backends.",
+        "current_signal": "go_for_next_seed",
+        "next_action": "consume replay and LangGraph run reports to recommend next module backend expansion"
+      },
+      {
+        "module_id": "analyst_brief_agent",
+        "priority": 2,
+        "reason": "LLM-assisted drafting can be demoed after citation gates, but local LLM must be the production target.",
+        "current_signal": "template_renderer_only",
+        "next_action": "add redacted prompt contract and deterministic fixture-based output checks"
+      },
+      {
+        "module_id": "timeline_investigation_agent",
+        "priority": 3,
+        "reason": "Timeline quality directly affects analyst brief usefulness and replay scoring.",
+        "current_signal": "evidence_completeness=0.9375",
+        "next_action": "add richer temporal assertions before any LLM summarizer backend"
+      },
+      {
+        "module_id": "mitre_context_agent",
+        "priority": 4,
+        "reason": "Context mapping is bounded today; later retrieval must remain citation-gated.",
+        "current_signal": "path_assurance=True",
+        "next_action": "expand reason-code mapping and prepare retrieval contract"
+      }
+    ],
+    "safety_summary": {
+      "response_action": "none",
+      "live_llm_called": false,
+      "soc_connector_called": false,
+      "human_review_required": true,
+      "local_llm_is_production_target": true,
+      "demo_oauth_model_allowed_for_redacted_demo_only": true
+    }
+  }
+}
