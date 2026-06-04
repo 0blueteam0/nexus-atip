@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T01:56:31.883Z",
+  "updatedAt": "2026-06-04T03:36:16.321Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-04T01-56-31-489Z-codex-to-claude-system-schoolwork",
+      "id": "2026-06-04T03-36-16-147Z-codex-to-claude-system-hermes-codex-launcher",
       "from": "codex",
       "to": "claude",
-      "title": "SchoolWork",
+      "title": "Hermes Codex Launcher",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T01-56-31-489Z-codex-to-claude-system-schoolwork.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T03-36-16-147Z-codex-to-claude-system-hermes-codex-launcher.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-04T01:56:31.489Z",
+      "createdAt": "2026-06-04T03:36:16.147Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-04T03-36-16-147Z-codex-to-claude-system-hermes-codex-launcher",
+      "from": "codex",
+      "to": "claude",
+      "title": "Hermes Codex Launcher",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T03-36-16-147Z-codex-to-claude-system-hermes-codex-launcher.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T03:36:16.147Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-04T01-56-31-489Z-codex-to-claude-system-schoolwork",
       "from": "codex",
