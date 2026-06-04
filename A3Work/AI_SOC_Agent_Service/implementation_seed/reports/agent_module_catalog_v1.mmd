@@ -1,0 +1,26 @@
+flowchart TD
+  %% AI SOC agent module catalog: connector-free seed, human review required
+  START --> evidence_intake_agent
+  %% condition: START -> evidence_intake_agent: evidence package present
+  evidence_intake_agent --> evidence_contract_agent
+  %% condition: evidence_intake_agent -> evidence_contract_agent: state normalized
+  evidence_contract_agent --> timeline_investigation_agent
+  %% condition: evidence_contract_agent -> timeline_investigation_agent: contract checked
+  timeline_investigation_agent --> mitre_context_agent
+  %% condition: timeline_investigation_agent -> mitre_context_agent: timeline summarized
+  mitre_context_agent --> policy_guardrail_agent
+  %% condition: mitre_context_agent -> policy_guardrail_agent: context mapped
+  policy_guardrail_agent --> analyst_brief_agent
+  %% condition: policy_guardrail_agent -> analyst_brief_agent: human review required
+  analyst_brief_agent --> replay_evaluation_agent
+  %% condition: analyst_brief_agent -> replay_evaluation_agent: brief ready for offline replay
+  replay_evaluation_agent --> END
+  %% condition: replay_evaluation_agent -> END: go hold no go recorded
+  classDef safety fill:#3b1d1d,stroke:#ff6b6b,color:#ffffff,stroke-width:2px
+  classDef review fill:#1d2b3b,stroke:#74c0fc,color:#ffffff,stroke-width:2px
+  classDef evaluation fill:#1d3b2a,stroke:#63e6be,color:#ffffff,stroke-width:2px
+  class policy_guardrail_agent safety
+  class analyst_brief_agent review
+  class replay_evaluation_agent review
+  class replay_evaluation_agent evaluation
+  %% invariant: no autonomous response; analyst brief and replay evaluation before expansion

@@ -14,6 +14,13 @@ from typing import Any, TypedDict
 
 from langgraph.graph import END, StateGraph
 
+from agent_module_catalog import (
+    build_agent_module_catalog,
+    build_module_assurance,
+    write_module_catalog,
+    write_module_mermaid,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 GRAPH_ID = 'ai_soc_investigation_langgraph_seed_v1'
 
@@ -43,11 +50,15 @@ class AgentGraphComposer:
 
     def build_spec(self) -> dict[str, Any]:
         """Return a serializable graph specification for review and documentation."""
+        module_catalog = build_agent_module_catalog()
         return {
             'schema_version': '1.0',
             'graph_id': GRAPH_ID,
             'runtime_target': 'langgraph_stategraph_compatible',
             'requires_langgraph_install_for_seed_tests': False,
+            'module_catalog_id': module_catalog['catalog_id'],
+            'agent_modules': module_catalog['modules'],
+            'module_edges': module_catalog['module_edges'],
             'state_contract': {
                 'input_fields': ['evidence_package', 'visited_nodes'],
                 'required_output_fields': [
@@ -63,31 +74,37 @@ class AgentGraphComposer:
                 {
                     'id': 'ingest_evidence_package',
                     'role': 'input_normalizer',
+                    'module_id': 'evidence_intake_agent',
                     'description': 'Load case, alert, tenant, and existing reason code fields from an Evidence Package.',
                 },
                 {
                     'id': 'validate_evidence_contract',
                     'role': 'contract_gate',
+                    'module_id': 'evidence_contract_agent',
                     'description': 'Check required Evidence Package sections before investigation proceeds.',
                 },
                 {
                     'id': 'investigate_timeline',
                     'role': 'timeline_investigator',
+                    'module_id': 'timeline_investigation_agent',
                     'description': 'Summarize timeline coverage without inventing missing events.',
                 },
                 {
                     'id': 'map_mitre_context',
                     'role': 'context_mapper',
+                    'module_id': 'mitre_context_agent',
                     'description': 'Derive conservative MITRE context hints from reason codes and evidence types.',
                 },
                 {
                     'id': 'assess_guardrails',
                     'role': 'safety_gate',
+                    'module_id': 'policy_guardrail_agent',
                     'description': 'Enforce human review and no autonomous response.',
                 },
                 {
                     'id': 'draft_human_review_brief',
                     'role': 'analyst_brief_writer',
+                    'module_id': 'analyst_brief_agent',
                     'description': 'Draft a bounded human-review brief with citations and missing-evidence notes.',
                 },
             ],
@@ -249,6 +266,7 @@ def build_execution_assurance(visited_nodes: list[str], spec: dict[str, Any] | N
         'declared_node_order': spec_node_ids,
         'unexpected_nodes': [node for node in visited_nodes if node not in required_nodes],
         'missing_required_nodes': [node for node in spec_node_ids if node not in visited_set],
+        'module_assurance': build_module_assurance(graph_spec),
     }
 
 
@@ -325,12 +343,16 @@ def main() -> int:
     parser = argparse.ArgumentParser(description='Build and run AI SOC LangGraph composition seed.')
     parser.add_argument('--spec-out', default=str(ROOT / 'reports' / 'langgraph_agent_composition_v1.json'))
     parser.add_argument('--mermaid-out', default=str(ROOT / 'reports' / 'langgraph_agent_composition_v1.mmd'))
+    parser.add_argument('--module-catalog-out', default=str(ROOT / 'reports' / 'agent_module_catalog_v1.json'))
+    parser.add_argument('--module-mermaid-out', default=str(ROOT / 'reports' / 'agent_module_catalog_v1.mmd'))
     parser.add_argument('--run-fixture', default=str(ROOT / 'fixtures' / 'vpn_login_anomaly_complete.evidence_package.json'))
     parser.add_argument('--run-out', default=str(ROOT / 'reports' / 'langgraph_seed_run_v1.json'))
     args = parser.parse_args()
 
     write_graph_spec(Path(args.spec_out))
     write_mermaid_graph(Path(args.mermaid_out))
+    write_module_catalog(Path(args.module_catalog_out))
+    write_module_mermaid(Path(args.module_mermaid_out))
     result = run_seed_investigation_graph(Path(args.run_fixture))
     run_out = Path(args.run_out)
     run_out.parent.mkdir(parents=True, exist_ok=True)
@@ -339,7 +361,14 @@ def main() -> int:
         fp.write('\n')
     print(
         json.dumps(
-            {'spec_out': args.spec_out, 'mermaid_out': args.mermaid_out, 'run_out': args.run_out, 'result': result},
+            {
+                'spec_out': args.spec_out,
+                'mermaid_out': args.mermaid_out,
+                'module_catalog_out': args.module_catalog_out,
+                'module_mermaid_out': args.module_mermaid_out,
+                'run_out': args.run_out,
+                'result': result,
+            },
             ensure_ascii=False,
             indent=2,
         )
@@ -349,3 +378,4 @@ def main() -> int:
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

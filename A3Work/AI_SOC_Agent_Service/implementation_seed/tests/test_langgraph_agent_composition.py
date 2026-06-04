@@ -42,6 +42,12 @@ class LangGraphAgentCompositionTest(unittest.TestCase):
         )
         self.assertIn('no_autonomous_response', spec['safety_invariants'])
         self.assertIn('human_review_required', spec['state_contract']['required_output_fields'])
+        self.assertEqual(spec['module_catalog_id'], 'ai_soc_agent_module_catalog_v1')
+        node_module_ids = {node['id']: node['module_id'] for node in spec['nodes']}
+        self.assertEqual(node_module_ids['ingest_evidence_package'], 'evidence_intake_agent')
+        self.assertEqual(node_module_ids['assess_guardrails'], 'policy_guardrail_agent')
+        self.assertEqual(node_module_ids['draft_human_review_brief'], 'analyst_brief_agent')
+        self.assertIn('replay_evaluation_agent', {module['id'] for module in spec['agent_modules']})
 
     def test_should_run_seed_investigation_graph_over_fixture_without_actions(self):
         fixture_path = ROOT / 'fixtures' / 'vpn_login_anomaly_complete.evidence_package.json'
@@ -58,6 +64,8 @@ class LangGraphAgentCompositionTest(unittest.TestCase):
         self.assertEqual(result['execution_assurance']['visited_path_matches_spec'], True)
         self.assertEqual(result['execution_assurance']['unexpected_nodes'], [])
         self.assertEqual(result['execution_assurance']['missing_required_nodes'], [])
+        self.assertTrue(result['execution_assurance']['module_assurance']['all_langgraph_nodes_have_module_owner'])
+        self.assertEqual(result['execution_assurance']['module_assurance']['missing_module_owner'], [])
 
     def test_should_compile_and_invoke_actual_langgraph_app(self):
         fixture_path = ROOT / 'fixtures' / 'vpn_login_anomaly_complete.evidence_package.json'

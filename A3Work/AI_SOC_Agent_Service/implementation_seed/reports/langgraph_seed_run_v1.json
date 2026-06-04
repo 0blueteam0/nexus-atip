@@ -20,7 +20,25 @@
       "draft_human_review_brief"
     ],
     "unexpected_nodes": [],
-    "missing_required_nodes": []
+    "missing_required_nodes": [],
+    "module_assurance": {
+      "all_langgraph_nodes_have_module_owner": true,
+      "node_module_map": {
+        "ingest_evidence_package": "evidence_intake_agent",
+        "validate_evidence_contract": "evidence_contract_agent",
+        "investigate_timeline": "timeline_investigation_agent",
+        "map_mitre_context": "mitre_context_agent",
+        "assess_guardrails": "policy_guardrail_agent",
+        "draft_human_review_brief": "analyst_brief_agent"
+      },
+      "missing_module_owner": [],
+      "orphan_non_evaluation_modules": [],
+      "deterministic_required_modules": [
+        "evidence_contract_agent",
+        "policy_guardrail_agent",
+        "replay_evaluation_agent"
+      ]
+    }
   },
   "final_state": {
     "contract_valid": true,

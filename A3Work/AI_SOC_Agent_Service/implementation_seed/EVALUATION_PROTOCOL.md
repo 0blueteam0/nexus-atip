@@ -35,6 +35,7 @@ PoC/MVP의 목표는 자동 대응 성공률이 아니라 Evidence Package 품�
 - `scripts/execution_plan2_generator.py`
 - `scripts/otrf_contract_builder.py`
 - `scripts/langgraph_agent_composition.py`
+- `scripts/agent_module_catalog.py`
 - `scripts/replay_runner.py`
 - `tests/test_synthetic_alert_generator.py`
 - `tests/test_replay_runner.py`
@@ -88,6 +89,7 @@ python implementation_seed/scripts/replay_runner.py --fixtures implementation_se
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
 python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
 python implementation_seed/scripts/otrf_contract_builder.py > implementation_seed/reports/otrf_contract_builder.stdout.json
+python implementation_seed/scripts/agent_module_catalog.py > implementation_seed/reports/agent_module_catalog.stdout.json
 python implementation_seed/scripts/langgraph_agent_composition.py > implementation_seed/reports/langgraph_agent_composition.stdout.json
 ```
 
@@ -116,7 +118,32 @@ python implementation_seed/scripts/langgraph_agent_composition.py > implementati
 - 실제 다운로드/크롤링/원시 로그 파싱은 명시 승인과 라이선스 검토 이후 별도 adapter로 구현한다.
 - ML score는 verdict가 아니라 evidence signal로만 사용한다.
 
-## 6.2 OTRF contract + LangGraph agent composition seed
+## 6.2 Agent module catalog + LangGraph 연결 방향
+
+작은 단위 기능 추가보다 큰 foreground 작업으로 진행할 때는 먼저 에이전트 모듈을 명시하고, 각 모듈을 LangGraph node owner로 연결한다. 현재 seed는 다음 모듈을 고정한다.
+
+| module_id | 역할 | LangGraph node | 현재 실행 방식 |
+|---|---|---|---|
+| evidence_intake_agent | Evidence Package/state intake | ingest_evidence_package | deterministic seed |
+| evidence_contract_agent | 필수 evidence contract gate | validate_evidence_contract | deterministic required |
+| timeline_investigation_agent | timeline count/summary | investigate_timeline | deterministic seed, LLM summarizer later |
+| mitre_context_agent | reason code 기반 ATT&CK review hint | map_mitre_context | bounded mapping |
+| policy_guardrail_agent | human review/no action/tenant guard | assess_guardrails | deterministic required |
+| analyst_brief_agent | citation-aware human review brief | draft_human_review_brief | template seed, LLM drafter later |
+| replay_evaluation_agent | replay metrics와 go/hold/no-go | offline replay feedback | deterministic required |
+
+원칙:
+- 모든 LangGraph node는 module owner를 가진다.
+- `policy_guardrail_agent`는 context mapping 이후, analyst brief 이전에 항상 실행된다.
+- `replay_evaluation_agent`는 운영 응답이 아니라 다음 seed로 갈지 판단하는 offline feedback loop이다.
+- LLM/ML/connector는 module backend 후보일 뿐이며, 현재 seed에서는 SOC/SIEM/EDR/SOAR/IAM/CMDB connector를 호출하지 않는다.
+
+생성 리포트:
+- `reports/agent_module_catalog_v1.json`
+- `reports/agent_module_catalog_v1.mmd`
+- `reports/agent_module_catalog.stdout.json`
+
+## 6.3 OTRF contract + LangGraph agent composition seed
 
 이번 단계는 OTRF Security Datasets를 실제 다운로드하지 않고, raw adapter 구현 전 검토 가능한 contract와 LangGraph 기반 조사 에이전트 seed를 추가한다.
 

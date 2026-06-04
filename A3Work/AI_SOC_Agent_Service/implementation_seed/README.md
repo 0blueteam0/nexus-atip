@@ -26,7 +26,10 @@
 - `scripts/execution_plan2_generator.py`: 실행계획 #2 markdown+docx 생성기
 - `scripts/otrf_contract_builder.py`: OTRF adapter 구현 전 contract-only report 생성기(no download)
 - `scripts/langgraph_agent_composition.py`: LangGraph 기반 AI SOC investigation agent graph seed
+- `scripts/agent_module_catalog.py`: agent module catalog와 LangGraph 연결 blueprint 생성기
 - `reports/otrf_adapter_contract_v1.json`: OTRF Security Datasets raw 접근 전 adapter contract report
+- `reports/agent_module_catalog_v1.json`: AI SOC agent module catalog JSON artifact
+- `reports/agent_module_catalog_v1.mmd`: agent module flow 검토용 Mermaid graph
 - `reports/langgraph_agent_composition_v1.json`: LangGraph-compatible node/edge/state/safety spec
 - `reports/langgraph_agent_composition_v1.mmd`: LangGraph seed 검토용 Mermaid workflow graph
 - `reports/langgraph_seed_run_v1.json`: local Evidence Package fixture로 실행한 LangGraph seed 결과
@@ -46,6 +49,7 @@ python implementation_seed/scripts/replay_runner.py --fixtures implementation_se
 python implementation_seed/scripts/doc_addendum_generator.py > implementation_seed/reports/doc_addendum_generator_v0.stdout.json
 python implementation_seed/scripts/execution_plan2_generator.py > implementation_seed/reports/execution_plan2_generator.stdout.json
 python implementation_seed/scripts/otrf_contract_builder.py > implementation_seed/reports/otrf_contract_builder.stdout.json
+python implementation_seed/scripts/agent_module_catalog.py > implementation_seed/reports/agent_module_catalog.stdout.json
 python implementation_seed/scripts/langgraph_agent_composition.py > implementation_seed/reports/langgraph_agent_composition.stdout.json
 ```
 
