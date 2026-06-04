@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="794" height="1123" viewBox="0 0 794 1123">
+  <rect x="0" y="0" width="794" height="1123" fill="#ffffff" stroke="#999999"/>
+  <text x="60" y="62" font-size="28" font-family="Arial" font-weight="bold">NO Synthetic Claim Evidence</text>
+  <rect x="610" y="34" width="130" height="36" fill="#2e7d32" opacity="0.15" stroke="#2e7d32"/>
+  <text x="625" y="58" font-size="18" font-family="Arial" fill="#2e7d32">NO</text>
+  <text x="60" y="120" font-size="18" font-family="Arial">기관: SYN-CLINIC-424</text><text x="60" y="162" font-size="18" font-family="Arial">기관ID: SYN-HIRA-11804588</text><text x="60" y="204" font-size="18" font-family="Arial">환자Alias: PAT-SYN-BB2CB2CB</text><text x="60" y="246" font-size="18" font-family="Arial">영수증번호: RCP-SYN-05428CF5A9</text><text x="60" y="288" font-size="18" font-family="Arial">진료일: 2026-03-05</text><text x="60" y="330" font-size="18" font-family="Arial">발급일: 2026-03-06</text><text x="60" y="372" font-size="18" font-family="Arial">청구일: 2026-03-08</text><text x="60" y="414" font-size="18" font-family="Arial">본인부담: 168,118</text><text x="60" y="456" font-size="18" font-family="Arial">청구금액: 117,682</text>
+  <rect x="56" y="90" width="620" height="430" fill="none" stroke="#dddddd"/>
+  <text x="60" y="1070" font-size="12" font-family="Arial" fill="#777777">synthetic_no_real_pii / defensive FDS training only</text>
+</svg>

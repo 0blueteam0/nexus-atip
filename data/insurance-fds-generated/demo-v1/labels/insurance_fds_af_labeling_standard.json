@@ -1,0 +1,211 @@
+{
+  "field_annotation_schema": {
+    "bbox": "렌더링 좌표계 기준 [x, y, width, height]. structured_json만 있을 때는 logical_bbox 사용.",
+    "evidence_type": [
+      "business_rule",
+      "cross_document",
+      "visual_region",
+      "ocr_roundtrip",
+      "behavior_graph"
+    ],
+    "field_ref": "문서 내 필드 고유 참조. 예: receipt.total_claim_amount",
+    "normalization": "금액은 integer KRW, 날짜는 YYYY-MM-DD, 기관/환자는 synthetic namespace.",
+    "value_type": [
+      "date",
+      "amount",
+      "provider",
+      "patient_alias",
+      "diagnosis_code_synthetic",
+      "line_item",
+      "free_text"
+    ]
+  },
+  "label_levels": [
+    "document",
+    "field",
+    "image_forensic",
+    "cross_document",
+    "claim_behavior"
+  ],
+  "label_standard_version": "insurance-fds-af-labels-v1",
+  "prefix_policy": {
+    "AF": "방어적 탐지 목적으로 생성한 합성 이상/위변조 데이터. 생성 레시피와 seed를 반드시 기록한다.",
+    "FK": "실제 공개 판례/보도/수사자료/공개 위조 데이터셋에서 추상화한 위조·사기 사례. 원문 PII는 저장하지 않는다.",
+    "NO": "정상 문서 또는 정상 합성 문서. 위변조 라벨은 없어야 하며 필드 정합성이 통과되어야 한다."
+  },
+  "privacy_rules": {
+    "allowed": [
+      "가상 환자 alias",
+      "가상 기관명과 synthetic provider id",
+      "방어적 라벨 및 검증 규칙",
+      "비식별 공개 사례의 추상 taxonomy"
+    ],
+    "forbidden": [
+      "실제 주민등록번호",
+      "실제 전화번호/주소/계좌번호",
+      "실제 병원 로고/직인/의사서명 원본",
+      "실제 환자 의료 원문",
+      "실제 위조 수행 절차를 단계별로 재현하는 설명"
+    ],
+    "required_pii_status": [
+      "synthetic_no_real_pii",
+      "public_case_abstracted_no_raw_pii"
+    ]
+  },
+  "qa_gates": {
+    "human_review_policy": "운영 학습 전 AF/FK 라벨은 표본 10% 이상 이중 검수하고, 실제 PII 의심 샘플은 즉시 격리한다.",
+    "minimum_required_annotations": 8,
+    "required_checks": [
+      "JSON schema parse",
+      "prefix/file-name consistency",
+      "pii_status validation",
+      "tamper label evidence completeness",
+      "NO sample business rules pass",
+      "AF sample has at least one failing business or forensic rule",
+      "split leakage check by claim_group_id",
+      "generation_seed recorded"
+    ]
+  },
+  "scope": "실손보험 청구서류 위조탐지 FDS용 합성/공개/정상 데이터 라벨 기준",
+  "split_policy": {
+    "default_ratio": {
+      "test": 0.15,
+      "train": 0.7,
+      "val": 0.15
+    },
+    "leakage_guard": "같은 claim_group_id와 document_fingerprint는 하나의 split에만 배치한다.",
+    "unit": "claim_group_id"
+  },
+  "tamper_taxonomy": {
+    "AF_AMOUNT_INFLATION": {
+      "description": "청구금액, 본인부담금, 비급여 금액 등 금액 필드가 관련 항목 합계 또는 타 문서와 맞지 않는 합성 이상.",
+      "detector_targets": [
+        "numeric_consistency",
+        "cross_doc_amount_match",
+        "ocr_field_validation"
+      ],
+      "level": [
+        "field",
+        "cross_document"
+      ],
+      "required_evidence": [
+        "field_ref",
+        "original_synthetic_value",
+        "mutated_value",
+        "business_rule_id"
+      ]
+    },
+    "AF_COMPRESSION_REGION_ANOMALY": {
+      "description": "문서 일부 영역의 압축/노이즈/블러 특성이 주변 영역과 다른 합성 포렌식 이상.",
+      "detector_targets": [
+        "ela_like_signal",
+        "noise_residual",
+        "region_consistency"
+      ],
+      "level": [
+        "image_forensic"
+      ],
+      "required_evidence": [
+        "mask_layer",
+        "region_ref",
+        "degradation_recipe_id"
+      ]
+    },
+    "AF_COPYMOVE_FIELD_REGION": {
+      "description": "방어적 탐지 학습을 위해 필드 영역 재사용 흔적을 mask로 표시한 합성 copy-move 계열 이상.",
+      "detector_targets": [
+        "copy_move_segmentation",
+        "tamper_mask_detection"
+      ],
+      "level": [
+        "image_forensic",
+        "field"
+      ],
+      "required_evidence": [
+        "source_bbox",
+        "target_bbox",
+        "mask_layer",
+        "field_ref"
+      ]
+    },
+    "AF_CROSSDOC_DATE_CONFLICT": {
+      "description": "진료일, 처방일, 청구일, 발급일의 순서가 업무 규칙과 충돌하는 합성 이상.",
+      "detector_targets": [
+        "temporal_rule_engine",
+        "claim_sequence_anomaly"
+      ],
+      "level": [
+        "cross_document"
+      ],
+      "required_evidence": [
+        "source_document",
+        "target_document",
+        "date_fields",
+        "business_rule_id"
+      ]
+    },
+    "AF_DUPLICATE_RECEIPT_REUSE": {
+      "description": "동일 합성 영수증 번호/문서 fingerprint가 서로 다른 청구 컨텍스트에서 반복되는 이상.",
+      "detector_targets": [
+        "duplicate_detection",
+        "graph_link_analysis"
+      ],
+      "level": [
+        "claim_behavior",
+        "cross_document"
+      ],
+      "required_evidence": [
+        "receipt_no",
+        "document_fingerprint",
+        "claim_group_id"
+      ]
+    },
+    "AF_FONT_LAYOUT_ANOMALY": {
+      "description": "특정 필드 영역의 폰트, 정렬, baseline, 자간, 행간이 주변 영역과 다른 합성 시각 이상.",
+      "detector_targets": [
+        "layout_anomaly",
+        "font_consistency"
+      ],
+      "level": [
+        "image_forensic"
+      ],
+      "required_evidence": [
+        "bbox",
+        "field_ref",
+        "visual_anomaly_type"
+      ]
+    },
+    "AF_ITEM_INSERTION": {
+      "description": "세부산정내역서에 항목이 삽입되어 영수증 합계와 충돌하거나 정책상 비정상 패턴을 만드는 합성 이상.",
+      "detector_targets": [
+        "line_item_kie",
+        "policy_rule_engine"
+      ],
+      "level": [
+        "field",
+        "document"
+      ],
+      "required_evidence": [
+        "line_item_ref",
+        "inserted_item_type",
+        "amount_delta"
+      ]
+    },
+    "AF_PROVIDER_ID_MISMATCH": {
+      "description": "기관명, 요양기관기호 형식, 사업자번호 namespace가 문서 간 불일치하는 합성 이상.",
+      "detector_targets": [
+        "provider_master_match",
+        "entity_resolution"
+      ],
+      "level": [
+        "field",
+        "cross_document"
+      ],
+      "required_evidence": [
+        "provider_field_refs",
+        "mismatch_type",
+        "namespace_policy"
+      ]
+    }
+  }
+}

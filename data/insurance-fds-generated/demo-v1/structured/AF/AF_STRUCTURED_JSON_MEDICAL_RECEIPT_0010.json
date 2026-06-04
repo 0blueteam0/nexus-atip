@@ -1,0 +1,215 @@
+{
+  "business_rule_checks": [
+    {
+      "description": "본인부담 합계는 세부 항목 합계와 일치해야 한다.",
+      "expected": 139615,
+      "observed": 139615,
+      "passed": true,
+      "rule_id": "BR_AMOUNT_PATIENT_PAID_EQUALS_LINE_SUM"
+    },
+    {
+      "description": "청구금액은 본인부담 합계를 초과하지 않아야 한다.",
+      "expected": "claim_amount <= patient_paid_amount",
+      "observed": "97730 <= 139615",
+      "passed": true,
+      "rule_id": "BR_CLAIM_NOT_GREATER_THAN_PATIENT_PAID"
+    },
+    {
+      "description": "진료일 <= 발급일 <= 청구일 순서가 유지되어야 한다.",
+      "expected": "visit_date <= issue_date <= claim_date",
+      "observed": "2026-01-15 <= 2026-01-18 <= 2026-01-30",
+      "passed": true,
+      "rule_id": "BR_DATE_VISIT_ISSUE_CLAIM_ORDER"
+    }
+  ],
+  "claim_group_id": "CG-2ADCC1BFE3",
+  "document_fingerprint": "D76EEE2AD20A098D8676",
+  "document_label": "AF",
+  "field_annotations": [
+    {
+      "bbox": [
+        40,
+        60,
+        420,
+        24
+      ],
+      "field_ref": "provider.provider_alias",
+      "source": "synthetic_generator",
+      "value_type": "provider"
+    },
+    {
+      "bbox": [
+        40,
+        92,
+        420,
+        24
+      ],
+      "field_ref": "provider.provider_id",
+      "source": "synthetic_generator",
+      "value_type": "provider"
+    },
+    {
+      "bbox": [
+        40,
+        124,
+        420,
+        24
+      ],
+      "field_ref": "patient.patient_alias",
+      "source": "synthetic_generator",
+      "value_type": "patient_alias"
+    },
+    {
+      "bbox": [
+        40,
+        156,
+        420,
+        24
+      ],
+      "field_ref": "receipt.receipt_no",
+      "source": "synthetic_generator",
+      "value_type": "free_text"
+    },
+    {
+      "bbox": [
+        40,
+        188,
+        420,
+        24
+      ],
+      "field_ref": "receipt.visit_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        220,
+        420,
+        24
+      ],
+      "field_ref": "receipt.issue_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        252,
+        420,
+        24
+      ],
+      "field_ref": "claim.claim_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        284,
+        420,
+        24
+      ],
+      "field_ref": "receipt.patient_paid_amount",
+      "source": "synthetic_generator",
+      "value_type": "amount"
+    },
+    {
+      "bbox": [
+        40,
+        316,
+        420,
+        24
+      ],
+      "field_ref": "receipt.claim_amount",
+      "source": "synthetic_generator",
+      "value_type": "amount"
+    },
+    {
+      "bbox": [
+        40,
+        348,
+        420,
+        24
+      ],
+      "field_ref": "diagnosis.diagnosis_code_synthetic",
+      "source": "synthetic_generator",
+      "value_type": "diagnosis_code_synthetic"
+    }
+  ],
+  "fields": {
+    "claim_amount": 97730,
+    "claim_date": "2026-01-30",
+    "covered_amount": 37541,
+    "diagnosis_code_synthetic": "SYN-KCD-K29",
+    "document_namespace": "insurance-fds-synthetic-v1",
+    "document_type": "medical_receipt",
+    "issue_date": "2026-01-18",
+    "line_items": [
+      {
+        "amount": 12513,
+        "benefit_type": "급여",
+        "item_ref": "line.consultation",
+        "name": "synthetic_consultation_fee"
+      },
+      {
+        "amount": 25028,
+        "benefit_type": "급여",
+        "item_ref": "line.procedure",
+        "name": "synthetic_minor_procedure"
+      },
+      {
+        "amount": 102074,
+        "benefit_type": "비급여",
+        "item_ref": "line.noncovered",
+        "name": "synthetic_noncovered_care"
+      }
+    ],
+    "patient_alias": "PAT-SYN-623A50A7",
+    "patient_paid_amount": 139615,
+    "provider_alias": "SYN-CLINIC-153",
+    "provider_id": "SYN-HIRA-MISMATCH-4881",
+    "receipt_no": "RCP-SYN-83C16DF5DB",
+    "uncovered_amount": 102074,
+    "visit_date": "2026-01-15"
+  },
+  "forensic_annotations": {
+    "coordinate_system": "logical_page_794x1123",
+    "degradation_recipe_id": "af-region-anomaly-placeholder",
+    "mask_layers": [
+      {
+        "bbox": [
+          40,
+          92,
+          420,
+          24
+        ],
+        "field_ref": "provider.provider_id",
+        "mask_id": "mask-1",
+        "mask_type": "logical_bbox_placeholder",
+        "purpose": "tamper localization label for defensive detector training"
+      }
+    ],
+    "ocr_roundtrip_required": true
+  },
+  "generation_seed": 20260604,
+  "pii_status": "synthetic_no_real_pii",
+  "qa_status": {
+    "human_review": "required_before_production_training",
+    "notes": "합성 데이터이며 실제 환자/기관 정보가 아니다.",
+    "schema_parse": "pending_or_passed_by_validator"
+  },
+  "schema_version": "insurance-fds-synthetic-document-v1",
+  "synthetic_namespace": "insurance-fds-synthetic-v1",
+  "tamper_labels": [
+    {
+      "business_rule_id": "BR_PROVIDER_MASTER_MATCH",
+      "evidence_type": "cross_document",
+      "field_ref": "provider.provider_id",
+      "mutated_value": "SYN-HIRA-MISMATCH-4881",
+      "original_synthetic_value": "SYN-HIRA-71720425",
+      "severity": "medium",
+      "tamper_type": "AF_PROVIDER_ID_MISMATCH"
+    }
+  ]
+}

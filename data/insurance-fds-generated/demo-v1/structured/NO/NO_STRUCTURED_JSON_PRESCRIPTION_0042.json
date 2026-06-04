@@ -1,0 +1,205 @@
+{
+  "business_rule_checks": [
+    {
+      "description": "본인부담 합계는 세부 항목 합계와 일치해야 한다.",
+      "expected": 204260,
+      "observed": 204260,
+      "passed": true,
+      "rule_id": "BR_AMOUNT_PATIENT_PAID_EQUALS_LINE_SUM"
+    },
+    {
+      "description": "청구금액은 본인부담 합계를 초과하지 않아야 한다.",
+      "expected": "claim_amount <= patient_paid_amount",
+      "observed": "163408 <= 204260",
+      "passed": true,
+      "rule_id": "BR_CLAIM_NOT_GREATER_THAN_PATIENT_PAID"
+    },
+    {
+      "description": "진료일 <= 발급일 <= 청구일 순서가 유지되어야 한다.",
+      "expected": "visit_date <= issue_date <= claim_date",
+      "observed": "2026-02-12 <= 2026-02-12 <= 2026-02-27",
+      "passed": true,
+      "rule_id": "BR_DATE_VISIT_ISSUE_CLAIM_ORDER"
+    }
+  ],
+  "claim_group_id": "CG-D378A4D5A4",
+  "document_fingerprint": "2A432CD7A3653FA0EFEC",
+  "document_label": "NO",
+  "field_annotations": [
+    {
+      "bbox": [
+        40,
+        60,
+        420,
+        24
+      ],
+      "field_ref": "provider.provider_alias",
+      "source": "synthetic_generator",
+      "value_type": "provider"
+    },
+    {
+      "bbox": [
+        40,
+        92,
+        420,
+        24
+      ],
+      "field_ref": "provider.provider_id",
+      "source": "synthetic_generator",
+      "value_type": "provider"
+    },
+    {
+      "bbox": [
+        40,
+        124,
+        420,
+        24
+      ],
+      "field_ref": "patient.patient_alias",
+      "source": "synthetic_generator",
+      "value_type": "patient_alias"
+    },
+    {
+      "bbox": [
+        40,
+        156,
+        420,
+        24
+      ],
+      "field_ref": "receipt.receipt_no",
+      "source": "synthetic_generator",
+      "value_type": "free_text"
+    },
+    {
+      "bbox": [
+        40,
+        188,
+        420,
+        24
+      ],
+      "field_ref": "receipt.visit_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        220,
+        420,
+        24
+      ],
+      "field_ref": "receipt.issue_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        252,
+        420,
+        24
+      ],
+      "field_ref": "claim.claim_date",
+      "source": "synthetic_generator",
+      "value_type": "date"
+    },
+    {
+      "bbox": [
+        40,
+        284,
+        420,
+        24
+      ],
+      "field_ref": "receipt.patient_paid_amount",
+      "source": "synthetic_generator",
+      "value_type": "amount"
+    },
+    {
+      "bbox": [
+        40,
+        316,
+        420,
+        24
+      ],
+      "field_ref": "receipt.claim_amount",
+      "source": "synthetic_generator",
+      "value_type": "amount"
+    },
+    {
+      "bbox": [
+        40,
+        348,
+        420,
+        24
+      ],
+      "field_ref": "diagnosis.diagnosis_code_synthetic",
+      "source": "synthetic_generator",
+      "value_type": "diagnosis_code_synthetic"
+    }
+  ],
+  "fields": {
+    "claim_amount": 163408,
+    "claim_date": "2026-02-27",
+    "covered_amount": 32885,
+    "diagnosis_code_synthetic": "SYN-KCD-J00",
+    "document_namespace": "insurance-fds-synthetic-v1",
+    "document_type": "prescription",
+    "issue_date": "2026-02-12",
+    "line_items": [
+      {
+        "amount": 10961,
+        "benefit_type": "급여",
+        "item_ref": "line.consultation",
+        "name": "synthetic_consultation_fee"
+      },
+      {
+        "amount": 21924,
+        "benefit_type": "급여",
+        "item_ref": "line.procedure",
+        "name": "synthetic_minor_procedure"
+      },
+      {
+        "amount": 171375,
+        "benefit_type": "비급여",
+        "item_ref": "line.noncovered",
+        "name": "synthetic_noncovered_care"
+      }
+    ],
+    "patient_alias": "PAT-SYN-2F709D53",
+    "patient_paid_amount": 204260,
+    "provider_alias": "SYN-CLINIC-727",
+    "provider_id": "SYN-HIRA-42170638",
+    "receipt_no": "RCP-SYN-443D1436EB",
+    "uncovered_amount": 171375,
+    "visit_date": "2026-02-12"
+  },
+  "forensic_annotations": {
+    "coordinate_system": "logical_page_794x1123",
+    "degradation_recipe_id": "baseline-clean",
+    "mask_layers": [
+      {
+        "bbox": [
+          0,
+          0,
+          794,
+          1123
+        ],
+        "field_ref": "document.full_page",
+        "mask_id": "mask-clean-page",
+        "mask_type": "clean_region_reference",
+        "purpose": "normal document baseline region"
+      }
+    ],
+    "ocr_roundtrip_required": true
+  },
+  "generation_seed": 20260604,
+  "pii_status": "synthetic_no_real_pii",
+  "qa_status": {
+    "human_review": "required_before_production_training",
+    "notes": "합성 데이터이며 실제 환자/기관 정보가 아니다.",
+    "schema_parse": "pending_or_passed_by_validator"
+  },
+  "schema_version": "insurance-fds-synthetic-document-v1",
+  "synthetic_namespace": "insurance-fds-synthetic-v1",
+  "tamper_labels": []
+}

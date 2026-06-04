@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260604-155840-insurance-fds-data-상세-AF-합성-데이터-생성기-라벨-기준표-다중도구-파이프라인-구현",
+  "project": "insurance-fds-data",
+  "task": "상세 AF 합성 데이터 생성기 라벨 기준표 다중도구 파이프라인 구현",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260604-155840-insurance-fds-data-상세-AF-합성-데이터-생성기-라벨-기준표-다중도구-파이프라인-구현",
+  "created_at": "2026-06-04T15:58:40+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
