@@ -10,8 +10,10 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 from langgraph_agent_composition import (
     AgentGraphComposer,
     build_langgraph_app,
+    render_mermaid_graph,
     run_seed_investigation_graph,
     write_graph_spec,
+    write_mermaid_graph,
 )
 
 
@@ -74,6 +76,27 @@ class LangGraphAgentCompositionTest(unittest.TestCase):
 
         self.assertEqual(loaded['graph_id'], 'ai_soc_investigation_langgraph_seed_v1')
         self.assertEqual(loaded['runtime_target'], 'langgraph_stategraph_compatible')
+
+    def test_should_render_reviewable_mermaid_graph_from_spec(self):
+        spec = AgentGraphComposer().build_spec()
+        mermaid = render_mermaid_graph(spec)
+
+        self.assertTrue(mermaid.startswith('flowchart TD'))
+        self.assertIn('START --> ingest_evidence_package', mermaid)
+        self.assertIn('assess_guardrails --> draft_human_review_brief', mermaid)
+        self.assertIn('draft_human_review_brief --> END', mermaid)
+        self.assertIn('classDef safety', mermaid)
+        self.assertIn('class assess_guardrails safety', mermaid)
+
+    def test_should_write_mermaid_graph_artifact(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            out_path = Path(temp_dir) / 'langgraph_agent_composition_v1.mmd'
+            write_mermaid_graph(out_path)
+            mermaid = out_path.read_text(encoding='utf-8')
+
+        self.assertIn('flowchart TD', mermaid)
+        self.assertIn('validate_evidence_contract', mermaid)
+        self.assertIn('human review required', mermaid)
 
 
 if __name__ == '__main__':

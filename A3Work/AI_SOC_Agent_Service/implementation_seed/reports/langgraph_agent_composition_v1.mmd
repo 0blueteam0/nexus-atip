@@ -1,0 +1,23 @@
+flowchart TD
+  %% AI SOC LangGraph investigation seed: human review required, no autonomous response
+  START --> ingest_evidence_package
+  %% condition: START -> ingest_evidence_package: evidence package present
+  ingest_evidence_package --> validate_evidence_contract
+  %% condition: ingest_evidence_package -> validate_evidence_contract: always
+  validate_evidence_contract --> investigate_timeline
+  %% condition: validate_evidence_contract -> investigate_timeline: contract checked
+  investigate_timeline --> map_mitre_context
+  %% condition: investigate_timeline -> map_mitre_context: timeline summarized
+  map_mitre_context --> assess_guardrails
+  %% condition: map_mitre_context -> assess_guardrails: context mapped
+  assess_guardrails --> draft_human_review_brief
+  %% condition: assess_guardrails -> draft_human_review_brief: always requires human review
+  draft_human_review_brief --> END
+  %% condition: draft_human_review_brief -> END: brief ready
+  classDef safety fill:#3b1d1d,stroke:#ff6b6b,color:#ffffff,stroke-width:2px
+  classDef review fill:#1d2b3b,stroke:#74c0fc,color:#ffffff,stroke-width:2px
+  classDef contract fill:#302b1d,stroke:#ffd43b,color:#ffffff,stroke-width:2px
+  class validate_evidence_contract contract
+  class assess_guardrails safety
+  class draft_human_review_brief review
+  %% invariant: human review required; response_action=none; automation_allowed=false

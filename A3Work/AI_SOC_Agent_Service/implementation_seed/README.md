@@ -28,6 +28,7 @@
 - `scripts/langgraph_agent_composition.py`: LangGraph 기반 AI SOC investigation agent graph seed
 - `reports/otrf_adapter_contract_v1.json`: OTRF Security Datasets raw 접근 전 adapter contract report
 - `reports/langgraph_agent_composition_v1.json`: LangGraph-compatible node/edge/state/safety spec
+- `reports/langgraph_agent_composition_v1.mmd`: LangGraph seed 검토용 Mermaid workflow graph
 - `reports/langgraph_seed_run_v1.json`: local Evidence Package fixture로 실행한 LangGraph seed 결과
 - `EVALUATION_PROTOCOL.md`: 평가 프로토콜 v0.1
 

@@ -136,7 +136,10 @@ LangGraph seed 원칙:
 생성 리포트:
 - `reports/otrf_adapter_contract_v1.json`
 - `reports/langgraph_agent_composition_v1.json`
+- `reports/langgraph_agent_composition_v1.mmd`
 - `reports/langgraph_seed_run_v1.json`
+
+`reports/langgraph_agent_composition_v1.mmd`는 JSON spec과 동일한 node/edge 흐름을 Mermaid `flowchart TD`로 내보낸다. 조건은 comment로 보존하고, `validate_evidence_contract`, `assess_guardrails`, `draft_human_review_brief`는 contract/safety/review class로 표시하여 reviewer가 graph 흐름과 안전 gate를 빠르게 확인할 수 있게 한다.
 
 ## 7. Go/Hold/No-Go 초안
 

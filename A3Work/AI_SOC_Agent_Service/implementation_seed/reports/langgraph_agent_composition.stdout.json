@@ -1,5 +1,6 @@
 {
   "spec_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\langgraph_agent_composition_v1.json",
+  "mermaid_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\langgraph_agent_composition_v1.mmd",
   "run_out": "J:\\PortableApps\\genai\\A3Work\\AI_SOC_Agent_Service\\implementation_seed\\reports\\langgraph_seed_run_v1.json",
   "result": {
     "graph_id": "ai_soc_investigation_langgraph_seed_v1",

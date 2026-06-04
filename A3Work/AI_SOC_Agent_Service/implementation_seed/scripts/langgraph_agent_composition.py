@@ -259,6 +259,37 @@ def run_seed_investigation_graph(fixture_path: Path) -> dict[str, Any]:
     }
 
 
+def render_mermaid_graph(spec: dict[str, Any]) -> str:
+    """Render the graph spec as a reviewable Mermaid flowchart."""
+    node_roles = {node['id']: node.get('role', '') for node in spec['nodes']}
+    lines = [
+        'flowchart TD',
+        '  %% AI SOC LangGraph investigation seed: human review required, no autonomous response',
+    ]
+    for edge in spec['edges']:
+        source = edge['from']
+        target = edge['to']
+        label = edge.get('condition', 'always').replace('_', ' ')
+        lines.append(f'  {source} --> {target}')
+        lines.append(f'  %% condition: {source} -> {target}: {label}')
+    lines.extend(
+        [
+            '  classDef safety fill:#3b1d1d,stroke:#ff6b6b,color:#ffffff,stroke-width:2px',
+            '  classDef review fill:#1d2b3b,stroke:#74c0fc,color:#ffffff,stroke-width:2px',
+            '  classDef contract fill:#302b1d,stroke:#ffd43b,color:#ffffff,stroke-width:2px',
+        ]
+    )
+    for node_id, role in node_roles.items():
+        if role == 'safety_gate':
+            lines.append(f'  class {node_id} safety')
+        elif role == 'analyst_brief_writer':
+            lines.append(f'  class {node_id} review')
+        elif role == 'contract_gate':
+            lines.append(f'  class {node_id} contract')
+    lines.append('  %% invariant: human review required; response_action=none; automation_allowed=false')
+    return '\n'.join(lines) + '\n'
+
+
 def write_graph_spec(out_path: Path) -> None:
     """Write the LangGraph-compatible graph spec as JSON."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -267,22 +298,36 @@ def write_graph_spec(out_path: Path) -> None:
         fp.write('\n')
 
 
+def write_mermaid_graph(out_path: Path) -> None:
+    """Write the LangGraph-compatible graph spec as a Mermaid artifact."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(render_mermaid_graph(AgentGraphComposer().build_spec()), encoding='utf-8')
+
+
 def main() -> int:
     """CLI entry point for writing graph spec and running a fixture smoke test."""
     parser = argparse.ArgumentParser(description='Build and run AI SOC LangGraph composition seed.')
     parser.add_argument('--spec-out', default=str(ROOT / 'reports' / 'langgraph_agent_composition_v1.json'))
+    parser.add_argument('--mermaid-out', default=str(ROOT / 'reports' / 'langgraph_agent_composition_v1.mmd'))
     parser.add_argument('--run-fixture', default=str(ROOT / 'fixtures' / 'vpn_login_anomaly_complete.evidence_package.json'))
     parser.add_argument('--run-out', default=str(ROOT / 'reports' / 'langgraph_seed_run_v1.json'))
     args = parser.parse_args()
 
     write_graph_spec(Path(args.spec_out))
+    write_mermaid_graph(Path(args.mermaid_out))
     result = run_seed_investigation_graph(Path(args.run_fixture))
     run_out = Path(args.run_out)
     run_out.parent.mkdir(parents=True, exist_ok=True)
     with run_out.open('w', encoding='utf-8') as fp:
         json.dump(result, fp, ensure_ascii=False, indent=2)
         fp.write('\n')
-    print(json.dumps({'spec_out': args.spec_out, 'run_out': args.run_out, 'result': result}, ensure_ascii=False, indent=2))
+    print(
+        json.dumps(
+            {'spec_out': args.spec_out, 'mermaid_out': args.mermaid_out, 'run_out': args.run_out, 'result': result},
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
     return 0
 
 
