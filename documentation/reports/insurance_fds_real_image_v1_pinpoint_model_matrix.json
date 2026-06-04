@@ -1,0 +1,104 @@
+{
+  "artifact_version": "insurance-fds-real-image-v1-pinpoint-model-matrix-2026-06-04",
+  "canonical_dataset_root": "data/insurance-fds-generated/real-image-redteam-v1",
+  "target_dataset_root": "data/insurance-fds-generated/real-image-redteam-v1-pinpoint-overwrite",
+  "deprecated_basis": [
+    {
+      "dataset_family": "field-pseudonymized-v3",
+      "reason": "실제 공개 이미지 원본/정본 좌표계를 기준으로 하지 않고 좌표 변경/내용 재구성 문제가 있어 후속 기준에서 제외"
+    }
+  ],
+  "core_policy": {
+    "paired_no_required": true,
+    "whole_document_rerender_allowed": false,
+    "ratio_based_box_allowed": false,
+    "shifted_overlay_allowed": false,
+    "diffusion_text_generation_allowed": false,
+    "edit_scope": "target_field_polygon_or_mask_only",
+    "safety_scope": "defensive_fds_adversarial_testing_with_fake_values_only"
+  },
+  "recommended_stack": [
+    {
+      "rank": 1,
+      "name": "OCR + SAM + deterministic overwrite MVP",
+      "components": [
+        "PaddleOCR or EasyOCR for OCR token boxes",
+        "OpenCV table/line/cell detection for field relation",
+        "SAM/SAM2 for mask refinement from OCR bbox prompts",
+        "OpenCV/Pillow inpaint and fake text rendering",
+        "pixel-diff validator"
+      ],
+      "use_for": "금액/날짜/번호처럼 OCR anchor가 명확한 필드의 최초 MVP",
+      "why": "좌표 보존과 재현성이 가장 높고 validation을 엄격하게 걸 수 있음",
+      "risks": [
+        "OCR 품질이 낮으면 target field 후보가 흔들림",
+        "복잡 배경에서는 inpaint 품질이 낮을 수 있음"
+      ]
+    },
+    {
+      "rank": 2,
+      "name": "OCR ensemble + VLM field grounding + SAM refinement",
+      "components": [
+        "PaddleOCR",
+        "EasyOCR fallback",
+        "Qwen2.5-VL/InternVL/GPT-4o-class vision model for semantic field QA",
+        "GroundingDINO or Florence-2 for open-vocabulary bbox candidates",
+        "SAM/SAM2 mask refinement"
+      ],
+      "use_for": "서식 다양성이 커서 OCR anchor만으로 필드 찾기가 어려운 실제 이미지",
+      "why": "필드 의미 기반 QA와 bbox 후보 검증을 결합할 수 있음",
+      "risks": [
+        "VLM bbox hallucination 가능성",
+        "API 사용 시 개인정보/데이터 반출 검토 필요",
+        "재현성 확보를 위해 model/version/prompt hash 기록 필요"
+      ]
+    },
+    {
+      "rank": 3,
+      "name": "Constrained inpainting background repair",
+      "components": [
+        "LaMa or OpenCV inpaint first",
+        "SDXL/FLUX/ComfyUI inpaint only as fallback",
+        "deterministic fake text renderer after background repair"
+      ],
+      "use_for": "원본 글자를 지운 뒤 배경/스캔 노이즈 복원이 어려운 경우",
+      "why": "복잡한 배경 복원 품질을 올릴 수 있음",
+      "risks": [
+        "텍스트/숫자를 diffusion에 맡기면 layout drift와 hallucination 발생",
+        "문서 전체 img2img는 금지"
+      ]
+    }
+  ],
+  "required_outputs": [
+    "field-candidates/*.json",
+    "manifests/pinpoint_pair_manifest.json",
+    "validation/pinpoint_validation.json",
+    "masks/AF/*_MASK.png",
+    "images/AF/AF_REAL_PINPOINT_*.png",
+    "indexes/pinpoint_pair_contact_sheet.png"
+  ],
+  "validation_gates": [
+    "Every AF record has paired_no_dataset_id",
+    "NO and AF image sizes match exactly",
+    "target_field bbox/polygon is in paired NO coordinate system",
+    "changed pixels outside target mask plus tolerance are zero or bounded",
+    "target mask positive pixel count is greater than zero",
+    "OCR before crop matches original_text where available",
+    "OCR after crop matches mutated_text where available",
+    "visual QA rejects large rectangle overlay and shifted boxes"
+  ],
+  "first_mvp_scope": {
+    "source_count": 2,
+    "af_min_count": 5,
+    "field_families": [
+      "총진료비/본인부담금/청구금액",
+      "진료일자/발급일자",
+      "영수증번호"
+    ],
+    "excluded_until_later": [
+      "line item insertion requiring table row reflow",
+      "logo/stamp/signature edits",
+      "real PII fields without manual privacy review"
+    ]
+  }
+}
