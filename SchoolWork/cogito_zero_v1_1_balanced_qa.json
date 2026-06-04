@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "orig_docx": {
+      "size": 2101265,
+      "paragraphs": 182,
+      "tables": 12,
+      "tokenish_words": 3205,
+      "long_paragraphs": 0
+    },
+    "light_docx": {
+      "size": 42179,
+      "paragraphs": 53,
+      "tables": 7,
+      "tokenish_words": 682,
+      "long_paragraphs": 0
+    },
+    "balanced_docx": {
+      "size": 43798,
+      "paragraphs": 91,
+      "tables": 3,
+      "tokenish_words": 1366,
+      "long_paragraphs": 0
+    },
+    "orig_pptx": {
+      "size": 1980816,
+      "slides": 17,
+      "tokenish_words": 801,
+      "dense_textboxes": 0,
+      "out_of_bounds": 0,
+      "empty_slides": []
+    },
+    "light_pptx": {
+      "size": 48647,
+      "slides": 11,
+      "tokenish_words": 525,
+      "dense_textboxes": 0,
+      "out_of_bounds": 0,
+      "empty_slides": []
+    },
+    "balanced_pptx": {
+      "size": 55357,
+      "slides": 14,
+      "tokenish_words": 711,
+      "dense_textboxes": 0,
+      "out_of_bounds": 0,
+      "empty_slides": []
+    }
+  },
+  "issues": []
+}

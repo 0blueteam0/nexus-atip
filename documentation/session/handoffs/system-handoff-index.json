@@ -1,0 +1,1194 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-04T01:46:30.307Z",
+  "latest": {
+    "codex->claude": {
+      "id": "2026-06-04T01-46-30-050Z-codex-to-claude-system-schoolwork",
+      "from": "codex",
+      "to": "claude",
+      "title": "SchoolWork",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T01-46-30-050Z-codex-to-claude-system-schoolwork.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T01:46:30.050Z",
+      "paths": [],
+      "docs": []
+    }
+  },
+  "entries": [
+    {
+      "id": "2026-06-04T01-46-30-050Z-codex-to-claude-system-schoolwork",
+      "from": "codex",
+      "to": "claude",
+      "title": "SchoolWork",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T01-46-30-050Z-codex-to-claude-system-schoolwork.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T01:46:30.050Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-06-02T07-24-03-800Z-codex-to-claude-system-ai-soc-agent-service",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI_SOC_Agent_Service",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T07-24-03-800Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T07:24:03.800Z",
+      "paths": [
+        "A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/doc_addendum_generator.py,A3Work/AI_SOC_Agent_Service/implementation_seed/tests/test_doc_addendum_generator.py,A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_14_테스트케이스_보강매트릭스.md,A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_20_기술스택_상세설계_보강.md,A3Work/AI_SOC_Agent_Service/docx/14_테스트케이스_보강매트릭스.docx,A3Work/AI_SOC_Agent_Service/docx/20_기술스택_상세설계_보강.docx"
+      ],
+      "docs": [
+        "A3Work/AI_SOC_Agent_Service/docx/14_테스트케이스_보강매트릭스.docx,A3Work/AI_SOC_Agent_Service/docx/20_기술스택_상세설계_보강.docx"
+      ]
+    },
+    {
+      "id": "2026-06-02T07-16-13-426Z-codex-to-claude-system-ai-soc-agent-service",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI_SOC_Agent_Service",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T07-16-13-426Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T07:16:13.426Z",
+      "paths": [
+        "A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/dataset_registry.py,A3Work/AI_SOC_Agent_Service/implementation_seed/reports/dataset_case_spec_plan_v0.json,A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_23_구현Seed_Replay_데이터셋CaseSpec_상세.md,A3Work/AI_SOC_Agent_Service/docx/23_구현Seed_Replay_데이터셋CaseSpec_상세.docx"
+      ],
+      "docs": [
+        "A3Work/AI_SOC_Agent_Service/docx/23_구현Seed_Replay_데이터셋CaseSpec_상세.docx"
+      ]
+    },
+    {
+      "id": "2026-06-02T04-14-50-147Z-codex-to-claude-system-ai-soc-agent-service",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI_SOC_Agent_Service",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T04-14-50-147Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T04:14:50.147Z",
+      "paths": [
+        "A3Work/AI_SOC_Agent_Service/implementation_seed/scripts/replay_runner.py,A3Work/AI_SOC_Agent_Service/implementation_seed/tests/test_replay_runner.py,A3Work/AI_SOC_Agent_Service/implementation_seed/reports/replay_metrics_v0.json,A3Work/AI_SOC_Agent_Service/implementation_seed/README.md,A3Work/AI_SOC_Agent_Service/implementation_seed/EVALUATION_PROTOCOL.md"
+      ],
+      "docs": [
+        "A3Work/AI_SOC_Agent_Service/implementation_seed/README.md,A3Work/AI_SOC_Agent_Service/implementation_seed/EVALUATION_PROTOCOL.md"
+      ]
+    },
+    {
+      "id": "2026-06-02T04-10-13-594Z-codex-to-claude-system-ai-soc-agent-service",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI_SOC_Agent_Service",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T04-10-13-594Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T04:10:13.594Z",
+      "paths": [
+        "A3Work/AI_SOC_Agent_Service/docx/22_데이터셋_및_평가전략.docx,A3Work/AI_SOC_Agent_Service/implementation_seed"
+      ],
+      "docs": [
+        "A3Work/AI_SOC_Agent_Service/implementation_seed/README.md,A3Work/AI_SOC_Agent_Service/implementation_seed/EVALUATION_PROTOCOL.md,A3Work/AI_SOC_Agent_Service/docx/22_데이터셋_및_평가전략.docx"
+      ]
+    },
+    {
+      "id": "2026-06-02T02-33-35-249Z-codex-to-claude-system-ai-soc-agent-service",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI_SOC_Agent_Service",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T02-33-35-249Z-codex-to-claude-system-ai-soc-agent-service.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T02:33:35.249Z",
+      "paths": [
+        "A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_상세실행계획_데이터셋_논문_아이데이션.md,A3Work/AI_SOC_Agent_Service/_analysis_extracted"
+      ],
+      "docs": [
+        "A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_상세실행계획_데이터셋_논문_아이데이션.md"
+      ]
+    },
+    {
+      "id": "2026-06-02T02-10-05-306Z-codex-to-claude-system-shrimp-hermes-dual-ledger-bridge",
+      "from": "codex",
+      "to": "claude",
+      "title": "Shrimp-Hermes dual-ledger bridge",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T02-10-05-306Z-codex-to-claude-system-shrimp-hermes-dual-ledger-bridge.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T02:10:05.306Z",
+      "paths": [
+        "scripts/shrimp_hermes_bridge.py,tests/test_shrimp_hermes_bridge.py"
+      ],
+      "docs": [
+        "documentation/guides/shrimp-hermes-dual-ledger-bridge.md"
+      ]
+    },
+    {
+      "id": "2026-06-02T00-23-28-387Z-codex-to-claude-system-hermes-codex-oauth-launcher",
+      "from": "codex",
+      "to": "claude",
+      "title": "Hermes Codex OAuth Launcher",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-02T00-23-28-387Z-codex-to-claude-system-hermes-codex-oauth-launcher.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-02T00:23:28.387Z",
+      "paths": [
+        "hermes-codex.bat,tools/hermes-codex-home/config.yaml,tools/hermes-codex-home/SOUL.md"
+      ],
+      "docs": [
+        "tools/hermes-agent/website/docs/integrations/providers.md,tools/hermes-agent/website/docs/user-guide/features/codex-app-server-runtime.md"
+      ]
+    },
+    {
+      "id": "2026-06-01T08-17-11-824Z-codex-to-claude-system-soc-assist-pack",
+      "from": "codex",
+      "to": "claude",
+      "title": "SOC Assist Pack",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-01T08-17-11-824Z-codex-to-claude-system-soc-assist-pack.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-01T08:17:11.824Z",
+      "paths": [
+        "security-hub/soc-assist-pack, data/soc-public-datasets"
+      ],
+      "docs": [
+        "security-hub/soc-assist-pack/docs/API.md, security-hub/soc-assist-pack/docs/ARCHITECTURE.md, security-hub/soc-assist-pack/docs/PUBLIC-DATASETS.md"
+      ]
+    },
+    {
+      "id": "2026-05-29T04-08-06-484Z-codex-to-claude-system-aimes-eleven-main-q2p-gates-cleanup",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven-main q2p-gates cleanup",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-29T04-08-06-484Z-codex-to-claude-system-aimes-eleven-main-q2p-gates-cleanup.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-29T04:08:06.484Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment commits 1af1835 and 6d16f4b,J:/tmp/aimes-q2p-gates-clean-1af1835,J:/tmp/aimes-q2p-workflows-clean-6d16f4b"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260529-124705-AIMES-Metal-Investigate-repeated-GitHub-q2p-gates-failures/QUALITY_GATE_RESULT.json"
+      ]
+    },
+    {
+      "id": "2026-05-29T03-46-34-926Z-codex-to-claude-system-aimes-eleven-main-version-coverage-push",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven-main version coverage push",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-29T03-46-34-926Z-codex-to-claude-system-aimes-eleven-main-version-coverage-push.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-29T03:46:34.926Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment/.gitignore,vendor/AIMES-Eleven-main-experiment/docs/source_lineage/v1_4_to_v1_4_13_linked_file_map.csv"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260529-124304-AIMES-Metal-Fix-GitHub-version-coverage-missing-source-lineage-map/QUALITY_GATE_RESULT.json"
+      ]
+    },
+    {
+      "id": "2026-05-29T03-07-44-089Z-codex-to-claude-system-aimes-eleven-main-github-workenv-push",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven-main GitHub workenv push",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-29T03-07-44-089Z-codex-to-claude-system-aimes-eleven-main-github-workenv-push.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-29T03:07:44.089Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment commit 88693d939a5ffcf0b8c33b2d11fe4c5878e03b23"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260529-120531-AIMES-Metal-Commit-and-push-GitHub-workenv-validation-fix/QUALITY_GATE_RESULT.json"
+      ]
+    },
+    {
+      "id": "2026-05-29T03-04-21-534Z-codex-to-claude-system-aimes-eleven-main-github-workenv-validation",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven-main GitHub workenv validation",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-29T03-04-21-534Z-codex-to-claude-system-aimes-eleven-main-github-workenv-validation.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-29T03:04:21.534Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment/.gitignore,vendor/AIMES-Eleven-main-experiment/CLAUDE.md,vendor/AIMES-Eleven-main-experiment/.claude/settings.json,vendor/AIMES-Eleven-main-experiment/.claude/commands/q2p*.md-required-subset,vendor/AIMES-Eleven-main-experiment/.claude/skills/q2p/SKILL.md,vendor/AIMES-Eleven-main-experiment/.claude/rules/30-session-continuity.md,vendor/AIMES-Eleven-main-experiment/data/product_help/question_bank_120_seed.csv,vendor/AIMES-Eleven-main-experiment/docs/llm_wiki/graph_edges.csv"
+      ],
+      "docs": [
+        "vendor/AIMES-Eleven-main-experiment/docs/handoffs/LATEST.md,vendor/AIMES-Eleven-main-experiment/docs/session/SESSION_CURRENT.md"
+      ]
+    },
+    {
+      "id": "2026-05-26T05-40-48-082Z-codex-to-claude-system-knowledge-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "knowledge-workflow",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-26T05-40-48-082Z-codex-to-claude-system-knowledge-workflow.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-26T05:40:48.082Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-26T00-46-38-244Z-codex-to-claude-system-argus-documentation-and-pcap-samples",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS documentation and PCAP samples",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-26T00-46-38-244Z-codex-to-claude-system-argus-documentation-and-pcap-samples.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-26T00:46:38.244Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-25T21-58-10-629Z-codex-to-claude-system-hermes",
+      "from": "codex",
+      "to": "claude",
+      "title": "Hermes",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-25T21-58-10-629Z-codex-to-claude-system-hermes.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-25T21:58:10.629Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-25T20-39-36-550Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-25T20-39-36-550Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-25T20:39:36.550Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-25T20-00-00-180Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-25T20-00-00-180Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-25T20:00:00.180Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-25T19-05-37-746Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-25T19-05-37-746Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-25T19:05:37.746Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-25T17-22-04-147Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-25T17-22-04-147Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-25T17:22:04.147Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-22T07-05-39-151Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-22T07-05-39-151Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-22T07:05:39.151Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-22T03-56-37-096Z-codex-to-claude-system-argus-test-server",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS-test-server",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-22T03-56-37-096Z-codex-to-claude-system-argus-test-server.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-22T03:56:37.096Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-21T03-26-22-130Z-codex-to-claude-system-argus-test-server-promotion-feasibility",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS test server promotion feasibility",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-21T03-26-22-130Z-codex-to-claude-system-argus-test-server-promotion-feasibility.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-21T03:26:22.130Z",
+      "paths": [
+        "documentation\\reports\\ARGUS_TEST_SERVER_PROMOTION_FEASIBILITY_20260521.md,documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260521-121444-genai-resume-prior-work-sessions-and-continue"
+      ],
+      "docs": [
+        "documentation\\reports\\ARGUS_TEST_SERVER_PROMOTION_FEASIBILITY_20260521.md"
+      ]
+    },
+    {
+      "id": "2026-05-20T08-46-49-272Z-codex-to-claude-system-argus-test-server",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS-test-server",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-20T08-46-49-272Z-codex-to-claude-system-argus-test-server.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-20T08:46:49.272Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-20T04-32-49-954Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-20T04-32-49-954Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-20T04:32:49.954Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-20T03-57-56-063Z-codex-to-claude-system-argus",
+      "from": "codex",
+      "to": "claude",
+      "title": "ARGUS",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-20T03-57-56-063Z-codex-to-claude-system-argus.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-20T03:57:56.063Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T08-34-47-007Z-codex-to-claude-system-aimes-metal-mes",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Metal-MES",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T08-34-47-007Z-codex-to-claude-system-aimes-metal-mes.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T08:34:47.007Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T08-30-50-606Z-codex-to-claude-system-aimes-metal-mes",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Metal-MES",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T08-30-50-606Z-codex-to-claude-system-aimes-metal-mes.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T08:30:50.606Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T08-01-09-872Z-codex-to-claude-system-aimes-metal-mes",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Metal-MES",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T08-01-09-872Z-codex-to-claude-system-aimes-metal-mes.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T08:01:09.872Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T07-56-48-431Z-codex-to-claude-system-aimes-metal-mes",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Metal-MES",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T07-56-48-431Z-codex-to-claude-system-aimes-metal-mes.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T07:56:48.431Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T04-22-42-833Z-codex-to-claude-system-aimes-metal-q2p-dashboard",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Metal Q2P dashboard",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T04-22-42-833Z-codex-to-claude-system-aimes-metal-q2p-dashboard.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T04:22:42.833Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-19T04-03-35-037Z-codex-to-claude-system-aimes-metal-q2p-traceability-bootstrap",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Metal Q2P Traceability Bootstrap",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-19T04-03-35-037Z-codex-to-claude-system-aimes-metal-q2p-traceability-bootstrap.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-19T04:03:35.037Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment/AIMES-Metal,vendor/AIMES-Eleven-main-experiment/docs/aimes_q2p,vendor/AIMES-Eleven-main-experiment/docs/savepoints/SP-20260519-metal-traceability-20050.md,vendor/AIMES-Eleven-main-experiment/prompts/UNIVERSAL_CONTINUE_AIMES_MES_METAL_v1_4_17.md"
+      ],
+      "docs": [
+        "vendor/AIMES-Eleven-main-experiment/docs/session/recovery_prompt.md,vendor/AIMES-Eleven-main-experiment/prompts/generated/next_agent_prompt.md,vendor/AIMES-Eleven-main-experiment/docs/handoffs/LATEST.md"
+      ]
+    },
+    {
+      "id": "2026-05-18T03-19-53-568Z-codex-to-claude-system-aimes-eleven-experiment-remote-update",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven experiment remote update",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-18T03-19-53-568Z-codex-to-claude-system-aimes-eleven-experiment-remote-update.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-18T03:19:53.568Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment,documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-111630-AIMES-Eleven-main-Update-remote-songyh-experiment-branch-on-GitHub-without-affecting-main"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-111630-AIMES-Eleven-main-Update-remote-songyh-experiment-branch-on-GitHub-without-affecting-main/HANDOFF.md,documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-111630-AIMES-Eleven-main-Update-remote-songyh-experiment-branch-on-GitHub-without-affecting-main/WORKLOG.md"
+      ]
+    },
+    {
+      "id": "2026-05-18T02-04-24-472Z-codex-to-claude-system-aimes-eleven-experiment-worktree",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES-Eleven experiment worktree",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-18T02-04-24-472Z-codex-to-claude-system-aimes-eleven-experiment-worktree.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-18T02:04:24.472Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main-experiment,documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-105511-AIMES-Eleven-main-Update-songyh-experiment-branch-from-A3-SECURITY-AIMES-Eleven-main-without-affec"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-105511-AIMES-Eleven-main-Update-songyh-experiment-branch-from-A3-SECURITY-AIMES-Eleven-main-without-affec/HANDOFF.md,documentation/llm-wiki/operations/knowledge-workflow/KW-20260518-105511-AIMES-Eleven-main-Update-songyh-experiment-branch-from-A3-SECURITY-AIMES-Eleven-main-without-affec/WORKLOG.md"
+      ]
+    },
+    {
+      "id": "2026-05-18T01-34-35-423Z-codex-to-claude-system-ai-expo-package-improvement-reusable-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI EXPO package improvement reusable workflow",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-18T01-34-35-423Z-codex-to-claude-system-ai-expo-package-improvement-reusable-workflow.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-18T01:34:35.423Z",
+      "paths": [
+        "documentation/llm-wiki/operations/crawl-classification/ai-expo-business-db-package-improvement-workflow-20260518.ko.md",
+        "documentation/guides/evidence-first-business-card-workflow-runbook.ko.md",
+        "work/expo business db/ai_expo_llm_wiki"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/crawl-classification/ai-expo-business-db-package-improvement-workflow-20260518.ko.md",
+        "work/expo business db/ai_expo_llm_wiki/README.md",
+        "work/expo business db/ai_expo_llm_wiki/IMPROVEMENT_AUDIT_20260518.md"
+      ]
+    },
+    {
+      "id": "2026-05-18T01-20-42-376Z-codex-to-claude-system-ai-expo-business-db-workflow-package",
+      "from": "codex",
+      "to": "claude",
+      "title": "AI EXPO business DB workflow package",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-18T01-20-42-376Z-codex-to-claude-system-ai-expo-business-db-workflow-package.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-18T01:20:42.376Z",
+      "paths": [
+        "work/expo business db/ai_expo_llm_wiki"
+      ],
+      "docs": [
+        "work/expo business db/ai_expo_llm_wiki/README.md",
+        "work/expo business db/ai_expo_llm_wiki/IMPROVEMENT_AUDIT_20260518.md",
+        "work/expo business db/ai_expo_llm_wiki/LLM_CONTEXT_PACK.md"
+      ]
+    },
+    {
+      "id": "2026-05-15T01-34-29-140Z-codex-to-claude-system-evidence-first-ops-continuation-bundle",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-ops-continuation-bundle",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-15T01-34-29-140Z-codex-to-claude-system-evidence-first-ops-continuation-bundle.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-15T01:34:29.140Z",
+      "paths": [
+        "documentation/session/handoffs/EVIDENCE_FIRST_OPS_CONTINUATION_BUNDLE_2026-05-15.ko.md; documentation/session/handoffs/README.md; documentation/guides/evidence-first-workflow-prompt-template-catalog.ko.md; documentation/guides/evidence-first-business-card-workflow-runbook.ko.md; scripts/evidence_first_ops.py; tests/test_evidence_first_ops.py"
+      ],
+      "docs": [
+        "documentation/session/handoffs/EVIDENCE_FIRST_OPS_CONTINUATION_BUNDLE_2026-05-15.ko.md"
+      ]
+    },
+    {
+      "id": "2026-05-15T00-59-24-359Z-codex-to-claude-system-evidence-first-ops-tooling",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-ops-tooling",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-15T00-59-24-359Z-codex-to-claude-system-evidence-first-ops-tooling.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-15T00:59:24.359Z",
+      "paths": [
+        "scripts/evidence_first_ops.py; tests/test_evidence_first_ops.py; documentation/guides/evidence-first-workflow-prompt-template-catalog.ko.md; documentation/guides/evidence-first-business-card-workflow-runbook.ko.md"
+      ],
+      "docs": [
+        "documentation/guides/evidence-first-workflow-prompt-template-catalog.ko.md; documentation/guides/evidence-first-business-card-workflow-runbook.ko.md"
+      ]
+    },
+    {
+      "id": "2026-05-15T00-31-13-563Z-codex-to-claude-system-evidence-first-template-documentation",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-template-documentation",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-15T00-31-13-563Z-codex-to-claude-system-evidence-first-template-documentation.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-15T00:31:13.563Z",
+      "paths": [
+        "documentation/guides/evidence-first-workflow-prompt-template-catalog.ko.md,documentation/guides/evidence-first-business-card-workflow-runbook.ko.md"
+      ],
+      "docs": [
+        "documentation/guides/evidence-first-workflow-prompt-template-catalog.ko.md,documentation/guides/evidence-first-business-card-workflow-runbook.ko.md"
+      ]
+    },
+    {
+      "id": "2026-05-14T11-44-50-367Z-codex-to-claude-system-business-card-governed-pipeline-adversarial-test-loop",
+      "from": "codex",
+      "to": "claude",
+      "title": "business-card-governed-pipeline-adversarial-test-loop",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T11-44-50-367Z-codex-to-claude-system-business-card-governed-pipeline-adversarial-test-loop.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T11:44:50.367Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T11-11-27-040Z-codex-to-claude-system-business-card-governed-pipeline-orchestrator",
+      "from": "codex",
+      "to": "claude",
+      "title": "business-card-governed-pipeline-orchestrator",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T11-11-27-040Z-codex-to-claude-system-business-card-governed-pipeline-orchestrator.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T11:11:27.040Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T10-28-25-795Z-codex-to-claude-system-business-card-governed-postprocess",
+      "from": "codex",
+      "to": "claude",
+      "title": "business-card-governed-postprocess",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T10-28-25-795Z-codex-to-claude-system-business-card-governed-postprocess.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T10:28:25.795Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T10-11-35-638Z-codex-to-claude-system-evidence-first-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-workflow",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T10-11-35-638Z-codex-to-claude-system-evidence-first-workflow.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T10:11:35.638Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T07-55-57-889Z-codex-to-claude-system-evidence-first-crawl-search-db-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-crawl-search-db-workflow",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T07-55-57-889Z-codex-to-claude-system-evidence-first-crawl-search-db-workflow.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T07:55:57.889Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T07-35-33-998Z-codex-to-claude-system-business-card-company-db-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "business-card-company-db-workflow",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T07-35-33-998Z-codex-to-claude-system-business-card-company-db-workflow.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T07:35:33.998Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T05-09-37-794Z-codex-to-claude-system-aiexpo-becuai-supplemental-report-row",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo-becuai-supplemental-report-row",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T05-09-37-794Z-codex-to-claude-system-aiexpo-becuai-supplemental-report-row.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T05:09:37.794Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T04-17-18-642Z-codex-to-claude-system-aiexpo-aimes-truthlens-medium-low-recrawl",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo-aimes-truthlens-medium-low-recrawl",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T04-17-18-642Z-codex-to-claude-system-aiexpo-aimes-truthlens-medium-low-recrawl.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T04:17:18.642Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T03-12-18-969Z-codex-to-claude-system-aiexpo-aimes-truthlens-recrawl",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo-aimes-truthlens-recrawl",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T03-12-18-969Z-codex-to-claude-system-aiexpo-aimes-truthlens-recrawl.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T03:12:18.969Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T01-37-41-271Z-codex-to-claude-system-aimes-live-recrawl-round2",
+      "from": "codex",
+      "to": "claude",
+      "title": "aimes-live-recrawl-round2",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T01-37-41-271Z-codex-to-claude-system-aimes-live-recrawl-round2.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T01:37:41.271Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T01-22-37-753Z-codex-to-claude-system-aimes-evidence-pipeline-v2",
+      "from": "codex",
+      "to": "claude",
+      "title": "aimes-evidence-pipeline-v2",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T01-22-37-753Z-codex-to-claude-system-aimes-evidence-pipeline-v2.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T01:22:37.753Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-14T00-55-03-333Z-codex-to-claude-system-evidence-first-company-crawl-classification",
+      "from": "codex",
+      "to": "claude",
+      "title": "evidence-first-company-crawl-classification",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-14T00-55-03-333Z-codex-to-claude-system-evidence-first-company-crawl-classification.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-14T00:55:03.333Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-13T21-38-43-716Z-codex-to-claude-system-aiexpo-aimes-truthlens-report",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo-aimes-truthlens-report",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-13T21-38-43-716Z-codex-to-claude-system-aiexpo-aimes-truthlens-report.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-13T21:38:43.716Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-13T21-25-32-888Z-codex-to-claude-system-aiexpo",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-13T21-25-32-888Z-codex-to-claude-system-aiexpo.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-13T21:25:32.888Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-13T20-16-55-993Z-codex-to-claude-system-aiexpo",
+      "from": "codex",
+      "to": "claude",
+      "title": "aiexpo",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-13T20-16-55-993Z-codex-to-claude-system-aiexpo.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-13T20:16:55.993Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-13T01-22-40-984Z-codex-to-claude-system-desktop-commander-mcp",
+      "from": "codex",
+      "to": "claude",
+      "title": "Desktop Commander MCP",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-13T01-22-40-984Z-codex-to-claude-system-desktop-commander-mcp.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-13T01:22:40.984Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-12T07-57-43-971Z-codex-to-claude-system-company-domain-clean-evidence-review",
+      "from": "codex",
+      "to": "claude",
+      "title": "company-domain-clean-evidence-review",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-12T07-57-43-971Z-codex-to-claude-system-company-domain-clean-evidence-review.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-12T07:57:43.971Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-12T06-21-46-333Z-codex-to-claude-system-company-domain-scored-research",
+      "from": "codex",
+      "to": "claude",
+      "title": "company-domain-scored-research",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-12T06-21-46-333Z-codex-to-claude-system-company-domain-scored-research.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-12T06:21:46.333Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-12T06-09-04-542Z-codex-to-claude-system-company-domain-scored-research",
+      "from": "codex",
+      "to": "claude",
+      "title": "company-domain-scored-research",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-12T06-09-04-542Z-codex-to-claude-system-company-domain-scored-research.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-12T06:09:04.542Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-12T04-39-36-409Z-codex-to-claude-system-company-domain-research",
+      "from": "codex",
+      "to": "claude",
+      "title": "company-domain-research",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-12T04-39-36-409Z-codex-to-claude-system-company-domain-research.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-12T04:39:36.409Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-10T22-38-57-219Z-codex-to-claude-system-attention-transformer-drone-robot-security-report",
+      "from": "codex",
+      "to": "claude",
+      "title": "Attention Transformer drone robot security report",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-10T22-38-57-219Z-codex-to-claude-system-attention-transformer-drone-robot-security-report.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-10T22:38:57.219Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-06T20-56-44-404Z-codex-to-claude-system-claude-mythos-report",
+      "from": "codex",
+      "to": "claude",
+      "title": "Claude Mythos report",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-06T20-56-44-404Z-codex-to-claude-system-claude-mythos-report.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-06T20:56:44.404Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-06T19-59-36-779Z-codex-to-claude-system-claude-mythos-cyber-research-corpus",
+      "from": "codex",
+      "to": "claude",
+      "title": "Claude Mythos cyber research corpus",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-06T19-59-36-779Z-codex-to-claude-system-claude-mythos-cyber-research-corpus.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-06T19:59:36.779Z",
+      "paths": [
+        "tools/research/collect-claude-mythos-cyber-corpus.mjs,tools/research/augment-claude-mythos-cyber-corpus.mjs,tools/research/normalize-claude-mythos-source-ledger.mjs,data/research/claude-mythos-cybersecurity-20260507"
+      ],
+      "docs": [
+        "data/research/claude-mythos-cybersecurity-20260507/SOURCE_TIER_SUMMARY.md,data/research/claude-mythos-cybersecurity-20260507/TOPIC_IDEAS.md"
+      ]
+    },
+    {
+      "id": "2026-05-06T19-51-58-878Z-codex-to-claude-system-claude-mythos-cyber-research-corpus",
+      "from": "codex",
+      "to": "claude",
+      "title": "Claude Mythos cyber research corpus",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-06T19-51-58-878Z-codex-to-claude-system-claude-mythos-cyber-research-corpus.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-06T19:51:58.878Z",
+      "paths": [
+        "tools/research/collect-claude-mythos-cyber-corpus.mjs,tools/research/augment-claude-mythos-cyber-corpus.mjs,tools/research/normalize-claude-mythos-source-ledger.mjs,data/research/claude-mythos-cybersecurity-20260507"
+      ],
+      "docs": [
+        "data/research/claude-mythos-cybersecurity-20260507/SOURCE_TIER_SUMMARY.md,data/research/claude-mythos-cybersecurity-20260507/TOPIC_IDEAS.md"
+      ]
+    },
+    {
+      "id": "2026-05-06T19-09-25-423Z-codex-to-claude-system-aimes-agricultural-ollama-connectivity",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Agricultural Ollama connectivity",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-06T19-09-25-423Z-codex-to-claude-system-aimes-agricultural-ollama-connectivity.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-06T19:09:25.423Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-05T03-51-00-677Z-codex-to-claude-system-aimes-agricultural-localhost-data-coverage",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Agricultural localhost data coverage",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-05T03-51-00-677Z-codex-to-claude-system-aimes-agricultural-localhost-data-coverage.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-05T03:51:00.677Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/production.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/haccp.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/traceability.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/maintenance.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/settings.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/ai-llm.js,tools/aimes-eleven/README.md"
+      ],
+      "docs": [
+        "tools/aimes-eleven/README.md,documentation/llm-wiki/operations/knowledge-workflow/KW-20260504-213507-genai-Re-audit-AIMES-Agricultural-production-quality-full-data-coverage/HANDOFF.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T12-31-11-988Z-codex-to-claude-system-aimes-agricultural-production-quality-data-apis",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Agricultural production quality data APIs",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T12-31-11-988Z-codex-to-claude-system-aimes-agricultural-production-quality-data-apis.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T12:31:11.988Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/production.js,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/routes/quality.js,tools/aimes-eleven/README.md"
+      ],
+      "docs": [
+        "tools/aimes-eleven/README.md,documentation/llm-wiki/operations/knowledge-workflow/KW-20260504-210109-genai-Audit-AIMES-Agricultural-20001-production-and-quality-API-data-wiring/HANDOFF.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T11-59-25-503Z-codex-to-claude-system-aimes-agricultural-localhost-auth",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Agricultural localhost auth",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T11-59-25-503Z-codex-to-claude-system-aimes-agricultural-localhost-auth.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T11:59:25.503Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main/AIMES-Agricultural/frontend/web/src/pages/LoginPage.tsx,vendor/AIMES-Eleven-main/AIMES-Agricultural/frontend/web/dist,vendor/AIMES-Eleven-main/AIMES-Agricultural/services/api-gateway/src/models/users.js,tools/aimes-eleven/README.md"
+      ],
+      "docs": [
+        "tools/aimes-eleven/README.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T11-49-37-498Z-codex-to-claude-system-aimes-eleven-localhost-static-api-proxy",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Eleven localhost static/API proxy",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T11-49-37-498Z-codex-to-claude-system-aimes-eleven-localhost-static-api-proxy.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T11:49:37.498Z",
+      "paths": [
+        "tools/aimes-eleven/static-server.mjs,tools/aimes-eleven/start-aimes-localhost.ps1,tools/aimes-eleven/README.md,data/aimes-eleven-localhost/servers.json"
+      ],
+      "docs": [
+        "tools/aimes-eleven/README.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T11-40-52-665Z-codex-to-claude-system-aimes-eleven-localhost-backend-harness",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Eleven localhost backend harness",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T11-40-52-665Z-codex-to-claude-system-aimes-eleven-localhost-backend-harness.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T11:40:52.665Z",
+      "paths": [
+        "tools/aimes-eleven,data/aimes-eleven-localhost,documentation/llm-wiki/operations/aimes/AIMES_ELEVEN_BACKEND_RUNTIME_SCOREBOARD_20260504.ko.md"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/aimes/AIMES_ELEVEN_BACKEND_RUNTIME_SCOREBOARD_20260504.ko.md,data/aimes-eleven-localhost/scoreboards/AIMES_DOMAIN_BACKEND_SCOREBOARD_20260504.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T07-01-54-277Z-codex-to-claude-system-aimes-domain-backend-profiles",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES domain backend profiles",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T07-01-54-277Z-codex-to-claude-system-aimes-domain-backend-profiles.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T07:01:54.277Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-04T06-33-30-706Z-codex-to-claude-system-aimes-food-backend-localhost-docker-stack",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Food backend localhost Docker stack",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T06-33-30-706Z-codex-to-claude-system-aimes-food-backend-localhost-docker-stack.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T06:33:30.706Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-05-04T06-10-01-946Z-codex-to-claude-system-aimes-eleven-localhost-static-servers",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Eleven localhost static servers",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T06-10-01-946Z-codex-to-claude-system-aimes-eleven-localhost-static-servers.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T06:10:01.946Z",
+      "paths": [
+        "tools/aimes-eleven/static-server.mjs",
+        "tools/aimes-eleven/start-aimes-localhost.ps1",
+        "tools/aimes-eleven/stop-aimes-localhost.ps1",
+        "data/aimes-eleven-localhost/servers.json",
+        "documentation/guides/AIMES-ELEVEN-LOCALHOST.ko.md"
+      ],
+      "docs": [
+        "documentation/guides/AIMES-ELEVEN-LOCALHOST.ko.md",
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260504-150401-genai-AIMES-Eleven-localhost-static-servers-on-ports-20001-20011/HANDOFF.md"
+      ]
+    },
+    {
+      "id": "2026-05-04T05-59-29-182Z-codex-to-claude-system-aimes-eleven-clone-and-root-build",
+      "from": "codex",
+      "to": "claude",
+      "title": "AIMES Eleven clone and root build",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-04T05-59-29-182Z-codex-to-claude-system-aimes-eleven-clone-and-root-build.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-04T05:59:29.182Z",
+      "paths": [
+        "vendor/AIMES-Eleven-main",
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260504-145408-genai-AIMES-Eleven-repository-clone-and-root-monorepo-build-verification"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260504-145408-genai-AIMES-Eleven-repository-clone-and-root-monorepo-build-verification/HANDOFF.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T07-23-07-906Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness",
+      "from": "codex",
+      "to": "claude",
+      "title": "K-Drive System Audit Scanner and Scoring Harness",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T07-23-07-906Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T07:23:07.906Z",
+      "paths": [
+        "data/system-audit/full-kdrive-audit-20260501-162200/RUN.json",
+        "data/system-audit/latest.json",
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260501-155837-genai-K-Drive-full-system-audit-scanner-and-100-point-scoring-implementation/HANDOFF.md"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/system-audit/SYSTEM_AUDIT_OPERATING_GUIDE.ko.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T07-21-10-786Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness",
+      "from": "codex",
+      "to": "claude",
+      "title": "K-Drive System Audit Scanner and Scoring Harness",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T07-21-10-786Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T07:21:10.786Z",
+      "paths": [
+        "tools/kdrive_system_audit/scan.py",
+        "tools/kdrive_system_audit/README.md",
+        "documentation/llm-wiki/operations/system-audit/SYSTEM_AUDIT_OPERATING_GUIDE.ko.md"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/system-audit/SYSTEM_AUDIT_OPERATING_GUIDE.ko.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T07-18-34-032Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness",
+      "from": "codex",
+      "to": "claude",
+      "title": "K-Drive System Audit Scanner and Scoring Harness",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T07-18-34-032Z-codex-to-claude-system-k-drive-system-audit-scanner-and-scoring-harness.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T07:18:34.032Z",
+      "paths": [
+        "tools/kdrive_system_audit",
+        "tools/tests/test_kdrive_system_audit.py",
+        "documentation/llm-wiki/operations/system-audit/SYSTEM_AUDIT_OPERATING_GUIDE.ko.md",
+        "data/system-audit/latest.json"
+      ],
+      "docs": [
+        "documentation/llm-wiki/operations/system-audit/SYSTEM_AUDIT_OPERATING_GUIDE.ko.md",
+        "tools/kdrive_system_audit/README.md",
+        "documentation/llm-wiki/operations/knowledge-workflow/KW-20260501-155837-genai-K-Drive-full-system-audit-scanner-and-100-point-scoring-implementation/HANDOFF.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T06-42-26-936Z-codex-to-claude-system-abl-alias-namespace-and-k-drive-ai-ops-harness",
+      "from": "codex",
+      "to": "claude",
+      "title": "ABL Alias Namespace and K-Drive AI Ops Harness",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T06-42-26-936Z-codex-to-claude-system-abl-alias-namespace-and-k-drive-ai-ops-harness.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T06:42:26.936Z",
+      "paths": [
+        "config/abl-namespace-registry.json",
+        "systems/abl-registry.js",
+        "abl.ps1",
+        ".claude/skills/abl-router/SKILL.md",
+        "temp/codex-home/skills/abl-router/SKILL.md",
+        "data/agent-board/kdrive-ai-ops-harness.json",
+        "data/agent-board/open-brain-candidate-evaluation.json",
+        "documentation/abl/K_DRIVE_AI_OPS_HARNESS.ko.md",
+        "documentation/architect/adr/ADR-AGENT-BOARD-0011-open-brain-memory-backend-selection.ko.md",
+        "documentation/abl/ABL_NAMESPACE_AND_OPEN_BRAIN_BRIDGE.ko.md"
+      ],
+      "docs": [
+        "config/abl-namespace-registry.json",
+        "documentation/abl/K_DRIVE_AI_OPS_HARNESS.ko.md",
+        "documentation/architect/adr/ADR-AGENT-BOARD-0011-open-brain-memory-backend-selection.ko.md",
+        ".claude/skills/abl-router/SKILL.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T06-04-16-090Z-codex-to-claude-system-abl-namespace-registry-and-open-brain-bridge",
+      "from": "codex",
+      "to": "claude",
+      "title": "ABL Namespace Registry and Open Brain Bridge",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T06-04-16-090Z-codex-to-claude-system-abl-namespace-registry-and-open-brain-bridge.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T06:04:16.090Z",
+      "paths": [
+        "config/abl-namespace-registry.json",
+        "systems/abl-registry.js",
+        "abl.ps1",
+        "documentation/abl/ABL_NAMESPACE_AND_OPEN_BRAIN_BRIDGE.ko.md",
+        ".claude/skills/cross-llm-handoff/SKILL.md"
+      ],
+      "docs": [
+        "documentation/abl/ABL_NAMESPACE_AND_OPEN_BRAIN_BRIDGE.ko.md",
+        "config/abl-namespace-registry.json"
+      ]
+    },
+    {
+      "id": "2026-05-01T05-36-42-339Z-codex-to-claude-system-short-handoff-wrapper-and-skill",
+      "from": "codex",
+      "to": "claude",
+      "title": "Short Handoff Wrapper and Skill",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-01T05-36-42-339Z-codex-to-claude-system-short-handoff-wrapper-and-skill.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T05:36:42.339Z",
+      "paths": [
+        "handoff.ps1",
+        ".claude/skills/cross-llm-handoff/SKILL.md",
+        "systems/llm-system-handoff.js",
+        "documentation/session/handoffs/README.md"
+      ],
+      "docs": [
+        "documentation/session/handoffs/README.md",
+        ".claude/skills/cross-llm-handoff/SKILL.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T14-23-11-codex-to-claude-system-cross-llm-handoff",
+      "from": "codex",
+      "to": "claude",
+      "title": "Cross-LLM handoff system",
+      "status": "completed",
+      "path": "K:/PortableApps/genai/documentation/session/handoffs/2026-05-01T14-23-11-codex-to-claude-system-cross-llm-handoff.md",
+      "latestPath": "K:/PortableApps/genai/documentation/session/handoffs/latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T14:23:11+09:00",
+      "paths": [
+        "systems/llm-system-handoff.js",
+        "systems/provider-handoff.js",
+        "documentation/session/handoffs/"
+      ],
+      "docs": [
+        "documentation/session/handoffs/README.md",
+        "documentation/session/handoffs/2026-05-01T14-23-11-codex-to-claude-retroactive-systems.md"
+      ]
+    },
+    {
+      "id": "2026-05-01T14-23-11-codex-to-claude-retroactive-systems",
+      "from": "codex",
+      "to": "claude",
+      "title": "Retroactive Codex systems digest",
+      "status": "completed",
+      "path": "K:/PortableApps/genai/documentation/session/handoffs/2026-05-01T14-23-11-codex-to-claude-retroactive-systems.md",
+      "latestPath": "K:/PortableApps/genai/documentation/session/handoffs/latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-05-01T14:23:11+09:00",
+      "paths": [
+        "command-center/ai-ops-console/",
+        "systems/provider-handoff.js",
+        "codex.bat",
+        "nexus/hooks/codex-hook-bridge.js",
+        "nexus/sync/config-sync.js"
+      ],
+      "docs": [
+        "documentation/session/handoffs/2026-05-01T14-23-11-codex-to-claude-retroactive-systems.md",
+        "documentation/guides/CLAUDE-CODEX-SHARED-RUNTIME.md"
+      ]
+    }
+  ]
+}

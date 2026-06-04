@@ -1,0 +1,22 @@
+{
+  "claude->codex": {
+    "provider": "claude",
+    "target": "codex",
+    "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-09T06-08-38-352Z-claude-to-codex.md",
+    "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-claude-to-codex.md",
+    "generatedAt": "2026-05-09T06:08:38.490Z",
+    "stage": "executing",
+    "statusLine": "Unified Diff MCP 비교 분석",
+    "activeTask": "Unified Diff MCP 비교 분석"
+  },
+  "codex->claude": {
+    "provider": "codex",
+    "target": "claude",
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T01-46-28-748Z-codex-to-claude.md",
+    "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-codex-to-claude.md",
+    "generatedAt": "2026-06-04T01:46:29.053Z",
+    "stage": "queued",
+    "statusLine": "10개의 열린 작업이 실행 선택을 기다리고 있습니다",
+    "activeTask": null
+  }
+}
