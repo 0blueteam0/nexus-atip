@@ -55,6 +55,9 @@ class LangGraphAgentCompositionTest(unittest.TestCase):
         self.assertGreaterEqual(result['final_state']['timeline_event_count'], 1)
         self.assertIn('privileged_account', result['final_state']['reason_codes'])
         self.assertIn('draft_human_review_brief', result['visited_nodes'])
+        self.assertEqual(result['execution_assurance']['visited_path_matches_spec'], True)
+        self.assertEqual(result['execution_assurance']['unexpected_nodes'], [])
+        self.assertEqual(result['execution_assurance']['missing_required_nodes'], [])
 
     def test_should_compile_and_invoke_actual_langgraph_app(self):
         fixture_path = ROOT / 'fixtures' / 'vpn_login_anomaly_complete.evidence_package.json'

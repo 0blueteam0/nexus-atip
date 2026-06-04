@@ -238,15 +238,31 @@ def build_langgraph_app() -> Any:
     return graph.compile()
 
 
+def build_execution_assurance(visited_nodes: list[str], spec: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Compare actual visited LangGraph nodes with the declared graph spec."""
+    graph_spec = spec or AgentGraphComposer().build_spec()
+    spec_node_ids = [node['id'] for node in graph_spec['nodes']]
+    required_nodes = set(spec_node_ids)
+    visited_set = set(visited_nodes)
+    return {
+        'visited_path_matches_spec': visited_nodes == spec_node_ids,
+        'declared_node_order': spec_node_ids,
+        'unexpected_nodes': [node for node in visited_nodes if node not in required_nodes],
+        'missing_required_nodes': [node for node in spec_node_ids if node not in visited_set],
+    }
+
+
 def run_seed_investigation_graph(fixture_path: Path) -> dict[str, Any]:
     """Run the compiled LangGraph seed over a local Evidence Package fixture."""
     package = json.loads(fixture_path.read_text(encoding='utf-8'))
     app = build_langgraph_app()
     final_state = app.invoke({'evidence_package': package, 'visited_nodes': []})
+    visited_nodes = final_state['visited_nodes']
     return {
         'graph_id': GRAPH_ID,
         'case_id': final_state['case_id'],
-        'visited_nodes': final_state['visited_nodes'],
+        'visited_nodes': visited_nodes,
+        'execution_assurance': build_execution_assurance(visited_nodes),
         'final_state': {
             'contract_valid': final_state['contract_valid'],
             'timeline_event_count': final_state['timeline_event_count'],

@@ -13,6 +13,19 @@
       "assess_guardrails",
       "draft_human_review_brief"
     ],
+    "execution_assurance": {
+      "visited_path_matches_spec": true,
+      "declared_node_order": [
+        "ingest_evidence_package",
+        "validate_evidence_contract",
+        "investigate_timeline",
+        "map_mitre_context",
+        "assess_guardrails",
+        "draft_human_review_brief"
+      ],
+      "unexpected_nodes": [],
+      "missing_required_nodes": []
+    },
     "final_state": {
       "contract_valid": true,
       "timeline_event_count": 5,
