@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260604-105149-SchoolWork-Cogito-Zero-polished-cleanup-add-necessary-visuals-tables-and-remove-generation-",
+  "project": "SchoolWork",
+  "task": "Cogito Zero polished cleanup add necessary visuals tables and remove generation artifacts",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260604-105149-SchoolWork-Cogito-Zero-polished-cleanup-add-necessary-visuals-tables-and-remove-generation-",
+  "created_at": "2026-06-04T10:51:49+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
