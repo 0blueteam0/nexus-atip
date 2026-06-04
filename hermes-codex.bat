@@ -19,9 +19,9 @@ set "NPM_GLOBAL_BIN=%DRV%\PortableApps\tools\nodejs\npm-global"
 set "NODE_PATH=%DRV%\PortableApps\tools\nodejs-v20-backup"
 set "UV_PATH=%DRV%\PortableApps\tools\uv"
 set "HERMES_CODEX_BASE_URL=https://chatgpt.com/backend-api/codex"
-set "HERMES_CODEX_MODEL=gpt-5.4"
+set "HERMES_CODEX_MODEL=gpt-5.5"
 set "HERMES_DASHBOARD_HOST=127.0.0.1"
-set "HERMES_DASHBOARD_PORT=9119"
+set "HERMES_DASHBOARD_PORT=9203"
 set "HERMES_DASHBOARD_URL=http://%HERMES_DASHBOARD_HOST%:%HERMES_DASHBOARD_PORT%/"
 set "HERMES_DASHBOARD_CHAT_URL=http://%HERMES_DASHBOARD_HOST%:%HERMES_DASHBOARD_PORT%/chat"
 set "HERMES_DASHBOARD_TUI=1"
@@ -262,7 +262,7 @@ echo   hermes-codex.bat --setup        Open Hermes model setup; choose OpenAI Co
 echo   hermes-codex.bat --auth         Start fresh OpenAI Codex device-code login
 echo   hermes-codex.bat --doctor       Run Hermes diagnostics with this profile
 echo   hermes-codex.bat --mcp-list     List MCP servers for this profile
-echo   hermes-codex.bat --chat         Start/open browser chat at http://127.0.0.1:9119/chat
+echo   hermes-codex.bat --chat         Start/open browser chat at http://127.0.0.1:9203/chat
 echo   hermes-codex.bat --browser      Alias of --chat
 echo   hermes-codex.bat --dashboard-status  Show Hermes dashboard process status
 echo   hermes-codex.bat --no-dashboard [args]  Start Hermes without auto-opening dashboard

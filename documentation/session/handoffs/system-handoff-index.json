@@ -1,21 +1,45 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T08:04:46.646Z",
+  "updatedAt": "2026-06-04T11:16:56.741Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-04T08-04-46-347Z-codex-to-claude-system-insurance-fds-data",
+      "id": "2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-data",
+      "title": "hermes-codex-launcher",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T08-04-46-347Z-codex-to-claude-system-insurance-fds-data.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-04T08:04:46.347Z",
+      "createdAt": "2026-06-04T11:16:56.581Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher",
+      "from": "codex",
+      "to": "claude",
+      "title": "hermes-codex-launcher",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-16-56-581Z-codex-to-claude-system-hermes-codex-launcher.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T11:16:56.581Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-06-04T11-14-03-396Z-codex-to-claude-system-hermes-codex-launcher",
+      "from": "codex",
+      "to": "claude",
+      "title": "hermes-codex-launcher",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-14-03-396Z-codex-to-claude-system-hermes-codex-launcher.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-04T11:14:03.396Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-04T08-04-46-347Z-codex-to-claude-system-insurance-fds-data",
       "from": "codex",
