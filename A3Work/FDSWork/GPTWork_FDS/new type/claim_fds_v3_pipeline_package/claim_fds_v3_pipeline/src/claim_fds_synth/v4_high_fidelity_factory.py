@@ -23,10 +23,12 @@ from .schema_renderers import (
     render_claim_review_cover_sheet,
     render_diagnosis_certificate,
     render_hospitalization_confirmation,
+    render_inpatient_detail_statement,
     render_medical_opinion,
     render_outpatient_confirmation,
     render_pharmacy_receipt,
     render_prescription,
+    render_supporting_evidence_checklist,
     render_surgery_confirmation,
 )
 from .qc import audit_layout
@@ -75,6 +77,36 @@ ATTACK_TAXONOMY = {
         "reason_codes": ["R701_ENTITY_MISMATCH", "R703_PROVIDER_MISMATCH", "R704_HOSPITAL_PHARMACY_MISMATCH"],
         "fields": ["provider_token", "pharmacy_provider_token", "business_no"],
         "why_fds_detects": "청구 bundle 내 병원·약국·발급기관 식별정보가 서로 맞지 않는지 탐지",
+    },
+    "semantic_hospitalization_period_mismatch": {
+        "category": "입원기간/입퇴원일 변조",
+        "reason_codes": ["R601_DATE_SEQUENCE_VIOLATION", "R602_ADMISSION_PERIOD_MISMATCH", "R603_LENGTH_OF_STAY_OUTLIER"],
+        "fields": ["admission_date", "discharge_date", "admission_days", "treatment_date"],
+        "why_fds_detects": "입퇴원확인서·입원세부내역서·영수증의 입원기간과 일수, 식대/병실료 산정 일수가 맞지 않는지 탐지",
+    },
+    "semantic_inpatient_room_charge_inflation": {
+        "category": "입원 병실료/비급여 과청구",
+        "reason_codes": ["R302_NONCOVERED_OVERBILLING", "R303_ROOM_CHARGE_INFLATION", "R603_LENGTH_OF_STAY_OUTLIER"],
+        "fields": ["room_charge", "noncovered_amount", "admission_days"],
+        "why_fds_detects": "상급병실료·비급여·식대가 입원일수 또는 세부내역 합계에 비해 과다한지 탐지",
+    },
+    "semantic_line_item_insertion": {
+        "category": "진료비세부내역 항목 추가/수량 조작",
+        "reason_codes": ["R304_QUANTITY_OVERCLAIM", "R305_LINE_ITEM_INSERTION", "R306_DETAIL_RECEIPT_SUM_MISMATCH"],
+        "fields": ["inserted_line_item_amount", "line_item_name", "quantity", "noncovered_amount"],
+        "why_fds_detects": "세부내역서 표에 추가된 처치/검사/재료대 항목이나 수량 증가가 영수증 합계·진료 맥락과 맞는지 탐지",
+    },
+    "semantic_surgery_anesthesia_mismatch": {
+        "category": "수술/마취/처치 불일치",
+        "reason_codes": ["R901_SURGERY_MISMATCH", "R902_ANESTHESIA_MISMATCH", "R504_PRESCRIPTION_PERIOD_ANOMALY"],
+        "fields": ["surgery_name", "surgery_date", "anesthesia_type", "surgery_anesthesia_amount"],
+        "why_fds_detects": "수술확인서·진단서·입원세부내역서의 수술/마취/처치 항목이 서로 일관되는지 탐지",
+    },
+    "semantic_supporting_document_checkbox_mismatch": {
+        "category": "증빙자료 체크박스/필수서류 불일치",
+        "reason_codes": ["R1201_DOCUMENT_INCOMPLETE", "R1202_CHECKBOX_MISMATCH", "R1203_REQUIRED_EVIDENCE_MISSING"],
+        "fields": ["hospitalization_checkbox", "inpatient_detail_checkbox", "diagnosis_checkbox", "evidence_mismatch_note"],
+        "why_fds_detects": "보험금 청구서 체크 항목과 실제 제출 문서 bundle이 일치하는지, 입원 청구 필수 증빙이 누락/허위 체크되었는지 탐지",
     },
 }
 
@@ -171,6 +203,82 @@ def _claim_payload(claim: ClaimCase, ctx: PrivacyContext, attack_family: str | N
         "risk_taxonomy": ATTACK_TAXONOMY.get(attack_family or "semantic_amount_mismatch", ATTACK_TAXONOMY["semantic_amount_mismatch"])["category"],
         "required_documents": "영수증, 세부내역서, 처방전, 약제비영수증, 청구서",
         "reason_codes": ", ".join(ATTACK_TAXONOMY.get(attack_family or "semantic_amount_mismatch", ATTACK_TAXONOMY["semantic_amount_mismatch"])["reason_codes"]),
+        "receipt_checkbox": "필수",
+        "detail_checkbox": "필수",
+        "prescription_checkbox": "필수",
+        "pharmacy_checkbox": "필수",
+        "diagnosis_checkbox": "필수",
+        "hospitalization_checkbox": "필수" if attack_family != "semantic_supporting_document_checkbox_mismatch" else "미제출인데 체크됨",
+        "inpatient_detail_checkbox": "필수" if attack_family != "semantic_supporting_document_checkbox_mismatch" else "누락인데 체크됨",
+        "evidence_mismatch_note": "정상 제출" if attack_family != "semantic_supporting_document_checkbox_mismatch" else "입원청구 필수 증빙 누락/허위 체크 synthetic case",
+    }
+
+
+def _inpatient_payload(claim: ClaimCase, attack_family: str | None = None) -> dict[str, Any]:
+    admission_date = "2026-06-01"
+    discharge_date = "2026-06-03"
+    admission_days = 3
+    if attack_family == "semantic_hospitalization_period_mismatch":
+        discharge_date = "2026-06-09"
+        admission_days = 9
+    lines = [
+        {"date": "06-01", "name": "일반병실료", "qty": admission_days, "covered": 180000, "patient_burden": 36000, "full_patient": 0, "noncovered": 0, "selective": 0, "note": "입원"},
+        {"date": "06-01", "name": "입원 식대", "qty": admission_days * 3, "covered": 54000, "patient_burden": 16200, "full_patient": 0, "noncovered": 0, "selective": 0, "note": "식대"},
+        {"date": "06-02", "name": "처치 및 주사료", "qty": 2, "covered": 45000, "patient_burden": 9000, "full_patient": 0, "noncovered": 12000, "selective": 0, "note": "처치"},
+        {"date": "06-02", "name": "검사료", "qty": 1, "covered": 68000, "patient_burden": 13600, "full_patient": 0, "noncovered": 25000, "selective": 0, "note": "검사"},
+        {"date": "06-03", "name": "수술/마취료", "qty": 1, "covered": 0, "patient_burden": 0, "full_patient": 0, "noncovered": 0, "selective": 0, "note": "해당없음"},
+    ]
+    if attack_family == "semantic_inpatient_room_charge_inflation":
+        lines[0]["noncovered"] = 240000
+        lines[0]["note"] = "상급병실 synthetic"
+    if attack_family == "semantic_line_item_insertion":
+        lines.append({"date": "06-03", "name": "비급여 재료대 SYN-추가", "qty": 3, "covered": 0, "patient_burden": 0, "full_patient": 0, "noncovered": 165000, "selective": 0, "note": "추가항목"})
+    if attack_family == "semantic_surgery_anesthesia_mismatch":
+        lines[4].update({"covered": 210000, "patient_burden": 42000, "noncovered": 150000, "note": "수술기록 불일치"})
+    room_charge = sum(row["covered"] + row["patient_burden"] + row["noncovered"] for row in lines if "병실" in row["name"])
+    noncovered_amount = sum(row["noncovered"] for row in lines)
+    inserted_line_item_amount = sum(row["noncovered"] for row in lines if "추가" in row["name"])
+    surgery_anesthesia_amount = sum(row["covered"] + row["patient_burden"] + row["noncovered"] for row in lines if "수술" in row["name"])
+    return {
+        "patient_name": claim.patient_name,
+        "provider_name": claim.provider.name,
+        "admission_date": admission_date,
+        "discharge_date": discharge_date,
+        "admission_days": admission_days,
+        "inpatient_lines": lines,
+        "room_charge": room_charge,
+        "noncovered_amount": noncovered_amount,
+        "inserted_line_item_amount": inserted_line_item_amount,
+        "surgery_anesthesia_amount": surgery_anesthesia_amount,
+        "inpatient_total": sum(row["covered"] + row["patient_burden"] + row["full_patient"] + row["noncovered"] + row["selective"] for row in lines),
+    }
+
+
+def _reference_form_source_catalog() -> dict[str, Any]:
+    queries = [
+        ("medical_receipt", "진료비 계산서 영수증 별지 제6호서식 이미지 PDF"),
+        ("medical_detail_statement", "진료비 세부산정내역서 양식 PDF 비급여 급여 표"),
+        ("prescription", "질병분류기호 기재 처방전 양식 이미지"),
+        ("pharmacy_receipt", "약제비 계산서 영수증 양식 약국 영수증"),
+        ("diagnosis_certificate", "진단서 양식 질병분류기호 발급번호"),
+        ("hospitalization_confirmation", "입퇴원확인서 양식 입원일 퇴원일 병실"),
+        ("inpatient_detail_statement", "입원 진료비 세부내역서 양식 병실료 식대 비급여"),
+        ("claim_application", "손해보험 보험금 청구서 실손 체크박스 구비서류 양식"),
+    ]
+    return {
+        "schema_version": "reference_form_source_catalog_ko.v4",
+        "purpose": "실제 양식 디테일 고도화를 위한 공개/공식/병원/보험사 reference 후보 큐. 다운로드 자료는 PII/license quarantine 후 사용.",
+        "safety_policy": "공개 양식의 구조와 표 topology만 참조하고 실제 기관명, 로고, 도장, 개인정보, 접수번호는 복사하지 않음.",
+        "needed_visual_evidence": [
+            "표 열명/행 높이/합계 박스/급여·비급여·본인부담·전액본인부담 구획",
+            "보험금 청구서 체크박스 및 구비서류 섹션",
+            "입원기간·입원일수·병실료·식대·수술/마취료 표 구조",
+            "QR/barcode/문서번호/발급번호/도장/워터마크/모바일 캡처 상태",
+        ],
+        "queries": [
+            {"source_id": f"KO_FORM_QUERY_{idx:03d}", "document_type": doc_type, "query": query, "candidate_status": "search_queue", "privacy_review_status": "quarantine_required", "license_status": "unverified"}
+            for idx, (doc_type, query) in enumerate(queries, start=1)
+        ],
     }
 
 
@@ -258,6 +366,7 @@ def generate_high_fidelity_dataset(
     while len(profiles) < 8:
         profiles.append(dict(profiles[-1]))
     _write_json(out / "reference_profiles.v4.json", {"schema_version": "reference_profiles.v4", "stores_source_pixels": False, "ocr_text_extracted": False, "profiles": profiles})
+    _write_json(out / "reference_form_source_catalog_ko.v4.json", _reference_form_source_catalog())
 
     root = Path(__file__).resolve().parents[2]
     renderer_cfg = yaml.safe_load((root / "config" / "generator.yaml").read_text(encoding="utf-8"))
@@ -282,6 +391,7 @@ def generate_high_fidelity_dataset(
             rendered_pharmacy = render_pharmacy_receipt(clean_drug_payload, style)
             rendered_prescription = render_prescription(clean_drug_payload, style)
             payload = _claim_payload(claim, ctx)
+            inpatient_payload = _inpatient_payload(claim)
             clean_extra_docs = [
                 render_claim_application(payload, style),
                 render_diagnosis_certificate(payload, style),
@@ -289,6 +399,8 @@ def generate_high_fidelity_dataset(
                 render_outpatient_confirmation(payload, style),
                 render_medical_opinion(payload, style),
                 render_surgery_confirmation(payload, style),
+                render_inpatient_detail_statement(inpatient_payload, style),
+                render_supporting_evidence_checklist(payload, style),
                 render_claim_review_cover_sheet(payload, style),
             ]
             receipt_img = _cluster_capture(rendered_receipt.image, cluster_id)
@@ -315,8 +427,18 @@ def generate_high_fidelity_dataset(
                 ("semantic_drug_mismatch", render_pharmacy_receipt),
                 ("semantic_duplicate_claim", render_claim_application),
                 ("semantic_provider_mismatch", render_claim_review_cover_sheet),
+                ("semantic_hospitalization_period_mismatch", render_hospitalization_confirmation),
+                ("semantic_inpatient_room_charge_inflation", render_inpatient_detail_statement),
+                ("semantic_line_item_insertion", render_inpatient_detail_statement),
+                ("semantic_surgery_anesthesia_mismatch", render_inpatient_detail_statement),
+                ("semantic_supporting_document_checkbox_mismatch", render_supporting_evidence_checklist),
             ]:
-                attack_payload = _drug_payload(claim, ctx, attack_family) if attack_family == "semantic_drug_mismatch" else _claim_payload(claim, ctx, attack_family)
+                if attack_family == "semantic_drug_mismatch":
+                    attack_payload = _drug_payload(claim, ctx, attack_family)
+                elif attack_family in {"semantic_inpatient_room_charge_inflation", "semantic_line_item_insertion", "semantic_surgery_anesthesia_mismatch"}:
+                    attack_payload = _inpatient_payload(claim, attack_family)
+                else:
+                    attack_payload = _claim_payload(claim, ctx, attack_family)
                 rendered_attack = renderer_fn(attack_payload, style)
                 attack_docs.append((
                     rendered_attack.document_type,

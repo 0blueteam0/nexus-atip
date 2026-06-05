@@ -125,6 +125,36 @@ def render_claim_review_cover_sheet(data: dict[str, Any], style: dict[str, Any])
     return _render_form_document("claim_review_cover_sheet", "손해보험 실손 FDS 심사 커버시트", data, style, fields, ["review_no", "risk_taxonomy", "reason_codes"])
 
 
+def render_inpatient_detail_statement(data: dict[str, Any], style: dict[str, Any]) -> SimpleRenderedDocument:
+    """입원 진료비 세부내역서.
+
+    병실료, 식대, 처치/수술/마취, 비급여, 투약/검사 항목처럼 입원 청구에서
+    과청구·항목추가·수량조작이 자주 문제되는 표 영역을 명시적으로 렌더링합니다.
+    """
+
+    return _render_inpatient_detail_document(
+        "inpatient_detail_statement",
+        "입원 진료비 세부내역서",
+        data,
+        style,
+        ["admission_date", "discharge_date", "room_charge", "noncovered_amount", "inserted_line_item_amount", "surgery_anesthesia_amount"],
+    )
+
+
+def render_supporting_evidence_checklist(data: dict[str, Any], style: dict[str, Any]) -> SimpleRenderedDocument:
+    fields = [
+        ("진료비계산서", data["receipt_checkbox"]),
+        ("진료비세부내역서", data["detail_checkbox"]),
+        ("질병분류기호처방전", data["prescription_checkbox"]),
+        ("약제비영수증", data["pharmacy_checkbox"]),
+        ("진단서", data["diagnosis_checkbox"]),
+        ("입퇴원확인서", data["hospitalization_checkbox"]),
+        ("입원세부내역서", data["inpatient_detail_checkbox"]),
+        ("누락/불일치메모", data["evidence_mismatch_note"]),
+    ]
+    return _render_checklist_document("supporting_evidence_checklist", "실손 청구 증빙자료 체크리스트", data, style, fields, ["hospitalization_checkbox", "inpatient_detail_checkbox", "evidence_mismatch_note"])
+
+
 def _render_tabular_document(document_type: str, title: str, data: dict[str, Any], style: dict[str, Any], critical_fields: list[str]) -> SimpleRenderedDocument:
     page_w, page_h = 1000, 1400
     bg = tuple(style.get("paper_rgb", (248, 247, 241)))
@@ -172,6 +202,82 @@ def _render_tabular_document(document_type: str, title: str, data: dict[str, Any
         draw_text_box(draw, audit, value_box, f"{value:,}" if isinstance(value, int) else str(value), font_path, 15, 9, align="right", label=field_name)
         field_bboxes.append({"field": field_name, "bbox": list(value_box), "critical": field_name in critical_fields})
     draw_text_box(draw, audit, (70, 1285, 930, 1330), "비실제 합성 샘플 / invalid synthetic identifiers only", font_path, 13, 9, align="right", label="synthetic_footer")
+    return SimpleRenderedDocument(document_type, image, field_bboxes, audit)
+
+
+def _render_inpatient_detail_document(document_type: str, title: str, data: dict[str, Any], style: dict[str, Any], critical_fields: list[str]) -> SimpleRenderedDocument:
+    page_w, page_h = 1200, 1500
+    bg = tuple(style.get("paper_rgb", (248, 247, 241)))
+    grid = tuple(style.get("grid_rgb", (88, 125, 170)))
+    image = Image.new("RGB", (page_w, page_h), bg)
+    draw = ImageDraw.Draw(image)
+    audit = LayoutAudit((0, 0, page_w, page_h))
+    font_path = style.get("font_path", "C:/Windows/Fonts/NotoSansKR-VF.ttf")
+    _draw_header(draw, audit, title, data["provider_name"], data["patient_name"], font_path)
+    draw_text_box(draw, audit, (70, 205, 250, 240), "입원기간", font_path, 15, 9, label="admission_period_label")
+    draw_text_box(draw, audit, (250, 205, 530, 240), f"{data['admission_date']} ~ {data['discharge_date']}", font_path, 15, 9, label="admission_period")
+    draw_text_box(draw, audit, (560, 205, 710, 240), "입원일수", font_path, 15, 9, label="admission_days_label")
+    draw_text_box(draw, audit, (710, 205, 860, 240), str(data["admission_days"]), font_path, 15, 9, label="admission_days")
+    table = (55, 270, 1145, 974)
+    widths = [90, 205, 75, 110, 110, 110, 110, 110, 170]
+    draw_grid(draw, audit, table, widths, [44] * 16, outline=grid, label="inpatient_detail_grid")
+    headers = ["일자", "항목", "수량", "급여", "본인부담", "전액본인", "비급여", "선택", "비고"]
+    x = table[0]
+    for width, header in zip(widths, headers):
+        draw_text_box(draw, audit, (x, 270, x + width, 314), header, font_path, 14, 8, label=f"inpatient_header_{header}")
+        x += width
+    field_bboxes: list[dict[str, Any]] = []
+    for idx, row in enumerate(data["inpatient_lines"][:14]):
+        y = 314 + idx * 44
+        values = [row["date"], row["name"], str(row["qty"]), row["covered"], row["patient_burden"], row["full_patient"], row["noncovered"], row["selective"], row["note"]]
+        x = table[0]
+        for col, (width, value) in enumerate(zip(widths, values)):
+            shown = f"{value:,}" if isinstance(value, int) else str(value)
+            align = "right" if col >= 3 and col <= 7 else "center"
+            draw_text_box(draw, audit, (x, y, x + width, y + 44), shown, font_path, 13, 7, align=align, label=f"inpatient_row_{idx}_{col}")
+            x += width
+    summary_fields = {
+        "room_charge": data["room_charge"],
+        "noncovered_amount": data["noncovered_amount"],
+        "inserted_line_item_amount": data["inserted_line_item_amount"],
+        "surgery_anesthesia_amount": data["surgery_anesthesia_amount"],
+        "inpatient_total": data["inpatient_total"],
+    }
+    for idx, (field_name, value) in enumerate(summary_fields.items()):
+        y = 1040 + idx * 50
+        label_box = (610, y, 850, y + 42)
+        value_box = (850, y, 1115, y + 42)
+        draw_text_box(draw, audit, label_box, field_name, font_path, 14, 8, align="left", label=f"{field_name}_label")
+        draw_text_box(draw, audit, value_box, f"{value:,}", font_path, 15, 8, align="right", label=field_name)
+        field_bboxes.append({"field": field_name, "bbox": list(value_box), "critical": field_name in critical_fields})
+    draw_text_box(draw, audit, (70, 1370, 1130, 1410), "비실제 합성 입원 세부내역 / 항목추가·수량조작 FDS 학습용", font_path, 14, 8, align="right", label="synthetic_footer")
+    return SimpleRenderedDocument(document_type, image, field_bboxes, audit)
+
+
+def _render_checklist_document(document_type: str, title: str, data: dict[str, Any], style: dict[str, Any], fields: list[tuple[str, Any]], critical_fields: list[str]) -> SimpleRenderedDocument:
+    page_w, page_h = 1000, 1400
+    bg = tuple(style.get("paper_rgb", (248, 247, 241)))
+    grid = tuple(style.get("grid_rgb", (88, 125, 170)))
+    image = Image.new("RGB", (page_w, page_h), bg)
+    draw = ImageDraw.Draw(image)
+    audit = LayoutAudit((0, 0, page_w, page_h))
+    font_path = style.get("font_path", "C:/Windows/Fonts/NotoSansKR-VF.ttf")
+    _draw_header(draw, audit, title, data["provider_name"], data["patient_name"], font_path)
+    field_bboxes: list[dict[str, Any]] = []
+    draw_grid(draw, audit, (85, 245, 915, 805), [95, 445, 290], [56] * 10, outline=grid, label="supporting_checklist_grid")
+    draw_text_box(draw, audit, (85, 245, 180, 301), "체크", font_path, 15, 8, label="check_header")
+    draw_text_box(draw, audit, (180, 245, 625, 301), "증빙자료", font_path, 15, 8, label="evidence_header")
+    draw_text_box(draw, audit, (625, 245, 915, 301), "FDS 검토 포인트", font_path, 15, 8, label="fds_header")
+    for idx, (label, value) in enumerate(fields[:8]):
+        y = 301 + idx * 56
+        field_name = _field_name_from_label(label)
+        checked = "☑" if str(value).upper() in {"Y", "TRUE", "CHECKED", "필수"} else "☐"
+        draw_text_box(draw, audit, (85, y, 180, y + 56), checked, font_path, 22, 10, label=f"{field_name}_checkbox")
+        draw_text_box(draw, audit, (180, y, 625, y + 56), label, font_path, 16, 9, align="left", label=f"{field_name}_label")
+        draw_text_box(draw, audit, (625, y, 915, y + 56), str(value), font_path, 13, 7, align="left", label=field_name)
+        field_bboxes.append({"field": field_name, "bbox": [85, y, 915, y + 56], "critical": field_name in critical_fields})
+    draw_text_box(draw, audit, (85, 925, 915, 1015), "체크박스가 제출 문서와 맞지 않거나 필수 입원 증빙이 누락되면 문서 간 정합성 FDS 검토 대상입니다.", font_path, 16, 8, align="left", label="checklist_note")
+    draw_text_box(draw, audit, (70, 1285, 930, 1330), "비실제 합성 체크리스트 / invalid synthetic evidence only", font_path, 13, 9, align="right", label="synthetic_footer")
     return SimpleRenderedDocument(document_type, image, field_bboxes, audit)
 
 
@@ -240,5 +346,13 @@ def _field_name_from_label(label: str) -> str:
         "대표위험유형": "risk_taxonomy",
         "필수서류": "required_documents",
         "FDS사유코드": "reason_codes",
+        "진료비계산서": "receipt_checkbox",
+        "진료비세부내역서": "detail_checkbox",
+        "질병분류기호처방전": "prescription_checkbox",
+        "약제비영수증": "pharmacy_checkbox",
+        "진단서": "diagnosis_checkbox",
+        "입퇴원확인서": "hospitalization_checkbox",
+        "입원세부내역서": "inpatient_detail_checkbox",
+        "누락/불일치메모": "evidence_mismatch_note",
     }
     return mapping.get(label, label)

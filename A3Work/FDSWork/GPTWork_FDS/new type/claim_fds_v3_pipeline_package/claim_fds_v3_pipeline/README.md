@@ -53,12 +53,12 @@ python run_demo.py
 
 ## v4 방향 전환: 한국 손해보험 실손 FDS 고충실 bundle factory
 
-v4는 한국 손해보험사의 실손/손해 청구 FDS가 탐지해야 하는 맥락을 중심으로 확장했습니다. 단순한 이미지 훼손이 아니라 `과청구`, `중복청구`, `금액 변조`, `진단명/질병코드 변조`, `약품/처방 변조`, `발급기관 불일치`가 문서 간 정합성으로 드러나도록 NO/AF counterfactual bundle을 생성합니다.
+v4는 한국 손해보험사의 실손/손해 청구 FDS가 탐지해야 하는 맥락을 중심으로 확장했습니다. 단순한 이미지 훼손이 아니라 `과청구`, `중복청구`, `금액 변조`, `진단명/질병코드 변조`, `약품/처방 변조`, `입원기간/병실료/비급여 변조`, `세부내역 항목추가`, `수술/마취 불일치`, `증빙 체크박스/필수서류 불일치`, `발급기관 불일치`가 문서 간 정합성으로 드러나도록 NO/AF counterfactual bundle을 생성합니다.
 
-- 기본 factory는 8개 visual cluster를 유지하고, 현재 검증 산출물은 cluster당 4개 bundle = 32 claim bundle과 Real Image 파생 AF 40개를 생성했습니다.
-- 각 synthetic claim bundle은 16개 row를 가집니다.
-  - NO 11종: `medical_receipt`, `medical_detail_statement`, `pharmacy_receipt`, `prescription`, `claim_application`, `diagnosis_certificate`, `hospitalization_confirmation`, `outpatient_confirmation`, `medical_opinion`, `surgery_confirmation`, `claim_review_cover_sheet`
-  - AF 5종: `semantic_amount_mismatch`, `semantic_diagnosis_code_mismatch`, `semantic_drug_mismatch`, `semantic_duplicate_claim`, `semantic_provider_mismatch`
+- 기본 factory는 8개 visual cluster를 유지하고, 현재 검증 산출물은 cluster당 3개 bundle = 24 claim bundle과 Real Image 파생 AF 40개를 생성했습니다.
+- 각 synthetic claim bundle은 23개 row를 가집니다.
+  - NO 13종: `medical_receipt`, `medical_detail_statement`, `pharmacy_receipt`, `prescription`, `claim_application`, `diagnosis_certificate`, `hospitalization_confirmation`, `outpatient_confirmation`, `medical_opinion`, `surgery_confirmation`, `inpatient_detail_statement`, `supporting_evidence_checklist`, `claim_review_cover_sheet`
+  - AF 10종: `semantic_amount_mismatch`, `semantic_diagnosis_code_mismatch`, `semantic_drug_mismatch`, `semantic_duplicate_claim`, `semantic_provider_mismatch`, `semantic_hospitalization_period_mismatch`, `semantic_inpatient_room_charge_inflation`, `semantic_line_item_insertion`, `semantic_surgery_anesthesia_mismatch`, `semantic_supporting_document_checkbox_mismatch`
 - `tamper_mask`, `changed_fields`, `masks/` 산출물은 생성하지 않습니다. 현재 단계는 OCR/KIE/문서 간 의미정합성 학습용입니다.
 - `Real Image` 경로의 실제 이미지는 원본을 복사하거나 실제 식별자를 재사용하지 않고 visual profile 및 안전한 derived synthetic reference로만 사용합니다.
 - 접힘, 구김, 약한 찢김, 도장, 붉은 주석, QR/barcode placeholder, 모바일 perspective, crop은 기본적으로 `benign_condition_tags`이며 fraud label이 아닙니다.
@@ -76,7 +76,7 @@ images = sorted(p for p in real.rglob('*') if p.suffix.lower() in {'.jpg', '.jpe
 result = generate_high_fidelity_dataset(
     images,
     'outputs/v4_real_image_many',
-    bundles_per_cluster=4,
+    bundles_per_cluster=3,
     generate_real_image_derivatives=True,
     real_derivatives_per_image=5,
     image_quality=90,
@@ -87,23 +87,34 @@ PY
 
 현재 v4 bulk 산출물:
 
-- `outputs/v4_real_image_bulk/reference_profiles.v4.json`
-- `outputs/v4_real_image_bulk/manifest.v4.jsonl`
-- `outputs/v4_real_image_bulk/splits.v4.json`
-- `outputs/v4_real_image_bulk/qc_report.v4.json`
-- `outputs/v4_real_image_bulk/images/*.jpg`
-- `outputs/v4_real_image_bulk/real_image_derived/*.jpg`
-- `outputs/v4_real_image_bulk/montage.v4.jpg`
-- `outputs/v4_real_image_bulk/summary_ko.v4.xlsx`
-- `outputs/v4_real_image_bulk/summary.v4.ko.xlsx`
-- `outputs/v4_real_image_bulk/fds_scenario_taxonomy_ko.v4.csv`
+- `outputs/v4_real_image_many/reference_profiles.v4.json`
+- `outputs/v4_real_image_many/reference_form_source_catalog_ko.v4.json`
+- `outputs/v4_real_image_many/manifest.v4.jsonl`
+- `outputs/v4_real_image_many/splits.v4.json`
+- `outputs/v4_real_image_many/qc_report.v4.json`
+- `outputs/v4_real_image_many/images/*.jpg`
+- `outputs/v4_real_image_many/real_image_derived/*.jpg`
+- `outputs/v4_real_image_many/montage.v4.jpg`
+- `outputs/v4_real_image_many/summary_ko.v4.xlsx`
+- `outputs/v4_real_image_many/summary.v4.ko.xlsx`
+- `outputs/v4_real_image_many/fds_scenario_taxonomy_ko.v4.csv`
 
 검증된 bulk 결과:
 
-- image/manifest rows: 680
-- generated images: 640 synthetic bundle images + 40 Real Image reference-derived synthetic AF images
-- claim bundles/reference groups: 48
-- label counts: NO 440, AF 240
-- document types: 12
-- attack families: 5
+- image/manifest rows: 592
+- generated images: 552 synthetic bundle images + 40 Real Image reference-derived synthetic AF images
+- claim bundles/reference groups: 24 synthetic claim bundles + 8 real reference groups
+- label counts: NO 312, AF 280
+- document types: 14
+- attack families: 10
 - QC: layout overflow 0, privacy leakage findings 0, quality gate pass
+
+추가 케이스 스터디 반영:
+
+- 입원기간/입퇴원일 변조: 입퇴원확인서, 입원 진료비 세부내역서, 영수증 산정 일수 불일치
+- 병실료/비급여 과청구: 상급병실료, 비급여, 식대가 입원일수 또는 세부내역 합계 대비 과다
+- 세부내역 항목 추가: 진료비세부내역서 표에 비급여 재료대/처치/검사 항목이 추가되거나 수량이 증가
+- 수술/마취 불일치: 진단서/수술확인서에는 근거가 약한데 입원세부내역서에 수술·마취료가 존재
+- 증빙자료 체크박스 불일치: 보험금 청구서 또는 체크리스트는 입원 필수서류를 제출했다고 표시하지만 bundle에는 누락/불일치
+
+`reference_form_source_catalog_ko.v4.json`은 실제 양식 디테일을 계속 보강하기 위한 검색 큐입니다. 필요한 참조 이미지는 공개/공식 PDF, 병원 안내 양식, 보험사 청구서 양식, 정부 별지서식이며, 사용 전 PII/license quarantine이 필요합니다.

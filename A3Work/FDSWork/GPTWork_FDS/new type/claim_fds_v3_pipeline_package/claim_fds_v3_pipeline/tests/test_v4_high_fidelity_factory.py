@@ -21,6 +21,8 @@ DOC_TYPES = {
     "medical_opinion",
     "surgery_confirmation",
     "claim_review_cover_sheet",
+    "inpatient_detail_statement",
+    "supporting_evidence_checklist",
 }
 
 ATTACK_FAMILIES = {
@@ -29,6 +31,19 @@ ATTACK_FAMILIES = {
     "semantic_drug_mismatch",
     "semantic_duplicate_claim",
     "semantic_provider_mismatch",
+    "semantic_hospitalization_period_mismatch",
+    "semantic_inpatient_room_charge_inflation",
+    "semantic_line_item_insertion",
+    "semantic_surgery_anesthesia_mismatch",
+    "semantic_supporting_document_checkbox_mismatch",
+}
+
+INPATIENT_REASON_CODES = {
+    "R602_ADMISSION_PERIOD_MISMATCH",
+    "R302_NONCOVERED_OVERBILLING",
+    "R304_QUANTITY_OVERCLAIM",
+    "R504_PRESCRIPTION_PERIOD_ANOMALY",
+    "R1201_DOCUMENT_INCOMPLETE",
 }
 
 
@@ -84,6 +99,8 @@ def test_high_fidelity_factory_should_emit_8_clusters_4_docs_privacy_safe_splits
     assert {row["visual_cluster_id"] for row in rows} >= set(CLUSTERS)
     assert {row["document_type"] for row in rows} >= DOC_TYPES
     assert {row.get("attack_family") for row in rows if row["label_family"] == "AF"} >= ATTACK_FAMILIES
+    observed_reason_codes = {code for row in rows for code in row.get("reason_codes", [])}
+    assert observed_reason_codes >= INPATIENT_REASON_CODES
     assert all(row["synthetic_only"] is True for row in rows)
     assert all(row["privacy_state"] == "synthetic_rewrite" for row in rows)
     assert all(row["raw_value_retention"] is False for row in rows)
@@ -118,7 +135,10 @@ def test_high_fidelity_factory_should_generate_many_claim_bundles_without_tamper
     assert len(rows) >= 24 * 5
     assert {row["document_type"] for row in rows} >= DOC_TYPES
     assert {row.get("attack_family") for row in rows if row["label_family"] == "AF"} >= ATTACK_FAMILIES
+    observed_reason_codes = {code for row in rows for code in row.get("reason_codes", [])}
+    assert observed_reason_codes >= INPATIENT_REASON_CODES
     assert (out / "summary_ko.v4.xlsx").exists()
     assert (out / "fds_scenario_taxonomy_ko.v4.csv").exists()
+    assert (out / "reference_form_source_catalog_ko.v4.json").exists()
     assert all("tamper_mask" not in row for row in rows)
     assert not (out / "masks").exists()
