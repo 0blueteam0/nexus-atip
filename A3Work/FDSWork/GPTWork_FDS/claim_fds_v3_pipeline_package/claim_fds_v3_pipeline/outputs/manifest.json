@@ -1,0 +1,542 @@
+{
+  "dataset_version": "claim_fds_synth_v3_reference_calibrated_skeleton",
+  "safety": {
+    "synthetic_only": true,
+    "real_logo_allowed": false,
+    "real_provider_identifier_allowed": false,
+    "visible_public_sample_mark": true,
+    "production_training_mark_policy": "Use dataset registry/provenance rather than visible pixel marks to avoid shortcut learning."
+  },
+  "claim": {
+    "claim_id": "SYN-CLAIM-20260604",
+    "patient_name": "최가명",
+    "patient_registration_no": "SYN-600960",
+    "treatment_start": "2026-06-03",
+    "treatment_end": "2026-06-03",
+    "issue_date": "2026-06-03",
+    "department": "신경외과",
+    "receipt_no": "26-06-4516",
+    "provider": {
+      "name": "라온합성클리닉",
+      "business_no": "222-22-22222",
+      "address": "부산광역시 해운대구 비식별로 22",
+      "phone": "051-000-2222",
+      "representative": "이합성",
+      "provider_type": "의원급ㆍ보건기관"
+    },
+    "charge_rows": [
+      {
+        "label": "진 찰 료",
+        "key": "consultation_fee",
+        "covered_partial_patient_payment": 2600,
+        "covered_corporation_payment": 5900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "입원료 1인실",
+        "key": "hospitalization_room_1p",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "입원료 2ㆍ3인실",
+        "key": "hospitalization_room_2_3p",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "입원료 4인실 이상",
+        "key": "hospitalization_room_4p_plus",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "식대",
+        "key": "meal",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "투약 및 조제료 - 행위료",
+        "key": "medication_dispense_service_fee",
+        "covered_partial_patient_payment": 3400,
+        "covered_corporation_payment": 7900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "투약 및 조제료 - 약품비",
+        "key": "medication_dispense_drug_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "주사료 - 행위료",
+        "key": "injection_service_fee",
+        "covered_partial_patient_payment": 5900,
+        "covered_corporation_payment": 13900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "주사료 - 약품비",
+        "key": "injection_drug_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "마취료",
+        "key": "anesthesia_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "처치 및 수술료",
+        "key": "treatment_surgery_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 23400,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "검사료",
+        "key": "lab_test_fee",
+        "covered_partial_patient_payment": 10400,
+        "covered_corporation_payment": 24300,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "영상진단료",
+        "key": "imaging_diagnosis_fee",
+        "covered_partial_patient_payment": 5100,
+        "covered_corporation_payment": 11900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "방사선치료료",
+        "key": "radiation_therapy_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "치료재료대",
+        "key": "medical_material_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "재활 및 물리치료료",
+        "key": "rehab_physical_therapy_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 4100,
+        "noncovered_payment": 0,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "정신요법료",
+        "key": "psychotherapy_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "전혈 및 혈액성분제제료",
+        "key": "blood_component_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "CT 진단료",
+        "key": "ct_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "MRI 진단료",
+        "key": "mri_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "PET 진단료",
+        "key": "pet_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "초음파 진단료",
+        "key": "ultrasound_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "보철ㆍ교정료",
+        "key": "prosthodontics_orthodontics_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "제증명수수료",
+        "key": "certificate_fee",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 23400,
+        "calculation_detail": "일자별 세부내역 참조"
+      },
+      {
+        "label": "선별급여",
+        "key": "selective_benefit",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "65세 이상 등 정액",
+        "key": "elderly_flat_amount",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "정액수가(요양병원)",
+        "key": "convalescent_hospital_flat_amount",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "정액수가(완화의료)",
+        "key": "hospice_flat_amount",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "질병군 포괄수가",
+        "key": "drg_bundled_payment",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      },
+      {
+        "label": "기타",
+        "key": "other",
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "calculation_detail": ""
+      }
+    ],
+    "summary": {
+      "covered_partial_patient_total": 27400,
+      "covered_corporation_total": 63900,
+      "full_patient_total": 27500,
+      "noncovered_total": 23400,
+      "cap_excess": 0,
+      "total_medical_fee": 142200,
+      "insurer_corporation_total": 63900,
+      "patient_burden_total": 78300,
+      "prepaid_amount": 0,
+      "amount_due": 78300,
+      "paid_by_card": 78300,
+      "paid_by_cash_receipt": 0,
+      "paid_by_cash": 0,
+      "paid_total": 78300,
+      "unpaid_amount": 0
+    },
+    "detail_rows": [
+      {
+        "treatment_date": "2026-06-03",
+        "category": "진찰료",
+        "code": "AA154",
+        "name": "초진진찰료",
+        "quantity": 1,
+        "unit_price": 8500,
+        "covered_partial_patient_payment": 2600,
+        "covered_corporation_payment": 5900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 8500
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "검사료",
+        "code": "D3021",
+        "name": "말초혈액검사",
+        "quantity": 1,
+        "unit_price": 23400,
+        "covered_partial_patient_payment": 7000,
+        "covered_corporation_payment": 16400,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 23400
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "검사료",
+        "code": "D6620",
+        "name": "C-반응성단백",
+        "quantity": 1,
+        "unit_price": 11300,
+        "covered_partial_patient_payment": 3400,
+        "covered_corporation_payment": 7900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 11300
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "처치 및 수술료",
+        "code": "K1020",
+        "name": "처치료-창상소독",
+        "quantity": 1,
+        "unit_price": 23400,
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 23400,
+        "noncovered_payment": 0,
+        "total_amount": 23400
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "주사료",
+        "code": "J0010",
+        "name": "주사료-정맥내",
+        "quantity": 1,
+        "unit_price": 19800,
+        "covered_partial_patient_payment": 5900,
+        "covered_corporation_payment": 13900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 19800
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "재활 및 물리치료료",
+        "code": "M0110",
+        "name": "물리치료-표층열",
+        "quantity": 1,
+        "unit_price": 4100,
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 4100,
+        "noncovered_payment": 0,
+        "total_amount": 4100
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "영상진단료",
+        "code": "R0001",
+        "name": "방사선 단순촬영",
+        "quantity": 2,
+        "unit_price": 8500,
+        "covered_partial_patient_payment": 5100,
+        "covered_corporation_payment": 11900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 17000
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "투약 및 조제료",
+        "code": "P0002",
+        "name": "투약 및 조제-행위",
+        "quantity": 1,
+        "unit_price": 11300,
+        "covered_partial_patient_payment": 3400,
+        "covered_corporation_payment": 7900,
+        "full_patient_payment": 0,
+        "noncovered_payment": 0,
+        "total_amount": 11300
+      },
+      {
+        "treatment_date": "2026-06-03",
+        "category": "제증명수수료",
+        "code": "Z1000",
+        "name": "진료확인서",
+        "quantity": 1,
+        "unit_price": 23400,
+        "covered_partial_patient_payment": 0,
+        "covered_corporation_payment": 0,
+        "full_patient_payment": 0,
+        "noncovered_payment": 23400,
+        "total_amount": 23400
+      }
+    ]
+  },
+  "files": {
+    "medical_receipt_pristine": "v3_01_medical_receipt_pristine.png",
+    "medical_receipt_clean_scan": "v3_02_medical_receipt_clean_scan.jpg",
+    "medical_receipt_post_scan_tampered": "v3_03_medical_receipt_post_scan_tampered.jpg",
+    "tamper_mask": "v3_04_tamper_mask.png",
+    "tamper_overlay": "v3_05_tamper_overlay.png",
+    "medical_receipt_folded_benign": "v3_06_medical_receipt_folded_benign.jpg",
+    "medical_receipt_crumpled_torn_benign": "v3_07_medical_receipt_crumpled_torn_benign.jpg",
+    "medical_receipt_mobile_capture": "v3_08_medical_receipt_mobile_capture.jpg",
+    "detail_statement_clean_scan": "v3_09_detail_statement_clean_scan.jpg"
+  },
+  "tamper": {
+    "attack_family": "post_scan_local_field_replacement + semantic_consistency_break",
+    "changed_fields": [
+      {
+        "field": "total_medical_fee",
+        "old": "142,200",
+        "new": "242,200",
+        "bbox": [
+          1362,
+          382,
+          1539,
+          454
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      },
+      {
+        "field": "patient_burden_total",
+        "old": "78,300",
+        "new": "178,300",
+        "bbox": [
+          1362,
+          542,
+          1539,
+          614
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      },
+      {
+        "field": "amount_due",
+        "old": "78,300",
+        "new": "178,300",
+        "bbox": [
+          1362,
+          686,
+          1539,
+          742
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      },
+      {
+        "field": "paid_by_card",
+        "old": "78,300",
+        "new": "178,300",
+        "bbox": [
+          1362,
+          750,
+          1539,
+          800
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      },
+      {
+        "field": "paid_total",
+        "old": "78,300",
+        "new": "178,300",
+        "bbox": [
+          1362,
+          924,
+          1539,
+          974
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      },
+      {
+        "field": "issue_date",
+        "old": "2026-06-03",
+        "new": "2026-07-03",
+        "bbox": [
+          332,
+          1568,
+          1539,
+          1600
+        ],
+        "attack_type": "post_scan_local_field_replacement"
+      }
+    ],
+    "expected_reason_codes": [
+      "RECEIPT_DETAIL_TOTAL_MISMATCH",
+      "AMOUNT_SUM_MISMATCH",
+      "LOCAL_PATCH_TEXTURE_MISMATCH",
+      "ISSUE_DATE_TEMPORAL_ANOMALY"
+    ]
+  },
+  "benign_degradation_labels": {
+    "folded": "benign_document_condition",
+    "crumpled": "benign_document_condition",
+    "slight_torn_edge": "benign_document_condition_margin_only",
+    "mobile_capture": "benign_capture_condition"
+  },
+  "layout_audit_summary": {
+    "receipt_overflow_count": 0,
+    "receipt_truncated_count": 0,
+    "detail_overflow_count": 0,
+    "detail_truncated_count": 0
+  }
+}

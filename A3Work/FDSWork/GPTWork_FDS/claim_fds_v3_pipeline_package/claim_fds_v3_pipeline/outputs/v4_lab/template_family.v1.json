@@ -1,0 +1,28 @@
+{
+  "schema_version": "template_family.v1",
+  "synthetic_only": true,
+  "sampled_from_profile_id": "real_image_statistical_profile",
+  "rendering": {
+    "page_tone_rgb": [
+      238,
+      238,
+      233
+    ],
+    "margin_px": 124,
+    "line_darkness": 71,
+    "table_density_hint": "dense_official_receipt_like"
+  },
+  "capture_profile": {
+    "scanner_quality": 78,
+    "mobile_shadow_strength": 0.091,
+    "fold_crumple_allowed": true,
+    "torn_edge_max_depth_px": 18,
+    "benign_condition_default_label": "benign_document_condition"
+  },
+  "safety": {
+    "real_logo_allowed": false,
+    "real_provider_identifier_allowed": false,
+    "visible_public_sample_mark": true,
+    "internal_marking_policy": "registry_provenance_not_pixel_shortcut"
+  }
+}

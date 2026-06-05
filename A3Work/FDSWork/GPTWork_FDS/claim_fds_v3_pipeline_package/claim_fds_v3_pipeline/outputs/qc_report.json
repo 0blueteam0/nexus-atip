@@ -1,0 +1,89 @@
+{
+  "layout_receipt": {
+    "page_box": [
+      0,
+      0,
+      1654,
+      2339
+    ],
+    "record_count": 387,
+    "overflow_count": 0,
+    "truncated_count": 0,
+    "overflows": [],
+    "truncated": [],
+    "pass": true,
+    "max_truncated_allowed": 8
+  },
+  "layout_detail_statement": {
+    "page_box": [
+      0,
+      0,
+      1654,
+      2339
+    ],
+    "record_count": 287,
+    "overflow_count": 0,
+    "truncated_count": 0,
+    "overflows": [],
+    "truncated": [],
+    "pass": true,
+    "max_truncated_allowed": 8
+  },
+  "clean_semantics": {
+    "checks": {
+      "total_medical_fee_matches_components": true,
+      "insurer_corporation_total_matches": true,
+      "patient_burden_total_matches": true,
+      "amount_due_matches": true,
+      "paid_total_matches": true,
+      "unpaid_amount_matches": true
+    },
+    "all_pass": true,
+    "expected": {
+      "total_medical_fee": 142200,
+      "insurer_corporation_total": 63900,
+      "patient_burden_total": 78300,
+      "amount_due": 78300,
+      "paid_total": 78300,
+      "unpaid_amount": 0
+    },
+    "actual": {
+      "total_medical_fee": 142200,
+      "insurer_corporation_total": 63900,
+      "patient_burden_total": 78300,
+      "amount_due": 78300,
+      "paid_total": 78300,
+      "unpaid_amount": 0
+    }
+  },
+  "tampered_semantics": {
+    "checks": {
+      "total_medical_fee_matches_components": false,
+      "insurer_corporation_total_matches": true,
+      "patient_burden_total_matches": false,
+      "amount_due_matches": true,
+      "paid_total_matches": true,
+      "unpaid_amount_matches": true
+    },
+    "all_pass": false,
+    "expected": {
+      "total_medical_fee": 142200,
+      "insurer_corporation_total": 63900,
+      "patient_burden_total": 78300,
+      "amount_due": 178300,
+      "paid_total": 178300,
+      "unpaid_amount": 0
+    },
+    "actual": {
+      "total_medical_fee": 242200,
+      "insurer_corporation_total": 63900,
+      "patient_burden_total": 178300,
+      "amount_due": 178300,
+      "paid_total": 178300,
+      "unpaid_amount": 0
+    }
+  },
+  "tampered_expected_to_fail_semantic_checks": true,
+  "receipt_field_bbox_count": 52,
+  "detail_field_bbox_count": 13
+}

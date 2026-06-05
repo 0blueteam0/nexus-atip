@@ -1,0 +1,21 @@
+{
+  "train": {
+    "leakage_groups": [
+      "SYN-V4-PAIR-0001|가람모의의료센터|real_image_statistical_profile|scanner_q78"
+    ],
+    "dataset_ids": [
+      "NO_V4_MEDICAL_RECEIPT_CLEAN_0001",
+      "NO_V4_MEDICAL_RECEIPT_FOLDED_0001",
+      "NO_V4_MEDICAL_RECEIPT_TORN_EDGE_0001",
+      "AF_V4_MEDICAL_RECEIPT_AMOUNT_PATCH_0001"
+    ]
+  },
+  "validation": {
+    "leakage_groups": [],
+    "dataset_ids": []
+  },
+  "test": {
+    "leakage_groups": [],
+    "dataset_ids": []
+  }
+}

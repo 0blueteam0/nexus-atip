@@ -1,0 +1,136 @@
+{
+  "schema_version": "qc_report.v4",
+  "reference_profile_summary": {
+    "document_count": 8,
+    "source_pixels_stored": false
+  },
+  "clean_semantics": {
+    "checks": {
+      "total_medical_fee_matches_components": true,
+      "insurer_corporation_total_matches": true,
+      "patient_burden_total_matches": true,
+      "amount_due_matches": true,
+      "paid_total_matches": true,
+      "unpaid_amount_matches": true
+    },
+    "all_pass": true,
+    "expected": {
+      "total_medical_fee": 137200,
+      "insurer_corporation_total": 71800,
+      "patient_burden_total": 65400,
+      "amount_due": 65400,
+      "paid_total": 65400,
+      "unpaid_amount": 0
+    },
+    "actual": {
+      "total_medical_fee": 137200,
+      "insurer_corporation_total": 71800,
+      "patient_burden_total": 65400,
+      "amount_due": 65400,
+      "paid_total": 65400,
+      "unpaid_amount": 0
+    }
+  },
+  "tampered_semantics": {
+    "checks": {
+      "total_medical_fee_matches_components": false,
+      "insurer_corporation_total_matches": true,
+      "patient_burden_total_matches": false,
+      "amount_due_matches": true,
+      "paid_total_matches": true,
+      "unpaid_amount_matches": true
+    },
+    "all_pass": false,
+    "expected": {
+      "total_medical_fee": 137200,
+      "insurer_corporation_total": 71800,
+      "patient_burden_total": 65400,
+      "amount_due": 165400,
+      "paid_total": 165400,
+      "unpaid_amount": 0
+    },
+    "actual": {
+      "total_medical_fee": 237200,
+      "insurer_corporation_total": 71800,
+      "patient_burden_total": 165400,
+      "amount_due": 165400,
+      "paid_total": 165400,
+      "unpaid_amount": 0
+    }
+  },
+  "clean_bundle_graph": {
+    "schema_version": "consistency_graph.v1",
+    "all_pass": true,
+    "failed_reason_codes": [],
+    "edges": [
+      {
+        "edge_id": "edge.receipt_detail.total_medical_fee",
+        "reason_code": "RECEIPT_DETAIL_TOTAL_MISMATCH",
+        "left_document": "medical_receipt",
+        "right_document": "medical_detail_statement",
+        "field": "total_medical_fee",
+        "pass": true,
+        "expected": 137200,
+        "actual": 137200
+      }
+    ]
+  },
+  "tampered_bundle_graph": {
+    "schema_version": "consistency_graph.v1",
+    "all_pass": false,
+    "failed_reason_codes": [
+      "RECEIPT_DETAIL_TOTAL_MISMATCH"
+    ],
+    "edges": [
+      {
+        "edge_id": "edge.receipt_detail.total_medical_fee",
+        "reason_code": "RECEIPT_DETAIL_TOTAL_MISMATCH",
+        "left_document": "medical_receipt",
+        "right_document": "medical_detail_statement",
+        "field": "total_medical_fee",
+        "pass": false,
+        "expected": 137200,
+        "actual": 237200
+      }
+    ]
+  },
+  "layout_receipt": {
+    "page_box": [
+      0,
+      0,
+      1654,
+      2339
+    ],
+    "record_count": 387,
+    "overflow_count": 0,
+    "truncated_count": 0,
+    "overflows": [],
+    "truncated": [],
+    "pass": true,
+    "max_truncated_allowed": 8
+  },
+  "layout_detail_statement": {
+    "page_box": [
+      0,
+      0,
+      1654,
+      2339
+    ],
+    "record_count": 287,
+    "overflow_count": 0,
+    "truncated_count": 0,
+    "overflows": [],
+    "truncated": [],
+    "pass": true,
+    "max_truncated_allowed": 8
+  },
+  "quality_gate": {
+    "schema_version": "quality_gate.v1",
+    "all_generated_pages_overflow_free": true,
+    "critical_fields_not_truncated": true,
+    "benign_conditions_not_fraud": true,
+    "tamper_masks_align_changed_field_bboxes": true,
+    "manifest_rows_have_leakage_groups": true,
+    "pass": true
+  }
+}

@@ -1,0 +1,36 @@
+seed: 20260604
+page:
+  dpi: 200
+  width_px: 1654
+  height_px: 2339
+  margin_px: 110
+fonts:
+  primary: "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+  primary_bold: "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf"
+  mono: "/usr/share/fonts/truetype/nanum/NanumGothicCoding.ttf"
+quality:
+  max_text_overflow_count: 0
+  allow_truncation: true
+  max_truncated_fields: 8
+augmentation_policy:
+  normal_training_mix:
+    scanner_cleanish: 0.30
+    mobile_perspective: 0.25
+    folded: 0.15
+    crumpled: 0.08
+    slight_torn_edge: 0.03
+    heavy_occlusion_reject: 0.01
+    plain_render_debug: 0.18
+  principle: "Fold/crumple/tear are benign document-condition labels, not fraud labels. Apply to both clean and tampered samples."
+tamper_policy:
+  post_scan_local:
+    enabled: true
+    example_fields:
+      - total_medical_fee
+      - patient_burden_total
+      - issue_date
+  semantic_only:
+    enabled: true
+    examples:
+      - "Receipt total changed while detail-statement line item totals remain unchanged."
+      - "Issue date moved far from treatment date without corresponding context."
