@@ -87,23 +87,23 @@ PY
 
 현재 v4 bulk 산출물:
 
-- `outputs/v4_real_image_many/reference_profiles.v4.json`
-- `outputs/v4_real_image_many/manifest.v4.jsonl`
-- `outputs/v4_real_image_many/splits.v4.json`
-- `outputs/v4_real_image_many/qc_report.v4.json`
-- `outputs/v4_real_image_many/images/*.jpg`
-- `outputs/v4_real_image_many/real_image_derived/*.jpg`
-- `outputs/v4_real_image_many/montage.v4.jpg`
-- `outputs/v4_real_image_many/summary_ko.v4.xlsx`
-- `outputs/v4_real_image_many/summary.v4.ko.xlsx`
-- `outputs/v4_real_image_many/fds_scenario_taxonomy_ko.v4.csv`
+- `outputs/v4_real_image_bulk/reference_profiles.v4.json`
+- `outputs/v4_real_image_bulk/manifest.v4.jsonl`
+- `outputs/v4_real_image_bulk/splits.v4.json`
+- `outputs/v4_real_image_bulk/qc_report.v4.json`
+- `outputs/v4_real_image_bulk/images/*.jpg`
+- `outputs/v4_real_image_bulk/real_image_derived/*.jpg`
+- `outputs/v4_real_image_bulk/montage.v4.jpg`
+- `outputs/v4_real_image_bulk/summary_ko.v4.xlsx`
+- `outputs/v4_real_image_bulk/summary.v4.ko.xlsx`
+- `outputs/v4_real_image_bulk/fds_scenario_taxonomy_ko.v4.csv`
 
 검증된 bulk 결과:
 
-- image/manifest rows: 552
-- synthetic claim bundles: 32
-- real-image-derived AF rows: 40
-- label counts: NO 352, AF 200
-- document types: 12 (`real_image_reference_derived` 포함)
+- image/manifest rows: 680
+- generated images: 640 synthetic bundle images + 40 Real Image reference-derived synthetic AF images
+- claim bundles/reference groups: 48
+- label counts: NO 440, AF 240
+- document types: 12
 - attack families: 5
 - QC: layout overflow 0, privacy leakage findings 0, quality gate pass
