@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260605-160848-FDS-OCR-vision-gated-real-web-source-collection-ideation-and-tooling",
+  "project": "FDS",
+  "task": "OCR vision gated real web source collection ideation and tooling",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260605-160848-FDS-OCR-vision-gated-real-web-source-collection-ideation-and-tooling",
+  "created_at": "2026-06-05T16:08:48+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

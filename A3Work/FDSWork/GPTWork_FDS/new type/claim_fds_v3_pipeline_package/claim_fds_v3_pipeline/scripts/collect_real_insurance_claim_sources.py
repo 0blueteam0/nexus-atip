@@ -214,6 +214,26 @@ NEGATIVE_ASSET_PATTERNS = [
     "istockphoto",
 ]
 
+# raw_images가 너무 넓게 채워지는 것을 막기 위한 선다운로드 노이즈 차단어입니다.
+# 실제 보험/의료 청구 문서가 아니라 판다·인물·프로필·상담 배너·동물/음식/스톡 사진으로
+# 보이는 후보는 OCR까지 가지 않고 카탈로그 단계에서 제외합니다.
+NON_DOCUMENT_VISUAL_NOISE_TERMS = [
+    "판다", "panda", "푸바오", "fubao", "동물", "animal", "cat", "dog", "pet",
+    "인물", "사람", "people", "person", "portrait", "face", "프로필", "profile", "avatar",
+    "상담사", "설계사", "doctor_people", "staff", "team", "banner", "배너", "main_visual",
+    "food", "recipe", "요리", "맛집", "stock", "adobestock", "shutterstock", "gettyimages", "istockphoto",
+]
+
+# OCR에서 확인해야 하는 한국어 실손/의료 청구 문서 필드 신호입니다. 단순 블로그 본문이나
+# 귀여운 동물 이미지 텍스트는 한국어가 있어도 이 필드 신호가 부족하므로 rejected가 됩니다.
+OCR_FIELD_GROUPS_KO: dict[str, list[str]] = {
+    "document_title": ["진료비계산서", "진료비 계산서", "영수증", "세부산정내역서", "세부내역서", "처방전", "진단서", "확인서", "청구서"],
+    "amount": ["총진료비", "진료비총액", "본인부담", "환자부담", "비급여", "급여", "청구금액", "납부", "수납", "원"],
+    "date": ["진료일", "발급일", "발행일", "처방일", "입원일", "퇴원일", "내원일", "통원일"],
+    "issuer": ["의료기관", "요양기관", "병원", "의원", "약국", "사업자등록", "대표자"],
+    "patient_or_code": ["환자", "성명", "등록번호", "영수증번호", "질병분류", "상병", "진단명"],
+}
+
 TRUSTED_SEED_URLS = [
     "https://www.hira.or.kr/",
     "https://www.nhis.or.kr/",
@@ -244,6 +264,7 @@ class Candidate:
     license_status: str
     collection_status: str
     rejection_reason: str
+    verification_evidence_json: str
     collected_at_epoch: float
 
 
@@ -257,6 +278,115 @@ def document_type_label(doc_type: str) -> str:
     """Return a Korean/non-English visual label for contact sheets and review paths."""
 
     return DOCUMENT_TYPE_KO.get(doc_type, "문서유형미분류")
+
+
+def pre_download_candidate_gate(title: str, page_url: str, image_url: str) -> tuple[bool, str]:
+    """Reject obvious non-document visual noise before writing broad raw_images files.
+
+    이 함수는 OCR 이전의 저비용 방어선입니다. 검색 결과 제목/페이지/이미지 URL만 보고
+    판다, 인물 프로필, 배너, 스톡 사진처럼 실제 영수증·처방전·청구서 원본 가능성이 낮은
+    이미지를 raw_images에 저장하지 않도록 막습니다.
+    """
+
+    hay = (title + " " + page_url + " " + image_url).lower()
+    if any(pattern in hay for pattern in NEGATIVE_ASSET_PATTERNS):
+        return False, "non_document_or_placeholder_asset"
+    if any(term.lower() in hay for term in NON_DOCUMENT_VISUAL_NOISE_TERMS):
+        return False, "non_document_visual_noise"
+    return True, ""
+
+
+def score_ocr_document_signal(tokens: list[str]) -> dict[str, Any]:
+    """Score whether OCR text looks like a Korean insurance/medical claim document.
+
+    원문 OCR은 저장하지 않아도 되므로, 게이트에서는 토큰 문자열을 즉시 점수화한 뒤
+    필드 그룹 수와 문서성 여부만 manifest에 남깁니다.
+    """
+
+    joined = re.sub(r"\s+", "", " ".join(tokens))
+    has_korean = bool(re.search(r"[가-힣]", joined))
+    matched_groups: list[str] = []
+    matched_terms: list[str] = []
+    for group, terms in OCR_FIELD_GROUPS_KO.items():
+        compact_terms = [term.replace(" ", "") for term in terms]
+        hits = [term for term in compact_terms if term and term in joined]
+        if hits:
+            matched_groups.append(group)
+            matched_terms.extend(hits[:3])
+    amount_like = bool(re.search(r"\d{1,3}(,\d{3})+원?|\d+원", joined))
+    date_like = bool(re.search(r"\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{1,2}[./-]\d{1,2}", joined))
+    field_hint_count = len(set(matched_groups))
+    is_document = has_korean and (field_hint_count >= 2 or (field_hint_count >= 1 and amount_like and date_like))
+    return {
+        "is_korean_claim_document": is_document,
+        "has_korean": has_korean,
+        "field_hint_count": field_hint_count,
+        "matched_groups": sorted(set(matched_groups)),
+        "matched_terms_sample": sorted(set(matched_terms))[:12],
+        "amount_like": amount_like,
+        "date_like": date_like,
+    }
+
+
+def extract_ocr_texts_for_gate(image_path: Path, max_tokens: int = 120) -> list[str]:
+    """Run lightweight RapidOCR for collection gating without storing raw OCR text."""
+
+    try:
+        from rapidocr_onnxruntime import RapidOCR
+
+        result, _ = RapidOCR()(str(image_path))
+    except Exception:
+        return []
+    texts: list[str] = []
+    for item in result or []:
+        if len(item) >= 2:
+            texts.append(str(item[1]))
+        if len(texts) >= max_tokens:
+            break
+    return texts
+
+
+def image_shape_document_signal(width: int | None, height: int | None) -> bool:
+    """Very small vision heuristic: real document photos/scans are usually rectangular and large enough."""
+
+    if not width or not height:
+        return False
+    if min(width, height) < 260 or max(width, height) < 520:
+        return False
+    ratio = max(width, height) / max(1, min(width, height))
+    return 1.1 <= ratio <= 3.2
+
+
+def should_accept_downloaded_image(
+    title: str,
+    page_url: str,
+    image_url: str,
+    image_path: Path,
+    width: int | None,
+    height: int | None,
+    relevance: int,
+    verification_mode: str,
+) -> tuple[bool, str, dict[str, Any]]:
+    """Combine keyword, vision-shape, and OCR signals before moving an image into raw_images."""
+
+    ok, reason = pre_download_candidate_gate(title, page_url, image_url)
+    if not ok:
+        return False, reason, {"pre_download_gate": reason}
+    if verification_mode == "keyword_only":
+        return True, "", {"verification_mode": "keyword_only"}
+    tokens = extract_ocr_texts_for_gate(image_path)
+    ocr_signal = score_ocr_document_signal(tokens)
+    shape_ok = image_shape_document_signal(width, height)
+    strong_keyword_context = relevance >= 8 and any(term in (title + " " + page_url + " " + image_url) for term in POSITIVE_TERMS)
+    accepted = bool(ocr_signal["is_korean_claim_document"] and shape_ok) or bool(strong_keyword_context and shape_ok and ocr_signal["has_korean"])
+    evidence = {
+        "verification_mode": verification_mode,
+        "ocr_signal": ocr_signal,
+        "vision_shape_document_signal": shape_ok,
+        "strong_keyword_context": strong_keyword_context,
+        "raw_ocr_text_stored": False,
+    }
+    return accepted, "" if accepted else "ocr_vision_gate_failed", evidence
 
 
 def fetch_text(url: str, timeout: int = 20) -> str:
@@ -448,34 +578,59 @@ def infer_ext(url: str, data: bytes) -> str:
     return guessed
 
 
-def save_image_candidate(out_dir: Path, doc_type: str, idx: int, image_url: str, title: str) -> tuple[str, int | None, int | None, str | None, str]:
+def save_image_candidate(
+    out_dir: Path,
+    doc_type: str,
+    idx: int,
+    image_url: str,
+    title: str,
+    page_url: str,
+    relevance: int,
+    verification_mode: str,
+) -> tuple[str, int | None, int | None, str | None, str, dict[str, Any]]:
+    """Download to staging first, then move only OCR/vision-passed images to raw_images."""
+
+    gate_ok, gate_reason = pre_download_candidate_gate(title, page_url, image_url)
+    if not gate_ok:
+        return "", None, None, None, f"rejected_pre_download:{gate_reason}", {"pre_download_gate": gate_reason}
     try:
         data = fetch_bytes(image_url)
         digest = hashlib.sha256(data).hexdigest()
         ext = infer_ext(image_url, data)
         # 사람이 직접 여는 파일명에는 medical_receipt 같은 영문 doc_type 토큰을 넣지 않습니다.
         # 세부 문서유형은 manifest의 document_type_guess/document_type_label_ko에서만 확인합니다.
-        path = out_dir / "raw_images" / f"문서후보_{idx:05d}_{digest[:10]}{ext}"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(data)
+        staged = out_dir / "staging_images" / f"문서후보검증중_{idx:05d}_{digest[:10]}{ext}"
+        staged.parent.mkdir(parents=True, exist_ok=True)
+        staged.write_bytes(data)
         try:
-            with Image.open(path) as img:
+            with Image.open(staged) as img:
                 img.verify()
-            with Image.open(path) as img:
+            with Image.open(staged) as img:
                 w, h = img.size
                 if min(w, h) < 180:
-                    path.unlink(missing_ok=True)
-                    return "", w, h, digest, "rejected_too_small_non_document_asset"
+                    staged.unlink(missing_ok=True)
+                    return "", w, h, digest, "rejected_too_small_non_document_asset", {"min_dimension": min(w, h)}
         except Exception as exc:
-            path.unlink(missing_ok=True)
-            return "", None, None, digest, f"downloaded_but_not_valid_image:{type(exc).__name__}"
-        return str(path.as_posix()), w, h, digest, "downloaded_quarantine"
+            staged.unlink(missing_ok=True)
+            return "", None, None, digest, f"downloaded_but_not_valid_image:{type(exc).__name__}", {}
+        accepted, reject_reason, evidence = should_accept_downloaded_image(title, page_url, image_url, staged, w, h, relevance, verification_mode)
+        if not accepted:
+            rejected = out_dir / "rejected_images" / f"거절_{idx:05d}_{digest[:10]}{ext}"
+            rejected.parent.mkdir(parents=True, exist_ok=True)
+            staged.replace(rejected)
+            evidence["rejected_image_path"] = str(rejected.as_posix())
+            return "", w, h, digest, f"rejected_after_ocr_vision:{reject_reason}", evidence
+        path = out_dir / "raw_images" / f"문서후보_{idx:05d}_{digest[:10]}{ext}"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        staged.replace(path)
+        evidence["accepted_image_path"] = str(path.as_posix())
+        return str(path.as_posix()), w, h, digest, "downloaded_quarantine_ocr_vision_pass", evidence
     except Exception as exc:
-        return "", None, None, None, f"download_error:{type(exc).__name__}:{exc}"
+        return "", None, None, None, f"download_error:{type(exc).__name__}:{exc}", {}
 
 
 def make_contact_sheet(manifest_rows: list[Candidate], output_dir: Path, max_items: int = 60) -> None:
-    downloaded = [r for r in manifest_rows if r.local_path and Path(r.local_path).exists() and r.collection_status == "downloaded_quarantine"]
+    downloaded = [r for r in manifest_rows if r.local_path and Path(r.local_path).exists() and r.collection_status.startswith("downloaded_quarantine")]
     thumbs = []
     for row in downloaded[:max_items]:
         try:
@@ -511,6 +666,7 @@ def main() -> int:
     ap.add_argument("--sleep-max", type=float, default=5.0)
     ap.add_argument("--source-mode", choices=["balanced", "focused"], default="focused")
     ap.add_argument("--firecrawl-mode", choices=["off", "trusted_seed", "query"], default="trusted_seed")
+    ap.add_argument("--verification-mode", choices=["ocr_vision", "keyword_only"], default="ocr_vision")
     args = ap.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -576,6 +732,12 @@ def main() -> int:
                     continue
                 seen_keys.add(key)
                 score, reject = relevance_score(title, page_url, image_url)
+                verification_evidence: dict[str, Any] = {}
+                if image_url:
+                    gate_ok, gate_reason = pre_download_candidate_gate(title, page_url, image_url)
+                    if not gate_ok:
+                        reject = ";".join([x for x in [gate_reason, reject] if x])
+                        verification_evidence["pre_download_gate"] = gate_reason
                 idx += 1
                 local_path = ""
                 width = height = None
@@ -583,9 +745,11 @@ def main() -> int:
                 status = "cataloged_page_candidate"
                 if pdf_url and score > 0:
                     status = "cataloged_pdf_candidate_quarantine"
-                if image_url and args.download_images and score >= 4:
-                    local_path, width, height, digest, status = save_image_candidate(output_dir, doc_type, idx, image_url, title)
-                    if status == "downloaded_quarantine" and score >= 4:
+                if image_url and args.download_images and score >= 4 and not reject:
+                    local_path, width, height, digest, status, verification_evidence = save_image_candidate(
+                        output_dir, doc_type, idx, image_url, title, page_url, score, args.verification_mode
+                    )
+                    if status.startswith("downloaded_quarantine") and score >= 4:
                         alert = events_dir / f"important_candidate_{idx:05d}.txt"
                         alert.write_text(f"important_candidate\nquery={query}\ndocument_type_label_ko={document_type_label(doc_type)}\ntitle={title}\npage_url={page_url}\nimage_url={image_url}\nlocal_path={local_path}\nscore={score}\n", encoding="utf-8")
                 c = Candidate(
@@ -606,6 +770,7 @@ def main() -> int:
                     license_status="unverified",
                     collection_status=status if not reject else f"rejected_or_low_priority:{reject}",
                     rejection_reason=reject,
+                    verification_evidence_json=json.dumps(verification_evidence, ensure_ascii=False, sort_keys=True),
                     collected_at_epoch=time.time(),
                 )
                 candidates.append(c)
@@ -627,6 +792,9 @@ def main() -> int:
         "candidate_count": len(candidates),
         "downloaded_count": sum(1 for c in candidates if c.local_path),
         "important_event_count": len(list(events_dir.glob("important_candidate_*.txt"))),
+        "verification_mode": args.verification_mode,
+        "pre_download_reject_count": sum(1 for c in candidates if "pre_download_gate" in c.verification_evidence_json),
+        "rejected_after_ocr_vision_count": sum(1 for c in candidates if c.collection_status.startswith("rejected_after_ocr_vision")),
         "manifest": str(manifest_path.as_posix()),
         "csv": str(csv_path.as_posix()),
         "contact_sheet": str((output_dir / "contact_sheets" / "real_web_candidate_contact_sheet.jpg").as_posix()),

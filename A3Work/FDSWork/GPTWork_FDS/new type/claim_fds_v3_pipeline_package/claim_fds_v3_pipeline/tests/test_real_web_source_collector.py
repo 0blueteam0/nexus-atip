@@ -51,3 +51,34 @@ def test_relevance_score_should_keep_actual_document_like_assets():
 def test_document_type_label_should_hide_internal_english_tokens():
     assert collector.document_type_label("medical_receipt") == "진료비계산서영수증"
     assert collector.document_type_label("unknown_doc_type") == "문서유형미분류"
+
+
+def test_pre_download_gate_should_reject_panda_people_and_profile_noise():
+    noisy_rows = [
+        ("판다 푸바오 귀여운 사진", "https://example.org/panda.html", "https://cdn.example.org/fubao_panda.jpg"),
+        ("보험상담 담당자 프로필", "https://example.org/insurance-agent", "https://cdn.example.org/person_profile_photo.png"),
+        ("병원 진료 안내", "https://example.org/hospital", "https://cdn.example.org/doctor_people_banner.jpg"),
+    ]
+
+    for title, page_url, image_url in noisy_rows:
+        ok, reason = collector.pre_download_candidate_gate(title, page_url, image_url)
+        assert ok is False
+        assert reason == "non_document_visual_noise"
+
+
+def test_ocr_signal_should_accept_korean_claim_document_fields():
+    tokens = ["진료비 계산서 영수증", "본인부담금", "비급여", "진료일자", "금액 12,300원"]
+
+    signal = collector.score_ocr_document_signal(tokens)
+
+    assert signal["is_korean_claim_document"] is True
+    assert signal["field_hint_count"] >= 3
+
+
+def test_ocr_signal_should_reject_generic_korean_blog_image_text():
+    tokens = ["오늘의 판다", "귀여운 동물", "댓글", "공감"]
+
+    signal = collector.score_ocr_document_signal(tokens)
+
+    assert signal["is_korean_claim_document"] is False
+    assert signal["field_hint_count"] == 0
