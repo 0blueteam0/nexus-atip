@@ -1,25 +1,41 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-05T08:34:03.051Z",
+  "updatedAt": "2026-06-05T08:40:11.474Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge",
+      "id": "2026-06-05T08-40-11-249Z-codex-to-claude-system-fds-bg2-zero-download-collector-diagnostics",
       "from": "codex",
       "to": "claude",
-      "title": "fds-ocr-stg-label-value-bridge",
+      "title": "fds-bg2-zero-download-collector-diagnostics",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-40-11-249Z-codex-to-claude-system-fds-bg2-zero-download-collector-diagnostics.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-05T08:34:02.715Z",
+      "createdAt": "2026-06-05T08:40:11.249Z",
       "paths": [
-        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/src/claim_fds_synth/ocr_stg_bridge.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_ocr_stg_bridge.py"
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/scripts/collect_real_insurance_claim_sources.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_real_web_source_collector.py"
       ],
       "docs": [
-        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_focused_news_ocr_run_20260605/stg_bridge/OCR_STG_BRIDGE_SUMMARY.md"
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_bg2_20260605/BG2_ZERO_DOWNLOAD_ANALYSIS.md"
       ]
     }
   },
   "entries": [
+    {
+      "id": "2026-06-05T08-40-11-249Z-codex-to-claude-system-fds-bg2-zero-download-collector-diagnostics",
+      "from": "codex",
+      "to": "claude",
+      "title": "fds-bg2-zero-download-collector-diagnostics",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-40-11-249Z-codex-to-claude-system-fds-bg2-zero-download-collector-diagnostics.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-05T08:40:11.249Z",
+      "paths": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/scripts/collect_real_insurance_claim_sources.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_real_web_source_collector.py"
+      ],
+      "docs": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_bg2_20260605/BG2_ZERO_DOWNLOAD_ANALYSIS.md"
+      ]
+    },
     {
       "id": "2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge",
       "from": "codex",

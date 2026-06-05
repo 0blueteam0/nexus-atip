@@ -204,9 +204,12 @@ NEGATIVE_ASSET_PATTERNS = [
     "/main/nav/",
     "ic_search",
     "call_code",
+    "kpubpop",
+    "pop02",
     "img_d1_comp",
     "/writer/",
     "kb%20think",
+    "banner-npay",
     "actual-cost-insurance/img-",
     "adobestock",
     "shutterstock",
@@ -221,6 +224,8 @@ NON_DOCUMENT_VISUAL_NOISE_TERMS = [
     "판다", "panda", "푸바오", "fubao", "동물", "animal", "cat", "dog", "pet",
     "인물", "사람", "people", "person", "portrait", "face", "프로필", "profile", "avatar",
     "상담사", "설계사", "doctor_people", "staff", "team", "banner", "배너", "main_visual",
+    "gpu", "rtx", "geforce", "显卡", "天梯图", "allevents", "events in", "travel", "tour",
+    "나무위키", "namu.wiki", "한국민족문화대백과사전", "encykorea", "설문", "survey",
     "food", "recipe", "요리", "맛집", "stock", "adobestock", "shutterstock", "gettyimages", "istockphoto",
 ]
 
@@ -389,15 +394,30 @@ def should_accept_downloaded_image(
     return accepted, "" if accepted else "ocr_vision_gate_failed", evidence
 
 
+def quote_url_for_request(url: str) -> str:
+    """Percent-encode non-ASCII URL parts before urllib Request.
+
+    검색 결과에는 한글 경로가 그대로 들어간 image URL이 섞입니다. urllib Request는 이런 URL을
+    ASCII로 인코딩하려다 UnicodeEncodeError를 낼 수 있으므로, scheme/netloc은 보존하고 path,
+    query, fragment만 안전하게 quote합니다.
+    """
+
+    parts = urllib.parse.urlsplit(url)
+    path = urllib.parse.quote(parts.path, safe="/%:@")
+    query = urllib.parse.quote(parts.query, safe="=&?/:+,%@")
+    fragment = urllib.parse.quote(parts.fragment, safe="=&?/:+,%@")
+    return urllib.parse.urlunsplit((parts.scheme, parts.netloc, path, query, fragment))
+
+
 def fetch_text(url: str, timeout: int = 20) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    req = urllib.request.Request(quote_url_for_request(url), headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         raw = resp.read(2_000_000)
     return raw.decode("utf-8", "ignore")
 
 
 def fetch_bytes(url: str, timeout: int = 25, max_bytes: int = 8_000_000) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    req = urllib.request.Request(quote_url_for_request(url), headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         data = resp.read(max_bytes + 1)
     if len(data) > max_bytes:
@@ -612,7 +632,10 @@ def save_image_candidate(
                     return "", w, h, digest, "rejected_too_small_non_document_asset", {"min_dimension": min(w, h)}
         except Exception as exc:
             staged.unlink(missing_ok=True)
-            return "", None, None, digest, f"downloaded_but_not_valid_image:{type(exc).__name__}", {}
+            return "", None, None, digest, f"downloaded_but_not_valid_image:{type(exc).__name__}", {
+                "image_validation_error_type": type(exc).__name__,
+                "image_validation_error_message": str(exc),
+            }
         accepted, reject_reason, evidence = should_accept_downloaded_image(title, page_url, image_url, staged, w, h, relevance, verification_mode)
         if not accepted:
             rejected = out_dir / "rejected_images" / f"거절_{idx:05d}_{digest[:10]}{ext}"

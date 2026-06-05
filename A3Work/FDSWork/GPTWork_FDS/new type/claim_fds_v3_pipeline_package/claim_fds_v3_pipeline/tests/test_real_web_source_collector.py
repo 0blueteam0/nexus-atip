@@ -82,3 +82,82 @@ def test_ocr_signal_should_reject_generic_korean_blog_image_text():
 
     assert signal["is_korean_claim_document"] is False
     assert signal["field_hint_count"] == 0
+
+
+def test_quote_url_for_request_should_percent_encode_non_ascii_path_segments():
+    url = "https://kbthink.com/content/dam/tam-dcp-cms/kbcontent/자산관리/insurance/opengraph-pc-1.jpg"
+
+    normalized = collector.quote_url_for_request(url)
+
+    assert "자산관리" not in normalized
+    assert "%EC%9E%90%EC%82%B0%EA%B4%80%EB%A6%AC" in normalized
+    assert normalized.startswith("https://kbthink.com/content/dam/")
+
+
+def test_save_image_candidate_should_keep_validation_error_evidence_when_downloaded_bytes_are_not_image(tmp_path, monkeypatch):
+    monkeypatch.setattr(collector, "fetch_bytes", lambda url: b"not an image")
+
+    local_path, width, height, digest, status, evidence = collector.save_image_candidate(
+        tmp_path,
+        "medical_receipt",
+        1,
+        "https://example.org/uploads/receipt.png",
+        "진료비 계산서 영수증 실손 보험금 청구 사진",
+        "https://example.org/claim-review/sample",
+        6,
+        "ocr_vision",
+    )
+
+    assert local_path == ""
+    assert width is None
+    assert height is None
+    assert digest
+    assert status.startswith("downloaded_but_not_valid_image:")
+    assert evidence["image_validation_error_type"]
+    assert evidence["image_validation_error_message"]
+
+
+def test_pre_download_gate_should_reject_noise_observed_in_focused_news_run():
+    noisy_rows = [
+        (
+            "2026年 5月 显卡天梯图（更新RTX 5090Dv2&RX 9060）",
+            "https://example.org/gpu-rank",
+            "https://cdn.example.org/rtx-5090-gpu-chart.jpg",
+            "non_document_visual_noise",
+        ),
+        (
+            "All Events in Sydney, Today and Upcoming Events in Sydney",
+            "https://allevents.in/sydney",
+            "https://cdn.example.org/events-travel-people.webp",
+            "non_document_visual_noise",
+        ),
+        (
+            "손해보험협회",
+            "http://kpub.knia.or.kr/main.do",
+            "http://kpub.knia.or.kr/images/kpubPop02.jpg",
+            "non_document_or_placeholder_asset",
+        ),
+        (
+            "보험 - 나무위키",
+            "https://namu.wiki/w/보험",
+            "https://i.namu.wiki/i/insurance-table.webp",
+            "non_document_visual_noise",
+        ),
+        (
+            "의무 - 한국민족문화대백과사전",
+            "https://encykorea.aks.ac.kr/Article/E0043350",
+            "https://encykorea.aks.ac.kr/logo-card.png",
+            "non_document_or_placeholder_asset",
+        ),
+        (
+            "비급여 정보 포털",
+            "https://www.hira.or.kr/npay",
+            "https://www.hira.or.kr/images/contents/banner-npay.png",
+            "non_document_or_placeholder_asset",
+        ),
+    ]
+
+    for title, page_url, image_url, expected_reason in noisy_rows:
+        ok, reason = collector.pre_download_candidate_gate(title, page_url, image_url)
+        assert ok is False
+        assert reason == expected_reason
