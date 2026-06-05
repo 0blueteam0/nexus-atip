@@ -1,21 +1,53 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-05T07:52:45.674Z",
+  "updatedAt": "2026-06-05T08:34:03.051Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution",
+      "id": "2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge",
       "from": "codex",
       "to": "claude",
-      "title": "FDS Real Image STG local substitution",
+      "title": "fds-ocr-stg-label-value-bridge",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-05T07:52:45.236Z",
-      "paths": [],
-      "docs": []
+      "createdAt": "2026-06-05T08:34:02.715Z",
+      "paths": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/src/claim_fds_synth/ocr_stg_bridge.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_ocr_stg_bridge.py"
+      ],
+      "docs": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_focused_news_ocr_run_20260605/stg_bridge/OCR_STG_BRIDGE_SUMMARY.md"
+      ]
     }
   },
   "entries": [
+    {
+      "id": "2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge",
+      "from": "codex",
+      "to": "claude",
+      "title": "fds-ocr-stg-label-value-bridge",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-34-02-715Z-codex-to-claude-system-fds-ocr-stg-label-value-bridge.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-05T08:34:02.715Z",
+      "paths": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/src/claim_fds_synth/ocr_stg_bridge.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_ocr_stg_bridge.py"
+      ],
+      "docs": [
+        "A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_focused_news_ocr_run_20260605/stg_bridge/OCR_STG_BRIDGE_SUMMARY.md"
+      ]
+    },
+    {
+      "id": "2026-06-05T08-25-35-504Z-codex-to-claude-system-fds-ocr-stg-bridge",
+      "from": "codex",
+      "to": "claude",
+      "title": "FDS OCR STG bridge",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-25-35-504Z-codex-to-claude-system-fds-ocr-stg-bridge.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-05T08:25:35.504Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution",
       "from": "codex",

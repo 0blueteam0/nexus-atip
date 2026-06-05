@@ -1,10 +1,10 @@
 # codex -> claude 인수인계
 
-- 생성시각: 2026-06-05T07:52:57.116Z
+- 생성시각: 2026-06-05T08:25:34.612Z
 - 보낸 쪽: codex
 - 받는 쪽: claude
 - 프로젝트: K드라이브 Claude Code 통합 프로젝트
-- Git: main @ 0b5b0ff
+- Git: main @ d0d6627
 
 ## 현재 작업 상태
 

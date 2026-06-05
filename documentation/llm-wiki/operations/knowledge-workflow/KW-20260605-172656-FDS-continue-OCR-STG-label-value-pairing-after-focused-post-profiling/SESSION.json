@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260605-172656-FDS-continue-OCR-STG-label-value-pairing-after-focused-post-profiling",
+  "project": "FDS",
+  "task": "continue OCR STG label value pairing after focused post profiling",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260605-172656-FDS-continue-OCR-STG-label-value-pairing-after-focused-post-profiling",
+  "created_at": "2026-06-05T17:26:56+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
