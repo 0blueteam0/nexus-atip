@@ -1,0 +1,183 @@
+version: "2024-07-18-aligned-safe-synthetic"
+purpose: "FDS defensive training data. Not a valid claim document. Do not use real institution logos or identifiers."
+safety_guards:
+  synthetic_only: true
+  real_logo_allowed: false
+  real_provider_identifier_allowed: false
+  visible_public_sample_mark: true
+  production_training_mark_policy: "Use dataset registry/provenance rather than visible pixel marks to avoid shortcut learning."
+documents:
+  medical_receipt:
+    source_basis:
+      - "국민건강보험 요양급여의 기준에 관한 규칙 별지 제6호서식, 개정 2024.7.18"
+      - "실손 청구 기본서류: 진료비계산서·영수증, 진료비세부내역서, 필요시 병명확인서류"
+    must_have_fields:
+      header:
+        - claim_context_type        # outpatient/admission/discharge/interim
+        - patient_registration_no
+        - patient_name
+        - treatment_period
+        - night_or_holiday_treatment
+        - department
+        - drg_no
+        - ward
+        - patient_category
+        - receipt_no
+      charge_table_columns:
+        - item
+        - covered_partial_patient_payment
+        - covered_corporation_payment
+        - full_patient_payment
+        - noncovered_payment
+        - calculation_detail
+      charge_items:
+        basic:
+          - consultation_fee
+          - hospitalization_room_1p
+          - hospitalization_room_2_3p
+          - hospitalization_room_4p_plus
+          - meal
+          - medication_dispense_service_fee
+          - medication_dispense_drug_fee
+          - injection_service_fee
+          - injection_drug_fee
+          - anesthesia_fee
+          - treatment_surgery_fee
+          - lab_test_fee
+          - imaging_diagnosis_fee
+          - radiation_therapy_fee
+          - medical_material_fee
+          - rehabilitation_physical_therapy_fee
+          - psychotherapy_fee
+          - blood_component_fee
+        elective_or_optional:
+          - ct_fee
+          - mri_fee
+          - pet_fee
+          - ultrasound_fee
+          - prosthodontics_orthodontics_fee
+          - certificate_fee
+          - selective_benefit
+          - elderly_flat_amount
+          - convalescent_hospital_flat_amount
+          - hospice_flat_amount
+          - drg_bundled_payment
+          - other
+      summary:
+        - total_medical_fee            # ①+②+③+④
+        - insurer_corporation_total    # ②+⑤
+        - patient_burden_total         # (①-⑤)+③+④
+        - prepaid_amount
+        - amount_due
+        - paid_by_card
+        - paid_by_cash_receipt
+        - paid_by_cash
+        - paid_total
+        - unpaid_amount
+        - cash_receipt_identity_no
+        - cash_receipt_approval_no
+      provider:
+        - provider_type
+        - provider_business_no
+        - provider_name
+        - provider_phone
+        - provider_address
+        - provider_representative
+        - issue_date
+        - representative_seal_area
+    fds_key_fields:
+      - patient_name
+      - treatment_period
+      - receipt_no
+      - total_medical_fee
+      - insurer_corporation_total
+      - patient_burden_total
+      - paid_total
+      - noncovered_total
+      - provider_name
+      - provider_business_no
+      - issue_date
+  medical_detail_statement:
+    source_basis:
+      - "진료비 세부산정내역 서식 등에 관한 기준, 보건복지부 고시 제2018-21호"
+    must_have_fields:
+      header:
+        - patient_registration_no
+        - patient_name
+        - treatment_period
+        - ward
+        - patient_category
+      line_item_columns:
+        - treatment_date
+        - item_category
+        - item_code
+        - item_name
+        - quantity
+        - unit_price
+        - covered_partial_patient_payment
+        - covered_corporation_payment
+        - full_patient_payment
+        - noncovered_payment
+        - total_amount
+      summary:
+        - covered_partial_total
+        - covered_corporation_total
+        - full_patient_total
+        - noncovered_total
+        - line_total
+  pharmacy_receipt:
+    source_basis:
+      - "국민건강보험 요양급여의 기준에 관한 규칙 별지 제10호서식, 개정 2024.7.18"
+    must_have_fields:
+      header:
+        - receipt_no
+        - patient_name
+        - dispense_date
+        - medication_days
+        - night_or_holiday_dispense
+      charge_items:
+        - drug_fee
+        - basic_dispensing_fee
+        - medication_counseling_fee
+        - dispensing_fee
+        - management_fee
+        - selective_benefit
+        - elderly_flat_amount
+        - other
+      summary:
+        - pharmacy_total_fee
+        - patient_burden_total
+        - paid_by_card
+        - paid_by_cash_receipt
+        - paid_by_cash
+        - paid_total
+      provider:
+        - prescribing_provider_type
+        - pharmacy_business_no
+        - pharmacy_name
+        - pharmacy_address
+        - pharmacy_phone
+        - pharmacy_representative
+        - issue_date
+  prescription:
+    source_basis:
+      - "의료법 시행규칙 제12조 처방전 기재 사항"
+    must_have_fields:
+      header:
+        - patient_name
+        - patient_identity_no_or_managed_no
+        - provider_name
+        - provider_phone
+        - provider_fax
+        - disease_classification_code
+        - clinician_name
+        - license_type
+        - license_no
+        - issue_date
+        - valid_period
+      drug_lines:
+        - drug_name_or_code
+        - dose_per_administration
+        - administrations_per_day
+        - total_days
+        - route_or_instructions

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.example/fds/privacy_transform.schema.json",
+  "title": "PrivacyTransformContract",
+  "type": "object",
+  "required": ["mode", "targets", "replacement_strategy", "audit"],
+  "properties": {
+    "mode": {"enum": ["pseudonymization", "anonymization", "synthetic_rewrite"]},
+    "targets": {"type": "array", "items": {"enum": ["patient_name", "patient_registration_no", "birth_date", "resident_no", "provider_name", "business_registration_no", "address", "phone", "receipt_no", "card_no", "cash_receipt_no", "doctor_name", "signature", "stamp", "diagnosis_code", "free_text_note"]}},
+    "replacement_strategy": {
+      "type": "object",
+      "properties": {
+        "deterministic_tokenization": {"type": "boolean"},
+        "preserve_visual_width": {"type": "boolean"},
+        "preserve_semantic_consistency": {"type": "boolean"},
+        "generate_invalid_identifiers": {"type": "boolean"},
+        "date_shift_by_claim": {"type": "boolean"},
+        "amount_transform_policy": {"enum": ["preserve_clean_consistency", "bucketize", "ratio_preserving_synthetic", "tamper_controlled"]}
+      }
+    },
+    "audit": {
+      "type": "object",
+      "properties": {
+        "no_raw_values_in_manifest": {"type": "boolean"},
+        "regex_leak_scan_required": {"type": "boolean"},
+        "manual_review_required_for_release": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.example/fds/dataset_manifest.schema.json",
+  "title": "GeneratedClaimDocumentManifest",
+  "type": "object",
+  "required": ["doc_id", "claim_id", "doc_type", "source", "privacy_state", "is_tampered", "labels", "provenance", "split_keys"],
+  "properties": {
+    "doc_id": {"type": "string"},
+    "claim_id": {"type": "string"},
+    "bundle_id": {"type": "string"},
+    "doc_type": {"enum": ["medical_receipt", "medical_detail_statement", "pharmacy_receipt", "prescription", "claim_form", "diagnosis_certificate", "other"]},
+    "source": {"enum": ["synthetic", "pseudonymized_reference", "profile_calibrated_synthetic"]},
+    "privacy_state": {"enum": ["synthetic_only", "pseudonymized", "anonymized"]},
+    "is_tampered": {"type": "boolean"},
+    "labels": {
+      "type": "object",
+      "required": ["doc_label", "field_labels", "semantic_edges", "mask_path"],
+      "properties": {
+        "doc_label": {"enum": ["clean", "tampered", "benign_hard_negative", "quality_reject"]},
+        "tamper_family": {"type": "array", "items": {"type": "string"}},
+        "field_labels": {"type": "array", "items": {"type": "object"}},
+        "semantic_edges": {"type": "array", "items": {"type": "object"}},
+        "mask_path": {"type": ["string", "null"]},
+        "reason_codes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "capture_profile": {"type": "object"},
+    "quality": {"type": "object"},
+    "provenance": {
+      "type": "object",
+      "required": ["generator_version", "template_family_id", "profile_family_id", "created_at"],
+      "properties": {
+        "generator_version": {"type": "string"},
+        "template_family_id": {"type": "string"},
+        "profile_family_id": {"type": "string"},
+        "seed": {"type": "integer"},
+        "created_at": {"type": "string"}
+      }
+    },
+    "split_keys": {
+      "type": "object",
+      "required": ["claim_pair_id", "template_family_id", "provider_family_id", "device_family_id", "attack_family_id"],
+      "properties": {
+        "claim_pair_id": {"type": "string"},
+        "template_family_id": {"type": "string"},
+        "provider_family_id": {"type": "string"},
+        "device_family_id": {"type": "string"},
+        "attack_family_id": {"type": "string"}
+      }
+    }
+  }
+}

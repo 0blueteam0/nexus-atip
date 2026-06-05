@@ -1,0 +1,31 @@
+version: "reference_visual_clusters.v4"
+clusters:
+  C1_oblique_mobile_closeup_blue_grid:
+    source_examples: ["001.jpg"]
+    use_for: ["mobile_partial_closeup", "amount_panel_localization", "perspective_hard_negative"]
+    must_sample:
+      perspective: "strong"
+      crop_scope: "partial"
+      background: "wood_or_desk"
+      line_color: "blue"
+  C2_low_res_flat_scan_blue_dense_table_stamp:
+    source_examples: ["002.png"]
+    use_for: ["low_res_scan", "stamp_annotation_benign", "dense_table"]
+  C3_fullpage_gray_scan_official_2019:
+    source_examples: ["003.jpg"]
+    use_for: ["fullpage_receipt_topology", "bottom_notice_microtext", "right_payment_panel"]
+  C4_landscape_hospital_photo_watermark_barcode:
+    source_examples: ["255693.jpg"]
+    use_for: ["inpatient_period_receipt", "barcode_placeholder", "watermark_benign_background"]
+  C5_blue_two_panel_receipt_with_red_circles:
+    source_examples: ["370078_509_5754.jpg"]
+    use_for: ["two_panel_layout", "red_pen_annotation_benign", "screenshot_crop"]
+  C6_modern_2024_fullpage_qr_stamp_gray_grid:
+    source_examples: ["2025042410544033382_1745459706.jpg"]
+    use_for: ["modern_2024_schema", "qr_placeholder", "red_stamp_layer"]
+  C7_mobile_photo_full_receipt_beige_blue_stamp:
+    source_examples: ["pryvZ-xc1nTy62mXSAJMA.jpg"]
+    use_for: ["warm_paper_mobile", "large_notice_texture", "shadow_gradient"]
+  C8_cropped_table_detail_gray_grid:
+    source_examples: ["SE-3ed6f4b3-d3e5-46c8-ab37-26fe03f5268d.jpg"]
+    use_for: ["detail_statement_crop", "sparse_zero_cells", "row_insert_delete_tamper"]

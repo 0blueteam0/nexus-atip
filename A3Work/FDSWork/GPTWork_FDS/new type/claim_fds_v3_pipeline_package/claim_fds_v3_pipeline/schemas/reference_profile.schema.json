@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.example/fds/reference_profile.schema.json",
+  "title": "ReferenceImageProfile",
+  "type": "object",
+  "required": ["image_id", "source_class", "privacy_state", "visual_cluster", "geometry", "table", "appearance", "capture", "privacy_targets", "allowed_usage"],
+  "properties": {
+    "image_id": {"type": "string"},
+    "source_class": {"enum": ["authorized_real_reference", "synthetic", "public_licensed_reference"]},
+    "privacy_state": {"enum": ["raw_secure_zone", "pseudonymized", "anonymized", "profile_only"]},
+    "visual_cluster": {"type": "string"},
+    "document_type_guess": {"type": "string"},
+    "geometry": {
+      "type": "object",
+      "required": ["width", "height", "aspect_ratio", "content_bbox_xyxy", "skew_deg"],
+      "properties": {
+        "width": {"type": "integer"},
+        "height": {"type": "integer"},
+        "aspect_ratio": {"type": "number"},
+        "content_bbox_xyxy": {"type": ["array", "null"], "items": {"type": "integer"}},
+        "skew_deg": {"type": ["number", "null"]},
+        "perspective_profile": {"enum": ["flat", "mild", "oblique", "partial_closeup", "unknown"]}
+      }
+    },
+    "table": {
+      "type": "object",
+      "properties": {
+        "hough_line_count_per_mp": {"type": "number"},
+        "horizontal_line_count": {"type": "integer"},
+        "vertical_line_count": {"type": "integer"},
+        "edge_density": {"type": "number"},
+        "line_color_family": {"enum": ["blue", "cyan", "gray_black", "mixed", "unknown"]},
+        "topology_tags": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "appearance": {
+      "type": "object",
+      "properties": {
+        "mean_gray": {"type": "number"},
+        "std_gray": {"type": "number"},
+        "background_bgr_mean": {"type": "array", "items": {"type": "number"}},
+        "background_bgr_std": {"type": "array", "items": {"type": "number"}},
+        "blue_pixel_ratio": {"type": "number"},
+        "red_stamp_pixel_ratio": {"type": "number"},
+        "purple_ink_pixel_ratio": {"type": "number"},
+        "stamp_tags": {"type": "array", "items": {"type": "string"}},
+        "annotation_tags": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "capture": {
+      "type": "object",
+      "properties": {
+        "profile_guess": {"type": "string"},
+        "laplacian_blur_var": {"type": "number"},
+        "jpeg_or_resize_suspected": {"type": "boolean"},
+        "damage_tags": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "privacy_targets": {"type": "array", "items": {"type": "string"}},
+    "allowed_usage": {"type": "array", "items": {"enum": ["profile_stats", "layout_sampling", "capture_sampling", "ocr_error_modeling", "direct_training", "external_share"]}},
+    "forbidden_usage": {"type": "array", "items": {"type": "string"}}
+  }
+}

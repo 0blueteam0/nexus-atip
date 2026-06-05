@@ -1,0 +1,64 @@
+version: "privacy_policy.v4"
+principle: "pseudonymize/anonymize/rewrite content instead of black-box masking whenever possible"
+raw_reference_images:
+  storage_zone: "secure_reference_zone_only"
+  allowed_use:
+    - "profile extraction"
+    - "layout/table/capture distribution fitting"
+    - "privacy-safe pseudonymized internal validation after approval"
+  prohibited_use:
+    - "direct public release"
+    - "direct model training without privacy transform and legal approval"
+    - "copying real logos/identifiers into synthetic output"
+
+privacy_transform_modes:
+  pseudonymization:
+    description: "replace sensitive values with deterministic synthetic equivalents so claim-bundle consistency is retained"
+    stable_within: ["claim_id", "patient_entity_id", "provider_family_id"]
+    do_not_store_raw_values_in_manifest: true
+  anonymization:
+    description: "irreversibly rewrite sensitive values and remove linkage to original subject"
+  synthetic_rewrite:
+    description: "use reference image only for style/capture profile; render all text/content from synthetic schema"
+
+replacement_rules:
+  patient_name:
+    method: "deterministic_pseudonym_generator"
+    examples: ["가명환자A", "이하늘", "박도윤"]
+    preserve_visual_width: true
+  patient_registration_no:
+    method: "synthetic_invalid_pattern"
+    pattern_examples: ["PX-26-0417-003", "SYN-000421"]
+  resident_no_or_birth:
+    method: "date_shift_or_age_band"
+    store_exact_birth: false
+  provider_name:
+    method: "synthetic_provider_family_name"
+    prohibit_real_names: true
+  business_registration_no:
+    method: "invalid_checksum_synthetic_no"
+    prohibit_valid_real_like_numbers: true
+  phone_address:
+    method: "synthetic_nonroutable_contact"
+  doctor_name_license:
+    method: "synthetic_professional_identity_invalid_license"
+  receipt_no:
+    method: "synthetic_nontraceable_serial"
+  card_cash_receipt_no:
+    method: "synthetic_token_nonfinancial"
+  stamp_signature:
+    method: "fictional_stamp_or_placeholder; no real seal reuse"
+  diagnosis_code:
+    method: "policy_controlled; use coarse class or synthetic code unless medical governance approves"
+  free_text_note:
+    method: "drop_or_synthetic_rewrite"
+
+leakage_scan:
+  required: true
+  regex_targets:
+    - "resident_registration_number_like"
+    - "business_registration_number_like"
+    - "phone_number_like"
+    - "card_number_like"
+    - "bank_account_like"
+    - "known_provider_names_blacklist"
