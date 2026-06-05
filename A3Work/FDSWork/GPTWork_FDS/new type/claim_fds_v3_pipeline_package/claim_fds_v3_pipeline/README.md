@@ -20,7 +20,7 @@ python run_demo.py
 2. `layout.py`: 표가 페이지 밖으로 삐져나가지 않도록 grid 합계 검증, cell 단위 text fit, truncation, overflow audit을 수행합니다.
 3. `renderer.py`: 진료비 계산서·영수증과 진료비 세부산정내역 샘플을 생성합니다.
 4. `degradation.py`: scanner, mobile capture, fold, crumple, torn-edge augmentation을 분리합니다.
-5. `tamper.py`: post-scan local field replacement와 tamper mask를 생성합니다.
+5. `tamper.py`: post-scan local field replacement 이미지만 생성합니다. 마스크/블럭/제출불가 표시는 산출 이미지에 넣지 않습니다.
 6. `qc.py`: semantic consistency와 layout audit을 수행합니다.
 
 ## 산출물
@@ -28,12 +28,11 @@ python run_demo.py
 - `v3_01_medical_receipt_pristine.png`: 렌더링 디버그 이미지
 - `v3_02_medical_receipt_clean_scan.jpg`: 정상 스캔풍 이미지
 - `v3_03_medical_receipt_post_scan_tampered.jpg`: 국소 field replacement 변조 이미지
-- `v3_04_tamper_mask.png`: 변조 영역 mask
-- `v3_05_tamper_overlay.png`: reviewer용 overlay
-- `v3_06_medical_receipt_folded_benign.jpg`: 접힘 hard negative
-- `v3_07_medical_receipt_crumpled_torn_benign.jpg`: 약한 구김 + margin tear hard negative
-- `v3_08_medical_receipt_mobile_capture.jpg`: 모바일 청구앱풍 촬영
-- `v3_09_detail_statement_clean_scan.jpg`: 쌍 문서인 진료비 세부내역서
+- 변조 영역 좌표/변경 필드는 manifest/QC 메타데이터에만 기록하며, mask/overlay 이미지는 생성하지 않습니다.
+- `v3_04_medical_receipt_folded_benign.jpg`: 접힘 hard negative
+- `v3_05_medical_receipt_crumpled_torn_benign.jpg`: 약한 구김 + margin tear hard negative
+- `v3_06_medical_receipt_mobile_capture.jpg`: 모바일 청구앱풍 촬영
+- `v3_07_detail_statement_clean_scan.jpg`: 쌍 문서인 진료비 세부내역서
 - `manifest.json`: claim, tamper, benign degradation, provenance
 - `qc_report.json`: overflow, truncation, semantic consistency report
 
@@ -59,7 +58,7 @@ v4는 한국 손해보험사의 실손/손해 청구 FDS가 탐지해야 하는 
 - 각 synthetic claim bundle은 23개 row를 가집니다.
   - NO 13종: `medical_receipt`, `medical_detail_statement`, `pharmacy_receipt`, `prescription`, `claim_application`, `diagnosis_certificate`, `hospitalization_confirmation`, `outpatient_confirmation`, `medical_opinion`, `surgery_confirmation`, `inpatient_detail_statement`, `supporting_evidence_checklist`, `claim_review_cover_sheet`
   - AF 10종: `semantic_amount_mismatch`, `semantic_diagnosis_code_mismatch`, `semantic_drug_mismatch`, `semantic_duplicate_claim`, `semantic_provider_mismatch`, `semantic_hospitalization_period_mismatch`, `semantic_inpatient_room_charge_inflation`, `semantic_line_item_insertion`, `semantic_surgery_anesthesia_mismatch`, `semantic_supporting_document_checkbox_mismatch`
-- `tamper_mask`, `changed_fields`, `masks/` 산출물은 생성하지 않습니다. 현재 단계는 OCR/KIE/문서 간 의미정합성 학습용입니다.
+- `tamper_mask`, `masks/`, block/overlay 이미지는 생성하지 않습니다. `changed_fields`는 manifest/QC 메타데이터에만 남깁니다.
 - `Real Image` 경로의 실제 이미지는 원본을 복사하거나 실제 식별자를 재사용하지 않고 visual profile 및 안전한 derived synthetic reference로만 사용합니다.
 - 접힘, 구김, 약한 찢김, 도장, 붉은 주석, QR/barcode placeholder, 모바일 perspective, crop은 기본적으로 `benign_condition_tags`이며 fraud label이 아닙니다.
 - 모든 값은 synthetic/pseudonymized/invalid token이며, 실제 병원명·로고·사업자번호·주민번호·계좌번호·전화번호를 복사하지 않습니다.

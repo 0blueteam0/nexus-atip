@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import yaml
-from PIL import Image
-
 from src.claim_fds_synth.claim_data import generate_claim
 from src.claim_fds_synth.renderer import Renderer
 from src.claim_fds_synth.degradation import scanner_effect, fold_effect, crumple_effect, slight_torn_edge, mobile_capture_effect
@@ -29,12 +27,12 @@ def main() -> None:
     clean_render_path = OUT / "v3_01_medical_receipt_pristine.png"
     clean_scan_path = OUT / "v3_02_medical_receipt_clean_scan.jpg"
     tampered_path = OUT / "v3_03_medical_receipt_post_scan_tampered.jpg"
-    mask_path = OUT / "v3_04_tamper_mask.png"
-    overlay_path = OUT / "v3_05_tamper_overlay.png"
-    folded_path = OUT / "v3_06_medical_receipt_folded_benign.jpg"
-    crumpled_torn_path = OUT / "v3_07_medical_receipt_crumpled_torn_benign.jpg"
-    mobile_path = OUT / "v3_08_medical_receipt_mobile_capture.jpg"
-    detail_path = OUT / "v3_09_detail_statement_clean_scan.jpg"
+    folded_path = OUT / "v3_04_medical_receipt_folded_benign.jpg"
+    crumpled_torn_path = OUT / "v3_05_medical_receipt_crumpled_torn_benign.jpg"
+    mobile_path = OUT / "v3_06_medical_receipt_mobile_capture.jpg"
+    detail_path = OUT / "v3_07_detail_statement_clean_scan.jpg"
+    for legacy_artifact in ["v3_04_tamper_mask.png", "v3_05_tamper_overlay.png"]:
+        (OUT / legacy_artifact).unlink(missing_ok=True)
 
     receipt.image.save(clean_render_path)
     clean_scan = scanner_effect(receipt.image, seed=101, quality=78)
@@ -42,20 +40,6 @@ def main() -> None:
 
     tamper = post_scan_local_tamper(clean_scan, claim, receipt.field_bboxes, cfg["fonts"], seed=203)
     tamper.image.save(tampered_path, quality=88)
-    tamper.mask.save(mask_path)
-
-    # Create overlay preview.
-    overlay = tamper.image.convert("RGBA")
-    mask_col = tamper.mask.convert("RGBA")
-    pix = mask_col.load()
-    for y in range(mask_col.height):
-        for x in range(mask_col.width):
-            if pix[x, y][0] > 0:
-                pix[x, y] = (255, 35, 35, 86)
-            else:
-                pix[x, y] = (0, 0, 0, 0)
-    overlay = Image.alpha_composite(overlay, mask_col)
-    overlay.convert("RGB").save(overlay_path, quality=88)
 
     folded = fold_effect(clean_scan, seed=309, vertical=True, strength=0.45)
     folded.save(folded_path, quality=88)
@@ -86,8 +70,6 @@ def main() -> None:
             "medical_receipt_pristine": clean_render_path.name,
             "medical_receipt_clean_scan": clean_scan_path.name,
             "medical_receipt_post_scan_tampered": tampered_path.name,
-            "tamper_mask": mask_path.name,
-            "tamper_overlay": overlay_path.name,
             "medical_receipt_folded_benign": folded_path.name,
             "medical_receipt_crumpled_torn_benign": crumpled_torn_path.name,
             "medical_receipt_mobile_capture": mobile_path.name,
@@ -145,10 +127,9 @@ def main() -> None:
     make_montage([
         ("1. Clean scanner view / no overflow", clean_scan),
         ("2. Post-scan subtle tamper", tamper.image),
-        ("3. Tamper mask overlay", overlay.convert("RGB")),
-        ("4. Folded benign hard negative", folded),
-        ("5. Crumpled + slight torn edge", torn),
-        ("6. Detail statement paired document", detail_scan),
+        ("3. Folded benign hard negative", folded),
+        ("4. Crumpled + slight torn edge", torn),
+        ("5. Detail statement paired document", detail_scan),
     ], str(montage_path), thumb_w=620)
     print(json.dumps({"ok": True, "outputs": str(OUT), "qc": qc}, ensure_ascii=False, indent=2))
 
