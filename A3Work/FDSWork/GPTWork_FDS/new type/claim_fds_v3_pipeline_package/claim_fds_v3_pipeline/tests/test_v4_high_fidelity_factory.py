@@ -9,7 +9,27 @@ from claim_fds_synth.v4_high_fidelity_factory import generate_high_fidelity_data
 
 
 CLUSTERS = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"]
-DOC_TYPES = {"medical_receipt", "medical_detail_statement", "pharmacy_receipt", "prescription"}
+DOC_TYPES = {
+    "medical_receipt",
+    "medical_detail_statement",
+    "pharmacy_receipt",
+    "prescription",
+    "claim_application",
+    "diagnosis_certificate",
+    "hospitalization_confirmation",
+    "outpatient_confirmation",
+    "medical_opinion",
+    "surgery_confirmation",
+    "claim_review_cover_sheet",
+}
+
+ATTACK_FAMILIES = {
+    "semantic_amount_mismatch",
+    "semantic_diagnosis_code_mismatch",
+    "semantic_drug_mismatch",
+    "semantic_duplicate_claim",
+    "semantic_provider_mismatch",
+}
 
 
 def _make_reference_images(root: Path) -> list[Path]:
@@ -63,6 +83,7 @@ def test_high_fidelity_factory_should_emit_8_clusters_4_docs_privacy_safe_splits
     rows = [json.loads(line) for line in (out / "manifest.v4.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
     assert {row["visual_cluster_id"] for row in rows} >= set(CLUSTERS)
     assert {row["document_type"] for row in rows} >= DOC_TYPES
+    assert {row.get("attack_family") for row in rows if row["label_family"] == "AF"} >= ATTACK_FAMILIES
     assert all(row["synthetic_only"] is True for row in rows)
     assert all(row["privacy_state"] == "synthetic_rewrite" for row in rows)
     assert all(row["raw_value_retention"] is False for row in rows)
@@ -96,5 +117,8 @@ def test_high_fidelity_factory_should_generate_many_claim_bundles_without_tamper
     assert len(claim_ids) == 24
     assert len(rows) >= 24 * 5
     assert {row["document_type"] for row in rows} >= DOC_TYPES
+    assert {row.get("attack_family") for row in rows if row["label_family"] == "AF"} >= ATTACK_FAMILIES
+    assert (out / "summary_ko.v4.xlsx").exists()
+    assert (out / "fds_scenario_taxonomy_ko.v4.csv").exists()
     assert all("tamper_mask" not in row for row in rows)
     assert not (out / "masks").exists()

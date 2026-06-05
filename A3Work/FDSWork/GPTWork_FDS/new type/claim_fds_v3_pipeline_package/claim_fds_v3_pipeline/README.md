@@ -51,24 +51,20 @@ python run_demo.py
 - real-vs-synthetic discriminator AUC가 낮아질 때까지 template family를 반복 개선합니다.
 - 영수증·세부내역서·처방전·약제비영수증 간 cross-document graph consistency label을 확장합니다.
 
-## v4 방향 전환: mask 없는 실손 청구 bundle factory
+## v4 방향 전환: 한국 손해보험 실손 FDS 고충실 bundle factory
 
-사용자 피드백에 따라 v4의 중심을 pixel tamper mask 생성에서 실손보험 청구 bundle 다양성으로 옮겼습니다.
+v4는 한국 손해보험사의 실손/손해 청구 FDS가 탐지해야 하는 맥락을 중심으로 확장했습니다. 단순한 이미지 훼손이 아니라 `과청구`, `중복청구`, `금액 변조`, `진단명/질병코드 변조`, `약품/처방 변조`, `발급기관 불일치`가 문서 간 정합성으로 드러나도록 NO/AF counterfactual bundle을 생성합니다.
 
-- v4 factory는 기본적으로 8개 visual cluster x cluster당 3개 claim bundle = 24개 claim bundle을 생성합니다.
-- 각 bundle은 최소 5개 문서 row를 가집니다.
-  - NO `medical_receipt`
-  - NO `medical_detail_statement`
-  - NO `pharmacy_receipt`
-  - NO `prescription`
-  - AF `medical_receipt` semantic counterfactual
-- `tamper_mask`, `changed_fields`, `masks/` 산출물은 생성하지 않습니다.
-- AF는 국소 이미지 패치가 아니라 문서 간 의미 불일치로 만듭니다.
-  - 예: 영수증 총액만 counterfactual로 증가시키고, 세부내역/약제비/처방전은 clean evidence로 유지합니다.
-  - FDS 학습 신호는 `semantic_amount_mismatch`, `RECEIPT_DETAIL_TOTAL_MISMATCH`에 둡니다.
+- 기본 factory는 8개 visual cluster를 유지하고, 현재 검증 산출물은 cluster당 4개 bundle = 32 claim bundle과 Real Image 파생 AF 40개를 생성했습니다.
+- 각 synthetic claim bundle은 16개 row를 가집니다.
+  - NO 11종: `medical_receipt`, `medical_detail_statement`, `pharmacy_receipt`, `prescription`, `claim_application`, `diagnosis_certificate`, `hospitalization_confirmation`, `outpatient_confirmation`, `medical_opinion`, `surgery_confirmation`, `claim_review_cover_sheet`
+  - AF 5종: `semantic_amount_mismatch`, `semantic_diagnosis_code_mismatch`, `semantic_drug_mismatch`, `semantic_duplicate_claim`, `semantic_provider_mismatch`
+- `tamper_mask`, `changed_fields`, `masks/` 산출물은 생성하지 않습니다. 현재 단계는 OCR/KIE/문서 간 의미정합성 학습용입니다.
+- `Real Image` 경로의 실제 이미지는 원본을 복사하거나 실제 식별자를 재사용하지 않고 visual profile 및 안전한 derived synthetic reference로만 사용합니다.
 - 접힘, 구김, 약한 찢김, 도장, 붉은 주석, QR/barcode placeholder, 모바일 perspective, crop은 기본적으로 `benign_condition_tags`이며 fraud label이 아닙니다.
+- 모든 값은 synthetic/pseudonymized/invalid token이며, 실제 병원명·로고·사업자번호·주민번호·계좌번호·전화번호를 복사하지 않습니다.
 
-실제 참조 이미지 기반 v4 생성 예:
+실제 참조 이미지 기반 v4 bulk 생성 예:
 
 ```bash
 PYTHONPATH=src python - <<'PY'
@@ -76,17 +72,38 @@ from pathlib import Path
 from claim_fds_synth.v4_high_fidelity_factory import generate_high_fidelity_dataset
 
 real = Path('J:/PortableApps/genai/A3Work/FDSWork/Real Image')
-images = [p for p in real.iterdir() if p.suffix.lower() in {'.jpg', '.jpeg', '.png'}]
-result = generate_high_fidelity_dataset(images, 'outputs/v4_real_image_many', bundles_per_cluster=3)
+images = sorted(p for p in real.rglob('*') if p.suffix.lower() in {'.jpg', '.jpeg', '.png', '.bmp', '.webp'})
+result = generate_high_fidelity_dataset(
+    images,
+    'outputs/v4_real_image_many',
+    bundles_per_cluster=4,
+    generate_real_image_derivatives=True,
+    real_derivatives_per_image=5,
+    image_quality=90,
+)
 print(result)
 PY
 ```
 
-현재 v4 산출물:
+현재 v4 bulk 산출물:
 
 - `outputs/v4_real_image_many/reference_profiles.v4.json`
 - `outputs/v4_real_image_many/manifest.v4.jsonl`
 - `outputs/v4_real_image_many/splits.v4.json`
 - `outputs/v4_real_image_many/qc_report.v4.json`
 - `outputs/v4_real_image_many/images/*.jpg`
+- `outputs/v4_real_image_many/real_image_derived/*.jpg`
 - `outputs/v4_real_image_many/montage.v4.jpg`
+- `outputs/v4_real_image_many/summary_ko.v4.xlsx`
+- `outputs/v4_real_image_many/summary.v4.ko.xlsx`
+- `outputs/v4_real_image_many/fds_scenario_taxonomy_ko.v4.csv`
+
+검증된 bulk 결과:
+
+- image/manifest rows: 552
+- synthetic claim bundles: 32
+- real-image-derived AF rows: 40
+- label counts: NO 352, AF 200
+- document types: 12 (`real_image_reference_derived` 포함)
+- attack families: 5
+- QC: layout overflow 0, privacy leakage findings 0, quality gate pass
