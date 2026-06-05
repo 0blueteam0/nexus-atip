@@ -1,27 +1,45 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-04T11:31:49.443Z",
+  "updatedAt": "2026-06-05T07:52:45.674Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset",
+      "id": "2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution",
       "from": "codex",
       "to": "claude",
-      "title": "Insurance FDS v3.2 exact-coordinate AF dataset",
+      "title": "FDS Real Image STG local substitution",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-04T11:31:49.108Z",
-      "paths": [
-        "scripts/insurance_fds_exact_coordinate_pipeline.py",
-        "tests/test_insurance_fds_exact_coordinate_pipeline.py",
-        "data/insurance-fds-generated/field-pseudonymized-v3.2-exact-coordinate-overwrite"
-      ],
-      "docs": [
-        "documentation/reports/INSURANCE_FDS_EXACT_COORDINATE_V3_2_REPORT.ko.md"
-      ]
+      "createdAt": "2026-06-05T07:52:45.236Z",
+      "paths": [],
+      "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution",
+      "from": "codex",
+      "to": "claude",
+      "title": "FDS Real Image STG local substitution",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T07-52-45-236Z-codex-to-claude-system-fds-real-image-stg-local-substitution.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-05T07:52:45.236Z",
+      "paths": [],
+      "docs": []
+    },
+    {
+      "id": "2026-06-05T07-06-44-964Z-codex-to-claude-system-claim-fds-real-web-source-collector",
+      "from": "codex",
+      "to": "claude",
+      "title": "claim-fds-real-web-source-collector",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T07-06-44-964Z-codex-to-claude-system-claim-fds-real-web-source-collector.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-05T07:06:44.964Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-04T11-31-49-108Z-codex-to-claude-system-insurance-fds-v3-2-exact-coordinate-af-dataset",
       "from": "codex",

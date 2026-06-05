@@ -1,10 +1,10 @@
 # codex -> claude 인수인계
 
-- 생성시각: 2026-06-04T11:14:01.203Z
+- 생성시각: 2026-06-05T07:52:57.116Z
 - 보낸 쪽: codex
 - 받는 쪽: claude
 - 프로젝트: K드라이브 Claude Code 통합 프로젝트
-- Git: main @ 9690148
+- Git: main @ 0b5b0ff
 
 ## 현재 작업 상태
 
@@ -44,11 +44,11 @@
 
 ## 최근 시스템 산출물 인수인계
 
-- 2026-06-04T08:04:46.347Z insurance-fds-data
-- 2026-06-04T07:44:13.469Z insurance-fds-camera-image-data
-- 2026-06-04T03:56:21.538Z AI_SOC_Agent_Service docs=A3Work/AI_SOC_Agent_Service/AI_SOC_Agent_Service_24_AI보안관제_에이전트_실행계획_2.md,A3Work/AI_SOC_Agent_Service/docx/24_AI보안관제_에이전트_실행계획_2.docx
-- 2026-06-04T03:36:16.147Z Hermes Codex Launcher
-- 2026-06-04T01:56:31.489Z SchoolWork
+- 2026-06-05T07:52:45.236Z FDS Real Image STG local substitution
+- 2026-06-05T07:06:44.964Z claim-fds-real-web-source-collector
+- 2026-06-04T11:31:49.108Z Insurance FDS v3.2 exact-coordinate AF dataset docs=documentation/reports/INSURANCE_FDS_EXACT_COORDINATE_V3_2_REPORT.ko.md
+- 2026-06-04T11:16:56.581Z hermes-codex-launcher
+- 2026-06-04T11:14:03.396Z hermes-codex-launcher
 
 ## Resume Context
 

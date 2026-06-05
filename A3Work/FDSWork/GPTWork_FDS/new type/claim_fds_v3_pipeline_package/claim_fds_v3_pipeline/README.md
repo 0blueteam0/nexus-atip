@@ -59,9 +59,11 @@ v4는 한국 손해보험사의 실손/손해 청구 FDS가 탐지해야 하는 
   - NO 13종: `medical_receipt`, `medical_detail_statement`, `pharmacy_receipt`, `prescription`, `claim_application`, `diagnosis_certificate`, `hospitalization_confirmation`, `outpatient_confirmation`, `medical_opinion`, `surgery_confirmation`, `inpatient_detail_statement`, `supporting_evidence_checklist`, `claim_review_cover_sheet`
   - AF 10종: `semantic_amount_mismatch`, `semantic_diagnosis_code_mismatch`, `semantic_drug_mismatch`, `semantic_duplicate_claim`, `semantic_provider_mismatch`, `semantic_hospitalization_period_mismatch`, `semantic_inpatient_room_charge_inflation`, `semantic_line_item_insertion`, `semantic_surgery_anesthesia_mismatch`, `semantic_supporting_document_checkbox_mismatch`
 - `tamper_mask`, `masks/`, block/overlay 이미지는 생성하지 않습니다. `changed_fields`는 manifest/QC 메타데이터에만 남깁니다.
-- `Real Image` 경로의 실제 이미지는 원본을 복사하거나 실제 식별자를 재사용하지 않고 visual profile 및 안전한 derived synthetic reference로만 사용합니다.
+- `Real Image` 경로의 실제 이미지는 두 방식으로 씁니다.
+  - v4 bulk: 원본을 직접 변조하지 않고 visual profile 및 안전한 derived synthetic reference로 사용합니다.
+  - STG local substitution: OCR/KIE 좌표 후보를 만든 뒤 같은 좌표 영역에만 donor field patch를 치환합니다. 출력 이미지에는 마스크, 블럭, 합성전용, 제출불가 표시를 넣지 않습니다.
 - 접힘, 구김, 약한 찢김, 도장, 붉은 주석, QR/barcode placeholder, 모바일 perspective, crop은 기본적으로 `benign_condition_tags`이며 fraud label이 아닙니다.
-- 모든 값은 synthetic/pseudonymized/invalid token이며, 실제 병원명·로고·사업자번호·주민번호·계좌번호·전화번호를 복사하지 않습니다.
+- 모든 값은 synthetic/pseudonymized/invalid token이거나 비식별 OCR field type이며, 실제 병원명·로고·사업자번호·주민번호·계좌번호·전화번호를 manifest에 원문 저장하지 않습니다.
 
 실제 참조 이미지 기반 v4 bulk 생성 예:
 
@@ -82,6 +84,54 @@ result = generate_high_fidelity_dataset(
 )
 print(result)
 PY
+```
+
+Real Image OCR 좌표 기반 STG local substitution 예:
+
+```bash
+python scripts/build_real_image_stg_manifest.py \
+  --image-dir "J:/PortableApps/genai/A3Work/FDSWork/Real Image" \
+  --output-dir outputs/real_image_stg_manifest_run_20260605 \
+  --min-fields-per-image 2
+
+PYTHONPATH=src python - <<'PY'
+from pathlib import Path
+from claim_fds_synth.stg_local_tamper import generate_stg_local_tamper_dataset
+
+root = Path('outputs/real_image_stg_manifest_run_20260605')
+generate_stg_local_tamper_dataset(
+    root / 'manifest.real_image_stg.v1.jsonl',
+    root,
+    'outputs/real_image_stg_tamper_run_20260605',
+    max_samples=24,
+    attack_families=['semantic_amount_mismatch'],
+    image_quality=90,
+)
+PY
+```
+
+STG 산출물 품질 게이트:
+
+- `outputs/real_image_stg_manifest_run_20260605/summary.real_image_stg.v1.json`
+- `outputs/real_image_stg_manifest_run_20260605/manifest.real_image_stg.v1.jsonl`
+- `outputs/real_image_stg_manifest_run_20260605/reports/real_image_ocr_field_profiles.json`
+- `outputs/real_image_stg_tamper_run_20260605/manifest.stg.v1.jsonl`
+- `outputs/real_image_stg_tamper_run_20260605/qc_report.stg.v1.json`
+- 현재 검증: Real Image 8개 중 7개 manifest 편입, field candidate 107개, noise rejected token 213개, STG AF 24개 생성, `outside_bbox_diff_pixels == 0`, mask/block/마스크/블럭/합성전용/제출불가 문자열 없음.
+
+웹 원본 후보 재수집은 raw_images 직접 저장이 아니라 staging -> pre-download noise gate -> OCR/vision gate -> raw_images 편입 순서로 수행합니다.
+
+```bash
+python scripts/collect_real_insurance_claim_sources.py \
+  --output-dir outputs/real_web_claim_sources_bg2_20260605 \
+  --max-queries 40 \
+  --per-query 6 \
+  --download-images \
+  --source-mode focused \
+  --firecrawl-mode trusted_seed \
+  --verification-mode ocr_vision \
+  --sleep-min 0.8 \
+  --sleep-max 1.6
 ```
 
 현재 v4 bulk 산출물:
