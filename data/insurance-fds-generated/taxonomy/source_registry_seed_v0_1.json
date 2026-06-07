@@ -1,0 +1,215 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "version": "source-registry-seed-v0.1",
+  "created_from": "web search snippets and user-corrected direction; no knowledge_workflow gate; no API calls",
+  "purpose": "실손보험 FDS 모델 학습 데이터 구축을 위한 실제 청구서류 source seed registry. 원본 이미지를 바로 학습에 넣는 목록이 아니라 문서 유형, 필드, 업무규칙, 사기 의도 taxonomy를 만들기 위한 근거 목록이다.",
+  "source_policy": {
+    "primary_strategy": "real_claim_document_ecosystem_first",
+    "public_dataset_priority": "auxiliary_only",
+    "raw_real_document_handling": "quarantine_until_license_privacy_and_provenance_are_checked",
+    "training_promotion_rule": "only pseudonymized_or_derived_schema_and_localized_AF_pairs_can_be_promoted"
+  },
+  "sources": [
+    {
+      "source_id": "SRC_KNIA_CONSUMER_0202",
+      "source_name": "손해보험협회 소비자포털 실손의료보험 청구서류 안내",
+      "url": "https://consumer.knia.or.kr/m/consumer/insurance-guide/0202.do",
+      "source_type": "association_consumer_guidance",
+      "document_evidence": [
+        "실손의료보험금 청구서류 표준화/통일화 설명",
+        "3만원 이하 통원치료비 청구서류",
+        "3만원 초과 10만원 이하 통원의료비 청구서류",
+        "입원의료비 청구서류",
+        "추가심사 필요 조건"
+      ],
+      "model_training_use": [
+        "required_document_set_label",
+        "claim_amount_bucket_label",
+        "outpatient_inpatient_label",
+        "extra_review_trigger_label"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_SILSON24_NOTICE_153",
+      "source_name": "실손24 전자 전송 가능 청구서류 안내",
+      "url": "https://www.silson24.or.kr/claim/web/custSupp/custSuppNoticeDetail?postNo=153&postType=notice",
+      "source_type": "official_electronic_claim_guidance",
+      "document_evidence": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "입원 청구 시 추가서류"
+      ],
+      "model_training_use": [
+        "electronic_claim_document_type",
+        "submission_channel_label",
+        "claim_bundle_completeness"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_SILSON24_GUIDE_PDF",
+      "source_name": "실손24 전산청구 안내 PDF",
+      "url": "https://www.silson24.or.kr/claim/dn/silson24_guide_document.pdf",
+      "source_type": "official_pdf_guidance",
+      "document_evidence": [
+        "전자 전송 서류",
+        "서류 전송 및 보험금 청구 흐름"
+      ],
+      "model_training_use": [
+        "official_doc_flow",
+        "electronic_submission_flow",
+        "source_document_type_seed"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_DBINS_DISEASE_CLAIM_DOCS",
+      "source_name": "DB손해보험 질병관련 보험금 청구서류 안내",
+      "url": "https://www.idbins.com/pc/bizxpress/ct/dc/FWCUSV1301.shtm",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "진료비계산영수증",
+        "진료비세부내역서",
+        "진단명/질병분류코드 포함 서류"
+      ],
+      "model_training_use": [
+        "insurer_required_doc_set",
+        "diagnosis_code_presence",
+        "medical_receipt_and_detail_statement_bundle"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_DBINS_INJURY_CLAIM_DOCS",
+      "source_name": "DB손해보험 상해/운행관련 보험금 청구서류 안내",
+      "url": "https://www.idbins.com/pc/bizxpress/ct/dc/FWCUSV1300.shtm",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "입원: 진단서, 진료비계산서(영수증), 진료비세부내역서",
+        "통원: 진료비계산영수증, 진료비세부내역서, 진단명 포함 서류"
+      ],
+      "model_training_use": [
+        "inpatient_outpatient_required_bundle",
+        "document_bundle_consistency",
+        "cross_document_missing_evidence_label"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_HANWHA_ACCIDENT_DOCS",
+      "source_name": "한화생명 보험사고 구비서류 안내",
+      "url": "https://www.hanwhalife.com/static/main/customerCenter/documents/CU_RD00000_T1T100.jsp",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "실손 입원의료비 확인서류",
+        "진단서 또는 입퇴원확인서",
+        "진료비영수증",
+        "진료비세부내역서"
+      ],
+      "model_training_use": [
+        "admission_document_set",
+        "diagnosis_document_alternative_relation",
+        "claim_bundle_completeness"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_HANWHA_OUTPATIENT_DOCS",
+      "source_name": "한화생명 통원(실손) 신청서류 안내",
+      "url": "https://www.hanwhalife.com/static/main/myPage/insurance/accident/document/MY_INAPADC_T70000.jsp",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "질병분류기호가 기재된 처방전",
+        "진단서/통원확인서/진료확인서/소견서/진료차트 중 택1",
+        "일자별 진료비영수증",
+        "진료비세부내역서"
+      ],
+      "model_training_use": [
+        "outpatient_bundle",
+        "per_date_receipt_label",
+        "diagnosis_code_presence"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_SAMSUNGFIRE_DIRECT_CLAIM_DOCS",
+      "source_name": "삼성화재 질병/상해 보험금청구 필요서류 안내",
+      "url": "https://direct.samsungfire.com/m/claim/MP040202_001.html",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "진료비 계산서·영수증",
+        "진료비 세부내역서",
+        "약값 발생 시 약제비 계산서·영수증 및 처방전"
+      ],
+      "model_training_use": [
+        "pharmacy_receipt_bundle",
+        "medical_receipt_standard_form",
+        "claim_document_type_classification"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_SAMSUNGFIRE_REQUIRED_DOCS",
+      "source_name": "삼성화재 필요서류 안내",
+      "url": "https://www.samsungfire.com/claim/P_P03_01_02_009.html",
+      "source_type": "insurer_claim_document_guidance",
+      "document_evidence": [
+        "실손 의료비 입원 필수서류",
+        "진단서 또는 입퇴원확인서",
+        "진료비 계산서·영수증",
+        "진료비 세부내역서"
+      ],
+      "model_training_use": [
+        "required_doc_set_by_claim_type",
+        "claim_bundle_completeness",
+        "document_type_classification"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_HANWHA_INVESTIGATION_STANDARD",
+      "source_name": "한화생명 실손의료보험 보험금 지급사유 조사대상 선정기준",
+      "url": "https://www.hanwhalife.com/main/myPage/insurance/accident/selectionStandard/MY_INAPSSD_P10000.do",
+      "source_type": "insurer_investigation_trigger_guidance",
+      "document_evidence": [
+        "진단서, 진료비 계산서·영수증 등을 허위로 발행한 정황",
+        "세부 치료내역과 청구 정황 기반 조사대상 단서"
+      ],
+      "model_training_use": [
+        "investigation_trigger_label",
+        "provider_risk_signal",
+        "manual_or_provider_false_issue_case_family"
+      ],
+      "priority": "P0"
+    },
+    {
+      "source_id": "SRC_FSS_SPLIT_BILLING_CASE_PDF",
+      "source_name": "금감원/보험연구원 진료비 쪼개기 수법 보험사기 적발 보도자료 PDF",
+      "url": "https://kiri.or.kr/PDF/weeklytrend/20241111/trend20241111_3.pdf",
+      "source_type": "fraud_case_public_report",
+      "document_evidence": [
+        "진료비 쪼개기",
+        "허위 통원 입력",
+        "진단명 바꿔치기",
+        "실손보험금 편취 사례"
+      ],
+      "model_training_use": [
+        "fraud_intent_split_billing",
+        "fraud_intent_false_visit",
+        "fraud_intent_diagnosis_swap",
+        "cross_document_consistency_label"
+      ],
+      "priority": "P0"
+    }
+  ],
+  "next_collection_queries": [
+    "보험금 청구서 양식 PDF 실손 보험사",
+    "진료비 세부산정내역서 양식 샘플 병원",
+    "진료비 계산서 영수증 법정 서식 의료기관",
+    "약제비 계산서 영수증 처방전 실손 청구",
+    "실손보험 허위 영수증 진단서 위변조 사례",
+    "실손보험 진료비 쪼개기 허위 통원 진단명 바꿔치기"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "version": "four-case-taxonomy-v0.1",
+  "created_from": "user-directed planning; no knowledge_workflow gate; no external API calls",
+  "purpose": "실손보험 FDS 모델 학습을 위한 실제 청구서류/전통편집 위변조/생성형AI 위변조/실제서류 기반 생성형 위변조 데이터 분류 기준",
+  "safety_interpretation": {
+    "domain": "insurance fraud detection dataset engineering",
+    "not_cybersecurity_task": true,
+    "defensive_model_training_data": true,
+    "misuse_control": [
+      "실제 개인정보 원본은 quarantine 상태로만 취급",
+      "학습 이미지는 pseudonymized/derived 형태만 승격",
+      "visible mask, large overlay, synthetic-only labels를 이미지 픽셀에 합성하지 않음",
+      "위변조 절차는 FDS 탐지/분류/localization 학습용 라벨 생성 관점으로 기록"
+    ]
+  },
+  "case_families": [
+    {
+      "case_family": "case1_real_claim_documents",
+      "korean_name": "실제 실손보험 청구 관련 서류/이미지",
+      "model_role": "정상/참조 문서 분포, 문서유형 분류, OCR/KIE, 제출채널 분포 학습",
+      "primary_sources": [
+        "보험사 청구서류 안내 페이지",
+        "보험사 보험금 청구서 양식 PDF/HWP/DOC",
+        "실손24/협회/금감원/보험개발원 안내자료",
+        "병원/약국에서 공개한 영수증/세부내역서/처방전 샘플 또는 법정 서식 설명",
+        "실제 제출채널을 모사한 카메라/스캔/압축 변형"
+      ],
+      "document_types": [
+        "insurance_claim_form",
+        "medical_expense_receipt",
+        "medical_expense_detail_statement",
+        "prescription",
+        "pharmacy_receipt",
+        "diagnosis_certificate",
+        "admission_discharge_certificate",
+        "outpatient_confirmation",
+        "medical_opinion"
+      ],
+      "required_labels": [
+        "document_type",
+        "source_type",
+        "privacy_state",
+        "capture_profile",
+        "ocr_tokens",
+        "kie_fields",
+        "required_document_set",
+        "claim_amount_bucket",
+        "outpatient_or_inpatient"
+      ]
+    },
+    {
+      "case_family": "case2_traditional_editor_tamper",
+      "korean_name": "기존 이미지/문서 편집도구 기반 위변조",
+      "model_role": "포토샵/PDF편집기/모바일편집/스캔앱/수동표기 기반 조작 탐지와 localization 학습",
+      "tool_families": [
+        "photoshop_like",
+        "pdf_editor",
+        "mobile_photo_editor",
+        "scan_app_laundering",
+        "manual_markup",
+        "print_scan_recapture"
+      ],
+      "tamper_operations": [
+        "local_text_replace",
+        "digit_insert_or_delete",
+        "amount_replace",
+        "date_replace",
+        "provider_name_replace",
+        "patient_name_replace",
+        "row_copy_move",
+        "field_delete",
+        "splice",
+        "clone_or_texture_copy",
+        "jpeg_recompress_laundering"
+      ],
+      "required_labels": [
+        "tamper_tool_family",
+        "tamper_operation",
+        "target_field",
+        "tamper_mask_path",
+        "original_value",
+        "mutated_value",
+        "fraud_intent",
+        "laundering_profile"
+      ]
+    },
+    {
+      "case_family": "case3_genai_or_code_assisted_existing_image_tamper",
+      "korean_name": "LLM/코딩도구/생성형AI로 기존 청구 이미지 위변조",
+      "model_role": "기존 문서 이미지의 target field만 생성형AI/코딩도구로 바꾸는 공격면을 FDS 학습 데이터로 모델링",
+      "genai_roles": [
+        "llm_code_generated_edit",
+        "vlm_guided_field_selection",
+        "diffusion_inpaint",
+        "ocr_feedback_retry_loop",
+        "multimodal_agent_assisted_edit"
+      ],
+      "quality_levels": [
+        "L0_synthetic_exact_bbox",
+        "L1_real_image_ocr_or_component_bbox",
+        "L2_semantic_kie_field_pointer",
+        "L3_refined_mask_inpaint_ocr_roundtrip",
+        "L4_vlm_review_multi_ocr_consensus",
+        "L5_camera_laundered_pair_transform",
+        "L6_hard_adversarial_eval_set"
+      ],
+      "required_labels": [
+        "genai_role",
+        "model_or_tool_family",
+        "edit_algorithm",
+        "validation_loop_count",
+        "ocr_before",
+        "ocr_after",
+        "outside_mask_changed_pixels",
+        "visual_shortcut_reject"
+      ]
+    },
+    {
+      "case_family": "case4_real_grounded_genai_tamper_generation",
+      "korean_name": "실제 청구서류 grounding 기반 생성형AI 위변조 생성",
+      "model_role": "실제/공식 청구 문서 layout과 업무규칙을 grounding으로 하는 고현실성 AF 생성 및 consistency 학습",
+      "grounding_sources": [
+        "real_public_form",
+        "official_claim_document_schema",
+        "real_web_reference_quarantined",
+        "pseudonymized_copy",
+        "schema_only_derived_layout"
+      ],
+      "required_labels": [
+        "grounding_source_type",
+        "derivation_level",
+        "privacy_policy",
+        "fraud_intent",
+        "target_field_graph",
+        "consistency_constraints_before_after",
+        "source_lineage"
+      ]
+    }
+  ],
+  "fraud_intent_taxonomy": [
+    "amount_inflation",
+    "date_shift",
+    "diagnosis_swap",
+    "split_billing",
+    "false_visit",
+    "provider_swap",
+    "patient_swap",
+    "duplicate_claim",
+    "unsupported_item_claim",
+    "cross_document_inconsistency_hide"
+  ],
+  "model_training_tasks": [
+    "document_type_classification",
+    "field_extraction_kie",
+    "tamper_detection_multiclass",
+    "tamper_localization_mask_or_bbox",
+    "claim_consistency_and_fraud_intent_classification",
+    "source_leakage_and_duplicate_detection"
+  ],
+  "public_dataset_policy": {
+    "priority": "auxiliary_only",
+    "allowed_uses": [
+      "label_format_reference",
+      "baseline_sanity_check",
+      "OCR_KIE_pretraining_reference",
+      "tamper_localization_annotation_reference",
+      "domain_gap_analysis"
+    ],
+    "not_allowed_as_primary_strategy": true
+  },
+  "api_call_policy": {
+    "default": "do_not_call",
+    "allowed_when": [
+      "user explicitly requests API-based metadata collection",
+      "web/browser search cannot retrieve necessary evidence and reason is documented",
+      "local tool integration requires an API and user approves"
+    ]
+  }
+}
