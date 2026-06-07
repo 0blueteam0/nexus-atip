@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-07T13:28:26.801Z",
+  "updatedAt": "2026-06-07T14:12:59.146Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming",
+      "id": "2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-high-fidelity-korean-naming",
+      "title": "insurance-fds-case1-registry-case3-case5-contract",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-07T13:28:26.641Z",
+      "createdAt": "2026-06-07T14:12:58.972Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-case1-registry-case3-case5-contract",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-07T14:12:58.972Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming",
       "from": "codex",

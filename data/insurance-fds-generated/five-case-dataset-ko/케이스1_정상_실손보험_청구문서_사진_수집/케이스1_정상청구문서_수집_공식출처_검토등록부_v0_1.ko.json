@@ -1,0 +1,403 @@
+{
+  "artifact": "케이스1_정상청구문서_수집_공식출처_검토등록부_v0_1",
+  "case_family": "case1_normal_claim_document_collection",
+  "created_at": "2026-06-07T23:08:59",
+  "human_review_required": true,
+  "privacy_policy": {
+    "raw_personal_data_storage": "quarantine_only",
+    "training_promotion_rule": "pseudonymized_or_public_blank_form_only",
+    "visible_pixel_labels": "no_training_or_synthetic_shortcut_labels"
+  },
+  "required_document_types": [
+    "보험금 청구서",
+    "진료비 계산서·영수증",
+    "진료비 세부산정내역서",
+    "처방전",
+    "약제비 영수증",
+    "진단서",
+    "입퇴원확인서",
+    "통원확인서",
+    "의사소견서",
+    "수술확인서"
+  ],
+  "reviewed_sources": [
+    {
+      "source_id": "CASE1-SRC-0001",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "title": "[PDF] 보험금청구서 (질병ㆍ상해) - 현대해상",
+      "url": "https://www.hi.co.kr/data/CL/amends01.pdf",
+      "query": "실손보험 보험금 청구서 양식 PDF 보험사",
+      "covered_document_types": [
+        "보험금 청구서",
+        "통원확인서",
+        "수술확인서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0001",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0002",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "title": "[PDF] 보험금 청구서 - 메리츠화재",
+      "url": "https://cmdown.meritzfire.com/manager/cm/document/meritzfire_claim_form.pdf",
+      "query": "실손보험 보험금 청구서 양식 PDF 보험사",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0002",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0003",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "title": "[PDF] 보험금 청구서 (인보험用) - KB손해보험",
+      "url": "https://www.kbinsure.co.kr/images/claim_svc/reqdoc_genal.pdf",
+      "query": "실손보험 보험금 청구서 양식 PDF 보험사",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0003",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0004",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "title": "[PDF] 보험금 청구서 - 삼성화재",
+      "url": "https://www.samsungfire.com/download/claim/claim_new.pdf",
+      "query": "실손보험 보험금 청구서 양식 PDF 보험사",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0004",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0005",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "claim_document_guidance",
+      "title": "보험금청구서류 안내(질병관련사고) | DB손해보험",
+      "url": "https://www.idbins.com/pc/bizxpress/ct/dc/FWCUSV1301.shtm",
+      "query": "실손보험 보험금 청구서 양식 PDF 보험사",
+      "covered_document_types": [
+        "보험금 청구서",
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "진단서",
+        "입퇴원확인서",
+        "통원확인서",
+        "의사소견서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0005",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0006",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "statutory_form_guidance",
+      "title": "별표·서식 > 진료비 세부산정내역 - 국가법령정보센터",
+      "url": "https://www.law.go.kr/LSW/admRulBylInfoPLinkR.do?bylBrNo=00&bylClsCd=BF&bylEfYd=&admRulNm=%EC%A7%84%EB%A3%8C%EB%B9%84+%EC%84%B8%EB%B6%80%EC%82%B0%EC%A0%95%EB%82%B4%EC%97%AD+%EC%84%9C%EC%8B%9D+%EB%93%B1%EC%97%90+%EA%B4%80%ED%95%9C+%EA%B8%B0%EC%A4%80&joEfYd=&bylCls=BF&bylNo=0001&admRulSeq=2100000117269",
+      "query": "진료비 계산서 영수증 서식 진료비 세부산정내역서 서식",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0006",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0007",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "statutory_form_guidance",
+      "title": "진료비 세부산정내역 서식 관련 질의응답(18.1.31) - 네이버 블로그",
+      "url": "https://m.blog.naver.com/39954/221805881076",
+      "query": "진료비 계산서 영수증 서식 진료비 세부산정내역서 서식",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0007",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0008",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "statutory_form_guidance",
+      "title": "진료비 세부산정내역 서식 -보건복지부 고시 제2018 - 대한내과의사회",
+      "url": "https://physician.or.kr/kpaSeoul/plaza/index.php?Action=View&Gubun=pds&Idx=2986",
+      "query": "진료비 계산서 영수증 서식 진료비 세부산정내역서 서식",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0008",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0009",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "statutory_form_guidance",
+      "title": "진료비 세부산정내역 서식 등에 관한 기준 - 국가법령정보센터",
+      "url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000117269",
+      "query": "진료비 계산서 영수증 서식 진료비 세부산정내역서 서식",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0009",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0010",
+      "review_status": "accepted",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "title": "[PDF] 진료비 세부산정내역 서식 등에 관한 기준 - 건강보험심사평가원",
+      "url": "https://www.hira.or.kr/download.do?src=%2Fshare%2Finternet%2Fpt%2Fbbs%2F157%2F2018%2F03%2FBZ201803023669271.pdf&fnm=%E3%80%8C%EC%A7%84%EB%A3%8C%EB%B9%84+%EC%84%B8%EB%B6%80%EC%82%B0%EC%A0%95%EB%82%B4%EC%97%AD+%EC%84%9C%EC%8B%9D+%EB%93%B1%EC%97%90+%EA%B4%80%ED%95%9C+%EA%B8%B0%EC%A4%80%E3%80%8D+%28%EA%B3%A0%EC%8B%9C+%EC%A0%9C2018-21%ED%98%B8%29.pdf",
+      "query": "진료비 계산서 영수증 서식 진료비 세부산정내역서 서식",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0010",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0011",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "reference_only",
+      "title": "실손보험 청구 시 필요 서류 총정리 및 간편 청구 꿀팁 - 네이버 블로그",
+      "url": "https://m.blog.naver.com/rbeod1/224120979502",
+      "query": "실손보험 청구 필요서류 진단서 처방전 약제비 영수증",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "약제비 영수증",
+        "진단서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0011",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0012",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "reference_only",
+      "title": "보험금 청구할 때 필요한 서류 완벽 정리",
+      "url": "https://weavrlog.care/timeline/content/insurance/7136",
+      "query": "실손보험 청구 필요서류 진단서 처방전 약제비 영수증",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "처방전",
+        "약제비 영수증",
+        "진단서",
+        "통원확인서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0012",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0013",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "reference_only",
+      "title": "약제비 영수증만 있어도 실손 청구되나요? | 궁금할 땐, 아하!",
+      "url": "https://www.a-ha.io/questions/4770d36fb9c903cab80a8b2ec05ca066",
+      "query": "실손보험 청구 필요서류 진단서 처방전 약제비 영수증",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "처방전",
+        "약제비 영수증",
+        "진단서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0013",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0014",
+      "review_status": "accepted",
+      "source_authority_level": "quasi_official",
+      "source_category": "reference_only",
+      "title": "이제 앱으로 청구하세요! 실손보험 청구 전산화 서비스 시행 [클릭K+]",
+      "url": "https://m.ktv.go.kr/news/sphere/T000021/view?content_id=714273",
+      "query": "실손보험 청구 필요서류 진단서 처방전 약제비 영수증",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "약제비 영수증",
+        "진단서",
+        "입퇴원확인서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0014",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0015",
+      "review_status": "accepted",
+      "source_authority_level": "quasi_official",
+      "source_category": "claim_document_guidance",
+      "title": "손해보험협회 — 실손의료보험금 청구서류 표준화 및 통일화 안내",
+      "url": "https://consumer.knia.or.kr/m/consumer/insurance-guide/0202.do",
+      "query": "실손보험 청구 필요서류 진단서 처방전 약제비 영수증",
+      "covered_document_types": [
+        "보험금 청구서",
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "약제비 영수증",
+        "진단서",
+        "입퇴원확인서",
+        "통원확인서",
+        "의사소견서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0015",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0016",
+      "review_status": "accepted",
+      "source_authority_level": "quasi_official",
+      "source_category": "claim_document_guidance",
+      "title": "공지사항 상세보기 - 실손24",
+      "url": "https://www.silson24.or.kr/claim/web/custSupp/custSuppNoticeDetail?postNo=153&postType=notice",
+      "query": "실손24 실손보험 청구 서류 안내",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "처방전",
+        "진단서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0016",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": true,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0017",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "claim_document_guidance",
+      "title": "실손24 신청 안내가이드 - 실손보험청구 - Google Play 앱",
+      "url": "https://play.google.com/store/apps/details?id=com.seol.exseven&hl=ko",
+      "query": "실손24 실손보험 청구 서류 안내",
+      "covered_document_types": [],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0017",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0018",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "claim_document_guidance",
+      "title": "실손24 앱으로 실손보험 청구…서류 안떼도 된다 - 한국경제",
+      "url": "https://www.hankyung.com/article/2024102069451",
+      "query": "실손24 실손보험 청구 서류 안내",
+      "covered_document_types": [],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0018",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0019",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "unreviewed",
+      "source_category": "claim_document_guidance",
+      "title": "실손보험 청구 전산화, 실손24에서 서류발급 없이 실비청구하는 법 ...",
+      "url": "https://blog.naver.com/hhconsult/223670333549",
+      "query": "실손24 실손보험 청구 서류 안내",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서",
+        "진단서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0019",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    },
+    {
+      "source_id": "CASE1-SRC-0020",
+      "review_status": "rejected_or_reference",
+      "source_authority_level": "quasi_official",
+      "source_category": "claim_document_guidance",
+      "title": "실손24",
+      "url": "https://www.silson24.or.kr/claim/web",
+      "query": "실손24 실손보험 청구 서류 안내",
+      "covered_document_types": [],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0020",
+      "human_review_note": "공식/준공식 출처와 문서유형 coverage를 1차 기계검토했으며, 실제 다운로드/사용 전 사람 검토 필요",
+      "use_for_case3_case5_grounding": false,
+      "download_or_ingest_policy": "public_blank_form_or_guidance_only; no_real_personal_data_without_quarantine"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "accepted_source_count": 11,
+    "official_source_count": 8,
+    "quasi_official_source_count": 3,
+    "covered_document_types": [
+      "보험금 청구서",
+      "수술확인서",
+      "약제비 영수증",
+      "의사소견서",
+      "입퇴원확인서",
+      "진단서",
+      "진료비 계산서·영수증",
+      "진료비 세부산정내역서",
+      "처방전",
+      "통원확인서"
+    ],
+    "missing_document_types": [],
+    "case3_case5_grounding_ready": true,
+    "high_fidelity_basis_ready": true
+  }
+}

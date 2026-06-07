@@ -1,0 +1,365 @@
+{
+  "artifact": "케이스3_AI코딩도구_국소위변조_목표필드계약_v0_1",
+  "case_family": "case3_ai_code_local_tamper_from_case1",
+  "created_at": "2026-06-07T23:11:19",
+  "source_dependency": "case1_normal_claim_document_collection",
+  "same_coordinate_policy": "AF must preserve NO field bounding box and non-target document regions",
+  "visible_pixel_label_policy": "no_case_or_training_label_inside_image",
+  "target_field_contracts": [
+    {
+      "target_field_ko": "청구금액",
+      "source_document_types": [
+        "보험금 청구서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "진료비 총액",
+      "source_document_types": [
+        "진료비 계산서·영수증",
+        "약제비 영수증"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "본인부담금",
+      "source_document_types": [
+        "진료비 계산서·영수증",
+        "약제비 영수증"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "비급여금액",
+      "source_document_types": [
+        "진료비 계산서·영수증",
+        "약제비 영수증"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "진료일자",
+      "source_document_types": [
+        "진료비 계산서·영수증",
+        "통원확인서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "처방일자",
+      "source_document_types": [
+        "처방전",
+        "약제비 영수증"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "진단명",
+      "source_document_types": [
+        "진단서",
+        "입퇴원확인서",
+        "통원확인서",
+        "의사소견서",
+        "수술확인서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "질병분류기호",
+      "source_document_types": [
+        "처방전",
+        "진단서",
+        "입퇴원확인서",
+        "통원확인서",
+        "의사소견서",
+        "수술확인서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "약품명",
+      "source_document_types": [
+        "처방전",
+        "약제비 영수증"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "입원일자",
+      "source_document_types": [
+        "입퇴원확인서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    },
+    {
+      "target_field_ko": "퇴원일자",
+      "source_document_types": [
+        "입퇴원확인서"
+      ],
+      "operation_family": "same_coordinate_local_field_substitution",
+      "high_fidelity_acceptance": {
+        "intent_must_be_visible": true,
+        "non_target_regions_must_be_preserved": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true,
+        "korean_visible_field_required": true
+      },
+      "manifest_required_fields": [
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "field_bbox_xyxy",
+        "outside_target_changed_pixels",
+        "ocr_before",
+        "ocr_after"
+      ],
+      "failure_conditions": [
+        "대상 필드 좌표가 원본보다 밀림",
+        "대상 필드 외 표선/배경/다른 글자가 깨짐",
+        "문서 이미지 안에 AF/합성/모델학습 같은 shortcut label이 보임",
+        "OCR before/after가 target field 변화와 일치하지 않음"
+      ]
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "case3_target_count": 11,
+    "case5_document_schema_count": 10,
+    "missing_case3_targets": [],
+    "missing_case5_document_types": [],
+    "case3_targets_have_case1_sources": true,
+    "case5_schemas_have_korean_fields": true,
+    "financial_delivery_quality_ready": true
+  }
+}

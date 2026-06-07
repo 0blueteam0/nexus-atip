@@ -1,0 +1,391 @@
+{
+  "artifact": "케이스5_LLM코딩도구_신규생성_schema계약_v0_1",
+  "case_family": "case5_llm_code_full_synthetic_generation_from_case1_learning",
+  "created_at": "2026-06-07T23:11:19",
+  "source_dependency": "case1_normal_claim_document_collection",
+  "generation_boundary": "new document generation only; not local tamper and not visible synthetic labeling",
+  "document_generation_schemas": [
+    {
+      "document_type": "보험금 청구서",
+      "required_visible_fields_ko": [
+        "계약자",
+        "피보험자",
+        "수익자",
+        "주민등록번호",
+        "연락처",
+        "사고유형",
+        "치료형태",
+        "청구담보",
+        "보험금 지급계좌",
+        "타보험 가입사항",
+        "개인정보 처리 동의"
+      ],
+      "normal_consistency_constraints": [
+        "피보험자와 진료/처방 문서의 환자명 또는 가명 매핑이 일치해야 한다.",
+        "청구담보가 실손의료비인 경우 진료비 영수증 또는 약제비 영수증 등 의료비 증빙이 연결되어야 한다.",
+        "보험금 지급계좌 예금주와 수익자 관계가 설명 가능해야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0001",
+        "CASE1-SRC-0002",
+        "CASE1-SRC-0003",
+        "CASE1-SRC-0004",
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0015"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "진료비 계산서·영수증",
+      "required_visible_fields_ko": [
+        "환자명",
+        "진료일자",
+        "발행일자",
+        "요양기관명",
+        "사업자등록번호",
+        "영수증번호",
+        "진료비 총액",
+        "본인부담금",
+        "공단부담금",
+        "비급여금액",
+        "수납금액"
+      ],
+      "normal_consistency_constraints": [
+        "진료비 총액은 본인부담금, 공단부담금, 비급여금액 등 세부 금액 관계와 설명 가능해야 한다.",
+        "진료일자와 발행일자는 청구서의 사고/치료 기간과 모순되지 않아야 한다.",
+        "요양기관명과 사업자등록번호가 다른 문서의 발급기관 정보와 충돌하지 않아야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0006",
+        "CASE1-SRC-0009",
+        "CASE1-SRC-0010",
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015",
+        "CASE1-SRC-0016"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "진료비 세부산정내역서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "진료기간",
+        "진료과목",
+        "항목",
+        "일자",
+        "코드",
+        "명칭",
+        "금액",
+        "급여",
+        "비급여",
+        "요양기관명"
+      ],
+      "normal_consistency_constraints": [
+        "세부산정내역서의 합계는 연결된 진료비 계산서·영수증의 금액 구조와 크게 모순되지 않아야 한다.",
+        "진료기간은 영수증의 진료일자 또는 입원기간과 설명 가능해야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0006",
+        "CASE1-SRC-0009",
+        "CASE1-SRC-0010",
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015",
+        "CASE1-SRC-0016"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "처방전",
+      "required_visible_fields_ko": [
+        "환자명",
+        "교부일자",
+        "처방일자",
+        "질병분류기호",
+        "의료기관명",
+        "의사명",
+        "약품명",
+        "투약량",
+        "투약일수"
+      ],
+      "normal_consistency_constraints": [
+        "처방일자는 진료일자와 같거나 근접해야 한다.",
+        "질병분류기호 또는 진단명은 청구서/진단서의 질병 정보와 충돌하지 않아야 한다.",
+        "처방 약품은 약제비 영수증의 약품 또는 조제 정보와 연결되어야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015",
+        "CASE1-SRC-0016"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "약제비 영수증",
+      "required_visible_fields_ko": [
+        "환자명",
+        "조제일자",
+        "약국명",
+        "사업자등록번호",
+        "약품명",
+        "약제비 총액",
+        "본인부담금",
+        "비급여금액",
+        "처방전 교부번호"
+      ],
+      "normal_consistency_constraints": [
+        "조제일자는 처방전의 처방일자와 같거나 합리적 근접 범위에 있어야 한다.",
+        "약제비 총액과 본인부담금 관계가 영수증 내부에서 설명 가능해야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "진단서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "생년월일",
+        "진단명",
+        "질병분류기호",
+        "발병일",
+        "진단일",
+        "발행일자",
+        "의료기관명",
+        "의사명"
+      ],
+      "normal_consistency_constraints": [
+        "진단명과 질병분류기호가 처방전, 통원확인서, 입퇴원확인서의 병명 정보와 충돌하지 않아야 한다.",
+        "발행일자는 진료/입원 기간 이후 또는 설명 가능한 시점이어야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015",
+        "CASE1-SRC-0016"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "입퇴원확인서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "입원일자",
+        "퇴원일자",
+        "입원기간",
+        "진단명",
+        "질병분류기호",
+        "의료기관명",
+        "발행일자"
+      ],
+      "normal_consistency_constraints": [
+        "입원일자는 퇴원일자보다 늦을 수 없다.",
+        "입원기간과 입원진료비 영수증의 병실료/식대 산정 기간이 설명 가능해야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0014",
+        "CASE1-SRC-0015"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "통원확인서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "통원일자",
+        "진단명",
+        "질병분류기호",
+        "진료과",
+        "의료기관명",
+        "발행일자"
+      ],
+      "normal_consistency_constraints": [
+        "통원일자는 진료비 영수증의 진료일자와 연결되어야 한다.",
+        "진단명은 청구서의 사고/질병 정보와 충돌하지 않아야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0001",
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0015"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "의사소견서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "소견내용",
+        "진단명",
+        "질병분류기호",
+        "작성일자",
+        "의료기관명",
+        "의사명"
+      ],
+      "normal_consistency_constraints": [
+        "소견내용은 청구된 치료항목 또는 추가 심사 사유와 연결되어야 한다.",
+        "작성일자는 관련 진료/검사 이후의 설명 가능한 시점이어야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0005",
+        "CASE1-SRC-0015"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    },
+    {
+      "document_type": "수술확인서",
+      "required_visible_fields_ko": [
+        "환자명",
+        "수술명",
+        "수술일자",
+        "진단명",
+        "질병분류기호",
+        "의료기관명",
+        "의사명",
+        "발행일자"
+      ],
+      "normal_consistency_constraints": [
+        "수술일자는 진료비 세부내역서의 수술/처치 항목과 연결되어야 한다.",
+        "수술명과 진단명은 청구담보 및 진단서 정보와 충돌하지 않아야 한다."
+      ],
+      "accepted_source_ids": [
+        "CASE1-SRC-0001"
+      ],
+      "generation_acceptance": {
+        "looks_like_korean_insurance_claim_document": true,
+        "field_names_are_korean": true,
+        "internal_consistency_required": true,
+        "human_visual_review_required": true,
+        "not_resolution_only": true
+      },
+      "forbidden_shortcuts": [
+        "합성데이터/모델학습용/제출불가 문구",
+        "검은 박스/큰 흰색 덮개",
+        "영문 필드명 중심 문서",
+        "case 라벨 이미지 내 노출"
+      ]
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "case3_target_count": 11,
+    "case5_document_schema_count": 10,
+    "missing_case3_targets": [],
+    "missing_case5_document_types": [],
+    "case3_targets_have_case1_sources": true,
+    "case5_schemas_have_korean_fields": true,
+    "financial_delivery_quality_ready": true
+  }
+}
