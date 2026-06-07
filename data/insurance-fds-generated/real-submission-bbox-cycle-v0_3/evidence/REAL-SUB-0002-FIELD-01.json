@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-01__AF_same_bbox.png",
+  "af_sha256": "4d8e36f79bb31f0d9fb6ee4d2a21cfebbf6bb8dfa6ba9e1d328c7e4d39c48d97",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "가명박민준",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "medical_receipt",
+    "document_type_ko": "진료비 계산서ㆍ영수증",
+    "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+    "fds_reason": "동일 bundle 내 환자명 불일치",
+    "field_id": "REAL-SUB-0002-FIELD-01",
+    "field_key": "patient_name",
+    "label_bbox_pdf": [
+      181.55999755859375,
+      101.33477020263672,
+      217.5599822998047,
+      109.37477111816406
+    ],
+    "label_bbox_px": [
+      361,
+      200,
+      438,
+      221
+    ],
+    "label_ko": "환자 성명",
+    "no_value": "가명김서연",
+    "source_id": "REAL-SUB-0002",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      225.5599822998047,
+      99.53477020263672,
+      374.3099822998047,
+      112.37477111816406
+    ],
+    "value_bbox_px": [
+      448,
+      196,
+      752,
+      228
+    ],
+    "value_type": "person_name"
+  },
+  "document_type": "medical_receipt",
+  "document_type_ko": "진료비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-01__NO_filled.png",
+  "no_sha256": "e765c15d89db9f12ab6382dbc64e16f69e37f2d073c8fe16c0181efe6eb48686",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0002-FIELD-01",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0002",
+  "visible_shortcut_label_inside_image": false
+}

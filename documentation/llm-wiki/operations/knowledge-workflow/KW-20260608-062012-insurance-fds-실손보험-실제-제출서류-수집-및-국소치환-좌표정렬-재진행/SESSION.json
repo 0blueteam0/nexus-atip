@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260608-062012-insurance-fds-실손보험-실제-제출서류-수집-및-국소치환-좌표정렬-재진행",
+  "project": "insurance-fds",
+  "task": "실손보험 실제 제출서류 수집 및 국소치환 좌표정렬 재진행",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260608-062012-insurance-fds-실손보험-실제-제출서류-수집-및-국소치환-좌표정렬-재진행",
+  "created_at": "2026-06-08T06:20:12+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

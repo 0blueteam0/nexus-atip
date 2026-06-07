@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-02__AF_same_bbox.png",
+  "af_sha256": "d8b0db32d8d41fc1e871a9dcb7aa99dc8789b53e0bc8e53f1d3348d36940f7bd",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "2026-05-18",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "medical_receipt",
+    "document_type_ko": "진료비 계산서ㆍ영수증",
+    "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+    "fds_reason": "세부내역서/통원확인서 진료일자와 불일치",
+    "field_id": "REAL-SUB-0002-FIELD-02",
+    "field_key": "visit_date",
+    "label_bbox_pdf": [
+      173.63999938964844,
+      69.83999633789062,
+      421.55999755859375,
+      88.99199676513672
+    ],
+    "label_bbox_px": [
+      345,
+      137,
+      846,
+      180
+    ],
+    "label_ko": "진료",
+    "no_value": "2026-05-13",
+    "source_id": "REAL-SUB-0002",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      429.55999755859375,
+      66.96719627380371,
+      571.0,
+      93.77999687194824
+    ],
+    "value_bbox_px": [
+      856,
+      130,
+      1145,
+      191
+    ],
+    "value_type": "date"
+  },
+  "document_type": "medical_receipt",
+  "document_type_ko": "진료비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-02__NO_filled.png",
+  "no_sha256": "348104b144723874abfe10b6a2d7e4aedc6af474bd5676bf2243f5303a566e7a",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0002-FIELD-02",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0002",
+  "visible_shortcut_label_inside_image": false
+}

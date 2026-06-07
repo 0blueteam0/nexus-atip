@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0003-FIELD-03__AF_same_bbox.png",
+  "af_sha256": "8e1f34cfcd31e0ef87728145be5c72a9e5fef555a2c0e80e9746ed59e5a37533",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "329,000",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "medical_detail_statement",
+    "document_type_ko": "진료비 세부산정내역서",
+    "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+    "fds_reason": "비급여 항목이 총액/영수증과 충돌",
+    "field_id": "REAL-SUB-0003-FIELD-03",
+    "field_key": "noncovered_amount",
+    "label_bbox_pdf": [
+      22.0,
+      113.0,
+      62.0,
+      126.0
+    ],
+    "label_bbox_px": [
+      44,
+      226,
+      124,
+      252
+    ],
+    "label_ko": "비급여",
+    "no_value": "129,000",
+    "source_id": "REAL-SUB-0003",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      62.0,
+      113.0,
+      277.5,
+      126.0
+    ],
+    "value_bbox_px": [
+      124,
+      226,
+      555,
+      252
+    ],
+    "value_type": "amount"
+  },
+  "document_type": "medical_detail_statement",
+  "document_type_ko": "진료비 세부산정내역서",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0003-FIELD-03__NO_filled.png",
+  "no_sha256": "eed3d23fc50aa78c6b502cdf56de9305ec29b1f84176fdc2f1b4d4f6d2f44aeb",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0003-FIELD-03",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0003",
+  "visible_shortcut_label_inside_image": false
+}

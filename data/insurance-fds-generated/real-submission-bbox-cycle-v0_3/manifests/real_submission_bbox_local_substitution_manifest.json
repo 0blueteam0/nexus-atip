@@ -1,0 +1,1229 @@
+{
+  "artifact": "insurance-fds-real-submission-cycle-v0.3",
+  "contact_sheet_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\indexes\\real_submission_bbox_local_substitution_contact_sheet.png",
+  "created_at": "2026-06-07T21:33:22.803238+00:00",
+  "definition": "Actual external hospital/pharmacy submission-form PDFs -> PDF text bbox field targets -> filled NO derivatives -> same-bbox AF local substitutions.",
+  "failure_count": 1,
+  "failures": [
+    {
+      "error": "<urlopen error [WinError 10054] 현재 연결은 원격 호스트에 의해 강제로 끊겼습니다>",
+      "source_id": "REAL-SUB-0004",
+      "title": "남동구 보건소 공개 외래/입원 진료비 계산서ㆍ영수증 PDF",
+      "url": "https://biz.namdong.go.kr/clinic/bbs/bbsMsgFileDown.do?bcd=civil_counsel&msg_seq=1600&fileno=1"
+    }
+  ],
+  "field_records": [
+    {
+      "af_value": "가명박민준",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "동일 bundle 내 환자명 불일치",
+      "field_id": "REAL-SUB-0001-FIELD-01",
+      "field_key": "patient_name",
+      "label_bbox_pdf": [
+        169.94789123535156,
+        184.05174255371094,
+        205.9283905029297,
+        192.08517456054688
+      ],
+      "label_bbox_px": [
+        337,
+        366,
+        414,
+        387
+      ],
+      "label_ko": "환자 성명",
+      "no_value": "가명김서연",
+      "source_id": "REAL-SUB-0001",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        213.9283905029297,
+        182.25174255371093,
+        362.6783905029297,
+        195.08517456054688
+      ],
+      "value_bbox_px": [
+        424,
+        361,
+        729,
+        394
+      ],
+      "value_type": "person_name"
+    },
+    {
+      "af_value": "2026-05-28",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "처방전 발행일보다 조제일이 비정상적으로 뒤로 이동",
+      "field_id": "REAL-SUB-0001-FIELD-02",
+      "field_key": "dispense_date",
+      "label_bbox_pdf": [
+        254.741943359375,
+        184.05174255371094,
+        278.7291259765625,
+        192.08517456054688
+      ],
+      "label_bbox_px": [
+        507,
+        366,
+        560,
+        387
+      ],
+      "label_ko": "조제일",
+      "no_value": "2026-05-13",
+      "source_id": "REAL-SUB-0001",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        286.7291259765625,
+        182.25174255371093,
+        435.4791259765625,
+        195.08517456054688
+      ],
+      "value_bbox_px": [
+        570,
+        361,
+        874,
+        394
+      ],
+      "value_type": "date"
+    },
+    {
+      "af_value": "122,400",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "약제비 합계가 처방/조제 항목 합계와 충돌",
+      "field_id": "REAL-SUB-0001-FIELD-03",
+      "field_key": "pharmacy_total_amount",
+      "label_bbox_pdf": [
+        213.4842987060547,
+        134.01353454589844,
+        381.3932800292969,
+        153.14463806152344
+      ],
+      "label_bbox_px": [
+        424,
+        266,
+        765,
+        309
+      ],
+      "label_ko": "약제비",
+      "no_value": "22,400",
+      "source_id": "REAL-SUB-0001",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        389.3932800292969,
+        131.14386901855468,
+        538.1432800292969,
+        157.9274139404297
+      ],
+      "value_bbox_px": [
+        775,
+        259,
+        1080,
+        319
+      ],
+      "value_type": "amount"
+    },
+    {
+      "af_value": "가명박민준",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "동일 bundle 내 환자명 불일치",
+      "field_id": "REAL-SUB-0002-FIELD-01",
+      "field_key": "patient_name",
+      "label_bbox_pdf": [
+        181.55999755859375,
+        101.33477020263672,
+        217.5599822998047,
+        109.37477111816406
+      ],
+      "label_bbox_px": [
+        361,
+        200,
+        438,
+        221
+      ],
+      "label_ko": "환자 성명",
+      "no_value": "가명김서연",
+      "source_id": "REAL-SUB-0002",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        225.5599822998047,
+        99.53477020263672,
+        374.3099822998047,
+        112.37477111816406
+      ],
+      "value_bbox_px": [
+        448,
+        196,
+        752,
+        228
+      ],
+      "value_type": "person_name"
+    },
+    {
+      "af_value": "2026-05-18",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "세부내역서/통원확인서 진료일자와 불일치",
+      "field_id": "REAL-SUB-0002-FIELD-02",
+      "field_key": "visit_date",
+      "label_bbox_pdf": [
+        173.63999938964844,
+        69.83999633789062,
+        421.55999755859375,
+        88.99199676513672
+      ],
+      "label_bbox_px": [
+        345,
+        137,
+        846,
+        180
+      ],
+      "label_ko": "진료",
+      "no_value": "2026-05-13",
+      "source_id": "REAL-SUB-0002",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        429.55999755859375,
+        66.96719627380371,
+        571.0,
+        93.77999687194824
+      ],
+      "value_bbox_px": [
+        856,
+        130,
+        1145,
+        191
+      ],
+      "value_type": "date"
+    },
+    {
+      "af_value": "287,500",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+      "fds_reason": "급여+비급여 합산액과 총진료비가 충돌",
+      "field_id": "REAL-SUB-0002-FIELD-03",
+      "field_key": "total_medical_amount",
+      "label_bbox_pdf": [
+        91.55999755859375,
+        290.9347839355469,
+        147.59999084472656,
+        298.9747619628906
+      ],
+      "label_bbox_px": [
+        181,
+        579,
+        298,
+        600
+      ],
+      "label_ko": "진료비 총액",
+      "no_value": "187,500",
+      "source_id": "REAL-SUB-0002",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        155.59999084472656,
+        289.13478393554686,
+        304.34999084472656,
+        301.9747619628906
+      ],
+      "value_bbox_px": [
+        308,
+        575,
+        612,
+        607
+      ],
+      "value_type": "amount"
+    },
+    {
+      "af_value": "가명박민준",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "동일 bundle 내 환자명 불일치",
+      "field_id": "REAL-SUB-0003-FIELD-01",
+      "field_key": "patient_name",
+      "label_bbox_pdf": [
+        22.0,
+        86.5,
+        62.0,
+        102.5
+      ],
+      "label_bbox_px": [
+        44,
+        173,
+        124,
+        205
+      ],
+      "label_ko": "환자 성명",
+      "no_value": "가명김서연",
+      "source_id": "REAL-SUB-0003",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        62.0,
+        86.5,
+        277.5,
+        102.5
+      ],
+      "value_bbox_px": [
+        124,
+        173,
+        555,
+        205
+      ],
+      "value_type": "person_name"
+    },
+    {
+      "af_value": "2026-05-18",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "영수증 진료일자와 세부내역 진료일자 불일치",
+      "field_id": "REAL-SUB-0003-FIELD-02",
+      "field_key": "visit_date",
+      "label_bbox_pdf": [
+        240.5,
+        86.5,
+        280.5,
+        102.5
+      ],
+      "label_bbox_px": [
+        481,
+        173,
+        561,
+        205
+      ],
+      "label_ko": "진료일",
+      "no_value": "2026-05-13",
+      "source_id": "REAL-SUB-0003",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        280.5,
+        86.5,
+        510.0,
+        102.5
+      ],
+      "value_bbox_px": [
+        561,
+        173,
+        1020,
+        205
+      ],
+      "value_type": "date"
+    },
+    {
+      "af_value": "329,000",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "비급여 항목이 총액/영수증과 충돌",
+      "field_id": "REAL-SUB-0003-FIELD-03",
+      "field_key": "noncovered_amount",
+      "label_bbox_pdf": [
+        22.0,
+        113.0,
+        62.0,
+        126.0
+      ],
+      "label_bbox_px": [
+        44,
+        226,
+        124,
+        252
+      ],
+      "label_ko": "비급여",
+      "no_value": "129,000",
+      "source_id": "REAL-SUB-0003",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        62.0,
+        113.0,
+        277.5,
+        126.0
+      ],
+      "value_bbox_px": [
+        124,
+        226,
+        555,
+        252
+      ],
+      "value_type": "amount"
+    },
+    {
+      "af_value": "가명박민준",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "동일 bundle 내 환자명 불일치",
+      "field_id": "REAL-SUB-0005-FIELD-01",
+      "field_key": "patient_name",
+      "label_bbox_pdf": [
+        309.0,
+        247.5,
+        349.0,
+        277.5
+      ],
+      "label_bbox_px": [
+        618,
+        495,
+        698,
+        555
+      ],
+      "label_ko": "환자 성명",
+      "no_value": "가명김서연",
+      "source_id": "REAL-SUB-0005",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        349.0,
+        247.5,
+        589.5,
+        277.5
+      ],
+      "value_bbox_px": [
+        698,
+        495,
+        1179,
+        555
+      ],
+      "value_type": "person_name"
+    },
+    {
+      "af_value": "2026-05-28",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "처방전 발행일보다 조제일이 비정상적으로 뒤로 이동",
+      "field_id": "REAL-SUB-0005-FIELD-02",
+      "field_key": "dispense_date",
+      "label_bbox_pdf": [
+        309.0,
+        280.5,
+        349.0,
+        287.5
+      ],
+      "label_bbox_px": [
+        618,
+        561,
+        698,
+        575
+      ],
+      "label_ko": "조제일",
+      "no_value": "2026-05-13",
+      "source_id": "REAL-SUB-0005",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        349.0,
+        280.5,
+        589.5,
+        287.5
+      ],
+      "value_bbox_px": [
+        698,
+        561,
+        1179,
+        575
+      ],
+      "value_type": "date"
+    },
+    {
+      "af_value": "122,400",
+      "before_ocr_or_pdf_text": "",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+      "fds_reason": "약제비 합계가 처방/조제 항목 합계와 충돌",
+      "field_id": "REAL-SUB-0005-FIELD-03",
+      "field_key": "pharmacy_total_amount",
+      "label_bbox_pdf": [
+        309.0,
+        299.0,
+        349.0,
+        305.5
+      ],
+      "label_bbox_px": [
+        618,
+        598,
+        698,
+        611
+      ],
+      "label_ko": "약제비",
+      "no_value": "22,400",
+      "source_id": "REAL-SUB-0005",
+      "source_page_index": 0,
+      "value_bbox_pdf": [
+        349.0,
+        299.0,
+        589.5,
+        305.5
+      ],
+      "value_bbox_px": [
+        698,
+        598,
+        1179,
+        611
+      ],
+      "value_type": "amount"
+    }
+  ],
+  "field_target_count": 12,
+  "pair_count": 12,
+  "pair_records": [
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0001-FIELD-01__AF_same_bbox.png",
+      "af_sha256": "319cc0dd338cc7eae923475c98206a70b21280535105db4efc8e88a972aa6db2",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "가명박민준",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "동일 bundle 내 환자명 불일치",
+        "field_id": "REAL-SUB-0001-FIELD-01",
+        "field_key": "patient_name",
+        "label_bbox_pdf": [
+          169.94789123535156,
+          184.05174255371094,
+          205.9283905029297,
+          192.08517456054688
+        ],
+        "label_bbox_px": [
+          337,
+          366,
+          414,
+          387
+        ],
+        "label_ko": "환자 성명",
+        "no_value": "가명김서연",
+        "source_id": "REAL-SUB-0001",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          213.9283905029297,
+          182.25174255371093,
+          362.6783905029297,
+          195.08517456054688
+        ],
+        "value_bbox_px": [
+          424,
+          361,
+          729,
+          394
+        ],
+        "value_type": "person_name"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0001-FIELD-01__NO_filled.png",
+      "no_sha256": "34a02810d2d512e565dfcf184f9e4842bbf8282cc102357ab2e49c52242557ce",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0001-FIELD-01",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0001",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0001-FIELD-02__AF_same_bbox.png",
+      "af_sha256": "e6c4346791b1d1f605bcb1ff9dbc1c1277426b451625863bad66f8a40d388f95",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "2026-05-28",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "처방전 발행일보다 조제일이 비정상적으로 뒤로 이동",
+        "field_id": "REAL-SUB-0001-FIELD-02",
+        "field_key": "dispense_date",
+        "label_bbox_pdf": [
+          254.741943359375,
+          184.05174255371094,
+          278.7291259765625,
+          192.08517456054688
+        ],
+        "label_bbox_px": [
+          507,
+          366,
+          560,
+          387
+        ],
+        "label_ko": "조제일",
+        "no_value": "2026-05-13",
+        "source_id": "REAL-SUB-0001",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          286.7291259765625,
+          182.25174255371093,
+          435.4791259765625,
+          195.08517456054688
+        ],
+        "value_bbox_px": [
+          570,
+          361,
+          874,
+          394
+        ],
+        "value_type": "date"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0001-FIELD-02__NO_filled.png",
+      "no_sha256": "46692df8323506902fe57d9f5d08e20a07c9974efbb189dba662e5fc7abe5000",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0001-FIELD-02",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0001",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0001-FIELD-03__AF_same_bbox.png",
+      "af_sha256": "bba1bf0057b2b5b08de9db5bd3ee3f336ed72b822f9d69d8596da0dc32159e08",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "122,400",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "약제비 합계가 처방/조제 항목 합계와 충돌",
+        "field_id": "REAL-SUB-0001-FIELD-03",
+        "field_key": "pharmacy_total_amount",
+        "label_bbox_pdf": [
+          213.4842987060547,
+          134.01353454589844,
+          381.3932800292969,
+          153.14463806152344
+        ],
+        "label_bbox_px": [
+          424,
+          266,
+          765,
+          309
+        ],
+        "label_ko": "약제비",
+        "no_value": "22,400",
+        "source_id": "REAL-SUB-0001",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          389.3932800292969,
+          131.14386901855468,
+          538.1432800292969,
+          157.9274139404297
+        ],
+        "value_bbox_px": [
+          775,
+          259,
+          1080,
+          319
+        ],
+        "value_type": "amount"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0001-FIELD-03__NO_filled.png",
+      "no_sha256": "72a14c23370cc101d3ab9fa7c13819c975d2c35e450653dd1138ed2e6ac9eeb0",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0001-FIELD-03",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0001",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-01__AF_same_bbox.png",
+      "af_sha256": "4d8e36f79bb31f0d9fb6ee4d2a21cfebbf6bb8dfa6ba9e1d328c7e4d39c48d97",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "가명박민준",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_receipt",
+        "document_type_ko": "진료비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "동일 bundle 내 환자명 불일치",
+        "field_id": "REAL-SUB-0002-FIELD-01",
+        "field_key": "patient_name",
+        "label_bbox_pdf": [
+          181.55999755859375,
+          101.33477020263672,
+          217.5599822998047,
+          109.37477111816406
+        ],
+        "label_bbox_px": [
+          361,
+          200,
+          438,
+          221
+        ],
+        "label_ko": "환자 성명",
+        "no_value": "가명김서연",
+        "source_id": "REAL-SUB-0002",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          225.5599822998047,
+          99.53477020263672,
+          374.3099822998047,
+          112.37477111816406
+        ],
+        "value_bbox_px": [
+          448,
+          196,
+          752,
+          228
+        ],
+        "value_type": "person_name"
+      },
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-01__NO_filled.png",
+      "no_sha256": "e765c15d89db9f12ab6382dbc64e16f69e37f2d073c8fe16c0181efe6eb48686",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0002-FIELD-01",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0002",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-02__AF_same_bbox.png",
+      "af_sha256": "d8b0db32d8d41fc1e871a9dcb7aa99dc8789b53e0bc8e53f1d3348d36940f7bd",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "2026-05-18",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_receipt",
+        "document_type_ko": "진료비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "세부내역서/통원확인서 진료일자와 불일치",
+        "field_id": "REAL-SUB-0002-FIELD-02",
+        "field_key": "visit_date",
+        "label_bbox_pdf": [
+          173.63999938964844,
+          69.83999633789062,
+          421.55999755859375,
+          88.99199676513672
+        ],
+        "label_bbox_px": [
+          345,
+          137,
+          846,
+          180
+        ],
+        "label_ko": "진료",
+        "no_value": "2026-05-13",
+        "source_id": "REAL-SUB-0002",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          429.55999755859375,
+          66.96719627380371,
+          571.0,
+          93.77999687194824
+        ],
+        "value_bbox_px": [
+          856,
+          130,
+          1145,
+          191
+        ],
+        "value_type": "date"
+      },
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-02__NO_filled.png",
+      "no_sha256": "348104b144723874abfe10b6a2d7e4aedc6af474bd5676bf2243f5303a566e7a",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0002-FIELD-02",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0002",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-03__AF_same_bbox.png",
+      "af_sha256": "9827dd19f34d8d05d675b496716f8433a9c9e7c4cf80418ac8a72d04f1c801a9",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "287,500",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_receipt",
+        "document_type_ko": "진료비 계산서ㆍ영수증",
+        "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+        "fds_reason": "급여+비급여 합산액과 총진료비가 충돌",
+        "field_id": "REAL-SUB-0002-FIELD-03",
+        "field_key": "total_medical_amount",
+        "label_bbox_pdf": [
+          91.55999755859375,
+          290.9347839355469,
+          147.59999084472656,
+          298.9747619628906
+        ],
+        "label_bbox_px": [
+          181,
+          579,
+          298,
+          600
+        ],
+        "label_ko": "진료비 총액",
+        "no_value": "187,500",
+        "source_id": "REAL-SUB-0002",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          155.59999084472656,
+          289.13478393554686,
+          304.34999084472656,
+          301.9747619628906
+        ],
+        "value_bbox_px": [
+          308,
+          575,
+          612,
+          607
+        ],
+        "value_type": "amount"
+      },
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-03__NO_filled.png",
+      "no_sha256": "04451bc2cb21b90416264a789fe70d55987cd62b58a406373f3a5ca1711b4a81",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0002-FIELD-03",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0002",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0003-FIELD-01__AF_same_bbox.png",
+      "af_sha256": "c437e255ab76812766a6a0d1a8209e1357eb7fc2dcc9ec8fbda54558e60d2148",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "가명박민준",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_detail_statement",
+        "document_type_ko": "진료비 세부산정내역서",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "동일 bundle 내 환자명 불일치",
+        "field_id": "REAL-SUB-0003-FIELD-01",
+        "field_key": "patient_name",
+        "label_bbox_pdf": [
+          22.0,
+          86.5,
+          62.0,
+          102.5
+        ],
+        "label_bbox_px": [
+          44,
+          173,
+          124,
+          205
+        ],
+        "label_ko": "환자 성명",
+        "no_value": "가명김서연",
+        "source_id": "REAL-SUB-0003",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          62.0,
+          86.5,
+          277.5,
+          102.5
+        ],
+        "value_bbox_px": [
+          124,
+          173,
+          555,
+          205
+        ],
+        "value_type": "person_name"
+      },
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0003-FIELD-01__NO_filled.png",
+      "no_sha256": "9e59c804be3f66f94bef501ae8f60b7d103d044107a3997d614dea722906f221",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0003-FIELD-01",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0003",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0003-FIELD-02__AF_same_bbox.png",
+      "af_sha256": "1734c6205f6d064a0d57bed08ade105e7a7e291a4ed9822c6d6f552283dc1c8f",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "2026-05-18",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_detail_statement",
+        "document_type_ko": "진료비 세부산정내역서",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "영수증 진료일자와 세부내역 진료일자 불일치",
+        "field_id": "REAL-SUB-0003-FIELD-02",
+        "field_key": "visit_date",
+        "label_bbox_pdf": [
+          240.5,
+          86.5,
+          280.5,
+          102.5
+        ],
+        "label_bbox_px": [
+          481,
+          173,
+          561,
+          205
+        ],
+        "label_ko": "진료일",
+        "no_value": "2026-05-13",
+        "source_id": "REAL-SUB-0003",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          280.5,
+          86.5,
+          510.0,
+          102.5
+        ],
+        "value_bbox_px": [
+          561,
+          173,
+          1020,
+          205
+        ],
+        "value_type": "date"
+      },
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0003-FIELD-02__NO_filled.png",
+      "no_sha256": "22536f15b4d82a6449d1c7dce9d6312c411f64c4f84fb1b0ddd0f8923b7cc432",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0003-FIELD-02",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0003",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0003-FIELD-03__AF_same_bbox.png",
+      "af_sha256": "8e1f34cfcd31e0ef87728145be5c72a9e5fef555a2c0e80e9746ed59e5a37533",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "329,000",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "medical_detail_statement",
+        "document_type_ko": "진료비 세부산정내역서",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "비급여 항목이 총액/영수증과 충돌",
+        "field_id": "REAL-SUB-0003-FIELD-03",
+        "field_key": "noncovered_amount",
+        "label_bbox_pdf": [
+          22.0,
+          113.0,
+          62.0,
+          126.0
+        ],
+        "label_bbox_px": [
+          44,
+          226,
+          124,
+          252
+        ],
+        "label_ko": "비급여",
+        "no_value": "129,000",
+        "source_id": "REAL-SUB-0003",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          62.0,
+          113.0,
+          277.5,
+          126.0
+        ],
+        "value_bbox_px": [
+          124,
+          226,
+          555,
+          252
+        ],
+        "value_type": "amount"
+      },
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0003-FIELD-03__NO_filled.png",
+      "no_sha256": "eed3d23fc50aa78c6b502cdf56de9305ec29b1f84176fdc2f1b4d4f6d2f44aeb",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0003-FIELD-03",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0003",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-01__AF_same_bbox.png",
+      "af_sha256": "43fee620e461f5f9623e35b9762c668599ecf43a3caf29d165eff260b4e08e18",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "가명박민준",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "동일 bundle 내 환자명 불일치",
+        "field_id": "REAL-SUB-0005-FIELD-01",
+        "field_key": "patient_name",
+        "label_bbox_pdf": [
+          309.0,
+          247.5,
+          349.0,
+          277.5
+        ],
+        "label_bbox_px": [
+          618,
+          495,
+          698,
+          555
+        ],
+        "label_ko": "환자 성명",
+        "no_value": "가명김서연",
+        "source_id": "REAL-SUB-0005",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          349.0,
+          247.5,
+          589.5,
+          277.5
+        ],
+        "value_bbox_px": [
+          698,
+          495,
+          1179,
+          555
+        ],
+        "value_type": "person_name"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-01__NO_filled.png",
+      "no_sha256": "a180ba79a5cf67637976a523d2a64379e9b6b068ed2f4ec65f3e3fe9b23dce5d",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0005-FIELD-01",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0005",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-02__AF_same_bbox.png",
+      "af_sha256": "68c638bb9e5fe8abf94fad68c2f4b04bfc6b479b4f60ead8f0919fc32e053358",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "2026-05-28",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "처방전 발행일보다 조제일이 비정상적으로 뒤로 이동",
+        "field_id": "REAL-SUB-0005-FIELD-02",
+        "field_key": "dispense_date",
+        "label_bbox_pdf": [
+          309.0,
+          280.5,
+          349.0,
+          287.5
+        ],
+        "label_bbox_px": [
+          618,
+          561,
+          698,
+          575
+        ],
+        "label_ko": "조제일",
+        "no_value": "2026-05-13",
+        "source_id": "REAL-SUB-0005",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          349.0,
+          280.5,
+          589.5,
+          287.5
+        ],
+        "value_bbox_px": [
+          698,
+          561,
+          1179,
+          575
+        ],
+        "value_type": "date"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-02__NO_filled.png",
+      "no_sha256": "9e801db1d96f622457102e0991542139fecfec9a6fb82a7dc58d9c4a4a398438",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0005-FIELD-02",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0005",
+      "visible_shortcut_label_inside_image": false
+    },
+    {
+      "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-03__AF_same_bbox.png",
+      "af_sha256": "0e1aa3459a3e0aa11a3f13a97dd2c794fe11cea30cb01da47d4ec9deedd096e8",
+      "bbox_ok": true,
+      "changed_field": {
+        "af_value": "122,400",
+        "before_ocr_or_pdf_text": "",
+        "document_type": "pharmacy_receipt",
+        "document_type_ko": "약제비 계산서ㆍ영수증",
+        "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+        "fds_reason": "약제비 합계가 처방/조제 항목 합계와 충돌",
+        "field_id": "REAL-SUB-0005-FIELD-03",
+        "field_key": "pharmacy_total_amount",
+        "label_bbox_pdf": [
+          309.0,
+          299.0,
+          349.0,
+          305.5
+        ],
+        "label_bbox_px": [
+          618,
+          598,
+          698,
+          611
+        ],
+        "label_ko": "약제비",
+        "no_value": "22,400",
+        "source_id": "REAL-SUB-0005",
+        "source_page_index": 0,
+        "value_bbox_pdf": [
+          349.0,
+          299.0,
+          589.5,
+          305.5
+        ],
+        "value_bbox_px": [
+          698,
+          598,
+          1179,
+          611
+        ],
+        "value_type": "amount"
+      },
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-03__NO_filled.png",
+      "no_sha256": "650ddf6a2d6ffbbd7e9e5829335acafdd6af60552289b1588b6eca844e729110",
+      "outside_target_changed_pixels": 0,
+      "pair_id": "REAL-SUB-0005-FIELD-03",
+      "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+      "source_id": "REAL-SUB-0005",
+      "visible_shortcut_label_inside_image": false
+    }
+  ],
+  "safety_policy": {
+    "image_shortcut_labels_allowed": false,
+    "insurer_claim_forms_default_excluded": true,
+    "real_personal_data_allowed": false,
+    "source_rule": "public official/quasi-official blank forms or public samples only"
+  },
+  "source_count": 4,
+  "source_records": [
+    {
+      "actual_document_origin": "external_web_or_file",
+      "authority": "official_statutory_form",
+      "content_type": "application/pdf;;charset=UTF-8",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "field_target_count": 4,
+      "final_url": "https://www.law.go.kr/LSW/flDownload.do?gubun=&flSeq=150343257&bylClsCd=110202",
+      "generated_or_synthetic": false,
+      "insurer_claim_form_excluded": true,
+      "local_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\raw\\REAL-SUB-0001__법령정보센터_약제비_계산서ㆍ영수증_별지_서식.pdf",
+      "page_count": 1,
+      "preview_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\preview_pages\\REAL-SUB-0001__page1.png",
+      "preview_sha256": "ece1f55554677829b3d0275c927ed5409d0ba8d74fd2d21f6a65c777e0342826",
+      "sha256": "69355d2cc5319d8ee17cf007030f94bb5b1dbc751b13fd2179205b4bda3c011c",
+      "source_id": "REAL-SUB-0001",
+      "source_note": "검색 결과: 약제비 계산서ㆍ영수증 PDF. 실손 청구 시 약국 제출서류의 공식 blank form.",
+      "title": "법령정보센터 약제비 계산서ㆍ영수증 별지 서식",
+      "url": "https://www.law.go.kr/LSW/flDownload.do?gubun=&flSeq=150343257&bylClsCd=110202"
+    },
+    {
+      "actual_document_origin": "external_web_or_file",
+      "authority": "official_statutory_form",
+      "content_type": "application/pdf;;charset=UTF-8",
+      "document_type": "medical_receipt",
+      "document_type_ko": "진료비 계산서ㆍ영수증",
+      "field_target_count": 4,
+      "final_url": "https://www.law.go.kr/LSW//flDownload.do?gubun=&flSeq=163452923&bylClsCd=110202",
+      "generated_or_synthetic": false,
+      "insurer_claim_form_excluded": true,
+      "local_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\raw\\REAL-SUB-0002__법령정보센터_간이_외래_진료비_계산서ㆍ영수증_별지_서식.pdf",
+      "page_count": 1,
+      "preview_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\preview_pages\\REAL-SUB-0002__page1.png",
+      "preview_sha256": "2564241c3116818c7f2abdf6351d7861c1d5a041f735ce22bd7b3bbbc3dcc47e",
+      "sha256": "05193b79de05ca54b0c58ab75b8106d6869d711489c526efc0c750b069981343",
+      "source_id": "REAL-SUB-0002",
+      "source_note": "검색 결과: 진료비 계산서ㆍ영수증 PDF. 병원비 영수증 공식 blank form.",
+      "title": "법령정보센터 간이 외래 진료비 계산서ㆍ영수증 별지 서식",
+      "url": "https://www.law.go.kr/LSW//flDownload.do?gubun=&flSeq=163452923&bylClsCd=110202"
+    },
+    {
+      "actual_document_origin": "external_web_or_file",
+      "authority": "quasi_official_public_form",
+      "content_type": "application/pdf",
+      "document_type": "medical_detail_statement",
+      "document_type_ko": "진료비 세부산정내역서",
+      "field_target_count": 3,
+      "final_url": "https://m.lina.co.kr/upload/docs/claim/exam/medical_expense_detail.pdf",
+      "generated_or_synthetic": false,
+      "insurer_claim_form_excluded": true,
+      "local_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\raw\\REAL-SUB-0003__라이나생명_공개_진료비_세부산정내역_서식_PDF.pdf",
+      "page_count": 1,
+      "preview_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\preview_pages\\REAL-SUB-0003__page1.png",
+      "preview_sha256": "054af87d832ed6de71d7931f2381a8c20b3e87d0aa150b99436655df6f765ec9",
+      "sha256": "a90451514f7514333b3c922983a68a9753b438893200095dd533b1b81f333384",
+      "source_id": "REAL-SUB-0003",
+      "source_note": "검색 결과: 진료비 세부산정내역 서식. 보험사 도메인이지만 보험금 청구서가 아니라 병원 제출 증빙 서식.",
+      "title": "라이나생명 공개 진료비 세부산정내역 서식 PDF",
+      "url": "https://m.lina.co.kr/upload/docs/claim/exam/medical_expense_detail.pdf"
+    },
+    {
+      "actual_document_origin": "external_web_or_file",
+      "authority": "public_sample_form",
+      "content_type": "application/pdf",
+      "document_type": "pharmacy_receipt",
+      "document_type_ko": "약제비 계산서ㆍ영수증",
+      "field_target_count": 3,
+      "final_url": "https://imet.kr/download/Pharmacy_receipts.pdf",
+      "generated_or_synthetic": false,
+      "insurer_claim_form_excluded": true,
+      "local_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\raw\\REAL-SUB-0005__공개_약제비계산서_영수증_샘플_PDF.pdf",
+      "page_count": 1,
+      "preview_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_real_external_sources\\preview_pages\\REAL-SUB-0005__page1.png",
+      "preview_sha256": "06da056f9b9b2d95cccf8d68c79e8fa4b39882a2613b6fa678ef765c088edd33",
+      "sha256": "1b5c441242d7a3c81ea2352085d4ac48f0ac9561253a45f83d9f3af22e6b527c",
+      "source_id": "REAL-SUB-0005",
+      "source_note": "검색 결과: 약제비계산서/영수증 샘플. 실제 약국 제출서류 형태 확인용.",
+      "title": "공개 약제비계산서/영수증 샘플 PDF",
+      "url": "https://imet.kr/download/Pharmacy_receipts.pdf"
+    }
+  ],
+  "validation": {
+    "bad_same_bbox_pair_ids": [],
+    "contact_sheet_exists": true,
+    "document_types": [
+      "medical_detail_statement",
+      "medical_receipt",
+      "pharmacy_receipt"
+    ],
+    "failure_count": 1,
+    "insurer_or_non_submission_source_ids": [],
+    "missing_paths": [],
+    "ok": true,
+    "pair_count": 12,
+    "source_count": 4
+  }
+}

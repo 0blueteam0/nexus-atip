@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-02__AF_same_bbox.png",
+  "af_sha256": "68c638bb9e5fe8abf94fad68c2f4b04bfc6b479b4f60ead8f0919fc32e053358",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "2026-05-28",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "pharmacy_receipt",
+    "document_type_ko": "약제비 계산서ㆍ영수증",
+    "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+    "fds_reason": "처방전 발행일보다 조제일이 비정상적으로 뒤로 이동",
+    "field_id": "REAL-SUB-0005-FIELD-02",
+    "field_key": "dispense_date",
+    "label_bbox_pdf": [
+      309.0,
+      280.5,
+      349.0,
+      287.5
+    ],
+    "label_bbox_px": [
+      618,
+      561,
+      698,
+      575
+    ],
+    "label_ko": "조제일",
+    "no_value": "2026-05-13",
+    "source_id": "REAL-SUB-0005",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      349.0,
+      280.5,
+      589.5,
+      287.5
+    ],
+    "value_bbox_px": [
+      698,
+      561,
+      1179,
+      575
+    ],
+    "value_type": "date"
+  },
+  "document_type": "pharmacy_receipt",
+  "document_type_ko": "약제비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-02__NO_filled.png",
+  "no_sha256": "9e801db1d96f622457102e0991542139fecfec9a6fb82a7dc58d9c4a4a398438",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0005-FIELD-02",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0005",
+  "visible_shortcut_label_inside_image": false
+}

@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-03__AF_same_bbox.png",
+  "af_sha256": "0e1aa3459a3e0aa11a3f13a97dd2c794fe11cea30cb01da47d4ec9deedd096e8",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "122,400",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "pharmacy_receipt",
+    "document_type_ko": "약제비 계산서ㆍ영수증",
+    "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+    "fds_reason": "약제비 합계가 처방/조제 항목 합계와 충돌",
+    "field_id": "REAL-SUB-0005-FIELD-03",
+    "field_key": "pharmacy_total_amount",
+    "label_bbox_pdf": [
+      309.0,
+      299.0,
+      349.0,
+      305.5
+    ],
+    "label_bbox_px": [
+      618,
+      598,
+      698,
+      611
+    ],
+    "label_ko": "약제비",
+    "no_value": "22,400",
+    "source_id": "REAL-SUB-0005",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      349.0,
+      299.0,
+      589.5,
+      305.5
+    ],
+    "value_bbox_px": [
+      698,
+      598,
+      1179,
+      611
+    ],
+    "value_type": "amount"
+  },
+  "document_type": "pharmacy_receipt",
+  "document_type_ko": "약제비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-03__NO_filled.png",
+  "no_sha256": "650ddf6a2d6ffbbd7e9e5829335acafdd6af60552289b1588b6eca844e729110",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0005-FIELD-03",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0005",
+  "visible_shortcut_label_inside_image": false
+}

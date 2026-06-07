@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0005-FIELD-01__AF_same_bbox.png",
+  "af_sha256": "43fee620e461f5f9623e35b9762c668599ecf43a3caf29d165eff260b4e08e18",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "가명박민준",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "pharmacy_receipt",
+    "document_type_ko": "약제비 계산서ㆍ영수증",
+    "extraction_method": "image_table_line_bbox_fallback_no_text_layer",
+    "fds_reason": "동일 bundle 내 환자명 불일치",
+    "field_id": "REAL-SUB-0005-FIELD-01",
+    "field_key": "patient_name",
+    "label_bbox_pdf": [
+      309.0,
+      247.5,
+      349.0,
+      277.5
+    ],
+    "label_bbox_px": [
+      618,
+      495,
+      698,
+      555
+    ],
+    "label_ko": "환자 성명",
+    "no_value": "가명김서연",
+    "source_id": "REAL-SUB-0005",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      349.0,
+      247.5,
+      589.5,
+      277.5
+    ],
+    "value_bbox_px": [
+      698,
+      495,
+      1179,
+      555
+    ],
+    "value_type": "person_name"
+  },
+  "document_type": "pharmacy_receipt",
+  "document_type_ko": "약제비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0005-FIELD-01__NO_filled.png",
+  "no_sha256": "a180ba79a5cf67637976a523d2a64379e9b6b068ed2f4ec65f3e3fe9b23dce5d",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0005-FIELD-01",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0005",
+  "visible_shortcut_label_inside_image": false
+}

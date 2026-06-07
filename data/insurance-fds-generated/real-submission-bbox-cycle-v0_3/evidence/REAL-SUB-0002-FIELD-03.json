@@ -1,0 +1,53 @@
+{
+  "af_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case3_same_bbox_local_substitution_af\\REAL-SUB-0002-FIELD-03__AF_same_bbox.png",
+  "af_sha256": "9827dd19f34d8d05d675b496716f8433a9c9e7c4cf80418ac8a72d04f1c801a9",
+  "bbox_ok": true,
+  "changed_field": {
+    "af_value": "287,500",
+    "before_ocr_or_pdf_text": "",
+    "document_type": "medical_receipt",
+    "document_type_ko": "진료비 계산서ㆍ영수증",
+    "extraction_method": "pymupdf_word_bbox_label_to_right_value_box",
+    "fds_reason": "급여+비급여 합산액과 총진료비가 충돌",
+    "field_id": "REAL-SUB-0002-FIELD-03",
+    "field_key": "total_medical_amount",
+    "label_bbox_pdf": [
+      91.55999755859375,
+      290.9347839355469,
+      147.59999084472656,
+      298.9747619628906
+    ],
+    "label_bbox_px": [
+      181,
+      579,
+      298,
+      600
+    ],
+    "label_ko": "진료비 총액",
+    "no_value": "187,500",
+    "source_id": "REAL-SUB-0002",
+    "source_page_index": 0,
+    "value_bbox_pdf": [
+      155.59999084472656,
+      289.13478393554686,
+      304.34999084472656,
+      301.9747619628906
+    ],
+    "value_bbox_px": [
+      308,
+      575,
+      612,
+      607
+    ],
+    "value_type": "amount"
+  },
+  "document_type": "medical_receipt",
+  "document_type_ko": "진료비 계산서ㆍ영수증",
+  "no_image_path": "data\\insurance-fds-generated\\real-submission-bbox-cycle-v0_3\\case1_filled_no_derivatives\\REAL-SUB-0002-FIELD-03__NO_filled.png",
+  "no_sha256": "04451bc2cb21b90416264a789fe70d55987cd62b58a406373f3a5ca1711b4a81",
+  "outside_target_changed_pixels": 0,
+  "pair_id": "REAL-SUB-0002-FIELD-03",
+  "same_coordinate_policy": "AF uses exact Case1/NO value_bbox_px",
+  "source_id": "REAL-SUB-0002",
+  "visible_shortcut_label_inside_image": false
+}

@@ -1,0 +1,23 @@
+# Quality Gate
+
+- targeted_tests_passed: true
+  - command: `PYTHONPATH=. uv run --with pytest --with pymupdf --with pillow python -m pytest tests/test_insurance_fds_real_submission_cycle.py -q`
+  - exit_code: 0
+  - output: `5 passed in 0.95s`
+- real_generation_passed: true
+  - command: `PYTHONPATH=. uv run --with pymupdf --with pillow python scripts/insurance_fds_real_submission_cycle.py --output-root "data/insurance-fds-generated/real-submission-bbox-cycle-v0_3"`
+  - exit_code: 0
+  - validation_ok: true
+- actual_external_sources_collected: true
+  - source_count: 4
+  - generated_or_synthetic: false for all source_records
+- field_bbox_manifest_written: true
+  - field_target_count: 12
+- local_substitution_verified: true
+  - pair_count: 12
+  - bad_same_bbox_pair_ids: []
+  - outside_target_changed_pixels: [0]
+- visual_shortcut_labels_inside_document_pixels: false
+- known_limitations:
+  - REAL-SUB-0004 failed due remote WinError 10054.
+  - No tesseract/marker OCR path was installed; no-text-layer fallback is image-structure based.
