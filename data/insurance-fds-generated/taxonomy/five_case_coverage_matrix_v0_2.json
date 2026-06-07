@@ -1,0 +1,335 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "taxonomy_version": "five-case-taxonomy-v0.2",
+  "coverage_policy": {
+    "all_five_cases_required": true,
+    "case_count": 5,
+    "visible_document_fields_language": "ko",
+    "case_must_be_visible_in_directory_and_filename": true,
+    "llm_only_generation_is_not_primary_strategy": true,
+    "case1_collection_is_required_before_case3_and_case5": true,
+    "no_visible_training_or_synthetic_labels_on_image": true,
+    "no_large_blocks_or_shortcut_marks_on_image": true,
+    "public_dataset_priority": "auxiliary_only",
+    "api_default": "do_not_call"
+  },
+  "validation": {
+    "ok": true,
+    "required_case_families": [
+      "case1_normal_claim_document_collection",
+      "case2_traditional_editor_tamper_case_study",
+      "case3_ai_code_local_tamper_from_case1",
+      "case4_real_grounded_genai_tamper_generation",
+      "case5_llm_code_full_synthetic_generation_from_case1_learning"
+    ],
+    "present_case_families": [
+      "case1_normal_claim_document_collection",
+      "case2_traditional_editor_tamper_case_study",
+      "case3_ai_code_local_tamper_from_case1",
+      "case4_real_grounded_genai_tamper_generation",
+      "case5_llm_code_full_synthetic_generation_from_case1_learning"
+    ],
+    "missing_case_families": [],
+    "extra_case_families": []
+  },
+  "cases": [
+    {
+      "case_family": "case1_normal_claim_document_collection",
+      "korean_name": "정상 실손보험 청구 문서/사진 수집",
+      "model_role": "FDS가 정상 실손보험 청구 문서, 제출 사진, 제출 채널, 문서 필드 범위를 알도록 하는 기준 데이터",
+      "must_appear_in_dataset": true,
+      "case_number": "case1",
+      "plain_korean_role": "정상 실손보험 청구 서류와 사진을 수집하고 범위를 정하는 케이스",
+      "training_balance_role": "normal_claim_collection_baseline",
+      "generation_track": "capture_variation_and_pseudonymized_derivatives_only",
+      "local_substitution_track": "field_inventory_and_source_coordinate_collection",
+      "minimum_smoke_records": 1,
+      "directory_prefix": "case1_normal_claim_document_collection",
+      "filename_prefix": "CASE1_case1_normal_claim_document_collection",
+      "why_required_ko": "FDS가 무엇을 정상 제출 문서로 봐야 하는지 알아야 위변조도 구별할 수 있다.",
+      "visible_document_fields_language": "ko",
+      "forbidden_image_shortcuts": [
+        "합성데이터/모델학습용/제출불가 같은 픽셀 내 문구",
+        "검은 박스/큰 흰색 덮개/비현실적 블록",
+        "영문 필드명 중심 문서",
+        "case 라벨을 이미지 안에 직접 노출"
+      ],
+      "required_korean_fields": [
+        "환자명",
+        "생년월일",
+        "진료일자",
+        "발행일자",
+        "요양기관명",
+        "사업자등록번호",
+        "영수증번호",
+        "진단명",
+        "질병분류기호",
+        "진료비 총액",
+        "본인부담금",
+        "비급여금액",
+        "청구금액",
+        "입원일자",
+        "퇴원일자",
+        "처방일자",
+        "약품명"
+      ],
+      "required_labels": [
+        "case_family",
+        "dataset_id",
+        "document_type",
+        "source_type",
+        "source_url_or_path",
+        "privacy_state",
+        "capture_profile",
+        "ocr_tokens",
+        "kie_fields",
+        "required_document_set",
+        "outpatient_or_inpatient"
+      ],
+      "allowed_artifact_examples": [
+        "CASE1_case1_normal_claim_document_collection_NO_0001_medical_receipt.png",
+        "CASE1_case1_normal_claim_document_collection_NO_0001_fields.ko.json",
+        "case1_normal_claim_document_collection/manifest.jsonl"
+      ],
+      "must_not_do": [
+        "정상 문서 수집 없이 바로 LLM 생성부터 시작하지 않는다.",
+        "실제 개인정보 원본을 학습용 이미지로 그대로 승격하지 않는다.",
+        "이미지에 합성데이터/모델학습용 문구를 넣지 않는다."
+      ]
+    },
+    {
+      "case_family": "case2_traditional_editor_tamper_case_study",
+      "korean_name": "기존 편집도구 기반 위변조 사례조사와 샘플화",
+      "model_role": "FDS가 전통 편집도구 기반 조작 흔적과 실제 위변조 패턴을 배우도록 하는 데이터",
+      "must_appear_in_dataset": true,
+      "case_number": "case2",
+      "plain_korean_role": "기존 편집도구와 실제 위변조 사례를 조사해 편집도구식 위변조 샘플을 만드는 케이스",
+      "training_balance_role": "traditional_editor_tool_tamper_case_study",
+      "generation_track": "editor_tool_artifact_reproduction_from_case_study",
+      "local_substitution_track": "paired_no_target_field_local_edit_with_editor_artifacts",
+      "minimum_smoke_records": 1,
+      "directory_prefix": "case2_traditional_editor_tamper_case_study",
+      "filename_prefix": "CASE2_case2_traditional_editor_tamper_case_study",
+      "why_required_ko": "포토샵/PDF편집기/모바일편집/스캔앱류의 실제 조작 방식과 흔적을 별도 케이스로 학습해야 한다.",
+      "visible_document_fields_language": "ko",
+      "forbidden_image_shortcuts": [
+        "합성데이터/모델학습용/제출불가 같은 픽셀 내 문구",
+        "검은 박스/큰 흰색 덮개/비현실적 블록",
+        "영문 필드명 중심 문서",
+        "case 라벨을 이미지 안에 직접 노출"
+      ],
+      "required_korean_fields": [
+        "진료비 총액",
+        "본인부담금",
+        "비급여금액",
+        "청구금액",
+        "진료일자",
+        "처방일자",
+        "요양기관명",
+        "환자명",
+        "진단명",
+        "질병분류기호"
+      ],
+      "required_labels": [
+        "case_family",
+        "dataset_id",
+        "paired_no_dataset_id",
+        "tamper_tool_family",
+        "tamper_operation",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "fraud_intent",
+        "laundering_profile",
+        "evidence_case_study_note"
+      ],
+      "allowed_artifact_examples": [
+        "CASE2_case2_traditional_editor_tamper_case_study_AF_0001_amount_replace.png",
+        "CASE2_case2_traditional_editor_tamper_case_study_AF_0001_labels.ko.json",
+        "case2_traditional_editor_tamper_case_study/editor_tool_case_studies.ko.md"
+      ],
+      "must_not_do": [
+        "실제 편집도구/사례조사 없이 임의 LLM 상상만으로 조작 유형을 만들지 않는다.",
+        "큰 흰색 박스나 검은 박스로 필드를 덮지 않는다.",
+        "이미지에 AF/합성/위조 같은 라벨을 직접 넣지 않는다."
+      ]
+    },
+    {
+      "case_family": "case3_ai_code_local_tamper_from_case1",
+      "korean_name": "Case 1 수집 문서 기반 AI/코딩도구 국소 위변조",
+      "model_role": "FDS가 AI/코딩도구 기반의 고품질 국소 필드 치환을 탐지하도록 하는 데이터",
+      "must_appear_in_dataset": true,
+      "case_number": "case3",
+      "plain_korean_role": "Case 1에서 수집한 문서를 AI/코딩도구로 국소 위변조하는 케이스",
+      "training_balance_role": "ai_code_local_tamper_on_collected_case1_sources",
+      "generation_track": "ai_code_assisted_local_field_rewrite",
+      "local_substitution_track": "paired_case1_no_same_coordinate_local_tamper",
+      "minimum_smoke_records": 1,
+      "directory_prefix": "case3_ai_code_local_tamper_from_case1",
+      "filename_prefix": "CASE3_case3_ai_code_local_tamper_from_case1",
+      "why_required_ko": "앞으로 AI/코딩도구가 기존 청구 이미지의 특정 필드만 정교하게 바꾸는 공격면을 학습해야 한다.",
+      "visible_document_fields_language": "ko",
+      "forbidden_image_shortcuts": [
+        "합성데이터/모델학습용/제출불가 같은 픽셀 내 문구",
+        "검은 박스/큰 흰색 덮개/비현실적 블록",
+        "영문 필드명 중심 문서",
+        "case 라벨을 이미지 안에 직접 노출"
+      ],
+      "required_korean_fields": [
+        "청구금액",
+        "진료비 총액",
+        "본인부담금",
+        "비급여금액",
+        "진료일자",
+        "진단명",
+        "질병분류기호",
+        "약품명",
+        "입원일자",
+        "퇴원일자"
+      ],
+      "required_labels": [
+        "case_family",
+        "dataset_id",
+        "paired_case1_no_dataset_id",
+        "target_field_ko",
+        "original_value",
+        "mutated_value",
+        "edit_algorithm",
+        "model_or_tool_family",
+        "ocr_before",
+        "ocr_after",
+        "outside_target_changed_pixels",
+        "same_coordinate_policy",
+        "visual_shortcut_reject"
+      ],
+      "allowed_artifact_examples": [
+        "CASE3_case3_ai_code_local_tamper_from_case1_AF_0001_claim_amount.png",
+        "CASE3_case3_ai_code_local_tamper_from_case1_AF_0001_ocr_before_after.ko.json",
+        "case3_ai_code_local_tamper_from_case1/pairs.jsonl"
+      ],
+      "must_not_do": [
+        "전체 문서를 새로 생성하지 않는다.",
+        "Case 1과 무관한 임의 template 위에서만 만들지 않는다.",
+        "필드 위치가 밀리거나 문서 레이아웃이 바뀌면 통과시키지 않는다."
+      ]
+    },
+    {
+      "case_family": "case4_real_grounded_genai_tamper_generation",
+      "korean_name": "실제/공식 문서 구조 grounding 기반 생성형AI 위변조 번들",
+      "model_role": "FDS가 단일 이미지 위변조뿐 아니라 여러 청구 문서 사이의 금액/날짜/진단/기관 불일치를 배우도록 하는 데이터",
+      "must_appear_in_dataset": true,
+      "case_number": "case4",
+      "plain_korean_role": "실제/공식 문서 구조와 업무규칙을 근거로 고현실성 위변조 번들을 만드는 케이스",
+      "training_balance_role": "real_grounded_genai_tamper_bundle",
+      "generation_track": "real_official_schema_grounded_tamper_bundle_generation",
+      "local_substitution_track": "real_schema_grounded_paired_local_edit_and_cross_document_mismatch",
+      "minimum_smoke_records": 1,
+      "directory_prefix": "case4_real_grounded_genai_tamper_generation",
+      "filename_prefix": "CASE4_case4_real_grounded_genai_tamper_generation",
+      "why_required_ko": "단일 이미지가 아니라 실제 청구 번들의 문서 간 금액/날짜/진단/기관 일관성까지 학습해야 한다.",
+      "visible_document_fields_language": "ko",
+      "forbidden_image_shortcuts": [
+        "합성데이터/모델학습용/제출불가 같은 픽셀 내 문구",
+        "검은 박스/큰 흰색 덮개/비현실적 블록",
+        "영문 필드명 중심 문서",
+        "case 라벨을 이미지 안에 직접 노출"
+      ],
+      "required_korean_fields": [
+        "보험금 청구금액",
+        "진료비 총액",
+        "본인부담금",
+        "비급여금액",
+        "진료일자",
+        "입원일자",
+        "퇴원일자",
+        "진단명",
+        "질병분류기호",
+        "처방일자",
+        "약품명",
+        "요양기관명"
+      ],
+      "required_labels": [
+        "case_family",
+        "dataset_id",
+        "claim_bundle_id",
+        "grounding_source_type",
+        "source_lineage",
+        "fraud_intent",
+        "target_field_graph",
+        "consistency_constraints_before_after",
+        "cross_document_mismatch_type",
+        "privacy_policy"
+      ],
+      "allowed_artifact_examples": [
+        "CASE4_case4_real_grounded_genai_tamper_generation_AF_0001_bundle_manifest.ko.json",
+        "CASE4_case4_real_grounded_genai_tamper_generation_AF_0001_medical_receipt.png",
+        "case4_real_grounded_genai_tamper_generation/bundles.jsonl"
+      ],
+      "must_not_do": [
+        "공식/실제 구조 grounding 없이 아무 문서나 상상 생성하지 않는다.",
+        "단일 이미지 자연스러움만 보고 통과시키지 않는다.",
+        "문서 간 일관성 라벨 없이 생성하지 않는다."
+      ]
+    },
+    {
+      "case_family": "case5_llm_code_full_synthetic_generation_from_case1_learning",
+      "korean_name": "Case 1 학습 기반 LLM/코딩도구 전체 문서 생성",
+      "model_role": "FDS 학습용 생성물의 다양성을 늘리되, 한국 실손보험 문서 필드와 구조를 벗어나지 않도록 제한하는 데이터",
+      "must_appear_in_dataset": true,
+      "case_number": "case5",
+      "plain_korean_role": "Case 1에서 배운 한국어 필드와 문서구조를 바탕으로 LLM/코딩도구가 새 문서를 생성하는 케이스",
+      "training_balance_role": "full_synthetic_generation_limited_to_case1_learned_korean_fields",
+      "generation_track": "llm_code_full_document_generation_from_case1_field_schema",
+      "local_substitution_track": "not_primary_new_document_generation_only_but_must_reference_case1_field_schema",
+      "minimum_smoke_records": 1,
+      "directory_prefix": "case5_llm_code_full_synthetic_generation_from_case1_learning",
+      "filename_prefix": "CASE5_case5_llm_code_full_synthetic_generation_from_case1_learning",
+      "why_required_ko": "새 문서 생성은 허용하되 Case 1에서 확인한 한국어 필드/서식 범위 안에서만 생성해야 실제 FDS 자료로 쓸 수 있다.",
+      "visible_document_fields_language": "ko",
+      "forbidden_image_shortcuts": [
+        "합성데이터/모델학습용/제출불가 같은 픽셀 내 문구",
+        "검은 박스/큰 흰색 덮개/비현실적 블록",
+        "영문 필드명 중심 문서",
+        "case 라벨을 이미지 안에 직접 노출"
+      ],
+      "required_korean_fields": [
+        "환자명",
+        "생년월일",
+        "진료일자",
+        "요양기관명",
+        "진단명",
+        "질병분류기호",
+        "진료비 총액",
+        "본인부담금",
+        "비급여금액",
+        "청구금액",
+        "보험금 지급계좌",
+        "청구인",
+        "연락처"
+      ],
+      "required_labels": [
+        "case_family",
+        "dataset_id",
+        "generation_source_schema_id",
+        "learned_from_case1_source_ids",
+        "document_type",
+        "visible_field_language",
+        "korean_field_schema_version",
+        "synthetic_generation_method",
+        "ocr_gold_fields",
+        "privacy_policy"
+      ],
+      "allowed_artifact_examples": [
+        "CASE5_case5_llm_code_full_synthetic_generation_from_case1_learning_NO_0001_claim_form.png",
+        "CASE5_case5_llm_code_full_synthetic_generation_from_case1_learning_AF_0001_amount_mismatch_bundle.ko.json",
+        "case5_llm_code_full_synthetic_generation_from_case1_learning/generated_manifest.jsonl"
+      ],
+      "must_not_do": [
+        "영문 필드명 문서를 생성하지 않는다.",
+        "Case 1에서 확인되지 않은 임의 문서 구조를 주력으로 만들지 않는다.",
+        "생성물 이미지에 모델학습용/합성데이터 표시를 넣지 않는다.",
+        "Case 5를 전체 전략의 중심으로 두지 않는다."
+      ]
+    }
+  ]
+}

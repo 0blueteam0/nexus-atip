@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-07T12:12:03.143Z",
+  "updatedAt": "2026-06-07T13:18:24.807Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-07T12-12-02-975Z-codex-to-claude-system-insurance-fds-field-inventory",
+      "id": "2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-field-inventory",
+      "title": "insurance-fds-five-case-taxonomy",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T12-12-02-975Z-codex-to-claude-system-insurance-fds-field-inventory.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-07T12:12:02.975Z",
+      "createdAt": "2026-06-07T13:18:24.626Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-five-case-taxonomy",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-07T13:18:24.626Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-07T12-12-02-975Z-codex-to-claude-system-insurance-fds-field-inventory",
       "from": "codex",
