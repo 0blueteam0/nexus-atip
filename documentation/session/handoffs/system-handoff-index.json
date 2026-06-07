@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-07T14:12:59.146Z",
+  "updatedAt": "2026-06-07T14:23:22.194Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract",
+      "id": "2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-case1-registry-case3-case5-contract",
+      "title": "insurance-fds-case1-real-external-documents",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-07T14:12:58.972Z",
+      "createdAt": "2026-06-07T14:23:22.034Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-case1-real-external-documents",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-07T14:23:22.034Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-07T14-12-58-972Z-codex-to-claude-system-insurance-fds-case1-registry-case3-case5-contract",
       "from": "codex",

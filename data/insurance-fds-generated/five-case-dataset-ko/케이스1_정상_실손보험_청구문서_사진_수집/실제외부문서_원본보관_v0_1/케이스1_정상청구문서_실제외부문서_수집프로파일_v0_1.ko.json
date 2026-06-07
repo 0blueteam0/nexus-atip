@@ -1,0 +1,185 @@
+{
+  "artifact": "케이스1_정상청구문서_실제외부문서_수집프로파일_v0_1",
+  "case_family": "case1_normal_claim_document_collection",
+  "created_at": "2026-06-07T23:20:57",
+  "definition": "Case 1 normal documents must be real external/web documents or images, not generated documents.",
+  "generated_documents_allowed": false,
+  "privacy_policy": "public_blank_form_or_official_guidance_only; no real personal claim document is promoted outside quarantine",
+  "selected_candidate_count": 5,
+  "downloaded_count": 5,
+  "failed_count": 0,
+  "documents": [
+    {
+      "source_id": "CASE1-SRC-0001",
+      "title": "[PDF] 보험금청구서 (질병ㆍ상해) - 현대해상",
+      "url": "https://www.hi.co.kr/data/CL/amends01.pdf",
+      "final_url": "https://www.hi.co.kr/data/CL/amends01.pdf",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "covered_document_types": [
+        "보험금 청구서",
+        "통원확인서",
+        "수술확인서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0001",
+      "local_path": "data\\insurance-fds-generated\\five-case-dataset-ko\\케이스1_정상_실손보험_청구문서_사진_수집\\실제외부문서_원본보관_v0_1\\원본파일\\CASE1-SRC-0001__케이스1_정상청구문서_수집_출처_0001__[PDF]_보험금청구서_(질병ㆍ상해)_-_현대해상.pdf",
+      "sha256": "d27339d160e1909158466c951d636b465b603d62189f1ca76461fb52b3b3193a",
+      "file_size_bytes": 1134730,
+      "content_type": "application/pdf",
+      "actual_document_origin": "external_web_or_file",
+      "generated_or_synthetic": false,
+      "pii_policy": "public_blank_form_only_no_real_personal_data",
+      "human_review_status": "needs_visual_review",
+      "case1_promotion_state": "raw_public_form_candidate",
+      "profile": {
+        "file_extension": ".pdf",
+        "document_kind": "pdf",
+        "page_count": 7,
+        "is_encrypted": false,
+        "metadata_title": "",
+        "first_page_width": 595.44,
+        "first_page_height": 841.68,
+        "first_page_text_chars": 2000,
+        "korean_field_signal_count": 5
+      }
+    },
+    {
+      "source_id": "CASE1-SRC-0002",
+      "title": "[PDF] 보험금 청구서 - 메리츠화재",
+      "url": "https://cmdown.meritzfire.com/manager/cm/document/meritzfire_claim_form.pdf",
+      "final_url": "https://cmdown.meritzfire.com/manager/cm/document/meritzfire_claim_form.pdf",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0002",
+      "local_path": "data\\insurance-fds-generated\\five-case-dataset-ko\\케이스1_정상_실손보험_청구문서_사진_수집\\실제외부문서_원본보관_v0_1\\원본파일\\CASE1-SRC-0002__케이스1_정상청구문서_수집_출처_0002__[PDF]_보험금_청구서_-_메리츠화재.pdf",
+      "sha256": "24fb5b2b11eb793b81e7f0560e6f317cf52c1809a67375dc072788cd792551da",
+      "file_size_bytes": 492621,
+      "content_type": "application/pdf",
+      "actual_document_origin": "external_web_or_file",
+      "generated_or_synthetic": false,
+      "pii_policy": "public_blank_form_only_no_real_personal_data",
+      "human_review_status": "needs_visual_review",
+      "case1_promotion_state": "raw_public_form_candidate",
+      "profile": {
+        "file_extension": ".pdf",
+        "document_kind": "pdf",
+        "page_count": 5,
+        "is_encrypted": false,
+        "metadata_title": "FNGCLRA0021R.ozr",
+        "first_page_width": 595.0,
+        "first_page_height": 842.0,
+        "first_page_text_chars": 2000,
+        "korean_field_signal_count": 5
+      }
+    },
+    {
+      "source_id": "CASE1-SRC-0003",
+      "title": "[PDF] 보험금 청구서 (인보험用) - KB손해보험",
+      "url": "https://www.kbinsure.co.kr/images/claim_svc/reqdoc_genal.pdf",
+      "final_url": "https://www.kbinsure.co.kr/images/claim_svc/reqdoc_genal.pdf",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0003",
+      "local_path": "data\\insurance-fds-generated\\five-case-dataset-ko\\케이스1_정상_실손보험_청구문서_사진_수집\\실제외부문서_원본보관_v0_1\\원본파일\\CASE1-SRC-0003__케이스1_정상청구문서_수집_출처_0003__[PDF]_보험금_청구서_(인보험用)_-_KB손해보험.pdf",
+      "sha256": "4a033983eb42e723c7e73c254d0044bed43c8fd4ab2b5a9fd5cc10863c14659a",
+      "file_size_bytes": 1580854,
+      "content_type": "application/pdf",
+      "actual_document_origin": "external_web_or_file",
+      "generated_or_synthetic": false,
+      "pii_policy": "public_blank_form_only_no_real_personal_data",
+      "human_review_status": "needs_visual_review",
+      "case1_promotion_state": "raw_public_form_candidate",
+      "profile": {
+        "file_extension": ".pdf",
+        "document_kind": "pdf",
+        "page_count": 5,
+        "is_encrypted": false,
+        "metadata_title": "보험금청구서_2026",
+        "first_page_width": 595.28,
+        "first_page_height": 841.89,
+        "first_page_text_chars": 1926,
+        "korean_field_signal_count": 5
+      }
+    },
+    {
+      "source_id": "CASE1-SRC-0004",
+      "title": "[PDF] 보험금 청구서 - 삼성화재",
+      "url": "https://www.samsungfire.com/download/claim/claim_new.pdf",
+      "final_url": "https://www.samsungfire.com/download/claim/claim_new.pdf",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "covered_document_types": [
+        "보험금 청구서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0004",
+      "local_path": "data\\insurance-fds-generated\\five-case-dataset-ko\\케이스1_정상_실손보험_청구문서_사진_수집\\실제외부문서_원본보관_v0_1\\원본파일\\CASE1-SRC-0004__케이스1_정상청구문서_수집_출처_0004__[PDF]_보험금_청구서_-_삼성화재.pdf",
+      "sha256": "640de89b446d4479b2104f73c49ca443b516a60c71fae5700c7e6b20f50c5508",
+      "file_size_bytes": 1519306,
+      "content_type": "application/pdf",
+      "actual_document_origin": "external_web_or_file",
+      "generated_or_synthetic": false,
+      "pii_policy": "public_blank_form_only_no_real_personal_data",
+      "human_review_status": "needs_visual_review",
+      "case1_promotion_state": "raw_public_form_candidate",
+      "profile": {
+        "file_extension": ".pdf",
+        "document_kind": "pdf",
+        "page_count": 9,
+        "is_encrypted": false,
+        "metadata_title": "claim_new",
+        "first_page_width": 595.28,
+        "first_page_height": 841.89,
+        "first_page_text_chars": 2000,
+        "korean_field_signal_count": 4
+      }
+    },
+    {
+      "source_id": "CASE1-SRC-0010",
+      "title": "[PDF] 진료비 세부산정내역 서식 등에 관한 기준 - 건강보험심사평가원",
+      "url": "https://www.hira.or.kr/download.do?src=%2Fshare%2Finternet%2Fpt%2Fbbs%2F157%2F2018%2F03%2FBZ201803023669271.pdf&fnm=%E3%80%8C%EC%A7%84%EB%A3%8C%EB%B9%84+%EC%84%B8%EB%B6%80%EC%82%B0%EC%A0%95%EB%82%B4%EC%97%AD+%EC%84%9C%EC%8B%9D+%EB%93%B1%EC%97%90+%EA%B4%80%ED%95%9C+%EA%B8%B0%EC%A4%80%E3%80%8D+%28%EA%B3%A0%EC%8B%9C+%EC%A0%9C2018-21%ED%98%B8%29.pdf",
+      "final_url": "https://www.hira.or.kr/download.do?src=%2Fshare%2Finternet%2Fpt%2Fbbs%2F157%2F2018%2F03%2FBZ201803023669271.pdf&fnm=%E3%80%8C%EC%A7%84%EB%A3%8C%EB%B9%84+%EC%84%B8%EB%B6%80%EC%82%B0%EC%A0%95%EB%82%B4%EC%97%AD+%EC%84%9C%EC%8B%9D+%EB%93%B1%EC%97%90+%EA%B4%80%ED%95%9C+%EA%B8%B0%EC%A4%80%E3%80%8D+%28%EA%B3%A0%EC%8B%9C+%EC%A0%9C2018-21%ED%98%B8%29.pdf",
+      "source_authority_level": "official",
+      "source_category": "blank_form_or_pdf",
+      "covered_document_types": [
+        "진료비 계산서·영수증",
+        "진료비 세부산정내역서"
+      ],
+      "korean_filename_prefix": "케이스1_정상청구문서_수집_출처_0010",
+      "local_path": "data\\insurance-fds-generated\\five-case-dataset-ko\\케이스1_정상_실손보험_청구문서_사진_수집\\실제외부문서_원본보관_v0_1\\원본파일\\CASE1-SRC-0010__케이스1_정상청구문서_수집_출처_0010__[PDF]_진료비_세부산정내역_서식_등에_관한_기준_-_건강보험심사평가원.pdf",
+      "sha256": "5ebd767d7bab161f74b009a7ae6647beadeb808c4ea22826a3c779aba4557457",
+      "file_size_bytes": 185496,
+      "content_type": "application/octet-stream",
+      "actual_document_origin": "external_web_or_file",
+      "generated_or_synthetic": false,
+      "pii_policy": "public_blank_form_only_no_real_personal_data",
+      "human_review_status": "needs_visual_review",
+      "case1_promotion_state": "raw_public_form_candidate",
+      "profile": {
+        "file_extension": ".pdf",
+        "document_kind": "pdf",
+        "page_count": 5,
+        "is_encrypted": false,
+        "metadata_title": "「진료비 세부산정내역 서식 등에 관한 기준」(고시 제2018-21호).hwp",
+        "first_page_width": 595.0,
+        "first_page_height": 841.0,
+        "first_page_text_chars": 251,
+        "korean_field_signal_count": 2
+      }
+    }
+  ],
+  "failures": [],
+  "validation": {
+    "ok": true,
+    "downloaded_real_document_count": 5,
+    "generated_document_count": 0,
+    "missing_files": [],
+    "missing_hash_source_ids": [],
+    "non_external_source_ids": []
+  }
+}
