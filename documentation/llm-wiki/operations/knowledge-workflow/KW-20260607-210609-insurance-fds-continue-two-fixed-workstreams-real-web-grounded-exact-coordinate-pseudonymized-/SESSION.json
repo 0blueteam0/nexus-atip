@@ -4,7 +4,7 @@
   "task": "continue two fixed workstreams: real-web grounded exact-coordinate pseudonymized dataset and mass-test harness stabilization",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260607-210609-insurance-fds-continue-two-fixed-workstreams-real-web-grounded-exact-coordinate-pseudonymized-",
   "created_at": "2026-06-07T21:06:09+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-06-07T21:14:57+09:00"
+  ]
 }

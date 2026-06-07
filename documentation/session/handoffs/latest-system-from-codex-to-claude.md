@@ -1,34 +1,34 @@
 ---
 type: llm_system_handoff
-id: 2026-06-05T08-40-11-249Z-codex-to-claude-system-fds-bg2-zero-download-collector-diagnostics
+id: 2026-06-07T12-12-02-975Z-codex-to-claude-system-insurance-fds-field-inventory
 status: completed
 from: codex
 to: claude
-created_at: 2026-06-05T08:40:11.249Z
-title: "fds-bg2-zero-download-collector-diagnostics"
+created_at: 2026-06-07T12:12:02.975Z
+title: "insurance-fds-field-inventory"
 ---
 
-# codex -> claude System Handoff: fds-bg2-zero-download-collector-diagnostics
+# codex -> claude System Handoff: insurance-fds-field-inventory
 
 ## Summary
 
-Analyzed bg2 zero-download run, added non-ASCII URL quoting and invalid-image evidence diagnostics, documented next source strategy.
+Codex implemented scripts/insurance_fds_real_image_field_inventory.py to unblock insurance FDS test collection and create real-image field inventory artifacts before exact-coordinate tamper generation; verified uvx pytest tests/test_insurance_fds_*.py -q --durations=12 exit_code 0 with 29 passed
 
 ## Artifact Paths
 
-- A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/scripts/collect_real_insurance_claim_sources.py,A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/tests/test_real_web_source_collector.py
+- none
 
 ## Documents To Read
 
-- A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_bg2_20260605/BG2_ZERO_DOWNLOAD_ANALYSIS.md
+- none
 
 ## Decisions
 
-- bg2 remains no-generation/quarantine; improve page/PDF deep extraction and diagnostics rather than relaxing OCR/vision gate.
+- none
 
 ## Verification
 
-- PYTHONPATH=src python -m pytest tests/test_real_web_source_collector.py -q => 9 passed
+- none
 
 ## Risks And Limits
 
@@ -41,16 +41,15 @@ Analyzed bg2 zero-download run, added non-ASCII URL quoting and invalid-image ev
 ## Git Context
 
 - branch: main
-- hash: ba57086
+- hash: 2f84f23
 
 ## Receiver Resume Prompt
 
 ```text
 claude should continue from this system handoff.
 Created by: codex
-System: fds-bg2-zero-download-collector-diagnostics
-Summary: Analyzed bg2 zero-download run, added non-ASCII URL quoting and invalid-image evidence diagnostics, documented next source strategy.
+System: insurance-fds-field-inventory
+Summary: Codex implemented scripts/insurance_fds_real_image_field_inventory.py to unblock insurance FDS test collection and create real-image field inventory artifacts before exact-coordinate tamper generation; verified uvx pytest tests/test_insurance_fds_*.py -q --durations=12 exit_code 0 with 29 passed
 Read these paths first:
-- A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_bg2_20260605/BG2_ZERO_DOWNLOAD_ANALYSIS.md
 Then check the next actions and verification section before editing.
 ```

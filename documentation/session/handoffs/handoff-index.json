@@ -12,11 +12,11 @@
   "codex->claude": {
     "provider": "codex",
     "target": "claude",
-    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-05T08-25-34-347Z-codex-to-claude.md",
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T12-12-02-302Z-codex-to-claude.md",
     "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-codex-to-claude.md",
-    "generatedAt": "2026-06-05T08:25:34.621Z",
-    "stage": "queued",
-    "statusLine": "10개의 열린 작업이 실행 선택을 기다리고 있습니다",
-    "activeTask": null
+    "generatedAt": "2026-06-07T12:12:02.471Z",
+    "stage": "executing",
+    "statusLine": "Unified Diff MCP 비교 분석",
+    "activeTask": "Unified Diff MCP 비교 분석"
   }
 }
