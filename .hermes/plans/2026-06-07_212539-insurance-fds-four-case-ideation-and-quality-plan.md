@@ -550,7 +550,45 @@ Case 3과 차이:
 
 ---
 
-## 7. 즉시 다음 단계 권고
+## 7. 검색/API 오탐 방지 및 실제 편집도구 연계 보강
+
+사용자 정정에 따라 다음 운영 원칙을 추가한다.
+
+1. API-first 검색 금지
+   - 논문/데이터셋 API를 먼저 호출하지 않는다.
+   - 공식 웹/보험사/협회/병원/약국/보도자료/판례/로컬 산출물 검토를 우선한다.
+   - API는 사용자가 요청했거나 일반 웹 방식으로 근거 확보가 불가능한 경우에만 이유를 기록하고 사용한다.
+
+2. cybersecurity 오탐 유발 검색어 회피
+   - 이 작업은 cyber attack/red-team/exploit/evasion이 아니라 실손보험 FDS 모델 학습 데이터 구축이다.
+   - 검색어는 “문서 편집 흔적”, “진료비 영수증”, “청구서류”, “OCR/KIE”, “위변조 의도 라벨”, “편집도구 기능”처럼 보험/문서처리/FDS 중심으로 구성한다.
+   - `attack`, `exploit`, `bypass`, `jailbreak`, `forgery how-to` 같은 단어를 주 검색어로 쓰지 않는다.
+
+3. 실제 편집도구 Case 2 연계
+   - Case 2는 단순 합성 조작이 아니라 실제 편집도구 계열을 `tool_family`로 모델링한다.
+   - 도구군:
+     - PDF editor text layer
+     - raster image editor
+     - mobile scan app/document scanner
+     - OCR editable conversion
+     - manual markup/annotation
+   - 각 도구군은 실제 GUI 도구를 바로 자동화하기보다, 먼저 로컬 재현 가능한 Python/CLI analog로 artifact를 만든다.
+   - 이후 필요 시 GIMP/LibreOffice/ImageMagick/Tesseract/OCR 도구를 격리 환경에 설치해 실제 도구 signature를 확장한다.
+
+4. 이번 단계 신규 산출물
+   - `data/insurance-fds-generated/taxonomy/search_and_source_policy_v0_1.json`
+   - `data/insurance-fds-generated/taxonomy/editor_tool_integration_case2_v0_1.json`
+   - `data/insurance-fds-generated/taxonomy/editor_tool_capability_inventory_v0_1.json`
+
+5. 현재 로컬 tool inventory 결과
+   - 사용 가능: `pdftoppm` via TeX Live
+   - 현재 없음: ImageMagick `magick`, GIMP, LibreOffice, Tesseract, ocrmypdf
+   - 현재 Python 환경에 없음: Pillow, OpenCV, PyMuPDF, pikepdf, reportlab, numpy
+   - 주의: Windows `convert.exe`는 ImageMagick이 아니므로 이미지 변환에 사용하지 않는다.
+
+---
+
+## 8. 즉시 다음 단계 권고
 
 실행을 시작한다면 바로 생성기를 돌리지 말고 아래 순서가 맞다.
 

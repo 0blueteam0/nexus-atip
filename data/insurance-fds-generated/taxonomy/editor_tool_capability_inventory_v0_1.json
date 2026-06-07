@@ -1,0 +1,64 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "version": "editor-tool-capability-inventory-v0.1",
+  "collected_by": "non-mutating local command/module availability check",
+  "purpose": "Case 2 실제 편집도구/대체 엔진 연계를 위한 현재 실행 환경 capability inventory",
+  "environment_result": {
+    "python": "3.11.9",
+    "commands": {
+      "magick": null,
+      "convert": "C:\\WINDOWS\\system32\\convert.EXE",
+      "gm": null,
+      "gimp": null,
+      "libreoffice": null,
+      "soffice": null,
+      "tesseract": null,
+      "ocrmypdf": null,
+      "pdftoppm": "C:\\texlive\\2025\\bin\\windows\\pdftoppm.EXE",
+      "mutool": null
+    },
+    "python_modules": {
+      "PIL": false,
+      "cv2": false,
+      "fitz": false,
+      "pikepdf": false,
+      "reportlab": false,
+      "pytesseract": false,
+      "numpy": false
+    }
+  },
+  "interpretation": {
+    "currently_available": [
+      "pdftoppm for PDF-to-image conversion is available via TeX Live"
+    ],
+    "not_currently_available": [
+      "ImageMagick magick command",
+      "GIMP batch mode",
+      "LibreOffice headless export",
+      "Tesseract OCR",
+      "ocrmypdf",
+      "Pillow/OpenCV/PyMuPDF/pikepdf/reportlab/numpy in the current python environment"
+    ],
+    "caution": "Windows system32 convert.exe is not ImageMagick; do not use it for image conversion. It is a Windows filesystem conversion utility."
+  },
+  "recommended_next_setup": [
+    {
+      "priority": "P0",
+      "action": "create isolated FDS data-engineering Python environment",
+      "packages": ["pillow", "opencv-python-headless", "numpy", "pymupdf", "reportlab"],
+      "reason": "reproducible local/raster/PDF editing analogs without relying on GUI tools"
+    },
+    {
+      "priority": "P1",
+      "action": "optional OCR tool setup",
+      "packages_or_tools": ["paddleocr or easyocr in isolated env", "tesseract if Korean traineddata is available"],
+      "reason": "semantic field pointer and OCR before/after validation"
+    },
+    {
+      "priority": "P1",
+      "action": "optional GUI/editor capability mapping",
+      "tools": ["GIMP", "LibreOffice", "ImageMagick"],
+      "reason": "simulate real editor artifacts only after local deterministic engine is validated"
+    }
+  ]
+}

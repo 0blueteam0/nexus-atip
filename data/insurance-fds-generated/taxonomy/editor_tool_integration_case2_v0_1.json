@@ -1,0 +1,138 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "version": "editor-tool-integration-case2-v0.1",
+  "purpose": "실손보험 FDS 모델 학습을 위해 Case 2(기존 이미지/문서 편집도구 기반 위변조)를 실제 편집도구/오픈소스 대체도구/자동화 가능한 로컬 편집 엔진과 연결하는 설계",
+  "scope_note": "이 산출물은 위변조 악용 절차가 아니라 FDS 모델이 실제 편집도구에서 발생할 수 있는 문서 편집 흔적을 학습하도록 데이터셋 생성/라벨링 방법을 정의한다.",
+  "tool_families": [
+    {
+      "tool_family": "pdf_editor_text_layer",
+      "real_world_examples": ["Adobe Acrobat류 PDF 편집기", "온라인 PDF 편집기", "사무용 PDF 편집기"],
+      "local_or_automatable_analogs": ["pikepdf", "PyMuPDF", "reportlab", "LibreOffice headless export"],
+      "document_flow": "PDF 양식 또는 스캔 OCR 결과에서 텍스트 레이어/주석/삽입 텍스트를 수정한 뒤 이미지/PDF로 export",
+      "fds_artifacts_to_label": [
+        "text_layer_mismatch",
+        "font_substitution",
+        "bbox_text_overflow_or_underflow",
+        "rendering_engine_signature",
+        "pdf_to_image_export_metadata",
+        "ocr_text_vs_visual_text_disagreement"
+      ],
+      "safe_dataset_generation_mode": "pseudonymized_NO_pdf_or_image를 복사하고 target field만 수정; 실제 개인정보 문서 사용 금지"
+    },
+    {
+      "tool_family": "raster_image_editor",
+      "real_world_examples": ["Photoshop류", "GIMP", "Paint.NET", "모바일 사진 편집 앱"],
+      "local_or_automatable_analogs": ["Pillow", "OpenCV", "ImageMagick", "GIMP batch mode if installed"],
+      "document_flow": "스캔/촬영 이미지에서 target field를 지우고 새 텍스트를 raster layer로 합성",
+      "fds_artifacts_to_label": [
+        "local_noise_discontinuity",
+        "edge_halo",
+        "anti_aliasing_mismatch",
+        "foreground_color_mismatch",
+        "background_patch_texture_mismatch",
+        "jpeg_block_boundary_mismatch",
+        "clone_or_splice_boundary"
+      ],
+      "safe_dataset_generation_mode": "paired NO image의 target mask 내부만 수정하고 outside-mask diff를 검증"
+    },
+    {
+      "tool_family": "mobile_scan_app_or_document_scanner",
+      "real_world_examples": ["Adobe Scan류", "모바일 스캔앱", "갤러리 재보정/재압축"],
+      "local_or_automatable_analogs": ["OpenCV perspective transform", "CLAHE/threshold", "JPEG recompression", "blur/noise/shadow augmentation"],
+      "document_flow": "편집된 문서를 스캔앱 또는 휴대폰 카메라 재촬영/자동보정/압축 과정을 거친 것처럼 변환",
+      "fds_artifacts_to_label": [
+        "perspective_transform",
+        "scan_app_flattening",
+        "shadow_or_illumination_change",
+        "jpeg_recompression",
+        "ocr_quality_drop",
+        "mask_projection_after_transform"
+      ],
+      "safe_dataset_generation_mode": "NO/AF pair에 같은 capture transform을 적용하거나, AF 편집 후 laundering profile을 명확히 라벨링"
+    },
+    {
+      "tool_family": "ocr_editable_conversion",
+      "real_world_examples": ["OCR PDF 변환기", "문서 스캔 OCR 편집 앱"],
+      "local_or_automatable_analogs": ["Tesseract", "PaddleOCR", "ocrmypdf if installed", "PyMuPDF text placement"],
+      "document_flow": "스캔 이미지를 OCR로 편집 가능한 텍스트로 변환한 뒤 일부 필드 값을 수정하고 재렌더링",
+      "fds_artifacts_to_label": [
+        "ocr_recognition_error_propagation",
+        "layout_reconstruction_error",
+        "font_metric_drift",
+        "line_spacing_shift",
+        "table_cell_alignment_drift",
+        "visual_text_vs_ocr_layer_disagreement"
+      ],
+      "safe_dataset_generation_mode": "전체 문서 재렌더링은 별도 case로 분리하고, 고품질 세트는 field-level local replacement를 우선"
+    },
+    {
+      "tool_family": "manual_markup_or_annotation",
+      "real_world_examples": ["펜 메모", "하이라이트", "체크 표시", "주석 삽입"],
+      "local_or_automatable_analogs": ["Pillow drawing", "OpenCV line/text overlays"],
+      "document_flow": "실제 위변조가 아니라 정상 주석/메모와 의미 변경 위변조를 구분해야 하는 케이스",
+      "fds_artifacts_to_label": [
+        "benign_annotation",
+        "fraudulent_annotation",
+        "highlight_over_key_field",
+        "handwritten_amount_or_date_override",
+        "model_shortcut_risk"
+      ],
+      "safe_dataset_generation_mode": "정상 주석과 fraud-intent 주석을 모두 만들어 오탐 감소용 hard negative로 사용"
+    }
+  ],
+  "case2_generation_matrix": [
+    {
+      "scenario_id": "CASE2_AMOUNT_RASTER_REPLACE",
+      "fraud_intent": "amount_inflation",
+      "target_documents": ["medical_expense_receipt", "pharmacy_receipt"],
+      "target_fields": ["total_amount", "patient_paid_amount", "non_covered_amount"],
+      "tool_family": "raster_image_editor",
+      "quality_checks": ["outside_mask_diff", "ocr_before_after", "font_color_baseline_similarity", "large_overlay_reject"]
+    },
+    {
+      "scenario_id": "CASE2_DATE_PDF_TEXT_LAYER",
+      "fraud_intent": "date_shift",
+      "target_documents": ["prescription", "medical_expense_receipt", "outpatient_confirmation"],
+      "target_fields": ["treatment_date", "issue_date", "prescription_date"],
+      "tool_family": "pdf_editor_text_layer",
+      "quality_checks": ["text_layer_visual_alignment", "ocr_after", "document_bundle_consistency"]
+    },
+    {
+      "scenario_id": "CASE2_DIAGNOSIS_OCR_CONVERSION_EDIT",
+      "fraud_intent": "diagnosis_swap",
+      "target_documents": ["prescription", "diagnosis_certificate", "medical_opinion"],
+      "target_fields": ["diagnosis_name", "disease_classification_code"],
+      "tool_family": "ocr_editable_conversion",
+      "quality_checks": ["kie_field_pointer", "ocr_layer_disagreement", "cross_document_consistency"]
+    },
+    {
+      "scenario_id": "CASE2_SPLIT_BILLING_BUNDLE",
+      "fraud_intent": "split_billing",
+      "target_documents": ["medical_expense_receipt", "medical_expense_detail_statement"],
+      "target_fields": ["treatment_date", "receipt_number", "total_amount"],
+      "tool_family": "pdf_editor_text_layer_or_raster_image_editor",
+      "quality_checks": ["claim_bundle_consistency", "duplicate_source_lineage", "per_date_receipt_rule"]
+    },
+    {
+      "scenario_id": "CASE2_SCAN_APP_LAUNDERED_EDIT",
+      "fraud_intent": "hard_case_evaluation",
+      "target_documents": ["medical_expense_receipt", "prescription", "pharmacy_receipt"],
+      "target_fields": ["amount", "date", "provider_name"],
+      "tool_family": "mobile_scan_app_or_document_scanner",
+      "quality_checks": ["mask_projection_after_transform", "ocr_quality_bucket", "jpeg_recompression_profile", "camera_capture_profile"]
+    }
+  ],
+  "implementation_order": [
+    "detect_installed_editing_tools_or_available_cli_analogs",
+    "define editor_tool_profile schema",
+    "implement non-mutating tool capability inventory",
+    "connect each tool_family to safe synthetic_or_pseudonymized NO inputs",
+    "generate small smoke set for each tool_family",
+    "validate labels and outside-mask/cross-document constraints",
+    "only then scale balanced Case2 dataset"
+  ],
+  "tool_detection_candidates": {
+    "windows_gui_possible_but_not_required": ["Adobe Acrobat", "GIMP", "Paint.NET", "LibreOffice", "NAPS2", "ImageMagick"],
+    "python_or_cli_preferred_for_reproducibility": ["Pillow", "OpenCV", "PyMuPDF", "pikepdf", "reportlab", "ocrmypdf", "tesseract", "ImageMagick"]
+  }
+}

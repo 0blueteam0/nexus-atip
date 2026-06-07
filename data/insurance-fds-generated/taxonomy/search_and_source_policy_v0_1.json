@@ -1,0 +1,111 @@
+{
+  "project": "insurance-fds-model-training-data",
+  "version": "search-and-source-policy-v0.1",
+  "created_from": "user correction: avoid API-first search and avoid cybersecurity-triggering wording for a non-cyber FDS dataset task",
+  "purpose": "실손보험 FDS 모델 학습 데이터 구축을 위한 웹 조사/검색/소스 수집 정책. API 호출과 cybersecurity 오탐을 줄이고 실제 청구서류/편집도구/업무규칙 중심으로 조사한다.",
+  "scope_interpretation": {
+    "domain": "insurance_fraud_detection",
+    "task_type": "model_training_dataset_engineering",
+    "not_cybersecurity": true,
+    "not_intrusion_or_malware_or_credential_task": true,
+    "defensive_fds_purpose": true
+  },
+  "api_policy": {
+    "default": "avoid_api_calls",
+    "reason": "API 기반 논문/데이터셋 검색은 현재 핵심 요구가 아니며, 검색어가 cybersecurity red-team 프레임으로 변형될 때 오탐을 유발할 수 있다.",
+    "allowed_when": [
+      "사용자가 명시적으로 API 기반 수집을 요청한 경우",
+      "공식 웹 페이지/브라우저 검색으로는 필요한 문서 근거를 찾을 수 없고 API가 공식 제공 경로인 경우",
+      "이미 확보한 URL의 메타데이터 정규화가 필요하고 데이터 반출/보안/개인정보 문제가 없는 경우"
+    ],
+    "must_record_before_call": [
+      "why_api_is_needed",
+      "which_official_endpoint",
+      "expected_non_sensitive_output",
+      "fallback_if_api_blocked"
+    ]
+  },
+  "preferred_search_modes": [
+    "general_web_search",
+    "browser_review_of_official_pages",
+    "official_insurer_claim_document_pages",
+    "association_or_regulator_guidance_pages",
+    "hospital_or_pharmacy_public_form_pages",
+    "public_news_or_regulator_case_reports",
+    "local_artifact_and_manifest_inspection"
+  ],
+  "search_query_policy": {
+    "prefer_terms": [
+      "실손보험 청구서류",
+      "진료비 계산서 영수증",
+      "진료비 세부산정내역서",
+      "처방전 실손 청구",
+      "보험금 청구서 양식",
+      "통원확인서 진단서 입퇴원확인서",
+      "약제비 영수증",
+      "실손보험 진료비 쪼개기",
+      "허위 통원 입력",
+      "진단명 바꿔치기",
+      "문서 편집 프로그램 OCR PDF 편집",
+      "스캔앱 문서 보정 OCR",
+      "이미지 편집 문서 사진 보정"
+    ],
+    "avoid_as_primary_terms": [
+      "attack",
+      "exploit",
+      "bypass",
+      "evasion",
+      "jailbreak",
+      "red team",
+      "deepfake attack",
+      "counterfeit tutorial",
+      "forgery how-to",
+      "malicious document"
+    ],
+    "replacement_terms": {
+      "attack": "fraud scenario / FDS 학습 시나리오",
+      "evasion": "hard-case evaluation / 탐지 난이도 라벨",
+      "red team": "FDS validation / adversarial evaluation for model training",
+      "forgery how-to": "document edit artifact taxonomy / 위변조 흔적 라벨",
+      "deepfake": "generated or edited claim evidence / 생성형AI 편집 증거"
+    },
+    "language_priority": [
+      "Korean official claim document terms first",
+      "Korean insurer/regulator terms second",
+      "English document-processing/OCR/editor terms only when needed"
+    ]
+  },
+  "source_priority": [
+    {
+      "priority": "P0",
+      "source_type": "official_claim_document_guidance",
+      "examples": ["보험사", "실손24", "손해보험협회", "금융감독원", "보험개발원"]
+    },
+    {
+      "priority": "P0",
+      "source_type": "real_document_schema_or_form",
+      "examples": ["보험금 청구서 양식", "진료비 영수증 법정서식", "세부산정내역서 샘플", "처방전/약제비 영수증 양식"]
+    },
+    {
+      "priority": "P1",
+      "source_type": "fraud_case_report",
+      "examples": ["금감원 보도자료", "판례/수사 보도", "진료비 쪼개기", "진단명 바꿔치기", "허위 통원"]
+    },
+    {
+      "priority": "P1",
+      "source_type": "editing_tool_capability_reference",
+      "examples": ["PDF 편집", "OCR 텍스트 변환", "스캔앱 보정", "이미지 편집", "주석/하이라이트/텍스트 추가"]
+    },
+    {
+      "priority": "P2",
+      "source_type": "public_dataset_or_paper",
+      "examples": ["OCR/KIE 라벨 포맷", "tamper localization baseline", "domain-gap 참고"]
+    }
+  ],
+  "collection_rule": {
+    "do_not_store_raw_pii_documents": true,
+    "official_forms_can_be_registered_as_source_candidates": true,
+    "actual_real_images_require_quarantine": true,
+    "promote_only_after": ["license_state_checked", "privacy_state_checked", "pseudonymization_or_schema_derivation", "model_training_use_defined"]
+  }
+}
