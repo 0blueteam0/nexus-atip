@@ -255,6 +255,160 @@ def build_human_review_table(manifest: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _redact_text_preview(text: str, max_len: int = 360) -> str:
+    redacted = re.sub(r"\b\d{6}[- ]?[1-4]\d{6}\b", "<redacted-rrn>", text)
+    redacted = re.sub(r"\b01[016789][- ]?\d{3,4}[- ]?\d{4}\b", "<redacted-phone>", redacted)
+    redacted = re.sub(r"\b\d{2,4}[- ]?\d{3,4}[- ]?\d{4}\b", "<redacted-number>", redacted)
+    redacted = re.sub(r"\s+", " ", redacted).strip()
+    return redacted[:max_len]
+
+
+def _render_pdf_first_page(pdf_path: Path, preview_path: Path, zoom: float = 1.5) -> dict[str, Any]:
+    import fitz  # type: ignore
+
+    doc = fitz.open(str(pdf_path))
+    if doc.page_count < 1:
+        doc.close()
+        raise ValueError(f"PDF has no pages: {pdf_path}")
+    page = doc.load_page(0)
+    text = page.get_text("text")
+    pixmap = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom), alpha=False)
+    preview_path.parent.mkdir(parents=True, exist_ok=True)
+    pixmap.save(str(preview_path))
+    rect = page.rect
+    metadata = {
+        "page_count": doc.page_count,
+        "first_page_width": round(rect.width, 2),
+        "first_page_height": round(rect.height, 2),
+        "first_page_text_redacted_preview": _redact_text_preview(text),
+        "first_page_text_chars": len(text),
+    }
+    doc.close()
+    return metadata
+
+
+def render_visual_review_previews(manifest: dict[str, Any], output_dir: Path | str) -> dict[str, Any]:
+    output_path = Path(output_dir)
+    preview_dir = output_path / "preview_images"
+    preview_dir.mkdir(parents=True, exist_ok=True)
+    previews: list[dict[str, Any]] = []
+    failures: list[dict[str, Any]] = []
+
+    for item in manifest.get("documents", []):
+        source_id = item.get("source_id", "UNKNOWN")
+        original_path = Path(item.get("local_path", ""))
+        preview_path = preview_dir / f"{source_id}__first_page.png"
+        try:
+            if item.get("generated_or_synthetic") is not False:
+                raise ValueError("generated_or_synthetic must be false for visual review preview")
+            if item.get("actual_document_origin") != "external_web_or_file":
+                raise ValueError("actual_document_origin must be external_web_or_file")
+            if original_path.suffix.lower() == ".pdf":
+                render_meta = _render_pdf_first_page(original_path, preview_path)
+            elif original_path.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}:
+                preview_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(original_path, preview_path)
+                render_meta = {"page_count": 1, "first_page_text_redacted_preview": "", "first_page_text_chars": 0}
+            else:
+                raise ValueError(f"unsupported preview extension: {original_path.suffix}")
+            preview_bytes = preview_path.read_bytes()
+            previews.append(
+                {
+                    "source_id": source_id,
+                    "title": item.get("title"),
+                    "covered_document_types": item.get("covered_document_types", []),
+                    "original_path": str(original_path),
+                    "original_sha256": item.get("sha256"),
+                    "preview_image_path": str(preview_path),
+                    "preview_sha256": hashlib.sha256(preview_bytes).hexdigest(),
+                    "preview_file_size_bytes": len(preview_bytes),
+                    "generated_or_synthetic": False,
+                    "actual_document_origin": "external_web_or_file",
+                    "review_recommendation": "needs_human_visual_review",
+                    "privacy_review_state": "needs_public_blank_form_or_no_pii_confirmation",
+                    **render_meta,
+                }
+            )
+        except Exception as exc:  # pragma: no cover - exercised through integration artifacts for malformed PDFs.
+            failures.append(
+                {
+                    "source_id": source_id,
+                    "original_path": str(original_path),
+                    "error": str(exc),
+                    "generated_or_synthetic": item.get("generated_or_synthetic"),
+                }
+            )
+
+    review_manifest = {
+        "artifact": "케이스1_정상청구문서_육안검수_프리뷰_v0_1",
+        "case_family": manifest.get("case_family", "case1_normal_claim_document_collection"),
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "definition": "First-page image previews for human visual review of real external non-generated Case 1 documents.",
+        "preview_count": len(previews),
+        "failure_count": len(failures),
+        "previews": previews,
+        "failures": failures,
+    }
+    review_manifest["validation"] = validate_visual_review_manifest(review_manifest)
+    return review_manifest
+
+
+def validate_visual_review_manifest(review_manifest: dict[str, Any]) -> dict[str, Any]:
+    previews = review_manifest.get("previews", [])
+    generated_count = sum(1 for item in previews if item.get("generated_or_synthetic") is not False)
+    missing_previews = [item.get("preview_image_path") for item in previews if not item.get("preview_image_path") or not Path(item["preview_image_path"]).exists()]
+    missing_hash = [item.get("source_id") for item in previews if not re.fullmatch(r"[0-9a-f]{64}", item.get("preview_sha256", ""))]
+    non_external = [item.get("source_id") for item in previews if item.get("actual_document_origin") != "external_web_or_file"]
+    return {
+        "ok": generated_count == 0 and not missing_previews and not missing_hash and not non_external and len(previews) > 0,
+        "preview_count": len(previews),
+        "missing_preview_count": len(missing_previews),
+        "missing_preview_paths": missing_previews,
+        "missing_hash_source_ids": missing_hash,
+        "generated_document_count": generated_count,
+        "non_external_source_ids": non_external,
+    }
+
+
+def build_visual_review_index(review_manifest: dict[str, Any]) -> str:
+    lines = [
+        "# 케이스1 실제 외부 정상문서 프리뷰 검수 인덱스",
+        "",
+        "이 인덱스는 생성물이 아닌 실제 외부 문서의 첫 페이지 preview를 사람이 검수하기 위한 보조 산출물입니다.",
+        "문서 원본과 preview 모두 학습 승격 전 상태이며, 개인정보/저작권/공식출처 검수 전에는 downstream 생성에 사용하지 않습니다.",
+        "",
+        "| source_id | 문서유형 | 생성여부 | 검수권고 | preview | 원본 | redact 텍스트 미리보기 | 제목 |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for item in review_manifest.get("previews", []):
+        generated_label = "생성문서 아님" if item.get("generated_or_synthetic") is False else "확인필요"
+        docs = ", ".join(item.get("covered_document_types", []))
+        lines.append(
+            "| {source_id} | {docs} | {generated} | {recommendation} | {preview} | {original} | {snippet} | {title} |".format(
+                source_id=item.get("source_id", ""),
+                docs=docs,
+                generated=generated_label,
+                recommendation=item.get("review_recommendation", ""),
+                preview=Path(item.get("preview_image_path", "")).name,
+                original=Path(item.get("original_path", "")).name,
+                snippet=str(item.get("first_page_text_redacted_preview", "")).replace("|", "/")[:120],
+                title=str(item.get("title", "")).replace("|", "/"),
+            )
+        )
+    return "\n".join(lines) + "\n"
+
+
+def write_visual_review_outputs(manifest_path: Path, output_dir: Path) -> dict[str, str]:
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    review_manifest = render_visual_review_previews(manifest, output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    review_manifest_path = output_dir / "케이스1_정상청구문서_육안검수_프리뷰_v0_1.ko.json"
+    index_path = output_dir / "케이스1_정상청구문서_육안검수_프리뷰_인덱스_v0_1.ko.md"
+    review_manifest_path.write_text(json.dumps(review_manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    index_path.write_text(build_visual_review_index(review_manifest), encoding="utf-8")
+    return {"visual_review_manifest": str(review_manifest_path), "visual_review_index": str(index_path), "output_dir": str(output_dir)}
+
+
 def write_collection_outputs(registry_path: Path, output_dir: Path, limit: int | None = None) -> dict[str, str]:
     registry = load_reviewed_registry(registry_path)
     manifest = collect_real_external_documents(registry, output_dir, limit=limit)
@@ -268,11 +422,20 @@ def write_collection_outputs(registry_path: Path, output_dir: Path, limit: int |
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Collect real external Case 1 normal insurance claim documents; generated documents are forbidden.")
-    parser.add_argument("--registry", type=Path, required=True)
+    parser.add_argument("--registry", type=Path)
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--mode", choices=["collect", "visual-review"], default="collect")
     args = parser.parse_args()
-    outputs = write_collection_outputs(args.registry, args.output_dir, limit=args.limit)
+    if args.mode == "collect":
+        if args.registry is None:
+            parser.error("--registry is required when --mode collect")
+        outputs = write_collection_outputs(args.registry, args.output_dir, limit=args.limit)
+    else:
+        if args.manifest is None:
+            parser.error("--manifest is required when --mode visual-review")
+        outputs = write_visual_review_outputs(args.manifest, args.output_dir)
     print(json.dumps(outputs, ensure_ascii=False, indent=2))
 
 

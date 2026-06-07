@@ -12,9 +12,9 @@
   "codex->claude": {
     "provider": "codex",
     "target": "claude",
-    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-23-21-389Z-codex-to-claude.md",
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-32-20-008Z-codex-to-claude.md",
     "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-codex-to-claude.md",
-    "generatedAt": "2026-06-07T14:23:21.545Z",
+    "generatedAt": "2026-06-07T14:32:20.163Z",
     "stage": "executing",
     "statusLine": "Unified Diff MCP 비교 분석",
     "activeTask": "Unified Diff MCP 비교 분석"

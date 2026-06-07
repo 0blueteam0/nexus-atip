@@ -1,10 +1,10 @@
 # codex -> claude 인수인계
 
-- 생성시각: 2026-06-07T14:23:21.537Z
+- 생성시각: 2026-06-07T14:32:20.156Z
 - 보낸 쪽: codex
 - 받는 쪽: claude
 - 프로젝트: K드라이브 Claude Code 통합 프로젝트
-- Git: main @ 1896bcc
+- Git: main @ 6d8bc58
 
 ## 현재 작업 상태
 
@@ -44,11 +44,11 @@
 
 ## 최근 시스템 산출물 인수인계
 
+- 2026-06-07T14:23:22.034Z insurance-fds-case1-real-external-documents
 - 2026-06-07T14:12:58.972Z insurance-fds-case1-registry-case3-case5-contract
 - 2026-06-07T13:28:26.641Z insurance-fds-high-fidelity-korean-naming
 - 2026-06-07T13:18:24.626Z insurance-fds-five-case-taxonomy
 - 2026-06-07T12:12:02.975Z insurance-fds-field-inventory
-- 2026-06-05T08:40:11.249Z fds-bg2-zero-download-collector-diagnostics docs=A3Work/FDSWork/GPTWork_FDS/new type/claim_fds_v3_pipeline_package/claim_fds_v3_pipeline/outputs/real_web_claim_sources_bg2_20260605/BG2_ZERO_DOWNLOAD_ANALYSIS.md
 
 ## Resume Context
 

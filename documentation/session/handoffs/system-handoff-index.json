@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-07T14:23:22.194Z",
+  "updatedAt": "2026-06-07T14:32:20.772Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents",
+      "id": "2026-06-07T14-32-20-609Z-codex-to-claude-system-insurance-fds-case1-visual-review-previews",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-case1-real-external-documents",
+      "title": "insurance-fds-case1-visual-review-previews",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-32-20-609Z-codex-to-claude-system-insurance-fds-case1-visual-review-previews.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-07T14:23:22.034Z",
+      "createdAt": "2026-06-07T14:32:20.609Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-07T14-32-20-609Z-codex-to-claude-system-insurance-fds-case1-visual-review-previews",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-case1-visual-review-previews",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T14-32-20-609Z-codex-to-claude-system-insurance-fds-case1-visual-review-previews.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-07T14:32:20.609Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-07T14-23-22-034Z-codex-to-claude-system-insurance-fds-case1-real-external-documents",
       "from": "codex",

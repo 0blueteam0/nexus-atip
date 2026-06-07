@@ -6,10 +6,13 @@ from pathlib import Path
 
 from scripts.insurance_fds_case1_real_document_collector import (
     build_human_review_table,
+    build_visual_review_index,
     collect_real_external_documents,
     load_reviewed_registry,
+    render_visual_review_previews,
     select_real_external_document_candidates,
     validate_real_document_manifest,
+    validate_visual_review_manifest,
 )
 
 
@@ -140,3 +143,72 @@ def test_should_load_registry_from_real_case1_path():
     assert len(candidates) >= 5
     assert all(candidate["review_status"] == "accepted" for candidate in candidates)
     assert all(candidate["generated_or_synthetic"] is False for candidate in candidates)
+
+
+def test_should_render_visual_review_preview_for_real_pdf_manifest(tmp_path):
+    import fitz  # type: ignore
+
+    pdf_path = tmp_path / "official.pdf"
+    doc = fitz.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((72, 72), "보험금 청구서 테스트 양식", fontsize=14)
+    doc.save(str(pdf_path))
+    doc.close()
+    manifest = {
+        "documents": [
+            {
+                "source_id": "CASE1-SRC-0001",
+                "title": "[PDF] 보험금 청구서 - 공식",
+                "local_path": str(pdf_path),
+                "sha256": hashlib.sha256(pdf_path.read_bytes()).hexdigest(),
+                "generated_or_synthetic": False,
+                "actual_document_origin": "external_web_or_file",
+                "covered_document_types": ["보험금 청구서"],
+            }
+        ]
+    }
+
+    review_manifest = render_visual_review_previews(manifest, tmp_path / "visual_review")
+
+    assert review_manifest["artifact"].endswith("육안검수_프리뷰_v0_1")
+    assert review_manifest["preview_count"] == 1
+    item = review_manifest["previews"][0]
+    assert item["source_id"] == "CASE1-SRC-0001"
+    assert item["generated_or_synthetic"] is False
+    assert item["actual_document_origin"] == "external_web_or_file"
+    assert item["review_recommendation"] == "needs_human_visual_review"
+    assert Path(item["preview_image_path"]).exists()
+    assert Path(item["preview_image_path"]).suffix == ".png"
+    assert item["preview_sha256"]
+
+    result = validate_visual_review_manifest(review_manifest)
+    assert result["ok"] is True
+    assert result["missing_preview_count"] == 0
+    assert result["generated_document_count"] == 0
+
+
+def test_should_build_visual_review_index_with_preview_links(tmp_path):
+    preview_path = tmp_path / "preview.png"
+    preview_path.write_bytes(b"fake image bytes")
+    review_manifest = {
+        "previews": [
+            {
+                "source_id": "CASE1-SRC-0001",
+                "title": "[PDF] 보험금 청구서 - 공식",
+                "covered_document_types": ["보험금 청구서"],
+                "preview_image_path": str(preview_path),
+                "original_path": str(tmp_path / "original.pdf"),
+                "generated_or_synthetic": False,
+                "review_recommendation": "needs_human_visual_review",
+                "first_page_text_redacted_preview": "보험금 청구서 / 주민등록번호:<redacted>",
+            }
+        ]
+    }
+
+    index = build_visual_review_index(review_manifest)
+
+    assert "# 케이스1 실제 외부 정상문서 프리뷰 검수 인덱스" in index
+    assert "CASE1-SRC-0001" in index
+    assert "생성문서 아님" in index
+    assert "preview.png" in index
+    assert "<redacted>" in index
