@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-07T13:18:24.807Z",
+  "updatedAt": "2026-06-07T13:28:26.801Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy",
+      "id": "2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming",
       "from": "codex",
       "to": "claude",
-      "title": "insurance-fds-five-case-taxonomy",
+      "title": "insurance-fds-high-fidelity-korean-naming",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-06-07T13:18:24.626Z",
+      "createdAt": "2026-06-07T13:28:26.641Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming",
+      "from": "codex",
+      "to": "claude",
+      "title": "insurance-fds-high-fidelity-korean-naming",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T13-28-26-641Z-codex-to-claude-system-insurance-fds-high-fidelity-korean-naming.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-06-07T13:28:26.641Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-06-07T13-18-24-626Z-codex-to-claude-system-insurance-fds-five-case-taxonomy",
       "from": "codex",

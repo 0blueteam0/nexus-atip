@@ -88,6 +88,61 @@ def test_should_have_physical_case_directories_with_korean_readme_for_future_out
         assert "이미지 픽셀 안에 합성/모델학습/제출불가 문구 금지" in readme
 
 
+def test_should_define_high_fidelity_as_intent_and_non_target_preservation_not_resolution():
+    taxonomy = load_taxonomy(TAXONOMY_PATH)
+    matrix = build_five_case_coverage_matrix(taxonomy)
+
+    policy = matrix["coverage_policy"]["high_fidelity_quality_policy"]
+    assert policy["delivery_target"] == "금융회사 납품 수준의 FDS 학습/검증 이미지"
+    assert policy["not_equal_to"] == "단순 고해상도"
+    assert policy["definition"] == "위변조 의도가 정확히 구현되고 정상 문서의 나머지 부분이 깨지지 않는 것"
+    assert policy["human_visual_review_required"] is True
+    assert policy["intent_implementation_required"] is True
+    assert policy["non_target_document_preservation_required"] is True
+
+    for case in matrix["cases"]:
+        assert case["high_fidelity_quality_gates"]["위변조_의도_구현_확인"] is True
+        assert case["high_fidelity_quality_gates"]["정상_문서_나머지_보존_확인"] is True
+        assert case["high_fidelity_quality_gates"]["사람_육안_검수_가능"] is True
+        assert case["high_fidelity_quality_gates"]["단순_해상도_기준_아님"] is True
+
+
+def test_should_define_korean_human_readable_directory_and_filename_prefixes():
+    taxonomy = load_taxonomy(TAXONOMY_PATH)
+    matrix = build_five_case_coverage_matrix(taxonomy)
+
+    for case in matrix["cases"]:
+        assert case["korean_directory_prefix"].startswith(case["case_number"].replace("case", "케이스"))
+        assert case["korean_filename_prefix"].startswith(case["case_number"].replace("case", "케이스"))
+        assert any("가" <= char <= "힣" for char in case["korean_directory_prefix"])
+        assert any("가" <= char <= "힣" for char in case["korean_filename_prefix"])
+        assert " " not in case["korean_directory_prefix"]
+        assert " " not in case["korean_filename_prefix"]
+
+
+def test_should_have_korean_physical_case_directories_and_human_review_artifacts():
+    taxonomy = load_taxonomy(TAXONOMY_PATH)
+    matrix = build_five_case_coverage_matrix(taxonomy)
+    root = Path("data/insurance-fds-generated/five-case-dataset-ko")
+
+    for case in matrix["cases"]:
+        case_dir = root / case["korean_directory_prefix"]
+        readme_path = case_dir / "README.ko.md"
+        checklist_path = case_dir / f"{case['korean_filename_prefix']}_고충실도_육안검수_체크리스트.ko.md"
+        plan_path = case_dir / f"{case['korean_filename_prefix']}_대표산출물_계획.ko.json"
+        assert case_dir.is_dir()
+        assert readme_path.is_file()
+        assert checklist_path.is_file()
+        assert plan_path.is_file()
+        plan = json.loads(plan_path.read_text(encoding="utf-8"))
+        assert plan["case_family"] == case["case_family"]
+        assert len(plan["representative_output_cases"]) >= 5
+        for output_case in plan["representative_output_cases"]:
+            assert output_case["한글_파일명_prefix"].startswith(case["korean_filename_prefix"])
+            assert output_case["고충실도_검증"]["위변조_의도_구현_확인"] is True
+            assert output_case["고충실도_검증"]["정상_문서_나머지_보존_확인"] is True
+
+
 def test_should_write_machine_readable_five_case_coverage_report(tmp_path):
     taxonomy = load_taxonomy(TAXONOMY_PATH)
     output_path = tmp_path / "five_case_coverage_report.json"

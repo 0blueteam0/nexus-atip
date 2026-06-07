@@ -1,6 +1,6 @@
 {
   "project": "insurance-fds-model-training-data",
-  "taxonomy_version": "five-case-taxonomy-v0.2",
+  "taxonomy_version": "five-case-taxonomy-v0.3-high-fidelity-korean-naming",
   "coverage_policy": {
     "all_five_cases_required": true,
     "case_count": 5,
@@ -10,6 +10,20 @@
     "case1_collection_is_required_before_case3_and_case5": true,
     "no_visible_training_or_synthetic_labels_on_image": true,
     "no_large_blocks_or_shortcut_marks_on_image": true,
+    "high_fidelity_quality_policy": {
+      "delivery_target": "금융회사 납품 수준의 FDS 학습/검증 이미지",
+      "not_equal_to": "단순 고해상도",
+      "definition": "위변조 의도가 정확히 구현되고 정상 문서의 나머지 부분이 깨지지 않는 것",
+      "human_visual_review_required": true,
+      "intent_implementation_required": true,
+      "non_target_document_preservation_required": true,
+      "review_dimensions": [
+        "위변조 의도가 라벨과 이미지에 같은 의미로 반영되었는가",
+        "목표 필드 외 정상 문서의 글자/표/배경/좌표/문서관계가 깨지지 않았는가",
+        "보험사 실무자가 육안으로 보아도 저품질 조작처럼 보이지 않는가",
+        "FDS 모델이 합성 표시/블록/영문 필드 같은 shortcut이 아니라 실제 위변조 신호를 배우는가"
+      ]
+    },
     "public_dataset_priority": "auxiliary_only",
     "api_default": "do_not_call"
   },
@@ -46,6 +60,8 @@
       "minimum_smoke_records": 1,
       "directory_prefix": "case1_normal_claim_document_collection",
       "filename_prefix": "CASE1_case1_normal_claim_document_collection",
+      "korean_directory_prefix": "케이스1_정상_실손보험_청구문서_사진_수집",
+      "korean_filename_prefix": "케이스1_정상청구문서_수집",
       "why_required_ko": "FDS가 무엇을 정상 제출 문서로 봐야 하는지 알아야 위변조도 구별할 수 있다.",
       "visible_document_fields_language": "ko",
       "forbidden_image_shortcuts": [
@@ -54,6 +70,12 @@
         "영문 필드명 중심 문서",
         "case 라벨을 이미지 안에 직접 노출"
       ],
+      "high_fidelity_quality_gates": {
+        "위변조_의도_구현_확인": true,
+        "정상_문서_나머지_보존_확인": true,
+        "사람_육안_검수_가능": true,
+        "단순_해상도_기준_아님": true
+      },
       "required_korean_fields": [
         "환자명",
         "생년월일",
@@ -110,6 +132,8 @@
       "minimum_smoke_records": 1,
       "directory_prefix": "case2_traditional_editor_tamper_case_study",
       "filename_prefix": "CASE2_case2_traditional_editor_tamper_case_study",
+      "korean_directory_prefix": "케이스2_기존편집도구_위변조_사례조사_샘플",
+      "korean_filename_prefix": "케이스2_편집도구위변조_사례샘플",
       "why_required_ko": "포토샵/PDF편집기/모바일편집/스캔앱류의 실제 조작 방식과 흔적을 별도 케이스로 학습해야 한다.",
       "visible_document_fields_language": "ko",
       "forbidden_image_shortcuts": [
@@ -118,6 +142,12 @@
         "영문 필드명 중심 문서",
         "case 라벨을 이미지 안에 직접 노출"
       ],
+      "high_fidelity_quality_gates": {
+        "위변조_의도_구현_확인": true,
+        "정상_문서_나머지_보존_확인": true,
+        "사람_육안_검수_가능": true,
+        "단순_해상도_기준_아님": true
+      },
       "required_korean_fields": [
         "진료비 총액",
         "본인부담금",
@@ -167,6 +197,8 @@
       "minimum_smoke_records": 1,
       "directory_prefix": "case3_ai_code_local_tamper_from_case1",
       "filename_prefix": "CASE3_case3_ai_code_local_tamper_from_case1",
+      "korean_directory_prefix": "케이스3_수집문서기반_AI코딩도구_국소위변조",
+      "korean_filename_prefix": "케이스3_AI코딩도구_국소위변조",
       "why_required_ko": "앞으로 AI/코딩도구가 기존 청구 이미지의 특정 필드만 정교하게 바꾸는 공격면을 학습해야 한다.",
       "visible_document_fields_language": "ko",
       "forbidden_image_shortcuts": [
@@ -175,6 +207,12 @@
         "영문 필드명 중심 문서",
         "case 라벨을 이미지 안에 직접 노출"
       ],
+      "high_fidelity_quality_gates": {
+        "위변조_의도_구현_확인": true,
+        "정상_문서_나머지_보존_확인": true,
+        "사람_육안_검수_가능": true,
+        "단순_해상도_기준_아님": true
+      },
       "required_korean_fields": [
         "청구금액",
         "진료비 총액",
@@ -226,6 +264,8 @@
       "minimum_smoke_records": 1,
       "directory_prefix": "case4_real_grounded_genai_tamper_generation",
       "filename_prefix": "CASE4_case4_real_grounded_genai_tamper_generation",
+      "korean_directory_prefix": "케이스4_실제공식서류기반_청구번들_위변조",
+      "korean_filename_prefix": "케이스4_실제근거_청구번들위변조",
       "why_required_ko": "단일 이미지가 아니라 실제 청구 번들의 문서 간 금액/날짜/진단/기관 일관성까지 학습해야 한다.",
       "visible_document_fields_language": "ko",
       "forbidden_image_shortcuts": [
@@ -234,6 +274,12 @@
         "영문 필드명 중심 문서",
         "case 라벨을 이미지 안에 직접 노출"
       ],
+      "high_fidelity_quality_gates": {
+        "위변조_의도_구현_확인": true,
+        "정상_문서_나머지_보존_확인": true,
+        "사람_육안_검수_가능": true,
+        "단순_해상도_기준_아님": true
+      },
       "required_korean_fields": [
         "보험금 청구금액",
         "진료비 총액",
@@ -284,6 +330,8 @@
       "minimum_smoke_records": 1,
       "directory_prefix": "case5_llm_code_full_synthetic_generation_from_case1_learning",
       "filename_prefix": "CASE5_case5_llm_code_full_synthetic_generation_from_case1_learning",
+      "korean_directory_prefix": "케이스5_수집문서학습기반_LLM코딩도구_신규문서생성",
+      "korean_filename_prefix": "케이스5_LLM코딩도구_신규문서생성",
       "why_required_ko": "새 문서 생성은 허용하되 Case 1에서 확인한 한국어 필드/서식 범위 안에서만 생성해야 실제 FDS 자료로 쓸 수 있다.",
       "visible_document_fields_language": "ko",
       "forbidden_image_shortcuts": [
@@ -292,6 +340,12 @@
         "영문 필드명 중심 문서",
         "case 라벨을 이미지 안에 직접 노출"
       ],
+      "high_fidelity_quality_gates": {
+        "위변조_의도_구현_확인": true,
+        "정상_문서_나머지_보존_확인": true,
+        "사람_육안_검수_가능": true,
+        "단순_해상도_기준_아님": true
+      },
       "required_korean_fields": [
         "환자명",
         "생년월일",
