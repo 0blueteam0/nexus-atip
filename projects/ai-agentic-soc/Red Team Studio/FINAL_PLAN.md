@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 3 persistence/report artifact complete, full goal active  
+상태: implementation slice 4 approval queue/UI reload complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 1 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 4 approval queue/UI reload 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 1 반영
-- `runtime/redteam_v2_models.py` - slice 3 persistence/report artifact 반영
+- `runtime/redteam_v2_api_router.py` - slice 4 approval queue endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 4 approval queue persistence/UI reload API 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 1 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 2 반영
+- `tests/test_redteam_v2_api_router.py` - slice 4 approval queue/reload 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 4 approval queue/reload 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -134,7 +134,7 @@ Tests:
 
 ### M3. ToolActionCard 중심 실행 통제
 
-상태: minimal persistence 완료, full workflow 진행 중
+상태: approval queue persistence/UI reload API 완료, full workflow 진행 중
 
 작업:
 
@@ -158,13 +158,19 @@ Tests:
 - ManualRunRecord JSON artifact 저장
 - EvidenceCard JSON artifact 저장
 - case audit JSONL append
+- ToolActionCard case별 목록 조회 API
+- ToolActionCard 단건 재조회 API
+- approval request JSON artifact 저장
+- approval decision JSON artifact 저장
+- 승인 요청/결정 후 ToolActionCard status persistence
+- `레드팀 분석2` 상태 새로고침 시 backend persistence queue reload
+- Queue 카드의 `Request Approval` 버튼을 `/request-approval` API에 연결
 
 남은 작업:
 
 - ToolProfile registry
-- approval queue persistence
 - normalizer/import-output API
-- UI queue reload from backend
+- 승인자 권한 모델 및 2인 승인 강제 정책
 
 ### M4. Evidence/Claim/Report v2
 
@@ -317,7 +323,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample case E2E unittest 추가 및 통과
 - [x] backend ToolActionCard/ManualRun/Evidence/ReportValidation persistence
 - [x] Korean Report v2 Markdown artifact 생성
-- [ ] ToolActionCard queue reload from backend persistence
+- [x] ToolActionCard queue reload from backend persistence
 - [ ] final approved export route
 - [ ] full release/security regression
 
@@ -333,4 +339,25 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample E2E가 artifact file 존재와 Markdown 핵심 섹션 검증
 - [x] live `/api/redteam/v2/reports/generate` artifact 생성 확인
 - [ ] approved export API
-- [ ] full persistent UI reload
+- [x] full persistent UI reload
+
+## 12. Slice 4 Approval Queue / UI Reload 체크리스트
+
+- [x] `GET /api/redteam/v2/tool-actions?case_id=...` 추가
+- [x] `GET /api/redteam/v2/tool-actions/{action_id}` 추가
+- [x] `POST /api/redteam/v2/tool-actions/{action_id}/request-approval` 추가
+- [x] `POST /api/redteam/v2/tool-actions/{action_id}/approve` 추가
+- [x] approval request/decision artifact 저장
+- [x] ToolActionCard status update artifact 저장
+- [x] stored ToolAction artifact가 `artifact_path`를 포함하도록 보정
+- [x] `레드팀 분석2` 상태 새로고침이 backend queue를 로드
+- [x] `레드팀 분석2` Queue에서 `Request Approval` 버튼이 backend API를 호출
+- [x] API unittest가 승인 요청, 승인 결정, 재조회, artifact 존재 검증
+- [x] sample E2E가 approval request/decision 흐름 포함
+- [x] live 8765 smoke로 `ApprovalRequested` 재조회와 artifact 존재 확인
+- [x] live 5177 browser smoke로 Queue와 `Request Approval` 버튼 렌더링 확인
+- [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-queue-ui-smoke.png`
+- [ ] 권한/역할 기반 승인자 검증
+- [ ] T5/controlled production 2인 승인 hard gate
+- [ ] approved export API
+- [ ] normalizer/import-output API

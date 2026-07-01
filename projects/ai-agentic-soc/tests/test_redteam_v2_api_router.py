@@ -62,6 +62,53 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("Request Approval", body["allowed_buttons"])
         self.assertNotIn("Run in Lab", body["allowed_buttons"])
 
+    def test_v2_tool_action_approval_queue_persists_and_updates_action_status(self) -> None:
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": "CASE-V2-APPROVAL-001",
+            "campaign_id": "CAMP-V2",
+            "title": "High risk lab action requiring approval",
+            "objective": "Prepare a human-approved lab action under ROE",
+            "risk_class": "T4",
+            "target_scope_refs": ["SCOPE-APPROVED-001"],
+        })
+        self.assertEqual(plan.status_code, 200)
+        action = plan.json()
+
+        request = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/request-approval", json={
+            "case_id": "CASE-V2-APPROVAL-001",
+            "requested_by": "analyst@example.com",
+            "justification": "High-risk action must be reviewed before any lab execution.",
+        })
+        self.assertEqual(request.status_code, 200)
+        requested = request.json()
+        self.assertEqual(requested["status"], "ApprovalRequested")
+        self.assertEqual(requested["action"]["status"], "ApprovalRequested")
+        self.assertIn("control_team", requested["required_approvers"])
+
+        listed = self.client.get("/api/redteam/v2/tool-actions", params={"case_id": "CASE-V2-APPROVAL-001"})
+        self.assertEqual(listed.status_code, 200)
+        listed_body = listed.json()
+        self.assertGreaterEqual(listed_body["count"], 1)
+        self.assertEqual(listed_body["items"][0]["status"], "ApprovalRequested")
+        self.assertTrue(Path(listed_body["items"][0]["artifact_path"]).exists())
+
+        approval = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
+            "case_id": "CASE-V2-APPROVAL-001",
+            "approver": "lead@example.com",
+            "decision": "approve",
+            "conditions": ["manual_run_only", "upload_artifacts_before_evidence"],
+        })
+        self.assertEqual(approval.status_code, 200)
+        approved = approval.json()
+        self.assertEqual(approved["status"], "Approved")
+        self.assertEqual(approved["action"]["status"], "Approved")
+        self.assertIn("Run in Lab", approved["action"]["allowed_buttons"])
+
+        reloaded = self.client.get(f"/api/redteam/v2/tool-actions/{action['action_id']}", params={"case_id": "CASE-V2-APPROVAL-001"})
+        self.assertEqual(reloaded.status_code, 200)
+        self.assertEqual(reloaded.json()["status"], "Approved")
+        self.assertTrue(Path(reloaded.json()["artifact_path"]).exists())
+
     def test_v2_manual_run_promotes_uploaded_artifacts_to_evidence_candidates(self) -> None:
         response = self.client.post("/api/redteam/v2/tool-actions/TAC-UNIT/manual-run-record", json={
             "executed_by": "analyst@example.com",

@@ -3166,13 +3166,21 @@ export default {
   }
 ,
   async loadRedTeam2AnalysisStatus() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = target ? this.redTeamOperationCaseId(reportId, target) : '';
+    const queueUrl = caseId
+      ? `http://127.0.0.1:8765/api/redteam/v2/tool-actions?case_id=${encodeURIComponent(caseId)}`
+      : 'http://127.0.0.1:8765/api/redteam/v2/tool-actions';
     this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'loading', error:null } }));
     try {
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/rag/knowledge/status'),
+        this.redTeamFetchJson(queueUrl),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3182,9 +3190,11 @@ export default {
           v1Health:v1HealthRes.ok ? v1HealthRes.data : { status:'unavailable', error:v1HealthRes.error },
           readiness:readinessRes.ok ? readinessRes.data : { summary:{}, pipeline_coverage:[], error:readinessRes.error },
           rag:ragRes.ok ? ragRes.data : { exists:false, error:ragRes.error },
+          queue:queueRes.ok ? queueRes.data : { count:0, items:[], error:queueRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
+        redteam2ToolActionQueue:queueRes.ok ? (queueRes.data.items || []).slice(0, 10) : (s.redteam2ToolActionQueue || []),
       }));
       this.toast('레드팀 분석2 상태를 불러왔습니다', 'success');
     } catch (err) {
@@ -3238,6 +3248,34 @@ export default {
     }
   }
 ,
+  async requestRedTeam2ToolActionApproval(action) {
+    if (!action?.action_id) return;
+    const payload = {
+      case_id:action.case_id,
+      requested_by:'current-analyst',
+      justification:`${action.title || action.action_id} 실행 전 HITL 승인 요청`,
+    };
+    this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'approval-requesting', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(action.action_id)}/request-approval`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid' || data.status === 'not_found') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'ready', lastApprovalRequest:data, checkedAt:new Date().toISOString() },
+        redteam2ToolActionQueue:[data.action, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== action.action_id))].slice(0, 10),
+      }));
+      this.toast('레드팀 분석2 승인 요청을 큐에 등록했습니다', 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 승인 요청: ${action.action_id}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('레드팀 분석2 승인 요청 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   redTeamAnalysis2Panel() {
     const C = this.C, h = this.h;
     const draft = this.redTeam2AnalysisDraft();
@@ -3273,13 +3311,17 @@ export default {
     const smallPanel = (title, content) => h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px', minWidth:0 } },
       h('div', { style:{ fontSize:'12.5px', fontWeight:900, marginBottom:'9px' } }, title),
       content);
-    const actionRows = queue.map(action => [
-      action.action_id || '-',
-      action.status || '-',
-      action.risk_class || '-',
-      action.hitl_required ? '필요' : '불필요',
-      (action.allowed_buttons || []).join(', ') || '-',
-    ]);
+    const queueCards = queue.map(action => h('div', { key:action.action_id || action.artifact_path, style:{ display:'grid', gridTemplateColumns:'minmax(170px, 1.4fr) minmax(90px, .7fr) minmax(70px, .5fr) minmax(160px, 1fr)', gap:'8px', alignItems:'center', borderTop:`1px solid ${C.border}`, padding:'8px 0', minWidth:0 } },
+      h('div', { style:{ minWidth:0 } },
+        h('div', { style:{ fontSize:'11px', fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.action_id || '-'),
+        h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.title || action.objective || '-')),
+      h('div', { style:{ fontSize:'10.5px', color:action.status === 'Approved' ? C.green : action.status === 'ApprovalRequested' ? C.amber : C.text, fontWeight:800 } }, action.status || '-'),
+      h('div', { style:{ fontSize:'10.5px', color:action.hitl_required ? C.coral : C.sec } }, `${action.risk_class || '-'} / ${action.hitl_required ? 'HITL' : 'auto'}`),
+      h('div', { style:{ display:'flex', gap:'6px', justifyContent:'flex-end', flexWrap:'wrap' } },
+        (action.allowed_buttons || []).includes('Request Approval') && action.status !== 'ApprovalRequested' && action.status !== 'Approved'
+          ? h('button', { onClick:()=>this.requestRedTeam2ToolActionApproval(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.amber}`, background:C.bg, color:C.amber, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Request Approval')
+          : null,
+        h('span', { style:{ fontSize:'9.5px', color:C.muted, alignSelf:'center', maxWidth:'190px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, (action.allowed_buttons || []).slice(0, 3).join(', ') || '-'))));
     const gateRows = st.lastAction ? [
       ['ROE', st.lastAction.roe_evaluation?.decision || '-', (st.lastAction.roe_evaluation?.failures || []).join(', ') || 'none'],
       ['HITL', st.lastAction.hitl_required ? 'required' : 'not required', st.lastAction.high_risk_mode || 'manual-run policy'],
@@ -3324,7 +3366,7 @@ export default {
           ['Primary Goal', activeBrief.primaryGoal || '-', C.text, 'Report v2 walkthrough + document control'],
           ['Safety', 'No direct high-risk execution', C.coral, 'AI assists planning, evidence, analysis, draft report, retest plan'],
         ].map(card))),
-      actionRows.length ? smallPanel('ToolActionCard Queue', this.renderTable(['Action ID','Status','Risk','HITL','Allowed Buttons'], actionRows)) : null,
+      queueCards.length ? smallPanel(`ToolActionCard Queue${st.queue?.count ? ` · ${st.queue.count}` : ''}`, h('div', { style:{ display:'grid' } }, queueCards)) : null,
       gateRows.length ? smallPanel('Guardrail / Evidence Gates', this.renderTable(['Gate','Status','Reason'], gateRows)) : null,
       st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null);
   }

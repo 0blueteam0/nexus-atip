@@ -1,0 +1,69 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-B0DAFF56EB51",
+  "case_id": "CASE-LIVE-APPROVAL-002",
+  "campaign_id": "CAMP-LIVE",
+  "title": "Live persistent approval queue smoke",
+  "objective": "Verify persisted approval queue can reload via v2 API",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-MANUAL-RECORDER",
+  "risk_class": "T4",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LIVE-002"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "manual_run_record",
+    "normalized_result",
+    "evidence_candidate"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "ApprovalRequested",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-APPROVAL-002",
+    "decision": "allow",
+    "risk_class": "T4",
+    "hitl_required": true,
+    "failures": [],
+    "evaluated_at": "2026-07-01T03:58:31Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-APPROVAL-002/roe/ROE-2CD8ECFF0D06.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-APPROVAL-002/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T03:58:31Z",
+      "actor": "codex-smoke"
+    },
+    {
+      "event": "approval_requested",
+      "at": "2026-07-01T03:58:31Z",
+      "actor": "codex-smoke"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-APPROVAL-002/tool-actions/TAC-B0DAFF56EB51.json",
+  "approval_request_id": "APR-2DF3BC2F98D6"
+}

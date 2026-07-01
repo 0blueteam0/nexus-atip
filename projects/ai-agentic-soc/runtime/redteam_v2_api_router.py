@@ -40,6 +40,34 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.plan_tool_action(payload)
 
 
+@router.get("/tool-actions")
+def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
+    return redteam_v2_models.list_tool_actions(case_id=case_id, status=status)
+
+
+@router.get("/tool-actions/{action_id}")
+def get_tool_action(action_id: str, case_id: str | None = None) -> dict[str, Any]:
+    action = redteam_v2_models.load_tool_action(action_id, case_id=case_id)
+    if action is None:
+        return {
+            "kind": "redteam_ax_v2_tool_action_card",
+            "action_id": action_id,
+            "status": "not_found",
+            "errors": ["tool_action_not_found"],
+        }
+    return action
+
+
+@router.post("/tool-actions/{action_id}/request-approval")
+def request_tool_action_approval(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.request_tool_action_approval(action_id, payload)
+
+
+@router.post("/tool-actions/{action_id}/approve")
+def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.approve_tool_action(action_id, payload)
+
+
 @router.post("/tool-actions/{action_id}/manual-run-record")
 def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.record_manual_run(action_id, payload)

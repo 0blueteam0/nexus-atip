@@ -37,6 +37,28 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(action["roe_evaluation"]["decision"], "allow")
         self.assertTrue(action["hitl_required"])
 
+        approval_request = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/request-approval", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "justification": "Sample E2E high-risk action requires explicit HITL approval before manual execution.",
+        })
+        self.assertEqual(approval_request.status_code, 200)
+        self.assertEqual(approval_request.json()["status"], "ApprovalRequested")
+
+        approval_decision = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
+            "case_id": case_id,
+            "approver": "lead@example.com",
+            "decision": "approve",
+            "conditions": ["manual_run_only", "evidence_upload_required"],
+        })
+        self.assertEqual(approval_decision.status_code, 200)
+        approved_action = approval_decision.json()["action"]
+        self.assertEqual(approved_action["status"], "Approved")
+
+        queue = self.client.get("/api/redteam/v2/tool-actions", params={"case_id": case_id})
+        self.assertEqual(queue.status_code, 200)
+        self.assertGreaterEqual(queue.json()["count"], 1)
+
         manual_run = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/manual-run-record", json={
             "case_id": case_id,
             "executed_by": "analyst@example.com",

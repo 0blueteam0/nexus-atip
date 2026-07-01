@@ -1,0 +1,17 @@
+{
+  "kind": "redteam_ax_v2_approval_request",
+  "request_id": "APR-2DF3BC2F98D6",
+  "case_id": "CASE-LIVE-APPROVAL-002",
+  "action_id": "TAC-B0DAFF56EB51",
+  "status": "ApprovalRequested",
+  "errors": [],
+  "requested_by": "codex-smoke",
+  "requested_at": "2026-07-01T03:58:31Z",
+  "justification": "Live smoke approval request only; no tool execution.",
+  "required_approvers": [
+    "red_team_lead",
+    "control_team"
+  ],
+  "risk_class": "T4",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-APPROVAL-002/approvals/APR-2DF3BC2F98D6.json"
+}

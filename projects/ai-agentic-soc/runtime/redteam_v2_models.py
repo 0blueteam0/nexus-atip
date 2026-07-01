@@ -40,6 +40,7 @@ def write_json_artifact(case_id: str, category: str, record_id: str, payload: di
     path = case_dir(case_id) / safe_name(category)
     path.mkdir(parents=True, exist_ok=True)
     artifact_path = path / f"{safe_name(record_id)}.json"
+    payload["artifact_path"] = artifact_path.as_posix()
     artifact_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return artifact_path.as_posix()
 
@@ -61,6 +62,66 @@ def append_artifact_metadata(payload: dict[str, Any], category: str, record_id: 
         "artifact_path": payload["artifact_path"],
     })
     return payload
+
+
+def read_json_artifact(path: Path) -> dict[str, Any] | None:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def list_json_artifacts(case_id: str | None, category: str) -> list[dict[str, Any]]:
+    roots = [case_dir(case_id)] if case_id else [path for path in DEFAULT_V2_ROOT.glob("*") if path.is_dir()]
+    records: list[tuple[float, dict[str, Any]]] = []
+    for root in roots:
+        category_dir = root / safe_name(category)
+        if not category_dir.exists():
+            continue
+        for artifact_path in category_dir.glob("*.json"):
+            record = read_json_artifact(artifact_path)
+            if record is not None:
+                records.append((artifact_path.stat().st_mtime, record))
+    return [record for _, record in sorted(records, key=lambda item: item[0], reverse=True)]
+
+
+def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
+    actions = list_json_artifacts(case_id, "tool-actions")
+    if status:
+        actions = [action for action in actions if str(action.get("status") or "") == status]
+    return {
+        "kind": "redteam_ax_v2_tool_action_list",
+        "case_id": case_id,
+        "status": status,
+        "count": len(actions),
+        "items": actions,
+    }
+
+
+def load_tool_action(action_id: str, case_id: str | None = None) -> dict[str, Any] | None:
+    safe_action_id = safe_name(action_id)
+    roots = [case_dir(case_id)] if case_id else [path for path in DEFAULT_V2_ROOT.glob("*") if path.is_dir()]
+    for root in roots:
+        artifact_path = root / "tool-actions" / f"{safe_action_id}.json"
+        if artifact_path.exists():
+            return read_json_artifact(artifact_path)
+    for action in list_json_artifacts(case_id, "tool-actions"):
+        if str(action.get("action_id") or "") == action_id:
+            return action
+    return None
+
+
+def persist_tool_action(action: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(action.get("case_id") or "CASE-UNSPECIFIED")
+    action_id = str(action.get("action_id") or stable_id("TAC", [case_id, action]))
+    action["artifact_path"] = write_json_artifact(case_id, "tool-actions", action_id, action)
+    action["audit_log_path"] = write_case_event(case_id, {
+        "event": event.get("event") or "tool_action_updated",
+        "record_id": action_id,
+        "artifact_path": action["artifact_path"],
+        **{k: v for k, v in event.items() if k != "event"},
+    })
+    return action
 
 
 def normalize_risk_class(value: Any) -> str:
@@ -146,6 +207,100 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
         "audit_events": [{"event": "planned", "at": now_utc(), "actor": payload.get("requested_by") or "analyst"}],
     }
     return append_artifact_metadata(result, "tool-actions", action_id)
+
+
+def request_tool_action_approval(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    action = load_tool_action(action_id, case_id)
+    if action is None:
+        return {
+            "kind": "redteam_ax_v2_approval_request",
+            "action_id": action_id,
+            "status": "not_found",
+            "errors": ["tool_action_not_found"],
+        }
+
+    requested_by = str(payload.get("requested_by") or "").strip()
+    justification = str(payload.get("justification") or "").strip()
+    errors: list[str] = []
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not justification:
+        errors.append("justification_required")
+
+    risk_class = normalize_risk_class(action.get("risk_class"))
+    required_approvers = ["red_team_lead"]
+    if risk_class in {"T4", "T5"}:
+        required_approvers.append("control_team")
+    if risk_class == "T5":
+        required_approvers.append("second_approver")
+    request_id = stable_id("APR", [action_id, requested_by, justification, now_utc()])
+    approval_request = {
+        "kind": "redteam_ax_v2_approval_request",
+        "request_id": request_id,
+        "case_id": action.get("case_id") or "CASE-UNSPECIFIED",
+        "action_id": action_id,
+        "status": "invalid" if errors else "ApprovalRequested",
+        "errors": errors,
+        "requested_by": requested_by,
+        "requested_at": now_utc(),
+        "justification": justification,
+        "required_approvers": required_approvers,
+        "risk_class": risk_class,
+    }
+    append_artifact_metadata(approval_request, "approvals", request_id)
+    if not errors:
+        action["status"] = "ApprovalRequested"
+        action["approval_request_id"] = request_id
+        action.setdefault("audit_events", []).append({"event": "approval_requested", "at": now_utc(), "actor": requested_by})
+        persist_tool_action(action, {"event": "approval_requested", "request_id": request_id, "actor": requested_by})
+    return {**approval_request, "action": action}
+
+
+def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    action = load_tool_action(action_id, case_id)
+    if action is None:
+        return {
+            "kind": "redteam_ax_v2_approval_decision",
+            "action_id": action_id,
+            "status": "not_found",
+            "errors": ["tool_action_not_found"],
+        }
+
+    approver = str(payload.get("approver") or payload.get("approved_by") or "").strip()
+    decision = str(payload.get("decision") or "approve").strip().lower()
+    conditions = payload.get("conditions") or []
+    errors: list[str] = []
+    if not approver:
+        errors.append("approver_required")
+    if decision not in {"approve", "reject"}:
+        errors.append("decision_must_be_approve_or_reject")
+
+    decision_id = stable_id("APD", [action_id, approver, decision, conditions, now_utc()])
+    decision_status = "invalid" if errors else ("Approved" if decision == "approve" else "Rejected")
+    approval_decision = {
+        "kind": "redteam_ax_v2_approval_decision",
+        "decision_id": decision_id,
+        "case_id": action.get("case_id") or "CASE-UNSPECIFIED",
+        "action_id": action_id,
+        "status": decision_status,
+        "errors": errors,
+        "approver": approver,
+        "decision": decision,
+        "conditions": conditions,
+        "decided_at": now_utc(),
+    }
+    append_artifact_metadata(approval_decision, "approvals", decision_id)
+    if not errors:
+        action["status"] = decision_status
+        action["approval_decision_id"] = decision_id
+        action["approval_conditions"] = conditions
+        if decision == "approve" and "Run in Lab" not in action.get("allowed_buttons", []):
+            action.setdefault("allowed_buttons", []).append("Run in Lab")
+        action.setdefault("audit_events", []).append({"event": "approval_decided", "at": now_utc(), "actor": approver, "decision": decision})
+        persist_tool_action(action, {"event": "approval_decided", "decision_id": decision_id, "actor": approver, "decision": decision})
+    return {**approval_decision, "action": action}
 
 
 def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
