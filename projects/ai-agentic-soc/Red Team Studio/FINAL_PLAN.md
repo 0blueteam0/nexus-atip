@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 20 frontend sanitizer preview UX complete, full goal active  
+상태: implementation slice 21 multipart tool output upload UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 20 RedTeam2 sanitizer preview UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 21 RedTeam2 multipart tool output upload UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 19 tool output sanitizer preview endpoint 유지
-- `runtime/redteam_v2_models.py` - slice 19 prompt injection quarantine/secret redaction sanitizer 유지
+- `runtime/redteam_v2_api_router.py` - slice 21 multipart import-file upload endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 21 upload-inbox -> strict import-file bridge 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 19 sanitizer quarantine/redaction 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 21 multipart upload -> parser 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -636,7 +636,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] imported artifact를 case archive `raw-artifacts/<run_id>/`에 복사하고 artifact metadata에 `sha256`, `storage_path`, `trusted_as_instruction=false`, `requires_human_validation=true` 저장
 - [x] `agent-analyze`가 request `raw_output` 없이도 저장된 text/json/xml artifact를 읽어 tool-specific parser 입력으로 사용
 - [x] API unittest가 hash 누락 거부와 Nuclei JSONL stored artifact parser 경로를 검증
-- [ ] multipart browser upload UX 연결
+- [x] multipart browser upload UX 연결 - slice 21 완료
 - [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 완료
 - [x] artifact quarantine/redaction preview backend foundation - slice 19 완료
 - [ ] sandbox/container runner와 network allowlist enforcement
@@ -652,7 +652,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] structured item trust invariant 강제: `trusted_as_instruction=false`, `requires_human_validation=true`
 - [x] API unittest가 valid/invalid normalized result schema validation을 검증
 - [ ] schema artifact와 runtime registry 자동 동기화 검증
-- [ ] multipart browser upload UX에 schema validation 결과 표시
+- [x] multipart browser upload UX에 schema validation 결과 표시 - slice 21 완료
 - [x] quarantine/redaction preview backend foundation - slice 19 완료
 
 ## 27. Slice 19 Tool Output Sanitizer Quarantine/Redaction 체크리스트
@@ -676,6 +676,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sanitizer decision, prompt injection score, secret score, redaction count, human review 상태 표시
 - [x] sanitized output preview 표시
 - [x] UI 상태에 sanitizer run/preview artifact id 보관
-- [ ] 실제 multipart file upload와 SHA-256 import-file 연결
+- [x] 실제 multipart file upload와 SHA-256 import-file 연결 - slice 21 완료
 - [ ] image/OCR 기반 sensitive visual redaction preview
 - [ ] Playwright visual smoke 확대
+
+## 29. Slice 21 Multipart Tool Output Upload UX/API 체크리스트
+
+- [x] `/tool-runs/{run_id}/import-file/upload` multipart endpoint 추가
+- [x] 업로드 파일을 case workspace `upload-inbox/<run_id>/`에 저장한 뒤 기존 strict `/import-file` 해시/경계 검증 재사용
+- [x] SHA-256은 브라우저에서 계산하고 서버에서 재검증
+- [x] `ToolArtifactImport` schema validation 결과를 UI에 표시
+- [x] 업로드된 stored artifact로 `/sanitize-preview`와 `/agent-analyze` 실행
+- [x] `레드팀 분석2` UI에 `Multipart Tool Output Upload` 패널 추가
+- [x] API unittest가 multipart upload -> stored artifact -> Nuclei JSONL parser 경로 검증
+- [ ] live 8765 backend 재시작 후 browser upload smoke
+- [ ] image/OCR 기반 sensitive visual redaction preview

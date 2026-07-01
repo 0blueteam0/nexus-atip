@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, File, Form, Header, UploadFile
 
 try:
     from runtime import redteam_v2_models
@@ -177,6 +177,29 @@ def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, An
 @router.post("/tool-runs/{run_id}/import-file")
 def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_file(run_id, payload)
+
+
+@router.post("/tool-runs/{run_id}/import-file/upload")
+async def upload_tool_run_file(
+    run_id: str,
+    case_id: str = Form(...),
+    sha256: str = Form(...),
+    summary: str = Form("Tool output file uploaded from Report Studio."),
+    content_type: str | None = Form(default=None),
+    file: UploadFile = File(...),
+) -> dict[str, Any]:
+    content = await file.read()
+    return redteam_v2_models.import_tool_run_uploaded_file(
+        run_id,
+        {
+            "case_id": case_id,
+            "filename": file.filename or "tool-output.bin",
+            "sha256": sha256,
+            "summary": summary,
+            "content_type": content_type or file.content_type or "application/octet-stream",
+            "content": content,
+        },
+    )
 
 
 @router.post("/tool-runs/{run_id}/sanitize-preview")

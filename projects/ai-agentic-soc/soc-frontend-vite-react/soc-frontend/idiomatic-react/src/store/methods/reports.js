@@ -3348,6 +3348,130 @@ export default {
     }
   }
 ,
+  async importRedTeam2ToolOutputFile(event, action = null) {
+    const file = event?.target?.files?.[0] || null;
+    if (event?.target) event.target.value = '';
+    const draft = this.redTeam2AnalysisDraft();
+    const queue = this.state.redteam2ToolActionQueue || [];
+    const selectedAction = action || this.state.redteam2AnalysisState?.lastAction || queue[0] || null;
+    if (!selectedAction?.action_id) {
+      this.toast('먼저 ToolActionCard를 계획하거나 큐에서 선택하세요', 'warn');
+      return;
+    }
+    if (!file) {
+      this.toast('업로드할 도구 출력 파일을 선택하세요', 'warn');
+      return;
+    }
+    const caseId = selectedAction.case_id || this.redTeamOperationCaseId(draft.reportId, draft.target);
+    const toolId = selectedAction.tool_id || draft.analysisToolId || 'TOOL-NUCLEI-001';
+    this.setState(s => ({
+      redteam2FileUploadState:{
+        ...(s.redteam2FileUploadState || {}),
+        status:'hashing',
+        fileName:file.name,
+        sizeBytes:file.size,
+        contentType:file.type || 'application/octet-stream',
+        error:null,
+      },
+    }));
+    try {
+      const buffer = await file.arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      const sha256 = Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+      this.setState(s => ({
+        redteam2FileUploadState:{
+          ...(s.redteam2FileUploadState || {}),
+          status:'creating-run',
+          sha256,
+        },
+      }));
+      const runRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(selectedAction.action_id)}/execute-governed`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          tool_id:toolId,
+          execution_mode:'offline_parse',
+          requested_by:'current-analyst',
+          raw_artifacts:[`ui://redteam2/browser-upload/${file.name}`],
+          output_summary:'Report Studio RedTeam2 browser-uploaded tool output.',
+        }),
+      });
+      const run = await runRes.json().catch(() => ({}));
+      if (!runRes.ok || run.status === 'invalid') throw new Error((run.errors || []).join(', ') || run.detail || `HTTP ${runRes.status}`);
+
+      const form = new FormData();
+      form.append('case_id', caseId);
+      form.append('sha256', sha256);
+      form.append('summary', `Browser multipart upload: ${file.name}`);
+      form.append('content_type', file.type || this.redTeam2GuessToolOutputContentType(file.name));
+      form.append('file', file, file.name);
+      this.setState(s => ({ redteam2FileUploadState:{ ...(s.redteam2FileUploadState || {}), status:'uploading', run, sha256 } }));
+      const importRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-runs/${encodeURIComponent(run.run_id)}/import-file/upload`, {
+        method:'POST',
+        body:form,
+      });
+      const imported = await importRes.json().catch(() => ({}));
+      if (!importRes.ok || imported.status === 'invalid') throw new Error((imported.errors || []).join(', ') || imported.detail || `HTTP ${importRes.status}`);
+
+      const previewRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-runs/${encodeURIComponent(run.run_id)}/sanitize-preview`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({ case_id:caseId }),
+      });
+      const preview = await previewRes.json().catch(() => ({}));
+      if (!previewRes.ok || preview.status === 'invalid') throw new Error((preview.errors || []).join(', ') || preview.detail || `HTTP ${previewRes.status}`);
+
+      const normalizedRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-runs/${encodeURIComponent(run.run_id)}/agent-analyze`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({ case_id:caseId }),
+      });
+      const normalized = await normalizedRes.json().catch(() => ({}));
+      if (!normalizedRes.ok || normalized.status === 'invalid') throw new Error((normalized.errors || []).join(', ') || normalized.detail || `HTTP ${normalizedRes.status}`);
+
+      this.setState(s => ({
+        redteam2FileUploadState:{
+          ...(s.redteam2FileUploadState || {}),
+          status:'ready',
+          fileName:file.name,
+          sizeBytes:file.size,
+          contentType:file.type || imported.artifact?.content_type || 'application/octet-stream',
+          sha256,
+          run,
+          imported,
+          sanitizerPreview:preview,
+          normalized,
+          checkedAt:new Date().toISOString(),
+          error:null,
+        },
+        redteam2SanitizerState:{
+          ...(s.redteam2SanitizerState || {}),
+          status:'ready',
+          run,
+          preview,
+          checkedAt:new Date().toISOString(),
+          error:null,
+        },
+        redteam2ToolActionQueue:[imported.tool_run || selectedAction, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== selectedAction.action_id))].slice(0, 10),
+      }));
+      this.toast(`파일 업로드/정규화 완료: ${file.name}`, 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 multipart tool output import: ${selectedAction.action_id} · ${file.name}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2FileUploadState:{ ...(s.redteam2FileUploadState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('도구 출력 파일 업로드 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  redTeam2GuessToolOutputContentType(filename) {
+    const lower = String(filename || '').toLowerCase();
+    if (lower.endsWith('.json')) return 'application/json';
+    if (lower.endsWith('.jsonl') || lower.endsWith('.ndjson')) return 'application/x-ndjson';
+    if (lower.endsWith('.xml')) return 'application/xml';
+    if (lower.endsWith('.txt') || lower.endsWith('.log') || lower.endsWith('.sarif')) return 'text/plain';
+    return 'application/octet-stream';
+  }
+,
   redTeam2ReportExportDraft() {
     const saved = this.state.redteam2ReportExportDraft || {};
     const analysisDraft = this.redTeam2AnalysisDraft();
@@ -3675,8 +3799,12 @@ export default {
     const reportDraft = this.redTeam2ReportExportDraft();
     const reportState = this.state.redteam2ReportExportState || {};
     const sanitizerState = this.state.redteam2SanitizerState || {};
+    const fileUploadState = this.state.redteam2FileUploadState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
+    const uploadedImport = fileUploadState.imported || {};
+    const uploadedArtifact = uploadedImport.artifact || {};
+    const uploadedNormalized = fileUploadState.normalized || {};
     const reportResult = reportState.report || {};
     const reportApproval = reportState.approval || {};
     const reportExported = reportState.exported || {};
@@ -3776,6 +3904,14 @@ export default {
       ['Trusted As Instruction', String(sanitizerPreview.trusted_as_instruction ?? sanitizer.trusted_as_instruction ?? false), 'must be false'],
       ['Human Review', sanitizerPreview.requires_human_review ? 'required' : 'not required', (sanitizer.warnings || []).join(', ') || 'none'],
     ];
+    const fileUploadRows = [
+      ['Upload Status', fileUploadState.status || 'idle', fileUploadState.error || uploadedImport.import_id || 'select a tool output file'],
+      ['SHA-256', fileUploadState.sha256 || uploadedArtifact.sha256 || '-', 'browser calculated before multipart upload'],
+      ['Stored Artifact', uploadedArtifact.storage_path ? 'stored' : 'not stored', uploadedArtifact.storage_path || '-'],
+      ['Schema Validation', uploadedImport.schema_validation?.valid === true ? 'valid' : uploadedImport.schema_validation?.valid === false ? 'invalid' : 'not checked', (uploadedImport.schema_validation?.errors || []).join(', ') || 'ToolArtifactImport'],
+      ['Parser', uploadedNormalized.parser_report?.parser || '-', uploadedNormalized.parser_report?.parsed_item_count != null ? `${uploadedNormalized.parser_report.parsed_item_count} structured items` : 'agent-analyze after upload'],
+      ['Trusted As Instruction', String(uploadedArtifact.trusted_as_instruction ?? false), 'must be false'],
+    ];
     return h('div', { style:{ display:'grid', gap:'14px' } },
       h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
         h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
@@ -3859,6 +3995,30 @@ export default {
           this.renderTable(['Check','Status','Evidence'], sanitizerRows),
           sanitizerPreview.sanitized_output_preview ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'160px', overflow:'auto' } }, sanitizerPreview.sanitized_output_preview) : null,
           sanitizerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, sanitizerState.error) : null)),
+      smallPanel('Multipart Tool Output Upload',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('label', { style:{ display:'inline-flex', alignItems:'center', gap:'6px', padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:fileUploadState.status === 'uploading' || fileUploadState.status === 'hashing' ? C.raised : C.bg, color:fileUploadState.status === 'uploading' || fileUploadState.status === 'hashing' ? C.muted : C.blue, cursor:fileUploadState.status === 'uploading' || fileUploadState.status === 'hashing' ? 'not-allowed' : 'pointer', fontWeight:900, fontSize:'11px' } },
+              this.ic('upload', 13, fileUploadState.status === 'uploading' || fileUploadState.status === 'hashing' ? C.muted : C.blue),
+              fileUploadState.status === 'hashing' ? 'Hashing' : fileUploadState.status === 'uploading' ? 'Uploading' : 'Upload Tool Output',
+              h('input', {
+                type:'file',
+                accept:'.json,.jsonl,.ndjson,.xml,.txt,.log,.sarif,application/json,application/xml,text/plain,*/*',
+                disabled:fileUploadState.status === 'uploading' || fileUploadState.status === 'hashing',
+                onChange:e=>this.importRedTeam2ToolOutputFile(e),
+                style:{ display:'none' },
+              })),
+            h('span', { style:{ fontSize:'10px', color:fileUploadState.status === 'ready' ? C.green : fileUploadState.status === 'error' ? C.coral : C.sec, fontWeight:900 } }, fileUploadState.fileName || 'no file selected'),
+            fileUploadState.sizeBytes != null ? h('span', { style:{ fontSize:'10px', color:C.muted } }, `${fileUploadState.sizeBytes} bytes`) : null),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['File', fileUploadState.fileName || '-', C.sec, fileUploadState.contentType || uploadedArtifact.content_type || 'content type'],
+            ['Run', fileUploadState.run?.run_id || '-', C.sec, fileUploadState.run?.status || 'offline_parse run'],
+            ['Import', uploadedImport.status || '-', uploadedImport.status === 'OutputImported' ? C.green : uploadedImport.status === 'invalid' ? C.coral : C.sec, uploadedImport.import_id || 'ToolArtifactImport'],
+            ['Normalize', uploadedNormalized.status || '-', uploadedNormalized.status === 'Normalized' ? C.green : uploadedNormalized.status === 'invalid' ? C.coral : C.sec, uploadedNormalized.result_id || 'agent-analyze'],
+          ].map(card)),
+          this.renderTable(['Check','Status','Evidence'], fileUploadRows),
+          uploadedArtifact.storage_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `stored: ${uploadedArtifact.storage_path}`) : null,
+          fileUploadState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, fileUploadState.error) : null)),
       smallPanel('Case RBAC Policy',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },

@@ -2079,6 +2079,53 @@ def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]
     return import_record
 
 
+def import_tool_run_uploaded_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    filename = safe_name(payload.get("filename") or "tool-output.bin")
+    content = payload.get("content") or b""
+    if isinstance(content, str):
+        content = content.encode("utf-8")
+    errors: list[str] = []
+    if not isinstance(content, (bytes, bytearray)):
+        content = b""
+        errors.append("uploaded_file_content_invalid")
+    if not content:
+        errors.append("uploaded_file_required")
+    if len(content) > MAX_TOOL_ARTIFACT_BYTES:
+        errors.append("source_file_exceeds_max_bytes")
+
+    upload_dir = case_dir(case_id) / "upload-inbox" / safe_name(run_id)
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    source_path = upload_dir / filename
+    if not errors:
+        source_path.write_bytes(bytes(content))
+
+    result = import_tool_run_file(
+        run_id,
+        {
+            "case_id": case_id,
+            "source_path": source_path.as_posix(),
+            "sha256": payload.get("sha256"),
+            "content_type": payload.get("content_type") or "application/octet-stream",
+            "summary": payload.get("summary") or "Tool output file uploaded as untrusted data for normalizer review.",
+            "artifact_id": payload.get("artifact_id"),
+        },
+    )
+    if errors:
+        result["status"] = "invalid"
+        result["errors"] = [*errors, *(result.get("errors") or [])]
+        result["schema_validation"] = validate_against_tool_schema("ToolArtifactImport", result)
+        append_artifact_metadata(result, "artifact-imports", result["import_id"])
+    result["upload"] = {
+        "filename": filename,
+        "content_type": payload.get("content_type") or "application/octet-stream",
+        "size_bytes": len(content),
+        "source_path": source_path.as_posix(),
+        "transport": "multipart/form-data",
+    }
+    return result
+
+
 def preview_tool_output_sanitizer(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     tool_run = load_json_record(run_id, "tool-runs", case_id)

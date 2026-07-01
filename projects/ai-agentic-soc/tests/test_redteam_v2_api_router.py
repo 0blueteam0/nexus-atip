@@ -493,6 +493,48 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["structured_items"][0]["template_id"], "file-import-panel")
         self.assertFalse(body["structured_items"][0]["trusted_as_instruction"])
 
+    def test_v2_tool_run_multipart_upload_imports_file_and_feeds_agent_parser(self) -> None:
+        case_id = "CASE-V2-MULTIPART-UPLOAD-NUCLEI-001"
+        action_id = "TAC-MULTIPART-UPLOAD-NUCLEI-001"
+        run = self.create_offline_tool_run(case_id, action_id, "TOOL-NUCLEI-001")
+        raw_output = (
+            b'{"template-id":"multipart-panel","matched-at":"https://app.example.test/admin",'
+            b'"info":{"name":"Multipart Panel Candidate","severity":"medium","tags":["panel"]}}\n'
+        )
+        digest = hashlib.sha256(raw_output).hexdigest()
+
+        uploaded = self.client.post(
+            f"/api/redteam/v2/tool-runs/{run['run_id']}/import-file/upload",
+            data={
+                "case_id": case_id,
+                "sha256": digest,
+                "summary": "Nuclei JSONL output uploaded from browser multipart form.",
+                "content_type": "application/x-ndjson",
+            },
+            files={"file": ("nuclei-upload.jsonl", raw_output, "application/x-ndjson")},
+        )
+        self.assertEqual(uploaded.status_code, 200)
+        uploaded_body = uploaded.json()
+        self.assertEqual(uploaded_body["status"], "OutputImported")
+        self.assertEqual(uploaded_body["upload"]["transport"], "multipart/form-data")
+        self.assertEqual(uploaded_body["artifact"]["sha256"], digest)
+        self.assertEqual(uploaded_body["artifact"]["content_type"], "application/x-ndjson")
+        self.assertFalse(uploaded_body["artifact"]["trusted_as_instruction"])
+        self.assertTrue(uploaded_body["artifact"]["requires_human_validation"])
+        self.assertTrue(Path(uploaded_body["artifact"]["storage_path"]).exists())
+        self.assertTrue(uploaded_body["schema_validation"]["valid"])
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+            "case_id": case_id,
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_body = normalized.json()
+        self.assertEqual(normalized_body["status"], "Normalized")
+        self.assertEqual(normalized_body["parser_report"]["input_source"], "stored_artifacts")
+        self.assertEqual(normalized_body["parser_report"]["parser"], "nuclei_jsonl")
+        self.assertEqual(normalized_body["structured_items"][0]["template_id"], "multipart-panel")
+        self.assertFalse(normalized_body["structured_items"][0]["trusted_as_instruction"])
+
     def test_v2_tool_output_sanitizer_quarantines_prompt_injection_and_redacts_secret(self) -> None:
         case_id = "CASE-V2-SANITIZER-001"
         run = self.create_offline_tool_run(case_id, "TAC-SANITIZER-001", "TOOL-NUCLEI-001")
