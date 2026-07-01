@@ -3447,6 +3447,53 @@ export default {
     }
   }
 ,
+  async executeRedTeam2GovernedRunner(action = null) {
+    const draft = this.redTeam2AnalysisDraft();
+    const queue = this.state.redteam2ToolActionQueue || [];
+    const selectedAction = action || this.state.redteam2ExecutionPlanState?.action || this.state.redteam2AnalysisState?.lastAction || queue[0] || null;
+    const plan = this.state.redteam2ExecutionPlanState?.plan || {};
+    const caseId = selectedAction?.case_id || plan.case_id || this.redTeamOperationCaseId(draft.reportId, draft.target);
+    const toolId = selectedAction?.tool_id || plan.tool_id || draft.analysisToolId || 'TOOL-NPM-AUDIT-001';
+    const commandText = String(draft.runnerCommandArgv || `${plan.wrapper_manifest?.command_name || 'npm.cmd'} --version`).trim();
+    const runnerArgv = commandText.split(/\s+/).filter(Boolean);
+    if (!selectedAction?.action_id || !plan.execution_plan_id) {
+      this.toast('먼저 ToolActionCard와 Execution Plan을 생성하세요', 'warn');
+      return;
+    }
+    if (plan.status !== 'PlanReady' || plan.execution_token?.status !== 'issued') {
+      this.toast('Runner 실행은 PlanReady와 issued token이 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2RunnerState:{ ...(s.redteam2RunnerState || {}), status:'executing', error:null, action:selectedAction } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(selectedAction.action_id)}/execute-governed`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          tool_id:toolId,
+          execution_mode:plan.execution_mode || draft.executionMode || 'sandbox_execute',
+          requested_by:'current-analyst',
+          execution_plan_id:plan.execution_plan_id,
+          execution_token_id:plan.execution_token?.token_id,
+          runner_argv:runnerArgv,
+          max_runtime_seconds:plan.environment_constraints?.max_runtime_seconds || 30,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2RunnerState:{ ...(s.redteam2RunnerState || {}), status:data.status || 'RunnerExecuted', run:data, error:null, checkedAt:new Date().toISOString() },
+        redteam2ToolActionQueue:[{ ...selectedAction, latest_run_id:data.run_id, status:data.status || selectedAction.status }, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== selectedAction.action_id))].slice(0, 10),
+      }));
+      this.toast(`Governed runner: ${data.status}`, data.status === 'RunnerExecuted' ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 governed runner: ${selectedAction.action_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2RunnerState:{ ...(s.redteam2RunnerState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Governed runner 실행 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4044,12 +4091,14 @@ export default {
     const fileUploadState = this.state.redteam2FileUploadState || {};
     const visualRedactionState = this.state.redteam2VisualRedactionState || {};
     const executionPlanState = this.state.redteam2ExecutionPlanState || {};
+    const runnerState = this.state.redteam2RunnerState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
     const visualPreview = visualRedactionState.preview || {};
     const visualDescriptor = visualPreview.visual_descriptor || {};
     const wrapperPinState = this.state.redteam2WrapperPinState || {};
     const executionPlan = executionPlanState.plan || {};
+    const runnerRun = runnerState.run || {};
     const uploadedImport = fileUploadState.imported || {};
     const uploadedArtifact = uploadedImport.artifact || {};
     const uploadedNormalized = fileUploadState.normalized || {};
@@ -4185,6 +4234,12 @@ export default {
       ['Wrapper', executionPlan.wrapper_manifest?.pinning_status || selectedWrapper.pinning_status || '-', (executionPlan.wrapper_preflight?.blocking_controls || selectedWrapper.runner_preflight?.blocking_controls || []).join(', ') || 'runner wrapper trusted'],
       ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.token_id || (executionPlan.warnings || []).join(', ') || 'not issued'],
     ];
+    const runnerRows = [
+      ['Runner Status', runnerRun.status || runnerState.status || 'idle', runnerState.error || runnerRun.run_id || 'PlanReady + issued token required'],
+      ['Attempt', runnerRun.runner_attempt?.status || '-', runnerRun.runner_attempt?.artifact_path || String(runnerRun.runner_attempt?.exit_code ?? 'not executed')],
+      ['Command', (runnerRun.runner_attempt?.runner_argv || []).join(' ') || draft.runnerCommandArgv || '-', 'shell=false, child process allowlist enforced by backend'],
+      ['Output Artifacts', (runnerRun.raw_artifacts || []).length, (runnerRun.raw_artifacts || []).map(item => item.source_path_or_ref).join(', ') || 'stdout/stderr artifact pending'],
+    ];
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
       ['Preview Status', visualPreview.status || visualRedactionState.status || 'idle', visualRedactionState.error || visualPreview.preview_id || 'select screenshot/image evidence'],
@@ -4293,8 +4348,24 @@ export default {
             ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.status === 'issued' ? C.green : C.amber, executionPlan.execution_token?.token_id || 'approval or plan required'],
           ].map(card)),
           this.renderTable(['Control','Status','Evidence'], executionPlanRows),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(220px, 1fr) auto', gap:'8px', alignItems:'end' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'Governed runner argv',
+              h('input', {
+                value:draft.runnerCommandArgv || `${executionPlan.wrapper_manifest?.command_name || selectedWrapper.command_name || 'npm.cmd'} --version`,
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ runnerCommandArgv:e.target.value }),
+                style:{ ...inputStyle, marginTop:'5px', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                placeholder:'npm.cmd --version',
+              })),
+            h('button', {
+              onClick:()=>this.executeRedTeam2GovernedRunner(),
+              disabled:runnerState.status === 'executing' || executionPlan.status !== 'PlanReady' || executionPlan.execution_token?.status !== 'issued',
+              style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:runnerState.status === 'executing' ? C.raised : C.bg, color:(runnerState.status === 'executing' || executionPlan.status !== 'PlanReady' || executionPlan.execution_token?.status !== 'issued') ? C.muted : C.green, cursor:(runnerState.status === 'executing' || executionPlan.status !== 'PlanReady' || executionPlan.execution_token?.status !== 'issued') ? 'not-allowed' : 'pointer', fontWeight:900 },
+            }, runnerState.status === 'executing' ? 'Executing' : 'Execute Governed Runner')),
+          this.renderTable(['Runner','Status','Evidence'], runnerRows),
           executionPlan.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `plan: ${executionPlan.artifact_path}`) : null,
-          executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null)),
+          runnerRun.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `run: ${runnerRun.artifact_path}`) : null,
+          executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
+          runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),
       smallPanel('Tool Output Sanitizer Preview',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Raw tool output',

@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 27 wrapper pin revoke/rotate and execution-plan hard-block UX/API complete, full goal active  
+상태: implementation slice 28 approved dry-run runner backend preflight UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 27 RedTeam2 wrapper pin revoke UX 및 preflight hard-block 표시 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 28 RedTeam2 governed runner execute UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 27 tool wrapper pin revoke endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 27 revoked pin exclusion 및 execution plan runner hard-block 반영
+- `runtime/redteam_v2_api_router.py` - slice 28 기존 execute-governed endpoint에서 runner preflight 실행 경로 사용
+- `runtime/redteam_v2_models.py` - slice 28 execution plan token/wrapper pin 기반 governed subprocess runner 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -756,7 +756,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] operator-attested version evidence 수집 UI - slice 26 완료
 - [x] expected_sha256 pin 등록/승인 workflow - slice 26 완료
 - [x] execution-plan runner token hard-block foundation - slice 27 완료
-- [ ] 실제 container/ephemeral runner process execution backend 구현
+- [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
+- [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper manifest smoke
 
 ## 34. Slice 26 Expected Wrapper Hash Pin Approval Workflow 체크리스트
@@ -787,5 +788,21 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] preflight blocked plan은 `status=preflight_blocked`, `policy_decision=deny_runner`로 표시
 - [x] `레드팀 분석2` UI에 `Revoke Pin` 버튼과 revoke status row 추가
 - [x] API unittest가 rotate, revoke, manifest approved_pin 제외, runner hard-block을 검증
-- [ ] 실제 container/ephemeral runner process execution backend
+- [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
+- [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper revoke/hard-block smoke
+
+## 36. Slice 28 Approved Runner Backend Preflight 체크리스트
+
+- [x] `execute-governed`가 `runner_argv`/`runner_command` 수신 시 governed runner attempt 생성
+- [x] runner 실행 전 `execution_plan_id` 존재와 artifact lookup 검증
+- [x] execution token이 `issued`이고 token id가 일치해야 runner 실행 가능
+- [x] `PlanReady`와 `policy_decision=allow_plan`이 아니면 subprocess 실행 차단
+- [x] wrapper manifest가 여전히 pin 필요 상태이면 runner 실행 차단
+- [x] dry_run/sandbox_execute 외 execution mode의 runner command 실행 차단
+- [x] child process allowlist는 ToolProfile `command_name` 또는 resolved wrapper basename으로 제한
+- [x] `shell=false`, timeout, max output bytes, stdout/stderr artifact sha256 저장
+- [x] `레드팀 분석2` Tool Execution Plan 패널에서 governed runner argv 입력과 실행 버튼 제공
+- [x] API unittest가 unissued token 차단과 approved npm sandbox dry-run output capture를 검증
+- [ ] container/ephemeral isolation, network namespace enforcement, cgroup/resource limit enforcement
+- [ ] live 5177/8765 browser governed runner smoke

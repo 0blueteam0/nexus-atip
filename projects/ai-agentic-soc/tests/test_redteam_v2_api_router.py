@@ -360,6 +360,120 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(high_body["environment_constraints"]["network_policy"]["allowlist"], ["127.0.0.1"])
         self.assertIn("approval_required_before_runner_token", high_body["warnings"])
 
+    def test_v2_governed_runner_requires_issued_token_and_captures_approved_dry_run_output(self) -> None:
+        case_id = "CASE-V2-GOVERNED-RUNNER-NPM-001"
+        action_id = "TAC-NPM-RUNNER-001"
+        planned = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "action_id": action_id,
+            "title": "npm audit governed runner smoke",
+            "objective": "Verify approved sandbox runner gate before npm audit integration.",
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(planned.status_code, 200)
+        initial_manifest = self.client.get("/api/redteam/v2/tool-wrapper-manifests/TOOL-NPM-AUDIT-001")
+        self.assertEqual(initial_manifest.status_code, 200)
+        if initial_manifest.json().get("approved_pin"):
+            revoked = self.client.post(
+                "/api/redteam/v2/tool-wrapper-pins/TOOL-NPM-AUDIT-001/revoke",
+                headers=self.actor_headers("lead@example.com", "red_team_lead"),
+                json={
+                    "case_id": case_id,
+                    "revoker": "lead@example.com",
+                    "revoker_role": "red_team_lead",
+                    "reason": "Reset governed runner test trust precondition",
+                },
+            )
+            self.assertEqual(revoked.status_code, 200)
+            self.assertEqual(revoked.json()["status"], "revoked")
+
+        blocked_plan = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execution-plan", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "sandbox_execute",
+            "requested_by": "analyst@example.com",
+            "max_runtime_seconds": 20,
+        })
+        self.assertEqual(blocked_plan.status_code, 200)
+        blocked_plan_body = blocked_plan.json()
+        self.assertEqual(blocked_plan_body["execution_token"]["status"], "blocked")
+
+        blocked_run = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "sandbox_execute",
+            "requested_by": "analyst@example.com",
+            "execution_plan_id": blocked_plan_body["execution_plan_id"],
+            "execution_token_id": blocked_plan_body["execution_token"]["token_id"],
+            "runner_argv": ["npm.cmd", "--version"],
+        })
+        self.assertEqual(blocked_run.status_code, 200)
+        blocked_run_body = blocked_run.json()
+        self.assertEqual(blocked_run_body["status"], "invalid")
+        self.assertEqual(blocked_run_body["runner_attempt"]["status"], "blocked")
+        self.assertIn("execution_token_not_issued", blocked_run_body["errors"])
+
+        manifest = self.client.get("/api/redteam/v2/tool-wrapper-manifests/TOOL-NPM-AUDIT-001")
+        self.assertEqual(manifest.status_code, 200)
+        manifest_body = manifest.json()
+        if manifest_body["availability"]["status"] != "available" or not manifest_body.get("actual_sha256"):
+            self.skipTest("npm.cmd is not available for governed runner success path on this host")
+
+        pin_request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-NPM-AUDIT-001/request", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "expected_sha256": manifest_body["actual_sha256"],
+            "operator_attested_version": "npm --version dry-run approved by test",
+            "version_command_executed_by_operator": True,
+        })
+        self.assertEqual(pin_request.status_code, 200)
+        self.assertEqual(pin_request.json()["status"], "submitted")
+        pin_approval = self.client.post(
+            "/api/redteam/v2/tool-wrapper-pins/TOOL-NPM-AUDIT-001/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "pin_request_id": pin_request.json()["pin_request_id"],
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(pin_approval.status_code, 200)
+        self.assertEqual(pin_approval.json()["status"], "approved")
+
+        ready_plan = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execution-plan", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "sandbox_execute",
+            "requested_by": "analyst@example.com",
+            "max_runtime_seconds": 20,
+        })
+        self.assertEqual(ready_plan.status_code, 200)
+        ready_plan_body = ready_plan.json()
+        self.assertEqual(ready_plan_body["status"], "PlanReady")
+        self.assertEqual(ready_plan_body["execution_token"]["status"], "issued")
+
+        executed = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "sandbox_execute",
+            "requested_by": "analyst@example.com",
+            "execution_plan_id": ready_plan_body["execution_plan_id"],
+            "execution_token_id": ready_plan_body["execution_token"]["token_id"],
+            "runner_argv": ["npm.cmd", "--version"],
+        })
+        self.assertEqual(executed.status_code, 200)
+        executed_body = executed.json()
+        self.assertEqual(executed_body["status"], "RunnerExecuted")
+        self.assertEqual(executed_body["policy_decision"]["decision"], "allow_runner_execution")
+        self.assertEqual(executed_body["runner_attempt"]["status"], "executed")
+        self.assertEqual(executed_body["runner_attempt"]["shell"], False)
+        self.assertTrue(executed_body["raw_artifacts"])
+        self.assertTrue(Path(executed_body["raw_artifacts"][0]["source_path_or_ref"]).exists())
+        self.assertEqual(len(executed_body["raw_artifacts"][0]["hash"]), 64)
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

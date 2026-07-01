@@ -7,6 +7,7 @@ import io
 import json
 import re
 import shutil
+import subprocess
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from fnmatch import fnmatch
@@ -17,6 +18,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
+MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
 TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
 TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
@@ -1631,6 +1633,161 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     return plan
 
 
+def normalize_runner_argv(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, dict):
+        command = str(value.get("command") or "").strip()
+        args = [str(item).strip() for item in (value.get("args") or []) if str(item).strip()]
+        return [command, *args] if command else []
+    if isinstance(value, str) and value.strip():
+        return [value.strip()]
+    return []
+
+
+def runner_command_allowed(profile: dict[str, Any] | None, argv: list[str], plan: dict[str, Any] | None) -> tuple[bool, str]:
+    if not argv:
+        return False, "runner_command_required"
+    if len(argv) == 1 and any(char.isspace() for char in argv[0].strip()):
+        return False, "runner_command_must_be_argv_list"
+    command_name = str((profile or {}).get("command_name") or "").strip()
+    if not command_name:
+        return False, "tool_has_no_runner_command"
+    command = argv[0]
+    command_path = Path(command)
+    command_basename = command_path.name if command_path.name else command
+    allowed_names = {command_name, Path(command_name).name}
+    manifest = (plan or {}).get("wrapper_manifest") or (tool_wrapper_manifest_for_profile(profile) if profile else {})
+    resolved_path = str((manifest or {}).get("availability", {}).get("resolved_path") or "").strip()
+    if resolved_path:
+        allowed_names.add(Path(resolved_path).name)
+    if command not in {command_name, resolved_path} and command_basename not in allowed_names:
+        return False, "runner_command_not_in_child_process_allowlist"
+    prohibited_options = set((profile or {}).get("prohibited_options") or [])
+    requested_options = {item for item in argv[1:] if item in prohibited_options}
+    if requested_options:
+        return False, f"prohibited_options_present:{','.join(sorted(requested_options))}"
+    return True, ""
+
+
+def write_runner_output_artifact(case_id: str, run_id: str, stream_name: str, content: str) -> dict[str, Any]:
+    output_dir = case_dir(case_id) / "runner-output" / safe_name(run_id)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = output_dir / f"{safe_name(stream_name)}.txt"
+    artifact_path.write_text(content, encoding="utf-8", newline="\n")
+    return {
+        "artifact_id": stable_id("ART", [run_id, stream_name, sha256_file(artifact_path)]),
+        "source_path_or_ref": artifact_path.as_posix(),
+        "hash": sha256_file(artifact_path),
+        "content_type": "text/plain",
+        "summary": f"Governed runner {stream_name} captured as untrusted tool output.",
+        "imported_at": now_utc(),
+    }
+
+
+def governed_runner_attempt(
+    case_id: str,
+    action_id: str,
+    run_id: str,
+    profile: dict[str, Any] | None,
+    execution_mode: str,
+    payload: dict[str, Any],
+) -> tuple[dict[str, Any] | None, list[str], list[dict[str, Any]]]:
+    if "runner_command" not in payload and "runner_argv" not in payload:
+        return None, [], []
+    plan_id = str(payload.get("execution_plan_id") or "").strip()
+    plan = load_json_record(plan_id, "tool-execution-plans", case_id=case_id) if plan_id else None
+    argv = normalize_runner_argv(payload.get("runner_argv") if "runner_argv" in payload else payload.get("runner_command"))
+    token_id = str(payload.get("execution_token_id") or (payload.get("execution_token") or {}).get("token_id") or "").strip()
+    errors: list[str] = []
+    raw_artifacts: list[dict[str, Any]] = []
+    if not plan_id:
+        errors.append("execution_plan_id_required_for_runner_execution")
+    if plan is None:
+        errors.append("execution_plan_not_found")
+    if execution_mode not in {"dry_run", "sandbox_execute"}:
+        errors.append("runner_command_not_allowed_for_execution_mode")
+    if plan is not None:
+        plan_token = plan.get("execution_token") or {}
+        if plan.get("status") != "PlanReady":
+            errors.append("execution_plan_not_ready")
+        if plan.get("policy_decision", {}).get("decision") != "allow_plan":
+            errors.append("execution_plan_policy_not_allow")
+        if plan_token.get("status") != "issued" or not plan_token.get("token_id"):
+            errors.append("execution_token_not_issued")
+        if token_id != plan_token.get("token_id"):
+            errors.append("execution_token_mismatch")
+        if plan.get("tool_id") != str((profile or {}).get("tool_id") or ""):
+            errors.append("execution_plan_tool_mismatch")
+        if plan.get("action_id") != action_id:
+            errors.append("execution_plan_action_mismatch")
+        if plan.get("execution_mode") != execution_mode:
+            errors.append("execution_plan_mode_mismatch")
+        if plan.get("wrapper_manifest", {}).get("requires_pin_before_runner"):
+            errors.append("wrapper_preflight_not_trusted")
+    allowed, reason = runner_command_allowed(profile, argv, plan)
+    if not allowed:
+        errors.append(reason)
+
+    attempt = {
+        "kind": "redteam_ax_v2_governed_runner_attempt",
+        "run_id": run_id,
+        "case_id": case_id,
+        "action_id": action_id,
+        "execution_plan_id": plan_id or None,
+        "execution_token_id": token_id or None,
+        "tool_id": (profile or {}).get("tool_id"),
+        "execution_mode": execution_mode,
+        "runner_argv": argv,
+        "shell": False,
+        "status": "blocked" if errors else "executing",
+        "errors": errors,
+        "started_at": now_utc(),
+        "completed_at": None,
+        "exit_code": None,
+        "timeout_seconds": min(int(payload.get("max_runtime_seconds") or (plan or {}).get("environment_constraints", {}).get("max_runtime_seconds") or 30), 120),
+        "max_output_bytes": min(int(payload.get("max_output_bytes") or (plan or {}).get("environment_constraints", {}).get("max_output_bytes") or MAX_RUNNER_OUTPUT_BYTES), MAX_RUNNER_OUTPUT_BYTES),
+        "cwd": case_dir(case_id).as_posix(),
+    }
+    if errors:
+        return attempt, errors, raw_artifacts
+
+    try:
+        completed = subprocess.run(
+            argv,
+            cwd=case_dir(case_id).as_posix(),
+            capture_output=True,
+            text=True,
+            timeout=attempt["timeout_seconds"],
+            shell=False,
+        )
+        stdout = (completed.stdout or "")[: attempt["max_output_bytes"]]
+        stderr = (completed.stderr or "")[: attempt["max_output_bytes"]]
+        attempt.update({
+            "status": "executed" if completed.returncode == 0 else "failed",
+            "completed_at": now_utc(),
+            "exit_code": completed.returncode,
+            "stdout_bytes": len(stdout.encode("utf-8")),
+            "stderr_bytes": len(stderr.encode("utf-8")),
+            "output_truncated": len((completed.stdout or "").encode("utf-8")) > attempt["max_output_bytes"] or len((completed.stderr or "").encode("utf-8")) > attempt["max_output_bytes"],
+        })
+        if stdout:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stdout", stdout))
+        if stderr:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stderr", stderr))
+    except subprocess.TimeoutExpired as exc:
+        attempt.update({"status": "timeout", "completed_at": now_utc(), "exit_code": None})
+        errors.append("runner_timeout")
+        if exc.stdout:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stdout", str(exc.stdout)[: attempt["max_output_bytes"]]))
+        if exc.stderr:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stderr", str(exc.stderr)[: attempt["max_output_bytes"]]))
+    except OSError as exc:
+        attempt.update({"status": "failed_to_start", "completed_at": now_utc(), "exit_code": None})
+        errors.append(f"runner_start_failed:{exc.__class__.__name__}")
+    return attempt, errors, raw_artifacts
+
+
 def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     action = load_tool_action(action_id, case_id)
@@ -1673,6 +1830,20 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
     if execution_mode == "plan_only" and not errors:
         status = "PlanOnly"
     run_id = str(payload.get("run_id") or stable_id("TRUN", [case_id, action_id, tool_id, execution_mode, requested_by, raw_artifacts, now_utc()]))
+    runner_attempt, runner_errors, runner_artifacts = governed_runner_attempt(case_id, action_id, run_id, profile, execution_mode, payload)
+    if runner_errors:
+        errors.extend(runner_errors)
+    if runner_attempt is not None:
+        append_artifact_metadata(runner_attempt, "runner-attempts", stable_id("RUNA", [run_id, runner_attempt.get("execution_plan_id"), runner_attempt.get("runner_argv")]))
+    if runner_artifacts:
+        raw_artifacts = [*raw_artifacts, *runner_artifacts]
+    if runner_attempt is not None:
+        if errors:
+            status = "invalid"
+        elif runner_attempt.get("status") == "executed":
+            status = "RunnerExecuted"
+        else:
+            status = "RunnerFailed"
     availability = command_availability(str((profile or {}).get("command_name") or ""))
     untrusted_envelope = {
         "trusted_as_instruction": False,
@@ -1703,15 +1874,16 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
         "target_scope_refs": target_scope_refs,
         "raw_artifacts": [
             {
-                "artifact_id": stable_id("ART", [run_id, artifact]),
+                "artifact_id": artifact.get("artifact_id") if isinstance(artifact, dict) and artifact.get("artifact_id") else stable_id("ART", [run_id, artifact]),
                 "source_path_or_ref": artifact if isinstance(artifact, str) else artifact.get("source_path_or_ref") or artifact.get("path") or artifact,
-                "hash": stable_id("SHA256", [run_id, artifact]),
-                "content_type": "application/json" if (profile or {}).get("supports_json_output") else "application/octet-stream",
-                "summary": payload.get("output_summary") or f"{(profile or {}).get('display_name') or tool_id} output imported for analysis.",
-                "imported_at": now_utc(),
+                "hash": artifact.get("hash") if isinstance(artifact, dict) and artifact.get("hash") else stable_id("SHA256", [run_id, artifact]),
+                "content_type": artifact.get("content_type") if isinstance(artifact, dict) and artifact.get("content_type") else ("application/json" if (profile or {}).get("supports_json_output") else "application/octet-stream"),
+                "summary": artifact.get("summary") if isinstance(artifact, dict) and artifact.get("summary") else (payload.get("output_summary") or f"{(profile or {}).get('display_name') or tool_id} output imported for analysis."),
+                "imported_at": artifact.get("imported_at") if isinstance(artifact, dict) and artifact.get("imported_at") else now_utc(),
             }
             for artifact in raw_artifacts
         ],
+        "runner_attempt": runner_attempt,
         "normalized_results": [],
         "evidence_candidates": [],
         "policy_decision": {
@@ -1720,7 +1892,7 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
             "requires_two_person_approval": bool((profile or {}).get("requires_two_person_approval")),
             "allowed_execution_modes": (profile or {}).get("allowed_execution_modes") or [],
             "denied_execution_modes": (profile or {}).get("denied_execution_modes") or [],
-            "decision": "deny" if errors else "allow_recorded_execution",
+            "decision": "deny" if errors else ("allow_runner_execution" if runner_attempt is not None else "allow_recorded_execution"),
         },
         "runtime_probe": availability,
         "analysis_agent_id": (profile or {}).get("agent_id"),
