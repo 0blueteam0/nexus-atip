@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib
+import hashlib
 import sys
 import unittest
 from pathlib import Path
@@ -392,6 +393,56 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(body["structured_items"][0][key], expected, tool_id)
             self.assertFalse(body["structured_items"][0]["trusted_as_instruction"], tool_id)
             self.assertTrue(body["structured_items"][0]["requires_human_validation"], tool_id)
+
+    def test_v2_tool_run_file_import_requires_sha256_and_feeds_agent_parser(self) -> None:
+        case_id = "CASE-V2-FILE-INGEST-NUCLEI-001"
+        action_id = "TAC-FILE-INGEST-NUCLEI-001"
+        run = self.create_offline_tool_run(case_id, action_id, "TOOL-NUCLEI-001")
+        fixture_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "fixtures"
+        fixture_dir.mkdir(parents=True, exist_ok=True)
+        fixture = fixture_dir / "nuclei-output.jsonl"
+        raw_output = (
+            '{"template-id":"file-import-panel","matched-at":"https://app.example.test/panel",'
+            '"info":{"name":"Imported Panel Candidate","severity":"low","tags":["panel"]}}\n'
+        )
+        fixture.write_bytes(raw_output.encode("utf-8"))
+
+        missing_hash = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/import-file", json={
+            "case_id": case_id,
+            "source_path": fixture.as_posix(),
+            "content_type": "application/x-ndjson",
+        })
+        self.assertEqual(missing_hash.status_code, 200)
+        missing_body = missing_hash.json()
+        self.assertEqual(missing_body["status"], "invalid")
+        self.assertIn("artifact_sha256_required", missing_body["errors"])
+
+        digest = hashlib.sha256(fixture.read_bytes()).hexdigest()
+        imported = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/import-file", json={
+            "case_id": case_id,
+            "source_path": fixture.as_posix(),
+            "sha256": digest,
+            "content_type": "application/x-ndjson",
+            "summary": "Nuclei JSONL output imported from approved workspace file.",
+        })
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["status"], "OutputImported")
+        self.assertFalse(imported_body["artifact"]["trusted_as_instruction"])
+        self.assertEqual(imported_body["artifact"]["sha256"], digest)
+        self.assertTrue(Path(imported_body["artifact"]["storage_path"]).exists())
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+            "case_id": case_id,
+        })
+        self.assertEqual(normalized.status_code, 200)
+        body = normalized.json()
+        self.assertEqual(body["status"], "Normalized")
+        self.assertEqual(body["parser_report"]["input_source"], "stored_artifacts")
+        self.assertEqual(body["parser_report"]["artifact_input_count"], 1)
+        self.assertEqual(body["parser_report"]["parser"], "nuclei_jsonl")
+        self.assertEqual(body["structured_items"][0]["template_id"], "file-import-panel")
+        self.assertFalse(body["structured_items"][0]["trusted_as_instruction"])
 
     def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
         resolved = self.client.post(

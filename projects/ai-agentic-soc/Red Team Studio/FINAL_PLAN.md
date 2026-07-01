@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 16 Tool-specific output normalizers complete, full goal active  
+상태: implementation slice 17 file-based tool result ingestion/hash gate complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 15 analysis tool registry/governed execution/agent normalize endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 16 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP parser normalizer 반영
+- `runtime/redteam_v2_api_router.py` - slice 17 strict tool artifact import endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 17 file-based tool result ingestion, SHA-256 gate, stored artifact parser input 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 16 도구별 parser normalizer 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 17 파일 기반 tool result ingestion/hash gate 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -622,8 +622,21 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] v2 router regression 28건 통과
 - [x] sample E2E 1건 통과
 - [ ] parser 결과를 Finding owner/SLA/retest UI에 직접 연결
-- [ ] 실제 파일 업로드/경로 기반 parser 입력 지원
+- [x] 실제 파일 업로드/경로 기반 parser 입력 지원 - slice 17 local workspace file import/hash gate 완료
 - [ ] parser schema를 별도 JSON Schema artifact로 분리
 - [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
 - [ ] sandbox/container runner와 network allowlist enforcement
 - [ ] full release/security/starter-pack regression
+
+## 25. Slice 17 File-Based Tool Result Ingestion 체크리스트
+
+- [x] `/tool-runs/{run_id}/import-file` strict import endpoint 추가
+- [x] local workspace file boundary check 적용: `artifact://` ref나 workspace 외부 경로는 strict file import에서 거부
+- [x] SHA-256 필수 입력 및 실제 파일 해시 불일치 차단
+- [x] imported artifact를 case archive `raw-artifacts/<run_id>/`에 복사하고 artifact metadata에 `sha256`, `storage_path`, `trusted_as_instruction=false`, `requires_human_validation=true` 저장
+- [x] `agent-analyze`가 request `raw_output` 없이도 저장된 text/json/xml artifact를 읽어 tool-specific parser 입력으로 사용
+- [x] API unittest가 hash 누락 거부와 Nuclei JSONL stored artifact parser 경로를 검증
+- [ ] multipart browser upload UX 연결
+- [ ] parser schema를 별도 JSON Schema artifact로 분리
+- [ ] artifact quarantine/redaction preview UI
+- [ ] sandbox/container runner와 network allowlist enforcement

@@ -4,7 +4,7 @@
   "task": "Implement RedTeam AX v2 file-based tool result ingestion and schema validation slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260701-161157-Red-Team-Studio-Implement-RedTeam-AX-v2-file-based-tool-result-ingestion-and-schema-validation-s",
   "created_at": "2026-07-01T16:11:57+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-01T16:16:15+09:00"
+  ]
 }

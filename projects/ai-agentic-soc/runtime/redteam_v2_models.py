@@ -12,6 +12,7 @@ from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
+MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5", "T6", "T7"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
@@ -299,6 +300,52 @@ def write_case_event(case_id: str, event: dict[str, Any]) -> str:
     with path.open("a", encoding="utf-8", newline="\n") as handle:
         handle.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
     return path.as_posix()
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def is_relative_to_path(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
+def resolve_workspace_source_path(value: Any) -> tuple[Path | None, list[str]]:
+    raw = str(value or "").strip()
+    errors: list[str] = []
+    if not raw:
+        return None, ["source_path_required"]
+    if "://" in raw:
+        return None, ["source_path_must_be_local_workspace_file"]
+    candidate = Path(raw)
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    resolved = candidate.resolve()
+    project_root = PROJECT_ROOT.resolve()
+    if not is_relative_to_path(resolved, project_root):
+        errors.append("source_path_outside_workspace")
+    if not resolved.exists():
+        errors.append("source_path_not_found")
+    elif not resolved.is_file():
+        errors.append("source_path_must_be_file")
+    elif resolved.stat().st_size > MAX_TOOL_ARTIFACT_BYTES:
+        errors.append("source_file_exceeds_max_bytes")
+    return resolved, errors
+
+
+def text_like_artifact(path: Path, content_type: str) -> bool:
+    normalized = str(content_type or "").lower()
+    if normalized.startswith("text/") or normalized in {"application/json", "application/xml", "application/x-ndjson"}:
+        return True
+    return path.suffix.lower() in {".json", ".jsonl", ".ndjson", ".xml", ".txt", ".sarif", ".cyclonedx"}
 
 
 def append_artifact_metadata(payload: dict[str, Any], category: str, record_id: str) -> dict[str, Any]:
@@ -1272,6 +1319,45 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     }
 
 
+def artifact_raw_output_values(tool_run: dict[str, Any] | None) -> tuple[list[str], dict[str, Any]]:
+    raw_values: list[str] = []
+    errors: list[str] = []
+    checked_artifacts = 0
+    skipped_artifacts = 0
+    for artifact in (tool_run or {}).get("raw_artifacts") or []:
+        if not isinstance(artifact, dict):
+            skipped_artifacts += 1
+            continue
+        storage_path = artifact.get("storage_path") or artifact.get("stored_path")
+        if not storage_path:
+            skipped_artifacts += 1
+            continue
+        path = Path(str(storage_path)).resolve()
+        checked_artifacts += 1
+        if not path.exists() or not path.is_file():
+            errors.append(f"stored_artifact_missing:{artifact.get('artifact_id') or path.name}")
+            continue
+        expected_hash = str(artifact.get("sha256") or artifact.get("hash") or "").strip().lower()
+        actual_hash = sha256_file(path)
+        if expected_hash and expected_hash != actual_hash:
+            errors.append(f"stored_artifact_hash_mismatch:{artifact.get('artifact_id') or path.name}")
+            continue
+        content_type = str(artifact.get("content_type") or "")
+        if not text_like_artifact(path, content_type):
+            skipped_artifacts += 1
+            continue
+        if path.stat().st_size > MAX_TOOL_ARTIFACT_BYTES:
+            errors.append(f"stored_artifact_exceeds_max_bytes:{artifact.get('artifact_id') or path.name}")
+            continue
+        raw_values.append(path.read_text(encoding="utf-8", errors="replace"))
+    return raw_values, {
+        "artifact_input_count": len(raw_values),
+        "artifact_checked_count": checked_artifacts,
+        "artifact_skipped_count": skipped_artifacts,
+        "artifact_errors": errors,
+    }
+
+
 def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     tool_run = load_json_record(run_id, "tool-runs", case_id)
@@ -1290,7 +1376,17 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         errors.append("analysis_agent_not_registered")
 
     raw_artifacts = (tool_run or {}).get("raw_artifacts") or []
-    parsed_items, parser_report = tool_specific_structured_items(tool_id, payload)
+    artifact_raw_values, artifact_report = artifact_raw_output_values(tool_run)
+    analysis_payload = payload
+    if not _raw_output_values(payload) and artifact_raw_values:
+        analysis_payload = {**payload, "raw_outputs": artifact_raw_values}
+    parsed_items, parser_report = tool_specific_structured_items(tool_id, analysis_payload)
+    parser_report = {
+        **parser_report,
+        **artifact_report,
+        "input_source": "request_payload" if _raw_output_values(payload) else ("stored_artifacts" if artifact_raw_values else "none"),
+    }
+    errors.extend(artifact_report.get("artifact_errors") or [])
     structured_items = payload.get("structured_items") or parsed_items or [
         {
             "item_type": payload.get("result_type") or "scanner_finding_candidate",
@@ -1532,6 +1628,100 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
         "audit_events": [{"event": "manual_run_recorded", "at": now_utc(), "actor": executed_by or "unknown"}],
     }
     return append_artifact_metadata(result, "manual-runs", run_id)
+
+
+def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    tool_run = load_json_record(run_id, "tool-runs", case_id)
+    errors: list[str] = []
+    if tool_run is None:
+        errors.append("tool_run_record_required")
+    elif tool_run.get("status") not in {"OutputImported", "Normalized", "EvidenceCreated"}:
+        errors.append("tool_run_output_must_be_imported")
+
+    source_value = payload.get("source_path") or payload.get("source_path_or_ref") or payload.get("path")
+    source_path, source_errors = resolve_workspace_source_path(source_value)
+    errors.extend(source_errors)
+    expected_hash = str(payload.get("sha256") or payload.get("hash") or "").strip().lower()
+    if not expected_hash:
+        errors.append("artifact_sha256_required")
+
+    actual_hash = ""
+    if source_path is not None and source_path.exists() and source_path.is_file() and not source_errors:
+        actual_hash = sha256_file(source_path)
+        if expected_hash and expected_hash != actual_hash:
+            errors.append("artifact_sha256_mismatch")
+
+    artifact_id = str(payload.get("artifact_id") or stable_id("ART", [run_id, source_path, expected_hash or actual_hash]))
+    content_type = str(payload.get("content_type") or "").strip()
+    if not content_type and source_path is not None:
+        suffix = source_path.suffix.lower()
+        content_type = {
+            ".json": "application/json",
+            ".jsonl": "application/x-ndjson",
+            ".ndjson": "application/x-ndjson",
+            ".xml": "application/xml",
+            ".txt": "text/plain",
+        }.get(suffix, "application/octet-stream")
+
+    storage_path = ""
+    if not errors and source_path is not None:
+        artifact_dir = case_dir(case_id) / "raw-artifacts" / safe_name(run_id)
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        storage = artifact_dir / f"{safe_name(artifact_id)}-{safe_name(source_path.name)}"
+        if source_path.resolve() != storage.resolve():
+            shutil.copyfile(source_path, storage)
+        storage_path = storage.as_posix()
+
+    artifact_record = {
+        "artifact_id": artifact_id,
+        "source_path_or_ref": str(source_value or ""),
+        "source_path": source_path.as_posix() if source_path is not None else None,
+        "storage_path": storage_path or None,
+        "sha256": actual_hash or expected_hash,
+        "hash_algorithm": "sha256",
+        "content_type": content_type or "application/octet-stream",
+        "size_bytes": source_path.stat().st_size if source_path is not None and source_path.exists() and source_path.is_file() else None,
+        "summary": payload.get("summary") or "Tool output file imported as untrusted data for normalizer review.",
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "imported_at": now_utc(),
+    }
+    import_record = {
+        "kind": "redteam_ax_v2_tool_artifact_import",
+        "import_id": stable_id("TAI", [run_id, artifact_id, expected_hash, now_utc()]),
+        "case_id": case_id,
+        "run_id": run_id,
+        "status": "invalid" if errors else "OutputImported",
+        "errors": errors,
+        "artifact": artifact_record,
+        "policy": {
+            "source_boundary": "workspace_only",
+            "hash_required": True,
+            "max_bytes": MAX_TOOL_ARTIFACT_BYTES,
+            "raw_content_trust": "data_only_never_instruction",
+        },
+    }
+    append_artifact_metadata(import_record, "artifact-imports", import_record["import_id"])
+    if tool_run is not None and not errors:
+        raw_artifacts = list(tool_run.get("raw_artifacts") or [])
+        raw_artifacts = [artifact for artifact in raw_artifacts if not (isinstance(artifact, dict) and artifact.get("artifact_id") == artifact_id)]
+        raw_artifacts.append(artifact_record)
+        tool_run["raw_artifacts"] = raw_artifacts
+        tool_run["status"] = "OutputImported"
+        envelope = tool_run.get("untrusted_output_envelope")
+        if isinstance(envelope, dict):
+            envelope["raw_content_ref"] = raw_artifacts
+            envelope["trusted_as_instruction"] = False
+            tool_run["untrusted_output_envelope"] = envelope
+        append_artifact_metadata(tool_run, "tool-runs", run_id)
+        action = load_tool_action(str(tool_run.get("action_id") or ""), case_id)
+        if action is not None:
+            action["status"] = "OutputImported"
+            action.setdefault("audit_events", []).append({"event": "tool_file_artifact_imported", "at": now_utc(), "run_id": run_id, "artifact_id": artifact_id})
+            persist_tool_action(action, {"event": "tool_file_artifact_imported", "run_id": run_id, "artifact_id": artifact_id})
+        import_record["tool_run"] = tool_run
+    return import_record
 
 
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:

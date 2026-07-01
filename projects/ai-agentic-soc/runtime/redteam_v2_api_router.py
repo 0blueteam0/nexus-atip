@@ -164,6 +164,11 @@ def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, An
     return redteam_v2_models.import_tool_run_output(run_id, payload)
 
 
+@router.post("/tool-runs/{run_id}/import-file")
+def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.import_tool_run_file(run_id, payload)
+
+
 @router.post("/tool-runs/{run_id}/agent-analyze")
 def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.agent_analyze_tool_run(run_id, payload)
