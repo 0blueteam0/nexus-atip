@@ -38,6 +38,7 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertTrue(action["hitl_required"])
 
         manual_run = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/manual-run-record", json={
+            "case_id": case_id,
             "executed_by": "analyst@example.com",
             "started_at": "2026-07-01T03:40:00Z",
             "ended_at": "2026-07-01T03:45:00Z",
@@ -51,6 +52,7 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         run = manual_run.json()
         self.assertEqual(run["status"], "ManuallyExecuted")
         self.assertEqual(run["normalized_result"]["evidence_candidate_count"], 2)
+        self.assertTrue(Path(run["artifact_path"]).exists())
 
         evidence = self.client.post("/api/redteam/v2/evidence", json={
             "case_id": case_id,
@@ -67,8 +69,10 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         evidence_card = evidence.json()
         self.assertEqual(evidence_card["validation_status"], "approved")
         self.assertFalse(evidence_card["errors"])
+        self.assertTrue(Path(evidence_card["artifact_path"]).exists())
 
         validation_payload = {
+            "case_id": case_id,
             "claims": [{
                 "claim_id": "C-E2E-001",
                 "support_level": "supported",
@@ -93,8 +97,10 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(gate["unsupported_claim_count"], 0)
         self.assertEqual(gate["unapproved_high_risk_count"], 0)
         self.assertEqual(gate["finding_without_evidence_count"], 0)
+        self.assertTrue(Path(gate["artifact_path"]).exists())
 
         report = self.client.post("/api/redteam/v2/reports/generate", json={
+            "case_id": case_id,
             "title": "CASE-V2-E2E-001 Korean Red Team Report v2",
             **validation_payload,
         })
@@ -105,6 +111,15 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertIn("캠페인 Walkthrough", body["report"]["sections"])
         self.assertIn("문서 통제", body["report"]["sections"])
         self.assertIn("Claim-Evidence Matrix", body["report"]["sections"])
+        report_path = Path(body["report"]["artifact_path"])
+        self.assertTrue(report_path.exists())
+        report_text = report_path.read_text(encoding="utf-8")
+        self.assertIn("## 문서 통제", report_text)
+        self.assertIn("## Campaign Walkthrough", report_text)
+        self.assertIn("## Claim-Evidence Matrix", report_text)
+        self.assertIn("Unsupported claims: `0`", report_text)
+        self.assertIn("Unapproved high-risk actions: `0`", report_text)
+        self.assertIn("Findings without evidence: `0`", report_text)
 
 
 if __name__ == "__main__":

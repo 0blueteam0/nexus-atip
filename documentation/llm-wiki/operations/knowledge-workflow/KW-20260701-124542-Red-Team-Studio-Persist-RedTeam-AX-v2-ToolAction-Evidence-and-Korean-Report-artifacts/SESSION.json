@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260701-124542-Red-Team-Studio-Persist-RedTeam-AX-v2-ToolAction-Evidence-and-Korean-Report-artifacts",
+  "project": "Red Team Studio",
+  "task": "Persist RedTeam AX v2 ToolAction Evidence and Korean Report artifacts",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260701-124542-Red-Team-Studio-Persist-RedTeam-AX-v2-ToolAction-Evidence-and-Korean-Report-artifacts",
+  "created_at": "2026-07-01T12:45:42+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

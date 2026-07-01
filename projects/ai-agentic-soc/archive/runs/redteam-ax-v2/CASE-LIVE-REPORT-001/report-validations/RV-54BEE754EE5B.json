@@ -1,0 +1,10 @@
+{
+  "kind": "redteam_ax_v2_report_validation",
+  "case_id": "CASE-LIVE-REPORT-001",
+  "gate_status": "pass",
+  "unsupported_claim_count": 0,
+  "unapproved_high_risk_count": 0,
+  "finding_without_evidence_count": 0,
+  "blocking_items": [],
+  "validated_at": "2026-07-01T03:48:48Z"
+}

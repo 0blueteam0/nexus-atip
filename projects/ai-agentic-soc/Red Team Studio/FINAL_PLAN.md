@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 2 live smoke/sample E2E complete, full goal active  
+상태: implementation slice 3 persistence/report artifact complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -41,7 +41,7 @@ Frontend:
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 1 반영
-- `runtime/redteam_v2_models.py` - slice 1 반영
+- `runtime/redteam_v2_models.py` - slice 3 persistence/report artifact 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -130,8 +130,11 @@ Tests:
 
 - ToolProfile registry, ScriptFactory, MCP v2 endpoints, audit 조회 API 분리
 - direct MCP deny는 기존 `/api/redteam/mcp/evaluate` 회귀 테스트와 v2 MCP 확장 테스트로 추가 고정
+- ToolActionCard, ManualRunRecord, EvidenceCard, ReportValidationResult, Report v2 draft는 slice 3부터 `archive/runs/redteam-ax-v2/{case_id}` 아래 JSON/Markdown artifact로 보존
 
 ### M3. ToolActionCard 중심 실행 통제
+
+상태: minimal persistence 완료, full workflow 진행 중
 
 작업:
 
@@ -149,7 +152,23 @@ Tests:
 - T5는 blocked
 - 결과 import는 Evidence candidate로만 저장
 
+현재 완료:
+
+- ToolActionCard plan JSON artifact 저장
+- ManualRunRecord JSON artifact 저장
+- EvidenceCard JSON artifact 저장
+- case audit JSONL append
+
+남은 작업:
+
+- ToolProfile registry
+- approval queue persistence
+- normalizer/import-output API
+- UI queue reload from backend
+
 ### M4. Evidence/Claim/Report v2
+
+상태: minimal report artifact 완료, full renderer 진행 중
 
 작업:
 
@@ -164,6 +183,18 @@ Tests:
 - Evidence 없는 Finding 승인 불가
 - unsupported material claim 0건
 - report export human approval 필수
+
+현재 완료:
+
+- Report validation JSON artifact 저장
+- Korean Report v2 Markdown artifact 생성
+- Markdown에 문서 통제, Campaign Walkthrough, Evidence Card Index, Claim-Evidence Matrix, Findings, Report Gate, 재시험 계획 포함
+
+남은 작업:
+
+- human approval 후 export route
+- Volkis식 상세 campaign timeline 확장
+- 악성코드 보고서식 문서 통제 metadata 확장
 
 ### M5. Sample E2E and regression
 
@@ -284,6 +315,22 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-report-studio-after-api.png`
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-toolaction-queue-live-smoke.png`
 - [x] sample case E2E unittest 추가 및 통과
-- [ ] ToolActionCard queue persistence beyond in-memory frontend state
-- [ ] final Korean Report v2 artifact export
+- [x] backend ToolActionCard/ManualRun/Evidence/ReportValidation persistence
+- [x] Korean Report v2 Markdown artifact 생성
+- [ ] ToolActionCard queue reload from backend persistence
+- [ ] final approved export route
 - [ ] full release/security regression
+
+## 11. Slice 3 Persistence / Report Artifact 체크리스트
+
+- [x] `archive/runs/redteam-ax-v2/{case_id}` 저장 루트 추가
+- [x] ToolActionCard JSON artifact 저장
+- [x] ManualRunRecord JSON artifact 저장
+- [x] EvidenceCard JSON artifact 저장
+- [x] ReportValidationResult JSON artifact 저장
+- [x] case audit JSONL append
+- [x] Korean Red Team Report v2 Markdown artifact 저장
+- [x] sample E2E가 artifact file 존재와 Markdown 핵심 섹션 검증
+- [x] live `/api/redteam/v2/reports/generate` artifact 생성 확인
+- [ ] approved export API
+- [ ] full persistent UI reload
