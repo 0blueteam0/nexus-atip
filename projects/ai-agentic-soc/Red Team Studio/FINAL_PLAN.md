@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 1 complete, full goal active  
+상태: implementation slice 2 live smoke/sample E2E complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -50,6 +50,7 @@ Backend:
 Tests:
 
 - `tests/test_redteam_v2_api_router.py` - slice 1 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 2 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -101,7 +102,7 @@ Tests:
 
 남은 작업:
 
-- Playwright screenshot으로 5177 live UI에서 `레드팀 분석`과 `레드팀 분석2` 동시 표시 확인
+- Playwright screenshot으로 5177 live UI에서 `레드팀 분석`과 `레드팀 분석2` 동시 표시 확인 - slice 2 완료
 - `redteam2ScopeRuns`, `redteam2SelectedCase`는 sample E2E 확장 시 실제 workflow state에 연결
 
 ### M2. v2 API skeleton
@@ -166,6 +167,8 @@ Tests:
 
 ### M5. Sample E2E and regression
 
+상태: fixture/API sample E2E 완료, full release E2E 진행 중
+
 작업:
 
 - loopback lab 또는 fixture 기반 sample case
@@ -175,10 +178,16 @@ Tests:
 
 완료 기준:
 
-- sample E2E 통과
+- fixture 기반 sample E2E 통과
 - frontend build 통과
-- backend pytest 통과
+- backend unittest 통과
 - report validation 0 blocker
+
+남은 작업:
+
+- 실제 5177/8765 UI 조작으로 ToolActionCard 계획 버튼을 눌러 API 결과가 queue에 쌓이는지 확인 - slice 2 완료
+- persistent case workspace와 실제 report artifact 저장 연동
+- full security regression과 starter pack 전체 회귀
 
 ## 5. 테스트 명령
 
@@ -200,7 +209,15 @@ Backend 구현 단계:
 ```powershell
 cd J:/PortableApps/genai/projects/ai-agentic-soc
 & .venv/Scripts/python.exe tests/test_redteam_v2_api_router.py
+& .venv/Scripts/python.exe tests/test_redteam_v2_sample_e2e.py
 & .venv/Scripts/python.exe tests/test_redteam_api_router.py
+```
+
+Live smoke:
+
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8765/api/redteam/v2/health"
+# Playwright: 5177 -> 보고서 스튜디오 -> 레드팀 분석2 렌더링 및 v2 API 200 응답 확인
 ```
 
 Starter pack 회귀:
@@ -250,6 +267,23 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 신규 v2 API unittest 6건 통과
 - [x] 기존 redteam API unittest 2건 통과
 - [x] frontend Vite build 통과
-- [ ] live 5177/8765 smoke
-- [ ] sample case E2E
+- [x] live 5177/8765 smoke
+- [x] fixture sample case E2E
 - [ ] release/security/report gate full regression
+
+## 10. Slice 2 Live Smoke / Sample E2E 체크리스트
+
+- [x] stale 8765 backend 프로세스 확인
+- [x] 8765 backend를 현재 코드로 재시작
+- [x] `/api/redteam/v2/health` live 200 확인
+- [x] `/api/redteam/v2/roe/evaluate` T5 deny 확인
+- [x] `/api/redteam/v2/tool-actions/plan` T3 HITL ToolActionCard 확인
+- [x] 5177 Report Studio에서 `레드팀 분석2` 탭 표시 확인
+- [x] 5177 `레드팀 분석2` 패널에서 v2 API/v1/RAG/readiness 요청 200 확인
+- [x] 5177 `ToolActionCard 계획` 클릭 후 queue에 T3/ScopeValidated/HITL required/Request Approval 표시 확인
+- [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-report-studio-after-api.png`
+- [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-toolaction-queue-live-smoke.png`
+- [x] sample case E2E unittest 추가 및 통과
+- [ ] ToolActionCard queue persistence beyond in-memory frontend state
+- [ ] final Korean Report v2 artifact export
+- [ ] full release/security regression
