@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
@@ -14,6 +15,22 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
+PROMPT_INJECTION_PATTERNS = [
+    "ignore all previous instructions",
+    "ignore previous instructions",
+    "disregard previous instructions",
+    "system prompt",
+    "developer message",
+    "export the final report",
+    "send the report",
+    "run this command",
+    "call this tool",
+]
+SECRET_REDACTION_PATTERNS = [
+    ("aws_access_key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
+    ("bearer_token", re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{16,}")),
+    ("api_key_assignment", re.compile(r"(?i)\b(api[_-]?key|secret|token|password|cookie)\s*[:=]\s*['\"]?[^'\"\s,;]+")),
+]
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5", "T6", "T7"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
@@ -1224,6 +1241,110 @@ def _raw_output_values(payload: dict[str, Any]) -> list[Any]:
     return []
 
 
+def raw_value_to_text(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    try:
+        return json.dumps(value, ensure_ascii=False, sort_keys=True)
+    except TypeError:
+        return str(value)
+
+
+def sanitize_tool_output_text(text: str, source_ref: str) -> dict[str, Any]:
+    sanitized = text
+    lowered = text.lower()
+    indicators: list[dict[str, Any]] = []
+    redactions: list[dict[str, Any]] = []
+
+    for pattern in PROMPT_INJECTION_PATTERNS:
+        if pattern in lowered:
+            indicators.append({
+                "category": "prompt_injection",
+                "pattern": pattern,
+                "source_ref": source_ref,
+                "severity": "high" if pattern in {"ignore all previous instructions", "ignore previous instructions"} else "medium",
+            })
+    if indicators:
+        sanitized_lines = []
+        for line in sanitized.splitlines() or [sanitized]:
+            line_lower = line.lower()
+            if any(pattern in line_lower for pattern in PROMPT_INJECTION_PATTERNS):
+                sanitized_lines.append("[PROMPT_INJECTION_REMOVED]")
+                redactions.append({
+                    "category": "prompt_injection",
+                    "source_ref": source_ref,
+                    "replacement": "[PROMPT_INJECTION_REMOVED]",
+                })
+            else:
+                sanitized_lines.append(line)
+        sanitized = "\n".join(sanitized_lines)
+
+    for label, regex in SECRET_REDACTION_PATTERNS:
+        matches = list(regex.finditer(sanitized))
+        if not matches:
+            continue
+        redactions.extend({
+            "category": "secret",
+            "label": label,
+            "source_ref": source_ref,
+            "replacement": "[REDACTED_SECRET]",
+        } for _ in matches)
+        sanitized = regex.sub("[REDACTED_SECRET]", sanitized)
+
+    prompt_score = 0.92 if any(item["severity"] == "high" for item in indicators) else (0.68 if indicators else 0.0)
+    secret_score = min(1.0, 0.55 + (0.1 * len([item for item in redactions if item.get("category") == "secret"]))) if any(item.get("category") == "secret" for item in redactions) else 0.0
+    return {
+        "source_ref": source_ref,
+        "sanitized_text": sanitized,
+        "indicators": indicators,
+        "redactions": redactions,
+        "prompt_injection_score": prompt_score,
+        "secret_detection_score": secret_score,
+    }
+
+
+def sanitize_tool_output_values(raw_values: list[Any], source_prefix: str = "payload") -> dict[str, Any]:
+    sanitized_outputs: list[str] = []
+    indicators: list[dict[str, Any]] = []
+    redactions: list[dict[str, Any]] = []
+    prompt_score = 0.0
+    secret_score = 0.0
+    for index, value in enumerate(raw_values):
+        result = sanitize_tool_output_text(raw_value_to_text(value), f"{source_prefix}:{index}")
+        sanitized_outputs.append(result["sanitized_text"])
+        indicators.extend(result["indicators"])
+        redactions.extend(result["redactions"])
+        prompt_score = max(prompt_score, float(result["prompt_injection_score"]))
+        secret_score = max(secret_score, float(result["secret_detection_score"]))
+    if prompt_score >= 0.85:
+        decision = "quarantine"
+    elif redactions:
+        decision = "redact"
+    else:
+        decision = "allow"
+    return {
+        "trusted_as_instruction": False,
+        "trusted_as_data": True,
+        "decision": decision,
+        "prompt_injection_score": prompt_score,
+        "secret_detection_score": secret_score,
+        "redactions": redactions,
+        "indicators": indicators,
+        "sanitized_outputs": sanitized_outputs,
+        "sanitized_summary": (
+            "Tool output quarantined due to prompt injection indicators."
+            if decision == "quarantine"
+            else "Sensitive tokens were redacted from tool output."
+            if decision == "redact"
+            else "No prompt injection or secret indicators detected."
+        ),
+        "warnings": [
+            *([] if prompt_score < 0.85 else ["tool_output_prompt_injection_quarantine"]),
+            *([] if not redactions else ["tool_output_secret_or_instruction_redacted"]),
+        ],
+    }
+
+
 def _severity(value: Any) -> str:
     raw = str(value or "").strip().lower()
     if raw in {"critical", "high", "medium", "low", "info", "informational"}:
@@ -1583,13 +1704,32 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
     analysis_payload = payload
     if not _raw_output_values(payload) and artifact_raw_values:
         analysis_payload = {**payload, "raw_outputs": artifact_raw_values}
+    raw_values_for_analysis = _raw_output_values(analysis_payload)
+    sanitizer_report = sanitize_tool_output_values(raw_values_for_analysis, "agent-analyze") if raw_values_for_analysis else {
+        "trusted_as_instruction": False,
+        "trusted_as_data": True,
+        "decision": "allow",
+        "prompt_injection_score": 0.0,
+        "secret_detection_score": 0.0,
+        "redactions": [],
+        "indicators": [],
+        "sanitized_outputs": [],
+        "sanitized_summary": "No raw tool output supplied for sanitizer preview.",
+        "warnings": [],
+    }
+    if raw_values_for_analysis:
+        analysis_payload = {**analysis_payload, "raw_outputs": sanitizer_report["sanitized_outputs"]}
     parsed_items, parser_report = tool_specific_structured_items(tool_id, analysis_payload)
     parser_report = {
         **parser_report,
         **artifact_report,
         "input_source": "request_payload" if _raw_output_values(payload) else ("stored_artifacts" if artifact_raw_values else "none"),
+        "sanitizer_decision": sanitizer_report["decision"],
+        "sanitizer_redaction_count": len(sanitizer_report["redactions"]),
     }
     errors.extend(artifact_report.get("artifact_errors") or [])
+    if sanitizer_report["decision"] == "quarantine":
+        errors.append("tool_output_quarantined")
     structured_items = enforce_structured_item_trust_contract(payload.get("structured_items") or parsed_items or [
         {
             "item_type": payload.get("result_type") or "scanner_finding_candidate",
@@ -1627,6 +1767,7 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         ],
         "structured_items": structured_items,
         "parser_report": parser_report,
+        "sanitizer_report": sanitizer_report,
         "recommended_next_actions": payload.get("recommended_next_actions") or [
             "Review candidate items for scope, false positives, and business impact.",
             "Create EvidenceCard candidates only for in-scope observations.",
@@ -1936,6 +2077,60 @@ def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]
             persist_tool_action(action, {"event": "tool_file_artifact_imported", "run_id": run_id, "artifact_id": artifact_id})
         import_record["tool_run"] = tool_run
     return import_record
+
+
+def preview_tool_output_sanitizer(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    tool_run = load_json_record(run_id, "tool-runs", case_id)
+    errors: list[str] = []
+    if tool_run is None:
+        errors.append("tool_run_record_required")
+
+    raw_values = _raw_output_values(payload)
+    input_source = "request_payload"
+    artifact_report: dict[str, Any] = {}
+    if not raw_values and tool_run is not None:
+        raw_values, artifact_report = artifact_raw_output_values(tool_run)
+        input_source = "stored_artifacts" if raw_values else "none"
+        errors.extend(artifact_report.get("artifact_errors") or [])
+    if not raw_values:
+        errors.append("raw_output_required")
+
+    sanitizer = sanitize_tool_output_values(raw_values, input_source) if raw_values else sanitize_tool_output_values([], input_source)
+    preview_id = str(payload.get("preview_id") or stable_id("SAN", [run_id, sanitizer, now_utc()]))
+    preview = {
+        "kind": "redteam_ax_v2_tool_output_sanitizer_preview",
+        "preview_id": preview_id,
+        "case_id": case_id,
+        "run_id": run_id,
+        "action_id": (tool_run or {}).get("action_id"),
+        "tool_id": (tool_run or {}).get("tool_id") or payload.get("tool_id"),
+        "input_source": input_source,
+        "artifact_report": artifact_report,
+        "status": "invalid" if errors else sanitizer["decision"],
+        "errors": errors,
+        "trusted_as_instruction": False,
+        "trusted_as_data": True,
+        "requires_human_review": sanitizer["decision"] in {"quarantine", "redact", "needs_review"} or bool(errors),
+        "sanitizer": sanitizer,
+        "sanitized_output_preview": "\n".join(sanitizer["sanitized_outputs"])[:2000],
+        "policy": {
+            "prompt_injection_threshold_quarantine": 0.85,
+            "secret_redaction_required": True,
+            "raw_output_trust": "data_only_never_instruction",
+        },
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(preview, "tool-sanitizer-previews", preview_id)
+    if tool_run is not None and not errors:
+        previews = list(tool_run.get("sanitizer_previews") or [])
+        if preview_id not in previews:
+            previews.append(preview_id)
+        tool_run["sanitizer_previews"] = previews
+        if sanitizer["decision"] == "quarantine":
+            tool_run["status"] = "Quarantined"
+        append_artifact_metadata(tool_run, "tool-runs", run_id)
+    return preview
 
 
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:

@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 18 tool result schema artifacts/validation complete, full goal active  
+상태: implementation slice 19 tool output sanitizer quarantine/redaction preview complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 18 tool schema registry/validation endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 18 ToolResultNormalized/ToolArtifactImport schema registry와 runtime validation 반영
+- `runtime/redteam_v2_api_router.py` - slice 19 tool output sanitizer preview endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 19 prompt injection quarantine/secret redaction sanitizer 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 18 schema registry/validation 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 19 sanitizer quarantine/redaction 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -638,7 +638,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 hash 누락 거부와 Nuclei JSONL stored artifact parser 경로를 검증
 - [ ] multipart browser upload UX 연결
 - [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 완료
-- [ ] artifact quarantine/redaction preview UI
+- [x] artifact quarantine/redaction preview backend foundation - slice 19 완료
 - [ ] sandbox/container runner와 network allowlist enforcement
 
 ## 26. Slice 18 Tool Result Schema Artifacts 체크리스트
@@ -653,4 +653,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 valid/invalid normalized result schema validation을 검증
 - [ ] schema artifact와 runtime registry 자동 동기화 검증
 - [ ] multipart browser upload UX에 schema validation 결과 표시
-- [ ] quarantine/redaction preview UI
+- [x] quarantine/redaction preview backend foundation - slice 19 완료
+
+## 27. Slice 19 Tool Output Sanitizer Quarantine/Redaction 체크리스트
+
+- [x] `/tool-runs/{run_id}/sanitize-preview` endpoint 추가
+- [x] tool output prompt injection pattern 탐지 및 `decision=quarantine` 판정
+- [x] secret/API key/token/password/cookie redaction preview 적용
+- [x] sanitizer 결과에 `trusted_as_instruction=false`, `trusted_as_data=true`, score, indicators, redactions, warnings 저장
+- [x] `agent-analyze`가 raw/stored output을 parser 전에 sanitizer에 통과시키고 quarantine이면 normalized result를 invalid로 고정
+- [x] sanitizer preview artifact를 `tool-sanitizer-previews`에 저장하고 ToolRunRecord에 preview ref 기록
+- [x] API unittest가 GT-OUTPUT-001 prompt injection quarantine, GT-OUTPUT-002 secret redaction, agent-analyze quarantine block을 검증
+- [ ] frontend upload UX에 sanitizer preview 표시
+- [ ] image/OCR 기반 sensitive visual redaction preview
+- [ ] sanitizer pattern corpus 확장 및 false-positive regression
