@@ -26,6 +26,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             "X-RedTeam-Actor-Role": role,
         }
 
+    @staticmethod
+    def session_headers(actor: str) -> dict[str, str]:
+        return {
+            "X-RedTeam-Session": f"dev:{actor}",
+        }
+
     def create_approved_evidence(self, case_id: str, evidence_id: str = "EV-APPROVED-1") -> dict:
         evidence = self.client.post("/api/redteam/v2/evidence", json={
             "case_id": case_id,
@@ -106,6 +112,87 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["safe_by_default"])
         self.assertEqual(body["execution_policy"], "tool_action_card_required")
         self.assertEqual(body["high_risk_mode"], "human_approved_manual_run")
+        self.assertEqual(body["actor_context_provider"], "local_dev_session_or_request_headers")
+
+    def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
+        resolved = self.client.post(
+            "/api/redteam/v2/auth/actor-context",
+            headers=self.session_headers("lead@example.com"),
+            json={"approver_role": "red_team_lead"},
+        )
+        self.assertEqual(resolved.status_code, 200)
+        body = resolved.json()
+        self.assertEqual(body["status"], "authenticated")
+        self.assertEqual(body["actor_context"]["actor_id"], "lead@example.com")
+        self.assertEqual(body["actor_context"]["actor_role"], "red_team_lead")
+        self.assertIn("finding:approve_severity", body["actor_context"]["permissions"])
+
+        wrong_role = self.client.post(
+            "/api/redteam/v2/auth/actor-context",
+            headers=self.session_headers("lead@example.com"),
+            json={"approver_role": "executive_sponsor"},
+        )
+        self.assertEqual(wrong_role.status_code, 200)
+        wrong_body = wrong_role.json()
+        self.assertEqual(wrong_body["status"], "invalid")
+        self.assertIn("actor_role_not_authorized_for_actor", wrong_body["errors"])
+
+    def test_v2_tool_action_approval_rejects_unregistered_actor_provider_context(self) -> None:
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": "CASE-V2-ACTOR-PROVIDER-001",
+            "campaign_id": "CAMP-V2",
+            "title": "Actor provider approval rejection",
+            "objective": "Verify unregistered actors cannot satisfy HITL approval.",
+            "risk_class": "T3",
+            "target_scope_refs": ["SCOPE-APPROVED-001"],
+        })
+        self.assertEqual(plan.status_code, 200)
+        action = plan.json()
+        rejected = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("unknown@example.com", "red_team_lead"),
+            json={
+                "case_id": "CASE-V2-ACTOR-PROVIDER-001",
+                "approver": "unknown@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(rejected.status_code, 200)
+        rejected_body = rejected.json()
+        self.assertEqual(rejected_body["status"], "invalid")
+        self.assertIn("actor_not_registered", rejected_body["errors"])
+        self.assertIn("actor_context_not_authenticated", rejected_body["errors"])
+
+    def test_v2_report_export_approval_accepts_session_bound_actor_context(self) -> None:
+        case_id = "CASE-V2-ACTOR-SESSION-EXPORT-001"
+        evidence = self.create_approved_evidence(case_id, "EV-ACTOR-SESSION-1")
+        finding = self.create_approved_finding(case_id, "F-ACTOR-SESSION-1", evidence["evidence_id"])
+        report = self.client.post("/api/redteam/v2/reports/generate", json={
+            "title": "Actor Session Bound Korean Red Team Report v2",
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-ACTOR-SESSION-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": finding["finding_id"], "severity_final": finding["severity_final"], "evidence_ids": [evidence["evidence_id"]]}],
+            "tool_actions": [],
+        })
+        self.assertEqual(report.status_code, 200)
+        report_body = report.json()
+        self.assertEqual(report_body["gate_status"], "pass")
+
+        approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export",
+            headers=self.session_headers("sponsor@example.com"),
+            json={
+                "case_id": case_id,
+                "approved_by": "sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "ExportApproved")
+        self.assertEqual(approval_body["actor_context"]["auth_provider"], "local_dev_session")
+        self.assertIn("report:approve_export", approval_body["actor_context"]["permissions"])
 
     def test_v2_roe_denies_missing_scope_and_t5_without_override(self) -> None:
         response = self.client.post("/api/redteam/v2/roe/evaluate", json={

@@ -1,0 +1,39 @@
+{
+  "kind": "redteam_ax_v2_approval_decision",
+  "decision_id": "APD-9E1DF73DE11E",
+  "case_id": "CASE-LIVE-ACTOR-PROVIDER-001",
+  "action_id": "TAC-5D67CDEDBF3C",
+  "status": "Approved",
+  "errors": [],
+  "approver": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "actor_context": {
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "requested_role": "red_team_lead",
+    "roles": [
+      "red_team_lead"
+    ],
+    "permissions": [
+      "evidence:approve",
+      "finding:approve_severity",
+      "tool_action:approve_t3"
+    ],
+    "authenticated": true,
+    "auth_provider": "local_dev_session",
+    "auth_strength": "session_bound",
+    "source": "local_dev_session",
+    "display_name": "Sample Red Team Lead",
+    "errors": [],
+    "resolved": true
+  },
+  "identity_binding": "bound",
+  "decision": "approve",
+  "conditions": [],
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_mode": "single_lead",
+  "decided_at": "2026-07-01T06:19:58Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-ACTOR-PROVIDER-001/approvals/APD-9E1DF73DE11E.json"
+}

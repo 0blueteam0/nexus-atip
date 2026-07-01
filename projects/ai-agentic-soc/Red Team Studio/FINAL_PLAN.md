@@ -514,6 +514,26 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample E2E가 approved Finding과 final severity 승인 후 report gate 0건 검증
 - [x] live 8765 smoke로 unapproved Finding blocked -> 2인 승인 -> report/export pass 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-finding-approved-export-flow.png`
-- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
+- [x] actor context provider/RBAC resolver foundation - slice 12 완료
+- [ ] 외부 SSO/IdP provider와 actor context 발급 연동
 - [ ] Finding owner/SLA/retest workflow의 별도 승인 UI
+- [ ] full release/security/starter-pack regression
+
+## 20. Slice 12 Actor Context Provider / RBAC Resolver 체크리스트
+
+- [x] backend `resolve_actor_context` provider 추가
+- [x] local dev session token 형식 `X-RedTeam-Session: dev:<actor_id>` 지원
+- [x] actor directory와 role permission registry 추가
+- [x] approval API가 actor provider의 `authenticated`, `roles`, `permissions`, `auth_provider` context를 artifact에 저장
+- [x] 등록되지 않은 actor는 approval invalid
+- [x] actor가 보유하지 않은 role 요청은 `actor_role_not_authorized_for_actor`로 invalid
+- [x] `POST /api/redteam/v2/auth/actor-context` 추가
+- [x] `/api/redteam/v2/health`에 actor context provider 상태 노출
+- [x] `레드팀 분석2` UI에서 Evidence/Finding approval actor와 Executive Sponsor actor를 분리
+- [x] API unittest가 registered actor, wrong role, unregistered actor, session-bound report export approval 검증
+- [x] 기존 v2 sample E2E와 기존 redteam router regression 통과
+- [x] live 8765 smoke로 session-bound actor context, wrong role reject, unregistered reject, session approval pass 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-actor-provider-export-flow.png`
+- [ ] 외부 SSO/IdP 토큰 검증 어댑터
+- [ ] 중앙 사용자/그룹 동기화 및 case별 RBAC policy
 - [ ] full release/security/starter-pack regression

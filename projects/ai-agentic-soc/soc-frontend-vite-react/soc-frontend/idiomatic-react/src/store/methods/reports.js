@@ -3360,8 +3360,8 @@ export default {
     if (!evidenceRes.ok || evidence.errors?.length) throw new Error((evidence.errors || []).join(', ') || evidence.detail || `HTTP ${evidenceRes.status}`);
     const approvalPayload = {
       case_id:evidencePayload.case_id,
-      reviewed_by:String(draft.approver || '').trim(),
-      reviewer_role:String(draft.approverRole || 'executive_sponsor').trim() === 'executive_sponsor' ? 'red_team_lead' : String(draft.approverRole || 'red_team_lead').trim(),
+      reviewed_by:String(draft.redTeamLead || 'lead@example.com').trim(),
+      reviewer_role:'red_team_lead',
       decision:'approve',
     };
     const reviewer = approvalPayload.reviewed_by || 'lead@example.com';

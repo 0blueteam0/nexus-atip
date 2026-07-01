@@ -25,6 +25,28 @@ APPROVER_ROLES = {
 REPORT_EXPORT_APPROVER_ROLES = {"executive_sponsor"}
 FINDING_SEVERITIES = {"info", "low", "medium", "high", "critical"}
 FINDING_SEVERITY_APPROVER_ROLES = {"red_team_lead", "business_owner"}
+ROLE_PERMISSIONS = {
+    "analyst": {"tool_action:plan", "tool_action:request_approval"},
+    "red_team_lead": {"tool_action:approve_t3", "evidence:approve", "finding:approve_severity"},
+    "control_team": {"tool_action:approve_t4", "tool_action:approve_t5", "evidence:approve"},
+    "second_approver": {"tool_action:approve_t5"},
+    "legal_privacy": {"evidence:approve_restricted", "evidence:approve"},
+    "data_owner": {"evidence:approve_restricted", "evidence:approve"},
+    "business_owner": {"finding:approve_severity", "risk:accept"},
+    "executive_sponsor": {"report:approve_export", "risk:accept"},
+}
+ACTOR_DIRECTORY = {
+    "analyst@example.com": {"display_name": "Sample Analyst", "roles": {"analyst"}},
+    "lead@example.com": {"display_name": "Sample Red Team Lead", "roles": {"red_team_lead"}},
+    "control@example.com": {"display_name": "Sample Control Team", "roles": {"control_team"}},
+    "second@example.com": {"display_name": "Sample Second Approver", "roles": {"second_approver"}},
+    "owner@example.com": {"display_name": "Sample Business Owner", "roles": {"business_owner"}},
+    "business-owner@example.com": {"display_name": "Sample Business Owner", "roles": {"business_owner"}},
+    "sponsor@example.com": {"display_name": "Sample Executive Sponsor", "roles": {"executive_sponsor"}},
+    "executive-sponsor@example.com": {"display_name": "Sample Executive Sponsor", "roles": {"executive_sponsor"}},
+    "privacy@example.com": {"display_name": "Sample Legal Privacy Reviewer", "roles": {"legal_privacy"}},
+    "data-owner@example.com": {"display_name": "Sample Data Owner", "roles": {"data_owner"}},
+}
 
 
 def now_utc() -> str:
@@ -172,24 +194,90 @@ def normalize_approver_role(value: Any) -> str:
     return role if role in APPROVER_ROLES else ""
 
 
-def actor_context_from_payload(payload: dict[str, Any]) -> dict[str, str]:
-    context = payload.get("_actor_context") or {}
-    actor_id = str(context.get("actor_id") or "").strip().lower()
-    actor_role = normalize_approver_role(context.get("actor_role"))
+def role_permissions(roles: set[str]) -> list[str]:
+    permissions: set[str] = set()
+    for role in roles:
+        permissions.update(ROLE_PERMISSIONS.get(role, set()))
+    return sorted(permissions)
+
+
+def requested_actor_role(payload: dict[str, Any], fallback: Any = "") -> str:
+    return normalize_approver_role(
+        fallback
+        or payload.get("approver_role")
+        or payload.get("reviewer_role")
+        or payload.get("role")
+        or ""
+    )
+
+
+def resolve_actor_context(
+    payload: dict[str, Any] | None = None,
+    actor_id: str | None = None,
+    actor_role: str | None = None,
+    session_token: str | None = None,
+) -> dict[str, Any]:
+    payload = payload or {}
+    raw_actor_id = str(actor_id or "").strip().lower()
+    raw_session = str(session_token or "").strip()
+    provider = "request_headers"
+    auth_strength = "header_bound"
+    errors: list[str] = []
+
+    if raw_session.startswith("dev:"):
+        raw_actor_id = raw_session[4:].strip().lower()
+        provider = "local_dev_session"
+        auth_strength = "session_bound"
+
+    requested_role = requested_actor_role(payload, actor_role)
+    profile = ACTOR_DIRECTORY.get(raw_actor_id)
+    assigned_roles = {normalize_approver_role(role) for role in (profile or {}).get("roles", set())}
+    assigned_roles.discard("")
+    authenticated = bool(profile)
+
+    if raw_actor_id and not authenticated:
+        errors.append("actor_not_registered")
+    if requested_role and authenticated and requested_role not in assigned_roles:
+        errors.append("actor_role_not_authorized_for_actor")
+
     return {
-        "actor_id": actor_id,
-        "actor_role": actor_role,
-        "source": str(context.get("source") or "request_headers").strip() or "request_headers",
+        "actor_id": raw_actor_id,
+        "actor_role": requested_role if requested_role in assigned_roles else "",
+        "requested_role": requested_role,
+        "roles": sorted(assigned_roles),
+        "permissions": role_permissions(assigned_roles),
+        "authenticated": authenticated and not errors,
+        "auth_provider": provider,
+        "auth_strength": auth_strength,
+        "source": provider,
+        "display_name": str((profile or {}).get("display_name") or "").strip(),
+        "errors": errors,
     }
 
 
-def approval_actor_binding_errors(payload: dict[str, Any], approver: str, approver_role: str) -> tuple[dict[str, str], list[str]]:
+def actor_context_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    context = payload.get("_actor_context") or {}
+    if context.get("resolved"):
+        return dict(context)
+    return resolve_actor_context(
+        payload,
+        actor_id=str(context.get("actor_id") or "").strip(),
+        actor_role=str(context.get("actor_role") or "").strip(),
+        session_token=str(context.get("session_token") or "").strip(),
+    ) | {"resolved": True}
+
+
+def approval_actor_binding_errors(payload: dict[str, Any], approver: str, approver_role: str) -> tuple[dict[str, Any], list[str]]:
     actor_context = actor_context_from_payload(payload)
     errors: list[str] = []
     if not actor_context["actor_id"]:
         errors.append("actor_context_required")
     if not actor_context["actor_role"]:
         errors.append("actor_role_required")
+    if actor_context.get("errors"):
+        errors.extend(actor_context["errors"])
+    if actor_context["actor_id"] and not actor_context.get("authenticated"):
+        errors.append("actor_context_not_authenticated")
     if approver and actor_context["actor_id"] and approver.strip().lower() != actor_context["actor_id"]:
         errors.append("approver_must_match_authenticated_actor")
     if approver_role and actor_context["actor_role"] and approver_role != actor_context["actor_role"]:
@@ -724,6 +812,10 @@ def approve_evidence_card(evidence_id: str, payload: dict[str, Any]) -> dict[str
         errors.append("actor_context_required")
     if not actor_context["actor_role"]:
         errors.append("actor_role_required")
+    if actor_context.get("errors"):
+        errors.extend(actor_context["errors"])
+    if actor_context["actor_id"] and not actor_context.get("authenticated"):
+        errors.append("actor_context_not_authenticated")
     if reviewer and actor_context["actor_id"] and reviewer.lower() != actor_context["actor_id"]:
         errors.append("reviewer_must_match_authenticated_actor")
     if reviewer_role and actor_context["actor_role"] and reviewer_role != actor_context["actor_role"]:

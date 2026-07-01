@@ -17,13 +17,19 @@ def with_actor_context(
     payload: dict[str, Any],
     actor_id: str | None,
     actor_role: str | None,
+    session_token: str | None = None,
 ) -> dict[str, Any]:
+    actor_context = redteam_v2_models.resolve_actor_context(
+        payload,
+        actor_id=actor_id,
+        actor_role=actor_role,
+        session_token=session_token,
+    )
     return {
         **payload,
         "_actor_context": {
-            "actor_id": actor_id or "",
-            "actor_role": actor_role or "",
-            "source": "request_headers",
+            **actor_context,
+            "resolved": True,
         },
     }
 
@@ -44,6 +50,28 @@ def redteam_v2_health() -> dict[str, Any]:
             "unapproved_finding_count": 0,
             "unapproved_final_severity_count": 0,
         },
+        "actor_context_provider": "local_dev_session_or_request_headers",
+    }
+
+
+@router.post("/auth/actor-context")
+def resolve_actor_context(
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
+) -> dict[str, Any]:
+    context = redteam_v2_models.resolve_actor_context(
+        payload,
+        actor_id=x_redteam_actor,
+        actor_role=x_redteam_actor_role,
+        session_token=x_redteam_session,
+    )
+    return {
+        "kind": "redteam_ax_v2_actor_context",
+        "actor_context": context,
+        "status": "authenticated" if context.get("authenticated") else "invalid",
+        "errors": context.get("errors") or [],
     }
 
 
@@ -86,8 +114,9 @@ def approve_tool_action(
     payload: dict[str, Any],
     x_redteam_actor: str | None = Header(default=None),
     x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    return redteam_v2_models.approve_tool_action(action_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+    return redteam_v2_models.approve_tool_action(action_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
 
 
 @router.post("/tool-actions/{action_id}/manual-run-record")
@@ -121,8 +150,9 @@ def approve_evidence(
     payload: dict[str, Any],
     x_redteam_actor: str | None = Header(default=None),
     x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    return redteam_v2_models.approve_evidence_card(evidence_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+    return redteam_v2_models.approve_evidence_card(evidence_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
 
 
 @router.post("/findings")
@@ -136,8 +166,9 @@ def approve_finding_severity(
     payload: dict[str, Any],
     x_redteam_actor: str | None = Header(default=None),
     x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    return redteam_v2_models.approve_finding_severity(finding_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+    return redteam_v2_models.approve_finding_severity(finding_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
 
 
 @router.post("/reports/validate")
@@ -156,8 +187,9 @@ def approve_report_export(
     payload: dict[str, Any],
     x_redteam_actor: str | None = Header(default=None),
     x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    return redteam_v2_models.approve_report_export(report_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+    return redteam_v2_models.approve_report_export(report_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
 
 
 @router.post("/reports/{report_id}/export")
