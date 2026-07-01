@@ -19,9 +19,12 @@ APPROVER_ROLES = {
     "second_approver",
     "legal_privacy",
     "data_owner",
+    "business_owner",
     "executive_sponsor",
 }
 REPORT_EXPORT_APPROVER_ROLES = {"executive_sponsor"}
+FINDING_SEVERITIES = {"info", "low", "medium", "high", "critical"}
+FINDING_SEVERITY_APPROVER_ROLES = {"red_team_lead", "business_owner"}
 
 
 def now_utc() -> str:
@@ -108,6 +111,7 @@ def load_json_record(record_id: str, category: str, case_id: str | None = None) 
             record.get("run_id")
             or record.get("result_id")
             or record.get("evidence_id")
+            or record.get("finding_id")
             or record.get("report_id")
             or record.get("approval_id")
             or record.get("export_id")
@@ -775,6 +779,204 @@ def evidence_approval_issues(case_id: str, evidence_ids: list[str]) -> list[dict
     return issues
 
 
+def normalize_severity(value: Any) -> str:
+    severity = str(value or "medium").strip().lower()
+    return severity if severity in FINDING_SEVERITIES else "medium"
+
+
+def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip() or "CASE-UNSPECIFIED"
+    evidence_ids = [str(item).strip() for item in (payload.get("evidence_ids") or []) if str(item).strip()]
+    finding_id = str(payload.get("finding_id") or "").strip() or stable_id("F", [case_id, payload.get("title"), evidence_ids])
+    severity_draft = normalize_severity(payload.get("severity_draft") or payload.get("severity") or "medium")
+    required_text_fields = ["title", "root_cause", "business_impact", "owner", "sla", "retest_criteria"]
+    errors = [f"{field}_required" for field in required_text_fields if not payload.get(field)]
+    evidence_issues = evidence_approval_issues(case_id, evidence_ids)
+    errors.extend(f"evidence:{issue['type']}:{issue['id']}" for issue in evidence_issues)
+    if not evidence_ids:
+        errors.append("evidence_ids_required")
+    if severity_draft in {"high", "critical"} and not (payload.get("crown_jewel_link") or payload.get("affected_business_process")):
+        errors.append("high_critical_requires_crown_jewel_or_business_process")
+
+    status = "needs_evidence" if not evidence_ids else "pending_review"
+    finding = {
+        "kind": "redteam_ax_v2_finding",
+        "case_id": case_id,
+        "finding_id": finding_id,
+        "title": str(payload.get("title") or "Untitled Finding").strip(),
+        "severity_draft": severity_draft,
+        "severity_final": None,
+        "confidence": float(payload.get("confidence") or 0.75),
+        "status": status,
+        "approval_status": "pending",
+        "related_objective": str(payload.get("related_objective") or "").strip(),
+        "related_scenario": str(payload.get("related_scenario") or "").strip(),
+        "related_campaign": str(payload.get("related_campaign") or "").strip(),
+        "affected_assets": payload.get("affected_assets") or [],
+        "affected_business_process": payload.get("affected_business_process") or [],
+        "affected_data": payload.get("affected_data") or [],
+        "crown_jewel_link": payload.get("crown_jewel_link") or [],
+        "attack_path_reference": payload.get("attack_path_reference") or [],
+        "observation": str(payload.get("observation") or "").strip(),
+        "evidence_ids": evidence_ids,
+        "expected_control": str(payload.get("expected_control") or "").strip(),
+        "observed_control_response": str(payload.get("observed_control_response") or "").strip(),
+        "detection_gap": str(payload.get("detection_gap") or "").strip(),
+        "response_gap": str(payload.get("response_gap") or "").strip(),
+        "root_cause": payload.get("root_cause") or [],
+        "business_impact": str(payload.get("business_impact") or "").strip(),
+        "likelihood": str(payload.get("likelihood") or "medium").strip().lower(),
+        "impact": str(payload.get("impact") or "medium").strip().lower(),
+        "recommendation": payload.get("recommendation") or [],
+        "owner": str(payload.get("owner") or "").strip(),
+        "sla": str(payload.get("sla") or "").strip(),
+        "verification_method": str(payload.get("verification_method") or "").strip(),
+        "retest_criteria": str(payload.get("retest_criteria") or "").strip(),
+        "residual_risk": str(payload.get("residual_risk") or "").strip(),
+        "human_reviewer": None,
+        "approval_decisions": [],
+        "severity_approval_policy": {
+            "required_approver_roles": sorted(FINDING_SEVERITY_APPROVER_ROLES),
+            "requires_distinct_approvers": True,
+        },
+        "errors": errors,
+        "created_at": now_utc(),
+    }
+    return append_artifact_metadata(finding, "findings", finding_id)
+
+
+def approved_finding_roles(finding: dict[str, Any], severity_final: str) -> tuple[set[str], set[str], bool]:
+    roles: set[str] = set()
+    actors: set[str] = set()
+    severities: set[str] = set()
+    for decision in finding.get("approval_decisions") or []:
+        if str(decision.get("decision") or "").lower() != "approve":
+            continue
+        role = normalize_approver_role(decision.get("approver_role"))
+        actor = str(decision.get("approved_by") or "").strip().lower()
+        severity = normalize_severity(decision.get("severity_final"))
+        if role in FINDING_SEVERITY_APPROVER_ROLES and actor:
+            roles.add(role)
+            actors.add(actor)
+            severities.add(severity)
+    return roles, actors, severities == {severity_final}
+
+
+def approve_finding_severity(finding_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    finding = load_json_record(finding_id, "findings", case_id=case_id)
+    errors: list[str] = []
+    if finding is None:
+        errors.append("finding_not_found")
+        resolved_case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    else:
+        resolved_case_id = str(finding.get("case_id") or payload.get("case_id") or "CASE-UNSPECIFIED")
+
+    approver = str(payload.get("approved_by") or payload.get("approver") or "").strip()
+    approver_role = normalize_approver_role(payload.get("approver_role"))
+    actor_context, binding_errors = approval_actor_binding_errors(payload, approver, approver_role)
+    decision = str(payload.get("decision") or "approve").strip().lower()
+    severity_final = normalize_severity(payload.get("severity_final") or (finding or {}).get("severity_draft"))
+
+    if not approver:
+        errors.append("approved_by_required")
+    errors.extend(binding_errors)
+    if approver_role not in FINDING_SEVERITY_APPROVER_ROLES:
+        errors.append("finding_severity_approver_role_required")
+    if decision != "approve":
+        errors.append("approval_decision_must_be_approve")
+
+    evidence_issues: list[dict[str, Any]] = []
+    if finding is not None:
+        evidence_ids = [str(item).strip() for item in (finding.get("evidence_ids") or []) if str(item).strip()]
+        if not evidence_ids:
+            errors.append("evidence_ids_required")
+        evidence_issues = evidence_approval_issues(resolved_case_id, evidence_ids)
+        errors.extend(f"evidence:{issue['type']}:{issue['id']}" for issue in evidence_issues)
+
+    approval_id = stable_id("FAPR", [resolved_case_id, finding_id, approver, approver_role, severity_final, now_utc()])
+    pending_conditions: list[str] = []
+    if finding is not None and not errors:
+        decisions = [
+            item for item in (finding.get("approval_decisions") or [])
+            if not (
+                str(item.get("approved_by") or "").strip().lower() == approver.lower()
+                and normalize_approver_role(item.get("approver_role")) == approver_role
+            )
+        ]
+        decisions.append({
+            "approval_id": approval_id,
+            "decision": decision,
+            "approved_by": approver,
+            "approver_role": approver_role,
+            "severity_final": severity_final,
+            "actor_context": actor_context,
+            "approved_at": now_utc(),
+        })
+        finding["approval_decisions"] = decisions
+        roles, actors, severity_aligned = approved_finding_roles(finding, severity_final)
+        if not severity_aligned:
+            errors.append("severity_approvals_must_match")
+        if not FINDING_SEVERITY_APPROVER_ROLES.issubset(roles):
+            pending_conditions.append("red_team_lead_and_business_owner_required")
+        if len(actors) < 2:
+            pending_conditions.append("distinct_finding_severity_approvers_required")
+        if not errors and not pending_conditions:
+            finding["status"] = "approved"
+            finding["approval_status"] = "approved"
+            finding["severity_final"] = severity_final
+            finding["human_reviewer"] = approver
+            finding["approved_at"] = now_utc()
+        finding["errors"] = errors
+        finding["pending_conditions"] = pending_conditions
+        append_artifact_metadata(finding, "findings", finding_id)
+
+    result = {
+        "kind": "redteam_ax_v2_finding_severity_approval",
+        "approval_id": approval_id,
+        "finding_id": finding_id,
+        "case_id": resolved_case_id,
+        "status": "approved" if finding is not None and not errors and not pending_conditions and finding.get("approval_status") == "approved" else "pending" if finding is not None and not errors else "invalid",
+        "decision": decision,
+        "approved_by": approver,
+        "approver_role": approver_role,
+        "severity_final": severity_final,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not binding_errors else "invalid",
+        "required_approver_roles": sorted(FINDING_SEVERITY_APPROVER_ROLES),
+        "finding": finding,
+        "evidence_issues": evidence_issues,
+        "pending_conditions": pending_conditions,
+        "errors": errors,
+        "approved_at": now_utc() if finding is not None and not errors and not pending_conditions and finding.get("approval_status") == "approved" else None,
+    }
+    return append_artifact_metadata(result, "finding-approvals", approval_id)
+
+
+def finding_approval_issues(case_id: str, findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    issues: list[dict[str, Any]] = []
+    for item in findings:
+        finding_id = str(item.get("finding_id") or item.get("id") or "").strip()
+        if not finding_id:
+            issues.append({"type": "missing_finding", "id": "unknown"})
+            continue
+        if not item.get("evidence_ids"):
+            continue
+        finding = load_json_record(finding_id, "findings", case_id)
+        if finding is None:
+            issues.append({"type": "missing_finding", "id": finding_id})
+            continue
+        if finding.get("approval_status") != "approved" or finding.get("status") != "approved":
+            issues.append({"type": "unapproved_finding", "id": finding_id, "approval_status": finding.get("approval_status") or "unknown"})
+        stored_final = str(finding.get("severity_final") or "").strip().lower()
+        requested_final = str(item.get("severity_final") or stored_final).strip().lower()
+        if stored_final not in FINDING_SEVERITIES:
+            issues.append({"type": "unapproved_final_severity", "id": finding_id})
+        elif requested_final and requested_final != stored_final:
+            issues.append({"type": "final_severity_mismatch", "id": finding_id, "expected": stored_final, "actual": requested_final})
+    return issues
+
+
 def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     claims = payload.get("claims") or []
@@ -794,6 +996,7 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
         finding for finding in findings
         if not finding.get("evidence_ids")
     ]
+    finding_issues = finding_approval_issues(case_id, findings)
     unapproved_high_risk = [
         action for action in tool_actions
         if normalize_risk_class(action.get("risk_class")) in HIGH_RISK_CLASSES
@@ -805,6 +1008,7 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     blocking_items.extend({"type": "finding_without_evidence", "id": item.get("finding_id") or item.get("id")} for item in findings_without_evidence)
     blocking_items.extend({"type": "unapproved_high_risk_action", "id": item.get("action_id") or item.get("id")} for item in unapproved_high_risk)
     blocking_items.extend(evidence_issues)
+    blocking_items.extend(finding_issues)
     gate_status = "pass" if not blocking_items else "blocked"
     result = {
         "kind": "redteam_ax_v2_report_validation",
@@ -816,6 +1020,9 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
         "unapproved_evidence_count": len([item for item in evidence_issues if item["type"] == "unapproved_evidence"]),
         "missing_evidence_count": len([item for item in evidence_issues if item["type"] == "missing_evidence"]),
         "unverified_evidence_count": len([item for item in evidence_issues if item["type"] == "unverified_evidence"]),
+        "missing_finding_count": len([item for item in finding_issues if item["type"] == "missing_finding"]),
+        "unapproved_finding_count": len([item for item in finding_issues if item["type"] == "unapproved_finding"]),
+        "unapproved_final_severity_count": len([item for item in finding_issues if item["type"] in {"unapproved_final_severity", "final_severity_mismatch"}]),
         "blocking_items": blocking_items,
         "validated_at": now_utc(),
     }
@@ -866,7 +1073,8 @@ def render_korean_report_markdown(payload: dict[str, Any], validation: dict[str,
         "",
     ])
     for finding in findings:
-        lines.append(f"- `{finding.get('finding_id') or finding.get('id')}` {finding.get('title') or 'Finding'} / Evidence: {', '.join(finding.get('evidence_ids') or [])}")
+        severity = finding.get("severity_final") or finding.get("severity_draft") or "pending"
+        lines.append(f"- `{finding.get('finding_id') or finding.get('id')}` {finding.get('title') or 'Finding'} / Severity: {severity} / Evidence: {', '.join(finding.get('evidence_ids') or [])}")
     lines.extend([
         "",
         "## ToolAction / HITL Summary",
@@ -885,6 +1093,9 @@ def render_korean_report_markdown(payload: dict[str, Any], validation: dict[str,
         f"- Missing evidence: `{validation.get('missing_evidence_count', 0)}`",
         f"- Unapproved evidence: `{validation.get('unapproved_evidence_count', 0)}`",
         f"- Unverified evidence: `{validation.get('unverified_evidence_count', 0)}`",
+        f"- Missing findings: `{validation.get('missing_finding_count', 0)}`",
+        f"- Unapproved findings: `{validation.get('unapproved_finding_count', 0)}`",
+        f"- Unapproved final severities: `{validation.get('unapproved_final_severity_count', 0)}`",
         "",
         "## 재시험 계획",
         "",
@@ -953,6 +1164,9 @@ def report_gate_snapshot(report: dict[str, Any]) -> dict[str, Any]:
         "missing_evidence_count": int(validation.get("missing_evidence_count") or 0),
         "unapproved_evidence_count": int(validation.get("unapproved_evidence_count") or 0),
         "unverified_evidence_count": int(validation.get("unverified_evidence_count") or 0),
+        "missing_finding_count": int(validation.get("missing_finding_count") or 0),
+        "unapproved_finding_count": int(validation.get("unapproved_finding_count") or 0),
+        "unapproved_final_severity_count": int(validation.get("unapproved_final_severity_count") or 0),
         "blocking_items": blocking_items,
     }
 
@@ -976,6 +1190,12 @@ def report_export_gate_errors(report: dict[str, Any] | None) -> list[str]:
         errors.append("unapproved_evidence_present")
     if snapshot["unverified_evidence_count"] != 0:
         errors.append("unverified_evidence_present")
+    if snapshot["missing_finding_count"] != 0:
+        errors.append("missing_finding_present")
+    if snapshot["unapproved_finding_count"] != 0:
+        errors.append("unapproved_finding_present")
+    if snapshot["unapproved_final_severity_count"] != 0:
+        errors.append("unapproved_final_severity_present")
     if snapshot["blocking_items"]:
         errors.append("report_validation_blocking_items_present")
     if not (report.get("report") or {}).get("artifact_path"):

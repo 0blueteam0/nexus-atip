@@ -1,0 +1,19 @@
+{
+  "kind": "redteam_ax_v2_evidence_approval",
+  "approval_id": "EVA-9261E8A2D84A",
+  "evidence_id": "EV-LIVE-FINDING-001",
+  "case_id": "CASE-LIVE-FINDING-APPROVAL-001",
+  "status": "approved",
+  "decision": "approve",
+  "reviewed_by": "lead@example.com",
+  "reviewer_role": "red_team_lead",
+  "actor_context": {
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "source": "request_headers"
+  },
+  "identity_binding": "bound",
+  "reviewed_at": "2026-07-01T06:08:41Z",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/evidence-approvals/EVA-9261E8A2D84A.json"
+}

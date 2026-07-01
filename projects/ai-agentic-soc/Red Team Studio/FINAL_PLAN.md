@@ -491,6 +491,29 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample E2E가 Evidence approval 후 report gate 0건 검증
 - [x] live 8765 smoke로 pending Evidence blocked -> approved Evidence pass -> export 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-evidence-approved-export-flow.png`
-- [ ] approved Finding lifecycle
+- [x] approved Finding lifecycle - slice 11 완료
 - [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
+- [ ] full release/security/starter-pack regression
+
+## 19. Slice 11 Approved Finding Lifecycle / Final Severity Gate 체크리스트
+
+- [x] `business_owner` approver role 추가
+- [x] `POST /api/redteam/v2/findings` 추가
+- [x] `POST /api/redteam/v2/findings/{finding_id}/approve-severity` 추가
+- [x] FindingV2 생성 시 title, root_cause, business_impact, owner, sla, retest_criteria, Evidence 링크 검증
+- [x] Evidence 없는 Finding은 `needs_evidence` 또는 report blocker로 유지
+- [x] Finding 최종 심각도는 `red_team_lead + business_owner` 2인 승인 전까지 approved 불가
+- [x] 동일 actor가 2인 승인을 충족하지 못하도록 distinct approver 조건 적용
+- [x] report validator가 실제 Finding artifact를 로드해 missing/unapproved Finding 차단
+- [x] report validator가 unapproved/mismatched final severity 차단
+- [x] ReportValidationResult에 `missing_finding_count`, `unapproved_finding_count`, `unapproved_final_severity_count` 추가
+- [x] Report export approval gate가 Finding blocker count를 재확인
+- [x] Report Markdown에 Finding/final severity blocker count 표시
+- [x] `레드팀 분석2` UI가 Generate Report v2 전에 Evidence 승인, Finding 생성, Red Team Lead + Business Owner 심각도 승인을 수행
+- [x] API unittest가 unapproved Finding/final severity gate 검증
+- [x] sample E2E가 approved Finding과 final severity 승인 후 report gate 0건 검증
+- [x] live 8765 smoke로 unapproved Finding blocked -> 2인 승인 -> report/export pass 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-finding-approved-export-flow.png`
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
+- [ ] Finding owner/SLA/retest workflow의 별도 승인 UI
 - [ ] full release/security/starter-pack regression

@@ -1,0 +1,109 @@
+{
+  "kind": "redteam_ax_v2_finding_severity_approval",
+  "approval_id": "FAPR-964A71F80198",
+  "finding_id": "F-LIVE-FINDING-001",
+  "case_id": "CASE-LIVE-FINDING-APPROVAL-001",
+  "status": "approved",
+  "decision": "approve",
+  "approved_by": "business-owner@example.com",
+  "approver_role": "business_owner",
+  "severity_final": "medium",
+  "actor_context": {
+    "actor_id": "business-owner@example.com",
+    "actor_role": "business_owner",
+    "source": "request_headers"
+  },
+  "identity_binding": "bound",
+  "required_approver_roles": [
+    "business_owner",
+    "red_team_lead"
+  ],
+  "finding": {
+    "kind": "redteam_ax_v2_finding",
+    "case_id": "CASE-LIVE-FINDING-APPROVAL-001",
+    "finding_id": "F-LIVE-FINDING-001",
+    "title": "Live smoke FindingV2 gate",
+    "severity_draft": "medium",
+    "severity_final": "medium",
+    "confidence": 0.75,
+    "status": "approved",
+    "approval_status": "approved",
+    "related_objective": "",
+    "related_scenario": "",
+    "related_campaign": "",
+    "affected_assets": [],
+    "affected_business_process": [
+      "RedTeam AX report workflow"
+    ],
+    "affected_data": [],
+    "crown_jewel_link": [],
+    "attack_path_reference": [],
+    "observation": "",
+    "evidence_ids": [
+      "EV-LIVE-FINDING-001"
+    ],
+    "expected_control": "",
+    "observed_control_response": "",
+    "detection_gap": "",
+    "response_gap": "",
+    "root_cause": [
+      "workflow_control_gap"
+    ],
+    "business_impact": "Live smoke verifies approved findings are required.",
+    "likelihood": "medium",
+    "impact": "medium",
+    "recommendation": [],
+    "owner": "Security Engineering",
+    "sla": "30 days",
+    "verification_method": "",
+    "retest_criteria": "Report gate has zero Finding blockers.",
+    "residual_risk": "",
+    "human_reviewer": "business-owner@example.com",
+    "approval_decisions": [
+      {
+        "approval_id": "FAPR-313FC2DBA7F4",
+        "decision": "approve",
+        "approved_by": "lead@example.com",
+        "approver_role": "red_team_lead",
+        "severity_final": "medium",
+        "actor_context": {
+          "actor_id": "lead@example.com",
+          "actor_role": "red_team_lead",
+          "source": "request_headers"
+        },
+        "approved_at": "2026-07-01T06:08:59Z"
+      },
+      {
+        "approval_id": "FAPR-964A71F80198",
+        "decision": "approve",
+        "approved_by": "business-owner@example.com",
+        "approver_role": "business_owner",
+        "severity_final": "medium",
+        "actor_context": {
+          "actor_id": "business-owner@example.com",
+          "actor_role": "business_owner",
+          "source": "request_headers"
+        },
+        "approved_at": "2026-07-01T06:08:59Z"
+      }
+    ],
+    "severity_approval_policy": {
+      "required_approver_roles": [
+        "business_owner",
+        "red_team_lead"
+      ],
+      "requires_distinct_approvers": true
+    },
+    "errors": [],
+    "created_at": "2026-07-01T06:08:59Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/findings/F-LIVE-FINDING-001.json",
+    "pending_conditions": [],
+    "approved_at": "2026-07-01T06:08:59Z",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/audit.jsonl"
+  },
+  "evidence_issues": [],
+  "pending_conditions": [],
+  "errors": [],
+  "approved_at": "2026-07-01T06:08:59Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/finding-approvals/FAPR-964A71F80198.json"
+}

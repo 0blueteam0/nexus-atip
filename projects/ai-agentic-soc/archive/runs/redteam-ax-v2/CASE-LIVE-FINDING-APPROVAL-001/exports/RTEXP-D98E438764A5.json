@@ -1,0 +1,33 @@
+{
+  "kind": "redteam_ax_v2_report_export",
+  "export_id": "RTEXP-D98E438764A5",
+  "report_id": "RTRPT-4FB7E6EF0089",
+  "case_id": "CASE-LIVE-FINDING-APPROVAL-001",
+  "status": "Exported",
+  "approval_id": "RTA-7F211C1F136A",
+  "approved_by": "executive-sponsor@example.com",
+  "approver_role": "executive_sponsor",
+  "actor_context": {
+    "actor_id": "executive-sponsor@example.com",
+    "actor_role": "executive_sponsor",
+    "source": "request_headers"
+  },
+  "identity_binding": "bound",
+  "report_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/reports/RTRPT-4FB7E6EF0089.md",
+  "gate_snapshot": {
+    "gate_status": "pass",
+    "unsupported_claim_count": 0,
+    "unapproved_high_risk_count": 0,
+    "finding_without_evidence_count": 0,
+    "missing_evidence_count": 0,
+    "unapproved_evidence_count": 0,
+    "unverified_evidence_count": 0,
+    "missing_finding_count": 0,
+    "unapproved_finding_count": 0,
+    "unapproved_final_severity_count": 0,
+    "blocking_items": []
+  },
+  "exported_at": "2026-07-01T06:08:59Z",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-FINDING-APPROVAL-001/exports/RTEXP-D98E438764A5.json"
+}

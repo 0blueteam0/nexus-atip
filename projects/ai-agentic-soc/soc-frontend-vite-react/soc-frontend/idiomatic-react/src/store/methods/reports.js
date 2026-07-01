@@ -3289,6 +3289,9 @@ export default {
       claimId:`C-${safeCase}-001`,
       findingId:`F-${safeCase}-001`,
       evidenceId:`EV-${safeCase}-001`,
+      severityFinal:'medium',
+      redTeamLead:'lead@example.com',
+      businessOwner:'business-owner@example.com',
       approver:'executive-sponsor@example.com',
       approverRole:'executive_sponsor',
       ...saved,
@@ -3327,6 +3330,7 @@ export default {
       findings:[{
         finding_id:String(draft.findingId || 'F-REDTEAM2-001').trim(),
         title:'Report Studio v2 evidence-gated finding',
+        severity_final:String(draft.severityFinal || 'medium').trim(),
         evidence_ids:evidenceIds,
       }],
       tool_actions:toolActions,
@@ -3378,10 +3382,72 @@ export default {
     return approvedEvidence;
   }
 ,
+  async ensureRedTeam2ApprovedFinding(approvedEvidence) {
+    const draft = this.redTeam2ReportExportDraft();
+    const state = this.state.redteam2ReportExportState || {};
+    const existingFinding = state.finding || {};
+    const findingId = String(draft.findingId || 'F-REDTEAM2-001').trim();
+    const severityFinal = String(draft.severityFinal || 'medium').trim();
+    if (existingFinding.finding_id === findingId && existingFinding.approval_status === 'approved' && existingFinding.severity_final === severityFinal) {
+      return existingFinding;
+    }
+    const caseId = String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim();
+    const evidenceId = approvedEvidence?.evidence_id || String(draft.evidenceId || '').trim();
+    const findingPayload = {
+      case_id:caseId,
+      finding_id:findingId,
+      title:'Report Studio v2 evidence-gated finding',
+      severity_draft:severityFinal,
+      evidence_ids:[evidenceId],
+      root_cause:['workflow_control_gap'],
+      business_impact:'Report generation depends on explicit evidence and reviewer approval.',
+      owner:'Security Engineering',
+      sla:'30 days',
+      retest_criteria:'Regenerate report with approved Evidence and Finding gates at zero blockers.',
+      affected_business_process:['RedTeam AX report workflow'],
+      verification_method:'API and UI smoke validation',
+    };
+    const findingRes = await fetch('http://127.0.0.1:8765/api/redteam/v2/findings', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify(findingPayload),
+    });
+    const finding = await findingRes.json().catch(() => ({}));
+    if (!findingRes.ok || finding.errors?.some(err => !String(err).startsWith('high_critical'))) throw new Error((finding.errors || []).join(', ') || finding.detail || `HTTP ${findingRes.status}`);
+    const lead = String(draft.redTeamLead || 'lead@example.com').trim();
+    const owner = String(draft.businessOwner || 'business-owner@example.com').trim();
+    const leadRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/findings/${encodeURIComponent(finding.finding_id)}/approve-severity`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-RedTeam-Actor':lead,
+        'X-RedTeam-Actor-Role':'red_team_lead',
+      },
+      body:JSON.stringify({ case_id:caseId, approved_by:lead, approver_role:'red_team_lead', severity_final:severityFinal }),
+    });
+    const leadApproval = await leadRes.json().catch(() => ({}));
+    if (!leadRes.ok || leadApproval.status === 'invalid') throw new Error((leadApproval.errors || []).join(', ') || leadApproval.detail || `HTTP ${leadRes.status}`);
+    const ownerRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/findings/${encodeURIComponent(finding.finding_id)}/approve-severity`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-RedTeam-Actor':owner,
+        'X-RedTeam-Actor-Role':'business_owner',
+      },
+      body:JSON.stringify({ case_id:caseId, approved_by:owner, approver_role:'business_owner', severity_final:severityFinal }),
+    });
+    const ownerApproval = await ownerRes.json().catch(() => ({}));
+    if (!ownerRes.ok || ownerApproval.status !== 'approved') throw new Error((ownerApproval.errors || ownerApproval.pending_conditions || []).join(', ') || ownerApproval.detail || `HTTP ${ownerRes.status}`);
+    const approvedFinding = ownerApproval.finding || finding;
+    this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), finding:approvedFinding, findingApproval:ownerApproval, checkedAt:new Date().toISOString() } }));
+    return approvedFinding;
+  }
+,
   async generateRedTeam2ReportDraft() {
     this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'generating', error:null } }));
     try {
-      await this.ensureRedTeam2ApprovedEvidence();
+      const evidence = await this.ensureRedTeam2ApprovedEvidence();
+      await this.ensureRedTeam2ApprovedFinding(evidence);
       const payload = this.redTeam2ReportPayload();
       const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/reports/generate', {
         method:'POST',
@@ -3475,6 +3541,7 @@ export default {
     const reportApproval = reportState.approval || {};
     const reportExported = reportState.exported || {};
     const reportEvidence = reportState.evidence || {};
+    const reportFinding = reportState.finding || {};
     const readiness = st.readiness || {};
     const rag = st.rag || {};
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -3533,11 +3600,15 @@ export default {
       ['Unapproved High-Risk', reportResult.validation.unapproved_high_risk_count ?? '-', 'must be 0'],
       ['Finding Without Evidence', reportResult.validation.finding_without_evidence_count ?? '-', 'must be 0'],
       ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
+      ['Finding Approval', reportFinding.approval_status || 'not approved', reportFinding.finding_id || 'approved finding required'],
+      ['Final Severity', reportFinding.severity_final || 'not approved', 'Red Team Lead + Business Owner required'],
       ['Final Approval', reportApproval.status || 'not approved', reportApproval.approval_id || 'Executive Sponsor required'],
       ['Export', reportExported.status || 'not exported', reportExported.export_id || reportExported.errors?.join(', ') || '-'],
     ] : [
       ['Gate', 'not generated', 'Generate Report v2 draft first'],
       ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
+      ['Finding Approval', reportFinding.approval_status || 'not approved', reportFinding.finding_id || 'approved finding required'],
+      ['Final Severity', reportFinding.severity_final || 'not approved', 'Red Team Lead + Business Owner required'],
       ['Final Approval', 'not approved', 'Executive Sponsor required'],
       ['Export', 'not exported', 'Approval ID required'],
     ];
@@ -3590,6 +3661,11 @@ export default {
               h('input', { value:reportDraft.claimId, onChange:e=>this.updateRedTeam2ReportExportDraft({ claimId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Finding ID',
               h('input', { value:reportDraft.findingId, onChange:e=>this.updateRedTeam2ReportExportDraft({ findingId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Final Severity',
+              h('select', { value:reportDraft.severityFinal, onChange:e=>this.updateRedTeam2ReportExportDraft({ severityFinal:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+                ['info','low','medium','high','critical'].map(id => h('option', { key:id, value:id }, id)))),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Business Owner',
+              h('input', { value:reportDraft.businessOwner, onChange:e=>this.updateRedTeam2ReportExportDraft({ businessOwner:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Executive Sponsor',
               h('input', { value:reportDraft.approver, onChange:e=>this.updateRedTeam2ReportExportDraft({ approver:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Approver Role',

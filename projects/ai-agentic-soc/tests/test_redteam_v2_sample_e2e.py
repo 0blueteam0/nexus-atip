@@ -141,6 +141,51 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(evidence_approval.json()["status"], "approved")
         self.assertEqual(approved_evidence["approval_status"], "approved")
 
+        finding = self.client.post("/api/redteam/v2/findings", json={
+            "case_id": case_id,
+            "finding_id": "F-E2E-001",
+            "title": "Report Studio v2 workbench is evidence-gated",
+            "severity_draft": "medium",
+            "evidence_ids": [approved_evidence["evidence_id"]],
+            "root_cause": ["workflow_control_gap"],
+            "business_impact": "Report generation depends on explicit evidence and reviewer approval.",
+            "owner": "Security Engineering",
+            "sla": "30 days",
+            "retest_criteria": "Regenerate report with approved Evidence and Finding gates at zero blockers.",
+            "affected_business_process": ["RedTeam AX report workflow"],
+            "verification_method": "API and UI smoke validation",
+        })
+        self.assertEqual(finding.status_code, 200)
+        self.assertEqual(finding.json()["status"], "pending_review")
+
+        lead_severity = self.client.post(
+            "/api/redteam/v2/findings/F-E2E-001/approve-severity",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approved_by": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "severity_final": "medium",
+            },
+        )
+        self.assertEqual(lead_severity.status_code, 200)
+        self.assertEqual(lead_severity.json()["status"], "pending")
+
+        owner_severity = self.client.post(
+            "/api/redteam/v2/findings/F-E2E-001/approve-severity",
+            headers=self.actor_headers("business-owner@example.com", "business_owner"),
+            json={
+                "case_id": case_id,
+                "approved_by": "business-owner@example.com",
+                "approver_role": "business_owner",
+                "severity_final": "medium",
+            },
+        )
+        self.assertEqual(owner_severity.status_code, 200)
+        approved_finding = owner_severity.json()["finding"]
+        self.assertEqual(owner_severity.json()["status"], "approved")
+        self.assertEqual(approved_finding["approval_status"], "approved")
+
         validation_payload = {
             "case_id": case_id,
             "claims": [{
@@ -149,8 +194,9 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
                 "evidence_ids": [approved_evidence["evidence_id"]],
             }],
             "findings": [{
-                "finding_id": "F-E2E-001",
+                "finding_id": approved_finding["finding_id"],
                 "title": "Report Studio v2 workbench is evidence-gated",
+                "severity_final": approved_finding["severity_final"],
                 "evidence_ids": [approved_evidence["evidence_id"]],
             }],
             "tool_actions": [{
@@ -169,6 +215,8 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(gate["finding_without_evidence_count"], 0)
         self.assertEqual(gate["unapproved_evidence_count"], 0)
         self.assertEqual(gate["unverified_evidence_count"], 0)
+        self.assertEqual(gate["unapproved_finding_count"], 0)
+        self.assertEqual(gate["unapproved_final_severity_count"], 0)
         self.assertTrue(Path(gate["artifact_path"]).exists())
 
         report = self.client.post("/api/redteam/v2/reports/generate", json={
@@ -194,6 +242,8 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertIn("Findings without evidence: `0`", report_text)
         self.assertIn("Unapproved evidence: `0`", report_text)
         self.assertIn("Unverified evidence: `0`", report_text)
+        self.assertIn("Unapproved findings: `0`", report_text)
+        self.assertIn("Unapproved final severities: `0`", report_text)
 
         blocked_export = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={
             "case_id": case_id,
@@ -216,6 +266,7 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(approval_body["status"], "ExportApproved")
         self.assertEqual(approval_body["identity_binding"], "bound")
         self.assertEqual(approval_body["gate_snapshot"]["finding_without_evidence_count"], 0)
+        self.assertEqual(approval_body["gate_snapshot"]["unapproved_finding_count"], 0)
 
         exported = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={
             "case_id": case_id,

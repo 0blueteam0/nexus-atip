@@ -50,6 +50,53 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(approval_body["identity_binding"], "bound")
         return approval_body["evidence"]
 
+    def create_approved_finding(self, case_id: str, finding_id: str, evidence_id: str, severity: str = "medium") -> dict:
+        finding = self.client.post("/api/redteam/v2/findings", json={
+            "case_id": case_id,
+            "finding_id": finding_id,
+            "title": f"Approved finding fixture {finding_id}",
+            "severity_draft": severity,
+            "evidence_ids": [evidence_id],
+            "root_cause": ["configuration_gap"],
+            "business_impact": "Authorized sample impact statement.",
+            "owner": "Security Engineering",
+            "sla": "30 days",
+            "retest_criteria": "Evidence-linked retest confirms remediation.",
+            "affected_business_process": ["Report Studio validation"],
+        })
+        self.assertEqual(finding.status_code, 200)
+        self.assertEqual(finding.json()["status"], "pending_review")
+
+        lead = self.client.post(
+            f"/api/redteam/v2/findings/{finding_id}/approve-severity",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approved_by": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "severity_final": severity,
+            },
+        )
+        self.assertEqual(lead.status_code, 200)
+        self.assertEqual(lead.json()["status"], "pending")
+
+        owner = self.client.post(
+            f"/api/redteam/v2/findings/{finding_id}/approve-severity",
+            headers=self.actor_headers("owner@example.com", "business_owner"),
+            json={
+                "case_id": case_id,
+                "approved_by": "owner@example.com",
+                "approver_role": "business_owner",
+                "severity_final": severity,
+            },
+        )
+        self.assertEqual(owner.status_code, 200)
+        owner_body = owner.json()
+        self.assertEqual(owner_body["status"], "approved")
+        self.assertEqual(owner_body["finding"]["approval_status"], "approved")
+        self.assertEqual(owner_body["finding"]["severity_final"], severity)
+        return owner_body["finding"]
+
     def test_v2_health_advertises_safe_tool_action_policy(self) -> None:
         response = self.client.get("/api/redteam/v2/health")
 
@@ -445,11 +492,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
     def test_v2_report_generate_passes_only_when_all_gate_counts_are_zero(self) -> None:
         case_id = "CASE-V2-REPORT-GENERATE-001"
         evidence = self.create_approved_evidence(case_id, "EV-1")
+        finding = self.create_approved_finding(case_id, "F-1", evidence["evidence_id"])
         response = self.client.post("/api/redteam/v2/reports/generate", json={
             "title": "Korean Red Team Report v2",
             "case_id": case_id,
             "claims": [{"claim_id": "C-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
-            "findings": [{"finding_id": "F-1", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": finding["finding_id"], "severity_final": finding["severity_final"], "evidence_ids": [evidence["evidence_id"]]}],
             "tool_actions": [{"action_id": "TAC-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
         })
 
@@ -485,14 +533,47 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("missing_evidence", {item["type"] for item in body["blocking_items"]})
         self.assertIn("unapproved_evidence", {item["type"] for item in body["blocking_items"]})
 
+    def test_v2_report_gate_blocks_unapproved_finding_and_final_severity(self) -> None:
+        case_id = "CASE-V2-FINDING-GATE-001"
+        evidence = self.create_approved_evidence(case_id, "EV-FINDING-1")
+        finding = self.client.post("/api/redteam/v2/findings", json={
+            "case_id": case_id,
+            "finding_id": "F-PENDING-1",
+            "title": "Pending finding must not enter report",
+            "severity_draft": "high",
+            "evidence_ids": [evidence["evidence_id"]],
+            "root_cause": ["missing_review"],
+            "business_impact": "Pending business impact.",
+            "owner": "Security Engineering",
+            "sla": "30 days",
+            "retest_criteria": "Retest after approval.",
+            "affected_business_process": ["Report Studio validation"],
+        })
+        self.assertEqual(finding.status_code, 200)
+
+        response = self.client.post("/api/redteam/v2/reports/validate", json={
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-FINDING-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": "F-PENDING-1", "severity_final": "high", "evidence_ids": [evidence["evidence_id"]]}],
+            "tool_actions": [],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["gate_status"], "blocked")
+        self.assertEqual(body["unapproved_finding_count"], 1)
+        self.assertEqual(body["unapproved_final_severity_count"], 1)
+        self.assertIn("unapproved_finding", {item["type"] for item in body["blocking_items"]})
+
     def test_v2_report_export_requires_final_human_approval(self) -> None:
         case_id = "CASE-V2-REPORT-EXPORT-001"
         evidence = self.create_approved_evidence(case_id, "EV-EXP-1")
+        finding = self.create_approved_finding(case_id, "F-EXP-1", evidence["evidence_id"])
         report = self.client.post("/api/redteam/v2/reports/generate", json={
             "title": "Korean Red Team Report v2 Export",
             "case_id": case_id,
             "claims": [{"claim_id": "C-EXP-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
-            "findings": [{"finding_id": "F-EXP-1", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": finding["finding_id"], "severity_final": finding["severity_final"], "evidence_ids": [evidence["evidence_id"]]}],
             "tool_actions": [{"action_id": "TAC-EXP-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
         })
         self.assertEqual(report.status_code, 200)

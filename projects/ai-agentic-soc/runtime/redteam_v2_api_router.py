@@ -41,6 +41,8 @@ def redteam_v2_health() -> dict[str, Any]:
             "unsupported_claim_count": 0,
             "unapproved_high_risk_count": 0,
             "finding_without_evidence_count": 0,
+            "unapproved_finding_count": 0,
+            "unapproved_final_severity_count": 0,
         },
     }
 
@@ -121,6 +123,21 @@ def approve_evidence(
     x_redteam_actor_role: str | None = Header(default=None),
 ) -> dict[str, Any]:
     return redteam_v2_models.approve_evidence_card(evidence_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+
+
+@router.post("/findings")
+def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.create_finding(payload)
+
+
+@router.post("/findings/{finding_id}/approve-severity")
+def approve_finding_severity(
+    finding_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_finding_severity(finding_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
 
 
 @router.post("/reports/validate")
