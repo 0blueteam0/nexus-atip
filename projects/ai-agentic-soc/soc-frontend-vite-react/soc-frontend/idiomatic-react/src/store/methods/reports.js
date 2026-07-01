@@ -3373,7 +3373,11 @@ export default {
     try {
       const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/reports/${encodeURIComponent(report.report_id)}/approve-export`, {
         method:'POST',
-        headers:{ 'Content-Type':'application/json' },
+        headers:{
+          'Content-Type':'application/json',
+          'X-RedTeam-Actor':payload.approved_by,
+          'X-RedTeam-Actor-Role':payload.approver_role,
+        },
         body:JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));

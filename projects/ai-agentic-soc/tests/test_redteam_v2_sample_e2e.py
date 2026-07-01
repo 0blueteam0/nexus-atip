@@ -19,6 +19,13 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         module = importlib.import_module("runtime.malware_upload_api")
         cls.client = TestClient(module.app)
 
+    @staticmethod
+    def actor_headers(actor: str, role: str) -> dict[str, str]:
+        return {
+            "X-RedTeam-Actor": actor,
+            "X-RedTeam-Actor-Role": role,
+        }
+
     def test_sample_case_reaches_report_v2_gate_with_zero_blockers(self) -> None:
         case_id = "CASE-V2-E2E-001"
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
@@ -45,13 +52,17 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(approval_request.status_code, 200)
         self.assertEqual(approval_request.json()["status"], "ApprovalRequested")
 
-        approval_decision = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": case_id,
-            "approver": "lead@example.com",
-            "approver_role": "red_team_lead",
-            "decision": "approve",
-            "conditions": ["manual_run_only", "evidence_upload_required"],
-        })
+        approval_decision = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+                "conditions": ["manual_run_only", "evidence_upload_required"],
+            },
+        )
         self.assertEqual(approval_decision.status_code, 200)
         approved_action = approval_decision.json()["action"]
         self.assertEqual(approved_action["status"], "Approved")
@@ -172,14 +183,19 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(blocked_export.json()["status"], "blocked")
         self.assertIn("report_export_approval_required", blocked_export.json()["errors"])
 
-        approval = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/approve-export", json={
-            "case_id": case_id,
-            "approved_by": "executive-sponsor@example.com",
-            "approver_role": "executive_sponsor",
-        })
+        approval = self.client.post(
+            f"/api/redteam/v2/reports/{body['report_id']}/approve-export",
+            headers=self.actor_headers("executive-sponsor@example.com", "executive_sponsor"),
+            json={
+                "case_id": case_id,
+                "approved_by": "executive-sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
         self.assertEqual(approval.status_code, 200)
         approval_body = approval.json()
         self.assertEqual(approval_body["status"], "ExportApproved")
+        self.assertEqual(approval_body["identity_binding"], "bound")
         self.assertEqual(approval_body["gate_snapshot"]["finding_without_evidence_count"], 0)
 
         exported = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={

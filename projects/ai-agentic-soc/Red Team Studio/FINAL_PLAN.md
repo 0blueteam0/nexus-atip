@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 8 report export UI controls complete, full goal active  
+상태: implementation slice 9 approval actor binding foundation complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 7 report export approval/export endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 7 report export approval gate/manifest 반영
+- `runtime/redteam_v2_api_router.py` - slice 9 actor context header binding 반영
+- `runtime/redteam_v2_models.py` - slice 9 approval identity binding validation 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 7 approved export/unapproved export block 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 7 final report approval/export 반영
+- `tests/test_redteam_v2_api_router.py` - slice 9 actor context binding negative/positive tests 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 9 actor-bound approval headers 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -179,11 +179,12 @@ Tests:
 - Evidence candidate JSON artifact 저장
 - ToolAction status `OutputImported` -> `Normalized` -> `EvidenceCreated` 전이 저장
 - raw output은 prohibited report claims와 limitations를 포함한 normalized result로만 Evidence 후보화
+- ToolAction approval은 `X-RedTeam-Actor`, `X-RedTeam-Actor-Role`과 본문 approver/role이 일치해야 통과
 
 남은 작업:
 
 - ToolProfile registry
-- 실제 인증/권한 시스템과 approver identity binding
+- 실제 SSO/RBAC provider와 actor context 발급 연동
 
 ### M4. Evidence/Claim/Report v2
 
@@ -215,11 +216,14 @@ Tests:
 - Export manifest JSON artifact 저장
 - `레드팀 분석2` UI에 Report v2 Final Gate / Export control 추가
 - UI에서 Generate Report v2 -> Approve Export -> Export Report 순서로 API 호출
+- Report export approval은 `X-RedTeam-Actor`, `X-RedTeam-Actor-Role`과 본문 Executive Sponsor가 일치해야 통과
+- Approval/export artifact에 `actor_context`와 `identity_binding=bound` 저장
 
 남은 작업:
 
 - Volkis식 상세 campaign timeline 확장
 - 악성코드 보고서식 문서 통제 metadata 확장
+- 실제 SSO/RBAC provider와 actor context 발급 연동
 
 ### M5. Sample E2E and regression
 
@@ -414,7 +418,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] live 8765 smoke로 T5 partial approval -> manual-run block -> second approval -> manual-run allow 확인
 - [x] live 5177 smoke로 required approval role 표시 확인
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-roles-ui-smoke.png`
-- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [x] approval actor context header binding foundation
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
 - [x] approved export API
 - [x] normalizer/import-output API - slice 6 완료
 
@@ -430,7 +435,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 unapproved export, wrong-role approval, approved export, blocked report gate 검증
 - [x] sample E2E가 report generate 후 final approval/export 흐름 검증
 - [x] live 8765 smoke로 approval 전 차단 -> 승인 -> export artifact 존재 확인
-- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [x] approval actor context header binding foundation
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
 - [ ] full release/security/starter-pack regression
 
 ## 16. Slice 8 Report Export UI Controls 체크리스트
@@ -445,5 +451,22 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Playwright 렌더링 smoke screenshot 저장: `고도화/live-smoke/redteam2-report-export-ui.png`
 - [x] Playwright 클릭 flow smoke screenshot 저장: `고도화/live-smoke/redteam2-report-export-flow.png`
 - [x] Browser smoke에서 `pass -> ExportApproved -> Exported` 확인
-- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [x] report export actor context header binding foundation
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
+- [ ] full release/security/starter-pack regression
+
+## 17. Slice 9 Approval Actor Binding Foundation 체크리스트
+
+- [x] FastAPI v2 router가 `X-RedTeam-Actor`, `X-RedTeam-Actor-Role` 헤더를 actor context로 주입
+- [x] ToolAction approval에서 actor context 누락 시 `actor_context_required`, `actor_role_required`로 invalid
+- [x] ToolAction approval에서 본문 approver와 actor header 불일치 시 `approver_must_match_authenticated_actor`로 invalid
+- [x] Report export approval에서 actor context 누락/불일치 차단
+- [x] Approval artifact에 `actor_context`와 `identity_binding` 저장
+- [x] Export manifest에 approval의 `actor_context`와 `identity_binding` 전파
+- [x] `레드팀 분석2` UI가 report export approval 호출 시 actor headers 전송
+- [x] API unittest가 actor context missing/mismatch/bound 흐름 검증
+- [x] sample E2E가 actor-bound ToolAction/report approval 사용
+- [x] live 8765 smoke로 missing actor invalid -> bound approval -> bound export 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-actor-bound-export-flow.png`
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
 - [ ] full release/security/starter-pack regression

@@ -1,0 +1,27 @@
+{
+  "kind": "redteam_ax_v2_report_export",
+  "export_id": "RTEXP-FED9D415D0B4",
+  "report_id": "RTRPT-CF3BAF542448",
+  "case_id": "CASE-LIVE-ACTOR-BINDING-001",
+  "status": "Exported",
+  "approval_id": "RTA-111008C9ED41",
+  "approved_by": "actor-sponsor@example.com",
+  "approver_role": "executive_sponsor",
+  "actor_context": {
+    "actor_id": "actor-sponsor@example.com",
+    "actor_role": "executive_sponsor",
+    "source": "request_headers"
+  },
+  "identity_binding": "bound",
+  "report_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-ACTOR-BINDING-001/reports/RTRPT-CF3BAF542448.md",
+  "gate_snapshot": {
+    "gate_status": "pass",
+    "unsupported_claim_count": 0,
+    "unapproved_high_risk_count": 0,
+    "finding_without_evidence_count": 0,
+    "blocking_items": []
+  },
+  "exported_at": "2026-07-01T04:39:16Z",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-ACTOR-BINDING-001/exports/RTEXP-FED9D415D0B4.json"
+}

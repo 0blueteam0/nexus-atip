@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 try:
     from runtime import redteam_v2_models
@@ -11,6 +11,21 @@ except ModuleNotFoundError:
 
 
 router = APIRouter(prefix="/api/redteam/v2", tags=["redteam-v2"])
+
+
+def with_actor_context(
+    payload: dict[str, Any],
+    actor_id: str | None,
+    actor_role: str | None,
+) -> dict[str, Any]:
+    return {
+        **payload,
+        "_actor_context": {
+            "actor_id": actor_id or "",
+            "actor_role": actor_role or "",
+            "source": "request_headers",
+        },
+    }
 
 
 @router.get("/health")
@@ -64,8 +79,13 @@ def request_tool_action_approval(action_id: str, payload: dict[str, Any]) -> dic
 
 
 @router.post("/tool-actions/{action_id}/approve")
-def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
-    return redteam_v2_models.approve_tool_action(action_id, payload)
+def approve_tool_action(
+    action_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_tool_action(action_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
 
 
 @router.post("/tool-actions/{action_id}/manual-run-record")
@@ -104,8 +124,13 @@ def generate_report(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 @router.post("/reports/{report_id}/approve-export")
-def approve_report_export(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
-    return redteam_v2_models.approve_report_export(report_id, payload)
+def approve_report_export(
+    report_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_report_export(report_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
 
 
 @router.post("/reports/{report_id}/export")

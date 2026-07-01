@@ -168,6 +168,31 @@ def normalize_approver_role(value: Any) -> str:
     return role if role in APPROVER_ROLES else ""
 
 
+def actor_context_from_payload(payload: dict[str, Any]) -> dict[str, str]:
+    context = payload.get("_actor_context") or {}
+    actor_id = str(context.get("actor_id") or "").strip().lower()
+    actor_role = normalize_approver_role(context.get("actor_role"))
+    return {
+        "actor_id": actor_id,
+        "actor_role": actor_role,
+        "source": str(context.get("source") or "request_headers").strip() or "request_headers",
+    }
+
+
+def approval_actor_binding_errors(payload: dict[str, Any], approver: str, approver_role: str) -> tuple[dict[str, str], list[str]]:
+    actor_context = actor_context_from_payload(payload)
+    errors: list[str] = []
+    if not actor_context["actor_id"]:
+        errors.append("actor_context_required")
+    if not actor_context["actor_role"]:
+        errors.append("actor_role_required")
+    if approver and actor_context["actor_id"] and approver.strip().lower() != actor_context["actor_id"]:
+        errors.append("approver_must_match_authenticated_actor")
+    if approver_role and actor_context["actor_role"] and approver_role != actor_context["actor_role"]:
+        errors.append("approver_role_must_match_authenticated_actor_role")
+    return actor_context, errors
+
+
 def approval_policy_for(action: dict[str, Any]) -> dict[str, Any]:
     risk_class = normalize_risk_class(action.get("risk_class"))
     environment = str(action.get("environment") or "").strip().lower()
@@ -368,6 +393,7 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
 
     approver = str(payload.get("approver") or payload.get("approved_by") or "").strip()
     approver_role = normalize_approver_role(payload.get("approver_role") or payload.get("role"))
+    actor_context, binding_errors = approval_actor_binding_errors(payload, approver, approver_role)
     decision = str(payload.get("decision") or "approve").strip().lower()
     conditions = payload.get("conditions") or []
     policy = approval_policy_for(action)
@@ -375,6 +401,7 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
     errors: list[str] = []
     if not approver:
         errors.append("approver_required")
+    errors.extend(binding_errors)
     if decision == "approve" and required_roles and not approver_role:
         errors.append("approver_role_required")
     if decision == "approve" and approver_role and approver_role not in required_roles:
@@ -397,6 +424,7 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
                 "approver_role": approver_role,
                 "decision": decision,
                 "conditions": conditions,
+                "actor_context": actor_context,
                 "decided_at": now_utc(),
             },
         ],
@@ -411,6 +439,8 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
         "errors": errors,
         "approver": approver,
         "approver_role": approver_role,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not binding_errors else "invalid",
         "decision": decision,
         "conditions": conditions,
         "required_approver_roles": policy["required_approver_roles"],
@@ -861,10 +891,12 @@ def approve_report_export(report_id: str, payload: dict[str, Any]) -> dict[str, 
     errors = report_export_gate_errors(report)
     approver = str(payload.get("approved_by") or payload.get("approver") or "").strip()
     approver_role = normalize_approver_role(payload.get("approver_role"))
+    actor_context, binding_errors = approval_actor_binding_errors(payload, approver, approver_role)
     decision = str(payload.get("decision") or "approve").strip().lower()
 
     if not approver:
         errors.append("approved_by_required")
+    errors.extend(binding_errors)
     if approver_role not in REPORT_EXPORT_APPROVER_ROLES:
         errors.append("executive_sponsor_approval_required")
     if decision != "approve":
@@ -881,6 +913,8 @@ def approve_report_export(report_id: str, payload: dict[str, Any]) -> dict[str, 
         "decision": decision,
         "approved_by": approver,
         "approver_role": approver_role,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not binding_errors else "invalid",
         "required_approver_roles": sorted(REPORT_EXPORT_APPROVER_ROLES),
         "gate_snapshot": report_gate_snapshot(report) if report else None,
         "approved_at": now_utc() if not errors else None,
@@ -921,6 +955,8 @@ def export_report(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         "approval_id": approval_id or None,
         "approved_by": (approval or {}).get("approved_by"),
         "approver_role": (approval or {}).get("approver_role"),
+        "actor_context": (approval or {}).get("actor_context"),
+        "identity_binding": (approval or {}).get("identity_binding"),
         "report_artifact_path": report_artifact_path,
         "gate_snapshot": report_gate_snapshot(report) if report else None,
         "exported_at": now_utc() if not errors else None,

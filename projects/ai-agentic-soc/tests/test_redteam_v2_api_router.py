@@ -19,6 +19,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         module = importlib.import_module("runtime.malware_upload_api")
         cls.client = TestClient(module.app)
 
+    @staticmethod
+    def actor_headers(actor: str, role: str) -> dict[str, str]:
+        return {
+            "X-RedTeam-Actor": actor,
+            "X-RedTeam-Actor-Role": role,
+        }
+
     def test_v2_health_advertises_safe_tool_action_policy(self) -> None:
         response = self.client.get("/api/redteam/v2/health")
 
@@ -92,13 +99,17 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(listed_body["items"][0]["status"], "ApprovalRequested")
         self.assertTrue(Path(listed_body["items"][0]["artifact_path"]).exists())
 
-        approval = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": "CASE-V2-APPROVAL-001",
-            "approver": "control@example.com",
-            "approver_role": "control_team",
-            "decision": "approve",
-            "conditions": ["manual_run_only", "upload_artifacts_before_evidence"],
-        })
+        approval = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("control@example.com", "control_team"),
+            json={
+                "case_id": "CASE-V2-APPROVAL-001",
+                "approver": "control@example.com",
+                "approver_role": "control_team",
+                "decision": "approve",
+                "conditions": ["manual_run_only", "upload_artifacts_before_evidence"],
+            },
+        )
         self.assertEqual(approval.status_code, 200)
         approved = approval.json()
         self.assertEqual(approved["status"], "Approved")
@@ -127,17 +138,73 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         })
         self.assertEqual(request.json()["status"], "ApprovalRequested")
 
-        approval = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": "CASE-V2-APPROVAL-ROLE-001",
-            "approver": "analyst@example.com",
-            "approver_role": "analyst",
-            "decision": "approve",
-        })
+        approval = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("analyst@example.com", "analyst"),
+            json={
+                "case_id": "CASE-V2-APPROVAL-ROLE-001",
+                "approver": "analyst@example.com",
+                "approver_role": "analyst",
+                "decision": "approve",
+            },
+        )
         self.assertEqual(approval.status_code, 200)
         body = approval.json()
         self.assertEqual(body["status"], "invalid")
         self.assertIn("approver_role_not_authorized", body["errors"])
         self.assertEqual(body["action"]["status"], "ApprovalRequested")
+
+    def test_v2_tool_action_approval_requires_actor_context_binding(self) -> None:
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": "CASE-V2-ACTOR-BINDING-001",
+            "campaign_id": "CAMP-V2",
+            "title": "Actor-bound T3 approval required",
+            "objective": "Verify request body approver cannot bypass authenticated actor context",
+            "risk_class": "T3",
+            "target_scope_refs": ["SCOPE-APPROVED-001"],
+        })
+        action = plan.json()
+        request = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/request-approval", json={
+            "case_id": "CASE-V2-ACTOR-BINDING-001",
+            "requested_by": "analyst@example.com",
+            "justification": "T3 requires red team lead approval.",
+        })
+        self.assertEqual(request.json()["status"], "ApprovalRequested")
+
+        missing_actor = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
+            "case_id": "CASE-V2-ACTOR-BINDING-001",
+            "approver": "lead@example.com",
+            "approver_role": "red_team_lead",
+            "decision": "approve",
+        })
+        self.assertEqual(missing_actor.json()["status"], "invalid")
+        self.assertIn("actor_context_required", missing_actor.json()["errors"])
+
+        mismatch = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("other-lead@example.com", "red_team_lead"),
+            json={
+                "case_id": "CASE-V2-ACTOR-BINDING-001",
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(mismatch.json()["status"], "invalid")
+        self.assertIn("approver_must_match_authenticated_actor", mismatch.json()["errors"])
+
+        approval = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": "CASE-V2-ACTOR-BINDING-001",
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(approval.json()["status"], "Approved")
+        self.assertEqual(approval.json()["identity_binding"], "bound")
 
     def test_v2_t5_requires_two_distinct_approvers_before_manual_run(self) -> None:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
@@ -162,12 +229,16 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         })
         self.assertEqual(request.json()["status"], "ApprovalRequested")
 
-        first = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": "CASE-V2-T5-TWO-PERSON-001",
-            "approver": "control@example.com",
-            "approver_role": "control_team",
-            "decision": "approve",
-        })
+        first = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("control@example.com", "control_team"),
+            json={
+                "case_id": "CASE-V2-T5-TWO-PERSON-001",
+                "approver": "control@example.com",
+                "approver_role": "control_team",
+                "decision": "approve",
+            },
+        )
         self.assertEqual(first.json()["status"], "PartiallyApproved")
 
         blocked_run = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/manual-run-record", json={
@@ -179,21 +250,29 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         })
         self.assertIn("approval_required_before_manual_run", blocked_run.json()["errors"])
 
-        same_actor = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": "CASE-V2-T5-TWO-PERSON-001",
-            "approver": "control@example.com",
-            "approver_role": "second_approver",
-            "decision": "approve",
-        })
+        same_actor = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("control@example.com", "second_approver"),
+            json={
+                "case_id": "CASE-V2-T5-TWO-PERSON-001",
+                "approver": "control@example.com",
+                "approver_role": "second_approver",
+                "decision": "approve",
+            },
+        )
         self.assertEqual(same_actor.json()["status"], "invalid")
         self.assertIn("two_person_approval_requires_distinct_approvers", same_actor.json()["errors"])
 
-        second = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
-            "case_id": "CASE-V2-T5-TWO-PERSON-001",
-            "approver": "second@example.com",
-            "approver_role": "second_approver",
-            "decision": "approve",
-        })
+        second = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("second@example.com", "second_approver"),
+            json={
+                "case_id": "CASE-V2-T5-TWO-PERSON-001",
+                "approver": "second@example.com",
+                "approver_role": "second_approver",
+                "decision": "approve",
+            },
+        )
         self.assertEqual(second.json()["status"], "Approved")
 
         allowed_run = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/manual-run-record", json={
@@ -374,23 +453,55 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(unapproved_export.json()["status"], "blocked")
         self.assertIn("report_export_approval_required", unapproved_export.json()["errors"])
 
-        bad_approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
-            "case_id": case_id,
-            "approved_by": "lead@example.com",
-            "approver_role": "red_team_lead",
-        })
-        self.assertEqual(bad_approval.status_code, 200)
-        self.assertEqual(bad_approval.json()["status"], "invalid")
-        self.assertIn("executive_sponsor_approval_required", bad_approval.json()["errors"])
-
-        approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
+        missing_actor = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
             "case_id": case_id,
             "approved_by": "sponsor@example.com",
             "approver_role": "executive_sponsor",
         })
+        self.assertEqual(missing_actor.status_code, 200)
+        self.assertEqual(missing_actor.json()["status"], "invalid")
+        self.assertIn("actor_context_required", missing_actor.json()["errors"])
+
+        bad_approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approved_by": "lead@example.com",
+                "approver_role": "red_team_lead",
+            },
+        )
+        self.assertEqual(bad_approval.status_code, 200)
+        self.assertEqual(bad_approval.json()["status"], "invalid")
+        self.assertIn("executive_sponsor_approval_required", bad_approval.json()["errors"])
+
+        mismatch = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export",
+            headers=self.actor_headers("other-sponsor@example.com", "executive_sponsor"),
+            json={
+                "case_id": case_id,
+                "approved_by": "sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
+        self.assertEqual(mismatch.status_code, 200)
+        self.assertEqual(mismatch.json()["status"], "invalid")
+        self.assertIn("approver_must_match_authenticated_actor", mismatch.json()["errors"])
+
+        approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export",
+            headers=self.actor_headers("sponsor@example.com", "executive_sponsor"),
+            json={
+                "case_id": case_id,
+                "approved_by": "sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
         self.assertEqual(approval.status_code, 200)
         approval_body = approval.json()
         self.assertEqual(approval_body["status"], "ExportApproved")
+        self.assertEqual(approval_body["identity_binding"], "bound")
+        self.assertEqual(approval_body["actor_context"]["actor_id"], "sponsor@example.com")
         self.assertEqual(approval_body["gate_snapshot"]["unsupported_claim_count"], 0)
         self.assertTrue(Path(approval_body["artifact_path"]).exists())
 
@@ -417,11 +528,15 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         report_body = report.json()
         self.assertEqual(report_body["gate_status"], "blocked")
 
-        approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
-            "case_id": case_id,
-            "approved_by": "sponsor@example.com",
-            "approver_role": "executive_sponsor",
-        })
+        approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export",
+            headers=self.actor_headers("sponsor@example.com", "executive_sponsor"),
+            json={
+                "case_id": case_id,
+                "approved_by": "sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
         self.assertEqual(approval.status_code, 200)
         approval_body = approval.json()
         self.assertEqual(approval_body["status"], "invalid")
