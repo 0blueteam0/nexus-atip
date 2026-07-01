@@ -1,0 +1,20 @@
+{
+  "kind": "redteam_ax_v2_approval_request",
+  "request_id": "APR-BBB40F22444E",
+  "case_id": "CASE-LIVE-RBAC-CRUD-001",
+  "action_id": "TAC-LIVE-RBAC-CRUD-001",
+  "status": "ApprovalRequested",
+  "errors": [],
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-01T06:37:30Z",
+  "justification": "live rbac approval smoke",
+  "required_approvers": [
+    "red_team_lead"
+  ],
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_mode": "single_lead",
+  "risk_class": "T3",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-CRUD-001/approvals/APR-BBB40F22444E.json"
+}

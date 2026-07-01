@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 10 Evidence approval lifecycle/report gate complete, full goal active  
+상태: implementation slice 14 Case RBAC policy CRUD/admin UI complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 8 report export UI controls 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 14 Case RBAC policy admin UI 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 10 Evidence approval endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 10 Evidence approval lifecycle/report gate 반영
+- `runtime/redteam_v2_api_router.py` - slice 14 Case RBAC policy CRUD endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 14 Case RBAC artifact persistence/actor context source 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 10 unapproved/missing/unverified Evidence gate 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 10 Evidence approval 후 report generation 반영
+- `tests/test_redteam_v2_api_router.py` - slice 14 Case RBAC policy CRUD/role mismatch 검증 반영
+- `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -275,6 +275,9 @@ cd J:/PortableApps/genai/projects/ai-agentic-soc
 & .venv/Scripts/python.exe tests/test_redteam_v2_api_router.py
 & .venv/Scripts/python.exe tests/test_redteam_v2_sample_e2e.py
 & .venv/Scripts/python.exe tests/test_redteam_api_router.py
+& .venv/Scripts/python.exe -m unittest discover -s tests -p "test_redteam_v2_api_router.py"
+& .venv/Scripts/python.exe -m unittest discover -s tests -p "test_redteam_v2_sample_e2e.py"
+& .venv/Scripts/python.exe -m unittest discover -s tests -p "test_redteam_api_router.py"
 ```
 
 Live smoke:
@@ -551,6 +554,27 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] v2 sample E2E와 기존 redteam router regression 통과
 - [x] live 8765 smoke로 `CASE-NO-RBAC-*` 차단, `CASE-LIVE-*` 승인 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-case-rbac-export-flow.png`
+- [x] case policy CRUD/API와 관리자 UI - slice 14 완료
 - [ ] 중앙 사용자/그룹 동기화
-- [ ] case policy CRUD/API와 관리자 UI
+- [ ] full release/security/starter-pack regression
+
+## 22. Slice 14 Case RBAC Policy CRUD / Admin UI 체크리스트
+
+- [x] `case-rbac/case-rbac-policy.json` artifact 기반 case별 RBAC override 저장
+- [x] `PUT /api/redteam/v2/cases/{case_id}/rbac` 추가
+- [x] `POST /api/redteam/v2/cases/{case_id}/rbac/assignments` 추가
+- [x] `DELETE /api/redteam/v2/cases/{case_id}/rbac/assignments/{actor_id}` 추가
+- [x] actor directory에 없는 actor는 policy invalid 처리
+- [x] actor가 보유하지 않은 role assignment는 `roles_not_authorized_for_actor`로 invalid 처리
+- [x] `required_roles` 누락 시 `required_roles_missing:*`로 invalid 처리
+- [x] active case policy artifact가 local case registry보다 우선 적용
+- [x] actor context의 `case_policy_source`가 `case_policy_artifact`로 기록
+- [x] `레드팀 분석2` UI에 `Case RBAC Policy` 관리자 패널 추가
+- [x] UI에서 `Load RBAC`, `Apply Defaults`, `Add Assignment` 버튼을 v2 API에 연결
+- [x] API unittest가 PUT/POST/DELETE override와 role mismatch reject 검증
+- [x] live 8765 smoke로 valid policy -> approval `Approved` 및 `case_policy_artifact` 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-rbac-crud-export-flow.png`
+- [ ] 중앙 사용자/그룹 동기화
+- [ ] 외부 SSO/IdP provider와 actor context 발급 연동
+- [ ] Finding owner/SLA/retest workflow의 별도 승인 UI
 - [ ] full release/security/starter-pack regression

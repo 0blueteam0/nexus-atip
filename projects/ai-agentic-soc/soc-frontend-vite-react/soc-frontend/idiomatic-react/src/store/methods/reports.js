@@ -3173,14 +3173,18 @@ export default {
     const queueUrl = caseId
       ? `http://127.0.0.1:8765/api/redteam/v2/tool-actions?case_id=${encodeURIComponent(caseId)}`
       : 'http://127.0.0.1:8765/api/redteam/v2/tool-actions';
+    const rbacUrl = caseId
+      ? `http://127.0.0.1:8765/api/redteam/v2/cases/${encodeURIComponent(caseId)}/rbac`
+      : null;
     this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'loading', error:null } }));
     try {
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/rag/knowledge/status'),
         this.redTeamFetchJson(queueUrl),
+        rbacUrl ? this.redTeamFetchJson(rbacUrl) : Promise.resolve({ ok:false, data:{ assignments:[] }, error:'case_id_required' }),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3191,6 +3195,7 @@ export default {
           readiness:readinessRes.ok ? readinessRes.data : { summary:{}, pipeline_coverage:[], error:readinessRes.error },
           rag:ragRes.ok ? ragRes.data : { exists:false, error:ragRes.error },
           queue:queueRes.ok ? queueRes.data : { count:0, items:[], error:queueRes.error },
+          rbac:rbacRes.ok ? rbacRes.data : { assignments:[], error:rbacRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -3294,6 +3299,8 @@ export default {
       businessOwner:'business-owner@example.com',
       approver:'executive-sponsor@example.com',
       approverRole:'executive_sponsor',
+      rbacActor:'lead@example.com',
+      rbacRole:'red_team_lead',
       ...saved,
       caseId:saved.caseId || caseId,
     };
@@ -3301,6 +3308,69 @@ export default {
 ,
   updateRedTeam2ReportExportDraft(patch) {
     this.setState({ redteam2ReportExportDraft:{ ...this.redTeam2ReportExportDraft(), ...patch } });
+  }
+,
+  redTeam2DefaultRbacAssignments() {
+    const draft = this.redTeam2ReportExportDraft();
+    return [
+      { actor_id:String(draft.redTeamLead || 'lead@example.com').trim(), roles:['red_team_lead'] },
+      { actor_id:String(draft.businessOwner || 'business-owner@example.com').trim(), roles:['business_owner'] },
+      { actor_id:String(draft.approver || 'executive-sponsor@example.com').trim(), roles:['executive_sponsor'] },
+    ];
+  }
+,
+  async saveRedTeam2DefaultRbacPolicy() {
+    const draft = this.redTeam2ReportExportDraft();
+    const caseId = String(draft.caseId || '').trim();
+    if (!caseId) {
+      this.toast('Case ID가 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'rbac-saving', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/cases/${encodeURIComponent(caseId)}/rbac`, {
+        method:'PUT',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          updated_by:'current-analyst',
+          required_roles:['red_team_lead','business_owner','executive_sponsor'],
+          assignments:this.redTeam2DefaultRbacAssignments(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'ready', rbac:data, checkedAt:new Date().toISOString(), error:null } }));
+      this.toast('Case RBAC policy 저장 완료', 'success');
+    } catch (err) {
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Case RBAC policy 저장 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async addRedTeam2RbacAssignment() {
+    const draft = this.redTeam2ReportExportDraft();
+    const caseId = String(draft.caseId || '').trim();
+    const actorId = String(draft.rbacActor || '').trim();
+    const role = String(draft.rbacRole || '').trim();
+    if (!caseId || !actorId || !role) {
+      this.toast('Case ID, Actor, Role이 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'rbac-saving', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/cases/${encodeURIComponent(caseId)}/rbac/assignments`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({ updated_by:'current-analyst', actor_id:actorId, roles:[role] }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'ready', rbac:data, checkedAt:new Date().toISOString(), error:null } }));
+      this.toast('Case RBAC assignment 추가 완료', 'success');
+    } catch (err) {
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Case RBAC assignment 추가 실패: ' + (err?.message || String(err)), 'warn');
+    }
   }
 ,
   redTeam2ReportPayload() {
@@ -3544,6 +3614,7 @@ export default {
     const reportFinding = reportState.finding || {};
     const readiness = st.readiness || {};
     const rag = st.rag || {};
+    const rbac = st.rbac || {};
     const queue = this.state.redteam2ToolActionQueue || [];
     const activeReport = this.redTeamReportById(draft.reportId);
     const activeBrief = this.redTeamAssessmentBrief(activeReport);
@@ -3594,6 +3665,11 @@ export default {
       ['Evidence', 'candidate required', 'Tool output is data, not instruction'],
       ['Report Gate', 'blocking until linked', 'unsupported claim, unapproved high-risk, evidence-less finding must be zero'],
     ] : [];
+    const rbacRows = (rbac.assignments || []).map(item => [
+      item.actor_id || '-',
+      (item.roles || []).join(', ') || '-',
+      (item.permissions || []).slice(0, 3).join(', ') || '-',
+    ]);
     const reportGateRows = reportResult.validation ? [
       ['Gate', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `${(reportResult.validation.blocking_items || []).length} blockers` : 'none'],
       ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
@@ -3644,6 +3720,21 @@ export default {
             h('input', { value:draft.scopeRef, onChange:e=>this.updateRedTeam2AnalysisDraft({ scopeRef:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
           h('label', { style:{ fontSize:'10.5px', color:C.muted, gridColumn:'1 / -1' } }, '목적',
             h('textarea', { value:draft.objective, onChange:e=>this.updateRedTeam2AnalysisDraft({ objective:e.target.value }), rows:3, style:{ ...inputStyle, marginTop:'5px', resize:'vertical' } })))),
+      smallPanel('Case RBAC Policy',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'RBAC Actor',
+              h('input', { value:reportDraft.rbacActor, onChange:e=>this.updateRedTeam2ReportExportDraft({ rbacActor:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'RBAC Role',
+              h('select', { value:reportDraft.rbacRole, onChange:e=>this.updateRedTeam2ReportExportDraft({ rbacRole:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+                ['analyst','red_team_lead','control_team','second_approver','legal_privacy','data_owner','business_owner','executive_sponsor'].map(id => h('option', { key:id, value:id }, id)))),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Policy Source',
+              h('input', { value:rbac.policy_source || 'not loaded', readOnly:true, style:{ ...inputStyle, marginTop:'5px', color:C.sec } }))),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap' } },
+            h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, 'Load RBAC'),
+            h('button', { onClick:()=>this.saveRedTeam2DefaultRbacPolicy(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'Apply Defaults'),
+            h('button', { onClick:()=>this.addRedTeam2RbacAssignment(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:C.bg, color:C.amber, cursor:'pointer', fontWeight:900 } }, 'Add Assignment')),
+          this.renderTable(['Actor','Roles','Permissions'], rbacRows.length ? rbacRows : [['not loaded','-','Load RBAC or Apply Defaults']]))),
       smallPanel('Assessment Context',
         h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:'8px' } }, [
           ['Scenario', activeReport?.scenario || '-', C.text, activeBrief.question],

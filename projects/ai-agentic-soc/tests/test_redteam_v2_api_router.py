@@ -178,6 +178,58 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("actor_not_assigned_to_case", body["errors"])
         self.assertIn("actor_context_not_authenticated", body["errors"])
 
+    def test_v2_case_rbac_policy_crud_overrides_local_assignments(self) -> None:
+        case_id = "CASE-CUSTOM-RBAC-001"
+        created = self.client.put(f"/api/redteam/v2/cases/{case_id}/rbac", json={
+            "updated_by": "control@example.com",
+            "required_roles": ["red_team_lead", "executive_sponsor"],
+            "assignments": [
+                {"actor_id": "lead@example.com", "roles": ["red_team_lead"]},
+                {"actor_id": "sponsor@example.com", "roles": ["executive_sponsor"]},
+            ],
+        })
+        self.assertEqual(created.status_code, 200)
+        created_body = created.json()
+        self.assertEqual(created_body["status"], "active")
+        self.assertEqual(created_body["policy_source"], "case_policy_artifact")
+        self.assertTrue(Path(created_body["artifact_path"]).exists())
+
+        policy = self.client.get(f"/api/redteam/v2/cases/{case_id}/rbac")
+        self.assertEqual(policy.status_code, 200)
+        policy_body = policy.json()
+        self.assertEqual(policy_body["policy_source"], "case_policy_artifact")
+        self.assertEqual(policy_body["assignment_count"], 2)
+        lead = next(item for item in policy_body["assignments"] if item["actor_id"] == "lead@example.com")
+        self.assertEqual(lead["roles"], ["red_team_lead"])
+
+        added = self.client.post(f"/api/redteam/v2/cases/{case_id}/rbac/assignments", json={
+            "updated_by": "control@example.com",
+            "actor_id": "business-owner@example.com",
+            "roles": ["business_owner"],
+        })
+        self.assertEqual(added.status_code, 200)
+        self.assertEqual(added.json()["status"], "active")
+        self.assertEqual(added.json()["assignment_count"], 3)
+
+        deleted = self.client.request("DELETE", f"/api/redteam/v2/cases/{case_id}/rbac/assignments/business-owner@example.com", json={
+            "updated_by": "control@example.com",
+        })
+        self.assertEqual(deleted.status_code, 200)
+        self.assertEqual(deleted.json()["status"], "active")
+        self.assertEqual(deleted.json()["assignment_count"], 2)
+
+    def test_v2_case_rbac_policy_rejects_actor_role_mismatch(self) -> None:
+        response = self.client.put("/api/redteam/v2/cases/CASE-CUSTOM-RBAC-INVALID-001/rbac", json={
+            "assignments": [
+                {"actor_id": "lead@example.com", "roles": ["executive_sponsor"]},
+            ],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "invalid")
+        self.assertIn("assignments[0].roles_not_authorized_for_actor:executive_sponsor", body["errors"])
+
     def test_v2_tool_action_approval_rejects_unregistered_actor_provider_context(self) -> None:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
             "case_id": "CASE-V2-ACTOR-PROVIDER-001",

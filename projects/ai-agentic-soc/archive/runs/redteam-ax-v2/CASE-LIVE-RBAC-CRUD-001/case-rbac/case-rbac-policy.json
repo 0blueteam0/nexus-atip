@@ -1,0 +1,36 @@
+{
+  "kind": "redteam_ax_v2_case_rbac_policy",
+  "policy_id": "case-rbac-policy",
+  "case_id": "CASE-LIVE-RBAC-CRUD-001",
+  "status": "active",
+  "assignments": [
+    {
+      "actor_id": "lead@example.com",
+      "roles": [
+        "red_team_lead"
+      ],
+      "permissions": [
+        "evidence:approve",
+        "finding:approve_severity",
+        "tool_action:approve_t3"
+      ]
+    },
+    {
+      "actor_id": "sponsor@example.com",
+      "roles": [
+        "executive_sponsor"
+      ],
+      "permissions": [
+        "report:approve_export",
+        "risk:accept"
+      ]
+    }
+  ],
+  "assignment_count": 2,
+  "required_roles": [],
+  "policy_source": "case_policy_artifact",
+  "updated_by": "codex-live-smoke",
+  "updated_at": "2026-07-01T06:37:30Z",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-CRUD-001/case-rbac/case-rbac-policy.json"
+}

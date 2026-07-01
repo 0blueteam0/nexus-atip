@@ -80,6 +80,21 @@ def get_case_rbac_policy(case_id: str) -> dict[str, Any]:
     return redteam_v2_models.case_rbac_policy(case_id)
 
 
+@router.put("/cases/{case_id}/rbac")
+def upsert_case_rbac_policy(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.upsert_case_rbac_policy(case_id, payload)
+
+
+@router.post("/cases/{case_id}/rbac/assignments")
+def add_case_rbac_assignment(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.add_case_rbac_assignment(case_id, payload)
+
+
+@router.delete("/cases/{case_id}/rbac/assignments/{actor_id}")
+def delete_case_rbac_assignment(case_id: str, actor_id: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    return redteam_v2_models.delete_case_rbac_assignment(case_id, actor_id, payload)
+
+
 @router.post("/roe/evaluate")
 def evaluate_roe(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.evaluate_roe(payload)

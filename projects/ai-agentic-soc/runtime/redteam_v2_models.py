@@ -245,6 +245,15 @@ def case_role_assignments(case_id: str) -> dict[str, set[str]]:
         if fnmatch(safe_case_id, pattern):
             for actor_id, roles in pattern_assignments.items():
                 assignments.setdefault(actor_id, set()).update(normalize_approver_role(role) for role in roles)
+    override = load_json_record("case-rbac-policy", "case-rbac", case_id=safe_case_id) if safe_case_id else None
+    if override and override.get("status") != "deleted":
+        assignments = {}
+        for item in override.get("assignments") or []:
+            actor_id = str(item.get("actor_id") or "").strip().lower()
+            roles = {normalize_approver_role(role) for role in (item.get("roles") or [])}
+            roles.discard("")
+            if actor_id and roles:
+                assignments.setdefault(actor_id, set()).update(roles)
     return {actor_id: {role for role in roles if role} for actor_id, roles in assignments.items()}
 
 
@@ -253,8 +262,14 @@ def case_roles_for_actor(case_id: str, actor_id: str) -> set[str]:
     return assignments.get(str(actor_id or "").strip().lower(), set())
 
 
+def case_rbac_policy_source(case_id: str) -> str:
+    stored = load_json_record("case-rbac-policy", "case-rbac", case_id=str(case_id or "").strip())
+    return "case_policy_artifact" if stored and stored.get("status") != "deleted" else "local_case_assignment_registry"
+
+
 def case_rbac_policy(case_id: str) -> dict[str, Any]:
     assignments = case_role_assignments(case_id)
+    stored = load_json_record("case-rbac-policy", "case-rbac", case_id=str(case_id or "").strip())
     return {
         "kind": "redteam_ax_v2_case_rbac_policy",
         "case_id": str(case_id or "").strip(),
@@ -267,8 +282,102 @@ def case_rbac_policy(case_id: str) -> dict[str, Any]:
             }
             for actor_id, roles in sorted(assignments.items())
         ],
-        "policy_source": "local_case_assignment_registry",
+        "policy_source": case_rbac_policy_source(case_id),
+        "policy_id": (stored or {}).get("policy_id"),
+        "updated_at": (stored or {}).get("updated_at"),
     }
+
+
+def normalize_case_rbac_assignments(raw_assignments: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[str]]:
+    assignments: list[dict[str, Any]] = []
+    errors: list[str] = []
+    seen: set[str] = set()
+    for index, item in enumerate(raw_assignments):
+        actor_id = str(item.get("actor_id") or "").strip().lower()
+        roles = sorted({normalize_approver_role(role) for role in (item.get("roles") or []) if normalize_approver_role(role)})
+        if not actor_id:
+            errors.append(f"assignments[{index}].actor_id_required")
+            continue
+        if actor_id not in ACTOR_DIRECTORY:
+            errors.append(f"assignments[{index}].actor_not_registered")
+        if not roles:
+            errors.append(f"assignments[{index}].roles_required")
+        actor_roles = {normalize_approver_role(role) for role in ACTOR_DIRECTORY.get(actor_id, {}).get("roles", set())}
+        unauthorized = [role for role in roles if role not in actor_roles]
+        if unauthorized:
+            errors.append(f"assignments[{index}].roles_not_authorized_for_actor:{','.join(unauthorized)}")
+        if actor_id in seen:
+            errors.append(f"assignments[{index}].duplicate_actor")
+        seen.add(actor_id)
+        if actor_id and roles:
+            assignments.append({
+                "actor_id": actor_id,
+                "roles": roles,
+                "permissions": role_permissions(set(roles)),
+            })
+    return assignments, errors
+
+
+def upsert_case_rbac_policy(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    resolved_case_id = str(case_id or payload.get("case_id") or "").strip()
+    assignments, errors = normalize_case_rbac_assignments(payload.get("assignments") or [])
+    if not resolved_case_id:
+        errors.append("case_id_required")
+    if not assignments:
+        errors.append("assignments_required")
+    required_roles = set(payload.get("required_roles") or [])
+    assignment_roles = {role for item in assignments for role in item["roles"]}
+    missing_required_roles = sorted(normalize_approver_role(role) for role in required_roles if normalize_approver_role(role) and normalize_approver_role(role) not in assignment_roles)
+    if missing_required_roles:
+        errors.append(f"required_roles_missing:{','.join(missing_required_roles)}")
+
+    policy_id = "case-rbac-policy"
+    result = {
+        "kind": "redteam_ax_v2_case_rbac_policy",
+        "policy_id": policy_id,
+        "case_id": resolved_case_id,
+        "status": "invalid" if errors else "active",
+        "assignments": assignments,
+        "assignment_count": len(assignments),
+        "required_roles": sorted(required_roles),
+        "policy_source": "case_policy_artifact",
+        "updated_by": str(payload.get("updated_by") or "").strip(),
+        "updated_at": now_utc() if not errors else None,
+        "errors": errors,
+    }
+    return append_artifact_metadata(result, "case-rbac", policy_id)
+
+
+def add_case_rbac_assignment(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    policy = case_rbac_policy(case_id)
+    assignments = [
+        {"actor_id": item["actor_id"], "roles": item["roles"]}
+        for item in policy.get("assignments") or []
+        if item.get("actor_id") != str(payload.get("actor_id") or "").strip().lower()
+    ]
+    assignments.append({"actor_id": payload.get("actor_id"), "roles": payload.get("roles") or []})
+    return upsert_case_rbac_policy(case_id, {**payload, "assignments": assignments})
+
+
+def delete_case_rbac_assignment(case_id: str, actor_id: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload = payload or {}
+    target_actor = str(actor_id or "").strip().lower()
+    policy = case_rbac_policy(case_id)
+    assignments = [
+        {"actor_id": item["actor_id"], "roles": item["roles"]}
+        for item in policy.get("assignments") or []
+        if item.get("actor_id") != target_actor
+    ]
+    if len(assignments) == len(policy.get("assignments") or []):
+        result = {
+            "kind": "redteam_ax_v2_case_rbac_assignment_delete",
+            "case_id": case_id,
+            "actor_id": target_actor,
+            "status": "invalid",
+            "errors": ["assignment_not_found"],
+        }
+        return append_artifact_metadata(result, "case-rbac-events", stable_id("CRBE", [case_id, target_actor, now_utc()]))
+    return upsert_case_rbac_policy(case_id, {**payload, "assignments": assignments})
 
 
 def requested_actor_role(payload: dict[str, Any], fallback: Any = "") -> str:
@@ -331,7 +440,7 @@ def resolve_actor_context(
         "auth_strength": auth_strength,
         "source": provider,
         "display_name": str((profile or {}).get("display_name") or "").strip(),
-        "case_policy_source": "local_case_assignment_registry" if case_id else None,
+        "case_policy_source": case_rbac_policy_source(case_id) if case_id else None,
         "errors": errors,
     }
 

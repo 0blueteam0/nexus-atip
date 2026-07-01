@@ -1,26 +1,26 @@
 # codex -> claude 인수인계
 
-- 생성시각: 2026-06-07T21:39:04.995Z
+- 생성시각: 2026-07-01T06:42:43.583Z
 - 보낸 쪽: codex
 - 받는 쪽: claude
 - 프로젝트: K드라이브 Claude Code 통합 프로젝트
-- Git: main @ 8f23122
+- Git: main @ 000b8d7
 
 ## 현재 작업 상태
 
-- 단계: executing
-- 상태: Unified Diff MCP 비교 분석
-- 이유: 활성 공유 작업이 선택되어 있고 shared task 소스가 서로 일치합니다
-- 다음 행동: 구현을 계속하고 변경이 안정되면 verify 단계로 올리세요
-- 현재 active task: Unified Diff MCP 비교 분석
+- 단계: queued
+- 상태: 6개의 열린 작업이 실행 선택을 기다리고 있습니다
+- 이유: 열린 queue는 있지만 아직 활성 공유 작업이 명시적으로 선택되지 않았습니다
+- 다음 행동: 편집 전에 다음 작업을 선택하고 왜 그 작업인지 근거를 기록하세요
+- 현재 active task: 선택된 작업 없음
 
 ## 대기열
 
 - (in_progress) [shrimp] Unified Diff MCP 비교 분석
 - (in_progress) [shrimp] 추천 MCP 서버 설치
-- (in_progress) [manual] Test Task 1
-- (in_progress) [manual] Test Task 1
-- (in_progress) [manual] Test Task 1
+- (pending) [shrimp] MCP 자동 발견 시스템 구축
+- (pending) [shrimp] 문서화 자동 업데이트 체계
+- (pending) [shrimp] NEXUS ATIP V2.0 프로젝트
 
 ## ADR / 결정
 
@@ -44,27 +44,27 @@
 
 ## 최근 시스템 산출물 인수인계
 
-- 2026-06-07T14:32:20.609Z insurance-fds-case1-visual-review-previews
-- 2026-06-07T14:23:22.034Z insurance-fds-case1-real-external-documents
-- 2026-06-07T14:12:58.972Z insurance-fds-case1-registry-case3-case5-contract
-- 2026-06-07T13:28:26.641Z insurance-fds-high-fidelity-korean-naming
-- 2026-06-07T13:18:24.626Z insurance-fds-five-case-taxonomy
+- 2026-07-01T06:29:18.404Z RedTeam AX
+- 2026-07-01T06:21:50.663Z RedTeam AX
+- 2026-07-01T06:12:36.881Z RedTeam AX
+- 2026-07-01T05:53:02.007Z RedTeam AX v2
+- 2026-07-01T04:41:10.443Z RedTeam AX v2
 
 ## Resume Context
 
 ```text
 프로젝트: K드라이브 Claude Code 통합 프로젝트
-현재 단계: executing
-현재 상태: Unified Diff MCP 비교 분석
-이유: 활성 공유 작업이 선택되어 있고 shared task 소스가 서로 일치합니다
-다음 행동: 구현을 계속하고 변경이 안정되면 verify 단계로 올리세요
-현재 작업: Unified Diff MCP 비교 분석
+현재 단계: queued
+현재 상태: 6개의 열린 작업이 실행 선택을 기다리고 있습니다
+이유: 열린 queue는 있지만 아직 활성 공유 작업이 명시적으로 선택되지 않았습니다
+다음 행동: 편집 전에 다음 작업을 선택하고 왜 그 작업인지 근거를 기록하세요
+현재 작업: 선택된 작업 없음
 ADR 상태: accepted (문서 존재)
 공급자 권고: continue / 공유 task와 문서 문맥이 안정적이어서 현재 provider로 계속 가거나 문서화된 handoff를 할 수 있습니다
 다음 후보 작업:
 - (in_progress) [shrimp] Unified Diff MCP 비교 분석
 - (in_progress) [shrimp] 추천 MCP 서버 설치
-- (in_progress) [manual] Test Task 1
-- (in_progress) [manual] Test Task 1
-- (in_progress) [manual] Test Task 1
+- (pending) [shrimp] MCP 자동 발견 시스템 구축
+- (pending) [shrimp] 문서화 자동 업데이트 체계
+- (pending) [shrimp] NEXUS ATIP V2.0 프로젝트
 ```

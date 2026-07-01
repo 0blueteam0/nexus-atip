@@ -2,21 +2,21 @@
   "claude->codex": {
     "provider": "claude",
     "target": "codex",
-    "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-05-09T06-08-38-352Z-claude-to-codex.md",
-    "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-claude-to-codex.md",
-    "generatedAt": "2026-05-09T06:08:38.490Z",
-    "stage": "executing",
-    "statusLine": "Unified Diff MCP 비교 분석",
-    "activeTask": "Unified Diff MCP 비교 분석"
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-01T03-29-57-795Z-claude-to-codex.md",
+    "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-claude-to-codex.md",
+    "generatedAt": "2026-07-01T03:29:59.677Z",
+    "stage": "queued",
+    "statusLine": "6개의 열린 작업이 실행 선택을 기다리고 있습니다",
+    "activeTask": null
   },
   "codex->claude": {
     "provider": "codex",
     "target": "claude",
-    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-06-07T21-39-04-835Z-codex-to-claude.md",
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-01T06-42-43-406Z-codex-to-claude.md",
     "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-codex-to-claude.md",
-    "generatedAt": "2026-06-07T21:39:05.003Z",
-    "stage": "executing",
-    "statusLine": "Unified Diff MCP 비교 분석",
-    "activeTask": "Unified Diff MCP 비교 분석"
+    "generatedAt": "2026-07-01T06:42:43.586Z",
+    "stage": "queued",
+    "statusLine": "6개의 열린 작업이 실행 선택을 기다리고 있습니다",
+    "activeTask": null
   }
 }
