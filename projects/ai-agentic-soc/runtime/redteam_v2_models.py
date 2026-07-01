@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from datetime import datetime, timezone
+from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any
 
@@ -46,6 +47,42 @@ ACTOR_DIRECTORY = {
     "executive-sponsor@example.com": {"display_name": "Sample Executive Sponsor", "roles": {"executive_sponsor"}},
     "privacy@example.com": {"display_name": "Sample Legal Privacy Reviewer", "roles": {"legal_privacy"}},
     "data-owner@example.com": {"display_name": "Sample Data Owner", "roles": {"data_owner"}},
+}
+CASE_ROLE_ASSIGNMENTS = {
+    "CASE-V2-*": {
+        "analyst@example.com": {"analyst"},
+        "lead@example.com": {"red_team_lead"},
+        "control@example.com": {"control_team"},
+        "second@example.com": {"second_approver"},
+        "owner@example.com": {"business_owner"},
+        "business-owner@example.com": {"business_owner"},
+        "sponsor@example.com": {"executive_sponsor"},
+        "executive-sponsor@example.com": {"executive_sponsor"},
+        "privacy@example.com": {"legal_privacy"},
+        "data-owner@example.com": {"data_owner"},
+    },
+    "CASE-LIVE-*": {
+        "analyst@example.com": {"analyst"},
+        "lead@example.com": {"red_team_lead"},
+        "control@example.com": {"control_team"},
+        "second@example.com": {"second_approver"},
+        "owner@example.com": {"business_owner"},
+        "business-owner@example.com": {"business_owner"},
+        "sponsor@example.com": {"executive_sponsor"},
+        "executive-sponsor@example.com": {"executive_sponsor"},
+        "privacy@example.com": {"legal_privacy"},
+        "data-owner@example.com": {"data_owner"},
+    },
+    "CASE-RTA-*": {
+        "lead@example.com": {"red_team_lead"},
+        "business-owner@example.com": {"business_owner"},
+        "executive-sponsor@example.com": {"executive_sponsor"},
+    },
+    "RTA-*": {
+        "lead@example.com": {"red_team_lead"},
+        "business-owner@example.com": {"business_owner"},
+        "executive-sponsor@example.com": {"executive_sponsor"},
+    },
 }
 
 
@@ -201,6 +238,39 @@ def role_permissions(roles: set[str]) -> list[str]:
     return sorted(permissions)
 
 
+def case_role_assignments(case_id: str) -> dict[str, set[str]]:
+    assignments: dict[str, set[str]] = {}
+    safe_case_id = str(case_id or "").strip()
+    for pattern, pattern_assignments in CASE_ROLE_ASSIGNMENTS.items():
+        if fnmatch(safe_case_id, pattern):
+            for actor_id, roles in pattern_assignments.items():
+                assignments.setdefault(actor_id, set()).update(normalize_approver_role(role) for role in roles)
+    return {actor_id: {role for role in roles if role} for actor_id, roles in assignments.items()}
+
+
+def case_roles_for_actor(case_id: str, actor_id: str) -> set[str]:
+    assignments = case_role_assignments(case_id)
+    return assignments.get(str(actor_id or "").strip().lower(), set())
+
+
+def case_rbac_policy(case_id: str) -> dict[str, Any]:
+    assignments = case_role_assignments(case_id)
+    return {
+        "kind": "redteam_ax_v2_case_rbac_policy",
+        "case_id": str(case_id or "").strip(),
+        "assignment_count": len(assignments),
+        "assignments": [
+            {
+                "actor_id": actor_id,
+                "roles": sorted(roles),
+                "permissions": role_permissions(roles),
+            }
+            for actor_id, roles in sorted(assignments.items())
+        ],
+        "policy_source": "local_case_assignment_registry",
+    }
+
+
 def requested_actor_role(payload: dict[str, Any], fallback: Any = "") -> str:
     return normalize_approver_role(
         fallback
@@ -220,6 +290,7 @@ def resolve_actor_context(
     payload = payload or {}
     raw_actor_id = str(actor_id or "").strip().lower()
     raw_session = str(session_token or "").strip()
+    case_id = str(payload.get("case_id") or "").strip()
     provider = "request_headers"
     auth_strength = "header_bound"
     errors: list[str] = []
@@ -233,24 +304,34 @@ def resolve_actor_context(
     profile = ACTOR_DIRECTORY.get(raw_actor_id)
     assigned_roles = {normalize_approver_role(role) for role in (profile or {}).get("roles", set())}
     assigned_roles.discard("")
+    case_roles = case_roles_for_actor(case_id, raw_actor_id) if case_id else set()
+    effective_roles = assigned_roles & case_roles if case_id else assigned_roles
     authenticated = bool(profile)
 
     if raw_actor_id and not authenticated:
         errors.append("actor_not_registered")
+    if case_id and authenticated and not case_roles:
+        errors.append("actor_not_assigned_to_case")
     if requested_role and authenticated and requested_role not in assigned_roles:
         errors.append("actor_role_not_authorized_for_actor")
+    if requested_role and authenticated and case_id and requested_role in assigned_roles and requested_role not in case_roles:
+        errors.append("actor_role_not_assigned_to_case")
 
     return {
+        "case_id": case_id,
         "actor_id": raw_actor_id,
-        "actor_role": requested_role if requested_role in assigned_roles else "",
+        "actor_role": requested_role if requested_role in effective_roles else "",
         "requested_role": requested_role,
         "roles": sorted(assigned_roles),
-        "permissions": role_permissions(assigned_roles),
+        "case_roles": sorted(case_roles),
+        "effective_roles": sorted(effective_roles),
+        "permissions": role_permissions(effective_roles),
         "authenticated": authenticated and not errors,
         "auth_provider": provider,
         "auth_strength": auth_strength,
         "source": provider,
         "display_name": str((profile or {}).get("display_name") or "").strip(),
+        "case_policy_source": "local_case_assignment_registry" if case_id else None,
         "errors": errors,
     }
 

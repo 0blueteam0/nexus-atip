@@ -1,0 +1,3 @@
+{"artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/roe/ROE-35641C8399E6.json", "event": "roe_stored", "record_id": "ROE-35641C8399E6", "recorded_at": "2026-07-01T06:25:24Z"}
+{"artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/tool-actions/TAC-E27A6CF45A2F.json", "event": "tool-actions_stored", "record_id": "TAC-E27A6CF45A2F", "recorded_at": "2026-07-01T06:25:24Z"}
+{"artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/approvals/APD-0AB4A3D583B6.json", "event": "approvals_stored", "record_id": "APD-0AB4A3D583B6", "recorded_at": "2026-07-01T06:25:24Z"}

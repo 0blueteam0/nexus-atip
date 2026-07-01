@@ -1,0 +1,73 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-E27A6CF45A2F",
+  "case_id": "CASE-NO-RBAC-LIVE-001",
+  "campaign_id": "CAMP-LIVE-RBAC",
+  "title": "Denied case RBAC smoke",
+  "objective": "Verify case-scoped RBAC denies unassigned case approval.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-MANUAL-RECORDER",
+  "risk_class": "T3",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-001"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "manual_run_record",
+    "normalized_result",
+    "evidence_candidate"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "single_lead",
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "ScopeValidated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-NO-RBAC-LIVE-001",
+    "decision": "allow",
+    "risk_class": "T3",
+    "hitl_required": true,
+    "failures": [],
+    "evaluated_at": "2026-07-01T06:25:24Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/roe/ROE-35641C8399E6.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T06:25:24Z",
+      "actor": "analyst"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/tool-actions/TAC-E27A6CF45A2F.json"
+}

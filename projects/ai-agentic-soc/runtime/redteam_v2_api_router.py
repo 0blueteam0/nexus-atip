@@ -75,6 +75,11 @@ def resolve_actor_context(
     }
 
 
+@router.get("/cases/{case_id}/rbac")
+def get_case_rbac_policy(case_id: str) -> dict[str, Any]:
+    return redteam_v2_models.case_rbac_policy(case_id)
+
+
 @router.post("/roe/evaluate")
 def evaluate_roe(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.evaluate_roe(payload)

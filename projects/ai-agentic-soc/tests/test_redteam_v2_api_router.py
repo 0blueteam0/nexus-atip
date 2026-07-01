@@ -118,24 +118,65 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         resolved = self.client.post(
             "/api/redteam/v2/auth/actor-context",
             headers=self.session_headers("lead@example.com"),
-            json={"approver_role": "red_team_lead"},
+            json={"case_id": "CASE-V2-ACTOR-CONTEXT-001", "approver_role": "red_team_lead"},
         )
         self.assertEqual(resolved.status_code, 200)
         body = resolved.json()
         self.assertEqual(body["status"], "authenticated")
         self.assertEqual(body["actor_context"]["actor_id"], "lead@example.com")
         self.assertEqual(body["actor_context"]["actor_role"], "red_team_lead")
+        self.assertEqual(body["actor_context"]["case_roles"], ["red_team_lead"])
         self.assertIn("finding:approve_severity", body["actor_context"]["permissions"])
 
         wrong_role = self.client.post(
             "/api/redteam/v2/auth/actor-context",
             headers=self.session_headers("lead@example.com"),
-            json={"approver_role": "executive_sponsor"},
+            json={"case_id": "CASE-V2-ACTOR-CONTEXT-001", "approver_role": "executive_sponsor"},
         )
         self.assertEqual(wrong_role.status_code, 200)
         wrong_body = wrong_role.json()
         self.assertEqual(wrong_body["status"], "invalid")
         self.assertIn("actor_role_not_authorized_for_actor", wrong_body["errors"])
+
+    def test_v2_case_rbac_policy_lists_case_scoped_assignments(self) -> None:
+        response = self.client.get("/api/redteam/v2/cases/CASE-V2-RBAC-001/rbac")
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_case_rbac_policy")
+        self.assertEqual(body["policy_source"], "local_case_assignment_registry")
+        lead = next(item for item in body["assignments"] if item["actor_id"] == "lead@example.com")
+        self.assertEqual(lead["roles"], ["red_team_lead"])
+        self.assertIn("finding:approve_severity", lead["permissions"])
+
+    def test_v2_case_scoped_rbac_blocks_actor_not_assigned_to_case(self) -> None:
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": "CASE-NO-RBAC-001",
+            "campaign_id": "CAMP-V2",
+            "title": "Unassigned case RBAC rejection",
+            "objective": "Verify actors cannot approve cases where they are not assigned.",
+            "risk_class": "T3",
+            "target_scope_refs": ["SCOPE-APPROVED-001"],
+        })
+        self.assertEqual(plan.status_code, 200)
+        action = plan.json()
+
+        rejected = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": "CASE-NO-RBAC-001",
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+
+        self.assertEqual(rejected.status_code, 200)
+        body = rejected.json()
+        self.assertEqual(body["status"], "invalid")
+        self.assertIn("actor_not_assigned_to_case", body["errors"])
+        self.assertIn("actor_context_not_authenticated", body["errors"])
 
     def test_v2_tool_action_approval_rejects_unregistered_actor_provider_context(self) -> None:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={

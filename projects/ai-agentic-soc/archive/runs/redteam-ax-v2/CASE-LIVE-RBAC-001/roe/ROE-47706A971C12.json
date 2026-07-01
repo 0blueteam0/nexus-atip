@@ -1,0 +1,10 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-LIVE-RBAC-001",
+  "decision": "allow",
+  "risk_class": "T3",
+  "hitl_required": true,
+  "failures": [],
+  "evaluated_at": "2026-07-01T06:25:24Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-001/roe/ROE-47706A971C12.json"
+}

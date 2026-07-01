@@ -535,5 +535,22 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] live 8765 smoke로 session-bound actor context, wrong role reject, unregistered reject, session approval pass 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-actor-provider-export-flow.png`
 - [ ] 외부 SSO/IdP 토큰 검증 어댑터
-- [ ] 중앙 사용자/그룹 동기화 및 case별 RBAC policy
+- [x] case별 RBAC policy foundation - slice 13 완료
+- [ ] 중앙 사용자/그룹 동기화
+- [ ] full release/security/starter-pack regression
+
+## 21. Slice 13 Case-Scoped RBAC Policy 체크리스트
+
+- [x] local case assignment registry 추가
+- [x] `CASE-V2-*`, `CASE-LIVE-*`, `CASE-RTA-*`, `RTA-*` sample case policy 추가
+- [x] actor context resolver가 `case_id` 기준 case role assignment를 계산
+- [x] 전역 role이 있어도 case에 배정되지 않으면 approval invalid
+- [x] approval artifact에 `case_roles`, `effective_roles`, `case_policy_source` 저장
+- [x] `GET /api/redteam/v2/cases/{case_id}/rbac` 추가
+- [x] API unittest가 case RBAC policy 조회와 unassigned case approval 차단 검증
+- [x] v2 sample E2E와 기존 redteam router regression 통과
+- [x] live 8765 smoke로 `CASE-NO-RBAC-*` 차단, `CASE-LIVE-*` 승인 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-case-rbac-export-flow.png`
+- [ ] 중앙 사용자/그룹 동기화
+- [ ] case policy CRUD/API와 관리자 UI
 - [ ] full release/security/starter-pack regression

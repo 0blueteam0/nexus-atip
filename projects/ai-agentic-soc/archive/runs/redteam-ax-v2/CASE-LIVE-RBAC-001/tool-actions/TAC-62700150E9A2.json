@@ -1,0 +1,122 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-62700150E9A2",
+  "case_id": "CASE-LIVE-RBAC-001",
+  "campaign_id": "CAMP-LIVE-RBAC",
+  "title": "Allowed case RBAC smoke",
+  "objective": "Verify case-scoped RBAC allows assigned case approval.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-MANUAL-RECORDER",
+  "risk_class": "T3",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-001"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "manual_run_record",
+    "normalized_result",
+    "evidence_candidate"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "single_lead",
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft",
+    "Run in Lab"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "Approved",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-RBAC-001",
+    "decision": "allow",
+    "risk_class": "T3",
+    "hitl_required": true,
+    "failures": [],
+    "evaluated_at": "2026-07-01T06:25:24Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-001/roe/ROE-47706A971C12.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T06:25:24Z",
+      "actor": "analyst"
+    },
+    {
+      "event": "approval_decided",
+      "at": "2026-07-01T06:25:24Z",
+      "actor": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "decision": "approve",
+      "status": "Approved"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-RBAC-001/tool-actions/TAC-62700150E9A2.json",
+  "approval_decision_id": "APD-769F596DF2E6",
+  "approval_conditions": [],
+  "approval_decisions": [
+    {
+      "decision_id": "APD-769F596DF2E6",
+      "approver": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "decision": "approve",
+      "conditions": [],
+      "actor_context": {
+        "case_id": "CASE-LIVE-RBAC-001",
+        "actor_id": "lead@example.com",
+        "actor_role": "red_team_lead",
+        "requested_role": "red_team_lead",
+        "roles": [
+          "red_team_lead"
+        ],
+        "case_roles": [
+          "red_team_lead"
+        ],
+        "effective_roles": [
+          "red_team_lead"
+        ],
+        "permissions": [
+          "evidence:approve",
+          "finding:approve_severity",
+          "tool_action:approve_t3"
+        ],
+        "authenticated": true,
+        "auth_provider": "local_dev_session",
+        "auth_strength": "session_bound",
+        "source": "local_dev_session",
+        "display_name": "Sample Red Team Lead",
+        "case_policy_source": "local_case_assignment_registry",
+        "errors": [],
+        "resolved": true
+      },
+      "decided_at": "2026-07-01T06:25:24Z"
+    }
+  ]
+}

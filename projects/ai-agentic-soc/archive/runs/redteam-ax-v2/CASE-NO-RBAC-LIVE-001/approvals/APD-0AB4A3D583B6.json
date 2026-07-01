@@ -1,0 +1,47 @@
+{
+  "kind": "redteam_ax_v2_approval_decision",
+  "decision_id": "APD-0AB4A3D583B6",
+  "case_id": "CASE-NO-RBAC-LIVE-001",
+  "action_id": "TAC-E27A6CF45A2F",
+  "status": "invalid",
+  "errors": [
+    "actor_role_required",
+    "actor_not_assigned_to_case",
+    "actor_role_not_assigned_to_case",
+    "actor_context_not_authenticated"
+  ],
+  "approver": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "actor_context": {
+    "case_id": "CASE-NO-RBAC-LIVE-001",
+    "actor_id": "lead@example.com",
+    "actor_role": "",
+    "requested_role": "red_team_lead",
+    "roles": [
+      "red_team_lead"
+    ],
+    "case_roles": [],
+    "effective_roles": [],
+    "permissions": [],
+    "authenticated": false,
+    "auth_provider": "request_headers",
+    "auth_strength": "header_bound",
+    "source": "request_headers",
+    "display_name": "Sample Red Team Lead",
+    "case_policy_source": "local_case_assignment_registry",
+    "errors": [
+      "actor_not_assigned_to_case",
+      "actor_role_not_assigned_to_case"
+    ],
+    "resolved": true
+  },
+  "identity_binding": "invalid",
+  "decision": "approve",
+  "conditions": [],
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_mode": "single_lead",
+  "decided_at": "2026-07-01T06:25:24Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-NO-RBAC-LIVE-001/approvals/APD-0AB4A3D583B6.json"
+}
