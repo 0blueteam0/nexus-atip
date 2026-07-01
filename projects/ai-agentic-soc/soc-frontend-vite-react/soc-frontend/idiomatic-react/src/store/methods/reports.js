@@ -3276,11 +3276,154 @@ export default {
     }
   }
 ,
+  redTeam2ReportExportDraft() {
+    const saved = this.state.redteam2ReportExportDraft || {};
+    const analysisDraft = this.redTeam2AnalysisDraft();
+    const reportId = String(analysisDraft.reportId || 'RTA-2026-0301').trim();
+    const target = String(analysisDraft.target || '').trim();
+    const caseId = target ? this.redTeamOperationCaseId(reportId, target) : `CASE-${reportId}-REDTEAM2`;
+    const safeCase = String(caseId).replace(/[^A-Za-z0-9_-]/g, '-').slice(0, 80);
+    return {
+      caseId,
+      title:`${reportId} Korean Red Team Report v2`,
+      claimId:`C-${safeCase}-001`,
+      findingId:`F-${safeCase}-001`,
+      evidenceId:`EV-${safeCase}-001`,
+      approver:'executive-sponsor@example.com',
+      approverRole:'executive_sponsor',
+      ...saved,
+      caseId:saved.caseId || caseId,
+    };
+  }
+,
+  updateRedTeam2ReportExportDraft(patch) {
+    this.setState({ redteam2ReportExportDraft:{ ...this.redTeam2ReportExportDraft(), ...patch } });
+  }
+,
+  redTeam2ReportPayload() {
+    const draft = this.redTeam2ReportExportDraft();
+    const evidenceIds = String(draft.evidenceId || '')
+      .split(',')
+      .map(x => x.trim())
+      .filter(Boolean);
+    const queue = this.state.redteam2ToolActionQueue || [];
+    const terminalStatuses = new Set(['Approved', 'ReadyForManualRun', 'ManuallyExecuted', 'OutputImported', 'Normalized', 'EvidenceCreated', 'LinkedToFinding', 'Closed']);
+    const toolActions = queue
+      .filter(action => terminalStatuses.has(action.status))
+      .map(action => ({
+        action_id:action.action_id,
+        risk_class:action.risk_class,
+        approval_required:action.approval_required,
+        status:action.status,
+      }));
+    return {
+      case_id:String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim(),
+      title:String(draft.title || 'Korean Red Team Report v2').trim(),
+      claims:[{
+        claim_id:String(draft.claimId || 'C-REDTEAM2-001').trim(),
+        support_level:evidenceIds.length ? 'supported' : 'unsupported',
+        evidence_ids:evidenceIds,
+      }],
+      findings:[{
+        finding_id:String(draft.findingId || 'F-REDTEAM2-001').trim(),
+        title:'Report Studio v2 evidence-gated finding',
+        evidence_ids:evidenceIds,
+      }],
+      tool_actions:toolActions,
+    };
+  }
+,
+  async generateRedTeam2ReportDraft() {
+    const payload = this.redTeam2ReportPayload();
+    this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'generating', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/reports/generate', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || data.error || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'ready', report:data, checkedAt:new Date().toISOString(), error:null },
+        redteam2ReportExportDraft:{ ...this.redTeam2ReportExportDraft(), caseId:payload.case_id, title:payload.title },
+      }));
+      this.toast(data.gate_status === 'pass' ? '레드팀 분석2 보고서 draft 생성 완료' : '레드팀 분석2 보고서 gate blocked', data.gate_status === 'pass' ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 보고서 draft 생성: ${data.report_id || payload.case_id}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('레드팀 분석2 보고서 draft 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async approveRedTeam2ReportExport() {
+    const draft = this.redTeam2ReportExportDraft();
+    const state = this.state.redteam2ReportExportState || {};
+    const report = state.report || {};
+    if (!report.report_id) {
+      this.toast('먼저 Red Team Report v2 draft를 생성하세요', 'warn');
+      return;
+    }
+    const payload = {
+      case_id:String(draft.caseId || report.case_id || '').trim(),
+      approved_by:String(draft.approver || '').trim(),
+      approver_role:String(draft.approverRole || 'executive_sponsor').trim(),
+    };
+    this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'approving', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/reports/${encodeURIComponent(report.report_id)}/approve-export`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'ready', approval:data, checkedAt:new Date().toISOString(), error:null } }));
+      this.toast('레드팀 분석2 보고서 export 승인 완료', 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 보고서 export 승인: ${report.report_id}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('레드팀 분석2 보고서 export 승인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async exportRedTeam2Report() {
+    const draft = this.redTeam2ReportExportDraft();
+    const state = this.state.redteam2ReportExportState || {};
+    const report = state.report || {};
+    const approval = state.approval || {};
+    if (!report.report_id || !approval.approval_id) {
+      this.toast('보고서 draft와 Executive Sponsor 승인 ID가 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'exporting', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/reports/${encodeURIComponent(report.report_id)}/export`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({ case_id:String(draft.caseId || report.case_id || '').trim(), approval_id:approval.approval_id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'blocked') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'ready', exported:data, checkedAt:new Date().toISOString(), error:null } }));
+      this.toast('레드팀 분석2 보고서 export 완료', 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 보고서 export 완료: ${report.report_id}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('레드팀 분석2 보고서 export 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   redTeamAnalysis2Panel() {
     const C = this.C, h = this.h;
     const draft = this.redTeam2AnalysisDraft();
     const reports = this.redTeamReports();
     const st = this.state.redteam2AnalysisState || { status:'idle' };
+    const reportDraft = this.redTeam2ReportExportDraft();
+    const reportState = this.state.redteam2ReportExportState || {};
+    const reportResult = reportState.report || {};
+    const reportApproval = reportState.approval || {};
+    const reportExported = reportState.exported || {};
     const readiness = st.readiness || {};
     const rag = st.rag || {};
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -3333,6 +3476,18 @@ export default {
       ['Evidence', 'candidate required', 'Tool output is data, not instruction'],
       ['Report Gate', 'blocking until linked', 'unsupported claim, unapproved high-risk, evidence-less finding must be zero'],
     ] : [];
+    const reportGateRows = reportResult.validation ? [
+      ['Gate', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `${(reportResult.validation.blocking_items || []).length} blockers` : 'none'],
+      ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
+      ['Unapproved High-Risk', reportResult.validation.unapproved_high_risk_count ?? '-', 'must be 0'],
+      ['Finding Without Evidence', reportResult.validation.finding_without_evidence_count ?? '-', 'must be 0'],
+      ['Final Approval', reportApproval.status || 'not approved', reportApproval.approval_id || 'Executive Sponsor required'],
+      ['Export', reportExported.status || 'not exported', reportExported.export_id || reportExported.errors?.join(', ') || '-'],
+    ] : [
+      ['Gate', 'not generated', 'Generate Report v2 draft first'],
+      ['Final Approval', 'not approved', 'Executive Sponsor required'],
+      ['Export', 'not exported', 'Approval ID required'],
+    ];
     return h('div', { style:{ display:'grid', gap:'14px' } },
       h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
         h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
@@ -3371,9 +3526,34 @@ export default {
           ['Primary Goal', activeBrief.primaryGoal || '-', C.text, 'Report v2 walkthrough + document control'],
           ['Safety', 'No direct high-risk execution', C.coral, 'AI assists planning, evidence, analysis, draft report, retest plan'],
         ].map(card))),
+      smallPanel('Report v2 Final Gate / Export',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Case ID',
+              h('input', { value:reportDraft.caseId, onChange:e=>this.updateRedTeam2ReportExportDraft({ caseId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Evidence ID',
+              h('input', { value:reportDraft.evidenceId, onChange:e=>this.updateRedTeam2ReportExportDraft({ evidenceId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Claim ID',
+              h('input', { value:reportDraft.claimId, onChange:e=>this.updateRedTeam2ReportExportDraft({ claimId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Finding ID',
+              h('input', { value:reportDraft.findingId, onChange:e=>this.updateRedTeam2ReportExportDraft({ findingId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Executive Sponsor',
+              h('input', { value:reportDraft.approver, onChange:e=>this.updateRedTeam2ReportExportDraft({ approver:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Approver Role',
+              h('input', { value:reportDraft.approverRole, onChange:e=>this.updateRedTeam2ReportExportDraft({ approverRole:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } }))),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Report Title',
+            h('input', { value:reportDraft.title, onChange:e=>this.updateRedTeam2ReportExportDraft({ title:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap' } },
+            h('button', { onClick:()=>this.generateRedTeam2ReportDraft(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'Generate Report v2'),
+            h('button', { onClick:()=>this.approveRedTeam2ReportExport(), disabled:!reportResult.report_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportResult.report_id ? C.amber : C.border}`, background:C.bg, color:reportResult.report_id ? C.amber : C.muted, cursor:reportResult.report_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, 'Approve Export'),
+            h('button', { onClick:()=>this.exportRedTeam2Report(), disabled:!reportApproval.approval_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportApproval.approval_id ? C.green : C.border}`, background:reportApproval.approval_id ? C.green : C.bg, color:reportApproval.approval_id ? '#fff' : C.muted, cursor:reportApproval.approval_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, 'Export Report')),
+          this.renderTable(['Check','Status','Evidence'], reportGateRows),
+          reportResult.report?.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `report: ${reportResult.report.artifact_path}`) : null,
+          reportExported.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.green, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `export: ${reportExported.artifact_path}`) : null)),
       queueCards.length ? smallPanel(`ToolActionCard Queue${st.queue?.count ? ` · ${st.queue.count}` : ''}`, h('div', { style:{ display:'grid' } }, queueCards)) : null,
       gateRows.length ? smallPanel('Guardrail / Evidence Gates', this.renderTable(['Gate','Status','Reason'], gateRows)) : null,
-      st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null);
+      st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null,
+      reportState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, reportState.error) : null);
   }
 ,
   redTeamAnalysisPanel() {

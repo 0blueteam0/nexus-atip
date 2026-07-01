@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 7 approved report export complete, full goal active  
+상태: implementation slice 8 report export UI controls complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,7 +35,7 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 5 approval role display 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 8 report export UI controls 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
@@ -213,6 +213,8 @@ Tests:
 - Executive Sponsor 승인 없이는 report export blocked 처리
 - report gate blocker, unsupported claim, unapproved high-risk, evidence 없는 finding이 있으면 export approval invalid 처리
 - Export manifest JSON artifact 저장
+- `레드팀 분석2` UI에 Report v2 Final Gate / Export control 추가
+- UI에서 Generate Report v2 -> Approve Export -> Export Report 순서로 API 호출
 
 남은 작업:
 
@@ -428,5 +430,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 unapproved export, wrong-role approval, approved export, blocked report gate 검증
 - [x] sample E2E가 report generate 후 final approval/export 흐름 검증
 - [x] live 8765 smoke로 approval 전 차단 -> 승인 -> export artifact 존재 확인
+- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [ ] full release/security/starter-pack regression
+
+## 16. Slice 8 Report Export UI Controls 체크리스트
+
+- [x] `레드팀 분석2`에 Report v2 Final Gate / Export 섹션 추가
+- [x] Case ID, Evidence ID, Claim ID, Finding ID, Executive Sponsor, Approver Role, Report Title 입력 분리
+- [x] `Generate Report v2` 버튼을 `/api/redteam/v2/reports/generate`에 연결
+- [x] `Approve Export` 버튼을 `/api/redteam/v2/reports/{report_id}/approve-export`에 연결
+- [x] `Export Report` 버튼을 `/api/redteam/v2/reports/{report_id}/export`에 연결
+- [x] Report gate, unsupported claim, unapproved high-risk, finding without evidence, final approval, export 상태를 테이블로 표시
+- [x] frontend build 통과
+- [x] Playwright 렌더링 smoke screenshot 저장: `고도화/live-smoke/redteam2-report-export-ui.png`
+- [x] Playwright 클릭 flow smoke screenshot 저장: `고도화/live-smoke/redteam2-report-export-flow.png`
+- [x] Browser smoke에서 `pass -> ExportApproved -> Exported` 확인
 - [ ] 실제 로그인/권한 provider와 approver identity binding
 - [ ] full release/security/starter-pack regression
