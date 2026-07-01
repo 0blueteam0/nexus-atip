@@ -1,0 +1,94 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-LIVE-PARSER-NUCLEI-001",
+  "case_id": "CASE-LIVE-PARSER-NUCLEI-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "TOOL-NUCLEI-001 parser live smoke",
+  "objective": "Verify tool-specific parser live",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_profile": {
+    "tool_id": "TOOL-NUCLEI-001",
+    "name": "nuclei",
+    "category": "web_validation",
+    "normalizer_id": "NORMALIZER-NUCLEI-001",
+    "agent_id": "AGENT-NUCLEI-ANALYST-001",
+    "default_policy": "approved_templates_and_scope_required"
+  },
+  "risk_class": "T3",
+  "environment": "approved_scope",
+  "target_scope_refs": [],
+  "inputs": {},
+  "expected_outputs": [
+    "scanner_finding_candidate",
+    "web_validation_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "single_lead",
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "Normalized",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-PARSER-NUCLEI-001",
+    "decision": "deny",
+    "risk_class": "T3",
+    "hitl_required": true,
+    "failures": [
+      "target_scope_refs_required"
+    ],
+    "evaluated_at": "2026-07-01T07:07:41Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-NUCLEI-001/roe/ROE-D102B2574151.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-NUCLEI-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T07:07:41Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-01T07:07:41Z",
+      "run_id": "TRUN-310EB0FC6B98",
+      "tool_id": "TOOL-NUCLEI-001",
+      "execution_mode": "offline_parse"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-01T07:07:41Z",
+      "run_id": "TRUN-310EB0FC6B98",
+      "result_id": "NR-A8C38F0A55D6",
+      "agent_id": "AGENT-NUCLEI-ANALYST-001"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-NUCLEI-001/tool-actions/TAC-LIVE-PARSER-NUCLEI-001.json"
+}

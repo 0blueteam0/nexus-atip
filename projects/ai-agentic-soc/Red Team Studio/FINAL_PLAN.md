@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 15 Analysis ToolHub / LLM Agent Registry foundation complete, full goal active  
+상태: implementation slice 16 Tool-specific output normalizers complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -41,7 +41,7 @@ Frontend:
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 15 analysis tool registry/governed execution/agent normalize endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 15 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP ToolProfile 및 agent registry 반영
+- `runtime/redteam_v2_models.py` - slice 16 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP parser normalizer 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 15 ToolHub registry, governed execution gate, agent normalize 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 16 도구별 parser normalizer 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -602,8 +602,28 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] live 8765 smoke로 Nuclei approval gate -> approved execution -> agent normalize 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-toolhub-agent-registry.png`
 - [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
-- [ ] 도구별 실제 JSON/XML parser normalizer 고도화
+- [x] 도구별 실제 JSON/XML parser normalizer 고도화 - slice 16 foundation 완료
 - [ ] OpenVAS/ZAP API credential vault 및 read-only token 정책
 - [ ] sandbox/container runner와 network allowlist enforcement
 - [ ] ToolResult -> Finding owner/SLA/retest UI 연계
+- [ ] full release/security/starter-pack regression
+
+## 24. Slice 16 Tool-Specific Output Normalizers 체크리스트
+
+- [x] Nuclei JSON/JSONL parser 추가: template, severity, matched target, tags 추출
+- [x] Trivy JSON parser 추가: target, package, installed/fixed version, CVE, severity 추출
+- [x] npm audit JSON parser 추가: package, severity, advisory refs, fix availability 추출
+- [x] OWASP ZAP JSON parser 추가: alert id/name/risk/confidence/URI/CWE/WASC 추출
+- [x] OpenVAS XML parser 추가: result id/name/threat/severity/host/port/description 추출
+- [x] Generic SCA JSON parser 추가: package, vulnerability id, severity, source 추출
+- [x] 모든 parser 결과에 `trusted_as_instruction=false`와 `requires_human_validation=true` 적용
+- [x] `agent-analyze` normalized result에 `parser_report` 저장
+- [x] API unittest가 6개 도구 parser별 대표 출력 fixture를 검증
+- [x] v2 router regression 28건 통과
+- [x] sample E2E 1건 통과
+- [ ] parser 결과를 Finding owner/SLA/retest UI에 직접 연결
+- [ ] 실제 파일 업로드/경로 기반 parser 입력 지원
+- [ ] parser schema를 별도 JSON Schema artifact로 분리
+- [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
+- [ ] sandbox/container runner와 network allowlist enforcement
 - [ ] full release/security/starter-pack regression

@@ -1,0 +1,12 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-LIVE-PARSER-NUCLEI-001",
+  "decision": "deny",
+  "risk_class": "T3",
+  "hitl_required": true,
+  "failures": [
+    "target_scope_refs_required"
+  ],
+  "evaluated_at": "2026-07-01T07:07:41Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-NUCLEI-001/roe/ROE-D102B2574151.json"
+}

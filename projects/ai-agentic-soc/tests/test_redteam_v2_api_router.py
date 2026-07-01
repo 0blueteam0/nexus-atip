@@ -103,6 +103,29 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(owner_body["finding"]["severity_final"], severity)
         return owner_body["finding"]
 
+    def create_offline_tool_run(self, case_id: str, action_id: str, tool_id: str) -> dict:
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "action_id": action_id,
+            "title": f"{tool_id} offline parser fixture",
+            "objective": "Normalize approved offline tool output fixture",
+            "tool_id": tool_id,
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(plan.status_code, 200)
+        executed = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": tool_id,
+            "execution_mode": "offline_parse",
+            "requested_by": "analyst@example.com",
+            "raw_artifacts": [f"artifact://{action_id}-output"],
+        })
+        self.assertEqual(executed.status_code, 200)
+        body = executed.json()
+        self.assertEqual(body["status"], "OutputImported")
+        self.assertFalse(body["errors"])
+        return body
+
     def test_v2_health_advertises_safe_tool_action_policy(self) -> None:
         response = self.client.get("/api/redteam/v2/health")
 
@@ -262,6 +285,113 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(normalized_body["status"], "Normalized")
         self.assertEqual(normalized_body["result_type"], "sca_vulnerability_candidate")
         self.assertFalse(normalized_body["structured_items"][0]["trusted_as_instruction"])
+
+    def test_v2_tool_specific_normalizers_parse_nuclei_trivy_npm_zap_openvas_and_sca(self) -> None:
+        cases = [
+            (
+                "TOOL-NUCLEI-001",
+                "TAC-PARSER-NUCLEI-001",
+                '{"template-id":"exposure-panel","matched-at":"https://app.example.test/admin","info":{"name":"Exposed Admin Panel","severity":"medium","tags":["exposure"]}}',
+                "nuclei_jsonl",
+                "template_id",
+                "exposure-panel",
+            ),
+            (
+                "TOOL-TRIVY-001",
+                "TAC-PARSER-TRIVY-001",
+                {
+                    "Results": [{
+                        "Target": "container:image",
+                        "Class": "os-pkgs",
+                        "Vulnerabilities": [{
+                            "VulnerabilityID": "CVE-2026-0001",
+                            "PkgName": "openssl",
+                            "InstalledVersion": "1.0",
+                            "FixedVersion": "1.1",
+                            "Severity": "HIGH",
+                            "Title": "Sample vulnerability",
+                        }],
+                    }],
+                },
+                "trivy_json",
+                "vulnerability_id",
+                "CVE-2026-0001",
+            ),
+            (
+                "TOOL-NPM-AUDIT-001",
+                "TAC-PARSER-NPM-001",
+                {
+                    "vulnerabilities": {
+                        "lodash": {
+                            "name": "lodash",
+                            "severity": "high",
+                            "range": "<4.17.21",
+                            "via": [{"source": 1106913, "name": "lodash"}],
+                            "fixAvailable": True,
+                        },
+                    },
+                },
+                "npm_audit_json",
+                "package_name",
+                "lodash",
+            ),
+            (
+                "TOOL-ZAP-001",
+                "TAC-PARSER-ZAP-001",
+                {
+                    "site": [{
+                        "@name": "https://app.example.test",
+                        "alerts": [{
+                            "pluginid": "10020",
+                            "name": "Missing Anti-clickjacking Header",
+                            "riskdesc": "Medium",
+                            "confidence": "Medium",
+                            "instances": [{"uri": "https://app.example.test/login"}],
+                        }],
+                    }],
+                },
+                "zap_json",
+                "alert_id",
+                "10020",
+            ),
+            (
+                "TOOL-OPENVAS-001",
+                "TAC-PARSER-OPENVAS-001",
+                "<report><results><result><id>r1</id><name>Sample OpenVAS Finding</name><threat>High</threat><severity>7.5</severity><host>192.0.2.10</host><port>443/tcp</port><description>Sample description</description></result></results></report>",
+                "openvas_xml",
+                "result_id",
+                "r1",
+            ),
+            (
+                "TOOL-SCA-001",
+                "TAC-PARSER-SCA-001",
+                {
+                    "vulnerabilities": [{
+                        "id": "GHSA-xxxx-yyyy",
+                        "package": {"name": "sample-lib"},
+                        "ratings": [{"severity": "low"}],
+                    }],
+                },
+                "sca_json",
+                "package_name",
+                "sample-lib",
+            ),
+        ]
+        for tool_id, action_id, raw_output, parser, key, expected in cases:
+            case_id = f"CASE-V2-PARSER-{action_id}"
+            run = self.create_offline_tool_run(case_id, action_id, tool_id)
+            normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+                "case_id": case_id,
+                "raw_output": raw_output,
+            })
+            self.assertEqual(normalized.status_code, 200, tool_id)
+            body = normalized.json()
+            self.assertEqual(body["status"], "Normalized", tool_id)
+            self.assertEqual(body["parser_report"]["parser"], parser, tool_id)
+            self.assertEqual(body["parser_report"]["parsed_item_count"], 1, tool_id)
+            self.assertEqual(body["structured_items"][0][key], expected, tool_id)
+            self.assertFalse(body["structured_items"][0]["trusted_as_instruction"], tool_id)
+            self.assertTrue(body["structured_items"][0]["requires_human_validation"], tool_id)
 
     def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
         resolved = self.client.post(

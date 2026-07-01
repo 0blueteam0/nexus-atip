@@ -1,0 +1,90 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-LIVE-PARSER-TRIVY-001",
+  "case_id": "CASE-LIVE-PARSER-TRIVY-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "TOOL-TRIVY-001 parser live smoke",
+  "objective": "Verify tool-specific parser live",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_profile": {
+    "tool_id": "TOOL-TRIVY-001",
+    "name": "trivy",
+    "category": "container_iac_dependency_scan",
+    "normalizer_id": "NORMALIZER-TRIVY-001",
+    "agent_id": "AGENT-TRIVY-ANALYST-001",
+    "default_policy": "offline_artifact_or_workspace_scan_only"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "container_scan_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "Normalized",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-PARSER-TRIVY-001",
+    "decision": "deny",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [
+      "target_scope_refs_required"
+    ],
+    "evaluated_at": "2026-07-01T07:07:41Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/roe/ROE-D17F6063EB60.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T07:07:41Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-01T07:07:41Z",
+      "run_id": "TRUN-C40E345F2409",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "offline_parse"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-01T07:07:41Z",
+      "run_id": "TRUN-C40E345F2409",
+      "result_id": "NR-5E0854F295D2",
+      "agent_id": "AGENT-TRIVY-ANALYST-001"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/tool-actions/TAC-LIVE-PARSER-TRIVY-001.json"
+}

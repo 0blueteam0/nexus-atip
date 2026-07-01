@@ -1,0 +1,66 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-310EB0FC6B98",
+  "case_id": "CASE-LIVE-PARSER-NUCLEI-001",
+  "action_id": "TAC-LIVE-PARSER-NUCLEI-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "execution_mode": "offline_parse",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "Normalized",
+  "errors": [],
+  "target_scope_refs": [],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-13AF47E8EAAA",
+      "source_path_or_ref": "artifact://TAC-LIVE-PARSER-NUCLEI-001-output",
+      "hash": "SHA256-13AF47E8EAAA",
+      "content_type": "application/json",
+      "summary": "Nuclei output imported for analysis.",
+      "imported_at": "2026-07-01T07:07:41Z"
+    }
+  ],
+  "normalized_results": [
+    "NR-A8C38F0A55D6"
+  ],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T3",
+    "requires_human_approval": true,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "offline_parse",
+      "manual_operator_run",
+      "lab_execute"
+    ],
+    "denied_execution_modes": [
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_recorded_execution"
+  },
+  "runtime_probe": {
+    "status": "missing",
+    "command": "nuclei",
+    "path": null,
+    "checked_at": "2026-07-01T07:07:41Z"
+  },
+  "analysis_agent_id": "AGENT-NUCLEI-ANALYST-001",
+  "normalizer_id": "NORMALIZER-NUCLEI-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-NUCLEI-001",
+    "run_id": "TRUN-310EB0FC6B98",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      "artifact://TAC-LIVE-PARSER-NUCLEI-001-output"
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-NUCLEI-001/tool-runs/TRUN-310EB0FC6B98.json"
+}

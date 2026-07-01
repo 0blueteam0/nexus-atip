@@ -1,0 +1,12 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-LIVE-PARSER-TRIVY-001",
+  "decision": "deny",
+  "risk_class": "T0",
+  "hitl_required": false,
+  "failures": [
+    "target_scope_refs_required"
+  ],
+  "evaluated_at": "2026-07-01T07:07:41Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/roe/ROE-D17F6063EB60.json"
+}

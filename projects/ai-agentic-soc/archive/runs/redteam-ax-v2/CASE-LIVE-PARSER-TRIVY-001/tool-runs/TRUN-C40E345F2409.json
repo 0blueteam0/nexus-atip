@@ -1,0 +1,66 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-C40E345F2409",
+  "case_id": "CASE-LIVE-PARSER-TRIVY-001",
+  "action_id": "TAC-LIVE-PARSER-TRIVY-001",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_name": "trivy",
+  "execution_mode": "offline_parse",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "Normalized",
+  "errors": [],
+  "target_scope_refs": [],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-78CD1E0AEF55",
+      "source_path_or_ref": "artifact://TAC-LIVE-PARSER-TRIVY-001-output",
+      "hash": "SHA256-78CD1E0AEF55",
+      "content_type": "application/json",
+      "summary": "Trivy output imported for analysis.",
+      "imported_at": "2026-07-01T07:07:41Z"
+    }
+  ],
+  "normalized_results": [
+    "NR-5E0854F295D2"
+  ],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": false,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "offline_parse",
+      "sandbox_execute"
+    ],
+    "denied_execution_modes": [
+      "lab_execute",
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_recorded_execution"
+  },
+  "runtime_probe": {
+    "status": "missing",
+    "command": "trivy",
+    "path": null,
+    "checked_at": "2026-07-01T07:07:41Z"
+  },
+  "analysis_agent_id": "AGENT-TRIVY-ANALYST-001",
+  "normalizer_id": "NORMALIZER-TRIVY-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-TRIVY-001",
+    "run_id": "TRUN-C40E345F2409",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      "artifact://TAC-LIVE-PARSER-TRIVY-001-output"
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/tool-runs/TRUN-C40E345F2409.json"
+}

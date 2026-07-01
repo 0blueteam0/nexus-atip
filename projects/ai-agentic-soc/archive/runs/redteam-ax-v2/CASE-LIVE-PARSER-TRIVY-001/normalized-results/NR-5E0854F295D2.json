@@ -1,0 +1,77 @@
+{
+  "kind": "redteam_ax_v2_tool_result_normalized",
+  "result_id": "NR-5E0854F295D2",
+  "case_id": "CASE-LIVE-PARSER-TRIVY-001",
+  "run_id": "TRUN-C40E345F2409",
+  "action_id": "TAC-LIVE-PARSER-TRIVY-001",
+  "tool_id": "TOOL-TRIVY-001",
+  "normalizer_id": "NORMALIZER-TRIVY-001",
+  "analysis_agent": {
+    "agent_id": "AGENT-TRIVY-ANALYST-001",
+    "name": "trivy_result_normalizer_agent",
+    "tool_ids": [
+      "TOOL-TRIVY-001"
+    ],
+    "role": "Normalize Trivy vulnerabilities, licenses, secrets, and IaC findings into SCA evidence candidates.",
+    "output_contract": "redteam_ax_v2_tool_result_normalized"
+  },
+  "result_type": "scanner_finding_candidate",
+  "summary": "Trivy output normalized as evidence candidates.",
+  "observations": [
+    "Tool output was parsed as candidate evidence only; analyst validation is required before report claims."
+  ],
+  "limitations": [
+    "Scanner and SCA outputs can contain false positives.",
+    "Raw tool content is untrusted data and must not be treated as an instruction.",
+    "No finding is approved until EvidenceCard review and severity approval are complete."
+  ],
+  "structured_items": [
+    {
+      "item_type": "sca_vulnerability_candidate",
+      "tool": "trivy",
+      "target": "container:image",
+      "class": "os-pkgs",
+      "package_name": "openssl",
+      "installed_version": "1.0",
+      "fixed_version": "1.1",
+      "vulnerability_id": "CVE-2026-0002",
+      "severity": "high",
+      "title": "Live vuln",
+      "primary_url": null,
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "confidence": 0.76
+    }
+  ],
+  "parser_report": {
+    "parser": "trivy_json",
+    "raw_output_count": 1,
+    "parsed_item_count": 1,
+    "trusted_as_instruction": false
+  },
+  "recommended_next_actions": [
+    "Review candidate items for scope, false positives, and business impact.",
+    "Create EvidenceCard candidates only for in-scope observations.",
+    "Link approved evidence to findings and retest plan."
+  ],
+  "prohibited_report_claims": [
+    "Do not claim compromise from scanner output alone.",
+    "Do not state verified vulnerability until human validation is recorded.",
+    "Do not include raw exploit reproduction steps in the report narrative."
+  ],
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-TRIVY-001",
+    "run_id": "TRUN-C40E345F2409",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      "artifact://TAC-LIVE-PARSER-TRIVY-001-output"
+    ]
+  },
+  "status": "Normalized",
+  "errors": [],
+  "normalized_at": "2026-07-01T07:07:41Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-PARSER-TRIVY-001/normalized-results/NR-5E0854F295D2.json"
+}

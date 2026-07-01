@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
@@ -967,6 +968,310 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
     return run_record
 
 
+def _coerce_json(value: Any) -> Any:
+    if isinstance(value, (dict, list)):
+        return value
+    if isinstance(value, str) and value.strip():
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+def _raw_output_values(payload: dict[str, Any]) -> list[Any]:
+    if "raw_outputs" in payload and isinstance(payload.get("raw_outputs"), list):
+        return payload.get("raw_outputs") or []
+    if "raw_output" in payload:
+        return [payload.get("raw_output")]
+    if "tool_output" in payload:
+        return [payload.get("tool_output")]
+    return []
+
+
+def _severity(value: Any) -> str:
+    raw = str(value or "").strip().lower()
+    if raw in {"critical", "high", "medium", "low", "info", "informational"}:
+        return "info" if raw == "informational" else raw
+    if raw in {"5"}:
+        return "critical"
+    if raw in {"4"}:
+        return "high"
+    if raw in {"3"}:
+        return "medium"
+    if raw in {"2"}:
+        return "low"
+    return raw or "unknown"
+
+
+def _confidence_for_severity(severity: str) -> float:
+    return {
+        "critical": 0.78,
+        "high": 0.76,
+        "medium": 0.72,
+        "low": 0.66,
+        "info": 0.58,
+    }.get(_severity(severity), 0.55)
+
+
+def _jsonl_items(raw: Any) -> list[dict[str, Any]]:
+    if isinstance(raw, list):
+        return [item for item in raw if isinstance(item, dict)]
+    if isinstance(raw, dict):
+        return [raw]
+    if not isinstance(raw, str):
+        return []
+    items: list[dict[str, Any]] = []
+    for line in raw.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        parsed = _coerce_json(line)
+        if isinstance(parsed, dict):
+            items.append(parsed)
+    parsed_all = _coerce_json(raw)
+    if not items and isinstance(parsed_all, list):
+        items.extend(item for item in parsed_all if isinstance(item, dict))
+    elif not items and isinstance(parsed_all, dict):
+        items.append(parsed_all)
+    return items
+
+
+def _normalize_nuclei_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        for finding in _jsonl_items(raw):
+            info = finding.get("info") if isinstance(finding.get("info"), dict) else {}
+            severity = _severity(info.get("severity") or finding.get("severity"))
+            items.append({
+                "item_type": "scanner_finding_candidate",
+                "tool": "nuclei",
+                "template_id": finding.get("template-id") or finding.get("template_id") or finding.get("template"),
+                "name": info.get("name") or finding.get("name") or finding.get("matcher-name"),
+                "severity": severity,
+                "target": finding.get("matched-at") or finding.get("host") or finding.get("ip") or finding.get("url"),
+                "evidence_ref": finding.get("curl-command") or finding.get("matcher-name") or finding.get("type"),
+                "tags": info.get("tags") or [],
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "confidence": _confidence_for_severity(severity),
+            })
+    return items
+
+
+def _normalize_trivy_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        if not isinstance(parsed, dict):
+            continue
+        for result in parsed.get("Results") or parsed.get("results") or []:
+            target = result.get("Target") or result.get("target")
+            result_class = result.get("Class") or result.get("class") or result.get("Type") or result.get("type")
+            for vuln in result.get("Vulnerabilities") or result.get("vulnerabilities") or []:
+                severity = _severity(vuln.get("Severity") or vuln.get("severity"))
+                items.append({
+                    "item_type": "sca_vulnerability_candidate",
+                    "tool": "trivy",
+                    "target": target,
+                    "class": result_class,
+                    "package_name": vuln.get("PkgName") or vuln.get("pkgName") or vuln.get("packageName"),
+                    "installed_version": vuln.get("InstalledVersion") or vuln.get("installedVersion"),
+                    "fixed_version": vuln.get("FixedVersion") or vuln.get("fixedVersion"),
+                    "vulnerability_id": vuln.get("VulnerabilityID") or vuln.get("vulnerabilityID") or vuln.get("id"),
+                    "severity": severity,
+                    "title": vuln.get("Title") or vuln.get("title"),
+                    "primary_url": vuln.get("PrimaryURL") or vuln.get("primaryURL"),
+                    "trusted_as_instruction": False,
+                    "requires_human_validation": True,
+                    "confidence": _confidence_for_severity(severity),
+                })
+    return items
+
+
+def _normalize_npm_audit_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        if not isinstance(parsed, dict):
+            continue
+        vulnerabilities = parsed.get("vulnerabilities")
+        if isinstance(vulnerabilities, dict):
+            iterable = vulnerabilities.items()
+        else:
+            iterable = []
+        for package_name, vuln in iterable:
+            if not isinstance(vuln, dict):
+                continue
+            severity = _severity(vuln.get("severity"))
+            via = vuln.get("via") or []
+            advisory_ids = [
+                str(item.get("source") or item.get("url") or item.get("name"))
+                for item in via
+                if isinstance(item, dict)
+            ]
+            items.append({
+                "item_type": "sca_vulnerability_candidate",
+                "tool": "npm audit",
+                "package_name": vuln.get("name") or package_name,
+                "severity": severity,
+                "range": vuln.get("range"),
+                "fix_available": vuln.get("fixAvailable"),
+                "advisory_refs": advisory_ids,
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "confidence": _confidence_for_severity(severity),
+            })
+        advisories = parsed.get("advisories")
+        if isinstance(advisories, dict):
+            for advisory_id, advisory in advisories.items():
+                if not isinstance(advisory, dict):
+                    continue
+                severity = _severity(advisory.get("severity"))
+                items.append({
+                    "item_type": "sca_vulnerability_candidate",
+                    "tool": "npm audit",
+                    "package_name": advisory.get("module_name"),
+                    "severity": severity,
+                    "advisory_id": advisory_id,
+                    "title": advisory.get("title"),
+                    "url": advisory.get("url"),
+                    "trusted_as_instruction": False,
+                    "requires_human_validation": True,
+                    "confidence": _confidence_for_severity(severity),
+                })
+    return items
+
+
+def _normalize_zap_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        if not isinstance(parsed, dict):
+            continue
+        sites = parsed.get("site") or parsed.get("sites") or []
+        if isinstance(sites, dict):
+            sites = [sites]
+        for site in sites:
+            for alert in site.get("alerts") or []:
+                severity = _severity(alert.get("riskcode") or alert.get("riskdesc") or alert.get("risk"))
+                instances = alert.get("instances") or []
+                first_instance = instances[0] if instances and isinstance(instances[0], dict) else {}
+                items.append({
+                    "item_type": "scanner_finding_candidate",
+                    "tool": "owasp-zap",
+                    "alert_id": alert.get("pluginid") or alert.get("id"),
+                    "name": alert.get("name") or alert.get("alert"),
+                    "severity": severity,
+                    "confidence_label": alert.get("confidence") or alert.get("confidencedesc"),
+                    "target": first_instance.get("uri") or site.get("@name") or site.get("name"),
+                    "cwe_id": alert.get("cweid"),
+                    "wasc_id": alert.get("wascid"),
+                    "trusted_as_instruction": False,
+                    "requires_human_validation": True,
+                    "confidence": _confidence_for_severity(severity),
+                })
+    return items
+
+
+def _normalize_openvas_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        if not isinstance(raw, str):
+            continue
+        try:
+            root = ET.fromstring(raw)
+        except ET.ParseError:
+            continue
+        for result in root.findall(".//result"):
+            nvt = result.find("nvt")
+            name = result.findtext("name") or (nvt.findtext("name") if nvt is not None else None)
+            severity = _severity(result.findtext("threat") or result.findtext("severity"))
+            items.append({
+                "item_type": "scanner_finding_candidate",
+                "tool": "openvas",
+                "result_id": result.findtext("id"),
+                "name": name,
+                "severity": severity,
+                "cvss": result.findtext("severity"),
+                "host": result.findtext("host"),
+                "port": result.findtext("port"),
+                "description": (result.findtext("description") or "")[:500],
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "confidence": _confidence_for_severity(severity),
+            })
+    return items
+
+
+def _normalize_sca_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        if not isinstance(parsed, dict):
+            continue
+        vulnerabilities = parsed.get("vulnerabilities") or parsed.get("findings") or []
+        if isinstance(vulnerabilities, dict):
+            vulnerabilities = vulnerabilities.values()
+        for finding in vulnerabilities:
+            if not isinstance(finding, dict):
+                continue
+            rating_severity = None
+            if isinstance(finding.get("ratings"), list) and finding.get("ratings"):
+                first_rating = finding["ratings"][0]
+                if isinstance(first_rating, dict):
+                    rating_severity = first_rating.get("severity")
+            severity = _severity(finding.get("severity") or rating_severity)
+            package = finding.get("package") if isinstance(finding.get("package"), dict) else {}
+            items.append({
+                "item_type": "sca_vulnerability_candidate",
+                "tool": "sca",
+                "package_name": finding.get("package_name") or package.get("name") or finding.get("component") or finding.get("name"),
+                "vulnerability_id": finding.get("id") or finding.get("vulnerability_id") or finding.get("cve"),
+                "severity": severity,
+                "source": finding.get("source") or finding.get("bom-ref"),
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "confidence": _confidence_for_severity(severity),
+            })
+    return items
+
+
+def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    raw_values = _raw_output_values(payload)
+    if not raw_values:
+        return [], {"parser": "none", "raw_output_count": 0, "parsed_item_count": 0}
+    profile = analysis_tool_profile(tool_id)
+    name = str((profile or {}).get("name") or tool_id).lower()
+    parser = "generic"
+    if name == "nuclei":
+        parser = "nuclei_jsonl"
+        items = _normalize_nuclei_output(raw_values)
+    elif name == "trivy":
+        parser = "trivy_json"
+        items = _normalize_trivy_output(raw_values)
+    elif name == "npm audit":
+        parser = "npm_audit_json"
+        items = _normalize_npm_audit_output(raw_values)
+    elif name == "owasp-zap":
+        parser = "zap_json"
+        items = _normalize_zap_output(raw_values)
+    elif name == "openvas":
+        parser = "openvas_xml"
+        items = _normalize_openvas_output(raw_values)
+    elif name == "sca":
+        parser = "sca_json"
+        items = _normalize_sca_output(raw_values)
+    else:
+        items = []
+    return items, {
+        "parser": parser,
+        "raw_output_count": len(raw_values),
+        "parsed_item_count": len(items),
+        "trusted_as_instruction": False,
+    }
+
+
 def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     tool_run = load_json_record(run_id, "tool-runs", case_id)
@@ -985,7 +1290,8 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         errors.append("analysis_agent_not_registered")
 
     raw_artifacts = (tool_run or {}).get("raw_artifacts") or []
-    structured_items = payload.get("structured_items") or [
+    parsed_items, parser_report = tool_specific_structured_items(tool_id, payload)
+    structured_items = payload.get("structured_items") or parsed_items or [
         {
             "item_type": payload.get("result_type") or "scanner_finding_candidate",
             "tool_id": tool_id,
@@ -1020,6 +1326,7 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
             "No finding is approved until EvidenceCard review and severity approval are complete.",
         ],
         "structured_items": structured_items,
+        "parser_report": parser_report,
         "recommended_next_actions": payload.get("recommended_next_actions") or [
             "Review candidate items for scope, false positives, and business impact.",
             "Create EvidenceCard candidates only for in-scope observations.",
