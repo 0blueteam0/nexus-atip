@@ -1,0 +1,86 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-43202C82B084",
+  "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+  "campaign_id": "CAMP-LIVE",
+  "title": "Live tool run normalization smoke",
+  "objective": "Verify raw tool output becomes normalized evidence candidate",
+  "action_type": "visual_recon",
+  "tool_id": "TOOL-GOWITNESS-001",
+  "risk_class": "T2",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LIVE-NORM"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "manual_run_record",
+    "normalized_result",
+    "evidence_candidate"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+    "decision": "allow",
+    "risk_class": "T2",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-01T04:16:54Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/roe/ROE-60280CB6B25D.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T04:16:54Z",
+      "actor": "codex-smoke"
+    },
+    {
+      "event": "output_imported",
+      "at": "2026-07-01T04:16:54Z",
+      "run_id": "TMR-E8A1364BE4B6"
+    },
+    {
+      "event": "tool_run_normalized",
+      "at": "2026-07-01T04:16:54Z",
+      "run_id": "TMR-E8A1364BE4B6",
+      "result_id": "NR-D74C760031C0"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-01T04:16:54Z",
+      "run_id": "TMR-E8A1364BE4B6",
+      "evidence_id": "EV-50ECF8AC3A04"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/tool-actions/TAC-43202C82B084.json"
+}

@@ -245,6 +245,86 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["status"], "invalid")
         self.assertIn("tool_action_card_required_before_manual_run", body["errors"])
 
+    def test_v2_tool_run_import_normalize_and_create_evidence_candidate(self) -> None:
+        case_id = "CASE-V2-TOOLRUN-001"
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "campaign_id": "CAMP-V2",
+            "title": "Normalize GoWitness-style screenshots",
+            "objective": "Verify tool output becomes evidence candidate before report use",
+            "risk_class": "T2",
+            "target_scope_refs": ["SCOPE-APPROVED-001"],
+            "tool_id": "TOOL-GOWITNESS-001",
+            "action_type": "visual_recon",
+        })
+        action = plan.json()
+        manual_run = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/manual-run-record", json={
+            "case_id": case_id,
+            "executed_by": "analyst@example.com",
+            "started_at": "2026-07-01T00:00:00Z",
+            "ended_at": "2026-07-01T00:05:00Z",
+            "uploaded_artifacts": ["artifact://gowitness/index.json", "artifact://gowitness/screen-001.png"],
+        })
+        run = manual_run.json()
+        self.assertEqual(run["status"], "ManuallyExecuted")
+
+        imported = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/import-output", json={
+            "case_id": case_id,
+            "raw_artifacts": [
+                {"source_path_or_ref": "artifact://gowitness/index.json", "content_type": "application/json", "summary": "GoWitness JSON index"},
+                {"source_path_or_ref": "artifact://gowitness/screen-001.png", "content_type": "image/png", "summary": "Captured login page"},
+            ],
+        })
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["status"], "OutputImported")
+        self.assertEqual(len(imported_body["raw_artifacts"]), 2)
+        self.assertTrue(Path(imported_body["artifact_path"]).exists())
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/normalize", json={
+            "case_id": case_id,
+            "result_type": "visual_capture",
+            "summary": "One screenshot was normalized as a visual evidence candidate.",
+            "observations": ["The screenshot shows a login page."],
+            "limitations": ["A login page screenshot does not prove compromise."],
+            "structured_items": [{
+                "item_type": "screenshot",
+                "source_path_or_ref": "artifact://gowitness/screen-001.png",
+                "confidence": 0.86,
+            }],
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_body = normalized.json()
+        self.assertEqual(normalized_body["status"], "Normalized")
+        self.assertIn("Do not claim compromise from tool output alone.", normalized_body["prohibited_report_claims"])
+        self.assertTrue(Path(normalized_body["artifact_path"]).exists())
+
+        evidence = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/create-evidence", json={
+            "case_id": case_id,
+            "result_id": normalized_body["result_id"],
+            "summary": "GoWitness screenshot evidence candidate for analyst review.",
+        })
+        self.assertEqual(evidence.status_code, 200)
+        evidence_body = evidence.json()
+        self.assertEqual(evidence_body["kind"], "redteam_ax_v2_evidence_candidate")
+        self.assertEqual(evidence_body["validation_status"], "candidate")
+        self.assertIn("prohibited_report_claims", evidence_body["normalized_fields"])
+        self.assertTrue(Path(evidence_body["artifact_path"]).exists())
+
+        reloaded_action = self.client.get(f"/api/redteam/v2/tool-actions/{action['action_id']}", params={"case_id": case_id})
+        self.assertEqual(reloaded_action.json()["status"], "EvidenceCreated")
+
+    def test_v2_tool_run_normalize_requires_imported_output(self) -> None:
+        response = self.client.post("/api/redteam/v2/tool-runs/TMR-MISSING/normalize", json={
+            "case_id": "CASE-V2-MISSING-TOOLRUN-001",
+            "structured_items": [{"item_type": "artifact_observation"}],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "invalid")
+        self.assertIn("tool_run_record_required", body["errors"])
+
     def test_v2_report_gate_blocks_unsupported_claims_unapproved_high_risk_and_evidenceless_findings(self) -> None:
         response = self.client.post("/api/redteam/v2/reports/validate", json={
             "claims": [{"claim_id": "C-1", "support_level": "unsupported", "evidence_ids": []}],

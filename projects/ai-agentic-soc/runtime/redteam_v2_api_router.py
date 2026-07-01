@@ -73,6 +73,21 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
     return redteam_v2_models.record_manual_run(action_id, payload)
 
 
+@router.post("/tool-runs/{run_id}/import-output")
+def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.import_tool_run_output(run_id, payload)
+
+
+@router.post("/tool-runs/{run_id}/normalize")
+def normalize_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.normalize_tool_run(run_id, payload)
+
+
+@router.post("/tool-runs/{run_id}/create-evidence")
+def create_evidence_from_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.create_evidence_from_tool_run(run_id, payload)
+
+
 @router.post("/evidence")
 def create_evidence(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.create_evidence_card(payload)

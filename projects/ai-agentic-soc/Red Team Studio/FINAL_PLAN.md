@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 5 role-based approval/T5 hard gate complete, full goal active  
+상태: implementation slice 6 tool result normalizer/evidence candidate complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 4 approval queue endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 5 role-based approval/T5 hard gate 반영
+- `runtime/redteam_v2_api_router.py` - slice 6 tool-run import/normalize/evidence endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 6 tool result normalizer/evidence candidate 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 5 role-based approval/T5 hard gate 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 5 approver role 반영
+- `tests/test_redteam_v2_api_router.py` - slice 6 import/normalize/evidence candidate 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 6 import/normalize/evidence candidate 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -134,7 +134,7 @@ Tests:
 
 ### M3. ToolActionCard 중심 실행 통제
 
-상태: role-based approval/T5 hard gate 완료, full workflow 진행 중
+상태: tool result normalizer/evidence candidate 완료, full workflow 진행 중
 
 작업:
 
@@ -171,11 +171,18 @@ Tests:
 - 고위험 ToolAction은 `Approved` 전 manual-run 기록 invalid 처리
 - ActionCard 없는 manual-run 기록 invalid 처리
 - Queue 카드에 approval mode와 required approver roles 표시
+- `/api/redteam/v2/tool-runs/{run_id}/import-output` 추가
+- `/api/redteam/v2/tool-runs/{run_id}/normalize` 추가
+- `/api/redteam/v2/tool-runs/{run_id}/create-evidence` 추가
+- ToolRunRecord JSON artifact 저장
+- NormalizedResult JSON artifact 저장
+- Evidence candidate JSON artifact 저장
+- ToolAction status `OutputImported` -> `Normalized` -> `EvidenceCreated` 전이 저장
+- raw output은 prohibited report claims와 limitations를 포함한 normalized result로만 Evidence 후보화
 
 남은 작업:
 
 - ToolProfile registry
-- normalizer/import-output API
 - 실제 인증/권한 시스템과 approver identity binding
 
 ### M4. Evidence/Claim/Report v2
@@ -366,7 +373,24 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 권한/역할 기반 승인자 검증
 - [x] T5/controlled production 2인 승인 hard gate
 - [ ] approved export API
-- [ ] normalizer/import-output API
+- [x] normalizer/import-output API
+
+## 14. Slice 6 Tool Result Normalizer / Evidence Candidate 체크리스트
+
+- [x] `POST /api/redteam/v2/tool-runs/{run_id}/import-output` 추가
+- [x] `POST /api/redteam/v2/tool-runs/{run_id}/normalize` 추가
+- [x] `POST /api/redteam/v2/tool-runs/{run_id}/create-evidence` 추가
+- [x] manual run 없는 import/normalize는 invalid 처리
+- [x] raw artifact를 ToolRunRecord로 저장
+- [x] normalized result에 observations, limitations, structured items, prohibited report claims 저장
+- [x] Evidence candidate는 `validation_status=candidate`로 생성
+- [x] ToolAction status가 `OutputImported` -> `Normalized` -> `EvidenceCreated`로 갱신
+- [x] API unittest가 import/normalize/evidence candidate 흐름과 missing tool-run normalize 차단 검증
+- [x] sample E2E가 direct evidence 생성 대신 import-output/normalize/create-evidence 흐름 사용
+- [x] live 8765 smoke로 artifact 존재와 `EvidenceCreated` 상태 확인
+- [ ] approved export API
+- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [ ] starter pack 전체 회귀 및 full security regression
 
 ## 13. Slice 5 Role-Based Approval / T5 Hard Gate 체크리스트
 
@@ -386,4 +410,4 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-roles-ui-smoke.png`
 - [ ] 실제 로그인/권한 provider와 approver identity binding
 - [ ] approved export API
-- [ ] normalizer/import-output API
+- [x] normalizer/import-output API - slice 6 완료

@@ -86,6 +86,20 @@ def list_json_artifacts(case_id: str | None, category: str) -> list[dict[str, An
     return [record for _, record in sorted(records, key=lambda item: item[0], reverse=True)]
 
 
+def load_json_record(record_id: str, category: str, case_id: str | None = None) -> dict[str, Any] | None:
+    safe_record_id = safe_name(record_id)
+    roots = [case_dir(case_id)] if case_id else [path for path in DEFAULT_V2_ROOT.glob("*") if path.is_dir()]
+    safe_category = safe_name(category)
+    for root in roots:
+        artifact_path = root / safe_category / f"{safe_record_id}.json"
+        if artifact_path.exists():
+            return read_json_artifact(artifact_path)
+    for record in list_json_artifacts(case_id, category):
+        if str(record.get("run_id") or record.get("result_id") or record.get("evidence_id") or record.get("id") or "") == record_id:
+            return record
+    return None
+
+
 def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
     actions = list_json_artifacts(case_id, "tool-actions")
     if status:
@@ -445,6 +459,168 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
         "audit_events": [{"event": "manual_run_recorded", "at": now_utc(), "actor": executed_by or "unknown"}],
     }
     return append_artifact_metadata(result, "manual-runs", run_id)
+
+
+def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    manual_run = load_json_record(run_id, "manual-runs", case_id)
+    errors: list[str] = []
+    if manual_run is None:
+        errors.append("manual_run_record_required")
+    elif manual_run.get("status") != "ManuallyExecuted":
+        errors.append("manual_run_must_be_manually_executed")
+
+    raw_artifacts = payload.get("raw_artifacts") or payload.get("uploaded_artifacts") or []
+    if not isinstance(raw_artifacts, list) or not raw_artifacts:
+        errors.append("raw_artifacts_required")
+
+    imported_artifacts = [
+        {
+            "artifact_id": stable_id("ART", [run_id, artifact]),
+            "source_path_or_ref": artifact if isinstance(artifact, str) else artifact.get("source_path_or_ref") or artifact.get("path") or artifact,
+            "hash": stable_id("SHA256", [run_id, artifact]),
+            "content_type": "application/octet-stream" if isinstance(artifact, str) else artifact.get("content_type", "application/octet-stream"),
+            "summary": "" if isinstance(artifact, str) else artifact.get("summary", ""),
+            "imported_at": now_utc(),
+        }
+        for artifact in raw_artifacts
+    ]
+    action_id = str(payload.get("action_id") or (manual_run or {}).get("action_id") or "")
+    tool_run = {
+        "kind": "redteam_ax_v2_tool_run_record",
+        "run_id": run_id,
+        "case_id": case_id,
+        "action_id": action_id,
+        "tool_id": payload.get("tool_id") or "TOOL-MANUAL-RECORDER",
+        "execution_mode": payload.get("execution_mode") or "manual_operator_run",
+        "environment": payload.get("environment") or "approved_scope",
+        "executed_by": (manual_run or {}).get("executed_by") or payload.get("executed_by"),
+        "status": "invalid" if errors else "OutputImported",
+        "errors": errors,
+        "raw_artifacts": imported_artifacts,
+        "normalized_results": [],
+        "evidence_candidates": [],
+        "notes": payload.get("notes") or (manual_run or {}).get("notes") or "",
+    }
+    append_artifact_metadata(tool_run, "tool-runs", run_id)
+    if action_id and not errors:
+        action = load_tool_action(action_id, case_id)
+        if action is not None:
+            action["status"] = "OutputImported"
+            action.setdefault("audit_events", []).append({"event": "output_imported", "at": now_utc(), "run_id": run_id})
+            persist_tool_action(action, {"event": "output_imported", "run_id": run_id})
+    return tool_run
+
+
+def normalize_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    tool_run = load_json_record(run_id, "tool-runs", case_id)
+    errors: list[str] = []
+    if tool_run is None:
+        errors.append("tool_run_record_required")
+    elif tool_run.get("status") not in {"OutputImported", "Normalized", "EvidenceCreated"}:
+        errors.append("tool_run_output_must_be_imported")
+
+    raw_artifacts = (tool_run or {}).get("raw_artifacts") or []
+    structured_items = payload.get("structured_items")
+    if structured_items is None:
+        structured_items = [
+            {
+                "item_type": payload.get("result_type") or "artifact_observation",
+                "artifact_id": artifact.get("artifact_id"),
+                "source_path_or_ref": artifact.get("source_path_or_ref"),
+                "confidence": payload.get("confidence", 0.75),
+            }
+            for artifact in raw_artifacts
+        ]
+    if not structured_items:
+        errors.append("structured_items_required")
+
+    result_id = str(payload.get("result_id") or stable_id("NR", [run_id, structured_items, payload.get("summary")]))
+    normalized = {
+        "kind": "redteam_ax_v2_tool_result_normalized",
+        "result_id": result_id,
+        "case_id": case_id,
+        "run_id": run_id,
+        "action_id": (tool_run or {}).get("action_id"),
+        "result_type": payload.get("result_type") or "artifact_observation",
+        "summary": payload.get("summary") or f"{len(structured_items)} tool output item(s) normalized for analyst review.",
+        "observations": payload.get("observations") or [],
+        "limitations": payload.get("limitations") or ["Tool output is evidence candidate material and does not prove compromise without analyst review."],
+        "structured_items": structured_items,
+        "recommended_next_actions": payload.get("recommended_next_actions") or ["Review normalized output and create EvidenceCard candidates."],
+        "prohibited_report_claims": payload.get("prohibited_report_claims") or [
+            "Do not claim compromise from tool output alone.",
+            "Do not promote candidates to findings without approved EvidenceCard links.",
+        ],
+        "status": "invalid" if errors else "Normalized",
+        "errors": errors,
+        "normalized_at": now_utc(),
+    }
+    append_artifact_metadata(normalized, "normalized-results", result_id)
+    if tool_run is not None and not errors:
+        normalized_refs = list(tool_run.get("normalized_results") or [])
+        if result_id not in normalized_refs:
+            normalized_refs.append(result_id)
+        tool_run["normalized_results"] = normalized_refs
+        tool_run["status"] = "Normalized"
+        append_artifact_metadata(tool_run, "tool-runs", run_id)
+        action = load_tool_action(str(tool_run.get("action_id") or ""), case_id)
+        if action is not None:
+            action["status"] = "Normalized"
+            action.setdefault("audit_events", []).append({"event": "tool_run_normalized", "at": now_utc(), "run_id": run_id, "result_id": result_id})
+            persist_tool_action(action, {"event": "tool_run_normalized", "run_id": run_id, "result_id": result_id})
+    return normalized
+
+
+def create_evidence_from_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    tool_run = load_json_record(run_id, "tool-runs", case_id)
+    errors: list[str] = []
+    if tool_run is None:
+        errors.append("tool_run_record_required")
+
+    result_id = str(payload.get("result_id") or "")
+    if not result_id and tool_run is not None:
+        normalized_refs = tool_run.get("normalized_results") or []
+        result_id = str(normalized_refs[-1]) if normalized_refs else ""
+    normalized = load_json_record(result_id, "normalized-results", case_id) if result_id else None
+    if normalized is None:
+        errors.append("normalized_result_required")
+
+    source_path = (normalized or {}).get("artifact_path") or f"tool-run://{run_id}/{result_id or 'missing-normalized-result'}"
+    evidence = create_evidence_card({
+        "case_id": case_id,
+        "source_type": payload.get("source_type") or "tool_normalized_result",
+        "source_path_or_url": source_path,
+        "summary": payload.get("summary") or (normalized or {}).get("summary") or "Normalized tool result requires analyst review.",
+        "normalized_fields": {
+            "run_id": run_id,
+            "result_id": result_id,
+            "result_type": (normalized or {}).get("result_type"),
+            "structured_items": (normalized or {}).get("structured_items") or [],
+            "prohibited_report_claims": (normalized or {}).get("prohibited_report_claims") or [],
+        },
+        "validation_status": payload.get("validation_status") or "candidate",
+    })
+    evidence["kind"] = "redteam_ax_v2_evidence_candidate"
+    evidence["errors"] = [*(evidence.get("errors") or []), *errors]
+    evidence["validation_status"] = "candidate" if evidence["errors"] else evidence.get("validation_status", "candidate")
+    append_artifact_metadata(evidence, "evidence", evidence["evidence_id"])
+
+    if tool_run is not None and not errors:
+        evidence_refs = list(tool_run.get("evidence_candidates") or [])
+        if evidence["evidence_id"] not in evidence_refs:
+            evidence_refs.append(evidence["evidence_id"])
+        tool_run["evidence_candidates"] = evidence_refs
+        tool_run["status"] = "EvidenceCreated"
+        append_artifact_metadata(tool_run, "tool-runs", run_id)
+        action = load_tool_action(str(tool_run.get("action_id") or ""), case_id)
+        if action is not None:
+            action["status"] = "EvidenceCreated"
+            action.setdefault("audit_events", []).append({"event": "evidence_candidate_created", "at": now_utc(), "run_id": run_id, "evidence_id": evidence["evidence_id"]})
+            persist_tool_action(action, {"event": "evidence_candidate_created", "run_id": run_id, "evidence_id": evidence["evidence_id"]})
+    return evidence
 
 
 def create_evidence_card(payload: dict[str, Any]) -> dict[str, Any]:

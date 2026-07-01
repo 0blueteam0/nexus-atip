@@ -1,0 +1,33 @@
+{
+  "kind": "redteam_ax_v2_tool_result_normalized",
+  "result_id": "NR-D74C760031C0",
+  "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+  "run_id": "TMR-E8A1364BE4B6",
+  "action_id": "TAC-43202C82B084",
+  "result_type": "visual_capture",
+  "summary": "Live screenshot normalized as evidence candidate.",
+  "observations": [
+    "A login screen was captured."
+  ],
+  "limitations": [
+    "Screenshot does not prove compromise."
+  ],
+  "structured_items": [
+    {
+      "item_type": "screenshot",
+      "confidence": 0.86,
+      "source_path_or_ref": "artifact://live/gowitness/screen.png"
+    }
+  ],
+  "recommended_next_actions": [
+    "Review normalized output and create EvidenceCard candidates."
+  ],
+  "prohibited_report_claims": [
+    "Do not claim compromise from tool output alone.",
+    "Do not promote candidates to findings without approved EvidenceCard links."
+  ],
+  "status": "Normalized",
+  "errors": [],
+  "normalized_at": "2026-07-01T04:16:54Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/normalized-results/NR-D74C760031C0.json"
+}

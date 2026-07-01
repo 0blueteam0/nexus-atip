@@ -1,0 +1,44 @@
+{
+  "kind": "redteam_ax_v2_manual_run_record",
+  "run_id": "TMR-E8A1364BE4B6",
+  "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+  "action_id": "TAC-43202C82B084",
+  "status": "ManuallyExecuted",
+  "errors": [],
+  "executed_by": "analyst@example.com",
+  "started_at": "2026-07-01T04:15:00Z",
+  "ended_at": "2026-07-01T04:16:00Z",
+  "notes": "Live smoke manual output import.",
+  "uploaded_artifacts": [
+    "artifact://live/gowitness/index.json",
+    "artifact://live/gowitness/screen.png"
+  ],
+  "normalized_result": {
+    "status": "pending_review",
+    "evidence_candidate_count": 2
+  },
+  "evidence_candidates": [
+    {
+      "evidence_id": "EV-9D83F1E030AF",
+      "source_type": "manual_run_artifact",
+      "source_path_or_ref": "artifact://live/gowitness/index.json",
+      "validation_status": "candidate",
+      "summary": "Live smoke manual output import."
+    },
+    {
+      "evidence_id": "EV-9460317E51B6",
+      "source_type": "manual_run_artifact",
+      "source_path_or_ref": "artifact://live/gowitness/screen.png",
+      "validation_status": "candidate",
+      "summary": "Live smoke manual output import."
+    }
+  ],
+  "audit_events": [
+    {
+      "event": "manual_run_recorded",
+      "at": "2026-07-01T04:16:54Z",
+      "actor": "analyst@example.com"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/manual-runs/TMR-E8A1364BE4B6.json"
+}

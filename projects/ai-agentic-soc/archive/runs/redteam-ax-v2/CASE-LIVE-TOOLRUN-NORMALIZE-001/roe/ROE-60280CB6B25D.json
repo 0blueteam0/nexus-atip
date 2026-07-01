@@ -1,0 +1,10 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+  "decision": "allow",
+  "risk_class": "T2",
+  "hitl_required": false,
+  "failures": [],
+  "evaluated_at": "2026-07-01T04:16:54Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/roe/ROE-60280CB6B25D.json"
+}

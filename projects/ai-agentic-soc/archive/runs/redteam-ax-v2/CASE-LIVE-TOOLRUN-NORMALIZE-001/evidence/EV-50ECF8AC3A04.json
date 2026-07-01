@@ -1,0 +1,30 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-50ECF8AC3A04",
+  "case_id": "CASE-LIVE-TOOLRUN-NORMALIZE-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/normalized-results/NR-D74C760031C0.json",
+  "collected_at": "2026-07-01T04:16:54Z",
+  "hash": "SHA256-865A9F357669",
+  "summary": "Live normalized visual capture evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TMR-E8A1364BE4B6",
+    "result_id": "NR-D74C760031C0",
+    "result_type": "visual_capture",
+    "structured_items": [
+      {
+        "item_type": "screenshot",
+        "confidence": 0.86,
+        "source_path_or_ref": "artifact://live/gowitness/screen.png"
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from tool output alone.",
+      "Do not promote candidates to findings without approved EvidenceCard links."
+    ]
+  },
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/evidence/EV-50ECF8AC3A04.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLRUN-NORMALIZE-001/audit.jsonl"
+}

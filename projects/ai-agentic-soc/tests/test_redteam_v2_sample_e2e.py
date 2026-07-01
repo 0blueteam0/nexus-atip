@@ -77,20 +77,41 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(run["normalized_result"]["evidence_candidate_count"], 2)
         self.assertTrue(Path(run["artifact_path"]).exists())
 
-        evidence = self.client.post("/api/redteam/v2/evidence", json={
+        imported = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/import-output", json={
             "case_id": case_id,
-            "source_type": "visual_capture",
-            "source_path_or_url": run["evidence_candidates"][0]["source_path_or_ref"],
+            "raw_artifacts": [
+                {"source_path_or_ref": "artifact://redteam2-report-studio-after-api.png", "content_type": "image/png", "summary": "Report Studio screenshot"},
+                {"source_path_or_ref": "artifact://redteam2-api-live-smoke.json", "content_type": "application/json", "summary": "v2 API smoke metadata"},
+            ],
+        })
+        self.assertEqual(imported.status_code, 200)
+        self.assertEqual(imported.json()["status"], "OutputImported")
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/normalize", json={
+            "case_id": case_id,
+            "result_type": "visual_capture",
             "summary": "Report Studio displays the RedTeam AX v2 workbench with ToolActionCard and evidence gates.",
-            "normalized_fields": {
-                "observed_or_inferred": "observed",
+            "observations": ["The redteam2 queue and guardrail gate are visible."],
+            "limitations": ["UI screenshot supports workflow presence, not exploit success."],
+            "structured_items": [{
+                "item_type": "screenshot",
+                "source_path_or_ref": "artifact://redteam2-report-studio-after-api.png",
                 "supports": ["C-E2E-001", "F-E2E-001"],
-            },
-            "validation_status": "approved",
+                "confidence": 0.9,
+            }],
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_result = normalized.json()
+        self.assertEqual(normalized_result["status"], "Normalized")
+
+        evidence = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/create-evidence", json={
+            "case_id": case_id,
+            "result_id": normalized_result["result_id"],
+            "summary": "Report Studio displays the RedTeam AX v2 workbench with ToolActionCard and evidence gates.",
         })
         self.assertEqual(evidence.status_code, 200)
         evidence_card = evidence.json()
-        self.assertEqual(evidence_card["validation_status"], "approved")
+        self.assertEqual(evidence_card["validation_status"], "candidate")
         self.assertFalse(evidence_card["errors"])
         self.assertTrue(Path(evidence_card["artifact_path"]).exists())
 

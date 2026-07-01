@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260701-131412-Red-Team-Studio-Implement-RedTeam-AX-v2-tool-result-import-normalize-and-evidence-candidate-APIs",
+  "project": "Red Team Studio",
+  "task": "Implement RedTeam AX v2 tool result import normalize and evidence candidate APIs",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260701-131412-Red-Team-Studio-Implement-RedTeam-AX-v2-tool-result-import-normalize-and-evidence-candidate-APIs",
+  "created_at": "2026-07-01T13:14:12+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
