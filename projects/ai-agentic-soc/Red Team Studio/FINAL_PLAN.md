@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 25 CLI wrapper manifest/hash preflight UX/API complete, full goal active  
+상태: implementation slice 26 expected wrapper hash pin approval workflow UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 25 RedTeam2 wrapper manifest/version pinning UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 26 RedTeam2 wrapper pin request/approval UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 25 tool wrapper manifest endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 25 CLI/API wrapper hash preflight manifest 반영
+- `runtime/redteam_v2_api_router.py` - slice 26 tool wrapper pin request/approval endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 26 approved expected_sha256 pin trust registry 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -753,7 +753,23 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `ToolExecutionPlan`에 `wrapper_manifest`, `wrapper_preflight`, `wrapper_sha256_pin_required_before_runner_execution` warning 연결
 - [x] `레드팀 분석2` UI에 `Tool Wrapper Manifest / Version Pinning` 패널 추가
 - [x] API unittest가 manifest registry, import-only trust, sandbox execution plan preflight를 검증
-- [ ] operator-attested version evidence card 수집 UI
-- [ ] expected_sha256 pin 등록/승인 workflow
+- [x] operator-attested version evidence 수집 UI - slice 26 완료
+- [x] expected_sha256 pin 등록/승인 workflow - slice 26 완료
 - [ ] 실제 container/ephemeral runner가 preflight를 hard-block하도록 연결
 - [ ] live 5177/8765 browser wrapper manifest smoke
+
+## 34. Slice 26 Expected Wrapper Hash Pin Approval Workflow 체크리스트
+
+- [x] `/tool-wrapper-pins/{tool_id}/request` endpoint 추가
+- [x] `/tool-wrapper-pins/{tool_id}/approve` endpoint 추가
+- [x] pin request artifact에 expected SHA-256, manifest snapshot, operator-attested version evidence 저장
+- [x] registry read API는 계속 version command를 실행하지 않도록 유지
+- [x] 승인은 `red_team_lead` actor binding/RBAC로 제한
+- [x] 승인된 pin을 `tool-wrapper-pins` trust registry artifact로 저장
+- [x] manifest가 approved pin을 읽어 `expected_sha256_source=approved_pin`으로 반영
+- [x] import-only 도구의 wrapper pin 요청 거부
+- [x] `레드팀 분석2` UI에서 Request Pin / Approve Pin 실행 및 version evidence 입력 가능
+- [x] API unittest가 pin request, unauthorized approval reject, approved pin manifest 반영, import-only reject를 검증
+- [ ] approved pin revoke/rotate workflow
+- [ ] 실제 runner hard-block enforcement
+- [ ] live 5177/8765 browser wrapper pin smoke

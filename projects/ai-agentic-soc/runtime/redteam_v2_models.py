@@ -18,6 +18,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
+TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
+TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
 PROMPT_INJECTION_PATTERNS = [
     "ignore all previous instructions",
     "ignore previous instructions",
@@ -563,12 +565,40 @@ def command_availability(command_name: str) -> dict[str, Any]:
     }
 
 
+def valid_sha256(value: Any) -> bool:
+    text = str(value or "").strip().lower()
+    return len(text) == 64 and all(ch in "0123456789abcdef" for ch in text)
+
+
+def tool_wrapper_pin_record_id(tool_id: str) -> str:
+    return f"wrapper-pin-{safe_name(tool_id).upper()}"
+
+
+def load_approved_tool_wrapper_pin(profile: dict[str, Any]) -> dict[str, Any] | None:
+    tool_id = str(profile.get("tool_id") or "").strip()
+    if not tool_id:
+        return None
+    pin = load_json_record(
+        tool_wrapper_pin_record_id(tool_id),
+        "tool-wrapper-pins",
+        case_id=TOOL_WRAPPER_PIN_CASE_ID,
+    )
+    if pin and pin.get("status") == "approved" and valid_sha256(pin.get("expected_sha256")):
+        return pin
+    return None
+
+
 def tool_wrapper_manifest_for_profile(profile: dict[str, Any]) -> dict[str, Any]:
     adapter_type = str(profile.get("adapter_type") or "")
     command_name = str(profile.get("command_name") or "").strip()
     availability = command_availability(command_name)
     resolved_path = availability.get("path")
-    expected_sha256 = str(profile.get("expected_sha256") or "").strip() or None
+    approved_pin = load_approved_tool_wrapper_pin(profile)
+    expected_sha256 = (
+        str(profile.get("expected_sha256") or "").strip()
+        or str((approved_pin or {}).get("expected_sha256") or "").strip()
+        or None
+    )
     actual_sha256 = None
     hash_error = None
 
@@ -612,6 +642,8 @@ def tool_wrapper_manifest_for_profile(profile: dict[str, Any]) -> dict[str, Any]
         "availability": availability,
         "resolved_path": resolved_path,
         "expected_sha256": expected_sha256,
+        "expected_sha256_source": "tool_profile" if profile.get("expected_sha256") else ("approved_pin" if approved_pin else "not_configured"),
+        "approved_pin": approved_pin,
         "actual_sha256": actual_sha256,
         "hash_error": hash_error,
         "pinning_status": pinning_status,
@@ -654,6 +686,145 @@ def tool_wrapper_manifest(tool_id: str) -> dict[str, Any]:
             "errors": ["tool_profile_not_registered"],
         }
     return tool_wrapper_manifest_for_profile(profile)
+
+
+def request_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID).strip()
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()
+    manifest = tool_wrapper_manifest_for_profile(profile) if profile else None
+    submitted_sha256 = str(
+        payload.get("expected_sha256")
+        or payload.get("observed_sha256")
+        or (manifest or {}).get("actual_sha256")
+        or ""
+    ).strip().lower()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not case_id:
+        errors.append("case_id_required")
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not submitted_sha256:
+        errors.append("expected_sha256_required")
+    elif not valid_sha256(submitted_sha256):
+        errors.append("expected_sha256_must_be_64_hex")
+    if profile and profile.get("adapter_type") == "import_only":
+        errors.append("import_only_tool_does_not_require_wrapper_pin")
+    if manifest and manifest.get("actual_sha256") and submitted_sha256 and submitted_sha256 != manifest.get("actual_sha256"):
+        warnings.append("submitted_hash_differs_from_current_resolved_wrapper")
+
+    request_id = str(payload.get("pin_request_id") or stable_id("TWPINREQ", [case_id, tool_id, submitted_sha256, requested_by, now_utc()]))
+    result = {
+        "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+        "pin_request_id": request_id,
+        "case_id": case_id,
+        "tool_id": (profile or {}).get("tool_id") or tool_id,
+        "tool_name": (profile or {}).get("name"),
+        "status": "invalid" if errors else "submitted",
+        "errors": errors,
+        "warnings": warnings,
+        "expected_sha256": submitted_sha256 or None,
+        "manifest_snapshot": manifest,
+        "version_evidence": {
+            "operator_attested_version": str(payload.get("operator_attested_version") or payload.get("version") or "").strip(),
+            "version_command": str(payload.get("version_command") or "").strip(),
+            "version_output_excerpt": str(payload.get("version_output_excerpt") or "")[:1000],
+            "version_command_executed_by_operator": bool(payload.get("version_command_executed_by_operator")),
+            "registry_executed_version_command": False,
+        },
+        "requested_by": requested_by,
+        "requested_at": now_utc(),
+        "approval_policy": {
+            "required_approver_roles": sorted(TOOL_WRAPPER_PIN_APPROVER_ROLES),
+            "approval_mode": "single_approval",
+            "safe_by_default": True,
+        },
+    }
+    return append_artifact_metadata(result, "tool-wrapper-pin-requests", request_id)
+
+
+def approve_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID).strip()
+    request_id = str(payload.get("pin_request_id") or payload.get("request_id") or "").strip()
+    pin_request = load_json_record(request_id, "tool-wrapper-pin-requests", case_id=case_id) if request_id else None
+    approver = str(payload.get("approver") or payload.get("approved_by") or "").strip()
+    approver_role = normalize_approver_role(payload.get("approver_role") or payload.get("role"))
+    actor_payload = {**payload, "case_id": case_id, "approver": approver, "approver_role": approver_role}
+    actor_context, binding_errors = approval_actor_binding_errors(actor_payload, approver, approver_role)
+    decision = str(payload.get("decision") or "approve").strip().lower()
+    errors: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not case_id:
+        errors.append("case_id_required")
+    if not request_id:
+        errors.append("pin_request_id_required")
+    if pin_request is None:
+        errors.append("pin_request_not_found")
+    elif pin_request.get("status") != "submitted":
+        errors.append("pin_request_not_submitted")
+    if not approver:
+        errors.append("approver_required")
+    errors.extend(binding_errors)
+    if decision not in {"approve", "reject"}:
+        errors.append("decision_must_be_approve_or_reject")
+    if decision == "approve" and approver_role not in TOOL_WRAPPER_PIN_APPROVER_ROLES:
+        errors.append("approver_role_not_authorized")
+    expected_sha256 = str((pin_request or {}).get("expected_sha256") or "").strip().lower()
+    if decision == "approve" and not valid_sha256(expected_sha256):
+        errors.append("expected_sha256_must_be_64_hex")
+
+    manifest_before = tool_wrapper_manifest_for_profile(profile) if profile else None
+    approval_id = stable_id("TWPINAP", [case_id, tool_id, request_id, approver, approver_role, decision, now_utc()])
+    approval = {
+        "kind": "redteam_ax_v2_tool_wrapper_pin_approval",
+        "approval_id": approval_id,
+        "case_id": case_id,
+        "tool_id": (profile or {}).get("tool_id") or tool_id,
+        "pin_request_id": request_id,
+        "status": "invalid" if errors else ("rejected" if decision == "reject" else "approved"),
+        "decision": decision,
+        "errors": errors,
+        "approver": approver,
+        "approver_role": approver_role,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not binding_errors else "invalid",
+        "expected_sha256": expected_sha256 or None,
+        "manifest_before": manifest_before,
+        "decided_at": now_utc(),
+    }
+    append_artifact_metadata(approval, "tool-wrapper-pin-approvals", approval_id)
+
+    approved_pin = None
+    if not errors and decision == "approve":
+        pin_record = {
+            "kind": "redteam_ax_v2_tool_wrapper_pin",
+            "pin_id": tool_wrapper_pin_record_id(str((profile or {}).get("tool_id") or tool_id)),
+            "case_id": TOOL_WRAPPER_PIN_CASE_ID,
+            "source_case_id": case_id,
+            "tool_id": (profile or {}).get("tool_id") or tool_id,
+            "tool_name": (profile or {}).get("name"),
+            "status": "approved",
+            "expected_sha256": expected_sha256,
+            "pin_request_id": request_id,
+            "approval_id": approval_id,
+            "approved_by": approver,
+            "approver_role": approver_role,
+            "version_evidence": (pin_request or {}).get("version_evidence") or {},
+            "approved_at": now_utc(),
+            "safe_by_default": True,
+        }
+        approved_pin = append_artifact_metadata(pin_record, "tool-wrapper-pins", pin_record["pin_id"])
+    manifest_after = tool_wrapper_manifest_for_profile(profile) if profile else None
+    return {
+        **approval,
+        "approved_pin": approved_pin,
+        "manifest_after": manifest_after,
+    }
 
 
 def schema_artifact_path(schema_id: str) -> str:

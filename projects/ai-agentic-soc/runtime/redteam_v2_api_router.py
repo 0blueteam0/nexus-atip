@@ -125,6 +125,22 @@ def get_tool_wrapper_manifest(tool_id: str) -> dict[str, Any]:
     return redteam_v2_models.tool_wrapper_manifest(tool_id)
 
 
+@router.post("/tool-wrapper-pins/{tool_id}/request")
+def request_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.request_tool_wrapper_pin(tool_id, payload)
+
+
+@router.post("/tool-wrapper-pins/{tool_id}/approve")
+def approve_tool_wrapper_pin(
+    tool_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_tool_wrapper_pin(tool_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
+
+
 @router.get("/tool-schemas")
 def list_tool_schemas() -> dict[str, Any]:
     return redteam_v2_models.list_tool_schemas()

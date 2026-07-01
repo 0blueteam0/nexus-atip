@@ -186,6 +186,74 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(one.status_code, 200)
         self.assertEqual(one.json()["pinning_status"], "import_only")
 
+    def test_v2_tool_wrapper_pin_request_and_approval_updates_manifest_expected_hash(self) -> None:
+        case_id = "CASE-V2-WRAPPER-PIN-001"
+        expected_sha256 = "a" * 64
+        request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/request", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "expected_sha256": expected_sha256,
+            "operator_attested_version": "trivy test-version",
+            "version_command": "trivy --version",
+            "version_output_excerpt": "Version: test-version",
+            "version_command_executed_by_operator": True,
+        })
+        self.assertEqual(request.status_code, 200)
+        request_body = request.json()
+        self.assertEqual(request_body["kind"], "redteam_ax_v2_tool_wrapper_pin_request")
+        self.assertEqual(request_body["status"], "submitted")
+        self.assertEqual(request_body["expected_sha256"], expected_sha256)
+        self.assertFalse(request_body["version_evidence"]["registry_executed_version_command"])
+
+        unauthorized = self.client.post(
+            "/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/approve",
+            headers=self.actor_headers("analyst@example.com", "analyst"),
+            json={
+                "case_id": case_id,
+                "pin_request_id": request_body["pin_request_id"],
+                "approver": "analyst@example.com",
+                "approver_role": "analyst",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(unauthorized.status_code, 200)
+        self.assertIn("approver_role_not_authorized", unauthorized.json()["errors"])
+
+        approval = self.client.post(
+            "/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "pin_request_id": request_body["pin_request_id"],
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "approved")
+        self.assertEqual(approval_body["approved_pin"]["expected_sha256"], expected_sha256)
+        self.assertEqual(approval_body["manifest_after"]["expected_sha256"], expected_sha256)
+        self.assertEqual(approval_body["manifest_after"]["expected_sha256_source"], "approved_pin")
+        self.assertEqual(approval_body["manifest_after"]["approved_pin"]["approval_id"], approval_body["approval_id"])
+
+        manifest = self.client.get("/api/redteam/v2/tool-wrapper-manifests/TOOL-TRIVY-001")
+        self.assertEqual(manifest.status_code, 200)
+        self.assertEqual(manifest.json()["expected_sha256"], expected_sha256)
+        self.assertEqual(manifest.json()["expected_sha256_source"], "approved_pin")
+
+    def test_v2_import_only_tool_rejects_wrapper_pin_request(self) -> None:
+        response = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-SCA-001/request", json={
+            "case_id": "CASE-V2-WRAPPER-PIN-IMPORT-ONLY-001",
+            "requested_by": "analyst@example.com",
+            "expected_sha256": "b" * 64,
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "invalid")
+        self.assertIn("import_only_tool_does_not_require_wrapper_pin", body["errors"])
+
     def test_v2_tool_execution_plan_enforces_sandbox_network_deny_and_approval_gate(self) -> None:
         sandbox_case_id = "CASE-V2-EXEC-PLAN-SANDBOX-001"
         sandbox_plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
