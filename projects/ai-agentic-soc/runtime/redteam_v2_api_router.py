@@ -115,6 +115,16 @@ def list_analysis_agents() -> dict[str, Any]:
     return redteam_v2_models.list_analysis_agents()
 
 
+@router.get("/tool-schemas")
+def list_tool_schemas() -> dict[str, Any]:
+    return redteam_v2_models.list_tool_schemas()
+
+
+@router.post("/tool-schemas/{schema_id}/validate")
+def validate_tool_schema(schema_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.validate_tool_schema_payload(schema_id, payload)
+
+
 @router.get("/tool-actions")
 def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
     return redteam_v2_models.list_tool_actions(case_id=case_id, status=status)

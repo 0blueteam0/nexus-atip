@@ -13,6 +13,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
+SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5", "T6", "T7"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
@@ -262,6 +263,92 @@ ANALYSIS_AGENT_REGISTRY = {
     },
 }
 
+TOOL_SCHEMA_REGISTRY = {
+    "ToolArtifactImport": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "redteam.ax.v2.ToolArtifactImport",
+        "title": "RedTeam AX v2 ToolArtifactImport",
+        "type": "object",
+        "additionalProperties": True,
+        "required": ["kind", "case_id", "run_id", "status", "artifact", "policy"],
+        "properties": {
+            "kind": {"const": "redteam_ax_v2_tool_artifact_import"},
+            "case_id": {"type": "string", "minLength": 1},
+            "run_id": {"type": "string", "minLength": 1},
+            "status": {"enum": ["OutputImported", "invalid"]},
+            "errors": {"type": "array", "items": {"type": "string"}},
+            "artifact": {
+                "type": "object",
+                "additionalProperties": True,
+                "required": ["artifact_id", "source_path_or_ref", "sha256", "hash_algorithm", "trusted_as_instruction", "requires_human_validation"],
+                "properties": {
+                    "artifact_id": {"type": "string", "minLength": 1},
+                    "source_path_or_ref": {"type": "string", "minLength": 1},
+                    "storage_path": {"type": ["string", "null"]},
+                    "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+                    "hash_algorithm": {"const": "sha256"},
+                    "content_type": {"type": "string"},
+                    "trusted_as_instruction": {"const": False},
+                    "requires_human_validation": {"const": True},
+                },
+            },
+            "policy": {
+                "type": "object",
+                "additionalProperties": True,
+                "required": ["source_boundary", "hash_required", "raw_content_trust"],
+                "properties": {
+                    "source_boundary": {"const": "workspace_only"},
+                    "hash_required": {"const": True},
+                    "raw_content_trust": {"const": "data_only_never_instruction"},
+                },
+            },
+        },
+    },
+    "ToolResultNormalized": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "redteam.ax.v2.ToolResultNormalized",
+        "title": "RedTeam AX v2 ToolResultNormalized",
+        "type": "object",
+        "additionalProperties": True,
+        "required": [
+            "kind",
+            "result_id",
+            "case_id",
+            "run_id",
+            "result_type",
+            "summary",
+            "structured_items",
+            "prohibited_report_claims",
+            "status",
+        ],
+        "properties": {
+            "kind": {"const": "redteam_ax_v2_tool_result_normalized"},
+            "result_id": {"type": "string", "minLength": 1},
+            "case_id": {"type": "string", "minLength": 1},
+            "run_id": {"type": "string", "minLength": 1},
+            "result_type": {"type": "string", "minLength": 1},
+            "summary": {"type": "string", "minLength": 1},
+            "structured_items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": True,
+                    "required": ["item_type", "trusted_as_instruction", "requires_human_validation"],
+                    "properties": {
+                        "item_type": {"type": "string", "minLength": 1},
+                        "trusted_as_instruction": {"const": False},
+                        "requires_human_validation": {"const": True},
+                    },
+                },
+            },
+            "prohibited_report_claims": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+            "parser_report": {"type": "object"},
+            "status": {"enum": ["Normalized", "invalid"]},
+        },
+    },
+}
+
 
 def now_utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -447,6 +534,107 @@ def command_availability(command_name: str) -> dict[str, Any]:
         "path": resolved,
         "checked_at": now_utc(),
     }
+
+
+def schema_artifact_path(schema_id: str) -> str:
+    return (SCHEMA_ARTIFACT_ROOT / f"{safe_name(schema_id)}.schema.json").as_posix()
+
+
+def list_tool_schemas() -> dict[str, Any]:
+    schemas = []
+    for schema_id, schema in TOOL_SCHEMA_REGISTRY.items():
+        schemas.append({
+            "schema_id": schema_id,
+            "title": schema.get("title"),
+            "artifact_path": schema_artifact_path(schema_id),
+            "required": schema.get("required") or [],
+        })
+    return {
+        "kind": "redteam_ax_v2_tool_schema_registry",
+        "schema_count": len(schemas),
+        "schemas": schemas,
+        "validation_policy": "runtime_subset_json_schema_plus_redteam_trust_invariants",
+    }
+
+
+def _json_type_matches(value: Any, expected_type: Any) -> bool:
+    expected = expected_type if isinstance(expected_type, list) else [expected_type]
+    for item in expected:
+        if item == "null" and value is None:
+            return True
+        if item == "object" and isinstance(value, dict):
+            return True
+        if item == "array" and isinstance(value, list):
+            return True
+        if item == "string" and isinstance(value, str):
+            return True
+        if item == "boolean" and isinstance(value, bool):
+            return True
+        if item == "number" and isinstance(value, (int, float)) and not isinstance(value, bool):
+            return True
+        if item == "integer" and isinstance(value, int) and not isinstance(value, bool):
+            return True
+    return False
+
+
+def _validate_schema_subset(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
+    errors: list[str] = []
+    if "type" in schema and not _json_type_matches(value, schema.get("type")):
+        errors.append(f"{path}:type_mismatch:{schema.get('type')}")
+        return errors
+    if "const" in schema and value != schema.get("const"):
+        errors.append(f"{path}:const_mismatch")
+    if "enum" in schema and value not in (schema.get("enum") or []):
+        errors.append(f"{path}:enum_mismatch")
+    if isinstance(value, str):
+        if int(schema.get("minLength") or 0) and len(value) < int(schema.get("minLength") or 0):
+            errors.append(f"{path}:min_length")
+        pattern = schema.get("pattern")
+        if pattern == "^[A-Fa-f0-9]{64}$":
+            valid_hex = len(value) == 64 and all(ch in "0123456789abcdefABCDEF" for ch in value)
+            if not valid_hex:
+                errors.append(f"{path}:pattern_mismatch")
+    if isinstance(value, list):
+        if int(schema.get("minItems") or 0) and len(value) < int(schema.get("minItems") or 0):
+            errors.append(f"{path}:min_items")
+        item_schema = schema.get("items")
+        if isinstance(item_schema, dict):
+            for index, item in enumerate(value):
+                errors.extend(_validate_schema_subset(item, item_schema, f"{path}[{index}]"))
+    if isinstance(value, dict):
+        for required in schema.get("required") or []:
+            if required not in value:
+                errors.append(f"{path}.{required}:required")
+        properties = schema.get("properties") if isinstance(schema.get("properties"), dict) else {}
+        for key, property_schema in properties.items():
+            if key in value and isinstance(property_schema, dict):
+                errors.extend(_validate_schema_subset(value[key], property_schema, f"{path}.{key}"))
+    return errors
+
+
+def validate_against_tool_schema(schema_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    schema = TOOL_SCHEMA_REGISTRY.get(str(schema_id or ""))
+    if schema is None:
+        return {
+            "kind": "redteam_ax_v2_schema_validation",
+            "schema_id": schema_id,
+            "valid": False,
+            "errors": ["schema_not_registered"],
+        }
+    errors = _validate_schema_subset(payload, schema)
+    return {
+        "kind": "redteam_ax_v2_schema_validation",
+        "schema_id": schema_id,
+        "schema_artifact_path": schema_artifact_path(schema_id),
+        "valid": not errors,
+        "errors": errors,
+        "validated_at": now_utc(),
+    }
+
+
+def validate_tool_schema_payload(schema_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    document = payload.get("document") if isinstance(payload.get("document"), dict) else payload
+    return validate_against_tool_schema(schema_id, document)
 
 
 def analysis_tool_profile(tool_id: str) -> dict[str, Any] | None:
@@ -1319,6 +1507,21 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     }
 
 
+def enforce_structured_item_trust_contract(items: Any) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    if not isinstance(items, list):
+        return normalized
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        normalized.append({
+            **item,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+        })
+    return normalized
+
+
 def artifact_raw_output_values(tool_run: dict[str, Any] | None) -> tuple[list[str], dict[str, Any]]:
     raw_values: list[str] = []
     errors: list[str] = []
@@ -1387,17 +1590,18 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         "input_source": "request_payload" if _raw_output_values(payload) else ("stored_artifacts" if artifact_raw_values else "none"),
     }
     errors.extend(artifact_report.get("artifact_errors") or [])
-    structured_items = payload.get("structured_items") or parsed_items or [
+    structured_items = enforce_structured_item_trust_contract(payload.get("structured_items") or parsed_items or [
         {
             "item_type": payload.get("result_type") or "scanner_finding_candidate",
             "tool_id": tool_id,
             "artifact_id": artifact.get("artifact_id"),
             "source_path_or_ref": artifact.get("source_path_or_ref"),
             "trusted_as_instruction": False,
+            "requires_human_validation": True,
             "confidence": payload.get("confidence", 0.7),
         }
         for artifact in raw_artifacts
-    ]
+    ])
     if not structured_items:
         errors.append("structured_items_required")
 
@@ -1438,8 +1642,13 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         "errors": errors,
         "normalized_at": now_utc(),
     }
+    schema_validation = validate_against_tool_schema("ToolResultNormalized", normalized)
+    normalized["schema_validation"] = schema_validation
+    if not schema_validation["valid"]:
+        normalized["status"] = "invalid"
+        normalized["errors"] = [*errors, *schema_validation["errors"]]
     append_artifact_metadata(normalized, "normalized-results", result_id)
-    if tool_run is not None and not errors:
+    if tool_run is not None and not normalized["errors"]:
         normalized_refs = list(tool_run.get("normalized_results") or [])
         if result_id not in normalized_refs:
             normalized_refs.append(result_id)
@@ -1702,8 +1911,13 @@ def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]
             "raw_content_trust": "data_only_never_instruction",
         },
     }
+    schema_validation = validate_against_tool_schema("ToolArtifactImport", import_record)
+    import_record["schema_validation"] = schema_validation
+    if not schema_validation["valid"]:
+        import_record["status"] = "invalid"
+        import_record["errors"] = [*errors, *schema_validation["errors"]]
     append_artifact_metadata(import_record, "artifact-imports", import_record["import_id"])
-    if tool_run is not None and not errors:
+    if tool_run is not None and not import_record["errors"]:
         raw_artifacts = list(tool_run.get("raw_artifacts") or [])
         raw_artifacts = [artifact for artifact in raw_artifacts if not (isinstance(artifact, dict) and artifact.get("artifact_id") == artifact_id)]
         raw_artifacts.append(artifact_record)
@@ -1792,10 +2006,13 @@ def normalize_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
                 "item_type": payload.get("result_type") or "artifact_observation",
                 "artifact_id": artifact.get("artifact_id"),
                 "source_path_or_ref": artifact.get("source_path_or_ref"),
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
                 "confidence": payload.get("confidence", 0.75),
             }
             for artifact in raw_artifacts
         ]
+    structured_items = enforce_structured_item_trust_contract(structured_items)
     if not structured_items:
         errors.append("structured_items_required")
 
@@ -1820,8 +2037,13 @@ def normalize_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         "errors": errors,
         "normalized_at": now_utc(),
     }
+    schema_validation = validate_against_tool_schema("ToolResultNormalized", normalized)
+    normalized["schema_validation"] = schema_validation
+    if not schema_validation["valid"]:
+        normalized["status"] = "invalid"
+        normalized["errors"] = [*errors, *schema_validation["errors"]]
     append_artifact_metadata(normalized, "normalized-results", result_id)
-    if tool_run is not None and not errors:
+    if tool_run is not None and not normalized["errors"]:
         normalized_refs = list(tool_run.get("normalized_results") or [])
         if result_id not in normalized_refs:
             normalized_refs.append(result_id)

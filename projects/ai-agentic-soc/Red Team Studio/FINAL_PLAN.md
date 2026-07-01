@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 17 file-based tool result ingestion/hash gate complete, full goal active  
+상태: implementation slice 18 tool result schema artifacts/validation complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 17 strict tool artifact import endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 17 file-based tool result ingestion, SHA-256 gate, stored artifact parser input 반영
+- `runtime/redteam_v2_api_router.py` - slice 18 tool schema registry/validation endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 18 ToolResultNormalized/ToolArtifactImport schema registry와 runtime validation 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 17 파일 기반 tool result ingestion/hash gate 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 18 schema registry/validation 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -623,7 +623,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample E2E 1건 통과
 - [ ] parser 결과를 Finding owner/SLA/retest UI에 직접 연결
 - [x] 실제 파일 업로드/경로 기반 parser 입력 지원 - slice 17 local workspace file import/hash gate 완료
-- [ ] parser schema를 별도 JSON Schema artifact로 분리
+- [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 `ToolResultNormalized`, `ToolArtifactImport` 완료
 - [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
 - [ ] sandbox/container runner와 network allowlist enforcement
 - [ ] full release/security/starter-pack regression
@@ -637,6 +637,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `agent-analyze`가 request `raw_output` 없이도 저장된 text/json/xml artifact를 읽어 tool-specific parser 입력으로 사용
 - [x] API unittest가 hash 누락 거부와 Nuclei JSONL stored artifact parser 경로를 검증
 - [ ] multipart browser upload UX 연결
-- [ ] parser schema를 별도 JSON Schema artifact로 분리
+- [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 완료
 - [ ] artifact quarantine/redaction preview UI
 - [ ] sandbox/container runner와 network allowlist enforcement
+
+## 26. Slice 18 Tool Result Schema Artifacts 체크리스트
+
+- [x] `고도화/schemas/json/ToolResultNormalized.schema.json` 추가
+- [x] `고도화/schemas/json/ToolArtifactImport.schema.json` 추가
+- [x] `/api/redteam/v2/tool-schemas` registry endpoint 추가
+- [x] `/api/redteam/v2/tool-schemas/{schema_id}/validate` runtime validation endpoint 추가
+- [x] `agent-analyze` 및 generic `normalize` 결과에 `schema_validation` 기록
+- [x] strict file import 결과에 `schema_validation` 기록
+- [x] structured item trust invariant 강제: `trusted_as_instruction=false`, `requires_human_validation=true`
+- [x] API unittest가 valid/invalid normalized result schema validation을 검증
+- [ ] schema artifact와 runtime registry 자동 동기화 검증
+- [ ] multipart browser upload UX에 schema validation 결과 표시
+- [ ] quarantine/redaction preview UI

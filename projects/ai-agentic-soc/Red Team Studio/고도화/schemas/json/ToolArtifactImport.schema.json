@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "redteam.ax.v2.ToolArtifactImport",
+  "title": "RedTeam AX v2 ToolArtifactImport",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["kind", "case_id", "run_id", "status", "artifact", "policy"],
+  "properties": {
+    "kind": { "const": "redteam_ax_v2_tool_artifact_import" },
+    "case_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["OutputImported", "invalid"] },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "artifact_id",
+        "source_path_or_ref",
+        "sha256",
+        "hash_algorithm",
+        "trusted_as_instruction",
+        "requires_human_validation"
+      ],
+      "properties": {
+        "artifact_id": { "type": "string", "minLength": 1 },
+        "source_path_or_ref": { "type": "string", "minLength": 1 },
+        "storage_path": { "type": ["string", "null"] },
+        "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" },
+        "hash_algorithm": { "const": "sha256" },
+        "content_type": { "type": "string" },
+        "trusted_as_instruction": { "const": false },
+        "requires_human_validation": { "const": true }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["source_boundary", "hash_required", "raw_content_trust"],
+      "properties": {
+        "source_boundary": { "const": "workspace_only" },
+        "hash_required": { "const": true },
+        "raw_content_trust": { "const": "data_only_never_instruction" }
+      }
+    }
+  }
+}
