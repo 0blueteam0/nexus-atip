@@ -113,6 +113,16 @@ def create_evidence(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.create_evidence_card(payload)
 
 
+@router.post("/evidence/{evidence_id}/approve")
+def approve_evidence(
+    evidence_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_evidence_card(evidence_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role))
+
+
 @router.post("/reports/validate")
 def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.validate_report(payload)

@@ -26,6 +26,30 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             "X-RedTeam-Actor-Role": role,
         }
 
+    def create_approved_evidence(self, case_id: str, evidence_id: str = "EV-APPROVED-1") -> dict:
+        evidence = self.client.post("/api/redteam/v2/evidence", json={
+            "case_id": case_id,
+            "evidence_id": evidence_id,
+            "source_path_or_url": f"artifact://{case_id}/{evidence_id}.json",
+            "summary": f"Approved evidence fixture {evidence_id}",
+        })
+        self.assertEqual(evidence.status_code, 200)
+        approval = self.client.post(
+            f"/api/redteam/v2/evidence/{evidence_id}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "reviewed_by": "lead@example.com",
+                "reviewer_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "approved")
+        self.assertEqual(approval_body["identity_binding"], "bound")
+        return approval_body["evidence"]
+
     def test_v2_health_advertises_safe_tool_action_policy(self) -> None:
         response = self.client.get("/api/redteam/v2/health")
 
@@ -419,11 +443,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["finding_without_evidence_count"], 1)
 
     def test_v2_report_generate_passes_only_when_all_gate_counts_are_zero(self) -> None:
+        case_id = "CASE-V2-REPORT-GENERATE-001"
+        evidence = self.create_approved_evidence(case_id, "EV-1")
         response = self.client.post("/api/redteam/v2/reports/generate", json={
             "title": "Korean Red Team Report v2",
-            "case_id": "CASE-V2-REPORT-GENERATE-001",
-            "claims": [{"claim_id": "C-1", "support_level": "supported", "evidence_ids": ["EV-1"]}],
-            "findings": [{"finding_id": "F-1", "evidence_ids": ["EV-1"]}],
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": "F-1", "evidence_ids": [evidence["evidence_id"]]}],
             "tool_actions": [{"action_id": "TAC-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
         })
 
@@ -433,13 +459,40 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIsNotNone(body["report"])
         self.assertIn("Claim-Evidence Matrix", body["report"]["sections"])
 
+    def test_v2_report_gate_blocks_missing_unapproved_and_unverified_evidence(self) -> None:
+        case_id = "CASE-V2-REPORT-EVIDENCE-GATE-001"
+        unapproved = self.client.post("/api/redteam/v2/evidence", json={
+            "case_id": case_id,
+            "evidence_id": "EV-PENDING-1",
+            "source_path_or_url": "artifact://pending.json",
+            "summary": "Pending evidence must not be used in report export.",
+        })
+        self.assertEqual(unapproved.status_code, 200)
+
+        response = self.client.post("/api/redteam/v2/reports/validate", json={
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-EV-1", "support_level": "supported", "evidence_ids": ["EV-PENDING-1", "EV-MISSING-1"]}],
+            "findings": [{"finding_id": "F-EV-1", "evidence_ids": ["EV-PENDING-1"]}],
+            "tool_actions": [],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["gate_status"], "blocked")
+        self.assertEqual(body["missing_evidence_count"], 1)
+        self.assertEqual(body["unapproved_evidence_count"], 1)
+        self.assertEqual(body["unverified_evidence_count"], 1)
+        self.assertIn("missing_evidence", {item["type"] for item in body["blocking_items"]})
+        self.assertIn("unapproved_evidence", {item["type"] for item in body["blocking_items"]})
+
     def test_v2_report_export_requires_final_human_approval(self) -> None:
         case_id = "CASE-V2-REPORT-EXPORT-001"
+        evidence = self.create_approved_evidence(case_id, "EV-EXP-1")
         report = self.client.post("/api/redteam/v2/reports/generate", json={
             "title": "Korean Red Team Report v2 Export",
             "case_id": case_id,
-            "claims": [{"claim_id": "C-EXP-1", "support_level": "supported", "evidence_ids": ["EV-EXP-1"]}],
-            "findings": [{"finding_id": "F-EXP-1", "evidence_ids": ["EV-EXP-1"]}],
+            "claims": [{"claim_id": "C-EXP-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": "F-EXP-1", "evidence_ids": [evidence["evidence_id"]]}],
             "tool_actions": [{"action_id": "TAC-EXP-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
         })
         self.assertEqual(report.status_code, 200)

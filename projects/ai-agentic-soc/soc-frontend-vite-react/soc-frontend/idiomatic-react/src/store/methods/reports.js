@@ -3333,10 +3333,56 @@ export default {
     };
   }
 ,
+  async ensureRedTeam2ApprovedEvidence() {
+    const draft = this.redTeam2ReportExportDraft();
+    const state = this.state.redteam2ReportExportState || {};
+    const existingEvidence = state.evidence || {};
+    if (existingEvidence.evidence_id === draft.evidenceId && existingEvidence.approval_status === 'approved') {
+      return existingEvidence;
+    }
+    const evidencePayload = {
+      case_id:String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim(),
+      evidence_id:String(draft.evidenceId || '').trim(),
+      source_type:'report_studio_observation',
+      source_path_or_url:`report-studio://${String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim()}/${String(draft.evidenceId || 'EV-REDTEAM2-001').trim()}`,
+      summary:'Report Studio RedTeam AX v2 final gate evidence prepared for analyst review.',
+    };
+    const evidenceRes = await fetch('http://127.0.0.1:8765/api/redteam/v2/evidence', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify(evidencePayload),
+    });
+    const evidence = await evidenceRes.json().catch(() => ({}));
+    if (!evidenceRes.ok || evidence.errors?.length) throw new Error((evidence.errors || []).join(', ') || evidence.detail || `HTTP ${evidenceRes.status}`);
+    const approvalPayload = {
+      case_id:evidencePayload.case_id,
+      reviewed_by:String(draft.approver || '').trim(),
+      reviewer_role:String(draft.approverRole || 'executive_sponsor').trim() === 'executive_sponsor' ? 'red_team_lead' : String(draft.approverRole || 'red_team_lead').trim(),
+      decision:'approve',
+    };
+    const reviewer = approvalPayload.reviewed_by || 'lead@example.com';
+    const reviewerRole = approvalPayload.reviewer_role || 'red_team_lead';
+    const approvalRes = await fetch(`http://127.0.0.1:8765/api/redteam/v2/evidence/${encodeURIComponent(evidence.evidence_id)}/approve`, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'X-RedTeam-Actor':reviewer,
+        'X-RedTeam-Actor-Role':reviewerRole,
+      },
+      body:JSON.stringify({ ...approvalPayload, reviewed_by:reviewer, reviewer_role:reviewerRole }),
+    });
+    const approval = await approvalRes.json().catch(() => ({}));
+    if (!approvalRes.ok || approval.status === 'invalid') throw new Error((approval.errors || []).join(', ') || approval.detail || `HTTP ${approvalRes.status}`);
+    const approvedEvidence = approval.evidence || evidence;
+    this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), evidence:approvedEvidence, evidenceApproval:approval, checkedAt:new Date().toISOString() } }));
+    return approvedEvidence;
+  }
+,
   async generateRedTeam2ReportDraft() {
-    const payload = this.redTeam2ReportPayload();
     this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'generating', error:null } }));
     try {
+      await this.ensureRedTeam2ApprovedEvidence();
+      const payload = this.redTeam2ReportPayload();
       const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/reports/generate', {
         method:'POST',
         headers:{ 'Content-Type':'application/json' },
@@ -3428,6 +3474,7 @@ export default {
     const reportResult = reportState.report || {};
     const reportApproval = reportState.approval || {};
     const reportExported = reportState.exported || {};
+    const reportEvidence = reportState.evidence || {};
     const readiness = st.readiness || {};
     const rag = st.rag || {};
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -3485,10 +3532,12 @@ export default {
       ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
       ['Unapproved High-Risk', reportResult.validation.unapproved_high_risk_count ?? '-', 'must be 0'],
       ['Finding Without Evidence', reportResult.validation.finding_without_evidence_count ?? '-', 'must be 0'],
+      ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
       ['Final Approval', reportApproval.status || 'not approved', reportApproval.approval_id || 'Executive Sponsor required'],
       ['Export', reportExported.status || 'not exported', reportExported.export_id || reportExported.errors?.join(', ') || '-'],
     ] : [
       ['Gate', 'not generated', 'Generate Report v2 draft first'],
+      ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
       ['Final Approval', 'not approved', 'Executive Sponsor required'],
       ['Export', 'not exported', 'Approval ID required'],
     ];

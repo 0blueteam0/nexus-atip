@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 9 approval actor binding foundation complete, full goal active  
+상태: implementation slice 10 Evidence approval lifecycle/report gate complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 9 actor context header binding 반영
-- `runtime/redteam_v2_models.py` - slice 9 approval identity binding validation 반영
+- `runtime/redteam_v2_api_router.py` - slice 10 Evidence approval endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 10 Evidence approval lifecycle/report gate 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 9 actor context binding negative/positive tests 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 9 actor-bound approval headers 반영
+- `tests/test_redteam_v2_api_router.py` - slice 10 unapproved/missing/unverified Evidence gate 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 10 Evidence approval 후 report generation 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -188,7 +188,7 @@ Tests:
 
 ### M4. Evidence/Claim/Report v2
 
-상태: approved export API 완료, full renderer 진행 중
+상태: Evidence approval lifecycle/report gate 완료, full renderer 진행 중
 
 작업:
 
@@ -209,6 +209,10 @@ Tests:
 - Report validation JSON artifact 저장
 - Korean Report v2 Markdown artifact 생성
 - Markdown에 문서 통제, Campaign Walkthrough, Evidence Card Index, Claim-Evidence Matrix, Findings, Report Gate, 재시험 계획 포함
+- EvidenceCard 기본 상태를 `pending_review`로 생성
+- `POST /api/redteam/v2/evidence/{evidence_id}/approve` 추가
+- report validator가 missing/unapproved/unverified Evidence를 blocking item으로 차단
+- Report Gate Markdown에 missing/unapproved/unverified Evidence count 표시
 - `POST /api/redteam/v2/reports/{report_id}/approve-export` 추가
 - `POST /api/redteam/v2/reports/{report_id}/export` 추가
 - Executive Sponsor 승인 없이는 report export blocked 처리
@@ -468,5 +472,25 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sample E2E가 actor-bound ToolAction/report approval 사용
 - [x] live 8765 smoke로 missing actor invalid -> bound approval -> bound export 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-actor-bound-export-flow.png`
+- [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
+- [ ] full release/security/starter-pack regression
+
+## 18. Slice 10 Evidence Approval Lifecycle / Report Gate 체크리스트
+
+- [x] EvidenceCard 생성 기본 상태를 `approval_status=pending_review`, `validation_status=candidate`로 변경
+- [x] `POST /api/redteam/v2/evidence/{evidence_id}/approve` 추가
+- [x] Evidence approval도 `X-RedTeam-Actor`, `X-RedTeam-Actor-Role` 기반 actor binding 적용
+- [x] Evidence approval artifact 저장
+- [x] approved EvidenceCard에 `approval_status=approved`, `validation_status=approved`, reviewer metadata 저장
+- [x] report validator가 실제 Evidence artifact를 로드해 missing/unapproved/unverified Evidence 차단
+- [x] ReportValidationResult에 `missing_evidence_count`, `unapproved_evidence_count`, `unverified_evidence_count` 추가
+- [x] Report export approval gate가 Evidence blocker count를 재확인
+- [x] Report Markdown에 Evidence blocker count 표시
+- [x] `레드팀 분석2` UI가 Generate Report v2 전에 Evidence 생성/승인을 수행
+- [x] API unittest가 unapproved/missing/unverified Evidence gate 검증
+- [x] sample E2E가 Evidence approval 후 report gate 0건 검증
+- [x] live 8765 smoke로 pending Evidence blocked -> approved Evidence pass -> export 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-evidence-approved-export-flow.png`
+- [ ] approved Finding lifecycle
 - [ ] 실제 SSO/RBAC provider와 actor context 발급 연동
 - [ ] full release/security/starter-pack regression

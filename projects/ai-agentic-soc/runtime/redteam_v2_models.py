@@ -694,16 +694,98 @@ def create_evidence_card(payload: dict[str, Any]) -> dict[str, Any]:
         "hash": payload.get("hash") or stable_id("SHA256", [source, summary]),
         "summary": summary,
         "normalized_fields": payload.get("normalized_fields") or {},
-        "validation_status": "candidate" if errors else payload.get("validation_status", "approved"),
+        "classification": payload.get("classification") or "internal",
+        "approval_status": payload.get("approval_status") or ("draft" if errors else "pending_review"),
+        "review_required": payload.get("review_required", True),
+        "validation_status": "candidate" if errors else payload.get("validation_status", "candidate"),
         "errors": errors,
     }
     return append_artifact_metadata(result, "evidence", evidence_id)
 
 
+def approve_evidence_card(evidence_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    evidence = load_json_record(evidence_id, "evidence", case_id)
+    errors: list[str] = []
+    actor_context = actor_context_from_payload(payload)
+    reviewer = str(payload.get("reviewed_by") or payload.get("approver") or payload.get("approved_by") or "").strip()
+    reviewer_role = normalize_approver_role(payload.get("reviewer_role") or payload.get("approver_role") or "red_team_lead")
+    decision = str(payload.get("decision") or "approve").strip().lower()
+
+    if evidence is None:
+        errors.append("evidence_not_found")
+    if not reviewer:
+        errors.append("reviewed_by_required")
+    if not actor_context["actor_id"]:
+        errors.append("actor_context_required")
+    if not actor_context["actor_role"]:
+        errors.append("actor_role_required")
+    if reviewer and actor_context["actor_id"] and reviewer.lower() != actor_context["actor_id"]:
+        errors.append("reviewer_must_match_authenticated_actor")
+    if reviewer_role and actor_context["actor_role"] and reviewer_role != actor_context["actor_role"]:
+        errors.append("reviewer_role_must_match_authenticated_actor_role")
+    if reviewer_role not in {"red_team_lead", "control_team", "legal_privacy", "data_owner"}:
+        errors.append("reviewer_role_not_authorized")
+    if decision not in {"approve", "reject"}:
+        errors.append("decision_must_be_approve_or_reject")
+
+    resolved_case_id = str((evidence or {}).get("case_id") or payload.get("case_id") or "CASE-UNSPECIFIED")
+    approval_id = stable_id("EVA", [resolved_case_id, evidence_id, reviewer, reviewer_role, decision, now_utc()])
+    status = "invalid" if errors else ("approved" if decision == "approve" else "rejected")
+    result = {
+        "kind": "redteam_ax_v2_evidence_approval",
+        "approval_id": approval_id,
+        "evidence_id": evidence_id,
+        "case_id": resolved_case_id,
+        "status": status,
+        "decision": decision,
+        "reviewed_by": reviewer,
+        "reviewer_role": reviewer_role,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not errors else "invalid",
+        "reviewed_at": now_utc() if not errors else None,
+        "errors": errors,
+    }
+    append_artifact_metadata(result, "evidence-approvals", approval_id)
+    if evidence is not None and not errors:
+        evidence["approval_status"] = status
+        evidence["validation_status"] = "approved" if status == "approved" else "rejected"
+        evidence["review_required"] = False
+        evidence["reviewed_by"] = reviewer
+        evidence["reviewer_role"] = reviewer_role
+        evidence["reviewed_at"] = result["reviewed_at"]
+        evidence["approval_id"] = approval_id
+        append_artifact_metadata(evidence, "evidence", evidence_id)
+    return {**result, "evidence": evidence}
+
+
+def evidence_approval_issues(case_id: str, evidence_ids: list[str]) -> list[dict[str, Any]]:
+    issues: list[dict[str, Any]] = []
+    for evidence_id in sorted({str(item).strip() for item in evidence_ids if str(item).strip()}):
+        evidence = load_json_record(evidence_id, "evidence", case_id)
+        if evidence is None:
+            issues.append({"type": "missing_evidence", "id": evidence_id})
+            continue
+        approval_status = str(evidence.get("approval_status") or "").lower()
+        validation_status = str(evidence.get("validation_status") or "").lower()
+        if approval_status != "approved":
+            issues.append({"type": "unapproved_evidence", "id": evidence_id, "approval_status": approval_status or "unknown"})
+        if validation_status not in {"approved", "verified"}:
+            issues.append({"type": "unverified_evidence", "id": evidence_id, "validation_status": validation_status or "unknown"})
+    return issues
+
+
 def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     claims = payload.get("claims") or []
     findings = payload.get("findings") or []
     tool_actions = payload.get("tool_actions") or []
+    referenced_evidence_ids = [
+        evidence_id
+        for item in [*claims, *findings]
+        for evidence_id in (item.get("evidence_ids") or [])
+    ]
+    evidence_issues = evidence_approval_issues(case_id, referenced_evidence_ids)
     unsupported_claims = [
         claim for claim in claims
         if not claim.get("evidence_ids") or str(claim.get("support_level") or "supported").lower() in {"unsupported", "none"}
@@ -722,14 +804,18 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     blocking_items.extend({"type": "unsupported_claim", "id": item.get("claim_id") or item.get("id")} for item in unsupported_claims)
     blocking_items.extend({"type": "finding_without_evidence", "id": item.get("finding_id") or item.get("id")} for item in findings_without_evidence)
     blocking_items.extend({"type": "unapproved_high_risk_action", "id": item.get("action_id") or item.get("id")} for item in unapproved_high_risk)
+    blocking_items.extend(evidence_issues)
     gate_status = "pass" if not blocking_items else "blocked"
     result = {
         "kind": "redteam_ax_v2_report_validation",
-        "case_id": str(payload.get("case_id") or "CASE-UNSPECIFIED"),
+        "case_id": case_id,
         "gate_status": gate_status,
         "unsupported_claim_count": len(unsupported_claims),
         "unapproved_high_risk_count": len(unapproved_high_risk),
         "finding_without_evidence_count": len(findings_without_evidence),
+        "unapproved_evidence_count": len([item for item in evidence_issues if item["type"] == "unapproved_evidence"]),
+        "missing_evidence_count": len([item for item in evidence_issues if item["type"] == "missing_evidence"]),
+        "unverified_evidence_count": len([item for item in evidence_issues if item["type"] == "unverified_evidence"]),
         "blocking_items": blocking_items,
         "validated_at": now_utc(),
     }
@@ -796,6 +882,9 @@ def render_korean_report_markdown(payload: dict[str, Any], validation: dict[str,
         f"- Unsupported claims: `{validation['unsupported_claim_count']}`",
         f"- Unapproved high-risk actions: `{validation['unapproved_high_risk_count']}`",
         f"- Findings without evidence: `{validation['finding_without_evidence_count']}`",
+        f"- Missing evidence: `{validation.get('missing_evidence_count', 0)}`",
+        f"- Unapproved evidence: `{validation.get('unapproved_evidence_count', 0)}`",
+        f"- Unverified evidence: `{validation.get('unverified_evidence_count', 0)}`",
         "",
         "## 재시험 계획",
         "",
@@ -861,6 +950,9 @@ def report_gate_snapshot(report: dict[str, Any]) -> dict[str, Any]:
         "unsupported_claim_count": int(validation.get("unsupported_claim_count") or 0),
         "unapproved_high_risk_count": int(validation.get("unapproved_high_risk_count") or 0),
         "finding_without_evidence_count": int(validation.get("finding_without_evidence_count") or 0),
+        "missing_evidence_count": int(validation.get("missing_evidence_count") or 0),
+        "unapproved_evidence_count": int(validation.get("unapproved_evidence_count") or 0),
+        "unverified_evidence_count": int(validation.get("unverified_evidence_count") or 0),
         "blocking_items": blocking_items,
     }
 
@@ -878,6 +970,12 @@ def report_export_gate_errors(report: dict[str, Any] | None) -> list[str]:
         errors.append("unapproved_high_risk_actions_present")
     if snapshot["finding_without_evidence_count"] != 0:
         errors.append("findings_without_evidence_present")
+    if snapshot["missing_evidence_count"] != 0:
+        errors.append("missing_evidence_present")
+    if snapshot["unapproved_evidence_count"] != 0:
+        errors.append("unapproved_evidence_present")
+    if snapshot["unverified_evidence_count"] != 0:
+        errors.append("unverified_evidence_present")
     if snapshot["blocking_items"]:
         errors.append("report_validation_blocking_items_present")
     if not (report.get("report") or {}).get("artifact_path"):

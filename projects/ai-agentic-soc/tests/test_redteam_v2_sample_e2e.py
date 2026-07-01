@@ -126,17 +126,32 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertFalse(evidence_card["errors"])
         self.assertTrue(Path(evidence_card["artifact_path"]).exists())
 
+        evidence_approval = self.client.post(
+            f"/api/redteam/v2/evidence/{evidence_card['evidence_id']}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "reviewed_by": "lead@example.com",
+                "reviewer_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(evidence_approval.status_code, 200)
+        approved_evidence = evidence_approval.json()["evidence"]
+        self.assertEqual(evidence_approval.json()["status"], "approved")
+        self.assertEqual(approved_evidence["approval_status"], "approved")
+
         validation_payload = {
             "case_id": case_id,
             "claims": [{
                 "claim_id": "C-E2E-001",
                 "support_level": "supported",
-                "evidence_ids": [evidence_card["evidence_id"]],
+                "evidence_ids": [approved_evidence["evidence_id"]],
             }],
             "findings": [{
                 "finding_id": "F-E2E-001",
                 "title": "Report Studio v2 workbench is evidence-gated",
-                "evidence_ids": [evidence_card["evidence_id"]],
+                "evidence_ids": [approved_evidence["evidence_id"]],
             }],
             "tool_actions": [{
                 "action_id": action["action_id"],
@@ -152,6 +167,8 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertEqual(gate["unsupported_claim_count"], 0)
         self.assertEqual(gate["unapproved_high_risk_count"], 0)
         self.assertEqual(gate["finding_without_evidence_count"], 0)
+        self.assertEqual(gate["unapproved_evidence_count"], 0)
+        self.assertEqual(gate["unverified_evidence_count"], 0)
         self.assertTrue(Path(gate["artifact_path"]).exists())
 
         report = self.client.post("/api/redteam/v2/reports/generate", json={
@@ -175,6 +192,8 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertIn("Unsupported claims: `0`", report_text)
         self.assertIn("Unapproved high-risk actions: `0`", report_text)
         self.assertIn("Findings without evidence: `0`", report_text)
+        self.assertIn("Unapproved evidence: `0`", report_text)
+        self.assertIn("Unverified evidence: `0`", report_text)
 
         blocked_export = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={
             "case_id": case_id,

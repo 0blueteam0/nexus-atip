@@ -1,0 +1,25 @@
+{
+  "kind": "redteam_ax_v2_report_validation",
+  "case_id": "CASE-LIVE-EVIDENCE-APPROVAL-001",
+  "gate_status": "blocked",
+  "unsupported_claim_count": 0,
+  "unapproved_high_risk_count": 0,
+  "finding_without_evidence_count": 0,
+  "unapproved_evidence_count": 1,
+  "missing_evidence_count": 0,
+  "unverified_evidence_count": 1,
+  "blocking_items": [
+    {
+      "type": "unapproved_evidence",
+      "id": "EV-LIVE-EVIDENCE-APPROVAL-001",
+      "approval_status": "pending_review"
+    },
+    {
+      "type": "unverified_evidence",
+      "id": "EV-LIVE-EVIDENCE-APPROVAL-001",
+      "validation_status": "candidate"
+    }
+  ],
+  "validated_at": "2026-07-01T05:32:23Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-EVIDENCE-APPROVAL-001/report-validations/RV-14D86E8BC751.json"
+}

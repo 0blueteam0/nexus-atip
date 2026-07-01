@@ -1,0 +1,21 @@
+{
+  "kind": "redteam_ax_v2_evidence_card",
+  "evidence_id": "EV-LIVE-EVIDENCE-APPROVAL-001",
+  "case_id": "CASE-LIVE-EVIDENCE-APPROVAL-001",
+  "source_type": "artifact",
+  "source_path_or_url": "artifact://live-evidence.json",
+  "collected_at": "2026-07-01T05:32:23Z",
+  "hash": "SHA256-D65425B62DDE",
+  "summary": "Live evidence approval smoke",
+  "normalized_fields": {},
+  "classification": "internal",
+  "approval_status": "approved",
+  "review_required": false,
+  "validation_status": "approved",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-EVIDENCE-APPROVAL-001/evidence/EV-LIVE-EVIDENCE-APPROVAL-001.json",
+  "reviewed_by": "lead@example.com",
+  "reviewer_role": "red_team_lead",
+  "reviewed_at": "2026-07-01T05:32:23Z",
+  "approval_id": "EVA-BE40071AF357"
+}
