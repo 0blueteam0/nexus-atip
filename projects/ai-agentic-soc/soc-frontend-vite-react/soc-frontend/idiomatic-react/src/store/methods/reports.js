@@ -3290,6 +3290,52 @@ export default {
     }
   }
 ,
+  async createRedTeam2ToolExecutionPlan(action = null) {
+    const draft = this.redTeam2AnalysisDraft();
+    const queue = this.state.redteam2ToolActionQueue || [];
+    const selectedAction = action || this.state.redteam2AnalysisState?.lastAction || queue[0] || null;
+    if (!selectedAction?.action_id) {
+      this.toast('먼저 ToolActionCard를 계획하거나 큐에서 선택하세요', 'warn');
+      return;
+    }
+    const caseId = selectedAction.case_id || this.redTeamOperationCaseId(draft.reportId, draft.target);
+    const toolId = selectedAction.tool_id || draft.analysisToolId || 'TOOL-NUCLEI-001';
+    const executionMode = String(draft.executionMode || selectedAction.inputs?.requested_execution_mode || 'dry_run').trim();
+    this.setState(s => ({ redteam2ExecutionPlanState:{ ...(s.redteam2ExecutionPlanState || {}), status:'planning', error:null, action:selectedAction } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(selectedAction.action_id)}/execution-plan`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          tool_id:toolId,
+          execution_mode:executionMode,
+          requested_by:'current-analyst',
+          target_scope_refs:selectedAction.target_scope_refs || [draft.scopeRef].filter(Boolean),
+          network_allowlist:executionMode === 'lab_execute' ? ['127.0.0.1'] : [],
+        }),
+      });
+      const plan = await res.json().catch(() => ({}));
+      if (!res.ok || plan.status === 'invalid') throw new Error((plan.errors || []).join(', ') || plan.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ExecutionPlanState:{
+          ...(s.redteam2ExecutionPlanState || {}),
+          status:'ready',
+          plan,
+          action:selectedAction,
+          checkedAt:new Date().toISOString(),
+          error:null,
+        },
+        redteam2ToolActionQueue:[{ ...selectedAction, execution_plans:[...(selectedAction.execution_plans || []), plan.execution_plan_id] }, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== selectedAction.action_id))].slice(0, 10),
+      }));
+      this.toast(`Execution plan: ${plan.status}`, plan.status === 'approval_required' ? 'warn' : 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 execution plan: ${selectedAction.action_id} · ${plan.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ExecutionPlanState:{ ...(s.redteam2ExecutionPlanState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Execution plan 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -3886,10 +3932,12 @@ export default {
     const sanitizerState = this.state.redteam2SanitizerState || {};
     const fileUploadState = this.state.redteam2FileUploadState || {};
     const visualRedactionState = this.state.redteam2VisualRedactionState || {};
+    const executionPlanState = this.state.redteam2ExecutionPlanState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
     const visualPreview = visualRedactionState.preview || {};
     const visualDescriptor = visualPreview.visual_descriptor || {};
+    const executionPlan = executionPlanState.plan || {};
     const uploadedImport = fileUploadState.imported || {};
     const uploadedArtifact = uploadedImport.artifact || {};
     const uploadedNormalized = fileUploadState.normalized || {};
@@ -3946,6 +3994,7 @@ export default {
         (action.allowed_buttons || []).includes('Request Approval') && action.status !== 'ApprovalRequested' && action.status !== 'Approved'
           ? h('button', { onClick:()=>this.requestRedTeam2ToolActionApproval(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.amber}`, background:C.bg, color:C.amber, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Request Approval')
           : null,
+        h('button', { onClick:()=>this.createRedTeam2ToolExecutionPlan(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.blue}`, background:C.bg, color:C.blue, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Execution Plan'),
         h('span', { style:{ fontSize:'9.5px', color:C.muted, alignSelf:'center', maxWidth:'190px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, (action.allowed_buttons || []).slice(0, 3).join(', ') || '-')));
     });
     const gateRows = st.lastAction ? [
@@ -3999,6 +4048,14 @@ export default {
       ['Schema Validation', uploadedImport.schema_validation?.valid === true ? 'valid' : uploadedImport.schema_validation?.valid === false ? 'invalid' : 'not checked', (uploadedImport.schema_validation?.errors || []).join(', ') || 'ToolArtifactImport'],
       ['Parser', uploadedNormalized.parser_report?.parser || '-', uploadedNormalized.parser_report?.parsed_item_count != null ? `${uploadedNormalized.parser_report.parsed_item_count} structured items` : 'agent-analyze after upload'],
       ['Trusted As Instruction', String(uploadedArtifact.trusted_as_instruction ?? false), 'must be false'],
+    ];
+    const executionPlanRows = [
+      ['Plan Status', executionPlan.status || executionPlanState.status || 'idle', executionPlanState.error || executionPlan.execution_plan_id || 'create from ToolActionCard queue'],
+      ['Runner', executionPlan.runner || '-', executionPlan.execution_mode || draft.executionMode || 'mode'],
+      ['Approval', executionPlan.requires_approval ? 'required' : 'not required', (executionPlan.approvals_required || []).join(', ') || 'none'],
+      ['Network', executionPlan.environment_constraints?.network_policy?.mode || '-', `default=${executionPlan.environment_constraints?.network_policy?.default || '-'} allowlist=${(executionPlan.environment_constraints?.network_policy?.allowlist || []).join(',') || 'none'}`],
+      ['Filesystem', executionPlan.environment_constraints?.filesystem_policy?.mode || '-', (executionPlan.environment_constraints?.filesystem_policy?.write_paths || []).join(', ') || 'workspace archive'],
+      ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.token_id || (executionPlan.warnings || []).join(', ') || 'not issued'],
     ];
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
@@ -4067,6 +4124,24 @@ export default {
             ['Agents', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || 'tool output is data'],
           ].map(card)),
           this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']]))),
+      smallPanel('Tool Execution Plan / Sandbox Policy',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('button', {
+              onClick:()=>this.createRedTeam2ToolExecutionPlan(),
+              disabled:executionPlanState.status === 'planning',
+              style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:executionPlanState.status === 'planning' ? C.raised : C.bg, color:executionPlanState.status === 'planning' ? C.muted : C.blue, cursor:executionPlanState.status === 'planning' ? 'not-allowed' : 'pointer', fontWeight:900 },
+            }, executionPlanState.status === 'planning' ? 'Planning' : 'Create Execution Plan'),
+            h('span', { style:{ fontSize:'10px', color:executionPlan.status === 'PlanReady' ? C.green : executionPlan.status === 'approval_required' ? C.amber : executionPlan.status === 'invalid' ? C.coral : C.sec, fontWeight:900 } }, executionPlan.status || executionPlanState.status || 'idle')),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['Plan', executionPlan.execution_plan_id || '-', C.sec, executionPlan.artifact_path || 'artifact'],
+            ['Runner', executionPlan.runner || '-', executionPlan.runner === 'sandbox' ? C.green : C.sec, executionPlan.execution_mode || draft.executionMode || 'mode'],
+            ['Network', executionPlan.environment_constraints?.network_policy?.default || '-', executionPlan.environment_constraints?.network_policy?.egress_allowed ? C.amber : C.green, executionPlan.environment_constraints?.network_policy?.mode || 'deny by default'],
+            ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.status === 'issued' ? C.green : C.amber, executionPlan.execution_token?.token_id || 'approval or plan required'],
+          ].map(card)),
+          this.renderTable(['Control','Status','Evidence'], executionPlanRows),
+          executionPlan.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `plan: ${executionPlan.artifact_path}`) : null,
+          executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null)),
       smallPanel('Tool Output Sanitizer Preview',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Raw tool output',

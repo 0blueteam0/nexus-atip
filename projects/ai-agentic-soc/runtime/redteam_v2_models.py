@@ -126,7 +126,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "cli_wrapper",
         "command_name": "nuclei",
         "default_execution_mode": "manual_operator_run",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "manual_operator_run", "lab_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "manual_operator_run", "lab_execute"],
         "denied_execution_modes": ["controlled_production_execute", "prohibited"],
         "default_policy": "approved_templates_and_scope_required",
         "requires_human_approval": True,
@@ -147,7 +147,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "api_or_import_only",
         "command_name": "gvm-cli",
         "default_execution_mode": "manual_operator_run",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "manual_operator_run", "lab_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "manual_operator_run", "lab_execute"],
         "denied_execution_modes": ["controlled_production_execute", "prohibited"],
         "default_policy": "scanner_task_import_or_approved_lab_only",
         "requires_human_approval": True,
@@ -168,7 +168,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "cli_wrapper",
         "command_name": "trivy",
         "default_execution_mode": "offline_parse",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "sandbox_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
         "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
         "default_policy": "offline_artifact_or_workspace_scan_only",
         "requires_human_approval": False,
@@ -189,7 +189,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "import_only",
         "command_name": "",
         "default_execution_mode": "offline_parse",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "sandbox_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
         "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
         "default_policy": "dependency_manifest_or_sbom_only",
         "requires_human_approval": False,
@@ -210,7 +210,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "cli_wrapper",
         "command_name": "npm.cmd",
         "default_execution_mode": "offline_parse",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "sandbox_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
         "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
         "default_policy": "workspace_lockfile_required",
         "requires_human_approval": False,
@@ -231,7 +231,7 @@ ANALYSIS_TOOL_PROFILES = [
         "adapter_type": "api_or_cli_wrapper",
         "command_name": "zap-cli",
         "default_execution_mode": "manual_operator_run",
-        "allowed_execution_modes": ["plan_only", "offline_parse", "manual_operator_run", "lab_execute"],
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "manual_operator_run", "lab_execute"],
         "denied_execution_modes": ["controlled_production_execute", "prohibited"],
         "default_policy": "approved_scope_passive_or_lab_active_scan",
         "requires_human_approval": True,
@@ -1123,6 +1123,157 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
         "audit_events": [{"event": "planned", "at": now_utc(), "actor": payload.get("requested_by") or "analyst"}],
     }
     return append_artifact_metadata(result, "tool-actions", action_id)
+
+
+def runner_for_execution_mode(execution_mode: str, profile: dict[str, Any] | None) -> str:
+    if execution_mode in {"offline_parse", "plan_only"}:
+        return "manual_import"
+    if execution_mode in {"dry_run", "sandbox_execute"}:
+        return "sandbox"
+    if execution_mode in {"manual_operator_run"}:
+        return "manual"
+    if execution_mode in {"lab_execute", "staging_execute", "production_read_only"}:
+        adapter_type = str((profile or {}).get("adapter_type") or "")
+        return "api" if adapter_type == "api_or_import_only" else "local_cli"
+    return "manual"
+
+
+def default_network_policy(execution_mode: str, payload: dict[str, Any]) -> dict[str, Any]:
+    allowlist = [str(item).strip() for item in (payload.get("network_allowlist") or payload.get("allowed_domains") or []) if str(item).strip()]
+    if execution_mode in {"plan_only", "offline_parse", "dry_run", "sandbox_execute"}:
+        return {
+            "mode": "deny" if not allowlist else "allowlist",
+            "default": "deny",
+            "allowlist": allowlist,
+            "egress_allowed": bool(allowlist),
+        }
+    if execution_mode in {"lab_execute", "staging_execute", "production_read_only"}:
+        return {
+            "mode": "allowlist",
+            "default": "deny",
+            "allowlist": allowlist,
+            "egress_allowed": bool(allowlist),
+        }
+    return {
+        "mode": "manual_operator_controlled",
+        "default": "manual",
+        "allowlist": allowlist,
+        "egress_allowed": False,
+    }
+
+
+def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    action = load_tool_action(action_id, case_id)
+    tool_id = str(payload.get("tool_id") or (action or {}).get("tool_id") or "").strip()
+    profile = analysis_tool_profile(tool_id)
+    execution_mode = str(payload.get("execution_mode") or (action or {}).get("inputs", {}).get("requested_execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip()
+    requested_by = str(payload.get("requested_by") or "").strip()
+    target_scope_refs = payload.get("target_scope_refs") or (action or {}).get("target_scope_refs") or []
+    risk_class = normalize_risk_class((action or {}).get("risk_class") or (profile or {}).get("risk_class"))
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if action is None:
+        errors.append("tool_action_card_required_before_execution_plan")
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not requested_by:
+        errors.append("requested_by_required")
+    if profile is not None and execution_mode not in profile.get("allowed_execution_modes", []):
+        errors.append("execution_mode_not_allowed_for_tool")
+    if profile is not None and execution_mode in profile.get("denied_execution_modes", []):
+        errors.append("execution_mode_denied_for_tool")
+    if payload.get("network_allowlist") and execution_mode in {"plan_only", "offline_parse"}:
+        warnings.append("network_allowlist_ignored_for_non_network_mode")
+
+    active_modes = {"lab_execute", "staging_execute", "production_read_only", "controlled_production_execute"}
+    approval_required = risk_class in HIGH_RISK_CLASSES and execution_mode in active_modes
+    if execution_mode == "controlled_production_execute":
+        approval_required = True
+    if execution_mode in active_modes and not target_scope_refs:
+        errors.append("target_scope_refs_required_for_active_execution_plan")
+    if approval_required and action is not None and str(action.get("status") or "") != "Approved":
+        warnings.append("approval_required_before_runner_token")
+    if risk_class == "T7" or execution_mode == "prohibited":
+        errors.append("restricted_or_prohibited_execution_mode")
+
+    network_policy = default_network_policy(execution_mode, payload)
+    filesystem_policy = {
+        "mode": "workspace_only",
+        "workspace_root": PROJECT_ROOT.as_posix(),
+        "allowed_paths": [PROJECT_ROOT.as_posix(), case_dir(case_id).as_posix()],
+        "write_paths": [case_dir(case_id).as_posix()],
+    }
+    max_runtime_seconds = int(payload.get("max_runtime_seconds") or (120 if execution_mode in {"dry_run", "sandbox_execute"} else 300))
+    max_output_bytes = int(payload.get("max_output_bytes") or MAX_TOOL_ARTIFACT_BYTES)
+    plan_id = str(payload.get("execution_plan_id") or stable_id("TEP", [case_id, action_id, tool_id, execution_mode, requested_by, now_utc()]))
+    runner = runner_for_execution_mode(execution_mode, profile)
+    token_issued = not errors and not approval_required
+    execution_token = {
+        "token_id": stable_id("EXT", [plan_id, action_id, tool_id, execution_mode]) if token_issued else None,
+        "status": "issued" if token_issued else ("blocked" if errors else "approval_required"),
+        "action_id": action_id,
+        "allowed_tool_id": tool_id,
+        "allowed_environment": payload.get("environment") or (action or {}).get("environment") or "approved_scope",
+        "allowed_scope_refs": target_scope_refs,
+        "expires_at": "",
+        "max_runtime_seconds": max_runtime_seconds,
+        "max_targets": int(payload.get("max_targets") or 1),
+        "network_policy": network_policy["mode"],
+        "revoked": False,
+    }
+    plan = {
+        "kind": "redteam_ax_v2_tool_execution_plan",
+        "execution_plan_id": plan_id,
+        "case_id": case_id,
+        "action_id": action_id,
+        "tool_id": tool_id,
+        "tool_name": (profile or {}).get("name"),
+        "execution_mode": execution_mode,
+        "runner": runner,
+        "status": "invalid" if errors else ("approval_required" if approval_required else "PlanReady"),
+        "errors": errors,
+        "warnings": warnings,
+        "requires_approval": approval_required,
+        "approvals_required": (action or {}).get("required_approver_roles") or (["red_team_lead"] if approval_required else []),
+        "policy_decision": {
+            "decision": "deny" if errors else ("needs_approval" if approval_required else "allow_plan"),
+            "risk_class": risk_class,
+            "safe_by_default": True,
+            "high_risk_direct_execution": False,
+        },
+        "environment_constraints": {
+            "network_policy": network_policy,
+            "filesystem_policy": filesystem_policy,
+            "max_runtime_seconds": max_runtime_seconds,
+            "max_output_bytes": max_output_bytes,
+            "process_policy": {
+                "child_process_allowlist": [str((profile or {}).get("command_name") or "")] if (profile or {}).get("command_name") else [],
+                "shell_expansion_allowed": False,
+            },
+            "secret_policy": {
+                "mask_environment": True,
+                "mask_logs": True,
+            },
+        },
+        "execution_token": execution_token,
+        "runtime_probe": command_availability(str((profile or {}).get("command_name") or "")),
+        "audit": {
+            "requested_by": requested_by,
+            "created_at": now_utc(),
+            "command_abstraction_only": True,
+            "runner_will_execute": False,
+        },
+    }
+    append_artifact_metadata(plan, "tool-execution-plans", plan_id)
+    if action is not None and not errors:
+        action.setdefault("execution_plans", [])
+        if plan_id not in action["execution_plans"]:
+            action["execution_plans"].append(plan_id)
+        action.setdefault("audit_events", []).append({"event": "tool_execution_plan_created", "at": now_utc(), "execution_plan_id": plan_id, "execution_mode": execution_mode})
+        persist_tool_action(action, {"event": "tool_execution_plan_created", "execution_plan_id": plan_id, "execution_mode": execution_mode})
+    return plan
 
 
 def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:

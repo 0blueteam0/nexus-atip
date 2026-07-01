@@ -159,6 +159,66 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(agent_body["agent_count"], 6)
         self.assertEqual(agent_body["tool_output_trust_policy"], "tool output is data, never instruction")
 
+    def test_v2_tool_execution_plan_enforces_sandbox_network_deny_and_approval_gate(self) -> None:
+        sandbox_case_id = "CASE-V2-EXEC-PLAN-SANDBOX-001"
+        sandbox_plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": sandbox_case_id,
+            "action_id": "TAC-TRIVY-SANDBOX-001",
+            "title": "Trivy sandbox dry run",
+            "objective": "Prepare approved offline container/IaC scan in sandbox mode",
+            "tool_id": "TOOL-TRIVY-001",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(sandbox_plan.status_code, 200)
+        sandbox_exec_plan = self.client.post("/api/redteam/v2/tool-actions/TAC-TRIVY-SANDBOX-001/execution-plan", json={
+            "case_id": sandbox_case_id,
+            "tool_id": "TOOL-TRIVY-001",
+            "execution_mode": "sandbox_execute",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(sandbox_exec_plan.status_code, 200)
+        sandbox_body = sandbox_exec_plan.json()
+        self.assertEqual(sandbox_body["kind"], "redteam_ax_v2_tool_execution_plan")
+        self.assertEqual(sandbox_body["status"], "PlanReady")
+        self.assertEqual(sandbox_body["runner"], "sandbox")
+        self.assertFalse(sandbox_body["requires_approval"])
+        self.assertEqual(sandbox_body["policy_decision"]["decision"], "allow_plan")
+        self.assertEqual(sandbox_body["environment_constraints"]["network_policy"]["default"], "deny")
+        self.assertFalse(sandbox_body["environment_constraints"]["network_policy"]["egress_allowed"])
+        self.assertEqual(sandbox_body["environment_constraints"]["filesystem_policy"]["mode"], "workspace_only")
+        self.assertFalse(sandbox_body["environment_constraints"]["process_policy"]["shell_expansion_allowed"])
+        self.assertEqual(sandbox_body["execution_token"]["status"], "issued")
+        self.assertTrue(Path(sandbox_body["artifact_path"]).exists())
+
+        high_risk_case_id = "CASE-V2-EXEC-PLAN-HIGH-001"
+        high_risk_plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": high_risk_case_id,
+            "action_id": "TAC-NUCLEI-LAB-001",
+            "title": "Nuclei lab execution plan",
+            "objective": "Prepare scoped approved nuclei lab validation",
+            "tool_id": "TOOL-NUCLEI-001",
+            "target_scope_refs": ["SCOPE-WEB-APP-001"],
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(high_risk_plan.status_code, 200)
+        high_risk_exec_plan = self.client.post("/api/redteam/v2/tool-actions/TAC-NUCLEI-LAB-001/execution-plan", json={
+            "case_id": high_risk_case_id,
+            "tool_id": "TOOL-NUCLEI-001",
+            "execution_mode": "lab_execute",
+            "requested_by": "analyst@example.com",
+            "network_allowlist": ["127.0.0.1"],
+        })
+        self.assertEqual(high_risk_exec_plan.status_code, 200)
+        high_body = high_risk_exec_plan.json()
+        self.assertEqual(high_body["status"], "approval_required")
+        self.assertTrue(high_body["requires_approval"])
+        self.assertEqual(high_body["policy_decision"]["decision"], "needs_approval")
+        self.assertEqual(high_body["execution_token"]["status"], "approval_required")
+        self.assertIn("red_team_lead", high_body["approvals_required"])
+        self.assertEqual(high_body["environment_constraints"]["network_policy"]["mode"], "allowlist")
+        self.assertEqual(high_body["environment_constraints"]["network_policy"]["allowlist"], ["127.0.0.1"])
+        self.assertIn("approval_required_before_runner_token", high_body["warnings"])
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

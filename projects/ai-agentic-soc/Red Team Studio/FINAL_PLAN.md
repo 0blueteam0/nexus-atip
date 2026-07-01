@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 23 pixel-level visual redaction artifact UX/API complete, full goal active  
+상태: implementation slice 24 tool execution plan sandbox policy UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,7 +35,7 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 23 RedTeam2 pixel-level visual redaction artifact UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 24 RedTeam2 tool execution plan / sandbox policy UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
@@ -604,7 +604,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
 - [x] 도구별 실제 JSON/XML parser normalizer 고도화 - slice 16 foundation 완료
 - [ ] OpenVAS/ZAP API credential vault 및 read-only token 정책
-- [ ] sandbox/container runner와 network allowlist enforcement
+- [x] sandbox/container runner와 network allowlist enforcement foundation - slice 24 ToolExecutionPlan 완료
 - [ ] ToolResult -> Finding owner/SLA/retest UI 연계
 - [ ] full release/security/starter-pack regression
 
@@ -625,7 +625,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실제 파일 업로드/경로 기반 parser 입력 지원 - slice 17 local workspace file import/hash gate 완료
 - [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 `ToolResultNormalized`, `ToolArtifactImport` 완료
 - [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
-- [ ] sandbox/container runner와 network allowlist enforcement
+- [x] sandbox/container runner와 network allowlist enforcement foundation - slice 24 ToolExecutionPlan 완료
 - [ ] full release/security/starter-pack regression
 
 ## 25. Slice 17 File-Based Tool Result Ingestion 체크리스트
@@ -639,7 +639,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] multipart browser upload UX 연결 - slice 21 완료
 - [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 완료
 - [x] artifact quarantine/redaction preview backend foundation - slice 19 완료
-- [ ] sandbox/container runner와 network allowlist enforcement
+- [x] sandbox/container runner와 network allowlist enforcement foundation - slice 24 ToolExecutionPlan 완료
 
 ## 26. Slice 18 Tool Result Schema Artifacts 체크리스트
 
@@ -719,3 +719,21 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 실제 PNG data URL -> original/redacted artifact 생성, hash divergence, manifest 생성을 검증
 - [ ] 실제 OCR bbox 연동으로 estimated band를 precise region으로 대체
 - [ ] live 5177/8765 browser visual upload smoke
+
+## 32. Slice 24 Tool Execution Plan / Sandbox Policy 체크리스트
+
+- [x] ToolProfile `allowed_execution_modes`에 SPEC의 `dry_run` 반영
+- [x] `/tool-actions/{action_id}/execution-plan` endpoint 추가
+- [x] ToolActionCard 없이는 execution plan 생성 거부
+- [x] ToolExecutionPlan에 runner(`sandbox`, `manual_import`, `manual`, `local_cli`, `api`) 결정 기록
+- [x] `dry_run`/`sandbox_execute` network policy 기본값 `deny` 적용
+- [x] lab/staging/read-only 실행은 network allowlist 요구 구조로 기록
+- [x] filesystem policy `workspace_only`, write path case archive 제한 기록
+- [x] process policy `shell_expansion_allowed=false`, child process allowlist 기록
+- [x] execution token 상태를 `issued`, `approval_required`, `blocked`로 분리
+- [x] high-risk lab execution plan은 승인 전 `approval_required_before_runner_token`으로 표시
+- [x] `레드팀 분석2` UI에 `Tool Execution Plan / Sandbox Policy` 패널과 queue button 추가
+- [x] API unittest가 sandbox network deny와 high-risk approval gate를 검증
+- [ ] 실제 ephemeral container 실행 backend 구현
+- [ ] 실제 CLI version pin/hash 검증과 wrapper manifest 연결
+- [ ] live 5177/8765 browser execution-plan smoke

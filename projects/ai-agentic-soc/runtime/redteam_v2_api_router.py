@@ -164,6 +164,11 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
     return redteam_v2_models.record_manual_run(action_id, payload)
 
 
+@router.post("/tool-actions/{action_id}/execution-plan")
+def create_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_tool_execution_plan(action_id, payload)
+
+
 @router.post("/tool-actions/{action_id}/execute-governed")
 def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.governed_tool_execution(action_id, payload)
