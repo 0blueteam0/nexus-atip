@@ -1,0 +1,5 @@
+User Input
+ → Input Guardrail
+ → Intent Classifier
+ → ROE/Scope Pre-check
+ → Task Planner

@@ -1,0 +1,13 @@
+Case/ROE/HITL
+ + Evidence Service
+ + Visual Capture
+ + MCP Gateway
+ + Guardrail
+ + ToolHub Registry
+ + ScriptFactory
+ + ToolActionCard
+ + Sandbox Runner
+ + Manual Run Recorder
+ + Tool Result Normalizer
+ + OSS Tool Adapter
+ + Report v2 Tool Evidence Appendix

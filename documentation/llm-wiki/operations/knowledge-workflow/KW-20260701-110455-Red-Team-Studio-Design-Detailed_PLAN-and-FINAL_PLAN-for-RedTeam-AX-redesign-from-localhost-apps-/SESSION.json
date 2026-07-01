@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260701-110455-Red-Team-Studio-Design-Detailed_PLAN-and-FINAL_PLAN-for-RedTeam-AX-redesign-from-localhost-apps-",
+  "project": "Red Team Studio",
+  "task": "Design Detailed_PLAN and FINAL_PLAN for RedTeam AX redesign from localhost apps, chatshare, and full folder inventory",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260701-110455-Red-Team-Studio-Design-Detailed_PLAN-and-FINAL_PLAN-for-RedTeam-AX-redesign-from-localhost-apps-",
+  "created_at": "2026-07-01T11:04:55+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

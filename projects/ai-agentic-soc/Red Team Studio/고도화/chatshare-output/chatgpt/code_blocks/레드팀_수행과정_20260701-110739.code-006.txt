@@ -1,0 +1,8 @@
+Tool Adapter
+ → DB/API Guard Proxy
+ → Query Template Enforcer
+ → SQL AST Validator
+ → RBAC/RLS
+ → Column/Row Masker
+ → Result Size Limiter
+ → DB/API

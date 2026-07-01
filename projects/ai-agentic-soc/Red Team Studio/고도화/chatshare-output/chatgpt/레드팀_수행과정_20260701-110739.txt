@@ -1,0 +1,570 @@
+콘텐츠로 건너뛰기
+새 채팅
+채팅 검색
+고정됨
+최근 채팅
+채팅 기록
+ChatGPT
+새 채팅
+CtrlShiftO
+채팅 검색
+CtrlK
+라이브러리
+일정
+앱
+더 보기
+고정됨
+온톨로지 및 graphdb
+MES 프로잭트
+AI 에이전트 서비스 개발
+보안관제 서비스 에이전트화
+ISAKMP 버퍼오버플로우 설명
+악성코드 분석 자동화
+악성코드 분석 과정
+프로젝트
+정보관리기술사 합격 프로젝트
+Tip 솔루션
+채팅
+악성코드 분석 과정 (AS-IS TO-BE)
+레드팀 수행과정
+구글 차세대 agentic rag
+CODEx 목표 구성 방법
+펜테스트 자동화 도구
+도클링 agentdir 분석 마크다운
+AI 가드레일 구성도
+AI 레드티밍 설명
+AI SOC 플랫폼 설명
+AI 에이전틱 SOC 기업
+일일관제 보고서 양식
+MVP 설계 정의
+CTI 보고서 AI 자동화
+AI 기반 CTI 보고서 자동화
+악성코드 분석 랭그래프 구현
+악성코드 분석 과정
+악성코드 분석 과정
+악성코드 분석 랭그래프
+논문 번역 요청
+구글 에이전틱 RAG 구현 방법
+AS-IS TO-BE 페이지 제작
+하네스 엔지니어링 발표자료 제작
+구글 RAG 구현 방법
+에이전트 스킬 고도화 요청
+악성코드 증거 세분화
+취약점 분석 증거 세분화
+AI 기반 취약점 분석
+오픈소스 취약점 모니터링 아이디어
+adrian song
+Pro
+공유된 ChatGPT 대화의 사본입니다.
+대화 신고하기
+나의 말:
+파일 업로드됨
+이런 양식으로 레드팀 분석 보고서 만들어 볼것. 디자인이나 스타일은 유사하지만 레드팀 관련 보고서 제대로 만들어줄것
+
+나의 말:
+파일 업로드됨
+이러한 레드팀 보고서를 아주 자세히 현미경 분석(이미지도 누락하지 않고)하고 무엇이 있는지 자세히 설명하라. 이와 유사한 보고서들이 있으면 가능하면 100여개까지 찾아보고 이를 레드팀 보고서의 일부 샘플로 지식화하라.
+
+나의 말:
+파일 업로드됨
+일단 레드티밍 보고서의 외부의 샘플 중 하나를 가져왔는데요. 여기 있는 모든 텍스트와 이미지 등을 상세히 보고 본 것을 바탕으로 한국어로 된 레드티밍 보고서의 하나의 샘플을 기존의 레드티밍 관련해서 레드팀 수행과정이라는 채팅에 있는 전부를 읽고 확인해보고 첨부한 pdf 보고서와 수행과정을 모두 읽고 들어가는 하나의 보고서 샘플을 만들어 보세요. 레드티밍 보고서 관련해서 한국어, 중국어, 러시아어, 프랑스어, 영어 키워드로 레드티밍 분석 보고서를 찾아보세요. 레드티밍 자체에 대한 분석이 아니라 위의 첨부파일 처럼 레드티밍을 통한 분석보고서 어떻게 보면 모의침투나 펜테스트 보고서일수도 있구요. 그러나 레드티밍 관련 오픈소스 도구들을 LLM 모델 등을 연결한 것으로 분석한 결과를 레드티밍 분석보고서로 둘지? 펜테스트 분석보고서로 쓸지 모의침투, 진단관련 분석보고서로 쓸지를 어떻게 할수 있을지 아니면 레드팀 분석 보고서로 어떤것이 맞는지 확인하고 판단해주세요. 위의 것과 비슷한 레드티밍 분석 보고서 있으면 출처도 주세요. 모두 상세히 분석하여 레드팀 분석보고서는 어떤 것이 있는지를 웹 검색, 리포트 검색 등으로 분석하여 무엇이 필수로 들어가고 선택으로 들어갈 사항은 무엇인지도 확인해주세요. 분석보고서 샘플을 DOCX로 만들어보세요.
+더 보기간단히
+
+ChatGPT의 말:
+10m 18s 동안 생각함
+추가 설계를 반영했습니다. 결론은 명확합니다.
+가드레일은 3군데 모두에 둡니다.
+ 정확히는 입력 프롬프트, LLM ↔ Tool, Tool ↔ DB/API, Tool Output ↔ LLM, Evidence, Report Export까지 모든 신뢰 경계에 둡니다. 단, 모든 위치에 같은 방식의 “프롬프트 가드레일”을 두는 것이 아니라, 위치별로 정규표현식, 스키마 검증, 정책 엔진, LLM Judge, 딥러닝 분류기, DB Query Guard, HITL을 조합합니다.
+Volkis 레드팀 보고서처럼 레드팀 보고서는 목표 달성, 캠페인별 Detection/Outcome, 취약점, Purple Team Workshop으로 이어지는 구조를 갖기 때문에, 자동화 시스템은 단순히 LLM이 보고서를 쓰는 구조가 아니라 각 분석 단계의 근거·도구 호출·응답·보고서 claim을 통제해야 합니다. Volkis 보고서도 Purple Team Workshop과 취약점 요약을 Executive Summary에 배치하고, 캠페인별 Detection/Outcome을 기록합니다. Volkis - Anonymous Client - Red…
+Volkis - Anonymous Client - Red…
+또한 기존 악성코드 분석 보고서 양식은 증적 자료에 설명, 캡처 시각, 출처를 함께 기재하도록 요구하므로, RedTeam AX의 Evidence/Visual Evidence도 이 필드를 필수화해야 합니다. 악성코드 분석 보고서 v2
+추가 산출물
+산출물 설명
+RedTeam AX SDD Guardrail v1.1 Markdown 번들 ZIP 기존 SDD 문서 + Guardrail Addendum 전체
+Guardrail Addendum README 추가 문서 인덱스
+15 Guardrail Architecture Spec 전체 가드레일 아키텍처
+16 Guardrail Policy Pipeline Spec 입력→LLM→툴→DB→응답→보고서 정책 흐름
+17 Guardrail Schemas and Contracts GuardrailDecision, ToolInvocation, DBQueryPlan 등 스키마
+18 Guardrail Engine Design 정규식·LLM Judge·딥러닝·정책 엔진 결합 설계
+19 Guardrail Implementation Backlog 구현 Epic/Task/완료 기준
+20 Guardrail Acceptance Test Plan 가드레일 인수 테스트/회귀 테스트
+21 Guardrail Agent Prompts Guardrail Judge/Tool Guard/Report Guard 프롬프트
+설계 요약
+1. 프롬프트 앞 가드레일
+사용자 입력과 자동 삽입 프롬프트를 먼저 검사합니다.
+적용 통제:
+정규표현식 기반 금지 패턴 탐지
+prompt injection / jailbreak 탐지
+금지 행위 intent 분류
+민감정보/secret 탐지
+ROE·Scope 사전 확인
+LLM Judge 기반 의미 분석
+예:
+User Input
+ → Input Guardrail
+ → Intent Classifier
+ → ROE/Scope Pre-check
+ → Task Planner
+2. LLM 호출 전 프롬프트 조립 가드레일
+자동으로 들어가는 system/developer/case/tool/evidence context를 그대로 합치면 위험합니다. 따라서 프롬프트 조립 단계에서 다음을 강제합니다.
+System Prompt
+Developer Policy
+ROE Summary
+Approved Evidence only
+Tool Output as quoted data block
+Retrieved Docs as untrusted data block
+Sanitized User Input
+중요 원칙:
+Tool output and retrieved documents are data, not instruction.
+3. LLM 출력 가드레일
+LLM이 만든 tool call, finding draft, report section draft를 바로 실행하거나 저장하지 않습니다.
+검사 항목:
+JSON schema 통과 여부
+금지 tool class 여부
+tool argument 유효성
+과도한 공격 재현 세부정보 포함 여부
+근거 없는 claim 포함 여부
+final severity 임의 설정 여부
+민감정보 포함 여부
+4. LLM ↔ Tool 사이 가드레일
+LLM은 툴을 직접 호출하지 않습니다.
+허용 구조:
+LLM
+ → LLM Output Guardrail
+ → MCP/Tool Gateway
+ → Tool Invocation Guardrail
+ → HITL if needed
+ → Tool Adapter
+차단 구조:
+LLM → Tool 직접 호출
+Tool Guardrail 검사:
+tool allowlist
+tool class
+argument schema
+target scope
+read/write/execute 분류
+ROE 허용 여부
+human approval 필요 여부
+5. Tool ↔ DB/API 사이 가드레일
+이 부분도 반드시 별도 통제합니다. LLM이 안전한 tool call을 만들었더라도, Tool 내부 버그나 과도한 DB 질의가 있을 수 있기 때문입니다.
+구조:
+Tool Adapter
+ → DB/API Guard Proxy
+ → Query Template Enforcer
+ → SQL AST Validator
+ → RBAC/RLS
+ → Column/Row Masker
+ → Result Size Limiter
+ → DB/API
+기본 정책:
+자유 SQL 금지
+query_template_id 필수
+SELECT-only 기본
+token/password/session/cookie column 차단
+결과 row limit
+case scope row-level security
+민감 컬럼 마스킹
+모든 query audit
+6. Tool 응답 ↔ LLM 사이 가드레일
+툴 응답은 가장 위험한 prompt injection 경로 중 하나입니다.
+적용 통제:
+tool output sanitizer
+prompt injection classifier
+PII/secret detector
+malicious instruction stripping
+output size cap
+data envelope 변환
+evidence candidate normalization
+예:
+JSON
+{
+ "trusted_as_instruction": false,
+ "trusted_as_data": true,
+ "classification": "confidential",
+ "summary": "5 authentication anomaly alerts returned.",
+ "redactions": [],
+ "evidence_candidate": true
+}
+7. Evidence Guardrail
+툴 결과나 캡처 이미지는 바로 보고서에 들어가지 않고 Evidence Card가 됩니다.
+필수 필드:
+source_system
+source_uri / query_id
+captured_at
+collected_by
+hash_sha256
+classification
+approval_status
+observation
+inference
+limitations
+confidence
+8. Visual Evidence Guardrail
+자동 캡처 이미지에는 별도 가드레일을 둡니다.
+핵심 규칙:
+Screenshot is evidence, not conclusion.
+허용 표현:
+SIEM 대시보드에 인증 이상 이벤트 spike가 보인다.
+차단 표현:
+SOC가 탐지에 실패했다.
+탐지 실패를 주장하려면 추가로 필요합니다.
+SIEM alert record
+rule execution result
+SOC ticket
+analyst triage timestamp
+telemetry readiness evidence
+9. Report Guardrail
+보고서 export 전에 최종 검증합니다.
+차단 조건:
+unsupported material claim 존재
+unapproved sensitive/restricted evidence 포함
+screenshot-only conclusion 존재
+final severity가 human approval 없이 설정됨
+공격 재현 세부 절차 과다 포함
+문서 TLP/분류/개정이력 누락
+evidence 없는 Finding 존재
+추가 문서에서 확정한 핵심 정책
+Guardrails are applied at every trust boundary.
+Prompt guardrails are necessary but insufficient.
+Tool guardrails are mandatory.
+DB/API traffic guardrails are mandatory.
+Tool output guardrails are mandatory.
+Report output guardrails are mandatory.
+Human approval is mandatory for high-risk decisions.
+구현 우선순위는 다음입니다.
+GuardrailDecision, PolicyViolation, ToolInvocationRequest, DBQueryPlan 스키마
+PolicyEngine deny-by-default
+InputGuardrailService
+ToolInvocationGuard
+DBQueryGuard
+ToolOutputSanitizer
+EvidenceGuardrail
+VisualClaimValidator
+ClaimEvidenceValidator
+ReportExportGuard
+이제 코딩 에이전트에는 기존 SDD 번들과 함께 이번 Guardrail v1.1 Addendum를 투입하면 됩니다.
+출처
+
+나의 말:
+펜테스트나 모의해킹, 레드팀 등에서 업무 수행할때 자동화된 스크립트나 모의해킹, 펜테스트, 레드팀 사용 도구를 제작하거나 오픈소스 도구를 가져와서 사용하거나 이를 커스텀 해서 사용하는 경우가 많나요? 그것이 위의 수행과정에 반영되면 좋겠는데요. 지금까지는 그런부분은 보강이 되지 않아 있는 것 같습니다. 그래서 보강 과정을 통해 필요한 스펙문서에 추가 보강이 필요할 것 같네요. AX 과정에서 모의해킹, 펜테스트, 레드팀을 수행하는 절차를 대체하되 검토하는 방향으로도 잡고 있기 때문에, 커스텀 스크립트 만들고 도구 제작하고 이런 것들은 AI를 통해서 자동화하고 수행은 사람이 직접하되 도구 등이 연동되어 있고 에이전트 및 LLM 연동한 웹앱에서 각각의 버튼만으로도 가능하다면 그것도 필요할 것으로 보입니다. 오픈 소스 적대적 에뮬레이션 도구와 스크립트 등등을 에이전트가 수행 할 수 있는 것이 필요하고 웹앱에서 해당 동작을 만들수 있도록 그리고 전체 레드팀 업무 수행절차를 진행할 수 있도록 해야 합니다. 그것이 더 보완되야 할것 같습니다. 스펙문서 고도화하라.
+더 보기간단히
+
+ChatGPT의 말:
+10m 0s 동안 생각함
+맞습니다. 펜테스트·모의해킹·레드팀 업무에서는 오픈소스 도구를 가져오고, 래퍼를 만들고, 커스텀 스크립트를 작성하고, 프로젝트별로 도구를 조합해 쓰는 경우가 매우 일반적입니다. 첨부된 Volkis 보고서에도 OSINT 도구, 스캐너, 웹 스크린샷 도구, AD 그래프/인증서 서비스 점검 도구, 패스워드 감사 도구, 커스텀 스크립트와 래퍼 스크립트가 캠페인 전반에 등장합니다. 특히 내부 웹 서버 스크린샷 수집에는 GoWitness와 래퍼 스크립트가 사용되고, 특정 무선 인증 시도에는 오픈소스 도구의 부족한 부분을 보완하기 위해 커스텀 스크립트를 작성한 사례가 나옵니다. Volkis - Anonymous Client - Red…
+그래서 기존 SDD에 Tooling & Custom Script Automation Addendum v1.2를 추가했습니다.
+추가 산출물
+산출물 설명
+Tooling Addendum v1.2 ZIP 도구·스크립트·웹앱 버튼·실행 승인·Evidence 변환 관련 Markdown 추가 문서
+Full SDD v1.2 Tooling 포함 번들 기존 SDD + Guardrail v1.1 + Tooling v1.2를 합친 전체 번들
+Tooling Artifact Index 생성 파일 목록과 SHA-256 인덱스
+이번 보강의 핵심 결론
+1. 도구 제작·커스텀 스크립트는 반드시 반영해야 합니다
+기존 설계는 Evidence, Report v2, Visual Capture, MCP, Guardrail 중심이었습니다. 하지만 실제 레드팀/펜테스트 수행에서는 다음이 빠지면 현실성이 떨어집니다.
+오픈소스 도구 등록
+도구 신뢰성 평가
+도구별 adapter/wrapper
+커스텀 스크립트 생성
+도구 출력 parser/normalizer
+웹앱 버튼 기반 실행/기록
+수동 실행 결과 업로드
+lab/staging 실행 승인
+운영환경 실행 제한
+도구 실행 결과의 EvidenceCard 변환
+도구 사용 내역의 보고서 반영
+Caldera는 ATT&CK 기반 adversary emulation 자동화 플랫폼이고, Atomic Red Team은 ATT&CK에 매핑된 테스트 라이브러리이며, Stratus Red Team은 클라우드 환경에서 공격 기법을 self-contained 방식으로 검증하는 도구입니다. 이런 도구들은 AX 플랫폼에서 “무조건 실행”이 아니라 계획·승인·lab 실행·결과 증거화 대상으로 붙이는 것이 맞습니다. GitHub+2GitHub+2
+2. 웹앱 버튼 기반 운영도 추가했습니다
+새 설계에서는 웹앱 버튼을 단순 Run 버튼으로 보지 않습니다. 모든 버튼은 ToolActionCard에 연결됩니다.
+Plan
+ → Select Tool
+ → Generate Wrapper
+ → Validate Scope
+ → Dry Run
+ → Request Approval
+ → Run in Lab / Record Manual Run
+ → Import Output
+ → Create Evidence
+ → Generate Finding Draft
+즉, 사람이 “도구를 직접 실행”하더라도 웹앱은 다음을 제공합니다.
+ROE 요약
+대상 범위
+금지 행위
+수집해야 할 증거 목록
+실행 전 승인 상태
+실행 결과 업로드 슬롯
+자동 캡처/해시/Evidence 연결
+보고서 반영 여부
+VECTR는 red/blue team testing activity를 추적하고 detection/prevention capability를 측정하는 도구이고, OpenAEV는 cyber adversary simulation campaigns and tests를 계획·수행하는 오픈소스 플랫폼입니다. 따라서 RedTeam AX는 이들과 경쟁하기보다, VECTR/OpenAEV/Caldera/Atomic/Stratus 결과를 Evidence-first 보고서 파이프라인에 연결하는 orchestration layer로 설계하는 것이 적합합니다. GitHub+1
+3. AI가 만들 수 있는 것은 “안전한 보조 스크립트”로 제한했습니다
+AI/LLM이 생성할 수 있는 스크립트 유형을 명확히 제한했습니다.
+허용 설명
+Output Parser 도구 출력 텍스트/CSV/JSON/XML 정규화
+Evidence Packager 결과 파일, 스크린샷, 로그를 Evidence bundle로 묶음
+Scope Validator 대상 URL/IP/도메인이 ROE 범위 안인지 검사
+Report Transformer 결과를 Finding draft 또는 ATT&CK 후보로 변환
+Lab Harness 샘플 데이터와 lab 환경에서 adapter 테스트
+Tool Wrapper 승인된 도구를 일관된 인터페이스로 호출
+Visual Capture Helper 웹/콘솔/PDF 캡처 자동화
+금지 이유
+Credential collection script 자격증명 수집 자동화 금지
+Phishing sender 사회공학 실행 자동화 금지
+Exploit execution script 공격 실행 자동화 위험
+Destructive script 장애·삭제·암호화·파괴 금지
+Security control disabling script 방어 무력화 금지
+Persistence/backdoor script 악성 지속성 금지
+Stealth/evasion script 탐지회피 자동화 위험
+즉, AI는 파서, 정규화기, 래퍼, Evidence 패키저, 보고서 변환기, lab harness를 만들 수 있습니다. 운영환경 공격 실행 스크립트는 만들지 않습니다.
+새로 추가한 문서
+ZIP 내부에는 다음 Markdown 문서를 추가했습니다.
+README_TOOLING_ADDENDUM.md
+22_TOOLING_AUTOMATION_ARCHITECTURE_SPEC.md
+23_CUSTOM_SCRIPT_FACTORY_SPEC.md
+24_OPEN_SOURCE_TOOL_INTEGRATION_CATALOG.md
+25_TOOL_ACTION_CARD_AND_WEBAPP_SPEC.md
+26_TOOL_EXECUTION_SANDBOX_AND_APPROVAL_SPEC.md
+27_AGENT_TOOL_ORCHESTRATION_WORKFLOW_SPEC.md
+28_TOOL_RESULT_EVIDENCE_AND_REPORTING_SPEC.md
+29_TOOLING_SCHEMA_CONTRACTS.md
+30_TOOLING_API_SPEC.md
+31_TOOLING_SECURITY_POLICY_SPEC.md
+32_TOOLING_IMPLEMENTATION_BACKLOG.md
+33_TOOLING_ACCEPTANCE_TEST_PLAN.md
+34_TOOLING_AGENT_PROMPTS.md
+추가한 주요 스펙 내용
+1. ToolHub Registry
+등록되는 모든 도구는 ToolProfile을 가져야 합니다.
+YAML
+tool_profile:
+ tool_id: TOOL-GOWITNESS-001
+ name: gowitness
+ category: visual_recon
+ risk_class: T2
+ execution_modes:
+ - sandbox
+ - approved_scope
+ - manual_operator_run
+ output_normalizers:
+ - gowitness_db_to_visual_evidence
+ evidence_types:
+ - visual_evidence
+ - web_asset_snapshot
+GoWitness는 Chrome Headless 기반 웹 스크린샷 도구이고, OWASP Nettacker는 정보수집·취약점 평가 자동화 프레임워크이며, SpiderFoot는 OSINT 자동화 도구입니다. 이 도구들은 RedTeam AX에서 각각 Visual Evidence, Recon/Assessment, OSINT Evidence 후보 생성에 매핑했습니다. GitHub+2GitHub+2
+2. ScriptFactory
+AI가 커스텀 스크립트를 만들 때 다음 파이프라인을 거치도록 했습니다.
+Script Request
+ → Scope/ROE Classification
+ → Allowed Script Type Check
+ → Script Design Draft
+ → LLM Code Generation
+ → Static Policy Scan
+ → Security Code Scan
+ → Unit Test Generation
+ → Dry-run in Sandbox
+ → Human Code Review
+ → ScriptManifest Versioning
+ → Approved Script Library
+생성된 스크립트는 반드시 ScriptManifest를 갖습니다.
+YAML
+script_manifest:
+ script_id: SCR-0001
+ name: nuclei_json_to_evidence_candidates
+ version: 0.1.0
+ script_type: output_parser
+ language: python
+ status: draft|reviewed|approved|deprecated|blocked
+ network_access: false
+ external_process: false
+ max_runtime_seconds: 60
+ tests:
+ - tests/test_nuclei_json_parser.py
+3. ToolActionCard
+웹앱 버튼은 반드시 ToolActionCard를 통해 동작합니다.
+YAML
+tool_action_card:
+ action_id: TAC-0001
+ case_id: CASE-001
+ campaign_id: CAMP-006
+ title: 내부 웹 관리 콘솔 시각 증거 수집
+ objective: 관리 포털 노출면을 증거화하고 후속 분석에 사용
+ action_type: visual_recon
+ tool_id: TOOL-GOWITNESS-001
+ risk_class: T2
+ environment: approved_scope
+ approval_required: false
+ allowed_buttons:
+ - Dry Run
+ - Run in Lab
+ - Record Manual Run
+ - Import Output
+이 구조를 통해 “버튼만 누르면 실행”이 아니라, 범위·위험·승인·증거화 조건을 가진 버튼 실행이 됩니다.
+4. 실행 모드 분리
+모든 도구 실행은 다음 모드 중 하나입니다.
+실행 모드 정책
+plan_only 실행 없이 계획만 생성
+dry_run 샘플 입력 또는 mock target으로 검증
+offline_parse 기존 결과 파일만 파싱
+sandbox_execute 격리 컨테이너에서 비네트워크 실행
+lab_execute 승인된 lab 환경에서 실행
+staging_execute staging에서 제한 실행
+production_read_only 운영 read-only query
+manual_operator_run 사람이 직접 수행하고 결과 업로드
+controlled_production_execute two-person approval 필요
+prohibited destructive/credential/phishing/exploit 등 금지
+5. Agent Tool Orchestration
+새로운 LangGraph 하위 그래프를 추가했습니다.
+campaign_or_finding_need
+ → tool_need_classifier_node
+ → tool_selection_node
+ → action_card_builder_node
+ → script_needed_router
+ ├─ no_script → tool_policy_gate_node
+ └─ script_required → script_factory_node
+ → code_review_node
+ → sandbox_dry_run_node
+ → tool_policy_gate_node
+ → human_approval_node
+ → execution_mode_router
+ ├─ plan_only
+ ├─ dry_run
+ ├─ lab_execute
+ ├─ manual_operator_run
+ └─ prohibited
+ → result_import_or_collection_node
+ → result_normalizer_node
+ → evidence_card_builder_node
+ → finding_or_campaign_linker_node
+ → report_candidate_node
+ → critic_node
+MITRE Attack Flow는 공격자가 여러 offensive technique을 어떤 순서로 결합하는지 설명하는 언어이므로, RedTeam AX에서는 Campaign/AttackStep을 Attack Flow로 export하는 구조도 추가했습니다. Threat-Informed Defense Center
+6. 도구 결과의 Evidence 변환
+도구 출력은 보고서에 바로 들어가지 않습니다.
+Raw Tool Output
+ → ToolResultNormalizer
+ → Evidence Candidate
+ → Analyst Review
+ → EvidenceCard
+ → Finding/Campaign Link
+ → Claim-Evidence Matrix
+ → Report Section
+보고서에 들어갈 수 있는 것은 raw output이 아니라 다음입니다.
+승인된 EvidenceCard
+승인된 VisualEvidence
+검토된 ToolRunRecord
+Claim-Evidence Validator를 통과한 문장
+보강된 개발 범위
+이번 보강으로 기존 RedTeam AX는 다음 범위까지 확장됩니다.
+Case/ROE/HITL
+ + Evidence Service
+ + Visual Capture
+ + MCP Gateway
+ + Guardrail
+ + ToolHub Registry
+ + ScriptFactory
+ + ToolActionCard
+ + Sandbox Runner
+ + Manual Run Recorder
+ + Tool Result Normalizer
+ + OSS Tool Adapter
+ + Report v2 Tool Evidence Appendix
+다음 구현 우선순위
+코딩 에이전트에게는 다음 순서로 투입하면 됩니다.
+22_TOOLING_AUTOMATION_ARCHITECTURE_SPEC.md
+29_TOOLING_SCHEMA_CONTRACTS.md
+31_TOOLING_SECURITY_POLICY_SPEC.md
+32_TOOLING_IMPLEMENTATION_BACKLOG.md
+33_TOOLING_ACCEPTANCE_TEST_PLAN.md
+34_TOOLING_AGENT_PROMPTS.md
+구현 순서는 다음이 좋습니다.
+1. ToolProfile / ToolRegistry
+2. ToolActionCard state machine
+3. ScriptManifest / ScriptFactory skeleton
+4. ToolExecutionPlan / Policy evaluation
+5. ManualRunRecorder
+6. ToolRunRecord / Artifact hash
+7. ToolResultNormalizer plugin interface
+8. EvidenceLinker
+9. WebApp button backend
+10. OSS adapter Phase 1
+최종 판단
+이번 보강으로 기존 스펙의 빈 부분이 채워졌습니다.
+기존에는 주로 다음이 중심이었습니다.
+보고서 자동화
+증거화
+이미지 캡처
+MCP
+가드레일
+Agentic RAG
+이번에는 실제 업무 수행에 필요한 다음을 추가했습니다.
+오픈소스 도구 도입
+커스텀 스크립트 생성
+도구 래퍼 제작
+웹앱 버튼 기반 Action Card
+샌드박스/수동/승인 실행
+도구 출력 정규화
+도구 결과 Evidence화
+Campaign/Finding/Report 연결
+핵심 운영 원칙은 그대로 유지됩니다.
+AI는 도구 사용을 계획하고, 보조 스크립트를 만들고, 결과를 정리하고, 증거화한다.
+사람은 고위험 실행, 운영환경 수행, 최종 판단, 보고서 발행을 승인한다.
+출처
+
+나의 말:
+레드팀 수행과정 내 전체 채팅을 보고 복잡한 제품/기능 구현을 넣은 구체적인 plan.md와 6줄 이내 goal(플랜이 완전히 구현되고 계속 검증을 통해 통과된 마지막 종료조건)을 만든다면?
+
+ChatGPT의 말:
+4m 19s 동안 생각함
+아래처럼 정리했습니다. 코딩 에이전트에는 goal.md를 먼저 주고, 그 다음 plan.md를 투입하면 됩니다.
+Volkis 샘플 보고서가 목표 달성표, Scope/Exclusions, Roles/Communication, Threat Cards, Root Cause, Effective Security Practices, Campaign Walkthrough, Detailed Vulnerabilities를 중심으로 구성되어 있어 이 구조를 제품의 Report v2 요구사항에 반영했습니다. Volkis - Anonymous Client - Red…
+
+ 또한 악성코드 보고서 양식의 TLP, 문서정보, 개정이력, 목차, ATT&CK 매핑, 탐지·대응, 증적 자료 구조를 RedTeam AX의 보고서·증거화 표준에 반영했습니다. 악성코드 분석 보고서 v2
+산출물
+goal.md
+plan.md
+goal.md — 6줄 이내 종료조건
+Markdown
+# Goal
+
+RedTeam AX 플랫폼은 승인된 레드팀·모의침투·펜테스트 업무를 케이스 단위로 운영하며, ROE/HITL/가드레일을 통과한 도구·스크립트·MCP·LLM 에이전트만 실행한다.
+모든 자료, 이미지, 로그, 도구 결과, 분석 판단은 Evidence Card와 Claim-Evidence Matrix로 추적된다.
+웹앱은 도구 실행을 자동화하되 고위험 실행은 사람이 승인·수행·검토하며, AI는 계획·증거화·분석·보고서 초안·재시험 계획을 보조한다.
+한국어 Red Team Report v2는 Volkis식 Campaign Walkthrough와 악성코드 보고서식 문서 통제/증적 양식을 결합해 자동 생성된다.
+종료 조건은 전체 테스트, 보안 게이트, 보고서 검증, 샘플 케이스 E2E, 회귀 검증을 모두 통과하고 unsupported claim, 승인 없는 고위험 실행, 증거 없는 Finding이 0건인 상태다.
+plan.md 핵심 구조
+plan.md에는 다음을 넣었습니다.
+1. Product Goal
+2. Non-Goals and Safety Boundary
+3. Reference Report Patterns to Implement
+4. Target Architecture
+5. Core Domain Objects
+6. Risk Classes
+7. LangGraph Workflows
+8. Agents and Skills
+9. API Surface
+10. Web App UX Plan
+11. Guardrails
+12. Implementation Phases
+13. Final Verification Gates
+14. Final End Conditions
+15. First 20 Implementation Tasks
+특히 이번 plan.md는 단순 보고서 생성기가 아니라 다음 제품 범위를 명확히 포함합니다.
+Case / ROE / HITL
+Evidence Service
+Visual Evidence Capture
+MCP Gateway
+Guardrail Engine
+ToolHub Registry
+ScriptFactory
+ToolActionCard
+웹앱 버튼 기반 승인형 도구 실행
+Agentic RAG / Sufficient Context
+Campaign Walkthrough
+Detection & Response Deep Dive
+Finding v2
+Report v2 Generator
+Remediation / Purple Team / Residual Risk
+CI 기반 최종 검증 게이트
+최종 종료 조건은 plan.md의 14. Final End Conditions에 명시했습니다.
+출처
+웹 검색
+Pro
+ChatGPT는 실수를 할 수 있습니다. 중요한 정보는 재차 확인하세요.

@@ -1,0 +1,565 @@
+# RedTeam AX 대규모 개편 상세 계획
+
+문서 상태: draft  
+작성일: 2026-07-01  
+대상 경로: `J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio`  
+관련 실행 경로:
+
+- Frontend: `J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react`
+- Backend: `J:/PortableApps/genai/projects/ai-agentic-soc/runtime`
+- Previous work index: `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-work-folder-inventory-20260701/WORK_FOLDER_INDEX.md`
+- ChatShare package: `J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/chatshare-output/chatgpt/레드팀_수행과정_20260701-110739.HANDOFF_PACKAGE_MANIFEST.json`
+- LLM wiki home: `J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md`
+
+## 1. 목표
+
+`http://127.0.0.1:5177/`의 Report Studio 안에 있는 기존 `레드팀 분석` 탭을 기준 기능으로 삼아, 옆에 `레드팀 분석2` 탭을 만든다. `레드팀 분석2`는 단순 복사본이 아니라 RedTeam AX v2 개편 워크벤치다. 기존 백엔드와 프론트엔드 구현은 참고하되 그대로 확장하지 않고, Red Team Studio 전체 자료, ChatShare의 레드팀 수행과정, 기존 runtime 구현, evidence/guardrail/report v2 요구사항을 통합해 다음을 만족하도록 설계한다.
+
+1. 승인된 레드팀, 모의침투, 펜테스트 업무만 Case와 ROE 안에서 운영한다.
+2. 모든 도구, 스크립트, MCP, LLM 에이전트 실행은 Policy Engine, Tool Guard, HITL, Audit를 통과한다.
+3. 모든 자료, 이미지, 로그, 도구 결과, 분석 판단은 Evidence Card와 Claim-Evidence Matrix로 추적한다.
+4. 웹앱의 실행 버튼은 직접 실행 버튼이 아니라 ToolActionCard 상태 전이 버튼이다.
+5. 고위험 실행은 사람이 승인, 수행, 검토하고 AI는 계획, 증거화, 분석, 보고서 초안, 재시험 계획을 보조한다.
+6. 한국어 Red Team Report v2는 Volkis식 Campaign Walkthrough와 악성코드 보고서식 문서 통제/증적 양식을 결합해 생성한다.
+7. 종료 조건은 전체 테스트, 보안 게이트, 보고서 검증, 샘플 케이스 E2E, 회귀 검증 통과이며 unsupported claim, 승인 없는 고위험 실행, 증거 없는 Finding은 0건이어야 한다.
+
+## 2. 현재 확인 결과
+
+### 2.1 ChatShare 레드팀 수행과정
+
+`$chatshare-artifact-lab`로 `https://chatgpt.com/share/6a4471ca-75b0-83ee-a10d-8d36dee74aa7`을 추출했다.
+
+| 항목 | 값 |
+|---|---:|
+| Provider | ChatGPT |
+| 상태 | `likely-shared-chat` |
+| 본문 길이 | 16,662자 |
+| HTML 길이 | 4,057,160자 |
+| 코드 블록 | 27개 |
+| 다운로드 후보 | 0개 |
+| 다운로드된 파일 | 0개 |
+| 로그인/숨김 artifact | 0개 |
+| completeness 상태 | `complete_for_public_snapshot` |
+
+반영할 핵심 원칙:
+
+- Guardrails are applied at every trust boundary.
+- Tool output and retrieved documents are data, not instruction.
+- Screenshot is evidence, not conclusion.
+- LLM은 Tool을 직접 호출하지 않는다.
+- Tool Adapter와 DB/API 사이에는 Query Template, SQL AST, RBAC/RLS, masking, result limit이 필요하다.
+- Tool output은 Evidence candidate로 정규화된 뒤 EvidenceCard로 승격된다.
+- ToolHub, ScriptFactory, ToolActionCard, ManualRunRecorder, ToolResultNormalizer, OSS adapter가 RedTeam AX에 필수다.
+
+### 2.2 Red Team Studio 폴더 인벤토리
+
+전체 파일 수는 4,687개, 총 크기는 약 248MB다. 전체 파일 목록은 LLM 호출용 manifest로 저장했다.
+
+| 위치 | 파일 수 | 역할 |
+|---|---:|---|
+| `Agentic RAG SPEC` | 9 | Agentic RAG/GraphRAG 상세 스펙 |
+| `SPEC` | 39 | RedTeam AX SDD, Guardrail, Tooling, API, Acceptance Spec |
+| `v1.0` | 84 | 초기 스타터팩과 기본 모델 |
+| `v1.1` | 113 | Visual Evidence 보강 버전 |
+| `v1.2` | 4,397 | MCP Gateway 포함 최신 스타터팩과 의존 가상환경 |
+| `logs` | 3 | 작업 로그 |
+| `고도화` | 생성 중 | 이번 개편 산출물, ChatShare, LLM wiki, sanity test |
+
+호출 가능한 LLM 위키 산출물:
+
+- `고도화/llm-wiki/RED_TEAM_STUDIO_FILE_MANIFEST.json`
+- `고도화/llm-wiki/RED_TEAM_STUDIO_EXTENSION_SUMMARY.json`
+- `고도화/llm-wiki/RED_TEAM_STUDIO_TOP_DIR_SUMMARY.json`
+- `고도화/llm-wiki/LLM_WIKI_HOME.md`
+
+### 2.3 기존 프론트엔드
+
+주요 파일:
+
+- `src/store/methods/reports.js`
+- `src/data.js`
+- `src/views/ReportsView.jsx`
+
+기존 `레드팀 분석` 탭은 `reports.js` 내부의 다음 함수군으로 구성된다.
+
+- `redTeamReports()`
+- `redTeamReportById()`
+- `redTeamAssessmentBrief()`
+- `redTeamAnalysisDraft()`
+- `updateRedTeamAnalysisDraft()`
+- `loadRedTeamAnalysisStatus()`
+- `submitRedTeamAnalysisTabRun()`
+- `redTeamAnalysisPanel()`
+- `reportStudioTabs()`
+- `reportStudioTabContent()`
+
+현재 탭 구조는 `reports`, `malax`, `redteam` 세 개다. `레드팀 분석2`는 `redteam2` 탭으로 추가하되, 상태 키와 API 호출을 분리해야 한다.
+
+### 2.4 기존 백엔드
+
+주요 파일:
+
+- `runtime/redteam_api_router.py`
+- `runtime/redteam_analysis_flow_sync.py`
+- `runtime/redteam_safe_tool_adapter.py`
+- `runtime/redteam_scope_analysis.py`
+- `runtime/redteam_asm_analyzer.py`
+- `runtime/redteam_operation_graph.py`
+- `runtime/redteam_evidence_graph.py`
+- `runtime/redteam_report_compiler.py`
+- `runtime/redteam_release_gate.py`
+- `runtime/redteam_toolchain_readiness.py`
+- `runtime/redteam_agentic_rag.py`
+- `runtime/redteam_knowledge_db.py`
+
+현재 API prefix는 `/api/redteam`이다. `레드팀 분석2`는 초기에는 같은 엔진을 versioned orchestrator로 재사용할 수 있지만, 프론트 상태와 route contract는 `/api/redteam2` 또는 `/api/redteam/v2`로 분리한다.
+
+현재 확인된 주요 API:
+
+- `GET /api/redteam/health`
+- `GET /api/redteam/tools/readiness`
+- `GET /api/redteam/rag/knowledge/status`
+- `POST /api/redteam/reports/{report_id}/analysis/run`
+- `GET /api/redteam/reports/{report_id}/analysis/latest`
+- `GET /api/redteam/cases/{case_id}/reports/latest`
+- `GET /api/redteam/cases/{case_id}/graph/latest`
+- `POST /api/redteam/cases/{case_id}/claims/verify`
+- `POST /api/redteam/cases/{case_id}/release/evaluate`
+- `POST /api/redteam/visual/capture-requests`
+- `POST /api/redteam/mcp/evaluate`
+- `POST /api/redteam/timeline/metrics`
+
+현재 `127.0.0.1:5177`과 `127.0.0.1:8765`는 실행 중이 아니었다. 계획 검증 단계에서는 서버를 재기동해 live smoke를 수행한다.
+
+## 3. 상세 요구사항
+
+### 3.1 Report Studio UI 요구사항
+
+1. 기존 `레드팀 분석` 옆에 `레드팀 분석2` 탭을 추가한다.
+2. `레드팀 분석2`는 기존 탭의 UI 구조를 복제하되 state namespace를 분리한다.
+3. 기존 탭을 깨지 않기 위해 `redteam`과 `redteam2`는 서로 다른 draft/run/cache key를 사용한다.
+4. `레드팀 분석2`는 다음 화면 블록을 포함한다.
+   - 개편 개요와 운영 원칙
+   - Case/ROE/HITL 상태
+   - Scope 대상 지정
+   - ToolHub/ToolActionCard 큐
+   - ScriptFactory 요청/검토 큐
+   - MCP Gateway 평가 큐
+   - Evidence/Visual Evidence Matrix
+   - Campaign Walkthrough Builder
+   - Finding v2 Builder
+   - Report v2 Section Sync
+   - Release Gate와 unsupported claim blocker
+   - Purple Team Retest Board
+5. 실행 버튼은 모두 `ToolActionCard`를 조회한 뒤 상태에 따라 활성화한다.
+6. 고위험 실행은 브라우저에서 disabled 상태로 표시하고 승인/수동 수행/결과 import 흐름만 제공한다.
+7. `레드팀 분석2`는 ChatShare에서 추출한 수행과정 지식과 Red Team Studio SDD를 직접 열 수 있는 reference panel을 제공한다.
+
+### 3.2 백엔드 요구사항
+
+1. `/api/redteam/v2` 또는 `/api/redteam2` route namespace를 만든다.
+2. 기존 `/api/redteam` 기능은 유지한다.
+3. v2 API는 실행 중심이 아니라 case orchestration, tool action planning, evidence validation, report validation 중심으로 설계한다.
+4. 모든 v2 응답에는 다음 audit envelope를 포함한다.
+   - `case_id`
+   - `request_id`
+   - `policy_decision`
+   - `evidence_refs`
+   - `audit_refs`
+   - `unsupported_claim_count`
+   - `requires_human_review`
+5. Tool/MCP/Script 실행은 기본 deny-by-default다.
+6. `T5`, credential collection, phishing sender, exploit execution, persistence, evasion, destructive action은 승인 여부와 무관하게 production 자동 실행을 금지한다.
+
+### 3.3 Evidence/LLM Wiki 요구사항
+
+1. Red Team Studio 전체 폴더는 파일 manifest로 호출 가능해야 한다.
+2. 주요 SDD, SPEC, v1.2 starter, ChatShare transcript는 LLM wiki home에서 연결한다.
+3. 모든 새 산출물은 `고도화` 폴더에 둔다.
+4. LLM wiki 문서는 frontmatter, source paths, collected_via, evidence_level, related links를 포함한다.
+5. 개발 중 스펙이 바뀌면 `고도화/spec-updates`에 addendum을 추가한다.
+6. official source 문서와 운영 메타를 섞지 않는다.
+
+### 3.4 보고서 요구사항
+
+Red Team Report v2 필수 섹션:
+
+1. 문서 정보 및 개정 이력
+2. Executive Summary
+3. 레드팀 평가 체크리스트
+4. 평가 개요 및 거버넌스
+5. Scope, ROE, 법무/개인정보/안전 통제
+6. Crown Jewel 분석
+7. Threat Intelligence / Threat Model
+8. Objectives and Scenarios
+9. Threat Cards
+10. Telemetry Readiness
+11. Attack Surface
+12. Campaign Walkthrough
+13. Attack Narrative Timeline
+14. Detection & Response Deep Dive
+15. Findings v2
+16. ATT&CK / ATLAS / OWASP Mapping
+17. Evidence & Visual Capture Index
+18. Effective Security Practices
+19. Additional Recommendations
+20. Remediation Roadmap
+21. Purple Team Retest Plan
+22. Residual Risk & Risk Acceptance
+23. AI/AX/MCP/Tooling Automation Audit
+24. Conclusion
+25. Appendices
+26. References
+27. Glossary
+28. Analyst and Reviewer Info
+
+## 4. 화면/기능 명세
+
+### 4.1 탭 구성
+
+| 탭 ID | 화면명 | 목적 | 기존 연동 |
+|---|---|---|---|
+| `reports` | Reports | 보고서 목록 | 유지 |
+| `malax` | 악성코드 분석 | 기존 malware workflow | 유지 |
+| `redteam` | 레드팀 분석 | 기존 RTA 분석 탭 | 유지 |
+| `redteam2` | 레드팀 분석2 | 대규모 개편 AX v2 워크벤치 | 신규 |
+
+### 4.2 `레드팀 분석2` 화면 블록
+
+| 블록 | 기능 | 데이터 소스 |
+|---|---|---|
+| AX v2 Overview | 목표, 안전 경계, 현재 case 상태 | `redteam_ax_plan.md`, SPEC |
+| Reference Pack | ChatShare, SDD, v1.2, 기존 WORK_FOLDER_INDEX 링크 | LLM wiki |
+| Case/ROE Gate | case 생성, ROE 상태, HITL 요구사항 | `/api/redteam/v2/cases`, `/roe/evaluate` |
+| Scope Builder | IP/URL/domain/CIDR 입력, loopback lab preset | `/scope/evaluate` |
+| ToolHub | 등록 도구, risk class, readiness, adapter 상태 | `/tools`, `/tools/readiness` |
+| ToolAction Cards | 버튼 상태, dry-run, approval, manual import | `/tool-actions/*` |
+| ScriptFactory | helper script request, static scan, sandbox dry-run | `/scripts/*` |
+| MCP Gateway | 서버/도구 평가, dry-run, output sanitizer | `/mcp/*` |
+| Evidence Matrix | EvidenceCard, VisualEvidence, ToolRunRecord | `/evidence/*` |
+| Campaign Walkthrough | 목적, Activity Narrative, Detection, Outcome | `/campaigns/*` |
+| Finding v2 | root cause, business impact, retest criteria | `/findings/*` |
+| Report v2 Builder | claim validation, section sync, export gate | `/reports/*` |
+| Purple Team Board | remediation backlog, retest evidence | `/retests`, `/remediation` |
+| Audit Timeline | LLM/MCP/tool/HITL/export audit | `/audit` |
+
+### 4.3 버튼 정책
+
+모든 버튼은 다음 흐름을 따른다.
+
+```text
+Button Click
+  -> Load ToolActionCard
+  -> Evaluate Case/ROE/Scope
+  -> Evaluate Tool Risk
+  -> Evaluate Execution Mode
+  -> Check Required Approvals
+  -> Execute, Block, or Record Manual Result
+  -> Create Audit Record
+  -> Create Evidence Candidate
+```
+
+금지:
+
+- 버튼에서 직접 shell, MCP, external tool 호출
+- 승인 없는 T3/T4/T5 실행
+- production exploit, credential capture, phishing sender, persistence/evasion/destructive 자동화
+- raw tool output을 보고서 본문에 직접 삽입
+
+## 5. API 설계
+
+초기 namespace는 `/api/redteam/v2`를 권장한다. 기존 `/api/redteam`과 병행 운영한다.
+
+### 5.1 Case/ROE
+
+| Method | Path | 목적 |
+|---|---|---|
+| `POST` | `/api/redteam/v2/cases` | Case 생성 |
+| `GET` | `/api/redteam/v2/cases/{case_id}` | Case 조회 |
+| `POST` | `/api/redteam/v2/roe` | ROEPolicy 생성/갱신 |
+| `POST` | `/api/redteam/v2/roe/evaluate` | target/tool/action 정책 평가 |
+| `POST` | `/api/redteam/v2/reviews/{review_id}/decision` | HITL 승인/반려/수정 |
+| `GET` | `/api/redteam/v2/audit` | audit 조회 |
+
+### 5.2 Evidence
+
+| Method | Path | 목적 |
+|---|---|---|
+| `POST` | `/api/redteam/v2/evidence` | EvidenceCard 생성 |
+| `GET` | `/api/redteam/v2/evidence/{evidence_id}` | EvidenceCard 조회 |
+| `POST` | `/api/redteam/v2/evidence/{evidence_id}/approve` | Evidence 승인 |
+| `POST` | `/api/redteam/v2/evidence/{evidence_id}/redact` | redaction 처리 |
+| `POST` | `/api/redteam/v2/evidence/export-pack` | 승인된 evidence pack export |
+
+### 5.3 ToolHub/ScriptFactory
+
+| Method | Path | 목적 |
+|---|---|---|
+| `POST` | `/api/redteam/v2/tools/register` | ToolProfile 등록 |
+| `GET` | `/api/redteam/v2/tools` | ToolHub 조회 |
+| `POST` | `/api/redteam/v2/tool-actions` | ToolActionCard 생성 |
+| `POST` | `/api/redteam/v2/tool-actions/{action_id}/dry-run` | dry run |
+| `POST` | `/api/redteam/v2/tool-actions/{action_id}/request-approval` | 승인 요청 |
+| `POST` | `/api/redteam/v2/tool-actions/{action_id}/record-manual-run` | 사람이 실행한 결과 기록 |
+| `POST` | `/api/redteam/v2/tool-actions/{action_id}/import-output` | 결과 import |
+| `POST` | `/api/redteam/v2/scripts/request` | helper script 요청 |
+| `POST` | `/api/redteam/v2/scripts/{script_id}/static-scan` | 정적 정책 스캔 |
+| `POST` | `/api/redteam/v2/scripts/{script_id}/sandbox-test` | sandbox dry-run |
+| `POST` | `/api/redteam/v2/scripts/{script_id}/approve` | 스크립트 승인 |
+
+### 5.4 MCP
+
+| Method | Path | 목적 |
+|---|---|---|
+| `GET` | `/api/redteam/v2/mcp/servers` | MCP registry 조회 |
+| `GET` | `/api/redteam/v2/mcp/tools` | MCP tool 목록 |
+| `POST` | `/api/redteam/v2/mcp/evaluate` | 정책 평가 |
+| `POST` | `/api/redteam/v2/mcp/invoke-dry-run` | 실행 없는 평가 |
+| `POST` | `/api/redteam/v2/mcp/invoke-approved` | 승인된 호출만 수행 |
+| `GET` | `/api/redteam/v2/mcp/audit` | MCP audit |
+
+### 5.5 Analysis/Report
+
+| Method | Path | 목적 |
+|---|---|---|
+| `POST` | `/api/redteam/v2/rag/query` | evidence-grounded query |
+| `POST` | `/api/redteam/v2/campaigns` | Campaign 생성 |
+| `POST` | `/api/redteam/v2/timelines` | Detection timeline 생성 |
+| `POST` | `/api/redteam/v2/findings` | Finding v2 draft |
+| `POST` | `/api/redteam/v2/findings/{id}/review` | Finding 승인/반려 |
+| `POST` | `/api/redteam/v2/reports/generate` | Report v2 Markdown 생성 |
+| `POST` | `/api/redteam/v2/reports/validate` | unsupported claim/release gate |
+| `POST` | `/api/redteam/v2/reports/export` | 최종 승인 후 export |
+| `POST` | `/api/redteam/v2/remediation` | 개선 backlog 생성 |
+| `POST` | `/api/redteam/v2/retests` | Purple retest plan |
+
+## 6. 마일스톤
+
+### M0. Evidence Session and Planning Packet
+
+완료 기준:
+
+- ChatShare package 생성
+- Red Team Studio 전체 file manifest 생성
+- `Detailed_PLAN.MD`, `FINAL_PLAN.md`, LLM wiki home 생성
+- sanity test 생성 및 통과
+
+### M1. Frontend Redteam2 Tab Clone and Isolation
+
+작업:
+
+- `reportStudioTabs()`에 `redteam2` 추가
+- `reportStudioTabContent()`에 `redTeamAnalysis2Panel()` 추가
+- 기존 `redTeamAnalysisPanel()` 구조를 복제하되 상태 키 분리
+- `redteam2AnalysisDraft`, `redteam2AnalysisState`, `redteam2ScopeRuns` 추가
+- 기존 `redteam` 탭 회귀 테스트
+
+완료 기준:
+
+- `npm run build` 통과
+- Playwright screenshot에서 `레드팀 분석`과 `레드팀 분석2`가 동시에 보임
+- `redteam` 탭 상태가 `redteam2` 조작으로 바뀌지 않음
+
+### M2. Backend v2 Route Skeleton
+
+작업:
+
+- `/api/redteam/v2/health`
+- `/api/redteam/v2/cases`
+- `/api/redteam/v2/roe/evaluate`
+- `/api/redteam/v2/tool-actions`
+- `/api/redteam/v2/reports/validate`
+- 기존 v1 router 유지
+
+완료 기준:
+
+- `pytest tests/test_redteam_api_router.py` 유지 통과
+- 신규 `test_redteam_v2_api_router.py` 통과
+- T5/tool execute는 deny-by-default
+
+### M3. ToolHub and ToolActionCard
+
+작업:
+
+- ToolProfile schema
+- ToolActionCard state machine
+- ManualRunRecorder
+- ToolRunRecord
+- ToolResultNormalizer contract
+- frontend card list and button policy
+
+완료 기준:
+
+- 버튼 직접 실행 경로 0건
+- T3/T4는 approval_required
+- T5는 blocked
+- output import는 Evidence candidate로만 생성
+
+### M4. ScriptFactory Guarded Helper Scripts
+
+작업:
+
+- ScriptManifest
+- allowed script type guard
+- static policy scanner
+- sandbox dry-run contract
+- unit test requirement
+
+완료 기준:
+
+- output_parser/evidence_packager/report_transformer는 network_access false
+- credential/phishing/persistence/evasion/destructive/exploit script request는 blocked
+- 승인 전 library 등록 불가
+
+### M5. Evidence and Claim Matrix
+
+작업:
+
+- EvidenceCard approval lifecycle
+- VisualEvidence observation/inference/limitation 분리
+- ClaimEvidenceMatrix validator
+- screenshot-only conclusion 차단
+
+완료 기준:
+
+- evidence 없는 Finding 승인 불가
+- material claim evidence coverage 100%
+- sensitive visual evidence는 review 없이는 report index에 표시 불가
+
+### M6. Report v2 Builder
+
+작업:
+
+- 28개 Report v2 section renderer
+- Campaign Walkthrough builder
+- Tooling/MCP/LLM automation audit appendix
+- ReportExportGuard
+
+완료 기준:
+
+- Markdown report 생성
+- DOCX/PDF adapter는 stub contract 또는 실제 export 통과
+- unsupported material claim 0건
+- final export human approval 필수
+
+### M7. E2E and Regression
+
+작업:
+
+- sample case intake -> ROE -> ToolAction -> Evidence -> Campaign -> Finding -> Report -> Retest
+- frontend smoke
+- backend API smoke
+- security regression fixture
+
+완료 기준:
+
+- 전체 unit/schema/API/policy/workflow/report tests 통과
+- sample E2E 통과
+- CI 또는 local equivalent에서 regression 통과
+
+## 7. 테스트 전략
+
+### 7.1 문서/플랜 sanity
+
+- `고도화/sanity/test_plan_contract.py`
+- 필수 섹션 존재 확인
+- ChatShare, LLM wiki, previous index, API, test strategy, edge cases 포함 여부 확인
+
+### 7.2 프론트엔드
+
+- `npm run build`
+- `npm` 기반 최소 테스트 또는 Playwright smoke
+- 검증 항목:
+  - `레드팀 분석2` 탭 표시
+  - 기존 `레드팀 분석` 탭 유지
+  - 버튼 disabled/approval state 표시
+  - 5177 모바일/데스크톱 screenshot에서 overlap 없음
+
+### 7.3 백엔드
+
+- `pytest tests/test_redteam_api_router.py`
+- 신규 `pytest tests/test_redteam_v2_api_router.py`
+- 검증 항목:
+  - health/readiness
+  - ROE evaluate
+  - ToolActionCard create/evaluate
+  - MCP direct invoke deny
+  - ReportValidator unsupported claim deny
+  - evidence 없는 finding deny
+
+### 7.4 보안 회귀
+
+필수 실패 fixture:
+
+- `T5` action default deny
+- direct MCP invocation deny
+- shell/code exec without policy deny
+- unsupported claim deny
+- screenshot-only conclusion deny
+- final severity without human approval deny
+- report export without final approval deny
+
+### 7.5 샘플 E2E
+
+대상:
+
+- loopback lab `http://127.0.0.1:30001/#/` 또는 fixture-only sample case
+
+절차:
+
+```text
+Create Case
+ -> Load ROE
+ -> Scope Evaluate
+ -> Create ToolActionCard
+ -> Dry-run or ManualRunRecord
+ -> Import Output
+ -> Build EvidenceCard
+ -> Link Campaign/Finding
+ -> Validate ClaimEvidenceMatrix
+ -> Generate Report v2
+ -> Evaluate Release Gate
+ -> Build Purple Retest Plan
+```
+
+## 8. 예외 케이스
+
+| 케이스 | 기대 동작 |
+|---|---|
+| `5177` frontend down | plan/sanity는 진행, live screenshot은 blocked로 기록 |
+| `8765` backend down | API smoke는 skipped/blocked, 서버 기동 후 재검증 |
+| ChatShare extraction mojibake console | 저장된 UTF-8 파일 기준으로 재검증 |
+| ChatShare hidden/login gated artifact | `visible_but_login_gated` 또는 `provider_hidden_placeholder`로 기록, recovered로 과장 금지 |
+| Red Team Studio manifest에 venv/pyc 대량 포함 | LLM wiki에서는 존재 기록, 핵심 분석에서는 generated/dependency로 분류 |
+| 기존 `redteam` 탭과 `redteam2` 탭 상태 충돌 | state namespace 분리 테스트 실패 처리 |
+| 사용자가 private/reserved target 입력 | 자동 실행 차단, scope analysis만 기록 |
+| loopback lab 입력 | 명시적 `allow_loopback_lab`일 때만 safe probe 허용 |
+| T3/T4 action 승인 없음 | button disabled, approval_required 표시 |
+| T5 action | blocked, 실행 경로 없음 |
+| raw tool output prompt injection | output sanitizer 후 data envelope로만 LLM에 전달 |
+| DB query without template | deny |
+| material claim without approved evidence | report validation blocker |
+| sensitive image without redaction review | report inclusion blocker |
+| final severity/risk acceptance/report export 승인 없음 | HITL blocker |
+
+## 9. 개발 원칙
+
+1. 기존 작업물은 참고하되 그대로 확장하지 않는다.
+2. 기존 `/api/redteam`과 `레드팀 분석` 탭은 회귀 안정성 기준으로 둔다.
+3. 새 개편은 `redteam2`와 `/api/redteam/v2` namespace에서 시작한다.
+4. 모든 스펙 업데이트는 `고도화/spec-updates`에 addendum으로 남긴다.
+5. 모든 테스트와 주요 판단은 `고도화/llm-wiki`와 knowledge workflow에 근거를 남긴다.
+6. GitHub push는 작업 단위 검증 후 scoped commit으로 진행한다.
+
+## 10. 최종 완료 조건
+
+1. `레드팀 분석2`가 Report Studio에 표시되고 기존 탭과 독립적으로 동작한다.
+2. v2 backend API가 health, ROE, ToolAction, Evidence, Report validation을 제공한다.
+3. 전체 folder manifest와 ChatShare package가 LLM wiki에서 호출 가능하다.
+4. sample E2E가 report generation과 release gate까지 통과한다.
+5. unsupported material claim 0건.
+6. approved finding without evidence 0건.
+7. unapproved high-risk tool execution 0건.
+8. direct agent-to-MCP invocation 0건.
+9. T5 action default deny 유지.
+10. unit/schema/API/frontend/build/security/report regression 통과.

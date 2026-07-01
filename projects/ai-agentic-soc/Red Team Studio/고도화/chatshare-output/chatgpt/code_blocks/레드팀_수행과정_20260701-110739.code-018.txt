@@ -1,0 +1,16 @@
+tool_action_card:
+ action_id: TAC-0001
+ case_id: CASE-001
+ campaign_id: CAMP-006
+ title: 내부 웹 관리 콘솔 시각 증거 수집
+ objective: 관리 포털 노출면을 증거화하고 후속 분석에 사용
+ action_type: visual_recon
+ tool_id: TOOL-GOWITNESS-001
+ risk_class: T2
+ environment: approved_scope
+ approval_required: false
+ allowed_buttons:
+ - Dry Run
+ - Run in Lab
+ - Record Manual Run
+ - Import Output

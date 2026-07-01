@@ -1,0 +1,8 @@
+오픈소스 도구 도입
+커스텀 스크립트 생성
+도구 래퍼 제작
+웹앱 버튼 기반 Action Card
+샌드박스/수동/승인 실행
+도구 출력 정규화
+도구 결과 Evidence화
+Campaign/Finding/Report 연결

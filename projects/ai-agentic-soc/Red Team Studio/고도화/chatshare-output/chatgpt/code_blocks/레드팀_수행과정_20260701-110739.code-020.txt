@@ -1,0 +1,8 @@
+Raw Tool Output
+ → ToolResultNormalizer
+ → Evidence Candidate
+ → Analyst Review
+ → EvidenceCard
+ → Finding/Campaign Link
+ → Claim-Evidence Matrix
+ → Report Section

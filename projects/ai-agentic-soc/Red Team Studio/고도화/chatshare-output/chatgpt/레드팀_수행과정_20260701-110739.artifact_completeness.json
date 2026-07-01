@@ -1,0 +1,462 @@
+{
+  "visible_extracted": {
+    "anchors": 43,
+    "images": 9,
+    "iframes": 1,
+    "svg_blocks": 0,
+    "code_blocks": 27,
+    "code_blocks_written": 27
+  },
+  "downloaded_verified": {
+    "count": 0,
+    "items": []
+  },
+  "download_failed_or_skipped": {
+    "count": 0,
+    "items": []
+  },
+  "interactive_visualization_iframes": {
+    "count": 0,
+    "items": []
+  },
+  "visible_but_login_gated": {
+    "count": 0,
+    "items": []
+  },
+  "referenced_but_not_downloadable": {
+    "count": 0,
+    "items": []
+  },
+  "provider_hidden_placeholders": {
+    "count": 0,
+    "items": []
+  },
+  "ui_assets_filtered": {
+    "count": 2,
+    "items": [
+      {
+        "kind": "image",
+        "alt": "프로필 이미지",
+        "src": "https://cdn.auth0.com/avatars/as.png",
+        "width": "",
+        "height": "",
+        "source_context": "page_chrome",
+        "classification": "ui_asset"
+      },
+      {
+        "kind": "image",
+        "alt": "프로필 이미지",
+        "src": "https://cdn.auth0.com/avatars/as.png",
+        "width": "",
+        "height": "",
+        "source_context": "page_chrome",
+        "classification": "ui_asset"
+      }
+    ]
+  },
+  "public_or_provider_links_seen": {
+    "count": 44,
+    "items": [
+      {
+        "kind": "link",
+        "text": "콘텐츠로 건너뛰기",
+        "href": "#main",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "새 채팅",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "ChatGPT",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "새 채팅 Ctrl Shift O",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "라이브러리",
+        "href": "/library",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "일정",
+        "href": "/scheduled",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "앱",
+        "href": "/apps",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "ISAKMP 버퍼오버플로우 설명",
+        "href": "/c/69df42f3-6258-83a7-a29f-cf7b17080ff8",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 자동화",
+        "href": "/c/6a34eeb6-1ad8-83e8-9acf-015b5d2d04a4",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3ce2db-fdec-83e8-b7e4-6d70e3219edc",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정 (AS-IS TO-BE)",
+        "href": "/c/6a3cdd40-e590-83e8-a6db-e52406328130",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "레드팀 수행과정",
+        "href": "/c/6a3e592d-bcd0-83e8-9b74-d601dba721d9",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 차세대 agentic rag",
+        "href": "/c/6a43f05a-d9e8-83ee-a876-7f2f18bee0d1",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "CODEx 목표 구성 방법",
+        "href": "/c/6a446971-7140-83ee-83ec-be5477102571",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "펜테스트 자동화 도구",
+        "href": "/c/6a445fd2-36bc-83e8-b54b-086caa7caf60",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "도클링 agentdir 분석 마크다운",
+        "href": "/c/6a43df37-82d8-83e8-b0db-04904ec96641?messageId=finalAgentTurnStart",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 가드레일 구성도",
+        "href": "/c/6a43d208-b330-83ee-a976-adba4c667529",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 레드티밍 설명",
+        "href": "/c/6a3f98ab-43dc-83ee-b50e-05c579aced35",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI SOC 플랫폼 설명",
+        "href": "/c/6a41efd7-f7b4-83e8-9c68-12c77cbc841e",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 에이전틱 SOC 기업",
+        "href": "/c/6a31f038-3588-83ee-bfa1-f3ac1c99531d",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "일일관제 보고서 양식",
+        "href": "/c/6a41c4ef-b248-83e8-a7b3-547a2381d3ee",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "MVP 설계 정의",
+        "href": "/c/6a41a00b-d36c-83ee-9a11-209cc5afa39f",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "CTI 보고서 AI 자동화",
+        "href": "/c/6a3dd1fd-3c90-83e8-b1fb-f2de37468504",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 기반 CTI 보고서 자동화",
+        "href": "/c/6a3dd18d-b398-83e8-b27f-e5f5da96355a",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 랭그래프 구현",
+        "href": "/c/6a3cd920-1edc-83e8-ae09-d7d890249b74",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3cdce7-13e8-83ee-9b93-d014c5a48d83",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3cdc7e-4080-83ee-949d-20f44c2c3501",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 랭그래프",
+        "href": "/c/6a3cd6a4-0710-83ee-82d4-0862f79e5a55",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "논문 번역 요청",
+        "href": "/c/6a3cca78-316c-83e8-ad9e-ef01f659dd8f",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 에이전틱 RAG 구현 방법",
+        "href": "/c/6a3c987b-9d00-83ee-8709-69099703afdb",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AS-IS TO-BE 페이지 제작",
+        "href": "/c/6a3a0955-31ec-83ee-a7c9-98bd1b303152",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "하네스 엔지니어링 발표자료 제작",
+        "href": "/c/6a2737fb-0a2c-83a3-960d-4aebbb5e7b55",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 RAG 구현 방법",
+        "href": "/c/6a3c989a-2e54-83e9-adf0-de44345c887d",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "에이전트 스킬 고도화 요청",
+        "href": "/c/6a3b79b7-75a8-83ee-a5c0-2ccb47d2d45e",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 증거 세분화",
+        "href": "/c/6a3b7325-93e4-83e8-90d9-7f6d9788ba37",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "취약점 분석 증거 세분화",
+        "href": "/c/6a3b746c-5350-83e8-a8b6-51a12347dca3",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 기반 취약점 분석",
+        "href": "/c/6a3b5c69-82c4-83e8-8003-8fdba20bef66",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "오픈소스 취약점 모니터링 아이디어",
+        "href": "/c/6a3b314b-889c-83ee-9cd7-999f49461dfd",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +2 GitHub +2",
+        "href": "https://github.com/apache/caldera?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +1",
+        "href": "https://github.com/securityriskadvisors/VECTR?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +2 GitHub +2",
+        "href": "https://github.com/sensepost/gowitness?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "Threat-Informed Defense Center",
+        "href": "https://center-for-threat-informed-defense.github.io/attack-flow/?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "iframe",
+        "src": "",
+        "url": "",
+        "title": "",
+        "label": "",
+        "sandbox": "",
+        "style": "position: absolute; top: 0px; left: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; visibility: hidden;",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      }
+    ]
+  },
+  "completion_status": "complete_for_public_snapshot",
+  "agent_warning": "No hidden/login-gated markers detected in this run."
+}

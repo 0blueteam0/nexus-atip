@@ -1,0 +1,7 @@
+Guardrails are applied at every trust boundary.
+Prompt guardrails are necessary but insufficient.
+Tool guardrails are mandatory.
+DB/API traffic guardrails are mandatory.
+Tool output guardrails are mandatory.
+Report output guardrails are mandatory.
+Human approval is mandatory for high-risk decisions.

@@ -1,0 +1,12 @@
+Script Request
+ → Scope/ROE Classification
+ → Allowed Script Type Check
+ → Script Design Draft
+ → LLM Code Generation
+ → Static Policy Scan
+ → Security Code Scan
+ → Unit Test Generation
+ → Dry-run in Sandbox
+ → Human Code Review
+ → ScriptManifest Versioning
+ → Approved Script Library

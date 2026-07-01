@@ -1,0 +1,14 @@
+tool_profile:
+ tool_id: TOOL-GOWITNESS-001
+ name: gowitness
+ category: visual_recon
+ risk_class: T2
+ execution_modes:
+ - sandbox
+ - approved_scope
+ - manual_operator_run
+ output_normalizers:
+ - gowitness_db_to_visual_evidence
+ evidence_types:
+ - visual_evidence
+ - web_asset_snapshot

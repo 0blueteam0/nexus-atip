@@ -1,0 +1,10 @@
+Plan
+ → Select Tool
+ → Generate Wrapper
+ → Validate Scope
+ → Dry Run
+ → Request Approval
+ → Run in Lab / Record Manual Run
+ → Import Output
+ → Create Evidence
+ → Generate Finding Draft

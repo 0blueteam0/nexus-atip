@@ -1,0 +1,23 @@
+campaign_or_finding_need
+ → tool_need_classifier_node
+ → tool_selection_node
+ → action_card_builder_node
+ → script_needed_router
+ ├─ no_script → tool_policy_gate_node
+ └─ script_required → script_factory_node
+ → code_review_node
+ → sandbox_dry_run_node
+ → tool_policy_gate_node
+ → human_approval_node
+ → execution_mode_router
+ ├─ plan_only
+ ├─ dry_run
+ ├─ lab_execute
+ ├─ manual_operator_run
+ └─ prohibited
+ → result_import_or_collection_node
+ → result_normalizer_node
+ → evidence_card_builder_node
+ → finding_or_campaign_linker_node
+ → report_candidate_node
+ → critic_node

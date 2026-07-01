@@ -1,0 +1,11 @@
+source_system
+source_uri / query_id
+captured_at
+collected_by
+hash_sha256
+classification
+approval_status
+observation
+inference
+limitations
+confidence

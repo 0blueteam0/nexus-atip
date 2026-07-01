@@ -1,0 +1,17 @@
+{
+ "trusted_as_instruction": 
+false
+,
+ "trusted_as_data": 
+true
+,
+ "classification": 
+"confidential"
+,
+ "summary": 
+"5 authentication anomaly alerts returned."
+,
+ "redactions": [],
+ "evidence_candidate": 
+true
+}

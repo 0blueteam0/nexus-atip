@@ -1,0 +1,12 @@
+script_manifest:
+ script_id: SCR-0001
+ name: nuclei_json_to_evidence_candidates
+ version: 0.1.0
+ script_type: output_parser
+ language: python
+ status: draft|reviewed|approved|deprecated|blocked
+ network_access: false
+ external_process: false
+ max_runtime_seconds: 60
+ tests:
+ - tests/test_nuclei_json_parser.py

@@ -1,0 +1,7 @@
+System Prompt
+Developer Policy
+ROE Summary
+Approved Evidence only
+Tool Output as quoted data block
+Retrieved Docs as untrusted data block
+Sanitized User Input

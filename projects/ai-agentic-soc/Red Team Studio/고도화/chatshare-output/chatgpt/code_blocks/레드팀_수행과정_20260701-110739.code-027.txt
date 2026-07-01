@@ -1,0 +1,15 @@
+1. Product Goal
+2. Non-Goals and Safety Boundary
+3. Reference Report Patterns to Implement
+4. Target Architecture
+5. Core Domain Objects
+6. Risk Classes
+7. LangGraph Workflows
+8. Agents and Skills
+9. API Surface
+10. Web App UX Plan
+11. Guardrails
+12. Implementation Phases
+13. Final Verification Gates
+14. Final End Conditions
+15. First 20 Implementation Tasks

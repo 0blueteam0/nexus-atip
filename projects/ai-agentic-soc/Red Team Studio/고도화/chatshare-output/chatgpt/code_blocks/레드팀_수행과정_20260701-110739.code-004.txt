@@ -1,0 +1,6 @@
+LLM
+ → LLM Output Guardrail
+ → MCP/Tool Gateway
+ → Tool Invocation Guardrail
+ → HITL if needed
+ → Tool Adapter

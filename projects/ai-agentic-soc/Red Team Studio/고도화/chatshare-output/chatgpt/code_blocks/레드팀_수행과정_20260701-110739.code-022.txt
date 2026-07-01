@@ -1,0 +1,10 @@
+1. ToolProfile / ToolRegistry
+2. ToolActionCard state machine
+3. ScriptManifest / ScriptFactory skeleton
+4. ToolExecutionPlan / Policy evaluation
+5. ManualRunRecorder
+6. ToolRunRecord / Artifact hash
+7. ToolResultNormalizer plugin interface
+8. EvidenceLinker
+9. WebApp button backend
+10. OSS adapter Phase 1

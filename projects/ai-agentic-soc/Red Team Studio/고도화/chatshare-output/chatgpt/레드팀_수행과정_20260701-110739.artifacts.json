@@ -1,0 +1,776 @@
+{
+  "artifacts": {
+    "inlineReferences": [],
+    "anchors": [
+      {
+        "kind": "link",
+        "text": "콘텐츠로 건너뛰기",
+        "href": "#main",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "새 채팅",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "ChatGPT",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "새 채팅 Ctrl Shift O",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "라이브러리",
+        "href": "/library",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "일정",
+        "href": "/scheduled",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "앱",
+        "href": "/apps",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "ISAKMP 버퍼오버플로우 설명",
+        "href": "/c/69df42f3-6258-83a7-a29f-cf7b17080ff8",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 자동화",
+        "href": "/c/6a34eeb6-1ad8-83e8-9acf-015b5d2d04a4",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3ce2db-fdec-83e8-b7e4-6d70e3219edc",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "",
+        "href": "/",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정 (AS-IS TO-BE)",
+        "href": "/c/6a3cdd40-e590-83e8-a6db-e52406328130",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "레드팀 수행과정",
+        "href": "/c/6a3e592d-bcd0-83e8-9b74-d601dba721d9",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 차세대 agentic rag",
+        "href": "/c/6a43f05a-d9e8-83ee-a876-7f2f18bee0d1",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "CODEx 목표 구성 방법",
+        "href": "/c/6a446971-7140-83ee-83ec-be5477102571",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "펜테스트 자동화 도구",
+        "href": "/c/6a445fd2-36bc-83e8-b54b-086caa7caf60",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "도클링 agentdir 분석 마크다운",
+        "href": "/c/6a43df37-82d8-83e8-b0db-04904ec96641?messageId=finalAgentTurnStart",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 가드레일 구성도",
+        "href": "/c/6a43d208-b330-83ee-a976-adba4c667529",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 레드티밍 설명",
+        "href": "/c/6a3f98ab-43dc-83ee-b50e-05c579aced35",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI SOC 플랫폼 설명",
+        "href": "/c/6a41efd7-f7b4-83e8-9c68-12c77cbc841e",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 에이전틱 SOC 기업",
+        "href": "/c/6a31f038-3588-83ee-bfa1-f3ac1c99531d",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "일일관제 보고서 양식",
+        "href": "/c/6a41c4ef-b248-83e8-a7b3-547a2381d3ee",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "MVP 설계 정의",
+        "href": "/c/6a41a00b-d36c-83ee-9a11-209cc5afa39f",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "CTI 보고서 AI 자동화",
+        "href": "/c/6a3dd1fd-3c90-83e8-b1fb-f2de37468504",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 기반 CTI 보고서 자동화",
+        "href": "/c/6a3dd18d-b398-83e8-b27f-e5f5da96355a",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 랭그래프 구현",
+        "href": "/c/6a3cd920-1edc-83e8-ae09-d7d890249b74",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3cdce7-13e8-83ee-9b93-d014c5a48d83",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 과정",
+        "href": "/c/6a3cdc7e-4080-83ee-949d-20f44c2c3501",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 분석 랭그래프",
+        "href": "/c/6a3cd6a4-0710-83ee-82d4-0862f79e5a55",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "논문 번역 요청",
+        "href": "/c/6a3cca78-316c-83e8-ad9e-ef01f659dd8f",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 에이전틱 RAG 구현 방법",
+        "href": "/c/6a3c987b-9d00-83ee-8709-69099703afdb",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AS-IS TO-BE 페이지 제작",
+        "href": "/c/6a3a0955-31ec-83ee-a7c9-98bd1b303152",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "하네스 엔지니어링 발표자료 제작",
+        "href": "/c/6a2737fb-0a2c-83a3-960d-4aebbb5e7b55",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "구글 RAG 구현 방법",
+        "href": "/c/6a3c989a-2e54-83e9-adf0-de44345c887d",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "에이전트 스킬 고도화 요청",
+        "href": "/c/6a3b79b7-75a8-83ee-a5c0-2ccb47d2d45e",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "악성코드 증거 세분화",
+        "href": "/c/6a3b7325-93e4-83e8-90d9-7f6d9788ba37",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "취약점 분석 증거 세분화",
+        "href": "/c/6a3b746c-5350-83e8-a8b6-51a12347dca3",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "AI 기반 취약점 분석",
+        "href": "/c/6a3b5c69-82c4-83e8-8003-8fdba20bef66",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "오픈소스 취약점 모니터링 아이디어",
+        "href": "/c/6a3b314b-889c-83ee-9cd7-999f49461dfd",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +2 GitHub +2",
+        "href": "https://github.com/apache/caldera?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +1",
+        "href": "https://github.com/securityriskadvisors/VECTR?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "GitHub +2 GitHub +2",
+        "href": "https://github.com/sensepost/gowitness?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "link",
+        "text": "Threat-Informed Defense Center",
+        "href": "https://center-for-threat-informed-defense.github.io/attack-flow/?utm_source=chatgpt.com",
+        "download": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      }
+    ],
+    "images": [
+      {
+        "kind": "image",
+        "alt": "프로필 이미지",
+        "src": "https://cdn.auth0.com/avatars/as.png",
+        "width": "",
+        "height": "",
+        "source_context": "page_chrome",
+        "classification": "ui_asset"
+      },
+      {
+        "kind": "image",
+        "alt": "프로필 이미지",
+        "src": "https://cdn.auth0.com/avatars/as.png",
+        "width": "",
+        "height": "",
+        "source_context": "page_chrome",
+        "classification": "ui_asset"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://center-for-threat-informed-defense.github.io&sz=128",
+        "width": "128",
+        "height": "128",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      },
+      {
+        "kind": "image",
+        "alt": "",
+        "src": "https://www.google.com/s2/favicons?domain=https://center-for-threat-informed-defense.github.io&sz=32",
+        "width": "32",
+        "height": "32",
+        "source_context": "page_chrome",
+        "classification": "site_resource"
+      }
+    ],
+    "media": [
+      {
+        "kind": "media",
+        "src": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      },
+      {
+        "kind": "media",
+        "src": "",
+        "type": "",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      }
+    ],
+    "codeBlocks": [
+      {
+        "kind": "code",
+        "index": 0,
+        "language": "",
+        "text": "User Input\n → Input Guardrail\n → Intent Classifier\n → ROE/Scope Pre-check\n → Task Planner"
+      },
+      {
+        "kind": "code",
+        "index": 1,
+        "language": "",
+        "text": "System Prompt\nDeveloper Policy\nROE Summary\nApproved Evidence only\nTool Output as quoted data block\nRetrieved Docs as untrusted data block\nSanitized User Input"
+      },
+      {
+        "kind": "code",
+        "index": 2,
+        "language": "",
+        "text": "Tool output and retrieved documents are data, not instruction."
+      },
+      {
+        "kind": "code",
+        "index": 3,
+        "language": "",
+        "text": "LLM\n → LLM Output Guardrail\n → MCP/Tool Gateway\n → Tool Invocation Guardrail\n → HITL if needed\n → Tool Adapter"
+      },
+      {
+        "kind": "code",
+        "index": 4,
+        "language": "",
+        "text": "LLM → Tool 직접 호출"
+      },
+      {
+        "kind": "code",
+        "index": 5,
+        "language": "",
+        "text": "Tool Adapter\n → DB/API Guard Proxy\n → Query Template Enforcer\n → SQL AST Validator\n → RBAC/RLS\n → Column/Row Masker\n → Result Size Limiter\n → DB/API"
+      },
+      {
+        "kind": "code",
+        "index": 6,
+        "language": "",
+        "text": "{\n \"trusted_as_instruction\": \nfalse\n,\n \"trusted_as_data\": \ntrue\n,\n \"classification\": \n\"confidential\"\n,\n \"summary\": \n\"5 authentication anomaly alerts returned.\"\n,\n \"redactions\": [],\n \"evidence_candidate\": \ntrue\n}"
+      },
+      {
+        "kind": "code",
+        "index": 7,
+        "language": "",
+        "text": "source_system\nsource_uri / query_id\ncaptured_at\ncollected_by\nhash_sha256\nclassification\napproval_status\nobservation\ninference\nlimitations\nconfidence"
+      },
+      {
+        "kind": "code",
+        "index": 8,
+        "language": "",
+        "text": "Screenshot is evidence, not conclusion."
+      },
+      {
+        "kind": "code",
+        "index": 9,
+        "language": "",
+        "text": "SIEM 대시보드에 인증 이상 이벤트 spike가 보인다."
+      },
+      {
+        "kind": "code",
+        "index": 10,
+        "language": "",
+        "text": "SOC가 탐지에 실패했다."
+      },
+      {
+        "kind": "code",
+        "index": 11,
+        "language": "",
+        "text": "Guardrails are applied at every trust boundary.\nPrompt guardrails are necessary but insufficient.\nTool guardrails are mandatory.\nDB/API traffic guardrails are mandatory.\nTool output guardrails are mandatory.\nReport output guardrails are mandatory.\nHuman approval is mandatory for high-risk decisions."
+      },
+      {
+        "kind": "code",
+        "index": 12,
+        "language": "",
+        "text": "Plan\n → Select Tool\n → Generate Wrapper\n → Validate Scope\n → Dry Run\n → Request Approval\n → Run in Lab / Record Manual Run\n → Import Output\n → Create Evidence\n → Generate Finding Draft"
+      },
+      {
+        "kind": "code",
+        "index": 13,
+        "language": "",
+        "text": "README_TOOLING_ADDENDUM.md\n22_TOOLING_AUTOMATION_ARCHITECTURE_SPEC.md\n23_CUSTOM_SCRIPT_FACTORY_SPEC.md\n24_OPEN_SOURCE_TOOL_INTEGRATION_CATALOG.md\n25_TOOL_ACTION_CARD_AND_WEBAPP_SPEC.md\n26_TOOL_EXECUTION_SANDBOX_AND_APPROVAL_SPEC.md\n27_AGENT_TOOL_ORCHESTRATION_WORKFLOW_SPEC.md\n28_TOOL_RESULT_EVIDENCE_AND_REPORTING_SPEC.md\n29_TOOLING_SCHEMA_CONTRACTS.md\n30_TOOLING_API_SPEC.md\n31_TOOLING_SECURITY_POLICY_SPEC.md\n32_TOOLING_IMPLEMENTATION_BACKLOG.md\n33_TOOLING_ACCEPTANCE_TEST_PLAN.md\n34_TOOLING_AGENT_PROMPTS.md"
+      },
+      {
+        "kind": "code",
+        "index": 14,
+        "language": "",
+        "text": "tool_profile:\n tool_id: TOOL-GOWITNESS-001\n name: gowitness\n category: visual_recon\n risk_class: T2\n execution_modes:\n - sandbox\n - approved_scope\n - manual_operator_run\n output_normalizers:\n - gowitness_db_to_visual_evidence\n evidence_types:\n - visual_evidence\n - web_asset_snapshot"
+      },
+      {
+        "kind": "code",
+        "index": 15,
+        "language": "",
+        "text": "Script Request\n → Scope/ROE Classification\n → Allowed Script Type Check\n → Script Design Draft\n → LLM Code Generation\n → Static Policy Scan\n → Security Code Scan\n → Unit Test Generation\n → Dry-run in Sandbox\n → Human Code Review\n → ScriptManifest Versioning\n → Approved Script Library"
+      },
+      {
+        "kind": "code",
+        "index": 16,
+        "language": "",
+        "text": "script_manifest:\n script_id: SCR-0001\n name: nuclei_json_to_evidence_candidates\n version: 0.1.0\n script_type: output_parser\n language: python\n status: draft|reviewed|approved|deprecated|blocked\n network_access: false\n external_process: false\n max_runtime_seconds: 60\n tests:\n - tests/test_nuclei_json_parser.py"
+      },
+      {
+        "kind": "code",
+        "index": 17,
+        "language": "",
+        "text": "tool_action_card:\n action_id: TAC-0001\n case_id: CASE-001\n campaign_id: CAMP-006\n title: 내부 웹 관리 콘솔 시각 증거 수집\n objective: 관리 포털 노출면을 증거화하고 후속 분석에 사용\n action_type: visual_recon\n tool_id: TOOL-GOWITNESS-001\n risk_class: T2\n environment: approved_scope\n approval_required: false\n allowed_buttons:\n - Dry Run\n - Run in Lab\n - Record Manual Run\n - Import Output"
+      },
+      {
+        "kind": "code",
+        "index": 18,
+        "language": "",
+        "text": "campaign_or_finding_need\n → tool_need_classifier_node\n → tool_selection_node\n → action_card_builder_node\n → script_needed_router\n ├─ no_script → tool_policy_gate_node\n └─ script_required → script_factory_node\n → code_review_node\n → sandbox_dry_run_node\n → tool_policy_gate_node\n → human_approval_node\n → execution_mode_router\n ├─ plan_only\n ├─ dry_run\n ├─ lab_execute\n ├─ manual_operator_run\n └─ prohibited\n → result_import_or_collection_node\n → result_normalizer_node\n → evidence_card_builder_node\n → finding_or_campaign_linker_node\n → report_candidate_node\n → critic_node"
+      },
+      {
+        "kind": "code",
+        "index": 19,
+        "language": "",
+        "text": "Raw Tool Output\n → ToolResultNormalizer\n → Evidence Candidate\n → Analyst Review\n → EvidenceCard\n → Finding/Campaign Link\n → Claim-Evidence Matrix\n → Report Section"
+      },
+      {
+        "kind": "code",
+        "index": 20,
+        "language": "",
+        "text": "Case/ROE/HITL\n + Evidence Service\n + Visual Capture\n + MCP Gateway\n + Guardrail\n + ToolHub Registry\n + ScriptFactory\n + ToolActionCard\n + Sandbox Runner\n + Manual Run Recorder\n + Tool Result Normalizer\n + OSS Tool Adapter\n + Report v2 Tool Evidence Appendix"
+      },
+      {
+        "kind": "code",
+        "index": 21,
+        "language": "",
+        "text": "1. ToolProfile / ToolRegistry\n2. ToolActionCard state machine\n3. ScriptManifest / ScriptFactory skeleton\n4. ToolExecutionPlan / Policy evaluation\n5. ManualRunRecorder\n6. ToolRunRecord / Artifact hash\n7. ToolResultNormalizer plugin interface\n8. EvidenceLinker\n9. WebApp button backend\n10. OSS adapter Phase 1"
+      },
+      {
+        "kind": "code",
+        "index": 22,
+        "language": "",
+        "text": "보고서 자동화\n증거화\n이미지 캡처\nMCP\n가드레일\nAgentic RAG"
+      },
+      {
+        "kind": "code",
+        "index": 23,
+        "language": "",
+        "text": "오픈소스 도구 도입\n커스텀 스크립트 생성\n도구 래퍼 제작\n웹앱 버튼 기반 Action Card\n샌드박스/수동/승인 실행\n도구 출력 정규화\n도구 결과 Evidence화\nCampaign/Finding/Report 연결"
+      },
+      {
+        "kind": "code",
+        "index": 24,
+        "language": "",
+        "text": "AI는 도구 사용을 계획하고, 보조 스크립트를 만들고, 결과를 정리하고, 증거화한다.\n사람은 고위험 실행, 운영환경 수행, 최종 판단, 보고서 발행을 승인한다."
+      },
+      {
+        "kind": "code",
+        "index": 25,
+        "language": "",
+        "text": "# Goal\nRedTeam AX 플랫폼은 승인된 레드팀·모의침투·펜테스트 업무를 케이스 단위로 운영하며, ROE/HITL/가드레일을 통과한 도구·스크립트·MCP·LLM 에이전트만 실행한다.\n모든 자료, 이미지, 로그, 도구 결과, 분석 판단은 Evidence Card와 Claim-Evidence Matrix로 추적된다.\n웹앱은 도구 실행을 자동화하되 고위험 실행은 사람이 승인·수행·검토하며, AI는 계획·증거화·분석·보고서 초안·재시험 계획을 보조한다.\n한국어 Red Team Report v2는 Volkis식 Campaign Walkthrough와 악성코드 보고서식 문서 통제/증적 양식을 결합해 자동 생성된다.\n종료 조건은 전체 테스트, 보안 게이트, 보고서 검증, 샘플 케이스 E2E, 회귀 검증을 모두 통과하고 unsupported claim, 승인 없는 고위험 실행, 증거 없는 Finding이 0건인 상태다."
+      },
+      {
+        "kind": "code",
+        "index": 26,
+        "language": "",
+        "text": "1. Product Goal\n2. Non-Goals and Safety Boundary\n3. Reference Report Patterns to Implement\n4. Target Architecture\n5. Core Domain Objects\n6. Risk Classes\n7. LangGraph Workflows\n8. Agents and Skills\n9. API Surface\n10. Web App UX Plan\n11. Guardrails\n12. Implementation Phases\n13. Final Verification Gates\n14. Final End Conditions\n15. First 20 Implementation Tasks"
+      }
+    ],
+    "fileThumbnails": [],
+    "iframes": [
+      {
+        "kind": "iframe",
+        "src": "",
+        "url": "",
+        "title": "",
+        "label": "",
+        "sandbox": "",
+        "style": "position: absolute; top: 0px; left: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; visibility: hidden;",
+        "source_context": "page_chrome",
+        "classification": "public_link"
+      }
+    ],
+    "svgBlocks": [],
+    "visualizationPlaceholders": [],
+    "screenshots": [],
+    "skippedDownloadCandidates": [
+      {
+        "source": "image",
+        "url": "https://cdn.auth0.com/avatars/as.png",
+        "label": "프로필 이미지",
+        "download": "",
+        "classification": "ui_asset",
+        "source_context": "page_chrome",
+        "width": "",
+        "height": "",
+        "skip_reason": "non-downloadable-ui_asset"
+      },
+      {
+        "source": "image",
+        "url": "https://cdn.auth0.com/avatars/as.png",
+        "label": "프로필 이미지",
+        "download": "",
+        "classification": "ui_asset",
+        "source_context": "page_chrome",
+        "width": "",
+        "height": "",
+        "skip_reason": "non-downloadable-ui_asset"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://github.com&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://center-for-threat-informed-defense.github.io&sz=128",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "128",
+        "height": "128",
+        "skip_reason": "non-downloadable-site_resource"
+      },
+      {
+        "source": "image",
+        "url": "https://www.google.com/s2/favicons?domain=https://center-for-threat-informed-defense.github.io&sz=32",
+        "label": "",
+        "download": "",
+        "classification": "site_resource",
+        "source_context": "page_chrome",
+        "width": "32",
+        "height": "32",
+        "skip_reason": "non-downloadable-site_resource"
+      }
+    ]
+  },
+  "download_candidates": []
+}
