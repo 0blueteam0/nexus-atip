@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 22 image/OCR visual redaction preview UX/API complete, full goal active  
+상태: implementation slice 23 pixel-level visual redaction artifact UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,7 +35,7 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 22 RedTeam2 image/OCR visual redaction preview UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 23 RedTeam2 pixel-level visual redaction artifact UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
@@ -704,5 +704,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2`에 이미지 파일 선택, SHA-256 계산, manual OCR 텍스트, claim guardrail note, sanitized OCR preview 표시
 - [x] API unittest가 민감 OCR 텍스트 redaction과 screenshot-only claim block을 검증
 - [ ] 실제 OCR 엔진(Tesseract/PaddleOCR 등) 연결 및 version/hash pin
-- [ ] pixel-level redacted image artifact 생성과 original/redacted artifact path 자동 연결
+- [x] pixel-level redacted image artifact 생성과 original/redacted artifact path 자동 연결 - slice 23 완료
 - [ ] live 8765 backend 재시작 후 browser visual upload smoke
+
+## 31. Slice 23 Pixel-Level Visual Redaction Artifact 체크리스트
+
+- [x] `image_data_url`를 서버에서 base64 decode하고 SHA-256 불일치 시 invalid 처리
+- [x] case archive `visual-bundles/<visual_evidence_id>/original.png` 저장
+- [x] Pillow 기반 `redacted.png` 생성
+- [x] 명시적 `redaction_regions`가 있으면 좌표 기반 마스킹, 없으면 manual OCR preview용 estimated OCR band 마스킹 적용
+- [x] `screenshot_manifest.json`과 `sha256sums.txt` 생성
+- [x] VisualEvidenceDescriptor에 `original_artifact_path`, `redacted_artifact_path`, `original_sha256`, `redacted_sha256`, `redaction_regions` 자동 연결
+- [x] `레드팀 분석2` UI에 redacted artifact path/hash와 visual bundle 상태 표시
+- [x] API unittest가 실제 PNG data URL -> original/redacted artifact 생성, hash divergence, manifest 생성을 검증
+- [ ] 실제 OCR bbox 연동으로 estimated band를 precise region으로 대체
+- [ ] live 5177/8765 browser visual upload smoke

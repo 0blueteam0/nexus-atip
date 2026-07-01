@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import base64
 import importlib
 import hashlib
+import io
 import sys
 import unittest
 from pathlib import Path
@@ -578,16 +580,23 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(normalized_body["sanitizer_report"]["trusted_as_instruction"])
 
     def test_v2_visual_redaction_preview_detects_ocr_sensitive_data(self) -> None:
+        from PIL import Image
+
+        image_buffer = io.BytesIO()
+        Image.new("RGB", (220, 120), color=(255, 255, 255)).save(image_buffer, format="PNG")
+        image_bytes = image_buffer.getvalue()
+        image_sha256 = hashlib.sha256(image_bytes).hexdigest()
+        image_data_url = f"data:image/png;base64,{base64.b64encode(image_bytes).decode('ascii')}"
         response = self.client.post("/api/redteam/v2/visual-evidence/redaction-preview", json={
             "case_id": "CASE-V2-VISUAL-REDACT-001",
             "visual_evidence_id": "VEV-VISUAL-001",
             "filename": "dashboard-capture.png",
             "content_type": "image/png",
-            "sha256": "a" * 64,
+            "sha256": image_sha256,
             "ocr_text": "User alice@example.com api_key = AKIA1234567890ABCDEF internal http://10.0.0.5/admin",
             "classification": "restricted",
             "claim": "This screenshot proves the SOC failed to respond.",
-            "image_data_url": "data:image/png;base64,iVBORw0KGgo=",
+            "image_data_url": image_data_url,
         })
         self.assertEqual(response.status_code, 200)
         body = response.json()
@@ -599,7 +608,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["policy"]["restricted_visual_requires_approval"])
         self.assertIn("screenshot_only_claims_blocked_link_log_ticket_or_tool_evidence", body["warnings"])
         self.assertIn("restricted_visual_evidence_requires_human_approval", body["warnings"])
-        self.assertEqual(body["source"]["sha256"], "a" * 64)
+        self.assertEqual(body["source"]["sha256"], image_sha256)
         self.assertTrue(body["source"]["image_data_url_present"])
         self.assertGreaterEqual(body["ocr"]["sensitive_label_count"], 2)
         self.assertIn("email", body["ocr"]["sensitive_labels"])
@@ -609,6 +618,15 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("[REDACTED_VISUAL_EMAIL]", body["ocr"]["sanitized_text"])
         self.assertIn("[REDACTED_SECRET]", body["ocr"]["sanitized_text"])
         self.assertTrue(Path(body["artifact_path"]).exists())
+        self.assertEqual(body["visual_bundle"]["status"], "redacted")
+        self.assertTrue(body["visual_bundle"]["source_sha256_verified"])
+        self.assertTrue(Path(body["visual_bundle"]["original_artifact_path"]).exists())
+        self.assertTrue(Path(body["visual_bundle"]["redacted_artifact_path"]).exists())
+        self.assertTrue(Path(body["visual_bundle"]["manifest_path"]).exists())
+        self.assertEqual(body["visual_descriptor"]["original_artifact_path"], body["visual_bundle"]["original_artifact_path"])
+        self.assertEqual(body["visual_descriptor"]["redacted_artifact_path"], body["visual_bundle"]["redacted_artifact_path"])
+        self.assertNotEqual(body["visual_descriptor"]["original_sha256"], body["visual_descriptor"]["redacted_sha256"])
+        self.assertGreaterEqual(len(body["visual_descriptor"]["redaction_regions"]), 1)
 
     def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
         resolved = self.client.post(

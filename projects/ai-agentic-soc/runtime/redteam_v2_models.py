@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import hashlib
+import base64
+import binascii
+import io
 import json
 import re
 import shutil
@@ -1397,6 +1400,162 @@ def detect_visual_ocr_sensitive_text(ocr_text: str) -> dict[str, Any]:
     }
 
 
+def decode_image_data_url(value: Any) -> tuple[bytes | None, str | None, list[str]]:
+    raw = str(value or "").strip()
+    errors: list[str] = []
+    if not raw:
+        return None, None, ["image_data_url_required"]
+    match = re.fullmatch(r"data:(image/[A-Za-z0-9.+-]+);base64,(.+)", raw, flags=re.DOTALL)
+    if not match:
+        return None, None, ["image_data_url_invalid"]
+    try:
+        return base64.b64decode(match.group(2), validate=True), match.group(1), errors
+    except (binascii.Error, ValueError):
+        return None, match.group(1), ["image_data_url_base64_invalid"]
+
+
+def _visual_redaction_regions(image_width: int, image_height: int, actions: list[dict[str, Any]], payload: dict[str, Any]) -> list[dict[str, int | str]]:
+    explicit_regions = payload.get("redaction_regions")
+    regions: list[dict[str, int | str]] = []
+    if isinstance(explicit_regions, list):
+        for index, item in enumerate(explicit_regions):
+            if not isinstance(item, dict):
+                continue
+            x = max(0, min(image_width, int(item.get("x") or 0)))
+            y = max(0, min(image_height, int(item.get("y") or 0)))
+            width = max(1, min(image_width - x, int(item.get("width") or item.get("w") or image_width)))
+            height = max(1, min(image_height - y, int(item.get("height") or item.get("h") or 24)))
+            regions.append({
+                "x": x,
+                "y": y,
+                "width": width,
+                "height": height,
+                "source": "explicit_region",
+                "action_index": index,
+            })
+    if regions:
+        return regions
+
+    if not actions:
+        return []
+    band_height = max(18, min(44, image_height // max(4, min(len(actions) + 2, 10))))
+    top_margin = max(4, image_height // 20)
+    usable_height = max(1, image_height - top_margin)
+    for index, action in enumerate(actions):
+        y = min(image_height - band_height, top_margin + int(index * band_height * 1.35) % usable_height)
+        regions.append({
+            "x": 0,
+            "y": max(0, y),
+            "width": image_width,
+            "height": band_height,
+            "source": "estimated_ocr_band",
+            "action_index": index,
+            "label": str(action.get("label") or action.get("category") or "sensitive_text"),
+        })
+    return regions
+
+
+def create_visual_redaction_bundle(
+    case_id: str,
+    visual_evidence_id: str,
+    filename: str,
+    image_data_url: Any,
+    expected_sha256: str,
+    redaction_actions: list[dict[str, Any]],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    content, detected_content_type, decode_errors = decode_image_data_url(image_data_url)
+    if decode_errors or content is None:
+        return {"status": "failed", "errors": decode_errors, "warnings": [], "redaction_regions": []}
+
+    uploaded_sha256 = hashlib.sha256(content).hexdigest()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if expected_sha256 and uploaded_sha256 != expected_sha256:
+        errors.append("source_sha256_mismatch")
+    try:
+        from PIL import Image, ImageDraw
+    except ImportError:
+        return {
+            "status": "failed",
+            "errors": [*errors, "pillow_not_available"],
+            "warnings": warnings,
+            "source_upload_sha256": uploaded_sha256,
+            "redaction_regions": [],
+        }
+    try:
+        image = Image.open(io.BytesIO(content)).convert("RGBA")
+    except Exception:
+        return {
+            "status": "failed",
+            "errors": [*errors, "image_decode_failed"],
+            "warnings": warnings,
+            "source_upload_sha256": uploaded_sha256,
+            "redaction_regions": [],
+        }
+
+    bundle_dir = case_dir(case_id) / "visual-bundles" / safe_name(visual_evidence_id)
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+    original_path = bundle_dir / "original.png"
+    redacted_path = bundle_dir / "redacted.png"
+    manifest_path = bundle_dir / "screenshot_manifest.json"
+    sha256sums_path = bundle_dir / "sha256sums.txt"
+
+    image.save(original_path, format="PNG")
+    redacted = image.copy()
+    draw = ImageDraw.Draw(redacted)
+    regions = _visual_redaction_regions(redacted.width, redacted.height, redaction_actions, payload)
+    for region in regions:
+        x = int(region["x"])
+        y = int(region["y"])
+        width = int(region["width"])
+        height = int(region["height"])
+        draw.rectangle([x, y, x + width, y + height], fill=(0, 0, 0, 255))
+    redacted.save(redacted_path, format="PNG")
+
+    original_sha256 = sha256_file(original_path)
+    redacted_sha256 = sha256_file(redacted_path)
+    if redaction_actions and original_sha256 == redacted_sha256:
+        warnings.append("redacted_image_hash_matches_original")
+    manifest = {
+        "kind": "redteam_ax_v2_visual_redaction_bundle",
+        "case_id": case_id,
+        "visual_evidence_id": visual_evidence_id,
+        "filename": filename,
+        "source_content_type": detected_content_type,
+        "source_upload_sha256": uploaded_sha256,
+        "source_sha256_verified": not errors,
+        "original_artifact_path": original_path.as_posix(),
+        "redacted_artifact_path": redacted_path.as_posix(),
+        "original_sha256": original_sha256,
+        "redacted_sha256": redacted_sha256,
+        "redaction_regions": regions,
+        "redaction_actions": redaction_actions,
+        "created_at": now_utc(),
+    }
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    sha256sums_path.write_text(
+        f"{original_sha256}  original.png\n{redacted_sha256}  redacted.png\n{sha256_file(manifest_path)}  screenshot_manifest.json\n",
+        encoding="utf-8",
+    )
+    return {
+        "status": "redacted" if redaction_actions else "copied",
+        "errors": errors,
+        "warnings": warnings,
+        "bundle_dir": bundle_dir.as_posix(),
+        "manifest_path": manifest_path.as_posix(),
+        "sha256sums_path": sha256sums_path.as_posix(),
+        "source_upload_sha256": uploaded_sha256,
+        "source_content_type": detected_content_type,
+        "source_sha256_verified": not errors,
+        "original_artifact_path": original_path.as_posix(),
+        "redacted_artifact_path": redacted_path.as_posix(),
+        "original_sha256": original_sha256,
+        "redacted_sha256": redacted_sha256,
+        "redaction_regions": regions,
+    }
+
+
 def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     visual_evidence_id = str(payload.get("visual_evidence_id") or stable_id("VEV", [case_id, payload.get("sha256"), now_utc()]))
@@ -1420,6 +1579,13 @@ def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]
 
     detector = detect_visual_ocr_sensitive_text(ocr_text)
     redaction_actions = detector["redaction_actions"]
+    visual_bundle: dict[str, Any] = {"status": "not_requested", "errors": [], "warnings": [], "redaction_regions": []}
+    if payload.get("image_data_url"):
+        visual_bundle = create_visual_redaction_bundle(case_id, visual_evidence_id, filename, payload.get("image_data_url"), sha256, redaction_actions, payload)
+        errors.extend(visual_bundle.get("errors") or [])
+        warnings.extend(visual_bundle.get("warnings") or [])
+    else:
+        warnings.append("pixel_redaction_skipped_image_data_url_missing")
     if claim.strip():
         warnings.append("screenshot_only_claims_blocked_link_log_ticket_or_tool_evidence")
     if classification in {"restricted", "confidential", "privacy", "secret"}:
@@ -1441,17 +1607,21 @@ def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]
         "visual_evidence_id": visual_evidence_id,
         "type": payload.get("type") or "screenshot",
         "source_artifact_sha256": sha256,
-        "original_artifact_path": payload.get("original_artifact_path") or "",
-        "redacted_artifact_path": payload.get("redacted_artifact_path") or "",
-        "masking_status": "redacted" if redaction_actions else "none",
+        "source_upload_sha256": visual_bundle.get("source_upload_sha256") or "",
+        "original_artifact_path": visual_bundle.get("original_artifact_path") or payload.get("original_artifact_path") or "",
+        "redacted_artifact_path": visual_bundle.get("redacted_artifact_path") or payload.get("redacted_artifact_path") or "",
+        "original_sha256": visual_bundle.get("original_sha256") or "",
+        "redacted_sha256": visual_bundle.get("redacted_sha256") or "",
+        "masking_status": "redacted" if visual_bundle.get("redacted_artifact_path") and redaction_actions else ("pending" if redaction_actions else "none"),
         "redaction_actions": redaction_actions,
+        "redaction_regions": visual_bundle.get("redaction_regions") or [],
         "trusted_as_instruction": False,
         "trusted_as_data": True,
         "requires_human_review": bool(redaction_actions or errors or classification in {"restricted", "confidential", "privacy", "secret"}),
         "limitations": [
             "OCR text and visual redaction preview do not prove compromise.",
             "Screenshot-only conclusions are blocked until linked to log, ticket, tool-output, or other non-visual evidence.",
-            "Pixel-level redacted image generation is a follow-up control; this preview records required masking actions.",
+            "Pixel-level redaction uses explicit regions when supplied; otherwise it creates estimated OCR masking bands that require human review.",
         ],
     }
     preview = {
@@ -1480,6 +1650,7 @@ def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]
             "secret_detection_score": detector["secret_detection_score"],
         },
         "redaction_actions": redaction_actions,
+        "visual_bundle": visual_bundle,
         "visual_descriptor": visual_descriptor,
         "policy": {
             "raw_visual_trust": "data_only_never_instruction",

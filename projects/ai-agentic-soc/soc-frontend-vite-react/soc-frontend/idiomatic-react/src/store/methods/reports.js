@@ -4005,6 +4005,9 @@ export default {
       ['Preview Status', visualPreview.status || visualRedactionState.status || 'idle', visualRedactionState.error || visualPreview.preview_id || 'select screenshot/image evidence'],
       ['Sensitive Labels', visualPreview.ocr?.sensitive_label_count ?? '-', (visualPreview.ocr?.sensitive_labels || []).join(', ') || 'none'],
       ['Redaction Actions', (visualPreview.redaction_actions || []).length, visualDescriptor.masking_status || 'not checked'],
+      ['Original Artifact', visualDescriptor.original_artifact_path ? 'stored' : 'not stored', visualDescriptor.original_artifact_path || 'image data URL required'],
+      ['Redacted Artifact', visualDescriptor.redacted_artifact_path ? 'stored' : 'not stored', visualDescriptor.redacted_artifact_path || 'redacted PNG pending'],
+      ['Redacted SHA-256', visualDescriptor.redacted_sha256 || '-', visualPreview.visual_bundle?.manifest_path || 'visual bundle manifest'],
       ['Screenshot-only Claims', visualPreview.policy?.screenshot_only_claims_blocked ? 'blocked' : 'not checked', (visualPreview.warnings || []).filter(x => String(x).includes('screenshot')).join(', ') || 'link non-visual evidence before claim'],
       ['Restricted Visual Review', visualDescriptor.requires_human_review ? 'required' : 'not required', (visualPreview.warnings || []).filter(x => String(x).includes('restricted')).join(', ') || 'classification review'],
       ['Trusted As Instruction', String(visualDescriptor.trusted_as_instruction ?? false), 'must be false'],
@@ -4127,6 +4130,7 @@ export default {
             ['SHA-256', visualRedactionState.sha256 || visualPreview.source?.sha256 || '-', C.sec, 'browser calculated before API call'],
             ['Masking', visualDescriptor.masking_status || '-', visualDescriptor.requires_human_review ? C.amber : C.sec, 'descriptor review state'],
             ['OCR Labels', visualPreview.ocr?.sensitive_label_count ?? '-', (visualPreview.ocr?.sensitive_label_count || 0) ? C.amber : C.green, (visualPreview.ocr?.sensitive_labels || []).join(', ') || 'none'],
+            ['Redacted PNG', visualPreview.visual_bundle?.status || '-', visualPreview.visual_bundle?.status === 'redacted' ? C.green : C.sec, visualDescriptor.redacted_sha256 || 'artifact hash'],
           ].map(card)),
           h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(0, 180px) minmax(0, 1fr)', gap:'10px', alignItems:'start' } },
             visualRedactionState.dataUrl
