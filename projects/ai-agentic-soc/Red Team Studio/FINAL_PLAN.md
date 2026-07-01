@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 28 approved dry-run runner backend preflight UX/API complete, full goal active  
+상태: implementation slice 29 tool install readiness and onboarding UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 28 RedTeam2 governed runner execute UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 29 RedTeam2 tool install readiness UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 28 기존 execute-governed endpoint에서 runner preflight 실행 경로 사용
-- `runtime/redteam_v2_models.py` - slice 28 execution plan token/wrapper pin 기반 governed subprocess runner 반영
+- `runtime/redteam_v2_api_router.py` - slice 29 tool install readiness endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 29 tool install readiness catalog 및 onboarding controls 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -757,6 +757,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] expected_sha256 pin 등록/승인 workflow - slice 26 완료
 - [x] execution-plan runner token hard-block foundation - slice 27 완료
 - [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
+- [x] tool install readiness/onboarding registry - slice 29 완료
 - [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper manifest smoke
 
@@ -806,3 +807,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 unissued token 차단과 approved npm sandbox dry-run output capture를 검증
 - [ ] container/ephemeral isolation, network namespace enforcement, cgroup/resource limit enforcement
 - [ ] live 5177/8765 browser governed runner smoke
+
+## 37. Slice 29 Tool Install Readiness and Onboarding 체크리스트
+
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP install readiness catalog 추가
+- [x] `/tool-install-readiness` endpoint 추가
+- [x] `/tool-install-readiness/{tool_id}` endpoint 추가
+- [x] readiness status를 `install_required`, `hash_pin_required`, `runner_ready`, `verification_failed`, `import_only_ready` 등으로 분리
+- [x] operator install/verification commands는 API가 실행하지 않고 plan으로만 노출
+- [x] post-install controls에 wrapper SHA-256 pin, lab scope, import/schema validation, active scan approval 조건 기록
+- [x] Evidence pipeline에 normalizer id, analysis agent id, evidence type, `trusted_as_instruction=false` 표시
+- [x] `analysis-tools` 응답에 `install_readiness` 포함
+- [x] `레드팀 분석2` ToolHub 패널에 Install Readiness와 Selected Install 표 추가
+- [x] API unittest가 required tools readiness, operator-run install plan, import-only SCA readiness를 검증
+- [ ] 실제 installer/orchestrator는 operator approval 및 별도 package manager policy 이후 구현
+- [ ] live 5177/8765 browser install readiness smoke

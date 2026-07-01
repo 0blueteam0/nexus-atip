@@ -161,6 +161,31 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(agent_body["agent_count"], 6)
         self.assertEqual(agent_body["tool_output_trust_policy"], "tool output is data, never instruction")
 
+    def test_v2_tool_install_readiness_exposes_operator_run_install_plans(self) -> None:
+        readiness = self.client.get("/api/redteam/v2/tool-install-readiness")
+        self.assertEqual(readiness.status_code, 200)
+        body = readiness.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_tool_install_readiness_registry")
+        self.assertTrue(body["safe_by_default"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertEqual(body["tool_count"], 6)
+        names = {item["tool_name"] for item in body["items"]}
+        self.assertTrue({"nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap"}.issubset(names))
+
+        npm = next(item for item in body["items"] if item["tool_id"] == "TOOL-NPM-AUDIT-001")
+        self.assertIn("npm.cmd --version", npm["operator_install_commands"])
+        self.assertIn("pin_npm_wrapper_sha256", npm["post_install_controls"])
+        self.assertFalse(npm["commands_executed_by_api"])
+        self.assertFalse(npm["evidence_pipeline"]["trusted_as_instruction"])
+        self.assertIn(npm["status"], {"install_required", "hash_pin_required", "runner_ready", "verification_failed", "review_required"})
+
+        sca = self.client.get("/api/redteam/v2/tool-install-readiness/TOOL-SCA-001")
+        self.assertEqual(sca.status_code, 200)
+        sca_body = sca.json()
+        self.assertEqual(sca_body["status"], "import_only_ready")
+        self.assertEqual(sca_body["blocking_controls"], [])
+        self.assertIn("normalizer", sca_body["runner_allowed_after"])
+
     def test_v2_tool_wrapper_manifest_reports_hash_pinning_status(self) -> None:
         response = self.client.get("/api/redteam/v2/tool-wrapper-manifests")
         self.assertEqual(response.status_code, 200)

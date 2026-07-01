@@ -115,6 +115,16 @@ def list_analysis_agents() -> dict[str, Any]:
     return redteam_v2_models.list_analysis_agents()
 
 
+@router.get("/tool-install-readiness")
+def list_tool_install_readiness() -> dict[str, Any]:
+    return redteam_v2_models.list_tool_install_readiness()
+
+
+@router.get("/tool-install-readiness/{tool_id}")
+def get_tool_install_readiness(tool_id: str) -> dict[str, Any]:
+    return redteam_v2_models.tool_install_readiness(tool_id)
+
+
 @router.get("/tool-wrapper-manifests")
 def list_tool_wrapper_manifests() -> dict[str, Any]:
     return redteam_v2_models.list_tool_wrapper_manifests()

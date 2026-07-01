@@ -3187,7 +3187,7 @@ export default {
       : null;
     this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'loading', error:null } }));
     try {
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3197,6 +3197,7 @@ export default {
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-tools'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-agents'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests'),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-install-readiness'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3211,6 +3212,7 @@ export default {
           toolRegistry:toolRegistryRes.ok ? toolRegistryRes.data : { tools:[], error:toolRegistryRes.error },
           agentRegistry:agentRegistryRes.ok ? agentRegistryRes.data : { agents:[], error:agentRegistryRes.error },
           wrapperRegistry:wrapperRegistryRes.ok ? wrapperRegistryRes.data : { manifests:[], error:wrapperRegistryRes.error },
+          installReadiness:installReadinessRes.ok ? installReadinessRes.data : { items:[], error:installReadinessRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -4113,8 +4115,10 @@ export default {
     const toolRegistry = st.toolRegistry || {};
     const agentRegistry = st.agentRegistry || {};
     const wrapperRegistry = st.wrapperRegistry || {};
+    const installReadiness = st.installReadiness || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
+    const installItems = installReadiness.items || [];
     const queue = this.state.redteam2ToolActionQueue || [];
     const activeReport = this.redTeamReportById(draft.reportId);
     const activeBrief = this.redTeamAssessmentBrief(activeReport);
@@ -4179,12 +4183,26 @@ export default {
     ]);
     const selectedTool = analysisTools.find(tool => tool.tool_id === draft.analysisToolId) || {};
     const selectedWrapper = selectedTool.wrapper_manifest || wrapperManifests.find(item => item.tool_id === draft.analysisToolId) || {};
+    const selectedInstall = selectedTool.install_readiness || installItems.find(item => item.tool_id === draft.analysisToolId) || {};
     const wrapperRows = wrapperManifests.map(item => [
       item.tool_name || item.tool_id || '-',
       item.pinning_status || '-',
       item.availability?.status || '-',
       item.actual_sha256 ? `${String(item.actual_sha256).slice(0, 12)}...` : item.resolved_path || item.installation_hint || '-',
     ]);
+    const installRows = installItems.map(item => [
+      item.tool_name || item.tool_id || '-',
+      item.status || '-',
+      (item.blocking_controls || []).join(', ') || 'ready',
+      (item.operator_install_commands || []).slice(0, 2).join(' | ') || 'import-only',
+    ]);
+    const selectedInstallRows = [
+      ['Status', selectedInstall.status || 'not loaded', (selectedInstall.blocking_controls || []).join(', ') || 'no blocking controls'],
+      ['Install Modes', (selectedInstall.install_modes || []).join(', ') || '-', selectedInstall.official_url || 'official source not registered'],
+      ['Operator Commands', (selectedInstall.operator_install_commands || []).slice(0, 3).join(' | ') || '-', 'not executed by API'],
+      ['Verification', (selectedInstall.verification_commands || []).join(' | ') || '-', selectedInstall.commands_executed_by_api === false ? 'operator-run evidence required' : 'not checked'],
+      ['Evidence Pipeline', selectedInstall.evidence_pipeline?.normalizer_id || '-', selectedInstall.evidence_pipeline?.analysis_agent_id || '-'],
+    ];
     const wrapperPinRows = [
       ['Request', wrapperPinState.request?.status || wrapperPinState.status || 'idle', wrapperPinState.request?.pin_request_id || wrapperPinState.error || 'submit current wrapper hash as expected pin'],
       ['Approval', wrapperPinState.approval?.status || selectedWrapper.approved_pin?.status || 'not approved', wrapperPinState.approval?.approval_id || selectedWrapper.approved_pin?.approval_id || 'red_team_lead approval required'],
@@ -4304,10 +4322,13 @@ export default {
             ['Selected Tool', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.default_policy || 'load registry'],
             ['LLM Agent', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, 'normalizer / evidence candidate'],
             ['Runtime', selectedTool.runtime_status || 'not loaded', selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command || 'import-only'],
+            ['Install', selectedInstall.status || 'not loaded', (selectedInstall.blocking_controls || []).length ? C.amber : C.green, selectedInstall.commands_executed_by_api === false ? 'operator-run plan only' : 'not checked'],
             ['Wrapper Pin', selectedWrapper.pinning_status || 'not loaded', selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.requires_pin_before_runner ? 'runner requires sha256 pin' : selectedWrapper.version_probe?.status || 'import-only'],
             ['Agents', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || 'tool output is data'],
           ].map(card)),
-          this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']]))),
+          this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']])),
+          this.renderTable(['Install Readiness','Status','Controls','Operator Plan'], installRows.length ? installRows : [['not loaded','-','-','상태 새로고침 필요']]),
+          this.renderTable(['Selected Install','Status','Evidence'], selectedInstallRows)),
       smallPanel('Tool Wrapper Manifest / Version Pinning',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [

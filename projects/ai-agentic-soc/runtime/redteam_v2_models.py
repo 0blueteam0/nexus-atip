@@ -249,6 +249,63 @@ ANALYSIS_TOOL_PROFILES = [
     },
 ]
 
+TOOL_INSTALL_READINESS_CATALOG = {
+    "TOOL-NUCLEI-001": {
+        "official_url": "https://github.com/projectdiscovery/nuclei",
+        "install_modes": ["official_release_binary", "go_install", "package_manager"],
+        "operator_install_commands": [
+            "go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest",
+            "nuclei -version",
+        ],
+        "verification_commands": ["nuclei -version", "nuclei -update-templates -validate"],
+        "post_install_controls": ["pin_binary_sha256", "pin_template_source", "approve_wrapper_pin"],
+        "safe_smoke": "version_only",
+    },
+    "TOOL-OPENVAS-001": {
+        "official_url": "https://greenbone.github.io/docs/latest/",
+        "install_modes": ["managed_service", "container_or_vm", "api_import"],
+        "operator_install_commands": [
+            "Deploy Greenbone Community Edition in an approved lab network.",
+            "gvm-cli --version",
+        ],
+        "verification_commands": ["gvm-cli --version", "import_completed_report_only"],
+        "post_install_controls": ["api_credentials_approved", "lab_network_only", "approve_wrapper_pin_or_import_only_report"],
+        "safe_smoke": "import_report_or_version_only",
+    },
+    "TOOL-TRIVY-001": {
+        "official_url": "https://github.com/aquasecurity/trivy",
+        "install_modes": ["official_release_binary", "package_manager", "container_image"],
+        "operator_install_commands": ["trivy --version"],
+        "verification_commands": ["trivy --version", "trivy fs --format json --offline-scan ."],
+        "post_install_controls": ["pin_binary_sha256", "offline_scan_default", "approve_wrapper_pin"],
+        "safe_smoke": "version_or_offline_fs_scan",
+    },
+    "TOOL-SCA-001": {
+        "official_url": "internal://redteam-ax/import-only-sca",
+        "install_modes": ["import_only", "sbom_parser"],
+        "operator_install_commands": ["No runner install required; upload SBOM, lockfile, or SCA export."],
+        "verification_commands": ["validate_uploaded_sbom_schema"],
+        "post_install_controls": ["schema_validation", "normalizer_only"],
+        "safe_smoke": "import_only",
+    },
+    "TOOL-NPM-AUDIT-001": {
+        "official_url": "https://docs.npmjs.com/cli/commands/npm-audit",
+        "install_modes": ["nodejs_npm_cli", "workspace_lockfile"],
+        "operator_install_commands": ["npm.cmd --version", "npm.cmd audit --json --package-lock-only"],
+        "verification_commands": ["npm.cmd --version"],
+        "post_install_controls": ["pin_npm_wrapper_sha256", "approved_workspace_only", "no_npm_fix_without_review"],
+        "safe_smoke": "version_only",
+    },
+    "TOOL-ZAP-001": {
+        "official_url": "https://www.zaproxy.org/docs/",
+        "install_modes": ["zap_daemon_container", "desktop_or_cli", "json_report_import"],
+        "operator_install_commands": ["zap-cli --version", "Run ZAP daemon only in approved lab scope."],
+        "verification_commands": ["zap-cli --version", "import_zap_json_report"],
+        "post_install_controls": ["pin_wrapper_sha256", "passive_scan_default", "active_scan_requires_approval"],
+        "safe_smoke": "version_or_report_import",
+    },
+}
+
 ANALYSIS_AGENT_REGISTRY = {
     "AGENT-NUCLEI-ANALYST-001": {
         "agent_id": "AGENT-NUCLEI-ANALYST-001",
@@ -1026,7 +1083,68 @@ def profile_with_runtime_status(profile: dict[str, Any]) -> dict[str, Any]:
         "availability": availability,
         "pinning_status": wrapper_manifest["pinning_status"],
         "wrapper_manifest": wrapper_manifest,
+        "install_readiness": tool_install_readiness_for_profile(profile, wrapper_manifest),
         "llm_agent": ANALYSIS_AGENT_REGISTRY.get(str(profile.get("agent_id") or "")),
+    }
+
+
+def tool_install_readiness_for_profile(profile: dict[str, Any], wrapper_manifest: dict[str, Any] | None = None) -> dict[str, Any]:
+    manifest = wrapper_manifest or tool_wrapper_manifest_for_profile(profile)
+    catalog = TOOL_INSTALL_READINESS_CATALOG.get(str(profile.get("tool_id") or ""), {})
+    adapter_type = str(profile.get("adapter_type") or "")
+    pinning_status = str(manifest.get("pinning_status") or "")
+    availability_status = str((manifest.get("availability") or {}).get("status") or "")
+    blocking_controls: list[str] = []
+    operator_actions: list[str] = []
+
+    if adapter_type == "import_only":
+        status = "import_only_ready"
+        operator_actions.extend(["upload_tool_output_or_sbom", "validate_schema", "normalize_to_evidence_candidate"])
+    elif availability_status == "missing":
+        status = "install_required"
+        blocking_controls.extend(["wrapper_binary_missing", "wrapper_sha256_pin_required"])
+        operator_actions.extend(["install_from_official_source", "record_operator_version_evidence", "request_wrapper_pin"])
+    elif pinning_status == "hash_match":
+        status = "runner_ready"
+        operator_actions.extend(["create_tool_action_card", "create_execution_plan", "run_safe_dry_run_or_manual_record"])
+    elif pinning_status == "hash_unpinned":
+        status = "hash_pin_required"
+        blocking_controls.append("wrapper_sha256_pin_required")
+        operator_actions.extend(["record_operator_version_evidence", "request_wrapper_pin", "red_team_lead_approve_pin"])
+    elif pinning_status in {"hash_mismatch", "hash_unreadable"}:
+        status = "verification_failed"
+        blocking_controls.extend(["wrapper_hash_verification_failed", "human_review_required"])
+        operator_actions.extend(["reinstall_or_review_binary", "revoke_or_rotate_wrapper_pin"])
+    else:
+        status = "review_required"
+        blocking_controls.append("tool_install_state_unknown")
+        operator_actions.append("human_review_required")
+
+    return {
+        "kind": "redteam_ax_v2_tool_install_readiness",
+        "tool_id": profile.get("tool_id"),
+        "tool_name": profile.get("name"),
+        "status": status,
+        "adapter_type": adapter_type,
+        "risk_class": profile.get("risk_class"),
+        "official_url": catalog.get("official_url") or "",
+        "install_modes": catalog.get("install_modes") or [],
+        "operator_install_commands": catalog.get("operator_install_commands") or [profile.get("installation_hint") or ""],
+        "verification_commands": catalog.get("verification_commands") or [],
+        "post_install_controls": catalog.get("post_install_controls") or ["pin_binary_sha256", "human_review"],
+        "safe_smoke": catalog.get("safe_smoke") or "manual_review",
+        "commands_executed_by_api": False,
+        "wrapper_manifest": manifest,
+        "blocking_controls": blocking_controls,
+        "operator_actions": operator_actions,
+        "runner_allowed_after": ["ToolActionCard", "ROE", "ExecutionPlan", "issued_execution_token", "wrapper_hash_pin"] if adapter_type != "import_only" else ["ToolActionCard", "schema_validation", "normalizer"],
+        "evidence_pipeline": {
+            "normalizer_id": profile.get("normalizer_id"),
+            "analysis_agent_id": profile.get("agent_id"),
+            "evidence_types": profile.get("evidence_types") or [],
+            "trusted_as_instruction": False,
+        },
+        "checked_at": now_utc(),
     }
 
 
@@ -1040,6 +1158,38 @@ def list_analysis_tools() -> dict[str, Any]:
         "safe_by_default": True,
         "execution_policy": "ToolActionCard + ROE + HITL before active execution",
     }
+
+
+def list_tool_install_readiness() -> dict[str, Any]:
+    items = [
+        tool_install_readiness_for_profile(profile, tool_wrapper_manifest_for_profile(profile))
+        for profile in ANALYSIS_TOOL_PROFILES
+    ]
+    ready_count = sum(1 for item in items if item["status"] in {"runner_ready", "import_only_ready"})
+    blocked_count = sum(1 for item in items if item["blocking_controls"])
+    return {
+        "kind": "redteam_ax_v2_tool_install_readiness_registry",
+        "tool_count": len(items),
+        "ready_count": ready_count,
+        "blocked_count": blocked_count,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "policy": "Install and verification commands are operator-run plans; API never installs tools automatically.",
+        "items": items,
+    }
+
+
+def tool_install_readiness(tool_id: str) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    if profile is None:
+        return {
+            "kind": "redteam_ax_v2_tool_install_readiness",
+            "tool_id": tool_id,
+            "status": "not_found",
+            "errors": ["tool_profile_not_registered"],
+            "commands_executed_by_api": False,
+        }
+    return tool_install_readiness_for_profile(profile)
 
 
 def list_analysis_agents() -> dict[str, Any]:
