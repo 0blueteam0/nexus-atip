@@ -115,6 +115,16 @@ def list_analysis_agents() -> dict[str, Any]:
     return redteam_v2_models.list_analysis_agents()
 
 
+@router.get("/tool-wrapper-manifests")
+def list_tool_wrapper_manifests() -> dict[str, Any]:
+    return redteam_v2_models.list_tool_wrapper_manifests()
+
+
+@router.get("/tool-wrapper-manifests/{tool_id}")
+def get_tool_wrapper_manifest(tool_id: str) -> dict[str, Any]:
+    return redteam_v2_models.tool_wrapper_manifest(tool_id)
+
+
 @router.get("/tool-schemas")
 def list_tool_schemas() -> dict[str, Any]:
     return redteam_v2_models.list_tool_schemas()

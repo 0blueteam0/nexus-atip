@@ -563,6 +563,99 @@ def command_availability(command_name: str) -> dict[str, Any]:
     }
 
 
+def tool_wrapper_manifest_for_profile(profile: dict[str, Any]) -> dict[str, Any]:
+    adapter_type = str(profile.get("adapter_type") or "")
+    command_name = str(profile.get("command_name") or "").strip()
+    availability = command_availability(command_name)
+    resolved_path = availability.get("path")
+    expected_sha256 = str(profile.get("expected_sha256") or "").strip() or None
+    actual_sha256 = None
+    hash_error = None
+
+    if resolved_path:
+        try:
+            actual_sha256 = sha256_file(Path(str(resolved_path)))
+        except OSError as exc:
+            hash_error = str(exc)
+
+    if adapter_type == "import_only" or not command_name:
+        pinning_status = "import_only"
+        trusted_for_runner = True
+        requires_pin_before_runner = False
+    elif availability["status"] == "missing":
+        pinning_status = "missing"
+        trusted_for_runner = False
+        requires_pin_before_runner = True
+    elif hash_error:
+        pinning_status = "hash_unreadable"
+        trusted_for_runner = False
+        requires_pin_before_runner = True
+    elif not expected_sha256:
+        pinning_status = "hash_unpinned"
+        trusted_for_runner = False
+        requires_pin_before_runner = True
+    elif actual_sha256 == expected_sha256:
+        pinning_status = "hash_match"
+        trusted_for_runner = True
+        requires_pin_before_runner = False
+    else:
+        pinning_status = "hash_mismatch"
+        trusted_for_runner = False
+        requires_pin_before_runner = True
+
+    return {
+        "kind": "redteam_ax_v2_tool_wrapper_manifest",
+        "tool_id": profile.get("tool_id"),
+        "tool_name": profile.get("name"),
+        "adapter_type": adapter_type,
+        "command_name": command_name,
+        "availability": availability,
+        "resolved_path": resolved_path,
+        "expected_sha256": expected_sha256,
+        "actual_sha256": actual_sha256,
+        "hash_error": hash_error,
+        "pinning_status": pinning_status,
+        "trusted_for_runner": trusted_for_runner,
+        "requires_pin_before_runner": requires_pin_before_runner,
+        "version_probe": {
+            "mode": "not_executed_safe_manifest_only",
+            "status": "not_verified" if command_name else "not_applicable",
+            "reason": "Version commands are intentionally not executed by the registry endpoint.",
+        },
+        "runner_preflight": {
+            "runner_can_use_wrapper": trusted_for_runner,
+            "blocking_controls": [] if trusted_for_runner else ["wrapper_sha256_pin_required"],
+            "human_review_required": not trusted_for_runner and availability["status"] == "available",
+        },
+        "installation_hint": profile.get("installation_hint") or "",
+        "checked_at": availability.get("checked_at") or now_utc(),
+    }
+
+
+def list_tool_wrapper_manifests() -> dict[str, Any]:
+    manifests = [tool_wrapper_manifest_for_profile(profile) for profile in ANALYSIS_TOOL_PROFILES]
+    return {
+        "kind": "redteam_ax_v2_tool_wrapper_manifest_registry",
+        "manifest_count": len(manifests),
+        "manifests": manifests,
+        "safe_by_default": True,
+        "verification_policy": "CLI/API wrappers require resolved binary hash pinning before runner trust.",
+        "version_probe_policy": "Version commands are not executed by registry read APIs; collect operator-attested version evidence separately.",
+    }
+
+
+def tool_wrapper_manifest(tool_id: str) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    if profile is None:
+        return {
+            "kind": "redteam_ax_v2_tool_wrapper_manifest",
+            "tool_id": tool_id,
+            "status": "not_found",
+            "errors": ["tool_profile_not_registered"],
+        }
+    return tool_wrapper_manifest_for_profile(profile)
+
+
 def schema_artifact_path(schema_id: str) -> str:
     return (SCHEMA_ARTIFACT_ROOT / f"{safe_name(schema_id)}.schema.json").as_posix()
 
@@ -673,14 +766,23 @@ def analysis_tool_profile(tool_id: str) -> dict[str, Any] | None:
 
 
 def profile_with_runtime_status(profile: dict[str, Any]) -> dict[str, Any]:
-    availability = command_availability(str(profile.get("command_name") or ""))
+    wrapper_manifest = tool_wrapper_manifest_for_profile(profile)
+    availability = wrapper_manifest["availability"]
     status = "registered"
     if profile.get("adapter_type") != "import_only" and availability["status"] == "missing":
         status = "registered_install_required"
+    elif profile.get("adapter_type") != "import_only" and wrapper_manifest["pinning_status"] == "hash_unpinned":
+        status = "registered_hash_pin_required"
+    elif profile.get("adapter_type") != "import_only" and wrapper_manifest["pinning_status"] in {"hash_mismatch", "hash_unreadable"}:
+        status = "registered_hash_verification_failed"
+    elif wrapper_manifest["pinning_status"] == "hash_match":
+        status = "registered_verified"
     return {
         **profile,
         "runtime_status": status,
         "availability": availability,
+        "pinning_status": wrapper_manifest["pinning_status"],
+        "wrapper_manifest": wrapper_manifest,
         "llm_agent": ANALYSIS_AGENT_REGISTRY.get(str(profile.get("agent_id") or "")),
     }
 
@@ -1209,6 +1311,9 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     max_output_bytes = int(payload.get("max_output_bytes") or MAX_TOOL_ARTIFACT_BYTES)
     plan_id = str(payload.get("execution_plan_id") or stable_id("TEP", [case_id, action_id, tool_id, execution_mode, requested_by, now_utc()]))
     runner = runner_for_execution_mode(execution_mode, profile)
+    wrapper_manifest = tool_wrapper_manifest_for_profile(profile) if profile else None
+    if wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner in {"sandbox", "local_cli", "api"}:
+        warnings.append("wrapper_sha256_pin_required_before_runner_execution")
     token_issued = not errors and not approval_required
     execution_token = {
         "token_id": stable_id("EXT", [plan_id, action_id, tool_id, execution_mode]) if token_issued else None,
@@ -1232,6 +1337,12 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
         "tool_name": (profile or {}).get("name"),
         "execution_mode": execution_mode,
         "runner": runner,
+        "wrapper_manifest": wrapper_manifest,
+        "wrapper_preflight": (wrapper_manifest or {}).get("runner_preflight") or {
+            "runner_can_use_wrapper": False,
+            "blocking_controls": ["tool_profile_not_registered"],
+            "human_review_required": True,
+        },
         "status": "invalid" if errors else ("approval_required" if approval_required else "PlanReady"),
         "errors": errors,
         "warnings": warnings,
@@ -1258,7 +1369,7 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
             },
         },
         "execution_token": execution_token,
-        "runtime_probe": command_availability(str((profile or {}).get("command_name") or "")),
+        "runtime_probe": (wrapper_manifest or {}).get("availability") or command_availability(str((profile or {}).get("command_name") or "")),
         "audit": {
             "requested_by": requested_by,
             "created_at": now_utc(),

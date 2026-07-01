@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 24 tool execution plan sandbox policy UX/API complete, full goal active  
+상태: implementation slice 25 CLI wrapper manifest/hash preflight UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 24 RedTeam2 tool execution plan / sandbox policy UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 25 RedTeam2 wrapper manifest/version pinning UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 21 multipart import-file upload endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 21 upload-inbox -> strict import-file bridge 반영
+- `runtime/redteam_v2_api_router.py` - slice 25 tool wrapper manifest endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 25 CLI/API wrapper hash preflight manifest 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -601,7 +601,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 registry, approval gate, agent normalize, Evidence 후보 생성 검증
 - [x] live 8765 smoke로 Nuclei approval gate -> approved execution -> agent normalize 확인
 - [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-toolhub-agent-registry.png`
-- [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
+- [x] 실제 CLI wrapper manifest/hash preflight 기반 - slice 25 완료
+- [ ] 실제 CLI/container 설치 자동화와 version command evidence 수집
 - [x] 도구별 실제 JSON/XML parser normalizer 고도화 - slice 16 foundation 완료
 - [ ] OpenVAS/ZAP API credential vault 및 read-only token 정책
 - [x] sandbox/container runner와 network allowlist enforcement foundation - slice 24 ToolExecutionPlan 완료
@@ -624,7 +625,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [ ] parser 결과를 Finding owner/SLA/retest UI에 직접 연결
 - [x] 실제 파일 업로드/경로 기반 parser 입력 지원 - slice 17 local workspace file import/hash gate 완료
 - [x] parser schema를 별도 JSON Schema artifact로 분리 - slice 18 `ToolResultNormalized`, `ToolArtifactImport` 완료
-- [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
+- [x] 실제 CLI wrapper manifest/hash preflight 기반 - slice 25 완료
+- [ ] 실제 CLI/container 설치 자동화와 version command evidence 수집
 - [x] sandbox/container runner와 network allowlist enforcement foundation - slice 24 ToolExecutionPlan 완료
 - [ ] full release/security/starter-pack regression
 
@@ -735,5 +737,23 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` UI에 `Tool Execution Plan / Sandbox Policy` 패널과 queue button 추가
 - [x] API unittest가 sandbox network deny와 high-risk approval gate를 검증
 - [ ] 실제 ephemeral container 실행 backend 구현
-- [ ] 실제 CLI version pin/hash 검증과 wrapper manifest 연결
+- [x] 실제 CLI wrapper manifest/hash preflight와 execution plan 연결 - slice 25 완료
+- [ ] 실제 CLI version command evidence 수집 및 pinned expected_sha256 운영 UI
 - [ ] live 5177/8765 browser execution-plan smoke
+
+## 33. Slice 25 CLI Wrapper Manifest / Hash Preflight 체크리스트
+
+- [x] `/tool-wrapper-manifests` endpoint 추가
+- [x] `/tool-wrapper-manifests/{tool_id}` endpoint 추가
+- [x] ToolProfile별 command availability, resolved path, actual SHA-256, expected SHA-256, pinning status 계산
+- [x] import-only 도구는 `pinning_status=import_only`, runner trusted로 분리
+- [x] CLI/API wrapper 도구는 expected hash 미설정 시 `hash_unpinned` 또는 missing으로 표시하고 runner trust를 보류
+- [x] version probe는 registry read API에서 실행하지 않고 `not_executed_safe_manifest_only`로 기록
+- [x] `analysis-tools` 응답에 `wrapper_manifest`, `pinning_status`, hash pin 필요 runtime status 반영
+- [x] `ToolExecutionPlan`에 `wrapper_manifest`, `wrapper_preflight`, `wrapper_sha256_pin_required_before_runner_execution` warning 연결
+- [x] `레드팀 분석2` UI에 `Tool Wrapper Manifest / Version Pinning` 패널 추가
+- [x] API unittest가 manifest registry, import-only trust, sandbox execution plan preflight를 검증
+- [ ] operator-attested version evidence card 수집 UI
+- [ ] expected_sha256 pin 등록/승인 workflow
+- [ ] 실제 container/ephemeral runner가 preflight를 hard-block하도록 연결
+- [ ] live 5177/8765 browser wrapper manifest smoke

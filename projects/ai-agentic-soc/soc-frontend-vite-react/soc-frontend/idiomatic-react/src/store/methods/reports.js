@@ -3183,7 +3183,7 @@ export default {
       : null;
     this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'loading', error:null } }));
     try {
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3192,6 +3192,7 @@ export default {
         rbacUrl ? this.redTeamFetchJson(rbacUrl) : Promise.resolve({ ok:false, data:{ assignments:[] }, error:'case_id_required' }),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-tools'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-agents'),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3205,6 +3206,7 @@ export default {
           rbac:rbacRes.ok ? rbacRes.data : { assignments:[], error:rbacRes.error },
           toolRegistry:toolRegistryRes.ok ? toolRegistryRes.data : { tools:[], error:toolRegistryRes.error },
           agentRegistry:agentRegistryRes.ok ? agentRegistryRes.data : { agents:[], error:agentRegistryRes.error },
+          wrapperRegistry:wrapperRegistryRes.ok ? wrapperRegistryRes.data : { manifests:[], error:wrapperRegistryRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -3951,7 +3953,9 @@ export default {
     const rbac = st.rbac || {};
     const toolRegistry = st.toolRegistry || {};
     const agentRegistry = st.agentRegistry || {};
+    const wrapperRegistry = st.wrapperRegistry || {};
     const analysisTools = toolRegistry.tools || [];
+    const wrapperManifests = wrapperRegistry.manifests || [];
     const queue = this.state.redteam2ToolActionQueue || [];
     const activeReport = this.redTeamReportById(draft.reportId);
     const activeBrief = this.redTeamAssessmentBrief(activeReport);
@@ -4015,6 +4019,13 @@ export default {
       tool.llm_agent?.name || tool.agent_id || '-',
     ]);
     const selectedTool = analysisTools.find(tool => tool.tool_id === draft.analysisToolId) || {};
+    const selectedWrapper = selectedTool.wrapper_manifest || wrapperManifests.find(item => item.tool_id === draft.analysisToolId) || {};
+    const wrapperRows = wrapperManifests.map(item => [
+      item.tool_name || item.tool_id || '-',
+      item.pinning_status || '-',
+      item.availability?.status || '-',
+      item.actual_sha256 ? `${String(item.actual_sha256).slice(0, 12)}...` : item.resolved_path || item.installation_hint || '-',
+    ]);
     const reportGateRows = reportResult.validation ? [
       ['Gate', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `${(reportResult.validation.blocking_items || []).length} blockers` : 'none'],
       ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
@@ -4055,6 +4066,7 @@ export default {
       ['Approval', executionPlan.requires_approval ? 'required' : 'not required', (executionPlan.approvals_required || []).join(', ') || 'none'],
       ['Network', executionPlan.environment_constraints?.network_policy?.mode || '-', `default=${executionPlan.environment_constraints?.network_policy?.default || '-'} allowlist=${(executionPlan.environment_constraints?.network_policy?.allowlist || []).join(',') || 'none'}`],
       ['Filesystem', executionPlan.environment_constraints?.filesystem_policy?.mode || '-', (executionPlan.environment_constraints?.filesystem_policy?.write_paths || []).join(', ') || 'workspace archive'],
+      ['Wrapper', executionPlan.wrapper_manifest?.pinning_status || selectedWrapper.pinning_status || '-', (executionPlan.wrapper_preflight?.blocking_controls || selectedWrapper.runner_preflight?.blocking_controls || []).join(', ') || 'runner wrapper trusted'],
       ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.token_id || (executionPlan.warnings || []).join(', ') || 'not issued'],
     ];
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
@@ -4121,9 +4133,19 @@ export default {
             ['Selected Tool', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.default_policy || 'load registry'],
             ['LLM Agent', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, 'normalizer / evidence candidate'],
             ['Runtime', selectedTool.runtime_status || 'not loaded', selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command || 'import-only'],
+            ['Wrapper Pin', selectedWrapper.pinning_status || 'not loaded', selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.requires_pin_before_runner ? 'runner requires sha256 pin' : selectedWrapper.version_probe?.status || 'import-only'],
             ['Agents', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || 'tool output is data'],
           ].map(card)),
           this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']]))),
+      smallPanel('Tool Wrapper Manifest / Version Pinning',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['Registry', wrapperRegistry.manifest_count ?? wrapperRows.length ?? '-', C.blue, wrapperRegistry.verification_policy || 'load wrapper manifest'],
+            ['Selected Path', selectedWrapper.resolved_path ? 'resolved' : selectedWrapper.command_name ? 'missing' : 'import-only', selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.resolved_path || selectedWrapper.command_name || '-'],
+            ['SHA-256', selectedWrapper.actual_sha256 ? `${String(selectedWrapper.actual_sha256).slice(0, 16)}...` : '-', selectedWrapper.expected_sha256 ? C.green : C.sec, selectedWrapper.expected_sha256 ? 'expected pin set' : 'expected pin not configured'],
+            ['Version Probe', selectedWrapper.version_probe?.status || '-', C.sec, selectedWrapper.version_probe?.mode || 'safe manifest read only'],
+          ].map(card)),
+          this.renderTable(['Tool','Pinning','Availability','Hash/Path'], wrapperRows.length ? wrapperRows : [['not loaded','-','-','상태 새로고침 필요']]))),
       smallPanel('Tool Execution Plan / Sandbox Policy',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
