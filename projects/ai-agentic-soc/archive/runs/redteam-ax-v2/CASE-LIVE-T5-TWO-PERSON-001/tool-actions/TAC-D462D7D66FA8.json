@@ -1,0 +1,118 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-D462D7D66FA8",
+  "case_id": "CASE-LIVE-T5-TWO-PERSON-001",
+  "campaign_id": "CAMP-LIVE",
+  "title": "Live T5 two person hard gate",
+  "objective": "Verify T5 requires two distinct approvers before manual run",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-MANUAL-RECORDER",
+  "risk_class": "T5",
+  "environment": "controlled_production_execute",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LIVE-T5"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "manual_run_record",
+    "normalized_result",
+    "evidence_candidate"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "two_person",
+    "required_approver_roles": [
+      "control_team",
+      "second_approver"
+    ],
+    "requires_distinct_approvers": true
+  },
+  "required_approver_roles": [
+    "control_team",
+    "second_approver"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft",
+    "Run in Lab"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "Approved",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-T5-TWO-PERSON-001",
+    "decision": "allow",
+    "risk_class": "T5",
+    "hitl_required": true,
+    "failures": [],
+    "evaluated_at": "2026-07-01T04:10:19Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-T5-TWO-PERSON-001/roe/ROE-B5A6B5E1529F.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-T5-TWO-PERSON-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T04:10:19Z",
+      "actor": "codex-smoke"
+    },
+    {
+      "event": "approval_requested",
+      "at": "2026-07-01T04:10:19Z",
+      "actor": "codex-smoke"
+    },
+    {
+      "event": "approval_decided",
+      "at": "2026-07-01T04:10:19Z",
+      "actor": "control@example.com",
+      "approver_role": "control_team",
+      "decision": "approve",
+      "status": "PartiallyApproved"
+    },
+    {
+      "event": "approval_decided",
+      "at": "2026-07-01T04:10:19Z",
+      "actor": "second@example.com",
+      "approver_role": "second_approver",
+      "decision": "approve",
+      "status": "Approved"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-T5-TWO-PERSON-001/tool-actions/TAC-D462D7D66FA8.json",
+  "approval_request_id": "APR-AAEDC4CC28E7",
+  "approval_decision_id": "APD-C117D5235159",
+  "approval_conditions": [],
+  "approval_decisions": [
+    {
+      "decision_id": "APD-B96D2AA92E45",
+      "approver": "control@example.com",
+      "approver_role": "control_team",
+      "decision": "approve",
+      "conditions": [],
+      "decided_at": "2026-07-01T04:10:19Z"
+    },
+    {
+      "decision_id": "APD-C117D5235159",
+      "approver": "second@example.com",
+      "approver_role": "second_approver",
+      "decision": "approve",
+      "conditions": [],
+      "decided_at": "2026-07-01T04:10:19Z"
+    }
+  ]
+}

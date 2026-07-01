@@ -12,6 +12,7 @@ DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
+APPROVER_ROLES = {"analyst", "red_team_lead", "control_team", "second_approver", "legal_privacy", "data_owner"}
 
 
 def now_utc() -> str:
@@ -129,6 +130,65 @@ def normalize_risk_class(value: Any) -> str:
     return risk_class if risk_class in RISK_CLASSES else "T5"
 
 
+def normalize_approver_role(value: Any) -> str:
+    role = str(value or "").strip().lower().replace("-", "_").replace(" ", "_")
+    return role if role in APPROVER_ROLES else ""
+
+
+def approval_policy_for(action: dict[str, Any]) -> dict[str, Any]:
+    risk_class = normalize_risk_class(action.get("risk_class"))
+    environment = str(action.get("environment") or "").strip().lower()
+    action_type = str(action.get("action_type") or "").strip().lower()
+    required_roles: list[str] = []
+    approval_mode = "none"
+
+    if risk_class == "T3":
+        required_roles = ["red_team_lead"]
+        approval_mode = "single_lead"
+    elif risk_class == "T4":
+        required_roles = ["control_team"]
+        approval_mode = "control_team"
+    elif risk_class == "T5" or environment == "controlled_production_execute" or action_type == "controlled_production_execute":
+        required_roles = ["control_team", "second_approver"]
+        approval_mode = "two_person"
+
+    return {
+        "approval_mode": approval_mode,
+        "required_approver_roles": required_roles,
+        "requires_distinct_approvers": approval_mode == "two_person",
+    }
+
+
+def approved_roles_for(action: dict[str, Any]) -> set[str]:
+    decisions = action.get("approval_decisions") or []
+    return {
+        normalize_approver_role(decision.get("approver_role"))
+        for decision in decisions
+        if str(decision.get("decision") or "").lower() == "approve"
+    } - {""}
+
+
+def approved_actors_for(action: dict[str, Any]) -> set[str]:
+    decisions = action.get("approval_decisions") or []
+    return {
+        str(decision.get("approver") or "").strip().lower()
+        for decision in decisions
+        if str(decision.get("decision") or "").lower() == "approve"
+    } - {""}
+
+
+def approval_status_for(action: dict[str, Any]) -> str:
+    policy = approval_policy_for(action)
+    required_roles = set(policy["required_approver_roles"])
+    if not required_roles:
+        return "Approved"
+    if required_roles.issubset(approved_roles_for(action)):
+        if policy["requires_distinct_approvers"] and len(approved_actors_for(action)) < 2:
+            return "PartiallyApproved"
+        return "Approved"
+    return "PartiallyApproved" if approved_roles_for(action) else "ApprovalRequested"
+
+
 def evaluate_roe(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "").strip()
     target_scope_refs = payload.get("target_scope_refs") or []
@@ -176,6 +236,11 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
     })
     approval_required = risk_class in HIGH_RISK_CLASSES
     status = "ScopeValidated" if roe["decision"] == "allow" else "NeedsRevision"
+    approval_policy = approval_policy_for({
+        "risk_class": risk_class,
+        "environment": payload.get("environment") or "approved_scope",
+        "action_type": payload.get("action_type") or "analysis_support",
+    })
     allowed_buttons = ["Plan", "Select Tool", "Validate Scope", "Record Manual Run", "Import Output", "Create Evidence", "Generate Finding Draft"]
     if not approval_required:
         allowed_buttons.insert(4, "Dry Run")
@@ -198,6 +263,8 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
         "inputs": payload.get("inputs") or {},
         "expected_outputs": payload.get("expected_outputs") or ["manual_run_record", "normalized_result", "evidence_candidate"],
         "policy_requirements": ["scope_validation", "artifact_hashing", "audit_logging", "claim_evidence_linking"],
+        "approval_policy": approval_policy,
+        "required_approver_roles": approval_policy["required_approver_roles"],
         "approval_required": approval_required,
         "hitl_required": approval_required,
         "allowed_buttons": allowed_buttons,
@@ -229,11 +296,7 @@ def request_tool_action_approval(action_id: str, payload: dict[str, Any]) -> dic
         errors.append("justification_required")
 
     risk_class = normalize_risk_class(action.get("risk_class"))
-    required_approvers = ["red_team_lead"]
-    if risk_class in {"T4", "T5"}:
-        required_approvers.append("control_team")
-    if risk_class == "T5":
-        required_approvers.append("second_approver")
+    policy = approval_policy_for(action)
     request_id = stable_id("APR", [action_id, requested_by, justification, now_utc()])
     approval_request = {
         "kind": "redteam_ax_v2_approval_request",
@@ -245,7 +308,9 @@ def request_tool_action_approval(action_id: str, payload: dict[str, Any]) -> dic
         "requested_by": requested_by,
         "requested_at": now_utc(),
         "justification": justification,
-        "required_approvers": required_approvers,
+        "required_approvers": policy["required_approver_roles"],
+        "required_approver_roles": policy["required_approver_roles"],
+        "approval_mode": policy["approval_mode"],
         "risk_class": risk_class,
     }
     append_artifact_metadata(approval_request, "approvals", request_id)
@@ -269,16 +334,41 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
         }
 
     approver = str(payload.get("approver") or payload.get("approved_by") or "").strip()
+    approver_role = normalize_approver_role(payload.get("approver_role") or payload.get("role"))
     decision = str(payload.get("decision") or "approve").strip().lower()
     conditions = payload.get("conditions") or []
+    policy = approval_policy_for(action)
+    required_roles = set(policy["required_approver_roles"])
     errors: list[str] = []
     if not approver:
         errors.append("approver_required")
+    if decision == "approve" and required_roles and not approver_role:
+        errors.append("approver_role_required")
+    if decision == "approve" and approver_role and approver_role not in required_roles:
+        errors.append("approver_role_not_authorized")
+    if decision == "approve" and approver_role in approved_roles_for(action):
+        errors.append("approver_role_already_satisfied")
+    if decision == "approve" and policy["requires_distinct_approvers"] and approver.lower() in approved_actors_for(action):
+        errors.append("two_person_approval_requires_distinct_approvers")
     if decision not in {"approve", "reject"}:
         errors.append("decision_must_be_approve_or_reject")
 
-    decision_id = stable_id("APD", [action_id, approver, decision, conditions, now_utc()])
-    decision_status = "invalid" if errors else ("Approved" if decision == "approve" else "Rejected")
+    decision_id = stable_id("APD", [action_id, approver, approver_role, decision, conditions, now_utc()])
+    projected_action = {
+        **action,
+        "approval_decisions": [
+            *(action.get("approval_decisions") or []),
+            {
+                "decision_id": decision_id,
+                "approver": approver,
+                "approver_role": approver_role,
+                "decision": decision,
+                "conditions": conditions,
+                "decided_at": now_utc(),
+            },
+        ],
+    }
+    decision_status = "invalid" if errors else ("Rejected" if decision == "reject" else approval_status_for(projected_action))
     approval_decision = {
         "kind": "redteam_ax_v2_approval_decision",
         "decision_id": decision_id,
@@ -287,8 +377,11 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
         "status": decision_status,
         "errors": errors,
         "approver": approver,
+        "approver_role": approver_role,
         "decision": decision,
         "conditions": conditions,
+        "required_approver_roles": policy["required_approver_roles"],
+        "approval_mode": policy["approval_mode"],
         "decided_at": now_utc(),
     }
     append_artifact_metadata(approval_decision, "approvals", decision_id)
@@ -296,21 +389,30 @@ def approve_tool_action(action_id: str, payload: dict[str, Any]) -> dict[str, An
         action["status"] = decision_status
         action["approval_decision_id"] = decision_id
         action["approval_conditions"] = conditions
-        if decision == "approve" and "Run in Lab" not in action.get("allowed_buttons", []):
+        action["approval_policy"] = policy
+        action["required_approver_roles"] = policy["required_approver_roles"]
+        action["approval_decisions"] = projected_action["approval_decisions"]
+        if decision == "approve" and decision_status == "Approved" and "Run in Lab" not in action.get("allowed_buttons", []):
             action.setdefault("allowed_buttons", []).append("Run in Lab")
-        action.setdefault("audit_events", []).append({"event": "approval_decided", "at": now_utc(), "actor": approver, "decision": decision})
-        persist_tool_action(action, {"event": "approval_decided", "decision_id": decision_id, "actor": approver, "decision": decision})
+        action.setdefault("audit_events", []).append({"event": "approval_decided", "at": now_utc(), "actor": approver, "approver_role": approver_role, "decision": decision, "status": decision_status})
+        persist_tool_action(action, {"event": "approval_decided", "decision_id": decision_id, "actor": approver, "approver_role": approver_role, "decision": decision, "status": decision_status})
     return {**approval_decision, "action": action}
 
 
 def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     executed_by = str(payload.get("executed_by") or "").strip()
     uploaded_artifacts = payload.get("uploaded_artifacts") or []
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    action = load_tool_action(action_id, case_id)
     errors: list[str] = []
     if not executed_by:
         errors.append("executed_by_required")
     if not isinstance(uploaded_artifacts, list) or not uploaded_artifacts:
         errors.append("uploaded_artifacts_required")
+    if action is None:
+        errors.append("tool_action_card_required_before_manual_run")
+    if action and normalize_risk_class(action.get("risk_class")) in HIGH_RISK_CLASSES and str(action.get("status") or "") != "Approved":
+        errors.append("approval_required_before_manual_run")
 
     run_id = stable_id("TMR", [action_id, executed_by, payload.get("started_at"), payload.get("ended_at"), uploaded_artifacts])
     evidence_candidates = [
@@ -326,7 +428,7 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
     result = {
         "kind": "redteam_ax_v2_manual_run_record",
         "run_id": run_id,
-        "case_id": str(payload.get("case_id") or "CASE-UNSPECIFIED"),
+        "case_id": case_id,
         "action_id": action_id,
         "status": "invalid" if errors else "ManuallyExecuted",
         "errors": errors,

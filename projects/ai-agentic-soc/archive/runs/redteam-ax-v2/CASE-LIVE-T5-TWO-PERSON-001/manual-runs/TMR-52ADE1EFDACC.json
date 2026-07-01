@@ -1,0 +1,36 @@
+{
+  "kind": "redteam_ax_v2_manual_run_record",
+  "run_id": "TMR-52ADE1EFDACC",
+  "case_id": "CASE-LIVE-T5-TWO-PERSON-001",
+  "action_id": "TAC-D462D7D66FA8",
+  "status": "ManuallyExecuted",
+  "errors": [],
+  "executed_by": "operator@example.com",
+  "started_at": "2026-07-01T04:10:00Z",
+  "ended_at": "2026-07-01T04:11:00Z",
+  "notes": "",
+  "uploaded_artifacts": [
+    "artifact://live-t5-approved.txt"
+  ],
+  "normalized_result": {
+    "status": "pending_review",
+    "evidence_candidate_count": 1
+  },
+  "evidence_candidates": [
+    {
+      "evidence_id": "EV-AE48B1FBEADF",
+      "source_type": "manual_run_artifact",
+      "source_path_or_ref": "artifact://live-t5-approved.txt",
+      "validation_status": "candidate",
+      "summary": "Manual run artifact imported for analyst review"
+    }
+  ],
+  "audit_events": [
+    {
+      "event": "manual_run_recorded",
+      "at": "2026-07-01T04:10:19Z",
+      "actor": "operator@example.com"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-T5-TWO-PERSON-001/manual-runs/TMR-52ADE1EFDACC.json"
+}

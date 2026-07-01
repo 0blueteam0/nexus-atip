@@ -3311,17 +3311,22 @@ export default {
     const smallPanel = (title, content) => h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px', minWidth:0 } },
       h('div', { style:{ fontSize:'12.5px', fontWeight:900, marginBottom:'9px' } }, title),
       content);
-    const queueCards = queue.map(action => h('div', { key:action.action_id || action.artifact_path, style:{ display:'grid', gridTemplateColumns:'minmax(170px, 1.4fr) minmax(90px, .7fr) minmax(70px, .5fr) minmax(160px, 1fr)', gap:'8px', alignItems:'center', borderTop:`1px solid ${C.border}`, padding:'8px 0', minWidth:0 } },
+    const queueCards = queue.map(action => {
+      const requiredRoles = action.required_approver_roles || action.approval_policy?.required_approver_roles || [];
+      const approvalMode = action.approval_policy?.approval_mode || (requiredRoles.length > 1 ? 'two_person' : requiredRoles.length ? 'single_approval' : 'none');
+      return h('div', { key:action.action_id || action.artifact_path, style:{ display:'grid', gridTemplateColumns:'minmax(170px, 1.4fr) minmax(100px, .7fr) minmax(100px, .6fr) minmax(180px, 1fr)', gap:'8px', alignItems:'center', borderTop:`1px solid ${C.border}`, padding:'8px 0', minWidth:0 } },
       h('div', { style:{ minWidth:0 } },
         h('div', { style:{ fontSize:'11px', fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.action_id || '-'),
-        h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.title || action.objective || '-')),
-      h('div', { style:{ fontSize:'10.5px', color:action.status === 'Approved' ? C.green : action.status === 'ApprovalRequested' ? C.amber : C.text, fontWeight:800 } }, action.status || '-'),
-      h('div', { style:{ fontSize:'10.5px', color:action.hitl_required ? C.coral : C.sec } }, `${action.risk_class || '-'} / ${action.hitl_required ? 'HITL' : 'auto'}`),
+        h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.title || action.objective || '-'),
+        requiredRoles.length ? h('div', { style:{ fontSize:'9px', color:C.amber, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', marginTop:'2px' } }, `required: ${requiredRoles.join(' + ')}`) : null),
+      h('div', { style:{ fontSize:'10.5px', color:action.status === 'Approved' ? C.green : ['ApprovalRequested','PartiallyApproved'].includes(action.status) ? C.amber : C.text, fontWeight:800 } }, action.status || '-'),
+      h('div', { style:{ fontSize:'10.5px', color:action.hitl_required ? C.coral : C.sec } }, `${action.risk_class || '-'} / ${approvalMode}`),
       h('div', { style:{ display:'flex', gap:'6px', justifyContent:'flex-end', flexWrap:'wrap' } },
         (action.allowed_buttons || []).includes('Request Approval') && action.status !== 'ApprovalRequested' && action.status !== 'Approved'
           ? h('button', { onClick:()=>this.requestRedTeam2ToolActionApproval(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.amber}`, background:C.bg, color:C.amber, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Request Approval')
           : null,
-        h('span', { style:{ fontSize:'9.5px', color:C.muted, alignSelf:'center', maxWidth:'190px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, (action.allowed_buttons || []).slice(0, 3).join(', ') || '-'))));
+        h('span', { style:{ fontSize:'9.5px', color:C.muted, alignSelf:'center', maxWidth:'190px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, (action.allowed_buttons || []).slice(0, 3).join(', ') || '-')));
+    });
     const gateRows = st.lastAction ? [
       ['ROE', st.lastAction.roe_evaluation?.decision || '-', (st.lastAction.roe_evaluation?.failures || []).join(', ') || 'none'],
       ['HITL', st.lastAction.hitl_required ? 'required' : 'not required', st.lastAction.high_risk_mode || 'manual-run policy'],

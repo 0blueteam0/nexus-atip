@@ -48,6 +48,7 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         approval_decision = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/approve", json={
             "case_id": case_id,
             "approver": "lead@example.com",
+            "approver_role": "red_team_lead",
             "decision": "approve",
             "conditions": ["manual_run_only", "evidence_upload_required"],
         })

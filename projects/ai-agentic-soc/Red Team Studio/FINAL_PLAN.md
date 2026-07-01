@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 4 approval queue/UI reload complete, full goal active  
+상태: implementation slice 5 role-based approval/T5 hard gate complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 4 approval queue/UI reload 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 5 approval role display 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 4 approval queue endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 4 approval queue persistence/UI reload API 반영
+- `runtime/redteam_v2_models.py` - slice 5 role-based approval/T5 hard gate 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 4 approval queue/reload 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 4 approval queue/reload 반영
+- `tests/test_redteam_v2_api_router.py` - slice 5 role-based approval/T5 hard gate 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 5 approver role 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -134,7 +134,7 @@ Tests:
 
 ### M3. ToolActionCard 중심 실행 통제
 
-상태: approval queue persistence/UI reload API 완료, full workflow 진행 중
+상태: role-based approval/T5 hard gate 완료, full workflow 진행 중
 
 작업:
 
@@ -165,12 +165,18 @@ Tests:
 - 승인 요청/결정 후 ToolActionCard status persistence
 - `레드팀 분석2` 상태 새로고침 시 backend persistence queue reload
 - Queue 카드의 `Request Approval` 버튼을 `/request-approval` API에 연결
+- `approver_role` 기반 승인자 역할 검증
+- T4는 `control_team` 승인 없이는 승인 불가
+- T5/controlled production은 `control_team` + `second_approver` 2인 승인 hard gate 적용
+- 고위험 ToolAction은 `Approved` 전 manual-run 기록 invalid 처리
+- ActionCard 없는 manual-run 기록 invalid 처리
+- Queue 카드에 approval mode와 required approver roles 표시
 
 남은 작업:
 
 - ToolProfile registry
 - normalizer/import-output API
-- 승인자 권한 모델 및 2인 승인 강제 정책
+- 실제 인증/권한 시스템과 approver identity binding
 
 ### M4. Evidence/Claim/Report v2
 
@@ -357,7 +363,27 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] live 8765 smoke로 `ApprovalRequested` 재조회와 artifact 존재 확인
 - [x] live 5177 browser smoke로 Queue와 `Request Approval` 버튼 렌더링 확인
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-queue-ui-smoke.png`
-- [ ] 권한/역할 기반 승인자 검증
-- [ ] T5/controlled production 2인 승인 hard gate
+- [x] 권한/역할 기반 승인자 검증
+- [x] T5/controlled production 2인 승인 hard gate
+- [ ] approved export API
+- [ ] normalizer/import-output API
+
+## 13. Slice 5 Role-Based Approval / T5 Hard Gate 체크리스트
+
+- [x] approval policy helper 추가: T3=`red_team_lead`, T4=`control_team`, T5=`control_team + second_approver`
+- [x] `approver_role` normalize/allow-list 검증
+- [x] 승인 역할 불일치 시 `approver_role_not_authorized`로 invalid
+- [x] T5 1차 승인 후 `PartiallyApproved` 유지
+- [x] T5 동일 인물 2차 승인 시 `two_person_approval_requires_distinct_approvers`로 invalid
+- [x] T5 두 명의 서로 다른 승인자 충족 후 `Approved`
+- [x] 고위험 ToolAction은 `Approved` 전 manual-run invalid
+- [x] ActionCard 없는 manual-run invalid
+- [x] `레드팀 분석2` Queue에 required approver roles와 approval mode 표시
+- [x] API unittest가 T4 unauthorized role, T5 partial/blocked/full approval, missing ActionCard manual-run 검증
+- [x] sample E2E가 `approver_role=red_team_lead` 포함
+- [x] live 8765 smoke로 T5 partial approval -> manual-run block -> second approval -> manual-run allow 확인
+- [x] live 5177 smoke로 required approval role 표시 확인
+- [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-roles-ui-smoke.png`
+- [ ] 실제 로그인/권한 provider와 approver identity binding
 - [ ] approved export API
 - [ ] normalizer/import-output API

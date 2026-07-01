@@ -1,0 +1,22 @@
+{
+  "kind": "redteam_ax_v2_approval_request",
+  "request_id": "APR-AAEDC4CC28E7",
+  "case_id": "CASE-LIVE-T5-TWO-PERSON-001",
+  "action_id": "TAC-D462D7D66FA8",
+  "status": "ApprovalRequested",
+  "errors": [],
+  "requested_by": "codex-smoke",
+  "requested_at": "2026-07-01T04:10:19Z",
+  "justification": "Live smoke: T5 two-person approval evidence only.",
+  "required_approvers": [
+    "control_team",
+    "second_approver"
+  ],
+  "required_approver_roles": [
+    "control_team",
+    "second_approver"
+  ],
+  "approval_mode": "two_person",
+  "risk_class": "T5",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-T5-TWO-PERSON-001/approvals/APR-AAEDC4CC28E7.json"
+}
