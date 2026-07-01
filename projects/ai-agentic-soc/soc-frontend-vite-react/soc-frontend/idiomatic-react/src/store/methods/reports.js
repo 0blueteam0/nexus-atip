@@ -3145,6 +3145,8 @@ export default {
       analysisToolId:'TOOL-NUCLEI-001',
       executionMode:'manual_operator_run',
       sanitizerRawOutput:'{"template-id":"sample-panel","matched-at":"http://127.0.0.1:30001/#/","info":{"name":"Sample panel candidate","severity":"low"}}',
+      visualOcrText:'user alice@example.com\napi_key = AKIA1234567890ABCDEF\ninternal admin panel http://10.0.0.5/admin',
+      visualClaim:'Screenshot shows an admin panel candidate; link log, ticket, or tool-output evidence before any finding conclusion.',
       ...saved,
       reportId,
       objective,
@@ -3470,6 +3472,89 @@ export default {
     if (lower.endsWith('.xml')) return 'application/xml';
     if (lower.endsWith('.txt') || lower.endsWith('.log') || lower.endsWith('.sarif')) return 'text/plain';
     return 'application/octet-stream';
+  }
+,
+  async previewRedTeam2VisualRedaction(event) {
+    const file = event?.target?.files?.[0] || null;
+    if (event?.target) event.target.value = '';
+    const draft = this.redTeam2AnalysisDraft();
+    if (!file) {
+      this.toast('시각 증거 이미지 파일을 선택하세요', 'warn');
+      return;
+    }
+    if (!String(file.type || '').startsWith('image/')) {
+      this.toast('이미지 파일만 preview할 수 있습니다', 'warn');
+      return;
+    }
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = target ? this.redTeamOperationCaseId(reportId, target) : `CASE-${reportId}-REDTEAM2`;
+    this.setState(s => ({
+      redteam2VisualRedactionState:{
+        ...(s.redteam2VisualRedactionState || {}),
+        status:'hashing',
+        fileName:file.name,
+        sizeBytes:file.size,
+        contentType:file.type || 'image/png',
+        error:null,
+      },
+    }));
+    try {
+      const buffer = await file.arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      const sha256 = Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error || new Error('image_read_failed'));
+        reader.readAsDataURL(file);
+      });
+      this.setState(s => ({
+        redteam2VisualRedactionState:{
+          ...(s.redteam2VisualRedactionState || {}),
+          status:'previewing',
+          sha256,
+          dataUrl,
+        },
+      }));
+      const previewRes = await fetch('http://127.0.0.1:8765/api/redteam/v2/visual-evidence/redaction-preview', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          visual_evidence_id:`VEV-${caseId}-UI-001`.replace(/[^A-Za-z0-9_-]/g, '-').slice(0, 96),
+          filename:file.name,
+          content_type:file.type || 'image/png',
+          sha256,
+          image_data_url:dataUrl,
+          ocr_text:draft.visualOcrText || '',
+          claim:draft.visualClaim || '',
+          classification:'restricted',
+          ocr_source:'manual_ocr_text',
+        }),
+      });
+      const preview = await previewRes.json().catch(() => ({}));
+      if (!previewRes.ok || preview.status === 'invalid') throw new Error((preview.errors || []).join(', ') || preview.detail || `HTTP ${previewRes.status}`);
+      this.setState(s => ({
+        redteam2VisualRedactionState:{
+          ...(s.redteam2VisualRedactionState || {}),
+          status:'ready',
+          fileName:file.name,
+          sizeBytes:file.size,
+          contentType:file.type || 'image/png',
+          sha256,
+          dataUrl,
+          preview,
+          checkedAt:new Date().toISOString(),
+          error:null,
+        },
+      }));
+      this.toast(`시각 증거 redaction preview: ${preview.status}`, preview.status === 'redact' || preview.status === 'needs_review' ? 'warn' : 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 visual redaction preview: ${file.name} · ${preview.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2VisualRedactionState:{ ...(s.redteam2VisualRedactionState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('시각 증거 redaction preview 실패: ' + (err?.message || String(err)), 'warn');
+    }
   }
 ,
   redTeam2ReportExportDraft() {
@@ -3800,8 +3885,11 @@ export default {
     const reportState = this.state.redteam2ReportExportState || {};
     const sanitizerState = this.state.redteam2SanitizerState || {};
     const fileUploadState = this.state.redteam2FileUploadState || {};
+    const visualRedactionState = this.state.redteam2VisualRedactionState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
+    const visualPreview = visualRedactionState.preview || {};
+    const visualDescriptor = visualPreview.visual_descriptor || {};
     const uploadedImport = fileUploadState.imported || {};
     const uploadedArtifact = uploadedImport.artifact || {};
     const uploadedNormalized = fileUploadState.normalized || {};
@@ -3912,6 +4000,15 @@ export default {
       ['Parser', uploadedNormalized.parser_report?.parser || '-', uploadedNormalized.parser_report?.parsed_item_count != null ? `${uploadedNormalized.parser_report.parsed_item_count} structured items` : 'agent-analyze after upload'],
       ['Trusted As Instruction', String(uploadedArtifact.trusted_as_instruction ?? false), 'must be false'],
     ];
+    const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
+    const visualRows = [
+      ['Preview Status', visualPreview.status || visualRedactionState.status || 'idle', visualRedactionState.error || visualPreview.preview_id || 'select screenshot/image evidence'],
+      ['Sensitive Labels', visualPreview.ocr?.sensitive_label_count ?? '-', (visualPreview.ocr?.sensitive_labels || []).join(', ') || 'none'],
+      ['Redaction Actions', (visualPreview.redaction_actions || []).length, visualDescriptor.masking_status || 'not checked'],
+      ['Screenshot-only Claims', visualPreview.policy?.screenshot_only_claims_blocked ? 'blocked' : 'not checked', (visualPreview.warnings || []).filter(x => String(x).includes('screenshot')).join(', ') || 'link non-visual evidence before claim'],
+      ['Restricted Visual Review', visualDescriptor.requires_human_review ? 'required' : 'not required', (visualPreview.warnings || []).filter(x => String(x).includes('restricted')).join(', ') || 'classification review'],
+      ['Trusted As Instruction', String(visualDescriptor.trusted_as_instruction ?? false), 'must be false'],
+    ];
     return h('div', { style:{ display:'grid', gap:'14px' } },
       h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
         h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
@@ -3995,6 +4092,50 @@ export default {
           this.renderTable(['Check','Status','Evidence'], sanitizerRows),
           sanitizerPreview.sanitized_output_preview ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'160px', overflow:'auto' } }, sanitizerPreview.sanitized_output_preview) : null,
           sanitizerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, sanitizerState.error) : null)),
+      smallPanel('Visual Evidence OCR Redaction Preview',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'10px' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'OCR text',
+              h('textarea', {
+                value:draft.visualOcrText || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ visualOcrText:e.target.value }),
+                rows:5,
+                style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace', fontSize:'10.5px' },
+              })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Claim guardrail note',
+              h('textarea', {
+                value:draft.visualClaim || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ visualClaim:e.target.value }),
+                rows:5,
+                style:{ ...inputStyle, marginTop:'5px', resize:'vertical' },
+              }))),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('label', { style:{ display:'inline-flex', alignItems:'center', gap:'6px', padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:visualRedactionState.status === 'hashing' || visualRedactionState.status === 'previewing' ? C.raised : C.bg, color:visualRedactionState.status === 'hashing' || visualRedactionState.status === 'previewing' ? C.muted : C.amber, cursor:visualRedactionState.status === 'hashing' || visualRedactionState.status === 'previewing' ? 'not-allowed' : 'pointer', fontWeight:900, fontSize:'11px' } },
+              this.ic('image', 13, visualRedactionState.status === 'hashing' || visualRedactionState.status === 'previewing' ? C.muted : C.amber),
+              visualRedactionState.status === 'hashing' ? 'Hashing Image' : visualRedactionState.status === 'previewing' ? 'Previewing' : 'Preview Image Redaction',
+              h('input', {
+                type:'file',
+                accept:'image/png,image/jpeg,image/webp,image/gif,image/*',
+                disabled:visualRedactionState.status === 'hashing' || visualRedactionState.status === 'previewing',
+                onChange:e=>this.previewRedTeam2VisualRedaction(e),
+                style:{ display:'none' },
+              })),
+            h('span', { style:{ fontSize:'10px', color:visualColor, fontWeight:900 } }, visualRedactionState.fileName || 'no image selected'),
+            visualRedactionState.sizeBytes != null ? h('span', { style:{ fontSize:'10px', color:C.muted } }, `${visualRedactionState.sizeBytes} bytes`) : null),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['Visual Preview', visualPreview.status || visualRedactionState.status || '-', visualColor, visualPreview.preview_id || visualRedactionState.error || 'preview artifact'],
+            ['SHA-256', visualRedactionState.sha256 || visualPreview.source?.sha256 || '-', C.sec, 'browser calculated before API call'],
+            ['Masking', visualDescriptor.masking_status || '-', visualDescriptor.requires_human_review ? C.amber : C.sec, 'descriptor review state'],
+            ['OCR Labels', visualPreview.ocr?.sensitive_label_count ?? '-', (visualPreview.ocr?.sensitive_label_count || 0) ? C.amber : C.green, (visualPreview.ocr?.sensitive_labels || []).join(', ') || 'none'],
+          ].map(card)),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(0, 180px) minmax(0, 1fr)', gap:'10px', alignItems:'start' } },
+            visualRedactionState.dataUrl
+              ? h('img', { src:visualRedactionState.dataUrl, alt:'visual evidence preview', style:{ width:'100%', maxHeight:'180px', objectFit:'contain', border:`1px solid ${C.border}`, borderRadius:'8px', background:C.bg } })
+              : h('div', { style:{ border:`1px dashed ${C.border}`, borderRadius:'8px', minHeight:'110px', display:'grid', placeItems:'center', color:C.muted, fontSize:'10px' } }, 'image preview'),
+            h('div', { style:{ minWidth:0, display:'grid', gap:'8px' } },
+              this.renderTable(['Check','Status','Evidence'], visualRows),
+              visualPreview.ocr?.sanitized_text ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'145px', overflow:'auto' } }, visualPreview.ocr.sanitized_text) : null)),
+          visualRedactionState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, visualRedactionState.error) : null)),
       smallPanel('Multipart Tool Output Upload',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },

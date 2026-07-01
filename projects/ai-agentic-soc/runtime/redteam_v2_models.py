@@ -31,6 +31,13 @@ SECRET_REDACTION_PATTERNS = [
     ("bearer_token", re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{16,}")),
     ("api_key_assignment", re.compile(r"(?i)\b(api[_-]?key|secret|token|password|cookie)\s*[:=]\s*['\"]?[^'\"\s,;]+")),
 ]
+VISUAL_OCR_SENSITIVE_PATTERNS = [
+    ("email", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")),
+    ("internal_ipv4", re.compile(r"\b(?:10|127)\.(?:\d{1,3}\.){2}\d{1,3}\b|\b172\.(?:1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}\b|\b192\.168\.\d{1,3}\.\d{1,3}\b")),
+    ("internal_url", re.compile(r"(?i)\bhttps?://(?:localhost|127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}|[A-Za-z0-9.-]+\.internal)(?:/[^\s\"'<>]*)?")),
+    ("phone_number", re.compile(r"\b(?:\+?82[-.\s]?)?0?1[016789][-.\s]?\d{3,4}[-.\s]?\d{4}\b")),
+    ("session_identifier", re.compile(r"(?i)\b(session[_-]?id|sid|jwt|csrf[_-]?token)\s*[:=]\s*['\"]?[A-Za-z0-9._~+/=-]{12,}")),
+]
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5", "T6", "T7"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
@@ -1343,6 +1350,147 @@ def sanitize_tool_output_values(raw_values: list[Any], source_prefix: str = "pay
             *([] if not redactions else ["tool_output_secret_or_instruction_redacted"]),
         ],
     }
+
+
+def detect_visual_ocr_sensitive_text(ocr_text: str) -> dict[str, Any]:
+    sanitized = str(ocr_text or "")
+    labels: list[str] = []
+    redactions: list[dict[str, Any]] = []
+
+    sanitizer_result = sanitize_tool_output_text(sanitized, "visual_ocr:0")
+    sanitized = sanitizer_result["sanitized_text"]
+    for item in sanitizer_result["redactions"]:
+        redactions.append({
+            "action": "mask_text_region",
+            "category": item.get("category") or "secret",
+            "label": item.get("label") or item.get("category") or "tool_output_guardrail",
+            "source_ref": item.get("source_ref") or "visual_ocr:0",
+            "replacement": item.get("replacement") or "[REDACTED_VISUAL_TEXT]",
+            "reason": "OCR text matched existing tool-output sanitizer guardrails.",
+        })
+        labels.append(str(item.get("label") or item.get("category") or "tool_output_guardrail"))
+
+    for label, regex in VISUAL_OCR_SENSITIVE_PATTERNS:
+        matches = list(regex.finditer(sanitized))
+        if not matches:
+            continue
+        labels.append(label)
+        redactions.extend({
+            "action": "mask_text_region",
+            "category": "visual_sensitive_text",
+            "label": label,
+            "source_ref": "visual_ocr:0",
+            "replacement": f"[REDACTED_VISUAL_{label.upper()}]",
+            "reason": "OCR text contains sensitive visual evidence that must be masked before report use.",
+        } for _ in matches)
+        sanitized = regex.sub(f"[REDACTED_VISUAL_{label.upper()}]", sanitized)
+
+    sensitive_labels = sorted(set(labels))
+    return {
+        "sanitized_text": sanitized,
+        "sensitive_labels": sensitive_labels,
+        "sensitive_label_count": len(sensitive_labels),
+        "redaction_actions": redactions,
+        "prompt_injection_indicators": sanitizer_result["indicators"],
+        "prompt_injection_score": sanitizer_result["prompt_injection_score"],
+        "secret_detection_score": sanitizer_result["secret_detection_score"],
+    }
+
+
+def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    visual_evidence_id = str(payload.get("visual_evidence_id") or stable_id("VEV", [case_id, payload.get("sha256"), now_utc()]))
+    filename = str(payload.get("filename") or "visual-evidence.png")
+    content_type = str(payload.get("content_type") or "image/png")
+    sha256 = str(payload.get("sha256") or "").strip().lower()
+    ocr_text = str(payload.get("ocr_text") or payload.get("manual_ocr_text") or "")
+    claim = str(payload.get("claim") or "")
+    classification = str(payload.get("classification") or payload.get("data_classification") or "restricted").lower()
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if not sha256:
+        errors.append("source_sha256_required")
+    elif not re.fullmatch(r"[a-f0-9]{64}", sha256):
+        errors.append("source_sha256_invalid")
+    if not filename:
+        errors.append("filename_required")
+    if not ocr_text.strip():
+        warnings.append("ocr_text_missing_manual_review_required")
+
+    detector = detect_visual_ocr_sensitive_text(ocr_text)
+    redaction_actions = detector["redaction_actions"]
+    if claim.strip():
+        warnings.append("screenshot_only_claims_blocked_link_log_ticket_or_tool_evidence")
+    if classification in {"restricted", "confidential", "privacy", "secret"}:
+        warnings.append("restricted_visual_evidence_requires_human_approval")
+    if detector["prompt_injection_score"] >= 0.85:
+        warnings.append("visual_ocr_prompt_injection_quarantine")
+
+    if errors:
+        status = "invalid"
+    elif detector["prompt_injection_score"] >= 0.85:
+        status = "needs_review"
+    elif redaction_actions:
+        status = "redact"
+    else:
+        status = "allow"
+
+    preview_id = str(payload.get("preview_id") or stable_id("VRED", [case_id, visual_evidence_id, sha256, detector, now_utc()]))
+    visual_descriptor = {
+        "visual_evidence_id": visual_evidence_id,
+        "type": payload.get("type") or "screenshot",
+        "source_artifact_sha256": sha256,
+        "original_artifact_path": payload.get("original_artifact_path") or "",
+        "redacted_artifact_path": payload.get("redacted_artifact_path") or "",
+        "masking_status": "redacted" if redaction_actions else "none",
+        "redaction_actions": redaction_actions,
+        "trusted_as_instruction": False,
+        "trusted_as_data": True,
+        "requires_human_review": bool(redaction_actions or errors or classification in {"restricted", "confidential", "privacy", "secret"}),
+        "limitations": [
+            "OCR text and visual redaction preview do not prove compromise.",
+            "Screenshot-only conclusions are blocked until linked to log, ticket, tool-output, or other non-visual evidence.",
+            "Pixel-level redacted image generation is a follow-up control; this preview records required masking actions.",
+        ],
+    }
+    preview = {
+        "kind": "redteam_ax_v2_visual_redaction_preview",
+        "preview_id": preview_id,
+        "case_id": case_id,
+        "visual_evidence_id": visual_evidence_id,
+        "status": status,
+        "errors": errors,
+        "warnings": warnings,
+        "source": {
+            "filename": filename,
+            "content_type": content_type,
+            "sha256": sha256,
+            "image_data_url_present": bool(payload.get("image_data_url")),
+            "ocr_source": payload.get("ocr_source") or "manual_ocr_text",
+            "classification": classification,
+        },
+        "ocr": {
+            "text_supplied": bool(ocr_text.strip()),
+            "confidence": float(payload.get("ocr_confidence") or 0.0),
+            "sanitized_text": detector["sanitized_text"],
+            "sensitive_label_count": detector["sensitive_label_count"],
+            "sensitive_labels": detector["sensitive_labels"],
+            "prompt_injection_score": detector["prompt_injection_score"],
+            "secret_detection_score": detector["secret_detection_score"],
+        },
+        "redaction_actions": redaction_actions,
+        "visual_descriptor": visual_descriptor,
+        "policy": {
+            "raw_visual_trust": "data_only_never_instruction",
+            "screenshot_only_claims_blocked": True,
+            "restricted_visual_requires_approval": True,
+            "pixel_level_redaction_artifact_required_before_report_export": True,
+        },
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(preview, "visual-redaction-previews", preview_id)
+    return preview
 
 
 def _severity(value: Any) -> str:

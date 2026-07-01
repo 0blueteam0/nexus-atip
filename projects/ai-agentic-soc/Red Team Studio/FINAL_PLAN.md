@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 21 multipart tool output upload UX/API complete, full goal active  
+상태: implementation slice 22 image/OCR visual redaction preview UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,7 +35,7 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 21 RedTeam2 multipart tool output upload UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 22 RedTeam2 image/OCR visual redaction preview UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
@@ -665,7 +665,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sanitizer preview artifact를 `tool-sanitizer-previews`에 저장하고 ToolRunRecord에 preview ref 기록
 - [x] API unittest가 GT-OUTPUT-001 prompt injection quarantine, GT-OUTPUT-002 secret redaction, agent-analyze quarantine block을 검증
 - [x] frontend upload UX에 sanitizer preview 표시 - slice 20 raw output preview foundation 완료
-- [ ] image/OCR 기반 sensitive visual redaction preview
+- [x] image/OCR 기반 sensitive visual redaction preview - slice 22 API/UI/manual OCR preview 완료
 - [ ] sanitizer pattern corpus 확장 및 false-positive regression
 
 ## 28. Slice 20 Frontend Sanitizer Preview UX 체크리스트
@@ -677,7 +677,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] sanitized output preview 표시
 - [x] UI 상태에 sanitizer run/preview artifact id 보관
 - [x] 실제 multipart file upload와 SHA-256 import-file 연결 - slice 21 완료
-- [ ] image/OCR 기반 sensitive visual redaction preview
+- [x] image/OCR 기반 sensitive visual redaction preview - slice 22 API/UI/manual OCR preview 완료
 - [ ] Playwright visual smoke 확대
 
 ## 29. Slice 21 Multipart Tool Output Upload UX/API 체크리스트
@@ -690,4 +690,19 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` UI에 `Multipart Tool Output Upload` 패널 추가
 - [x] API unittest가 multipart upload -> stored artifact -> Nuclei JSONL parser 경로 검증
 - [ ] live 8765 backend 재시작 후 browser upload smoke
-- [ ] image/OCR 기반 sensitive visual redaction preview
+- [x] image/OCR 기반 sensitive visual redaction preview - slice 22 API/UI/manual OCR preview 완료
+
+## 30. Slice 22 Image/OCR Visual Redaction Preview 체크리스트
+
+- [x] `/visual-evidence/redaction-preview` endpoint 추가
+- [x] OCR 텍스트를 기존 tool-output sanitizer와 visual-specific sensitive pattern corpus에 통과
+- [x] email, internal URL/IP, session identifier, phone number, secret/API key/token 후보 redaction action 생성
+- [x] visual descriptor에 `trusted_as_instruction=false`, `trusted_as_data=true`, `requires_human_review`, `masking_status`, limitations 기록
+- [x] screenshot-only claim은 log/ticket/tool-output evidence 연결 전 차단 정책으로 표시
+- [x] restricted visual evidence는 human approval 필요 경고로 표시
+- [x] preview artifact를 `visual-redaction-previews` archive에 저장
+- [x] `레드팀 분석2`에 이미지 파일 선택, SHA-256 계산, manual OCR 텍스트, claim guardrail note, sanitized OCR preview 표시
+- [x] API unittest가 민감 OCR 텍스트 redaction과 screenshot-only claim block을 검증
+- [ ] 실제 OCR 엔진(Tesseract/PaddleOCR 등) 연결 및 version/hash pin
+- [ ] pixel-level redacted image artifact 생성과 original/redacted artifact path 자동 연결
+- [ ] live 8765 backend 재시작 후 browser visual upload smoke

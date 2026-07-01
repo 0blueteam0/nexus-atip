@@ -207,6 +207,11 @@ def preview_tool_output_sanitizer(run_id: str, payload: dict[str, Any]) -> dict[
     return redteam_v2_models.preview_tool_output_sanitizer(run_id, payload)
 
 
+@router.post("/visual-evidence/redaction-preview")
+def preview_visual_evidence_redaction(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.preview_visual_evidence_redaction(payload)
+
+
 @router.post("/tool-runs/{run_id}/agent-analyze")
 def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.agent_analyze_tool_run(run_id, payload)
