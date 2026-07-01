@@ -12,7 +12,16 @@ DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 RISK_CLASSES = {"T0", "T1", "T2", "T3", "T4", "T5"}
 HIGH_RISK_CLASSES = {"T3", "T4", "T5"}
 TERMINAL_APPROVED_STATUSES = {"Approved", "ReadyForManualRun", "ManuallyExecuted", "OutputImported", "Normalized", "EvidenceCreated", "LinkedToFinding", "Closed"}
-APPROVER_ROLES = {"analyst", "red_team_lead", "control_team", "second_approver", "legal_privacy", "data_owner"}
+APPROVER_ROLES = {
+    "analyst",
+    "red_team_lead",
+    "control_team",
+    "second_approver",
+    "legal_privacy",
+    "data_owner",
+    "executive_sponsor",
+}
+REPORT_EXPORT_APPROVER_ROLES = {"executive_sponsor"}
 
 
 def now_utc() -> str:
@@ -95,7 +104,17 @@ def load_json_record(record_id: str, category: str, case_id: str | None = None) 
         if artifact_path.exists():
             return read_json_artifact(artifact_path)
     for record in list_json_artifacts(case_id, category):
-        if str(record.get("run_id") or record.get("result_id") or record.get("evidence_id") or record.get("id") or "") == record_id:
+        known_id = (
+            record.get("run_id")
+            or record.get("result_id")
+            or record.get("evidence_id")
+            or record.get("report_id")
+            or record.get("approval_id")
+            or record.get("export_id")
+            or record.get("id")
+            or ""
+        )
+        if str(known_id) == record_id:
             return record
     return None
 
@@ -802,3 +821,109 @@ def generate_report(payload: dict[str, Any]) -> dict[str, Any]:
         "report": report,
     }
     return append_artifact_metadata(result, "reports", report_id)
+
+
+def report_gate_snapshot(report: dict[str, Any]) -> dict[str, Any]:
+    validation = report.get("validation") or {}
+    blocking_items = validation.get("blocking_items") or []
+    return {
+        "gate_status": report.get("gate_status") or validation.get("gate_status") or "blocked",
+        "unsupported_claim_count": int(validation.get("unsupported_claim_count") or 0),
+        "unapproved_high_risk_count": int(validation.get("unapproved_high_risk_count") or 0),
+        "finding_without_evidence_count": int(validation.get("finding_without_evidence_count") or 0),
+        "blocking_items": blocking_items,
+    }
+
+
+def report_export_gate_errors(report: dict[str, Any] | None) -> list[str]:
+    if report is None:
+        return ["report_not_found"]
+    snapshot = report_gate_snapshot(report)
+    errors: list[str] = []
+    if snapshot["gate_status"] != "pass":
+        errors.append("report_validation_gate_not_passed")
+    if snapshot["unsupported_claim_count"] != 0:
+        errors.append("unsupported_claims_present")
+    if snapshot["unapproved_high_risk_count"] != 0:
+        errors.append("unapproved_high_risk_actions_present")
+    if snapshot["finding_without_evidence_count"] != 0:
+        errors.append("findings_without_evidence_present")
+    if snapshot["blocking_items"]:
+        errors.append("report_validation_blocking_items_present")
+    if not (report.get("report") or {}).get("artifact_path"):
+        errors.append("report_artifact_required")
+    return errors
+
+
+def approve_report_export(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    report = load_json_record(report_id, "reports", case_id=case_id)
+    errors = report_export_gate_errors(report)
+    approver = str(payload.get("approved_by") or payload.get("approver") or "").strip()
+    approver_role = normalize_approver_role(payload.get("approver_role"))
+    decision = str(payload.get("decision") or "approve").strip().lower()
+
+    if not approver:
+        errors.append("approved_by_required")
+    if approver_role not in REPORT_EXPORT_APPROVER_ROLES:
+        errors.append("executive_sponsor_approval_required")
+    if decision != "approve":
+        errors.append("approval_decision_must_be_approve")
+
+    resolved_case_id = str((report or {}).get("case_id") or payload.get("case_id") or "CASE-UNSPECIFIED")
+    approval_id = stable_id("RTA", [resolved_case_id, report_id, approver, approver_role, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_report_export_approval",
+        "approval_id": approval_id,
+        "report_id": report_id,
+        "case_id": resolved_case_id,
+        "status": "ExportApproved" if not errors else "invalid",
+        "decision": decision,
+        "approved_by": approver,
+        "approver_role": approver_role,
+        "required_approver_roles": sorted(REPORT_EXPORT_APPROVER_ROLES),
+        "gate_snapshot": report_gate_snapshot(report) if report else None,
+        "approved_at": now_utc() if not errors else None,
+        "errors": errors,
+    }
+    category = "report-export-approvals"
+    return append_artifact_metadata(result, category, approval_id)
+
+
+def export_report(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "").strip() or None
+    report = load_json_record(report_id, "reports", case_id=case_id)
+    errors = report_export_gate_errors(report)
+    approval_id = str(payload.get("approval_id") or "").strip()
+    approval = load_json_record(approval_id, "report-export-approvals", case_id=case_id) if approval_id else None
+
+    if not approval_id:
+        errors.append("report_export_approval_required")
+    elif approval is None:
+        errors.append("report_export_approval_not_found")
+    else:
+        if approval.get("report_id") != report_id:
+            errors.append("report_export_approval_report_mismatch")
+        if approval.get("status") != "ExportApproved":
+            errors.append("report_export_approval_not_approved")
+        if normalize_approver_role(approval.get("approver_role")) not in REPORT_EXPORT_APPROVER_ROLES:
+            errors.append("executive_sponsor_approval_required")
+
+    resolved_case_id = str((report or {}).get("case_id") or (approval or {}).get("case_id") or payload.get("case_id") or "CASE-UNSPECIFIED")
+    export_id = stable_id("RTEXP", [resolved_case_id, report_id, approval_id or "unapproved", now_utc()])
+    report_artifact_path = ((report or {}).get("report") or {}).get("artifact_path")
+    result = {
+        "kind": "redteam_ax_v2_report_export",
+        "export_id": export_id,
+        "report_id": report_id,
+        "case_id": resolved_case_id,
+        "status": "Exported" if not errors else "blocked",
+        "approval_id": approval_id or None,
+        "approved_by": (approval or {}).get("approved_by"),
+        "approver_role": (approval or {}).get("approver_role"),
+        "report_artifact_path": report_artifact_path,
+        "gate_snapshot": report_gate_snapshot(report) if report else None,
+        "exported_at": now_utc() if not errors else None,
+        "errors": errors,
+    }
+    return append_artifact_metadata(result, "exports", export_id)

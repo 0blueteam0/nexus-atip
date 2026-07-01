@@ -342,6 +342,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
     def test_v2_report_generate_passes_only_when_all_gate_counts_are_zero(self) -> None:
         response = self.client.post("/api/redteam/v2/reports/generate", json={
             "title": "Korean Red Team Report v2",
+            "case_id": "CASE-V2-REPORT-GENERATE-001",
             "claims": [{"claim_id": "C-1", "support_level": "supported", "evidence_ids": ["EV-1"]}],
             "findings": [{"finding_id": "F-1", "evidence_ids": ["EV-1"]}],
             "tool_actions": [{"action_id": "TAC-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
@@ -352,6 +353,80 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["gate_status"], "pass")
         self.assertIsNotNone(body["report"])
         self.assertIn("Claim-Evidence Matrix", body["report"]["sections"])
+
+    def test_v2_report_export_requires_final_human_approval(self) -> None:
+        case_id = "CASE-V2-REPORT-EXPORT-001"
+        report = self.client.post("/api/redteam/v2/reports/generate", json={
+            "title": "Korean Red Team Report v2 Export",
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-EXP-1", "support_level": "supported", "evidence_ids": ["EV-EXP-1"]}],
+            "findings": [{"finding_id": "F-EXP-1", "evidence_ids": ["EV-EXP-1"]}],
+            "tool_actions": [{"action_id": "TAC-EXP-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
+        })
+        self.assertEqual(report.status_code, 200)
+        report_body = report.json()
+        self.assertEqual(report_body["gate_status"], "pass")
+
+        unapproved_export = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/export", json={
+            "case_id": case_id,
+        })
+        self.assertEqual(unapproved_export.status_code, 200)
+        self.assertEqual(unapproved_export.json()["status"], "blocked")
+        self.assertIn("report_export_approval_required", unapproved_export.json()["errors"])
+
+        bad_approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
+            "case_id": case_id,
+            "approved_by": "lead@example.com",
+            "approver_role": "red_team_lead",
+        })
+        self.assertEqual(bad_approval.status_code, 200)
+        self.assertEqual(bad_approval.json()["status"], "invalid")
+        self.assertIn("executive_sponsor_approval_required", bad_approval.json()["errors"])
+
+        approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
+            "case_id": case_id,
+            "approved_by": "sponsor@example.com",
+            "approver_role": "executive_sponsor",
+        })
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "ExportApproved")
+        self.assertEqual(approval_body["gate_snapshot"]["unsupported_claim_count"], 0)
+        self.assertTrue(Path(approval_body["artifact_path"]).exists())
+
+        exported = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/export", json={
+            "case_id": case_id,
+            "approval_id": approval_body["approval_id"],
+        })
+        self.assertEqual(exported.status_code, 200)
+        exported_body = exported.json()
+        self.assertEqual(exported_body["status"], "Exported")
+        self.assertEqual(exported_body["gate_snapshot"]["unapproved_high_risk_count"], 0)
+        self.assertTrue(Path(exported_body["artifact_path"]).exists())
+
+    def test_v2_report_export_approval_blocks_failed_report_gate(self) -> None:
+        case_id = "CASE-V2-REPORT-EXPORT-BLOCKED-001"
+        report = self.client.post("/api/redteam/v2/reports/generate", json={
+            "title": "Blocked Korean Red Team Report v2",
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-BLK-1", "support_level": "unsupported", "evidence_ids": []}],
+            "findings": [{"finding_id": "F-BLK-1", "evidence_ids": []}],
+            "tool_actions": [{"action_id": "TAC-BLK-1", "risk_class": "T4", "approval_required": True, "status": "ScopeValidated"}],
+        })
+        self.assertEqual(report.status_code, 200)
+        report_body = report.json()
+        self.assertEqual(report_body["gate_status"], "blocked")
+
+        approval = self.client.post(f"/api/redteam/v2/reports/{report_body['report_id']}/approve-export", json={
+            "case_id": case_id,
+            "approved_by": "sponsor@example.com",
+            "approver_role": "executive_sponsor",
+        })
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "invalid")
+        self.assertIn("report_validation_gate_not_passed", approval_body["errors"])
+        self.assertIn("unsupported_claims_present", approval_body["errors"])
 
 
 if __name__ == "__main__":

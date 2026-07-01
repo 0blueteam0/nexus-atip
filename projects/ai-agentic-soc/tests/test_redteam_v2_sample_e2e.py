@@ -165,6 +165,33 @@ class RedTeamV2SampleE2ETests(unittest.TestCase):
         self.assertIn("Unapproved high-risk actions: `0`", report_text)
         self.assertIn("Findings without evidence: `0`", report_text)
 
+        blocked_export = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={
+            "case_id": case_id,
+        })
+        self.assertEqual(blocked_export.status_code, 200)
+        self.assertEqual(blocked_export.json()["status"], "blocked")
+        self.assertIn("report_export_approval_required", blocked_export.json()["errors"])
+
+        approval = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/approve-export", json={
+            "case_id": case_id,
+            "approved_by": "executive-sponsor@example.com",
+            "approver_role": "executive_sponsor",
+        })
+        self.assertEqual(approval.status_code, 200)
+        approval_body = approval.json()
+        self.assertEqual(approval_body["status"], "ExportApproved")
+        self.assertEqual(approval_body["gate_snapshot"]["finding_without_evidence_count"], 0)
+
+        exported = self.client.post(f"/api/redteam/v2/reports/{body['report_id']}/export", json={
+            "case_id": case_id,
+            "approval_id": approval_body["approval_id"],
+        })
+        self.assertEqual(exported.status_code, 200)
+        exported_body = exported.json()
+        self.assertEqual(exported_body["status"], "Exported")
+        self.assertEqual(exported_body["approved_by"], "executive-sponsor@example.com")
+        self.assertTrue(Path(exported_body["artifact_path"]).exists())
+
 
 if __name__ == "__main__":
     unittest.main()

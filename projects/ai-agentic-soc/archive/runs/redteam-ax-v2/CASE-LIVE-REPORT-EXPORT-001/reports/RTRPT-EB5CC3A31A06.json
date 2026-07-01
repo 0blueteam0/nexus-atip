@@ -1,0 +1,33 @@
+{
+  "kind": "redteam_ax_v2_korean_report_draft",
+  "case_id": "CASE-LIVE-REPORT-EXPORT-001",
+  "report_id": "RTRPT-EB5CC3A31A06",
+  "gate_status": "pass",
+  "validation": {
+    "kind": "redteam_ax_v2_report_validation",
+    "case_id": "CASE-LIVE-REPORT-EXPORT-001",
+    "gate_status": "pass",
+    "unsupported_claim_count": 0,
+    "unapproved_high_risk_count": 0,
+    "finding_without_evidence_count": 0,
+    "blocking_items": [],
+    "validated_at": "2026-07-01T04:25:10Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/report-validations/RV-FAAE47A8FE9F.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/audit.jsonl"
+  },
+  "report": {
+    "report_id": "RTRPT-EB5CC3A31A06",
+    "title": "Live RedTeam AX v2 Export Smoke",
+    "language": "ko",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/reports/RTRPT-EB5CC3A31A06.md",
+    "sections": [
+      "문서 통제",
+      "캠페인 Walkthrough",
+      "Evidence Card Index",
+      "Claim-Evidence Matrix",
+      "Findings",
+      "재시험 계획"
+    ]
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/reports/RTRPT-EB5CC3A31A06.json"
+}

@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 6 tool result normalizer/evidence candidate complete, full goal active  
+상태: implementation slice 7 approved report export complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -40,8 +40,8 @@ Frontend:
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 6 tool-run import/normalize/evidence endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 6 tool result normalizer/evidence candidate 반영
+- `runtime/redteam_v2_api_router.py` - slice 7 report export approval/export endpoints 반영
+- `runtime/redteam_v2_models.py` - slice 7 report export approval gate/manifest 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,8 +49,8 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 6 import/normalize/evidence candidate 반영
-- `tests/test_redteam_v2_sample_e2e.py` - slice 6 import/normalize/evidence candidate 반영
+- `tests/test_redteam_v2_api_router.py` - slice 7 approved export/unapproved export block 반영
+- `tests/test_redteam_v2_sample_e2e.py` - slice 7 final report approval/export 반영
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
 - frontend sanity/build/playwright tests
@@ -187,7 +187,7 @@ Tests:
 
 ### M4. Evidence/Claim/Report v2
 
-상태: minimal report artifact 완료, full renderer 진행 중
+상태: approved export API 완료, full renderer 진행 중
 
 작업:
 
@@ -208,10 +208,14 @@ Tests:
 - Report validation JSON artifact 저장
 - Korean Report v2 Markdown artifact 생성
 - Markdown에 문서 통제, Campaign Walkthrough, Evidence Card Index, Claim-Evidence Matrix, Findings, Report Gate, 재시험 계획 포함
+- `POST /api/redteam/v2/reports/{report_id}/approve-export` 추가
+- `POST /api/redteam/v2/reports/{report_id}/export` 추가
+- Executive Sponsor 승인 없이는 report export blocked 처리
+- report gate blocker, unsupported claim, unapproved high-risk, evidence 없는 finding이 있으면 export approval invalid 처리
+- Export manifest JSON artifact 저장
 
 남은 작업:
 
-- human approval 후 export route
 - Volkis식 상세 campaign timeline 확장
 - 악성코드 보고서식 문서 통제 metadata 확장
 
@@ -236,7 +240,7 @@ Tests:
 남은 작업:
 
 - 실제 5177/8765 UI 조작으로 ToolActionCard 계획 버튼을 눌러 API 결과가 queue에 쌓이는지 확인 - slice 2 완료
-- persistent case workspace와 실제 report artifact 저장 연동
+- persistent case workspace와 실제 report artifact/export manifest 저장 연동 - slice 7 완료
 - full security regression과 starter pack 전체 회귀
 
 ## 5. 테스트 명령
@@ -283,7 +287,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - ChatShare artifact 미복구: missing artifact 문서에 기록하고 plan claim에서 제외한다.
 - 사용자 대상이 private/reserved IP: 자동 실행 차단, scope note만 생성한다.
 - 승인 없는 high-risk action: UI button disabled, backend deny.
-- report validation blocker 존재: export 불가.
+- report validation blocker 존재: export approval/export 불가.
 - Github push 실패: 작업 완료로 말하지 않고 remote/branch 상태를 명시한다.
 
 ## 7. GitHub 처리 원칙
@@ -337,7 +341,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] backend ToolActionCard/ManualRun/Evidence/ReportValidation persistence
 - [x] Korean Report v2 Markdown artifact 생성
 - [x] ToolActionCard queue reload from backend persistence
-- [ ] final approved export route
+- [x] final approved export route
 - [ ] full release/security regression
 
 ## 11. Slice 3 Persistence / Report Artifact 체크리스트
@@ -351,7 +355,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Korean Red Team Report v2 Markdown artifact 저장
 - [x] sample E2E가 artifact file 존재와 Markdown 핵심 섹션 검증
 - [x] live `/api/redteam/v2/reports/generate` artifact 생성 확인
-- [ ] approved export API
+- [x] approved export API
 - [x] full persistent UI reload
 
 ## 12. Slice 4 Approval Queue / UI Reload 체크리스트
@@ -372,7 +376,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-queue-ui-smoke.png`
 - [x] 권한/역할 기반 승인자 검증
 - [x] T5/controlled production 2인 승인 hard gate
-- [ ] approved export API
+- [x] approved export API
 - [x] normalizer/import-output API
 
 ## 14. Slice 6 Tool Result Normalizer / Evidence Candidate 체크리스트
@@ -388,7 +392,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 import/normalize/evidence candidate 흐름과 missing tool-run normalize 차단 검증
 - [x] sample E2E가 direct evidence 생성 대신 import-output/normalize/create-evidence 흐름 사용
 - [x] live 8765 smoke로 artifact 존재와 `EvidenceCreated` 상태 확인
-- [ ] approved export API
+- [x] approved export API
 - [ ] 실제 로그인/권한 provider와 approver identity binding
 - [ ] starter pack 전체 회귀 및 full security regression
 
@@ -409,5 +413,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] live 5177 smoke로 required approval role 표시 확인
 - [x] screenshot artifact 저장: `고도화/live-smoke/redteam2-approval-roles-ui-smoke.png`
 - [ ] 실제 로그인/권한 provider와 approver identity binding
-- [ ] approved export API
+- [x] approved export API
 - [x] normalizer/import-output API - slice 6 완료
+
+## 15. Slice 7 Approved Report Export 체크리스트
+
+- [x] `executive_sponsor` approver role 추가
+- [x] `POST /api/redteam/v2/reports/{report_id}/approve-export` 추가
+- [x] `POST /api/redteam/v2/reports/{report_id}/export` 추가
+- [x] final approval 전 export는 `report_export_approval_required`로 blocked
+- [x] Executive Sponsor가 아닌 승인자는 `executive_sponsor_approval_required`로 invalid
+- [x] report validation gate가 blocked이면 export approval invalid
+- [x] export manifest JSON artifact 저장
+- [x] API unittest가 unapproved export, wrong-role approval, approved export, blocked report gate 검증
+- [x] sample E2E가 report generate 후 final approval/export 흐름 검증
+- [x] live 8765 smoke로 approval 전 차단 -> 승인 -> export artifact 존재 확인
+- [ ] 실제 로그인/권한 provider와 approver identity binding
+- [ ] full release/security/starter-pack regression

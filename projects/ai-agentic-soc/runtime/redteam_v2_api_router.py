@@ -101,3 +101,13 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
 @router.post("/reports/generate")
 def generate_report(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.generate_report(payload)
+
+
+@router.post("/reports/{report_id}/approve-export")
+def approve_report_export(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.approve_report_export(report_id, payload)
+
+
+@router.post("/reports/{report_id}/export")
+def export_report(report_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.export_report(report_id, payload)

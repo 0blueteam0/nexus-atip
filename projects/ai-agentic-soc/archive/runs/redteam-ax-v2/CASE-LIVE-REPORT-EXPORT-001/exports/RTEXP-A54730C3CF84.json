@@ -1,0 +1,21 @@
+{
+  "kind": "redteam_ax_v2_report_export",
+  "export_id": "RTEXP-A54730C3CF84",
+  "report_id": "RTRPT-EB5CC3A31A06",
+  "case_id": "CASE-LIVE-REPORT-EXPORT-001",
+  "status": "Exported",
+  "approval_id": "RTA-1DFF0DA59C8B",
+  "approved_by": "live-sponsor@example.com",
+  "approver_role": "executive_sponsor",
+  "report_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/reports/RTRPT-EB5CC3A31A06.md",
+  "gate_snapshot": {
+    "gate_status": "pass",
+    "unsupported_claim_count": 0,
+    "unapproved_high_risk_count": 0,
+    "finding_without_evidence_count": 0,
+    "blocking_items": []
+  },
+  "exported_at": "2026-07-01T04:25:10Z",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-REPORT-EXPORT-001/exports/RTEXP-A54730C3CF84.json"
+}
