@@ -186,7 +186,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(one.status_code, 200)
         self.assertEqual(one.json()["pinning_status"], "import_only")
 
-    def test_v2_tool_wrapper_pin_request_and_approval_updates_manifest_expected_hash(self) -> None:
+    def test_v2_tool_wrapper_pin_request_approval_rotate_and_revoke_updates_manifest(self) -> None:
         case_id = "CASE-V2-WRAPPER-PIN-001"
         expected_sha256 = "a" * 64
         request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/request", json={
@@ -243,6 +243,48 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(manifest.json()["expected_sha256"], expected_sha256)
         self.assertEqual(manifest.json()["expected_sha256_source"], "approved_pin")
 
+        rotated_sha256 = "c" * 64
+        rotate_request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/request", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "expected_sha256": rotated_sha256,
+            "operator_attested_version": "trivy rotated-version",
+        })
+        self.assertEqual(rotate_request.status_code, 200)
+        rotate_body = rotate_request.json()
+        self.assertEqual(rotate_body["status"], "submitted")
+        self.assertIn("existing_approved_pin_will_be_rotated_on_approval", rotate_body["warnings"])
+
+        rotate_approval = self.client.post(
+            "/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "pin_request_id": rotate_body["pin_request_id"],
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+            },
+        )
+        self.assertEqual(rotate_approval.status_code, 200)
+        self.assertEqual(rotate_approval.json()["approved_pin"]["expected_sha256"], rotated_sha256)
+
+        revoked = self.client.post(
+            "/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/revoke",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "revoker": "lead@example.com",
+                "revoker_role": "red_team_lead",
+                "reason": "Rotate test cleanup",
+            },
+        )
+        self.assertEqual(revoked.status_code, 200)
+        revoked_body = revoked.json()
+        self.assertEqual(revoked_body["status"], "revoked")
+        self.assertTrue(revoked_body["revoked_pin"]["revoked"])
+        self.assertNotEqual(revoked_body["manifest_after"]["expected_sha256_source"], "approved_pin")
+
     def test_v2_import_only_tool_rejects_wrapper_pin_request(self) -> None:
         response = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-SCA-001/request", json={
             "case_id": "CASE-V2-WRAPPER-PIN-IMPORT-ONLY-001",
@@ -274,10 +316,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(sandbox_exec_plan.status_code, 200)
         sandbox_body = sandbox_exec_plan.json()
         self.assertEqual(sandbox_body["kind"], "redteam_ax_v2_tool_execution_plan")
-        self.assertEqual(sandbox_body["status"], "PlanReady")
+        self.assertEqual(sandbox_body["status"], "preflight_blocked")
         self.assertEqual(sandbox_body["runner"], "sandbox")
         self.assertFalse(sandbox_body["requires_approval"])
-        self.assertEqual(sandbox_body["policy_decision"]["decision"], "allow_plan")
+        self.assertEqual(sandbox_body["policy_decision"]["decision"], "deny_runner")
+        self.assertTrue(sandbox_body["policy_decision"]["runner_preflight_blocked"])
         self.assertEqual(sandbox_body["environment_constraints"]["network_policy"]["default"], "deny")
         self.assertFalse(sandbox_body["environment_constraints"]["network_policy"]["egress_allowed"])
         self.assertEqual(sandbox_body["environment_constraints"]["filesystem_policy"]["mode"], "workspace_only")
@@ -285,7 +328,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn(sandbox_body["wrapper_manifest"]["pinning_status"], {"missing", "hash_unpinned", "hash_match", "hash_mismatch", "hash_unreadable"})
         if sandbox_body["wrapper_manifest"]["requires_pin_before_runner"]:
             self.assertIn("wrapper_sha256_pin_required_before_runner_execution", sandbox_body["warnings"])
-        self.assertEqual(sandbox_body["execution_token"]["status"], "issued")
+        self.assertEqual(sandbox_body["execution_token"]["status"], "blocked")
         self.assertTrue(Path(sandbox_body["artifact_path"]).exists())
 
         high_risk_case_id = "CASE-V2-EXEC-PLAN-HIGH-001"

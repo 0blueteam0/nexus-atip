@@ -3417,6 +3417,36 @@ export default {
     }
   }
 ,
+  async revokeRedTeam2WrapperPin() {
+    const draft = this.redTeam2AnalysisDraft();
+    const caseId = this.redTeamOperationCaseId(draft.reportId, draft.target);
+    this.setState(s => ({ redteam2WrapperPinState:{ ...(s.redteam2WrapperPinState || {}), status:'revoking', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-pins/${encodeURIComponent(draft.analysisToolId)}/revoke`, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'X-RedTeam-Actor':'lead@example.com',
+          'X-RedTeam-Actor-Role':'red_team_lead',
+        },
+        body:JSON.stringify({
+          case_id:caseId,
+          revoker:'lead@example.com',
+          revoker_role:'red_team_lead',
+          reason:'Operator revoked wrapper pin from RedTeam2 UI',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2WrapperPinState:{ ...(s.redteam2WrapperPinState || {}), status:data.status || 'revoked', revoke:data, error:null, checkedAt:new Date().toISOString() } }));
+      await this.loadRedTeam2AnalysisStatus();
+      this.toast(`Wrapper pin ${data.status}`, data.status === 'revoked' ? 'success' : 'warn');
+    } catch (err) {
+      this.setState(s => ({ redteam2WrapperPinState:{ ...(s.redteam2WrapperPinState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Wrapper pin 폐기 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4109,6 +4139,7 @@ export default {
     const wrapperPinRows = [
       ['Request', wrapperPinState.request?.status || wrapperPinState.status || 'idle', wrapperPinState.request?.pin_request_id || wrapperPinState.error || 'submit current wrapper hash as expected pin'],
       ['Approval', wrapperPinState.approval?.status || selectedWrapper.approved_pin?.status || 'not approved', wrapperPinState.approval?.approval_id || selectedWrapper.approved_pin?.approval_id || 'red_team_lead approval required'],
+      ['Revoke', wrapperPinState.revoke?.status || (selectedWrapper.approved_pin?.revoked ? 'revoked' : 'active/not set'), wrapperPinState.revoke?.revoke_id || selectedWrapper.approved_pin?.revoke_id || 'approved pin can be revoked by red_team_lead'],
       ['Expected Source', selectedWrapper.expected_sha256_source || '-', selectedWrapper.expected_sha256 || 'expected SHA-256 not configured'],
     ];
     const reportGateRows = reportResult.validation ? [
@@ -4242,7 +4273,8 @@ export default {
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
             h('button', { onClick:()=>this.requestRedTeam2WrapperPin(), disabled:wrapperPinState.status === 'requesting', style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.bg, color:C.blue, cursor:wrapperPinState.status === 'requesting' ? 'not-allowed' : 'pointer', fontWeight:900 } }, wrapperPinState.status === 'requesting' ? 'Requesting' : 'Request Pin'),
             h('button', { onClick:()=>this.approveRedTeam2WrapperPin(), disabled:wrapperPinState.status === 'approving' || !wrapperPinState.request?.pin_request_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:C.bg, color:(!wrapperPinState.request?.pin_request_id || wrapperPinState.status === 'approving') ? C.muted : C.green, cursor:(!wrapperPinState.request?.pin_request_id || wrapperPinState.status === 'approving') ? 'not-allowed' : 'pointer', fontWeight:900 } }, wrapperPinState.status === 'approving' ? 'Approving' : 'Approve Pin'),
-            h('span', { style:{ fontSize:'10px', color:wrapperPinState.error ? C.coral : wrapperPinState.approval?.status === 'approved' ? C.green : C.sec, fontWeight:900 } }, wrapperPinState.error || wrapperPinState.approval?.status || wrapperPinState.request?.status || wrapperPinState.status || 'idle')),
+            h('button', { onClick:()=>this.revokeRedTeam2WrapperPin(), disabled:wrapperPinState.status === 'revoking' || !selectedWrapper.approved_pin, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.coral}`, background:C.bg, color:(!selectedWrapper.approved_pin || wrapperPinState.status === 'revoking') ? C.muted : C.coral, cursor:(!selectedWrapper.approved_pin || wrapperPinState.status === 'revoking') ? 'not-allowed' : 'pointer', fontWeight:900 } }, wrapperPinState.status === 'revoking' ? 'Revoking' : 'Revoke Pin'),
+            h('span', { style:{ fontSize:'10px', color:wrapperPinState.error ? C.coral : wrapperPinState.approval?.status === 'approved' || wrapperPinState.revoke?.status === 'revoked' ? C.green : C.sec, fontWeight:900 } }, wrapperPinState.error || wrapperPinState.revoke?.status || wrapperPinState.approval?.status || wrapperPinState.request?.status || wrapperPinState.status || 'idle')),
           this.renderTable(['Pin Control','Status','Evidence'], wrapperPinRows),
           this.renderTable(['Tool','Pinning','Availability','Hash/Path'], wrapperRows.length ? wrapperRows : [['not loaded','-','-','상태 새로고침 필요']]))),
       smallPanel('Tool Execution Plan / Sandbox Policy',

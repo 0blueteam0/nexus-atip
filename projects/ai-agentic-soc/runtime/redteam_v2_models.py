@@ -583,7 +583,7 @@ def load_approved_tool_wrapper_pin(profile: dict[str, Any]) -> dict[str, Any] | 
         "tool-wrapper-pins",
         case_id=TOOL_WRAPPER_PIN_CASE_ID,
     )
-    if pin and pin.get("status") == "approved" and valid_sha256(pin.get("expected_sha256")):
+    if pin and pin.get("status") == "approved" and not pin.get("revoked") and valid_sha256(pin.get("expected_sha256")):
         return pin
     return None
 
@@ -701,6 +701,7 @@ def request_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str,
     ).strip().lower()
     errors: list[str] = []
     warnings: list[str] = []
+    existing_pin = load_approved_tool_wrapper_pin(profile) if profile else None
     if profile is None:
         errors.append("tool_profile_not_registered")
     if not case_id:
@@ -715,6 +716,8 @@ def request_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str,
         errors.append("import_only_tool_does_not_require_wrapper_pin")
     if manifest and manifest.get("actual_sha256") and submitted_sha256 and submitted_sha256 != manifest.get("actual_sha256"):
         warnings.append("submitted_hash_differs_from_current_resolved_wrapper")
+    if existing_pin:
+        warnings.append("existing_approved_pin_will_be_rotated_on_approval")
 
     request_id = str(payload.get("pin_request_id") or stable_id("TWPINREQ", [case_id, tool_id, submitted_sha256, requested_by, now_utc()]))
     result = {
@@ -727,6 +730,7 @@ def request_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str,
         "errors": errors,
         "warnings": warnings,
         "expected_sha256": submitted_sha256 or None,
+        "existing_approved_pin": existing_pin,
         "manifest_snapshot": manifest,
         "version_evidence": {
             "operator_attested_version": str(payload.get("operator_attested_version") or payload.get("version") or "").strip(),
@@ -823,6 +827,72 @@ def approve_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str,
     return {
         **approval,
         "approved_pin": approved_pin,
+        "manifest_after": manifest_after,
+    }
+
+
+def revoke_tool_wrapper_pin(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID).strip()
+    pin_id = tool_wrapper_pin_record_id(str((profile or {}).get("tool_id") or tool_id))
+    existing_pin = load_json_record(pin_id, "tool-wrapper-pins", case_id=TOOL_WRAPPER_PIN_CASE_ID)
+    revoker = str(payload.get("revoker") or payload.get("revoked_by") or payload.get("approver") or "").strip()
+    revoker_role = normalize_approver_role(payload.get("revoker_role") or payload.get("approver_role") or payload.get("role"))
+    actor_payload = {**payload, "case_id": case_id, "approver": revoker, "approver_role": revoker_role}
+    actor_context, binding_errors = approval_actor_binding_errors(actor_payload, revoker, revoker_role)
+    reason = str(payload.get("reason") or "").strip()
+    errors: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if existing_pin is None:
+        errors.append("approved_pin_not_found")
+    elif existing_pin.get("status") != "approved" or existing_pin.get("revoked"):
+        errors.append("approved_pin_not_active")
+    if not revoker:
+        errors.append("revoker_required")
+    errors.extend(binding_errors)
+    if revoker_role not in TOOL_WRAPPER_PIN_APPROVER_ROLES:
+        errors.append("revoker_role_not_authorized")
+    if not reason:
+        errors.append("revoke_reason_required")
+
+    revoke_id = stable_id("TWPINREV", [case_id, tool_id, revoker, revoker_role, reason, now_utc()])
+    manifest_before = tool_wrapper_manifest_for_profile(profile) if profile else None
+    result = {
+        "kind": "redteam_ax_v2_tool_wrapper_pin_revoke",
+        "revoke_id": revoke_id,
+        "case_id": case_id,
+        "tool_id": (profile or {}).get("tool_id") or tool_id,
+        "pin_id": pin_id,
+        "status": "invalid" if errors else "revoked",
+        "errors": errors,
+        "revoker": revoker,
+        "revoker_role": revoker_role,
+        "actor_context": actor_context,
+        "identity_binding": "bound" if not binding_errors else "invalid",
+        "reason": reason,
+        "pin_before": existing_pin,
+        "manifest_before": manifest_before,
+        "revoked_at": now_utc(),
+    }
+    append_artifact_metadata(result, "tool-wrapper-pin-revocations", revoke_id)
+    revoked_pin = None
+    if not errors and existing_pin is not None:
+        revoked_pin = {
+            **existing_pin,
+            "status": "revoked",
+            "revoked": True,
+            "revoked_by": revoker,
+            "revoker_role": revoker_role,
+            "revoke_id": revoke_id,
+            "revoke_reason": reason,
+            "revoked_at": now_utc(),
+        }
+        append_artifact_metadata(revoked_pin, "tool-wrapper-pins", pin_id)
+    manifest_after = tool_wrapper_manifest_for_profile(profile) if profile else None
+    return {
+        **result,
+        "revoked_pin": revoked_pin,
         "manifest_after": manifest_after,
     }
 
@@ -1483,12 +1553,14 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     plan_id = str(payload.get("execution_plan_id") or stable_id("TEP", [case_id, action_id, tool_id, execution_mode, requested_by, now_utc()]))
     runner = runner_for_execution_mode(execution_mode, profile)
     wrapper_manifest = tool_wrapper_manifest_for_profile(profile) if profile else None
-    if wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner in {"sandbox", "local_cli", "api"}:
+    runner_uses_wrapper = runner in {"sandbox", "local_cli", "api"}
+    wrapper_preflight_blocked = bool(wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner_uses_wrapper)
+    if wrapper_preflight_blocked:
         warnings.append("wrapper_sha256_pin_required_before_runner_execution")
-    token_issued = not errors and not approval_required
+    token_issued = not errors and not approval_required and not wrapper_preflight_blocked
     execution_token = {
         "token_id": stable_id("EXT", [plan_id, action_id, tool_id, execution_mode]) if token_issued else None,
-        "status": "issued" if token_issued else ("blocked" if errors else "approval_required"),
+        "status": "issued" if token_issued else ("blocked" if errors or (wrapper_preflight_blocked and not approval_required) else "approval_required"),
         "action_id": action_id,
         "allowed_tool_id": tool_id,
         "allowed_environment": payload.get("environment") or (action or {}).get("environment") or "approved_scope",
@@ -1514,16 +1586,17 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
             "blocking_controls": ["tool_profile_not_registered"],
             "human_review_required": True,
         },
-        "status": "invalid" if errors else ("approval_required" if approval_required else "PlanReady"),
+        "status": "invalid" if errors else ("approval_required" if approval_required else ("preflight_blocked" if wrapper_preflight_blocked else "PlanReady")),
         "errors": errors,
         "warnings": warnings,
         "requires_approval": approval_required,
         "approvals_required": (action or {}).get("required_approver_roles") or (["red_team_lead"] if approval_required else []),
         "policy_decision": {
-            "decision": "deny" if errors else ("needs_approval" if approval_required else "allow_plan"),
+            "decision": "deny" if errors else ("needs_approval" if approval_required else ("deny_runner" if wrapper_preflight_blocked else "allow_plan")),
             "risk_class": risk_class,
             "safe_by_default": True,
             "high_risk_direct_execution": False,
+            "runner_preflight_blocked": wrapper_preflight_blocked,
         },
         "environment_constraints": {
             "network_policy": network_policy,
