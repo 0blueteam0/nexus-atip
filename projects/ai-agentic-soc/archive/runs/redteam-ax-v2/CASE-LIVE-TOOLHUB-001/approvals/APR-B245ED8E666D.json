@@ -1,0 +1,20 @@
+{
+  "kind": "redteam_ax_v2_approval_request",
+  "request_id": "APR-B245ED8E666D",
+  "case_id": "CASE-LIVE-TOOLHUB-001",
+  "action_id": "TAC-LIVE-TOOLHUB-NUCLEI-001",
+  "status": "ApprovalRequested",
+  "errors": [],
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-01T06:49:55Z",
+  "justification": "live ToolHub smoke approved scope",
+  "required_approvers": [
+    "red_team_lead"
+  ],
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_mode": "single_lead",
+  "risk_class": "T3",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/approvals/APR-B245ED8E666D.json"
+}

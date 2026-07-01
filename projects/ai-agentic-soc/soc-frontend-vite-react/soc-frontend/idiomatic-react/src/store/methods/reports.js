@@ -3142,6 +3142,8 @@ export default {
       objective,
       riskClass:'T3',
       scopeRef:'SCOPE-APPROVED-LOCAL-LAB',
+      analysisToolId:'TOOL-NUCLEI-001',
+      executionMode:'manual_operator_run',
       ...saved,
       reportId,
       objective,
@@ -3178,13 +3180,15 @@ export default {
       : null;
     this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'loading', error:null } }));
     try {
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/rag/knowledge/status'),
         this.redTeamFetchJson(queueUrl),
         rbacUrl ? this.redTeamFetchJson(rbacUrl) : Promise.resolve({ ok:false, data:{ assignments:[] }, error:'case_id_required' }),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-tools'),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-agents'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3196,6 +3200,8 @@ export default {
           rag:ragRes.ok ? ragRes.data : { exists:false, error:ragRes.error },
           queue:queueRes.ok ? queueRes.data : { count:0, items:[], error:queueRes.error },
           rbac:rbacRes.ok ? rbacRes.data : { assignments:[], error:rbacRes.error },
+          toolRegistry:toolRegistryRes.ok ? toolRegistryRes.data : { tools:[], error:toolRegistryRes.error },
+          agentRegistry:agentRegistryRes.ok ? agentRegistryRes.data : { agents:[], error:agentRegistryRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -3223,11 +3229,11 @@ export default {
       title:`${reportId} · RedTeam AX v2 ToolActionCard`,
       objective:String(draft.objective || '').trim() || '승인된 범위의 RedTeam AX v2 evidence-first workflow',
       action_type:'analysis_support',
-      tool_id:'TOOL-MANUAL-RECORDER',
+      tool_id:String(draft.analysisToolId || 'TOOL-NUCLEI-001').trim(),
       risk_class:String(draft.riskClass || 'T3').trim().toUpperCase(),
       environment:'approved_scope',
       target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()],
-      inputs:{ target_type:draft.targetType, target },
+      inputs:{ target_type:draft.targetType, target, requested_execution_mode:String(draft.executionMode || 'manual_operator_run').trim() },
       expected_outputs:['manual_run_record', 'normalized_result', 'evidence_candidate', 'claim_evidence_matrix'],
       requested_by:'current-analyst',
     };
@@ -3241,7 +3247,7 @@ export default {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.detail || data.error || `HTTP ${res.status}`);
       this.setState(s => ({
-        redteam2AnalysisDraft:{ ...this.redTeam2AnalysisDraft(), reportId, target, targetType:draft.targetType, objective:payload.objective, riskClass:payload.risk_class, scopeRef:payload.target_scope_refs[0] },
+        redteam2AnalysisDraft:{ ...this.redTeam2AnalysisDraft(), reportId, target, targetType:draft.targetType, objective:payload.objective, riskClass:data.risk_class || payload.risk_class, scopeRef:payload.target_scope_refs[0], analysisToolId:payload.tool_id, executionMode:draft.executionMode },
         redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'ready', lastAction:data, checkedAt:new Date().toISOString() },
         redteam2ToolActionQueue:[data, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== data.action_id))].slice(0, 10),
       }));
@@ -3615,6 +3621,9 @@ export default {
     const readiness = st.readiness || {};
     const rag = st.rag || {};
     const rbac = st.rbac || {};
+    const toolRegistry = st.toolRegistry || {};
+    const agentRegistry = st.agentRegistry || {};
+    const analysisTools = toolRegistry.tools || [];
     const queue = this.state.redteam2ToolActionQueue || [];
     const activeReport = this.redTeamReportById(draft.reportId);
     const activeBrief = this.redTeamAssessmentBrief(activeReport);
@@ -3670,6 +3679,13 @@ export default {
       (item.roles || []).join(', ') || '-',
       (item.permissions || []).slice(0, 3).join(', ') || '-',
     ]);
+    const toolRows = analysisTools.map(tool => [
+      tool.display_name || tool.name || tool.tool_id,
+      tool.risk_class || '-',
+      tool.runtime_status || '-',
+      tool.llm_agent?.name || tool.agent_id || '-',
+    ]);
+    const selectedTool = analysisTools.find(tool => tool.tool_id === draft.analysisToolId) || {};
     const reportGateRows = reportResult.validation ? [
       ['Gate', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `${(reportResult.validation.blocking_items || []).length} blockers` : 'none'],
       ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
@@ -3702,6 +3718,7 @@ export default {
           ['v1 Backend', st.v1Health?.status || st.v1Health?.service || 'unknown', C.sec, '기존 레드팀 분석 회귀 기준'],
           ['RAG/Wiki', rag.exists === false ? 'pending' : 'ready', rag.exists === false ? C.sec : C.green, rag.db_path || rag.error || 'Agentic RAG status'],
           ['Readiness', readiness.summary?.ready_count ?? '-', C.blue, readiness.error || 'pipeline coverage'],
+          ['ToolHub', toolRegistry.tool_count ?? analysisTools.length ?? '-', C.blue, toolRegistry.execution_policy || 'registry not loaded'],
         ].map(card))),
       smallPanel('Case / ROE 입력',
         h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:'10px' } },
@@ -3715,11 +3732,33 @@ export default {
             h('input', { value:draft.target, onChange:e=>this.updateRedTeam2AnalysisDraft({ target:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Risk Class',
             h('select', { value:draft.riskClass, onChange:e=>this.updateRedTeam2AnalysisDraft({ riskClass:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
-              ['T0','T1','T2','T3','T4','T5'].map(id => h('option', { key:id, value:id }, id)))),
+              ['T0','T1','T2','T3','T4','T5','T6','T7'].map(id => h('option', { key:id, value:id }, id)))),
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Scope Ref',
             h('input', { value:draft.scopeRef, onChange:e=>this.updateRedTeam2AnalysisDraft({ scopeRef:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Analysis Tool',
+            h('select', { value:draft.analysisToolId, onChange:e=>this.updateRedTeam2AnalysisDraft({ analysisToolId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+              (analysisTools.length ? analysisTools : [
+                { tool_id:'TOOL-NUCLEI-001', display_name:'Nuclei' },
+                { tool_id:'TOOL-OPENVAS-001', display_name:'OpenVAS' },
+                { tool_id:'TOOL-TRIVY-001', display_name:'Trivy' },
+                { tool_id:'TOOL-SCA-001', display_name:'SCA' },
+                { tool_id:'TOOL-NPM-AUDIT-001', display_name:'npm audit' },
+                { tool_id:'TOOL-ZAP-001', display_name:'OWASP ZAP' },
+              ]).map(tool => h('option', { key:tool.tool_id, value:tool.tool_id }, tool.display_name || tool.name || tool.tool_id)))),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Execution Mode',
+            h('select', { value:draft.executionMode, onChange:e=>this.updateRedTeam2AnalysisDraft({ executionMode:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+              ['plan_only','offline_parse','sandbox_execute','manual_operator_run','lab_execute','production_read_only','controlled_production_execute'].map(id => h('option', { key:id, value:id }, id)))),
           h('label', { style:{ fontSize:'10.5px', color:C.muted, gridColumn:'1 / -1' } }, '목적',
             h('textarea', { value:draft.objective, onChange:e=>this.updateRedTeam2AnalysisDraft({ objective:e.target.value }), rows:3, style:{ ...inputStyle, marginTop:'5px', resize:'vertical' } })))),
+      smallPanel('Analysis ToolHub / LLM Agents',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['Selected Tool', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.default_policy || 'load registry'],
+            ['LLM Agent', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, 'normalizer / evidence candidate'],
+            ['Runtime', selectedTool.runtime_status || 'not loaded', selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command || 'import-only'],
+            ['Agents', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || 'tool output is data'],
+          ].map(card)),
+          this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']]))),
       smallPanel('Case RBAC Policy',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },

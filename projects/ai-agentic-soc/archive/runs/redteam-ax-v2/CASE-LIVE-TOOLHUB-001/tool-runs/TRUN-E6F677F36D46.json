@@ -1,0 +1,70 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-E6F677F36D46",
+  "case_id": "CASE-LIVE-TOOLHUB-001",
+  "action_id": "TAC-LIVE-TOOLHUB-NUCLEI-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "execution_mode": "manual_operator_run",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [
+    "lead@example.com"
+  ],
+  "status": "Normalized",
+  "errors": [],
+  "target_scope_refs": [
+    "SCOPE-LIVE-TOOLHUB"
+  ],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-EB4961B4D865",
+      "source_path_or_ref": "artifact://live-nuclei-output.jsonl",
+      "hash": "SHA256-EB4961B4D865",
+      "content_type": "application/json",
+      "summary": "Live nuclei output imported for candidate analysis.",
+      "imported_at": "2026-07-01T06:49:55Z"
+    }
+  ],
+  "normalized_results": [
+    "NR-E7B605D74935"
+  ],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T3",
+    "requires_human_approval": true,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "offline_parse",
+      "manual_operator_run",
+      "lab_execute"
+    ],
+    "denied_execution_modes": [
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_recorded_execution"
+  },
+  "runtime_probe": {
+    "status": "missing",
+    "command": "nuclei",
+    "path": null,
+    "checked_at": "2026-07-01T06:49:55Z"
+  },
+  "analysis_agent_id": "AGENT-NUCLEI-ANALYST-001",
+  "normalizer_id": "NORMALIZER-NUCLEI-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-NUCLEI-001",
+    "run_id": "TRUN-E6F677F36D46",
+    "classification": "internal",
+    "content_summary": "Live nuclei output imported for candidate analysis.",
+    "raw_content_ref": [
+      "artifact://live-nuclei-output.jsonl"
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/tool-runs/TRUN-E6F677F36D46.json"
+}

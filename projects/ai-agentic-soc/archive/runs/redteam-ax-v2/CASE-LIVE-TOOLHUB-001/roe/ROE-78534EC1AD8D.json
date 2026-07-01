@@ -1,0 +1,10 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-LIVE-TOOLHUB-001",
+  "decision": "allow",
+  "risk_class": "T3",
+  "hitl_required": true,
+  "failures": [],
+  "evaluated_at": "2026-07-01T06:49:55Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/roe/ROE-78534EC1AD8D.json"
+}

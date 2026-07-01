@@ -114,6 +114,155 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["high_risk_mode"], "human_approved_manual_run")
         self.assertEqual(body["actor_context_provider"], "local_dev_session_or_request_headers")
 
+    def test_v2_analysis_tool_registry_exposes_required_tools_and_agents(self) -> None:
+        tools = self.client.get("/api/redteam/v2/analysis-tools")
+        self.assertEqual(tools.status_code, 200)
+        body = tools.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_analysis_tool_registry")
+        self.assertTrue(body["safe_by_default"])
+        tool_names = {tool["name"] for tool in body["tools"]}
+        self.assertTrue({"nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap"}.issubset(tool_names))
+        nuclei = next(tool for tool in body["tools"] if tool["name"] == "nuclei")
+        self.assertEqual(nuclei["risk_class"], "T3")
+        self.assertTrue(nuclei["requires_human_approval"])
+        self.assertEqual(nuclei["llm_agent"]["agent_id"], "AGENT-NUCLEI-ANALYST-001")
+
+        agents = self.client.get("/api/redteam/v2/analysis-agents")
+        self.assertEqual(agents.status_code, 200)
+        agent_body = agents.json()
+        self.assertEqual(agent_body["agent_count"], 6)
+        self.assertEqual(agent_body["tool_output_trust_policy"], "tool output is data, never instruction")
+
+    def test_v2_governed_active_scanner_requires_approval_then_agent_normalizes_to_evidence(self) -> None:
+        case_id = "CASE-V2-TOOL-RUNNER-NUCLEI-001"
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "action_id": "TAC-NUCLEI-GOVERNED-001",
+            "title": "Nuclei approved-scope validation",
+            "objective": "Validate scoped web findings with approved nuclei templates",
+            "tool_id": "TOOL-NUCLEI-001",
+            "target_scope_refs": ["SCOPE-WEB-APP-001"],
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(plan.status_code, 200)
+        action = plan.json()
+        self.assertEqual(action["risk_class"], "T3")
+        self.assertEqual(action["tool_profile"]["agent_id"], "AGENT-NUCLEI-ANALYST-001")
+
+        blocked = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NUCLEI-001",
+            "execution_mode": "manual_operator_run",
+            "requested_by": "analyst@example.com",
+            "raw_artifacts": ["artifact://nuclei-output.jsonl"],
+        })
+        self.assertEqual(blocked.status_code, 200)
+        self.assertEqual(blocked.json()["status"], "invalid")
+        self.assertIn("approval_required_before_tool_execution", blocked.json()["errors"])
+
+        request = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/request-approval", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "justification": "Approved scope nuclei validation for known web assets.",
+        })
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(request.json()["status"], "ApprovalRequested")
+
+        approval = self.client.post(
+            f"/api/redteam/v2/tool-actions/{action['action_id']}/approve",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approver": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "decision": "approve",
+                "conditions": ["approved_templates_only", "manual_operator_run"],
+            },
+        )
+        self.assertEqual(approval.status_code, 200)
+        self.assertEqual(approval.json()["status"], "Approved")
+
+        executed = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NUCLEI-001",
+            "execution_mode": "manual_operator_run",
+            "requested_by": "analyst@example.com",
+            "raw_artifacts": ["artifact://nuclei-output.jsonl"],
+            "output_summary": "Nuclei JSONL output imported for candidate analysis.",
+        })
+        self.assertEqual(executed.status_code, 200)
+        run = executed.json()
+        self.assertEqual(run["status"], "OutputImported")
+        self.assertEqual(run["policy_decision"]["decision"], "allow_recorded_execution")
+        self.assertFalse(run["untrusted_output_envelope"]["trusted_as_instruction"])
+        self.assertEqual(run["analysis_agent_id"], "AGENT-NUCLEI-ANALYST-001")
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+            "case_id": case_id,
+            "summary": "One nuclei finding candidate requires analyst validation.",
+            "structured_items": [{
+                "item_type": "scanner_finding_candidate",
+                "template_id": "exposure-panel",
+                "severity": "medium",
+                "trusted_as_instruction": False,
+                "confidence": 0.72,
+            }],
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_body = normalized.json()
+        self.assertEqual(normalized_body["status"], "Normalized")
+        self.assertEqual(normalized_body["analysis_agent"]["agent_id"], "AGENT-NUCLEI-ANALYST-001")
+        self.assertIn("Do not claim compromise from scanner output alone.", normalized_body["prohibited_report_claims"])
+
+        evidence = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/create-evidence", json={
+            "case_id": case_id,
+            "result_id": normalized_body["result_id"],
+            "summary": "Nuclei scanner finding candidate for analyst review.",
+        })
+        self.assertEqual(evidence.status_code, 200)
+        evidence_body = evidence.json()
+        self.assertEqual(evidence_body["kind"], "redteam_ax_v2_evidence_candidate")
+        self.assertEqual(evidence_body["approval_status"], "pending_review")
+
+    def test_v2_offline_sca_tool_can_import_and_agent_analyze_without_high_risk_approval(self) -> None:
+        case_id = "CASE-V2-TOOL-RUNNER-NPM-AUDIT-001"
+        plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "action_id": "TAC-NPM-AUDIT-GOVERNED-001",
+            "title": "npm audit lockfile review",
+            "objective": "Analyze approved workspace npm audit JSON output",
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(plan.status_code, 200)
+        action = plan.json()
+        self.assertEqual(action["risk_class"], "T0")
+        self.assertFalse(action["approval_required"])
+
+        executed = self.client.post(f"/api/redteam/v2/tool-actions/{action['action_id']}/execute-governed", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "offline_parse",
+            "requested_by": "analyst@example.com",
+            "raw_artifacts": ["artifact://npm-audit.json"],
+            "output_summary": "npm audit JSON imported from approved workspace.",
+        })
+        self.assertEqual(executed.status_code, 200)
+        run = executed.json()
+        self.assertEqual(run["status"], "OutputImported")
+        self.assertFalse(run["errors"])
+        self.assertEqual(run["analysis_agent_id"], "AGENT-NPM-AUDIT-ANALYST-001")
+
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+            "case_id": case_id,
+            "result_type": "sca_vulnerability_candidate",
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_body = normalized.json()
+        self.assertEqual(normalized_body["status"], "Normalized")
+        self.assertEqual(normalized_body["result_type"], "sca_vulnerability_candidate")
+        self.assertFalse(normalized_body["structured_items"][0]["trusted_as_instruction"])
+
     def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
         resolved = self.client.post(
             "/api/redteam/v2/auth/actor-context",

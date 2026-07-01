@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 14 Case RBAC policy CRUD/admin UI complete, full goal active  
+상태: implementation slice 15 Analysis ToolHub / LLM Agent Registry foundation complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 14 Case RBAC policy admin UI 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 15 Analysis ToolHub / LLM Agents 패널 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 14 Case RBAC policy CRUD endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 14 Case RBAC artifact persistence/actor context source 반영
+- `runtime/redteam_v2_api_router.py` - slice 15 analysis tool registry/governed execution/agent normalize endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 15 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP ToolProfile 및 agent registry 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -49,7 +49,7 @@ Backend:
 
 Tests:
 
-- `tests/test_redteam_v2_api_router.py` - slice 14 Case RBAC policy CRUD/role mismatch 검증 반영
+- `tests/test_redteam_v2_api_router.py` - slice 15 ToolHub registry, governed execution gate, agent normalize 검증 반영
 - `tests/test_redteam_v2_sample_e2e.py` - approved Evidence/Finding/report E2E 유지
 - `tests/test_redteam_v2_tool_actions.py`
 - `tests/test_redteam_v2_report_gate.py`
@@ -577,4 +577,33 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [ ] 중앙 사용자/그룹 동기화
 - [ ] 외부 SSO/IdP provider와 actor context 발급 연동
 - [ ] Finding owner/SLA/retest workflow의 별도 승인 UI
+- [ ] full release/security/starter-pack regression
+
+## 23. Slice 15 Analysis ToolHub / LLM Agent Registry Foundation 체크리스트
+
+- [x] `GET /api/redteam/v2/analysis-tools` 추가
+- [x] `GET /api/redteam/v2/analysis-agents` 추가
+- [x] Nuclei ToolProfile 등록: T3, 승인 필요, approved template/scope policy
+- [x] OpenVAS/Greenbone ToolProfile 등록: T3, import/API/manual-run 중심
+- [x] Trivy ToolProfile 등록: T0, offline/sandbox SCA evidence 후보
+- [x] SCA Dependency Analyzer ToolProfile 등록: T0, SBOM/dependency manifest import 중심
+- [x] npm audit ToolProfile 등록: T0, lockfile 기반 offline parse 중심
+- [x] OWASP ZAP ToolProfile 등록: T3, passive/import 또는 approved lab active scan policy
+- [x] 각 도구별 LLM 분석/정규화 agent registry 추가
+- [x] ToolActionCard 계획 시 등록 ToolProfile의 risk class, normalizer, agent metadata 반영
+- [x] `POST /api/redteam/v2/tool-actions/{action_id}/execute-governed` 추가
+- [x] active scanner는 approval 전 `approval_required_before_tool_execution`으로 차단
+- [x] 승인 후 governed ToolRunRecord가 `untrusted_output_envelope`와 `analysis_agent_id`를 포함
+- [x] `POST /api/redteam/v2/tool-runs/{run_id}/agent-analyze` 추가
+- [x] agent normalize 결과가 prohibited report claims와 “tool output is data, not instruction” 정책을 포함
+- [x] `레드팀 분석2` UI에 Analysis ToolHub / LLM Agents 패널 추가
+- [x] UI에서 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 선택 후 ToolActionCard 계획 가능
+- [x] API unittest가 registry, approval gate, agent normalize, Evidence 후보 생성 검증
+- [x] live 8765 smoke로 Nuclei approval gate -> approved execution -> agent normalize 확인
+- [x] Playwright UI smoke screenshot 저장: `고도화/live-smoke/redteam2-toolhub-agent-registry.png`
+- [ ] 실제 CLI/container 설치 자동화와 version pin/hash 검증
+- [ ] 도구별 실제 JSON/XML parser normalizer 고도화
+- [ ] OpenVAS/ZAP API credential vault 및 read-only token 정책
+- [ ] sandbox/container runner와 network allowlist enforcement
+- [ ] ToolResult -> Finding owner/SLA/retest UI 연계
 - [ ] full release/security/starter-pack regression

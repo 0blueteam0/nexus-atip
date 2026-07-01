@@ -1,0 +1,153 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-LIVE-TOOLHUB-NUCLEI-001",
+  "case_id": "CASE-LIVE-TOOLHUB-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "Live ToolHub nuclei governed execution smoke",
+  "objective": "Verify governed active scanner execution path blocks before approval and normalizes after approval",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_profile": {
+    "tool_id": "TOOL-NUCLEI-001",
+    "name": "nuclei",
+    "category": "web_validation",
+    "normalizer_id": "NORMALIZER-NUCLEI-001",
+    "agent_id": "AGENT-NUCLEI-ANALYST-001",
+    "default_policy": "approved_templates_and_scope_required"
+  },
+  "risk_class": "T3",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-LIVE-TOOLHUB"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "scanner_finding_candidate",
+    "web_validation_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "single_lead",
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [
+    "red_team_lead"
+  ],
+  "approval_required": true,
+  "hitl_required": true,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Request Approval",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft",
+    "Run in Lab"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "Normalized",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-LIVE-TOOLHUB-001",
+    "decision": "allow",
+    "risk_class": "T3",
+    "hitl_required": true,
+    "failures": [],
+    "evaluated_at": "2026-07-01T06:49:55Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/roe/ROE-78534EC1AD8D.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-01T06:49:55Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "approval_requested",
+      "at": "2026-07-01T06:49:55Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "approval_decided",
+      "at": "2026-07-01T06:49:55Z",
+      "actor": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "decision": "approve",
+      "status": "Approved"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-01T06:49:55Z",
+      "run_id": "TRUN-E6F677F36D46",
+      "tool_id": "TOOL-NUCLEI-001",
+      "execution_mode": "manual_operator_run"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-01T06:49:55Z",
+      "run_id": "TRUN-E6F677F36D46",
+      "result_id": "NR-E7B605D74935",
+      "agent_id": "AGENT-NUCLEI-ANALYST-001"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-LIVE-TOOLHUB-001/tool-actions/TAC-LIVE-TOOLHUB-NUCLEI-001.json",
+  "approval_request_id": "APR-B245ED8E666D",
+  "approval_decision_id": "APD-CED257CEEACB",
+  "approval_conditions": [
+    "approved_templates_only"
+  ],
+  "approval_decisions": [
+    {
+      "decision_id": "APD-CED257CEEACB",
+      "approver": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "decision": "approve",
+      "conditions": [
+        "approved_templates_only"
+      ],
+      "actor_context": {
+        "case_id": "CASE-LIVE-TOOLHUB-001",
+        "actor_id": "lead@example.com",
+        "actor_role": "red_team_lead",
+        "requested_role": "red_team_lead",
+        "roles": [
+          "red_team_lead"
+        ],
+        "case_roles": [
+          "red_team_lead"
+        ],
+        "effective_roles": [
+          "red_team_lead"
+        ],
+        "permissions": [
+          "evidence:approve",
+          "finding:approve_severity",
+          "tool_action:approve_t3"
+        ],
+        "authenticated": true,
+        "auth_provider": "request_headers",
+        "auth_strength": "header_bound",
+        "source": "request_headers",
+        "display_name": "Sample Red Team Lead",
+        "case_policy_source": "local_case_assignment_registry",
+        "errors": [],
+        "resolved": true
+      },
+      "decided_at": "2026-07-01T06:49:55Z"
+    }
+  ]
+}

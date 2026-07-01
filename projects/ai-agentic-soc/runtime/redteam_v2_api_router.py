@@ -105,6 +105,16 @@ def plan_tool_action(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.plan_tool_action(payload)
 
 
+@router.get("/analysis-tools")
+def list_analysis_tools() -> dict[str, Any]:
+    return redteam_v2_models.list_analysis_tools()
+
+
+@router.get("/analysis-agents")
+def list_analysis_agents() -> dict[str, Any]:
+    return redteam_v2_models.list_analysis_agents()
+
+
 @router.get("/tool-actions")
 def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
     return redteam_v2_models.list_tool_actions(case_id=case_id, status=status)
@@ -144,9 +154,19 @@ def record_manual_run(action_id: str, payload: dict[str, Any]) -> dict[str, Any]
     return redteam_v2_models.record_manual_run(action_id, payload)
 
 
+@router.post("/tool-actions/{action_id}/execute-governed")
+def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.governed_tool_execution(action_id, payload)
+
+
 @router.post("/tool-runs/{run_id}/import-output")
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_output(run_id, payload)
+
+
+@router.post("/tool-runs/{run_id}/agent-analyze")
+def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.agent_analyze_tool_run(run_id, payload)
 
 
 @router.post("/tool-runs/{run_id}/normalize")
