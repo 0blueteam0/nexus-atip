@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 19 tool output sanitizer quarantine/redaction preview complete, full goal active  
+상태: implementation slice 20 frontend sanitizer preview UX complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 15 Analysis ToolHub / LLM Agents 패널 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 20 RedTeam2 sanitizer preview UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 19 tool output sanitizer preview endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 19 prompt injection quarantine/secret redaction sanitizer 반영
+- `runtime/redteam_v2_api_router.py` - slice 19 tool output sanitizer preview endpoint 유지
+- `runtime/redteam_v2_models.py` - slice 19 prompt injection quarantine/secret redaction sanitizer 유지
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -664,6 +664,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `agent-analyze`가 raw/stored output을 parser 전에 sanitizer에 통과시키고 quarantine이면 normalized result를 invalid로 고정
 - [x] sanitizer preview artifact를 `tool-sanitizer-previews`에 저장하고 ToolRunRecord에 preview ref 기록
 - [x] API unittest가 GT-OUTPUT-001 prompt injection quarantine, GT-OUTPUT-002 secret redaction, agent-analyze quarantine block을 검증
-- [ ] frontend upload UX에 sanitizer preview 표시
+- [x] frontend upload UX에 sanitizer preview 표시 - slice 20 raw output preview foundation 완료
 - [ ] image/OCR 기반 sensitive visual redaction preview
 - [ ] sanitizer pattern corpus 확장 및 false-positive regression
+
+## 28. Slice 20 Frontend Sanitizer Preview UX 체크리스트
+
+- [x] `레드팀 분석2`에 Raw tool output 입력 영역 추가
+- [x] `Sanitizer Preview` 버튼 추가: ToolActionCard 기준 `offline_parse` ToolRunRecord 생성 후 `/sanitize-preview` 호출
+- [x] guardrail fixture 버튼 추가: prompt injection + secret redaction 샘플 로드
+- [x] sanitizer decision, prompt injection score, secret score, redaction count, human review 상태 표시
+- [x] sanitized output preview 표시
+- [x] UI 상태에 sanitizer run/preview artifact id 보관
+- [ ] 실제 multipart file upload와 SHA-256 import-file 연결
+- [ ] image/OCR 기반 sensitive visual redaction preview
+- [ ] Playwright visual smoke 확대
