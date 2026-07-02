@@ -5604,6 +5604,7 @@ export default {
     const runtimeNextActionRows = (runtimeReadiness.next_action_plan || []).map(item => [
       item.title_ko || item.step_id || '-',
       koValue(item.status || '미확인'),
+      item.redteam2_button_ko || item.frontend_action_key || '-',
       item.operator_action_ko || '-',
       item.blocks_tool_execution ? '도구 실행 전 해결 필요' : '진행 상황 확인',
       item.primary_api_or_command || '-',
@@ -6343,7 +6344,7 @@ export default {
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
-          this.renderTable(['다음 실행 준비 단계','상태','사용자 조치','도구 실행 영향','확인 API/명령'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','runtime-readiness API가 다음 실행 준비 단계를 계산합니다','-','/api/redteam/v2/runtime-readiness']]),
+          this.renderTable(['다음 실행 준비 단계','상태','화면 버튼','사용자 조치','도구 실행 영향','확인 API/명령'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','런타임 상태 새로고침','runtime-readiness API가 다음 실행 준비 단계를 계산합니다','-','/api/redteam/v2/runtime-readiness']]),
           h('div', { style:{ display:'grid', gap:'6px' } },
             h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영자 조치 runbook 단계'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },

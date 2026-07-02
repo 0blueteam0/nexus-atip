@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 46,
+    "proved": 47,
     "partial": 1
   },
   "audit_items": [
@@ -796,6 +796,22 @@
       "proof_summary": "The runtime-readiness API returns next_action_plan, blocked_action_count, tool_execution_blocked_by, and tool_execution_ready while preserving no command execution and no active scan flags. RedTeam2 renders ?? ?? ?? ?? and ?? ?? ?? ?? with Korean operator actions, execution impact, and the confirming API/command. Regression and frontend contract tests assert the new fields and anchors.",
       "residual_gap": "This improves execution readiness guidance and blocker visibility; it does not prove Docker/WSL/OpenVAS/ZAP are ready or that all real Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP runs completed.",
       "next_action": "Use the action plan to resolve real runtime blockers, then run governed installed-tool or approved operator artifact flows and close Evidence/Finding/Matrix/Report/export gates."
+    },
+    {
+      "id": "RTA-COMP-048",
+      "requirement": "Runtime next-action plan must map backend readiness steps to concrete Korean RedTeam2 screen buttons so non-expert operators can continue the governed execution workflow.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "runtime-readiness next_action_plan now includes frontend_action_key and redteam2_button_ko. RedTeam2 renders a ?? ?? column in the ?? ?? ?? ?? table, and regression/frontend sanity checks assert the new contract.",
+      "residual_gap": "This maps guidance to UI controls; it does not prove real operators clicked through the full workflow with real scanner artifacts and approvers.",
+      "next_action": "Use the mapped UI controls to drive real runtime blocker remediation, result collection, Evidence approval, Finding/Matrix/Report/export, and completion audit."
     }
   ],
   "remaining_gaps": [
@@ -812,5 +828,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T04:48:15Z"
+  "last_updated": "2026-07-03T04:57:05Z"
 }

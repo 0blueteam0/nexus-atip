@@ -1070,3 +1070,12 @@ Create Case
 - regression test는 runtime-readiness 응답의 구조화된 action plan과 safe no-execution flags를 검증한다.
 - frontend runtime readiness contract와 Korean copy inventory에 새 anchor를 추가했다.
 - 이 slice는 실행 전 안내와 차단 사유를 명확히 하지만, Docker/WSL/OpenVAS/ZAP 실측 준비나 실제 6개 도구 실행 완료를 대신 증명하지 않는다.
+
+## 61. Slice 106 반영 사항
+
+- `next_action_plan` 각 단계에 `frontend_action_key`와 `redteam2_button_ko`를 추가해 backend readiness 판단과 RedTeam2 화면 조작 흐름을 연결했다.
+- 실행 환경 준비는 `런타임 상태 새로고침`, OpenVAS/ZAP 읽기 전용 연결은 `OpenVAS/ZAP 서비스 결과 가져오기`, 운영 증거 제출은 `운영 증거 제출 manifest 초안`, 도구 결과 분석은 `결과 회수·Evidence 후보`, 최종 실측 승격은 `운영 completion audit 검토`로 매핑한다.
+- RedTeam2 `다음 실행 준비 단계` 표는 `화면 버튼` 열을 추가해 사용자가 어느 버튼으로 다음 조치를 이어가야 하는지 바로 볼 수 있게 했다.
+- regression test는 runtime-readiness action plan의 `frontend_action_key`와 `redteam2_button_ko` 존재 및 핵심 action key를 검증한다.
+- frontend runtime readiness contract와 Korean copy inventory는 `화면 버튼`, `frontend_action_key`, `redteam2_button_ko` anchor를 검사한다.
+- 이 slice는 실제 실행 workflow 안내를 강화하지만, 실제 도구 실행/운영 산출물 승인을 대신하지 않는다.

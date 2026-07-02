@@ -1780,3 +1780,13 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 새 anchor 반영
 - [x] regression test가 runtime-readiness action plan과 safe no-execution flags를 검증
 - [ ] 실제 Docker/WSL/OpenVAS/ZAP readiness와 실제 6개 도구 운영 실행을 통과해 action plan이 모두 ready가 되는 운영 실측 증거 확보
+
+## 114. Slice 106 런타임 action plan 화면 버튼 매핑 체크리스트
+
+- [x] `next_action_plan[]`에 `frontend_action_key` 추가
+- [x] `next_action_plan[]`에 `redteam2_button_ko` 추가
+- [x] 실행 환경, OpenVAS/ZAP 서비스 import, 운영 증거 제출, 결과 회수, completion audit 단계가 RedTeam2 버튼명과 매핑됨
+- [x] RedTeam2 `다음 실행 준비 단계` 표에 `화면 버튼` 열 추가
+- [x] regression test가 핵심 `frontend_action_key`와 버튼명 필드를 검증
+- [x] frontend runtime readiness contract와 Korean copy inventory에 버튼 매핑 anchor 반영
+- [ ] 실제 운영자가 화면 버튼 순서대로 runtime blocker를 해소하고 6개 도구 결과를 Evidence/Finding/Matrix/Report/export gate까지 완료

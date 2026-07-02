@@ -75,6 +75,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertIn("operator_action_ko", action)
             self.assertIn("primary_api_or_command", action)
             self.assertIn("blocks_tool_execution", action)
+            self.assertIn("frontend_action_key", action)
+            self.assertIn("redteam2_button_ko", action)
+        action_keys = {action["frontend_action_key"] for action in body["next_action_plan"]}
+        self.assertIn("refresh_runtime_readiness", action_keys)
+        self.assertIn("operator_evidence_submission_manifest_draft", action_keys)
+        self.assertIn("operating_completion_audit_review", action_keys)
         for artifact in (
             body["container_runtime"],
             body["external_scanner_services"],

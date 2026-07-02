@@ -2558,6 +2558,8 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             "step_id": "runtime_container_or_wsl",
             "title_ko": "실행 환경 준비",
             "status": "ready" if container_ready and wsl_ready else "blocked",
+            "frontend_action_key": "refresh_runtime_readiness",
+            "redteam2_button_ko": "런타임 상태 새로고침",
             "operator_action_ko": (
                 "Docker/WSL 실행 환경이 준비되었습니다."
                 if container_ready and wsl_ready
@@ -2571,6 +2573,8 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             "step_id": "external_scanner_readonly",
             "title_ko": "OpenVAS/ZAP 읽기 전용 연결",
             "status": "ready" if external_ready and service_import_ready else "blocked",
+            "frontend_action_key": "openvas_zap_service_import_panel",
+            "redteam2_button_ko": "OpenVAS/ZAP 서비스 결과 가져오기",
             "operator_action_ko": (
                 "OpenVAS/ZAP 읽기 전용 endpoint와 가져오기 검증이 준비되었습니다."
                 if external_ready and service_import_ready
@@ -2584,6 +2588,8 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             "step_id": "operator_evidence_submission",
             "title_ko": "운영 증거 제출",
             "status": "ready" if operator_evidence_ready and operator_submission_ready and operator_import_plan_ready else "blocked",
+            "frontend_action_key": "operator_evidence_submission_manifest_draft",
+            "redteam2_button_ko": "운영 증거 제출 manifest 초안",
             "operator_action_ko": (
                 "운영자 증거 제출과 Evidence Card 후보 계획이 준비되었습니다."
                 if operator_evidence_ready and operator_submission_ready and operator_import_plan_ready
@@ -2597,6 +2603,8 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             "step_id": "tool_result_analysis",
             "title_ko": "도구 결과 분석",
             "status": "ready" if tool_result_analysis_ready and finding_claim_review_ready else "blocked",
+            "frontend_action_key": "collect_results_and_review_findings",
+            "redteam2_button_ko": "결과 회수·Evidence 후보",
             "operator_action_ko": (
                 "도구 결과 분석 브리프와 Finding/Claim 검토 패키지가 준비되었습니다."
                 if tool_result_analysis_ready and finding_claim_review_ready
@@ -2610,6 +2618,8 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             "step_id": "strict_promotion",
             "title_ko": "최종 실측 승격",
             "status": "ready" if promotion_ready and remediation_ready else "blocked",
+            "frontend_action_key": "operating_completion_audit_review",
+            "redteam2_button_ko": "운영 completion audit 검토",
             "operator_action_ko": (
                 "strict live readiness promotion이 준비되었습니다."
                 if promotion_ready and remediation_ready
