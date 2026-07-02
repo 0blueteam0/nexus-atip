@@ -373,6 +373,11 @@ try {
     && bodyText.includes('케이스별 역할 정책은 누가 승인, 실행, 검토, 내보내기를 할 수 있는지 정합니다')
     && bodyText.includes('평가 맥락')
     && bodyText.includes('보고서 제목');
+  result.checks.koreanDisplayMapping = bodyText.includes('T0 · 파일/로그 가져오기')
+    && bodyText.includes('레드팀 리드')
+    && bodyText.includes('보통')
+    && bodyText.includes('계획만 만들기')
+    && bodyText.includes('API 명령 실행');
   result.checks.agenticRagPanel = (bodyText.includes('Agentic RAG 충분성 검증') || bodyText.includes('Agentic RAG SCA / Citation Verifier'))
     && (bodyText.includes('Agentic RAG 검증 실행') || bodyText.includes('Run Agentic RAG SCA'))
     && (bodyText.includes('인용 검증') || bodyText.includes('Citation Verifier'));

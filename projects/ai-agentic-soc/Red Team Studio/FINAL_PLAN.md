@@ -1097,4 +1097,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `케이스 RBAC 정책`, `평가 맥락`, Report v2 메타데이터 라벨을 한국어 사용자 기준으로 정리
 - [x] ToolActionCard 대기열 버튼과 가드레일/Evidence 게이트 제목·표 머리글을 한국어화
 - [x] browser smoke DOM 체크에 sanitizer, visual evidence, file upload, RBAC/report metadata guidance 확인 추가
-- [ ] 다음 slice: Agentic RAG, ToolActionCard 상태값, severity/role 선택지 등 남은 내부 상태값의 한국어 display mapping을 별도 helper로 정리
+- [x] 다음 slice: Agentic RAG, ToolActionCard 상태값, severity/role 선택지 등 남은 내부 상태값의 한국어 display mapping을 별도 helper로 정리 - slice 51 완료
+
+## 59. Slice 51 Korean Display Mapping Helper 체크리스트
+
+- [x] RedTeam2 패널 안에 API 원본 값과 화면 표시값을 분리하는 `koValue`, `koRole`, `koSeverity`, `koExecutionMode`, `koRunnerBackend`, `koRiskClass` helper 추가
+- [x] ToolActionCard 대기열의 상태, 승인 방식, 필수 승인 역할, 위험 등급 표시를 한국어화
+- [x] RBAC 정책 표와 역할 선택지를 `레드팀 리드`, `업무 소유자`, `최종 후원자` 등 한국어 display label로 변경
+- [x] Report v2 심각도 선택지를 `정보`, `낮음`, `보통`, `높음`, `긴급`으로 변경하되 payload 값은 기존 코드값 유지
+- [x] Agentic RAG SCA, 인용 검증, Claim-Evidence Matrix 후보, 명령 신뢰/사람 검토 행을 한국어 display mapping으로 변경
+- [x] 실행 계획, 격리, runner, sanitizer, visual evidence, file upload 상태값에 한국어 display mapping 적용
+- [x] browser smoke DOM 체크에 `koreanDisplayMapping` 확인 추가
+- [ ] 다음 slice: smoke artifact/body encoding mojibake 원인 점검과 한국어 DOM 추출 안정화
