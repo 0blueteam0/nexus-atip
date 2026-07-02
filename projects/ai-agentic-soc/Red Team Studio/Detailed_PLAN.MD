@@ -659,3 +659,14 @@ Create Case
 - `고도화/sanity/test_redteam2_korean_copy_inventory.py`는 서비스 결과 가져오기 한국어 앵커를 추가로 검사한다.
 - accepted gate manifest에는 `GATE-FRONTEND-SERVICE-IMPORT-CONTRACT`를 추가해 UI/API 연결 회귀를 고정한다.
 - 이 slice는 로컬 서비스 import backend smoke와 frontend 호출 경로를 연결하지만, 조직/실서비스 OpenVAS/ZAP endpoint 실측과 Docker daemon 기반 container runtime smoke는 여전히 환경 의존 완료 조건으로 남긴다.
+
+## 20. Slice 65 반영 사항
+
+- `고도화/sanity/redteam_ax_external_scanner_service_readiness.py`는 조직/실서비스 OpenVAS/ZAP read-only endpoint 준비도를 machine-readable artifact로 남긴다.
+- 기본 실행은 네트워크를 호출하지 않는다. endpoint/vault reference 설정 여부, URL 안전성, secret query 금지, credential-in-URL 금지, mutating path term 금지를 검사한다.
+- `REDTEAM_AX_EXTERNAL_SCANNER_READINESS_ALLOW_NETWORK=1` 또는 `--allow-network`가 있을 때만 승인된 read-only GET probe를 수행한다.
+- 준비에 필요한 환경 변수는 `REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT`, `REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT`, `REDTEAM_AX_OPENVAS_VAULT_REF`, `REDTEAM_AX_ZAP_VAULT_REF`이다.
+- vault env는 secret 값이 아니라 외부 vault reference여야 하며, readiness artifact도 `secret_material_stored=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 유지한다.
+- accepted gate manifest에는 `GATE-EXTERNAL-SCANNER-READINESS`를 추가한다. 이 gate는 현재 환경의 not_configured/blocker 상태를 보존하지만 full goal 완료 증거로 쓰지 않는다.
+- Docker daemon은 재확인 결과 `Server:null` 및 `Docker Desktop is unable to start` 상태였고, `redteam_ax_container_runtime_smoke.py --allow-real --require-real`은 `blocked_container_runtime_not_ready` artifact를 갱신했다.
+- 이 slice는 남은 완료 조건을 더 명확하게 검증 가능한 readiness lane으로 만든 것이며, 실제 조직 endpoint와 Docker daemon 준비 후 실측 smoke가 여전히 필요하다.

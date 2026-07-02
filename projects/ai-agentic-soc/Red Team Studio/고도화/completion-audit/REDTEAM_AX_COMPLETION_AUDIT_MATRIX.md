@@ -55,7 +55,8 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - OpenVAS XML 및 OWASP ZAP JSON read-only service report import adapter smoke, tool-specific parser, sanitizer, Evidence Card 생성, secret material negative control
 - OpenVAS/ZAP 외부 vault reference 기반 read-only credential authorization API와 한국어 UI
 - RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 한국어 패널과 frontend service import contract sanity
-- 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, Python compile, frontend JS check, frontend build 통과
+- 외부 OpenVAS/ZAP read-only endpoint/vault reference readiness artifact와 Docker daemon blocker artifact
+- 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, external scanner readiness, Python compile, frontend JS check, frontend build 통과
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
 - LLM wiki의 Red Team Studio manifest, ChatShare, previous work index 연결
@@ -63,7 +64,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 ## 아직 완료로 주장하면 안 되는 항목
 
 - Docker/container runtime live smoke 성공 증거
-- 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
+- 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness artifact만 존재한다.
 
 ## 운영 규칙
 

@@ -1268,3 +1268,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 `GATE-FRONTEND-SERVICE-IMPORT-CONTRACT` 추가
 - [ ] 조직/실서비스 OpenVAS/ZAP endpoint에서 동일 import smoke 실측
 - [ ] Docker daemon ready 후 실제 container runtime smoke 실측
+
+## 73. Slice 65 External Scanner/Container Readiness Evidence 체크리스트
+
+- [x] Docker daemon 상태를 다시 확인하고 `Docker Desktop is unable to start`, `Server:null` blocker를 최신 container runtime smoke artifact로 갱신
+- [x] `고도화/sanity/redteam_ax_external_scanner_service_readiness.py` 추가
+- [x] 외부 OpenVAS/ZAP 실측에 필요한 환경 변수와 read-only endpoint 전제를 machine-readable artifact로 기록
+- [x] OpenVAS/ZAP endpoint URL은 credential-in-URL, secret query, mutating path term을 차단
+- [x] 기본 실행은 네트워크 probe를 하지 않고 not_configured/configured 상태만 기록
+- [x] `REDTEAM_AX_EXTERNAL_SCANNER_READINESS_ALLOW_NETWORK=1` 또는 `--allow-network`가 있을 때만 승인된 read-only GET probe 수행
+- [x] accepted gate manifest에 `GATE-EXTERNAL-SCANNER-READINESS` 추가
+- [ ] `REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT`, `REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT`, `REDTEAM_AX_OPENVAS_VAULT_REF`, `REDTEAM_AX_ZAP_VAULT_REF`가 준비된 조직 환경에서 `--allow-network --require-ready` 실측 통과
+- [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과

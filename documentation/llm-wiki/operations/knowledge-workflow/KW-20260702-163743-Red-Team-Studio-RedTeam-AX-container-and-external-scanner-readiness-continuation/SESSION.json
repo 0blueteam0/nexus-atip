@@ -4,7 +4,7 @@
   "task": "RedTeam AX container and external scanner readiness continuation",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-163743-Red-Team-Studio-RedTeam-AX-container-and-external-scanner-readiness-continuation",
   "created_at": "2026-07-02T16:37:43+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-02T16:42:03+09:00"
+  ]
 }
