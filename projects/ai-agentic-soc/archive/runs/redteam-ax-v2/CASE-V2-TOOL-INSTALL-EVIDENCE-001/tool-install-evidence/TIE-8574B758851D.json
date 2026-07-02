@@ -1,0 +1,35 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-8574B758851D",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "adapter_type": "api_or_import_only",
+  "install_mode": "container_or_vm",
+  "official_url": "https://greenbone.github.io/docs/latest/",
+  "version_command": "gvm-cli --version",
+  "verification_commands": [
+    "gvm-cli --version",
+    "import_completed_report_only"
+  ],
+  "version_output_excerpt": "gvm-cli 24.1.0",
+  "version_output_sha256": "93d773f274275e14e56b2b80c2ff89f91c5de6b14adf422bebda72eb8608f3bd",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-OPENVAS-001",
+    "analysis_agent_id": "AGENT-OPENVAS-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-8574B758851D.json"
+}

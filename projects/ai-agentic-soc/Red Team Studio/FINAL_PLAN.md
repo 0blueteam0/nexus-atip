@@ -1146,4 +1146,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] denial guard artifact를 case archive `mcp-direct-denials`에 저장
 - [x] `tests/test_redteam_v2_api_router.py::test_v2_mcp_direct_invocation_is_denied_without_tool_action_card` 추가
 - [x] completion audit matrix의 RTA-COMP-004를 `proved`로 갱신하고 MCP direct invoke gap 제거
-- [ ] 다음 slice: scanner install/version evidence capture 또는 OpenVAS/ZAP credential vault contract 구현
+- [x] 다음 slice: scanner install/version evidence capture 또는 OpenVAS/ZAP credential vault contract 구현 - scanner install/version evidence capture slice 56 완료
+
+## 64. Slice 56 Scanner Install Version Evidence Capture 체크리스트
+
+- [x] `/api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence` endpoint 추가
+- [x] `/api/redteam/v2/tool-install-version-evidence` registry endpoint 추가
+- [x] Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP의 operator-attested version evidence를 `tool-install-evidence` artifact로 저장
+- [x] version evidence는 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true`를 유지
+- [x] version output SHA-256, operator, install mode, verification command, evidence pipeline metadata를 기록
+- [x] unknown tool, operator 누락, version command/output 누락, operator 실행 증명 누락은 `invalid`로 차단
+- [x] `tests/test_redteam_v2_api_router.py::test_v2_tool_install_version_evidence_records_operator_attested_versions` 추가
+- [x] completion audit matrix의 RTA-COMP-006을 `proved`로 갱신하되 실제 scanner binary/container runtime smoke는 RTA-COMP-015에 남김
+- [ ] 다음 slice: OpenVAS/ZAP credential vault contract 또는 final accepted gate manifest 구현

@@ -1,0 +1,35 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-56DA379A2A7C",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_name": "trivy",
+  "adapter_type": "cli_wrapper",
+  "install_mode": "official_release_binary",
+  "official_url": "https://github.com/aquasecurity/trivy",
+  "version_command": "trivy --version",
+  "verification_commands": [
+    "trivy --version",
+    "trivy fs --format json --offline-scan ."
+  ],
+  "version_output_excerpt": "Version: 0.53.0",
+  "version_output_sha256": "1476a1bb1a723cdf3a6edc55dd8d2dd07038bb69b6607e9b37a5b5cb47833846",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-TRIVY-001",
+    "analysis_agent_id": "AGENT-TRIVY-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-56DA379A2A7C.json"
+}

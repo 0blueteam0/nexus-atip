@@ -536,6 +536,8 @@ Create Case
 | loopback lab 입력 | 명시적 `allow_loopback_lab`일 때만 safe probe 허용 |
 | T3/T4 action 승인 없음 | button disabled, approval_required 표시 |
 | T5 action | blocked, 실행 경로 없음 |
+| scanner version evidence의 operator 증명 누락 | `invalid`, artifact 저장 없음, API 명령 실행 없음 |
+| 미등록 scanner tool evidence 등록 | `tool_profile_not_registered`, API 명령 실행 없음 |
 | raw tool output prompt injection | output sanitizer 후 data envelope로만 LLM에 전달 |
 | DB query without template | deny |
 | material claim without approved evidence | report validation blocker |
@@ -562,4 +564,12 @@ Create Case
 7. unapproved high-risk tool execution 0건.
 8. direct agent-to-MCP invocation 0건.
 9. T5 action default deny 유지.
-10. unit/schema/API/frontend/build/security/report regression 통과.
+10. Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP version evidence capture가 operator-attested artifact로 남고 API 명령 실행 0건을 유지한다.
+11. unit/schema/API/frontend/build/security/report regression 통과.
+
+## 11. Slice 56 반영 사항
+
+- `/api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence`는 운영자가 별도 승인 환경에서 실행한 version command 결과를 증거로 기록한다.
+- `/api/redteam/v2/tool-install-version-evidence`는 case/tool별 scanner install evidence registry를 반환한다.
+- 이 기능은 scanner를 설치하거나 실행하지 않는다. `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true`가 contract다.
+- 실제 scanner binary/container runtime smoke 성공 증거는 별도 최종 게이트 항목으로 남긴다.

@@ -1,0 +1,35 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-1719F5E22D0E",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "adapter_type": "cli_wrapper",
+  "install_mode": "official_release_binary",
+  "official_url": "https://github.com/projectdiscovery/nuclei",
+  "version_command": "nuclei -version",
+  "verification_commands": [
+    "nuclei -version",
+    "nuclei -update-templates -validate"
+  ],
+  "version_output_excerpt": "nuclei version 3.3.0",
+  "version_output_sha256": "64e0d0a5253112fb528aac7792f98596a8962c8443344ff668ac638163f88663",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-NUCLEI-001",
+    "analysis_agent_id": "AGENT-NUCLEI-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-1719F5E22D0E.json"
+}

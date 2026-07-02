@@ -125,6 +125,16 @@ def get_tool_install_readiness(tool_id: str) -> dict[str, Any]:
     return redteam_v2_models.tool_install_readiness(tool_id)
 
 
+@router.get("/tool-install-version-evidence")
+def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
+    return redteam_v2_models.list_tool_install_version_evidence(case_id=case_id, tool_id=tool_id)
+
+
+@router.post("/tool-install-readiness/{tool_id}/version-evidence")
+def record_tool_install_version_evidence(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.record_tool_install_version_evidence(tool_id, payload)
+
+
 @router.get("/tool-wrapper-manifests")
 def list_tool_wrapper_manifests() -> dict[str, Any]:
     return redteam_v2_models.list_tool_wrapper_manifests()

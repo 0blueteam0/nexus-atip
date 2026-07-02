@@ -238,6 +238,63 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(sca_body["blocking_controls"], [])
         self.assertIn("normalizer", sca_body["runner_allowed_after"])
 
+    def test_v2_tool_install_version_evidence_records_operator_attested_versions(self) -> None:
+        case_id = "CASE-V2-TOOL-INSTALL-EVIDENCE-001"
+        tool_samples = [
+            ("TOOL-NUCLEI-001", "official_release_binary", "nuclei -version", "nuclei version 3.3.0"),
+            ("TOOL-OPENVAS-001", "container_or_vm", "gvm-cli --version", "gvm-cli 24.1.0"),
+            ("TOOL-TRIVY-001", "official_release_binary", "trivy --version", "Version: 0.53.0"),
+            ("TOOL-SCA-001", "import_only", "validate_uploaded_sbom_schema", "schema validation ok"),
+            ("TOOL-NPM-AUDIT-001", "nodejs_npm_cli", "npm.cmd --version", "10.8.2"),
+            ("TOOL-ZAP-001", "zap_daemon_container", "zap-cli --version", "zap-cli 0.10.0"),
+        ]
+        recorded_ids = set()
+        for tool_id, install_mode, command, output in tool_samples:
+            response = self.client.post(f"/api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence", json={
+                "case_id": case_id,
+                "operator": "operator@example.com",
+                "operator_role": "red_team_operator",
+                "install_mode": install_mode,
+                "version_command": command,
+                "version_output_excerpt": output,
+                "version_command_executed_by_operator": True,
+            })
+            self.assertEqual(response.status_code, 200)
+            body = response.json()
+            self.assertEqual(body["kind"], "redteam_ax_v2_tool_install_version_evidence")
+            self.assertEqual(body["status"], "recorded")
+            self.assertEqual(body["tool_id"], tool_id)
+            self.assertFalse(body["commands_executed_by_api"])
+            self.assertFalse(body["trusted_as_instruction"])
+            self.assertFalse(body["evidence_pipeline"]["trusted_as_instruction"])
+            self.assertTrue(body["requires_human_validation"])
+            self.assertTrue(body["version_command_executed_by_operator"])
+            self.assertEqual(len(body["version_output_sha256"]), 64)
+            self.assertEqual(body["runner_unlocks"], [])
+            self.assertTrue(Path(body["artifact_path"]).exists())
+            recorded_ids.add(tool_id)
+
+        registry = self.client.get(f"/api/redteam/v2/tool-install-version-evidence?case_id={case_id}")
+        self.assertEqual(registry.status_code, 200)
+        registry_body = registry.json()
+        self.assertEqual(registry_body["kind"], "redteam_ax_v2_tool_install_version_evidence_registry")
+        self.assertFalse(registry_body["commands_executed_by_api"])
+        self.assertFalse(registry_body["trusted_as_instruction"])
+        self.assertEqual(set(registry_body["tool_ids_with_evidence"]), recorded_ids)
+        self.assertGreaterEqual(registry_body["evidence_count"], 6)
+
+        invalid = self.client.post("/api/redteam/v2/tool-install-readiness/TOOL-UNKNOWN/version-evidence", json={
+            "case_id": case_id,
+            "operator": "operator@example.com",
+            "install_mode": "manual",
+            "version_command": "unknown --version",
+            "version_output_excerpt": "unknown",
+            "version_command_executed_by_operator": True,
+        })
+        self.assertEqual(invalid.status_code, 200)
+        self.assertEqual(invalid.json()["status"], "invalid")
+        self.assertIn("tool_profile_not_registered", invalid.json()["errors"])
+
     def test_v2_tool_wrapper_manifest_reports_hash_pinning_status(self) -> None:
         response = self.client.get("/api/redteam/v2/tool-wrapper-manifests")
         self.assertEqual(response.status_code, 200)

@@ -1,0 +1,35 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-F34FB635E3EF",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "adapter_type": "api_or_cli_wrapper",
+  "install_mode": "zap_daemon_container",
+  "official_url": "https://www.zaproxy.org/docs/",
+  "version_command": "zap-cli --version",
+  "verification_commands": [
+    "zap-cli --version",
+    "import_zap_json_report"
+  ],
+  "version_output_excerpt": "zap-cli 0.10.0",
+  "version_output_sha256": "245dfb0a9c2a43616944c5729555b255e36fad270eab8be727065ce4cb77afdb",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-ZAP-001",
+    "analysis_agent_id": "AGENT-ZAP-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-F34FB635E3EF.json"
+}

@@ -1,0 +1,34 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-CF265617A85F",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "adapter_type": "cli_wrapper",
+  "install_mode": "nodejs_npm_cli",
+  "official_url": "https://docs.npmjs.com/cli/commands/npm-audit",
+  "version_command": "npm.cmd --version",
+  "verification_commands": [
+    "npm.cmd --version"
+  ],
+  "version_output_excerpt": "10.8.2",
+  "version_output_sha256": "000048c944c18d1a67a7732ec03a87e200b23fe3a3f8b197f4d6bc3816d1732c",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-NPM-AUDIT-001",
+    "analysis_agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-CF265617A85F.json"
+}

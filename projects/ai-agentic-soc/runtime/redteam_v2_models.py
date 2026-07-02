@@ -1214,6 +1214,106 @@ def list_tool_install_readiness() -> dict[str, Any]:
     }
 
 
+def record_tool_install_version_evidence(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID)
+    operator = str(payload.get("operator") or payload.get("recorded_by") or "").strip()
+    operator_role = str(payload.get("operator_role") or "").strip()
+    install_mode = str(payload.get("install_mode") or "").strip()
+    version_command = str(payload.get("version_command") or "").strip()
+    version_output_excerpt = str(payload.get("version_output_excerpt") or payload.get("version_output") or "").strip()
+    executed_by_operator = bool(payload.get("version_command_executed_by_operator"))
+    evidence_id = str(payload.get("evidence_id") or stable_id(
+        "TIE",
+        [case_id, tool_id, operator, install_mode, version_command, version_output_excerpt],
+    ))
+    errors: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not operator:
+        errors.append("operator_required")
+    if not install_mode:
+        errors.append("install_mode_required")
+    if not version_command:
+        errors.append("version_command_required")
+    if not version_output_excerpt:
+        errors.append("version_output_excerpt_required")
+    if not executed_by_operator:
+        errors.append("version_command_must_be_executed_by_operator")
+
+    output_sha256 = hashlib.sha256(version_output_excerpt.encode("utf-8")).hexdigest() if version_output_excerpt else ""
+    catalog = TOOL_INSTALL_READINESS_CATALOG.get(str((profile or {}).get("tool_id") or tool_id), {})
+    record = {
+        "kind": "redteam_ax_v2_tool_install_version_evidence",
+        "status": "invalid" if errors else "recorded",
+        "case_id": case_id,
+        "evidence_id": evidence_id,
+        "tool_id": (profile or {}).get("tool_id") or tool_id,
+        "tool_name": (profile or {}).get("name") or str(tool_id),
+        "adapter_type": (profile or {}).get("adapter_type") or "",
+        "install_mode": install_mode,
+        "official_url": catalog.get("official_url") or "",
+        "version_command": version_command,
+        "verification_commands": catalog.get("verification_commands") or [],
+        "version_output_excerpt": version_output_excerpt[:4000],
+        "version_output_sha256": output_sha256,
+        "version_command_executed_by_operator": executed_by_operator,
+        "operator": operator,
+        "operator_role": operator_role,
+        "recorded_at": now_utc(),
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "evidence_pipeline": {
+            "normalizer_id": (profile or {}).get("normalizer_id"),
+            "analysis_agent_id": (profile or {}).get("agent_id"),
+            "trusted_as_instruction": False,
+            "claim_use": "tool_install_or_version_evidence_only",
+        },
+        "runner_unlocks": [],
+        "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+        "errors": errors,
+    }
+    if errors:
+        return record
+    record["artifact_path"] = write_json_artifact(case_id, "tool-install-evidence", evidence_id, record)
+    record["audit_log_path"] = write_case_event(case_id, {
+        "event": "tool_install_version_evidence_recorded",
+        "evidence_id": evidence_id,
+        "tool_id": record["tool_id"],
+        "artifact_path": record["artifact_path"],
+        "commands_executed_by_api": False,
+    })
+    return record
+
+
+def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
+    records = list_json_artifacts(case_id, "tool-install-evidence")
+    normalized_tool_id = str(tool_id or "").strip().upper()
+    if normalized_tool_id:
+        records = [
+            record for record in records
+            if str(record.get("tool_id") or "").upper() == normalized_tool_id
+            or str(record.get("tool_name") or "").upper() == normalized_tool_id
+        ]
+    tool_ids_with_evidence = sorted({
+        str(record.get("tool_id"))
+        for record in records
+        if record.get("status") == "recorded" and record.get("tool_id")
+    })
+    return {
+        "kind": "redteam_ax_v2_tool_install_version_evidence_registry",
+        "case_id": case_id or "",
+        "tool_id": tool_id or "",
+        "evidence_count": len(records),
+        "tool_ids_with_evidence": tool_ids_with_evidence,
+        "required_tool_ids": [profile["tool_id"] for profile in ANALYSIS_TOOL_PROFILES],
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "records": records,
+    }
+
+
 def tool_install_readiness(tool_id: str) -> dict[str, Any]:
     profile = analysis_tool_profile(tool_id)
     if profile is None:

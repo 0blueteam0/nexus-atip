@@ -1,0 +1,34 @@
+{
+  "kind": "redteam_ax_v2_tool_install_version_evidence",
+  "status": "recorded",
+  "case_id": "CASE-V2-TOOL-INSTALL-EVIDENCE-001",
+  "evidence_id": "TIE-C10AFB6FDA82",
+  "tool_id": "TOOL-SCA-001",
+  "tool_name": "sca",
+  "adapter_type": "import_only",
+  "install_mode": "import_only",
+  "official_url": "internal://redteam-ax/import-only-sca",
+  "version_command": "validate_uploaded_sbom_schema",
+  "verification_commands": [
+    "validate_uploaded_sbom_schema"
+  ],
+  "version_output_excerpt": "schema validation ok",
+  "version_output_sha256": "b6f82b3790a61fc8366bda73467446b1833cbef67177278877106ec68dee5b1f",
+  "version_command_executed_by_operator": true,
+  "operator": "operator@example.com",
+  "operator_role": "red_team_operator",
+  "recorded_at": "2026-07-02T04:28:09Z",
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "evidence_pipeline": {
+    "normalizer_id": "NORMALIZER-SCA-001",
+    "analysis_agent_id": "AGENT-SCA-ANALYST-001",
+    "trusted_as_instruction": false,
+    "claim_use": "tool_install_or_version_evidence_only"
+  },
+  "runner_unlocks": [],
+  "policy": "Version evidence is operator-attested data; it does not execute, install, or approve tool runs.",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence/TIE-C10AFB6FDA82.json"
+}

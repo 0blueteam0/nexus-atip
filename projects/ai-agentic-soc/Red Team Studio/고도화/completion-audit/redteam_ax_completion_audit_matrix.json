@@ -84,15 +84,18 @@
     {
       "id": "RTA-COMP-006",
       "requirement": "Tool installation integration and version-command evidence must be available for the scanner toolchain.",
-      "status": "gap",
+      "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_toolchain_readiness.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Install-readiness registry returns operator-run install plans and safe version evidence placeholders without executing commands by API.",
-      "residual_gap": "FINAL_PLAN still lists actual CLI/container installation automation and version command evidence collection as incomplete.",
-      "next_action": "Implement operator-safe install evidence capture workflow and per-tool version proof artifacts."
+      "proof_summary": "Install-readiness registry returns operator-run install plans, and /api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence records operator-attested version evidence for Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP without executing commands by API.",
+      "residual_gap": "This proves governed evidence capture, not that real scanner binaries or containers have run successfully in the local environment; runtime smoke remains tracked by RTA-COMP-015.",
+      "next_action": "Connect the captured install evidence to the front-end readiness panel and the final accepted gate manifest."
     },
     {
       "id": "RTA-COMP-007",
