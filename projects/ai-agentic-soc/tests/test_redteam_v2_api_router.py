@@ -774,6 +774,35 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(valid.status_code, 200)
         self.assertTrue(valid.json()["valid"])
 
+    def test_v2_mcp_direct_invocation_is_denied_without_tool_action_card(self) -> None:
+        case_id = "CASE-V2-MCP-DIRECT-DENY-001"
+        response = self.client.post("/api/redteam/v2/mcp/direct-invoke", json={
+            "case_id": case_id,
+            "server_id": "mcp_caldera_metadata",
+            "tool_name": "run_operation",
+            "tool_class": "emulation_execute",
+            "classification": "restricted",
+            "arguments": {"operation_id": "blocked-direct-call"},
+            "requested_by": "agent@example.com",
+            "purpose": "attempt direct MCP execution without ToolActionCard",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_mcp_direct_invocation_guard")
+        self.assertEqual(body["status"], "denied")
+        self.assertEqual(body["decision"], "deny")
+        self.assertIn("direct_agent_to_mcp_invocation_denied", body["errors"])
+        self.assertIn("tool_action_card_required", body["errors"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["mcp_server_invoked"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_human_validation"])
+        self.assertEqual(body["policy_decision"]["decision"], "deny")
+        self.assertEqual(body["policy_decision"]["tool_class"], "mcp_emulation_execute")
+        self.assertIn("ToolActionCard", body["required_path"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_governed_active_scanner_requires_approval_then_agent_normalizes_to_evidence(self) -> None:
         case_id = "CASE-V2-TOOL-RUNNER-NUCLEI-001"
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={

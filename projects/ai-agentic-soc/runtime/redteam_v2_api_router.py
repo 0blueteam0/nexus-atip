@@ -172,6 +172,11 @@ def validate_tool_schema(schema_id: str, payload: dict[str, Any]) -> dict[str, A
     return redteam_v2_models.validate_tool_schema_payload(schema_id, payload)
 
 
+@router.post("/mcp/direct-invoke")
+def guard_direct_mcp_invocation(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.guard_direct_mcp_invocation(payload)
+
+
 @router.get("/tool-actions")
 def list_tool_actions(case_id: str | None = None, status: str | None = None) -> dict[str, Any]:
     return redteam_v2_models.list_tool_actions(case_id=case_id, status=status)

@@ -35,8 +35,8 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 11 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
-| `partial` | 2 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
+| `proved` | 12 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 2 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 1 | 환경 조건 때문에 최종 증거가 아직 없음 |
 
@@ -45,6 +45,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `레드팀 분석2` 독립 탭과 live browser smoke 확인
 - RedTeam2 visible copy의 한국어/초급자 안내 inventory sanity
 - `/api/redteam/v2`의 ROE/HITL/ToolActionCard/Evidence/Report gate 흐름
+- MCP direct invocation denial guard와 artifact evidence
 - Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP registry와 분석 agent 매핑
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
@@ -52,7 +53,6 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 ## 아직 완료로 주장하면 안 되는 항목
 
-- live MCP direct invocation denial smoke
 - 실제 CLI/container 설치 자동화와 version command evidence 수집
 - OpenVAS/ZAP credential vault와 read-only token 정책
 - 전체 accepted gate manifest와 all-suite run artifact

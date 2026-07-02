@@ -133,7 +133,6 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
-- MCP direct invoke deny smoke
 - 실제 CLI/container 설치 자동화와 version command evidence 수집
 - OpenVAS/ZAP credential vault와 read-only token 정책
 - 전체 accepted gate manifest와 all-suite run artifact

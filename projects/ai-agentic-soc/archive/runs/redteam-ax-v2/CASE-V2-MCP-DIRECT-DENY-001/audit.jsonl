@@ -1,0 +1,2 @@
+{"commands_executed_by_api": false, "event": "mcp_direct_invocation_denied", "guard_id": "MCP-DENY-ADEF72FE4487", "mcp_server_invoked": false, "recorded_at": "2026-07-02T04:20:31Z", "server_id": "mcp_caldera_metadata", "tool_class": "emulation_execute", "tool_name": "run_operation"}
+{"commands_executed_by_api": false, "event": "mcp_direct_invocation_denied", "guard_id": "MCP-DENY-ADEF72FE4487", "mcp_server_invoked": false, "recorded_at": "2026-07-02T04:21:17Z", "server_id": "mcp_caldera_metadata", "tool_class": "emulation_execute", "tool_name": "run_operation"}

@@ -15,6 +15,11 @@ from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any
 
+try:
+    from runtime.redteam_mcp_gateway_adapter import deny_direct_mcp_invocation
+except ModuleNotFoundError:
+    from redteam_mcp_gateway_adapter import deny_direct_mcp_invocation  # type: ignore
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
@@ -1056,6 +1061,35 @@ def validate_against_tool_schema(schema_id: str, payload: dict[str, Any]) -> dic
 def validate_tool_schema_payload(schema_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     document = payload.get("document") if isinstance(payload.get("document"), dict) else payload
     return validate_against_tool_schema(schema_id, document)
+
+
+def guard_direct_mcp_invocation(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "RTA-MCP-DIRECT-DENY")
+    denial = deny_direct_mcp_invocation(payload)
+    denial["guard_id"] = stable_id(
+        "MCP-DENY",
+        [
+            case_id,
+            denial.get("server_id"),
+            denial.get("tool_name"),
+            denial.get("tool_class"),
+            denial.get("audit", {}).get("arguments_hash"),
+        ],
+    )
+    denial["artifact_path"] = write_json_artifact(case_id, "mcp-direct-denials", denial["guard_id"], denial)
+    write_case_event(
+        case_id,
+        {
+            "event": "mcp_direct_invocation_denied",
+            "guard_id": denial["guard_id"],
+            "server_id": denial.get("server_id"),
+            "tool_name": denial.get("tool_name"),
+            "tool_class": denial.get("tool_class"),
+            "commands_executed_by_api": False,
+            "mcp_server_invoked": False,
+        },
+    )
+    return denial
 
 
 def analysis_tool_profile(tool_id: str) -> dict[str, Any] | None:

@@ -1136,4 +1136,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `고도화/completion-audit/redteam2_korean_copy_inventory.json` inventory artifact 생성
 - [x] 현재 RedTeam2 copy 기준 한국어 맥락 리터럴 730/873개, 영문-only 비율 0.1592로 통과
 - [x] completion audit matrix의 RTA-COMP-002를 `proved`로 갱신하고 잔여 gap에서 visible-copy audit 제거
-- [ ] 다음 slice: MCP direct invoke deny smoke 또는 scanner install/version evidence capture 구현
+- [x] 다음 slice: MCP direct invoke deny smoke 또는 scanner install/version evidence capture 구현 - MCP direct invocation deny slice 55 완료
+
+## 63. Slice 55 MCP Direct Invocation Deny 체크리스트
+
+- [x] `redteam_mcp_gateway_adapter.deny_direct_mcp_invocation()` 추가
+- [x] `/api/redteam/v2/mcp/direct-invoke` guard endpoint 추가
+- [x] direct agent-to-MCP 요청은 실제 MCP 서버를 호출하지 않고 `decision=deny`, `commands_executed_by_api=false`, `mcp_server_invoked=false`로 반환
+- [x] denial guard artifact를 case archive `mcp-direct-denials`에 저장
+- [x] `tests/test_redteam_v2_api_router.py::test_v2_mcp_direct_invocation_is_denied_without_tool_action_card` 추가
+- [x] completion audit matrix의 RTA-COMP-004를 `proved`로 갱신하고 MCP direct invoke gap 제거
+- [ ] 다음 slice: scanner install/version evidence capture 또는 OpenVAS/ZAP credential vault contract 구현

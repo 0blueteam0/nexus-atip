@@ -11,8 +11,8 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 11,
-    "partial": 2,
+    "proved": 12,
+    "partial": 1,
     "gap": 2,
     "blocked": 1
   },
@@ -57,16 +57,17 @@
     {
       "id": "RTA-COMP-004",
       "requirement": "Only approved tools, scripts, MCP, and LLM agents may be used; direct MCP/tool invocation must be denied by default.",
-      "status": "partial",
+      "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_mcp_gateway_adapter.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-MCP-DIRECT-DENY-001/mcp-direct-denials/MCP-DENY-ADEF72FE4487.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC/07_MCP_GATEWAY_SPEC.md"
       ],
-      "proof_summary": "v2 API enforces ToolAction and approval controls for exposed routes; MCP gateway spec exists.",
-      "residual_gap": "An end-to-end MCP direct invocation denial smoke tied to the live gateway is not part of the current v2 browser/API regression set.",
-      "next_action": "Add explicit MCP direct invoke deny test or gateway smoke before claiming full completion."
+      "proof_summary": "v2 API enforces ToolAction and approval controls for exposed routes, and /api/redteam/v2/mcp/direct-invoke now returns a non-executing deny guard with commands_executed_by_api=false, mcp_server_invoked=false, trusted_as_instruction=false, and artifact evidence.",
+      "next_action": "Keep the MCP direct invocation denial regression in the v2 API suite when adding real MCP gateway integrations."
     },
     {
       "id": "RTA-COMP-005",
@@ -217,14 +218,12 @@
     }
   ],
   "remaining_gaps": [
-    "Live MCP direct invocation denial smoke.",
     "Actual CLI/container installation automation and version command evidence collection.",
     "OpenVAS/ZAP credential vault and read-only token policy.",
     "Full accepted gate manifest and all-suite run artifact.",
     "Successful real container runtime smoke after environment readiness."
   ],
   "next_slice_candidates": [
-    "Add MCP direct invoke deny regression.",
     "Implement scanner install evidence capture workflow.",
     "Design OpenVAS/ZAP credential vault contract.",
     "Create final verification harness for all accepted gates."
