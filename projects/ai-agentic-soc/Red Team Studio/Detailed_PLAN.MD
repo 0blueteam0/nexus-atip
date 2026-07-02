@@ -893,3 +893,13 @@ Create Case
 - Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 도구의 대표 운영자/서비스 결과가 하나의 toolchain collection으로 들어가고, Evidence 후보 6개, Evidence 승인, Finding 초안 6개, 2인 severity 승인, Matrix ready 6개 row, Report v2 draft, 최종 export, completion gate `complete=true`까지 통과하는 regression test를 추가했다.
 - RedTeam2 UI는 `운영자 결과 첨부 - 명령 실행 없음`과 `승인된 로컬 runner 실행` 모드를 분리한다. 첨부 모드는 `---REDTEAM-AX-TOOL---` 구분선으로 도구별 결과를 입력하고, 사용자가 실행과 첨부를 혼동하지 않도록 한국어 안내를 표시한다.
 - 이 slice는 6개 지정 도구 전체가 같은 collection/report/export/completion lane을 통과할 수 있음을 증명하지만, 실제 조직 OpenVAS/ZAP endpoint, Docker runtime, 운영 scanner artifact 제출·승인 완료를 대신 증명하지는 않는다.
+
+## 43. Slice 88 반영 사항
+
+- `/api/redteam/v2/toolchains/import-artifact-manifest`는 운영자가 제출한 multi-tool scanner artifact manifest를 읽는다.
+- manifest artifact는 `tool_id`, `source_path`, `sha256`, `content_type`, optional `action_id/run_id`를 포함한다. API는 등록된 ToolProfile, ToolActionCard, `offline_parse` ExecutionPlan, workspace 파일 존재, SHA-256 일치를 검증한다.
+- 각 파일은 기존 tool-run file importer를 통해 case raw artifact로 복사되고, run은 `OutputImported`로 남는다. toolchain manifest record에는 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`, `requires_human_validation=true`를 기록한다.
+- 잘못된 hash 또는 준비되지 않은 step은 해당 step만 `blocked`로 남기고, 유효한 다른 step은 import할 수 있다. 2개 미만/6개 초과 artifact, 미등록 tool profile, requested_by 누락은 명시 오류로 처리한다.
+- RedTeam2 UI는 `운영 산출물 manifest 가져오기` textarea와 버튼을 제공한다. 초급 운영자에게 `source_path`와 `sha256` 확인, 명령·능동 스캔 미실행, 검증된 파일만 toolchain collection으로 연결한다는 문구를 표시한다.
+- regression test는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 fixture 파일을 source_path/SHA-256 manifest로 가져오고, bad SHA-256 negative case와 이후 `/collect-results` Evidence 후보 6개 생성을 검증한다.
+- 이 slice는 실제 파일 기반 운영 산출물 제출 경로를 닫지만, 실제 조직 scanner 산출물의 사람 승인, Evidence 승인, Finding 승격, Matrix/Report/export/completion gate 완료는 후속 운영 실측 증거가 필요하다.

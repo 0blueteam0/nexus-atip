@@ -1795,6 +1795,89 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(completion_body["active_scan_executed"])
         self.assertFalse(completion_body["trusted_as_instruction"])
 
+    def test_v2_toolchain_artifact_manifest_imports_six_operating_outputs_for_collection(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-ARTIFACT-MANIFEST-001"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-artifact-manifest-source"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = [
+            ("TOOL-NUCLEI-001", "nuclei.jsonl", '{"template-id":"manifest-panel","info":{"name":"Manifest exposed panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}'),
+            ("TOOL-OPENVAS-001", "openvas.xml", "<report><results><result><id>ov-manifest</id><name>Manifest OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.10</host><port>443/tcp</port></result></results></report>"),
+            ("TOOL-TRIVY-001", "trivy.json", '{"Results":[{"Target":"container-image","Vulnerabilities":[{"VulnerabilityID":"CVE-MANIFEST-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Manifest Trivy vulnerability"}]}]}'),
+            ("TOOL-SCA-001", "sca.json", '{"vulnerabilities":[{"id":"CVE-MANIFEST-SCA","package":{"name":"example-lib"},"severity":"medium","source":"operator-sbom"}]}'),
+            ("TOOL-NPM-AUDIT-001", "npm-audit.json", '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-MANIFEST-NPM"}],"range":"<5.0.0","fixAvailable":true}}}'),
+            ("TOOL-ZAP-001", "zap.json", '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Manifest ZAP passive alert","riskdesc":"Low","confidence":"Medium","instances":[{"uri":"https://app.example.test/login"}]}]}]}'),
+        ]
+        artifacts = []
+        for tool_id, filename, content in fixtures:
+            path = source_dir / filename
+            path.write_text(content, encoding="utf-8", newline="\n")
+            artifacts.append({
+                "tool_id": tool_id,
+                "source_path": path.as_posix(),
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "content_type": "application/xml" if filename.endswith(".xml") else "application/json",
+                "summary": f"{tool_id} operator submitted manifest artifact.",
+            })
+
+        imported = self.client.post("/api/redteam/v2/toolchains/import-artifact-manifest", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-ARTIFACT-MANIFEST-001",
+            "requested_by": "operator@example.com",
+            "objective": "실제 운영자가 제출한 6개 도구 산출물 manifest를 collection으로 가져온다.",
+            "artifacts": artifacts,
+        })
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["kind"], "redteam_ax_v2_toolchain_artifact_manifest_import")
+        self.assertEqual(imported_body["status"], "imported")
+        self.assertEqual(imported_body["tool_count"], 6)
+        self.assertEqual(imported_body["imported_count"], 6)
+        self.assertEqual(imported_body["blocked_count"], 0)
+        self.assertFalse(imported_body["commands_executed_by_api"])
+        self.assertFalse(imported_body["active_scan_executed"])
+        self.assertFalse(imported_body["trusted_as_instruction"])
+        self.assertTrue(imported_body["requires_human_validation"])
+        for step in imported_body["steps"]:
+            self.assertEqual(step["status"], "imported")
+            self.assertEqual(step["plan"]["status"], "PlanReady")
+            self.assertEqual(step["run"]["status"], "OutputImported")
+            self.assertIsNone(step["run"]["runner_attempt"])
+            self.assertTrue(step["run"]["raw_artifacts"])
+            self.assertEqual(step["import"]["status"], "OutputImported")
+            self.assertTrue(Path(step["import"]["artifact"]["storage_path"]).exists())
+
+        bad_hash = self.client.post("/api/redteam/v2/toolchains/import-artifact-manifest", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-ARTIFACT-MANIFEST-BAD-HASH",
+            "requested_by": "operator@example.com",
+            "artifacts": [{**artifacts[0], "sha256": "0" * 64}, artifacts[1]],
+        })
+        self.assertEqual(bad_hash.status_code, 200)
+        bad_body = bad_hash.json()
+        self.assertEqual(bad_body["status"], "completed_with_blocks")
+        self.assertEqual(bad_body["imported_count"], 1)
+        self.assertEqual(bad_body["blocked_count"], 1)
+        self.assertIn("artifact_sha256_mismatch", ",".join(bad_body["steps"][0]["errors"]))
+
+        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-ARTIFACT-MANIFEST-001/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "운영자 제출 manifest 산출물을 Evidence 후보로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        collected_body = collected.json()
+        self.assertEqual(collected_body["status"], "collected")
+        self.assertEqual(collected_body["step_count"], 6)
+        self.assertEqual(collected_body["collected_count"], 6)
+        self.assertEqual(collected_body["evidence_candidate_count"], 6)
+        self.assertFalse(collected_body["commands_executed_by_api"])
+        self.assertFalse(collected_body["raw_output_trusted_as_instruction"])
+        for step in collected_body["steps"]:
+            self.assertEqual(step["status"], "collected")
+            self.assertEqual(step["normalized_result"]["input_source"], "stored_artifacts")
+            self.assertGreaterEqual(step["normalized_result"]["structured_item_count"], 1)
+            self.assertEqual(step["evidence_candidate"]["status"], "created")
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

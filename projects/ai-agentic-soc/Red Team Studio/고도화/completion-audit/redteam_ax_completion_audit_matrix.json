@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 28,
+    "proved": 29,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -477,6 +477,24 @@
       "proof_summary": "The governed toolchain execution path now accepts operator/imported output artifacts per step, stores inline output as untrusted artifacts, records run status OutputImported, increments imported_count, and keeps commands_executed_by_api=false. Regression coverage drives all six named tools through offline_parse imported outputs, collection normalization, six Evidence candidates, Evidence approval, six Finding drafts, two-person severity approval, Matrix ready rows, Korean Report v2 draft, Executive Sponsor export approval, export artifact, and completion gate complete=true with blocker_count=0. RedTeam2 UI now exposes an operator result attachment mode beside local runner execution and includes Korean guidance that attached outputs are not trusted as instructions.",
       "residual_gap": "This proves the full six-tool imported-output contract with representative operator/service outputs, not that real organization OpenVAS/ZAP endpoints, Docker runtime, or every operating scanner artifact has been submitted and approved.",
       "next_action": "Use the operator result attachment mode or live service import outputs with real governed Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP artifacts, then require the same completion gate complete=true."
+    },
+    {
+      "id": "RTA-COMP-030",
+      "requirement": "Real operating scanner artifact files must be importable as a multi-tool manifest with workspace source_path and SHA-256 validation, producing governed toolchain collection inputs without executing scanner commands.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/import-artifact-manifest API accepts a manifest of Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP source_path + sha256 artifacts, validates registered ToolProfile and PlanReady offline_parse controls per step, imports each file through the existing tool-run file importer, records OutputImported runs, and persists a toolchain artifact manifest record with commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false, and requires_human_validation=true. Regression coverage imports six operating-output fixture files, rejects a bad SHA-256 while allowing other valid steps, and then collects the imported files into six Evidence candidates. RedTeam2 UI exposes a Korean manifest textarea and '운영 산출물 manifest 가져오기' button.",
+      "residual_gap": "This proves the governed multi-file manifest import contract with representative files, not that real organization artifacts have all been submitted, reviewed, Evidence-approved, promoted to Findings, severity-approved, reported, exported, and completion-gated.",
+      "next_action": "Have the operator submit a real scanner artifact manifest with workspace paths and SHA-256 values, run /api/redteam/v2/toolchains/import-artifact-manifest, collect results, approve Evidence, promote Findings, approve severity, build Matrix/Report v2, export, and verify completion-gate complete=true."
     }
   ],
   "remaining_gaps": [

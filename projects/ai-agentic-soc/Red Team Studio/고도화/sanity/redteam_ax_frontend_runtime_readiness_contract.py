@@ -71,6 +71,9 @@ def main() -> int:
         "보류된 Finding/Claim 후보",
         "복합 도구 결과 회수 API",
         "/api/redteam/v2/toolchains/{toolchain_id}/collect-results",
+        "운영 산출물 manifest import API",
+        "/api/redteam/v2/toolchains/import-artifact-manifest",
+        "source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다",
         "복합 Evidence 후보 승인 API",
         "/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence",
         "레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동",
@@ -167,6 +170,9 @@ def main() -> int:
         "운영자 결과 본문",
         "---REDTEAM-AX-TOOL---",
         "여러 도구 결과 첨부",
+        "운영 산출물 manifest 가져오기",
+        "운영 산출물 manifest는 source_path와 sha256을 확인한 뒤",
+        "도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다",
     ]
     missing_safety_terms = [term for term in required_safety_terms if term not in redteam2_panel]
     if missing_safety_terms:

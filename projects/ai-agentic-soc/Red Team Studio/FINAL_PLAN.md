@@ -1559,3 +1559,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영자 결과 첨부 - 명령 실행 없음` / `승인된 로컬 runner 실행` 모드와 운영자 결과 본문 입력 추가
 - [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 imported-output full E2E anchor 반영
 - [ ] 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물을 imported-output 또는 live service import 경로로 제출하고 동일 completion gate 통과
+
+## 96. Slice 88 운영 산출물 파일 Manifest Import 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/import-artifact-manifest` API 추가
+- [x] manifest artifact별 `tool_id`, `source_path`, `sha256`, `content_type` 입력을 검증
+- [x] 등록 ToolProfile, ToolActionCard, `offline_parse` ExecutionPlan이 준비된 경우에만 import 허용
+- [x] 기존 tool-run file importer를 재사용해 workspace 경로와 SHA-256을 확인하고 case raw artifact로 보존
+- [x] run은 `OutputImported`로 남기고 API는 scanner 명령, shell expansion, 능동 스캔을 실행하지 않음
+- [x] bad SHA-256 step은 blocked로 남기되 다른 유효 step import는 유지하는 negative regression 추가
+- [x] regression test가 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 파일 manifest import 후 collection Evidence 후보 6개 생성을 검증
+- [x] RedTeam2 UI에 `운영 산출물 manifest 가져오기` textarea/button과 `source_path`/`sha256` 한국어 안내 추가
+- [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 manifest import anchor 반영
+- [ ] 실제 운영 scanner 파일 manifest를 제출하고 Evidence 승인, Finding 승격, severity 승인, Matrix/Report v2, export, completion gate까지 통과

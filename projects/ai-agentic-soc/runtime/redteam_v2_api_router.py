@@ -285,6 +285,11 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.governed_toolchain_execution(payload)
 
 
+@router.post("/toolchains/import-artifact-manifest")
+def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.import_toolchain_artifact_manifest(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

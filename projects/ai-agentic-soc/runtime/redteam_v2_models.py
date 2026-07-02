@@ -3485,6 +3485,153 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return record
 
 
+def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()
+    chain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("artifacts") or [], now_utc()]))
+    raw_artifacts = payload.get("artifacts") or payload.get("items") or []
+    target_scope_refs = payload.get("target_scope_refs") or []
+    errors: list[str] = []
+    warnings: list[str] = []
+    steps: list[dict[str, Any]] = []
+
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not isinstance(raw_artifacts, list) or len(raw_artifacts) < 2:
+        errors.append("at_least_two_artifacts_required_for_toolchain_manifest")
+    if isinstance(raw_artifacts, list) and len(raw_artifacts) > 6:
+        errors.append("too_many_artifacts_for_toolchain_manifest")
+
+    if not errors:
+        for index, raw_item in enumerate(raw_artifacts):
+            item = raw_item if isinstance(raw_item, dict) else {}
+            tool_id = str(item.get("tool_id") or "").strip()
+            profile = analysis_tool_profile(tool_id)
+            action_id = str(item.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id, "artifact-manifest"]))
+            run_id = str(item.get("run_id") or stable_id("TRUN", [case_id, chain_id, index, tool_id, "artifact-manifest"]))
+            step_record: dict[str, Any] = {
+                "index": index,
+                "tool_id": tool_id,
+                "tool_name": (profile or {}).get("name"),
+                "action_id": action_id,
+                "execution_mode": "offline_parse",
+                "status": "pending",
+                "errors": [],
+                "plan": None,
+                "run": None,
+                "import": None,
+            }
+            if profile is None:
+                step_record["status"] = "invalid"
+                step_record["errors"].append("tool_profile_not_registered")
+                steps.append(step_record)
+                continue
+
+            action = load_tool_action(action_id, case_id) or plan_tool_action({
+                "case_id": case_id,
+                "action_id": action_id,
+                "title": item.get("title") or f"{chain_id} · {(profile or {}).get('display_name') or tool_id} artifact import",
+                "objective": item.get("objective") or payload.get("objective") or "Operator-submitted scanner artifact import for governed toolchain collection.",
+                "tool_id": tool_id,
+                "requested_by": requested_by,
+                "target_scope_refs": item.get("target_scope_refs") or target_scope_refs,
+                "environment": item.get("environment") or payload.get("environment") or "approved_scope",
+                "inputs": {"requested_execution_mode": "offline_parse", "artifact_manifest_import": True},
+            })
+            plan = build_tool_execution_plan(action_id, {
+                "case_id": case_id,
+                "tool_id": tool_id,
+                "execution_mode": "offline_parse",
+                "requested_by": requested_by,
+                "target_scope_refs": item.get("target_scope_refs") or target_scope_refs,
+                "environment": item.get("environment") or payload.get("environment") or "approved_scope",
+            })
+            step_record["plan"] = {
+                "execution_plan_id": plan.get("execution_plan_id"),
+                "status": plan.get("status"),
+                "policy_decision": plan.get("policy_decision"),
+                "execution_token": plan.get("execution_token"),
+                "artifact_path": plan.get("artifact_path"),
+            }
+            if plan.get("status") != "PlanReady":
+                step_record["status"] = "blocked"
+                step_record["errors"].append("execution_plan_not_ready_for_artifact_import")
+                warnings.append(f"{tool_id}:execution_plan_not_ready_for_artifact_import")
+                steps.append(step_record)
+                continue
+
+            run = governed_tool_execution(action_id, {
+                "case_id": case_id,
+                "tool_id": tool_id,
+                "execution_mode": "offline_parse",
+                "requested_by": requested_by,
+                "target_scope_refs": item.get("target_scope_refs") or target_scope_refs,
+                "environment": item.get("environment") or payload.get("environment") or "approved_scope",
+                "run_id": run_id,
+                "raw_artifacts": [],
+                "output_summary": item.get("summary") or f"{(profile or {}).get('display_name') or tool_id} operator artifact manifest import.",
+                "notes": "Operator artifact manifest import; RedTeam AX validates and copies the artifact without executing scanner commands.",
+            })
+            import_record = import_tool_run_file(run_id, {
+                "case_id": case_id,
+                "source_path": item.get("source_path") or item.get("source_path_or_ref") or item.get("path"),
+                "sha256": item.get("sha256") or item.get("hash"),
+                "content_type": item.get("content_type"),
+                "summary": item.get("summary") or f"{(profile or {}).get('display_name') or tool_id} submitted output artifact.",
+                "artifact_id": item.get("artifact_id"),
+            })
+            updated_run = load_json_record(run_id, "tool-runs", case_id) or run
+            step_record["run"] = {
+                "run_id": updated_run.get("run_id"),
+                "status": updated_run.get("status"),
+                "policy_decision": updated_run.get("policy_decision"),
+                "runner_attempt": updated_run.get("runner_attempt"),
+                "raw_artifacts": updated_run.get("raw_artifacts") or [],
+                "artifact_path": updated_run.get("artifact_path"),
+                "analysis_agent_id": updated_run.get("analysis_agent_id"),
+                "normalizer_id": updated_run.get("normalizer_id"),
+            }
+            step_record["import"] = {
+                "import_id": import_record.get("import_id"),
+                "status": import_record.get("status"),
+                "errors": import_record.get("errors") or [],
+                "artifact": import_record.get("artifact"),
+                "artifact_path": import_record.get("artifact_path"),
+            }
+            if import_record.get("errors"):
+                step_record["status"] = "blocked"
+                step_record["errors"].extend(import_record.get("errors") or [])
+            else:
+                step_record["status"] = "imported"
+            steps.append(step_record)
+
+    imported_count = sum(1 for step in steps if step.get("status") == "imported")
+    blocked_count = sum(1 for step in steps if step.get("status") in {"blocked", "invalid"} or step.get("errors"))
+    record = {
+        "kind": "redteam_ax_v2_toolchain_artifact_manifest_import",
+        "toolchain_id": chain_id,
+        "case_id": case_id,
+        "requested_by": requested_by,
+        "status": "invalid" if errors else ("completed_with_blocks" if blocked_count else "imported"),
+        "errors": errors,
+        "warnings": warnings,
+        "tool_count": len(raw_artifacts) if isinstance(raw_artifacts, list) else 0,
+        "imported_count": imported_count,
+        "blocked_count": blocked_count,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "requires_evidence_approval_before_finding": True,
+        "steps": steps,
+        "policy": "Operator artifact manifest imports validate workspace source paths and SHA-256, then reuse ToolActionCard, ExecutionPlan, ToolRunRecord, sanitizer, normalizer, Evidence, Matrix, Report, export, and completion gates.",
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(record, "toolchain-runs", chain_id)
+    return record
+
+
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
