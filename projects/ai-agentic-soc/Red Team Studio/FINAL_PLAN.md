@@ -1027,4 +1027,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 결과는 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
 - [x] API 결과를 case artifact `agentic-rag-results`에 저장
 - [x] v2 API 회귀 테스트에 sufficient/retrieve_again 양쪽 smoke 추가
-- [ ] 다음 slice: Report Studio `레드팀 분석2`에 Agentic RAG/SCA 패널 연결 및 live browser smoke 추가
+- [x] Report Studio `레드팀 분석2`에 Agentic RAG/SCA 패널 연결 및 live browser smoke 추가 - slice 45 완료
+
+## 53. Slice 45 RedTeam2 Agentic RAG SCA UI/Browser Smoke 체크리스트
+
+- [x] `레드팀 분석2` 기본 draft에 Agentic RAG SCA query와 material claim draft 입력값 추가
+- [x] `레드팀 분석2`에 `Agentic RAG SCA / Citation Verifier` 패널 추가
+- [x] 패널에서 승인된 EvidenceCard를 준비한 뒤 `/api/redteam/v2/cases/{case_id}/agentic-rag/query` 호출
+- [x] SCA decision, answerability, citation count, unsupported claim count, selected corpora를 UI 표로 표시
+- [x] `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` safe-by-default 상태 표시
+- [x] live browser smoke에 `--allow-agentic-rag` opt-in 추가
+- [x] browser smoke가 Agentic RAG SCA 버튼, API 응답, citation verifier, no-runner invariant를 검증
+- [ ] 다음 slice: Agentic RAG 결과를 Report v2 draft의 Claim-Evidence Matrix 후보로 자동 반영하고 unsupported claim 보류 UI 추가

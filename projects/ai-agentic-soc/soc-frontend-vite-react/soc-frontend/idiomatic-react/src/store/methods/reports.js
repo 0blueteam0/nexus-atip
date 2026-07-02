@@ -3152,6 +3152,8 @@ export default {
       wrapperVersionCommand:'',
       wrapperVersionOutput:'',
       runnerBackend:'local_subprocess_shim',
+      agenticRagQuery:'Agentic RAG SCA로 승인된 EvidenceCard가 report claim을 충분히 뒷받침하는지 검증하라.',
+      agenticRagClaimText:'승인된 EvidenceCard가 RedTeam AX v2 보고서 claim의 근거로 연결되었다.',
       ...saved,
       reportId,
       objective,
@@ -4064,6 +4066,49 @@ export default {
     }
   }
 ,
+  async runRedTeam2AgenticRagSca() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportDraft = this.redTeam2ReportExportDraft();
+    this.setState(s => ({ redteam2AgenticRagState:{ ...(s.redteam2AgenticRagState || {}), status:'running', error:null } }));
+    try {
+      const evidence = await this.ensureRedTeam2ApprovedEvidence();
+      const caseId = String(reportDraft.caseId || evidence.case_id || '').trim();
+      const claimId = String(reportDraft.claimId || 'C-REDTEAM2-RAG-001').trim();
+      const payload = {
+        query:String(draft.agenticRagQuery || '').trim() || 'Agentic RAG SCA citation verifier',
+        required_facts:[evidence.summary || evidence.evidence_id].filter(Boolean),
+        claims:[{
+          claim_id:claimId,
+          text:String(draft.agenticRagClaimText || '').trim() || '승인된 EvidenceCard가 보고서 claim의 근거로 연결되었다.',
+          evidence_ids:[evidence.evidence_id],
+        }],
+      };
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/cases/${encodeURIComponent(caseId)}/agentic-rag/query`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.errors?.length) throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2AgenticRagState:{
+          ...(s.redteam2AgenticRagState || {}),
+          status:'ready',
+          result:data,
+          evidence,
+          checkedAt:new Date().toISOString(),
+          error:null,
+        },
+        redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), evidence, checkedAt:new Date().toISOString() },
+      }));
+      this.toast(`Agentic RAG SCA: ${data.sca_report?.decision || 'completed'}`, data.sca_report?.decision === 'sufficient' ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 Agentic RAG SCA: ${caseId} · ${data.sca_report?.decision || 'unknown'}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2AgenticRagState:{ ...(s.redteam2AgenticRagState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Agentic RAG SCA 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async approveRedTeam2ReportExport() {
     const draft = this.redTeam2ReportExportDraft();
     const state = this.state.redteam2ReportExportState || {};
@@ -4138,6 +4183,7 @@ export default {
     const visualRedactionState = this.state.redteam2VisualRedactionState || {};
     const executionPlanState = this.state.redteam2ExecutionPlanState || {};
     const runnerState = this.state.redteam2RunnerState || {};
+    const agenticRagState = this.state.redteam2AgenticRagState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
     const visualPreview = visualRedactionState.preview || {};
@@ -4145,6 +4191,9 @@ export default {
     const wrapperPinState = this.state.redteam2WrapperPinState || {};
     const executionPlan = executionPlanState.plan || {};
     const runnerRun = runnerState.run || {};
+    const agenticRagResult = agenticRagState.result || {};
+    const agenticSca = agenticRagResult.sca_report || {};
+    const agenticVerifier = agenticRagResult.citation_verification || {};
     const uploadedImport = fileUploadState.imported || {};
     const uploadedArtifact = uploadedImport.artifact || {};
     const uploadedNormalized = fileUploadState.normalized || {};
@@ -4329,6 +4378,16 @@ export default {
       ['Restricted Visual Review', visualDescriptor.requires_human_review ? 'required' : 'not required', (visualPreview.warnings || []).filter(x => String(x).includes('restricted')).join(', ') || 'classification review'],
       ['Trusted As Instruction', String(visualDescriptor.trusted_as_instruction ?? false), 'must be false'],
     ];
+    const agenticRagRows = [
+      ['SCA Decision', agenticSca.decision || agenticRagState.status || 'idle', agenticRagState.error || `score=${agenticSca.sufficient_context_score ?? '-'}`],
+      ['Answerable', String(agenticSca.answerable ?? false), (agenticSca.missing_facts || []).join(', ') || 'no missing facts'],
+      ['Citations', (agenticRagResult.citations || []).length, (agenticRagResult.citations || []).map(item => item.citation_id).join(', ') || 'approved EvidenceCard required'],
+      ['Unsupported Claims', agenticVerifier.unsupported_claim_count ?? '-', 'must be 0 before report use'],
+      ['Selected Corpora', (agenticRagResult.selected_corpora || []).length, (agenticRagResult.selected_corpora || []).join(', ') || 'redteam_ax_v2_evidence_store pending'],
+      ['Commands Executed', String(agenticRagResult.commands_executed_by_api ?? false), 'must stay false'],
+      ['Trusted As Instruction', String(agenticRagResult.trusted_as_instruction ?? false), 'must stay false'],
+      ['Human Validation', String(agenticRagResult.requires_human_validation ?? true), 'analyst review required'],
+    ];
     return h('div', { style:{ display:'grid', gap:'14px' } },
       h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
         h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
@@ -4394,6 +4453,38 @@ export default {
           this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']])),
           this.renderTable(['Install Readiness','Status','Controls','Operator Plan'], installRows.length ? installRows : [['not loaded','-','-','상태 새로고침 필요']]),
           this.renderTable(['Selected Install','Status','Evidence'], selectedInstallRows)),
+      smallPanel('Agentic RAG SCA / Citation Verifier',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'10px' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'SCA query',
+              h('textarea', {
+                value:draft.agenticRagQuery || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ agenticRagQuery:e.target.value }),
+                rows:3,
+                style:{ ...inputStyle, marginTop:'5px', resize:'vertical' },
+              })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Material claim draft',
+              h('textarea', {
+                value:draft.agenticRagClaimText || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ agenticRagClaimText:e.target.value }),
+                rows:3,
+                style:{ ...inputStyle, marginTop:'5px', resize:'vertical' },
+              }))),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('button', {
+              onClick:()=>this.runRedTeam2AgenticRagSca(),
+              disabled:agenticRagState.status === 'running',
+              style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:agenticRagState.status === 'running' ? C.raised : C.bg, color:agenticRagState.status === 'running' ? C.muted : C.blue, cursor:agenticRagState.status === 'running' ? 'not-allowed' : 'pointer', fontWeight:900 },
+            }, agenticRagState.status === 'running' ? 'SCA Running' : 'Run Agentic RAG SCA'),
+            h('span', { style:{ fontSize:'10px', color:agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : agenticRagState.error ? C.coral : C.sec, fontWeight:900 } }, agenticRagState.error || agenticSca.decision || agenticRagState.status || 'idle')),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['SCA', agenticSca.decision || '-', agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : C.sec, `score ${agenticSca.sufficient_context_score ?? '-'}`],
+            ['Citation Verifier', agenticVerifier.all_material_claims_supported ? 'supported' : 'pending', agenticVerifier.unsupported_claim_count === 0 ? C.green : C.amber, `${agenticVerifier.unsupported_claim_count ?? '-'} unsupported`],
+            ['Evidence', agenticRagState.evidence?.evidence_id || '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url || 'approved EvidenceCard auto-prepared'],
+            ['Corpora', (agenticRagResult.selected_corpora || []).length || '-', C.blue, (agenticRagResult.selected_corpora || []).slice(0, 3).join(', ') || 'run SCA'],
+          ].map(card)),
+          this.renderTable(['Agentic RAG','Status','Evidence'], agenticRagRows),
+          agenticRagResult.answer_draft_ko ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'130px', overflow:'auto' } }, agenticRagResult.answer_draft_ko) : null)),
       smallPanel('Tool Wrapper Manifest / Version Pinning',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [

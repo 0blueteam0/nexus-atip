@@ -99,6 +99,7 @@ def playwright_browser_smoke(
     allow_approval_request: bool,
     allow_approval_grant: bool,
     allow_evidence_matrix: bool,
+    allow_agentic_rag: bool,
 ) -> dict[str, Any]:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     script_path = ARTIFACT_DIR / "live_browser_parser_probe.mjs"
@@ -111,6 +112,7 @@ const allowAction = process.argv[3] === 'allow-action';
 const allowApprovalRequest = process.argv[4] === 'allow-approval-request';
 const allowApprovalGrant = process.argv[5] === 'allow-approval-grant';
 const allowEvidenceMatrix = process.argv[6] === 'allow-evidence-matrix';
+const allowAgenticRag = process.argv[7] === 'allow-agentic-rag';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const result = { url, checks: {}, apiResponses: [] };
@@ -139,6 +141,14 @@ try {
       requiredApprovers: parsed && Array.isArray(parsed.required_approvers) ? parsed.required_approvers : null,
       allowedButtons: parsed && Array.isArray(parsed.allowed_buttons) ? parsed.allowed_buttons : null,
       actionAllowedButtons: parsed && parsed.action && Array.isArray(parsed.action.allowed_buttons) ? parsed.action.allowed_buttons : null,
+      scaDecision: parsed && parsed.sca_report ? parsed.sca_report.decision : null,
+      scaAnswerable: parsed && parsed.sca_report ? parsed.sca_report.answerable : null,
+      citationCount: parsed && Array.isArray(parsed.citations) ? parsed.citations.length : null,
+      unsupportedClaimCount: parsed && parsed.citation_verification ? parsed.citation_verification.unsupported_claim_count : null,
+      allMaterialClaimsSupported: parsed && parsed.citation_verification ? parsed.citation_verification.all_material_claims_supported : null,
+      commandsExecutedByApi: parsed && typeof parsed.commands_executed_by_api === 'boolean' ? parsed.commands_executed_by_api : null,
+      trustedAsInstruction: parsed && typeof parsed.trusted_as_instruction === 'boolean' ? parsed.trusted_as_instruction : null,
+      requiresHumanValidation: parsed && typeof parsed.requires_human_validation === 'boolean' ? parsed.requires_human_validation : null,
       errors: parsed && Array.isArray(parsed.errors) ? parsed.errors : null,
       itemCount: parsed && parsed.count != null ? parsed.count : null,
       bodyPrefix: body.slice(0, 120),
@@ -305,6 +315,10 @@ try {
       }
     }
   }
+  if (allowAgenticRag) {
+    await page.getByRole('button', { name: /Run Agentic RAG SCA/ }).first().click({ timeout: 10000 });
+    await page.waitForTimeout(4000);
+  }
   result.title = await page.title();
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
@@ -320,6 +334,9 @@ try {
   result.checks.toolActionCard = bodyText.includes('ToolActionCard');
   result.checks.hitlGate = bodyText.includes('HITL');
   result.checks.evidenceGate = bodyText.includes('Evidence Card') || bodyText.includes('Claim-Evidence Matrix');
+  result.checks.agenticRagPanel = bodyText.includes('Agentic RAG SCA / Citation Verifier')
+    && bodyText.includes('Run Agentic RAG SCA')
+    && bodyText.includes('Citation Verifier');
   if (allowAction) {
     const planResponse = result.apiResponses.find((item) => item.url.endsWith('/api/redteam/v2/tool-actions/plan'));
     result.toolActionPlan = {
@@ -444,6 +461,37 @@ try {
       && result.evidenceMatrix.governedRunnerNotClicked
       && result.evidenceMatrix.governedRunnerNotExecuted;
   }
+  if (allowAgenticRag) {
+    const ragResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/agentic-rag/query'));
+    result.agenticRag = {
+      responseFound: Boolean(ragResponse),
+      responseStatus: ragResponse ? ragResponse.status : null,
+      kind: ragResponse ? ragResponse.kind : null,
+      scaDecision: ragResponse ? ragResponse.scaDecision : null,
+      scaAnswerable: ragResponse ? ragResponse.scaAnswerable : null,
+      citationCount: ragResponse ? ragResponse.citationCount : null,
+      unsupportedClaimCount: ragResponse ? ragResponse.unsupportedClaimCount : null,
+      allMaterialClaimsSupported: ragResponse ? ragResponse.allMaterialClaimsSupported : null,
+      commandsExecutedByApi: ragResponse ? ragResponse.commandsExecutedByApi : null,
+      trustedAsInstruction: ragResponse ? ragResponse.trustedAsInstruction : null,
+      requiresHumanValidation: ragResponse ? ragResponse.requiresHumanValidation : null,
+      governedRunnerNotClicked: true,
+      governedRunnerNotExecuted: true,
+    };
+    result.checks.agenticRagScaLinked = result.agenticRag.responseFound
+      && result.agenticRag.responseStatus === 200
+      && result.agenticRag.kind === 'redteam_ax_v2_agentic_rag_result'
+      && result.agenticRag.scaDecision === 'sufficient'
+      && result.agenticRag.scaAnswerable === true
+      && result.agenticRag.citationCount >= 1
+      && result.agenticRag.unsupportedClaimCount === 0
+      && result.agenticRag.allMaterialClaimsSupported === true
+      && result.agenticRag.commandsExecutedByApi === false
+      && result.agenticRag.trustedAsInstruction === false
+      && result.agenticRag.requiresHumanValidation === true
+      && result.agenticRag.governedRunnerNotClicked
+      && result.agenticRag.governedRunnerNotExecuted;
+  }
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
   result.status = 'failed_browser_probe';
@@ -460,7 +508,8 @@ console.log(JSON.stringify(result));
     approval_arg = "allow-approval-request" if allow_approval_request else "approval-request-disabled"
     grant_arg = "allow-approval-grant" if allow_approval_grant else "approval-grant-disabled"
     matrix_arg = "allow-evidence-matrix" if allow_evidence_matrix else "evidence-matrix-disabled"
-    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg, grant_arg, matrix_arg], cwd=FRONTEND_ROOT, timeout=timeout)
+    rag_arg = "allow-agentic-rag" if allow_agentic_rag else "agentic-rag-disabled"
+    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg, grant_arg, matrix_arg, rag_arg], cwd=FRONTEND_ROOT, timeout=timeout)
     parsed: dict[str, Any] | None = None
     if probe.get("stdout"):
         try:
@@ -493,6 +542,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "allow_browser_approval_request_smoke": args.allow_approval_request,
         "allow_browser_approval_grant_smoke": args.allow_approval_grant,
         "allow_browser_evidence_matrix_smoke": args.allow_evidence_matrix,
+        "allow_browser_agentic_rag_smoke": args.allow_agentic_rag,
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "browser_automation_executed": False,
@@ -541,6 +591,10 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         result["status"] = "blocked_evidence_matrix_smoke_requires_approval_grant"
         result["blockers"] = ["evidence_matrix_smoke_requires_allow_approval_grant"]
         return result, 2 if args.require_live else 0
+    if args.allow_agentic_rag and not allow_browser:
+        result["status"] = "blocked_agentic_rag_smoke_requires_browser"
+        result["blockers"] = ["agentic_rag_smoke_requires_allow_browser"]
+        return result, 2 if args.require_live else 0
     if not (FRONTEND_ROOT / "node_modules" / "playwright").exists():
         result["status"] = "blocked_playwright_dependency_not_installed"
         result["blockers"] = ["frontend_node_modules_playwright_not_found"]
@@ -553,6 +607,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         args.allow_approval_request,
         args.allow_approval_grant,
         args.allow_evidence_matrix,
+        args.allow_agentic_rag,
     )
     result["browser_smoke"] = browser
     result["status"] = "passed" if browser.get("status") == "passed" else "failed_browser_dom_parser_smoke"
@@ -567,6 +622,7 @@ def main() -> int:
     parser.add_argument("--allow-approval-request", action="store_true", help="Opt in to requesting HITL approval after ToolActionCard planning. No approval grant or runner execution is triggered.")
     parser.add_argument("--allow-approval-grant", action="store_true", help="Opt in to granting the HITL approval in the UI smoke. No runner execution is triggered.")
     parser.add_argument("--allow-evidence-matrix", action="store_true", help="Opt in to importing approved manual-run artifacts through Evidence Card and Claim-Evidence Matrix validation. No runner execution is triggered.")
+    parser.add_argument("--allow-agentic-rag", action="store_true", help="Opt in to running the RedTeam2 Agentic RAG SCA/citation verifier UI flow against approved EvidenceCard data. No runner execution is triggered.")
     parser.add_argument("--require-live", action="store_true", help="Return non-zero if live services/browser smoke are not ready.")
     parser.add_argument("--frontend-url", default="http://127.0.0.1:5177")
     parser.add_argument("--backend-url", default="http://127.0.0.1:8765")
