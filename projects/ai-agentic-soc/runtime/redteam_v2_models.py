@@ -6634,6 +6634,218 @@ def generate_toolchain_collection_report_draft_from_matrix(collection_id: str, p
     return append_artifact_metadata(result, "toolchain-report-drafts", report_request_id)
 
 
+def close_toolchain_collection_e2e(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    reviewer = str(payload.get("reviewed_by") or payload.get("evidence_reviewer") or "").strip()
+    lead_approver = str(payload.get("lead_approver") or payload.get("red_team_lead") or "").strip()
+    business_owner = str(payload.get("business_owner_approver") or payload.get("business_owner") or "").strip()
+    export_approver = str(payload.get("export_approver") or payload.get("executive_sponsor") or "").strip()
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+    if not reviewer:
+        errors.append("evidence_reviewer_required")
+    if not lead_approver:
+        errors.append("lead_approver_required")
+    if not business_owner:
+        errors.append("business_owner_approver_required")
+    if not export_approver:
+        errors.append("export_approver_required")
+    if lead_approver and business_owner and lead_approver.lower() == business_owner.lower():
+        errors.append("distinct_finding_severity_approvers_required")
+
+    candidate_evidence_ids = [
+        str(((step or {}).get("evidence_candidate") or {}).get("evidence_id") or "").strip()
+        for step in (collection or {}).get("steps") or []
+        if str(((step or {}).get("evidence_candidate") or {}).get("evidence_id") or "").strip()
+    ]
+    if collection is not None and not candidate_evidence_ids:
+        errors.append("evidence_candidates_required")
+
+    closure_id = stable_id("TCCE2E", [collection_id, case_id, reviewer, lead_approver, business_owner, export_approver, now_utc()])
+    evidence_approval: dict[str, Any] | None = None
+    finding_promotion: dict[str, Any] | None = None
+    severity_approval: dict[str, Any] | None = None
+    matrix_draft: dict[str, Any] | None = None
+    report_draft: dict[str, Any] | None = None
+    export_approval: dict[str, Any] | None = None
+    export_result: dict[str, Any] | None = None
+    completion_gate: dict[str, Any] | None = None
+
+    if not errors:
+        evidence_approval = approve_toolchain_collection_evidence(collection_id, {
+            **payload,
+            "case_id": case_id,
+            "reviewed_by": reviewer,
+            "reviewer_role": normalize_approver_role(payload.get("reviewer_role") or "red_team_lead"),
+            "decision": "approve",
+            "evidence_ids": payload.get("evidence_ids") or candidate_evidence_ids,
+            "_actor_context": {
+                **resolve_actor_context(
+                    {"case_id": case_id, "reviewer_role": normalize_approver_role(payload.get("reviewer_role") or "red_team_lead")},
+                    actor_id=reviewer,
+                    actor_role=normalize_approver_role(payload.get("reviewer_role") or "red_team_lead"),
+                ),
+                "resolved": True,
+            },
+        })
+        if evidence_approval.get("errors") or evidence_approval.get("status") != "evidence_approved":
+            errors.extend(f"evidence_approval:{error}" for error in (evidence_approval.get("errors") or [evidence_approval.get("status")]))
+
+    if not errors:
+        approved_ids = evidence_approval.get("evidence_ids") or candidate_evidence_ids
+        finding_promotion = promote_toolchain_collection_evidence_to_findings(collection_id, {
+            **payload,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "evidence_ids": approved_ids,
+        })
+        if finding_promotion.get("errors") or finding_promotion.get("status") not in {"finding_drafts_created", "finding_drafts_partially_created"}:
+            errors.extend(f"finding_promotion:{error}" for error in (finding_promotion.get("errors") or [finding_promotion.get("status")]))
+
+    finding_ids: list[str] = []
+    if not errors:
+        finding_ids = [
+            str(item.get("finding_id") or "").strip()
+            for item in (finding_promotion or {}).get("promotions") or []
+            if str(item.get("finding_id") or "").strip()
+        ]
+        severity_approval = approve_toolchain_collection_finding_severity(collection_id, {
+            **payload,
+            "case_id": case_id,
+            "finding_ids": finding_ids,
+            "lead_approver": lead_approver,
+            "business_owner_approver": business_owner,
+            "severity_final": payload.get("severity_final") or "medium",
+        })
+        if severity_approval.get("errors") or severity_approval.get("status") != "findings_severity_approved":
+            errors.extend(f"finding_severity:{error}" for error in (severity_approval.get("errors") or [severity_approval.get("status")]))
+
+    if not errors:
+        approved_finding_ids = [
+            str(item.get("finding_id") or "").strip()
+            for item in (severity_approval or {}).get("approvals") or []
+            if item.get("status") == "approved" and str(item.get("finding_id") or "").strip()
+        ]
+        matrix_draft = build_toolchain_collection_claim_evidence_matrix_draft(collection_id, {
+            **payload,
+            "case_id": case_id,
+            "finding_ids": approved_finding_ids,
+            "title": payload.get("matrix_title") or "복합 도구 결과 Claim-Evidence Matrix 초안",
+        })
+        if matrix_draft.get("errors") or matrix_draft.get("status") != "matrix_draft_ready":
+            errors.extend(f"matrix:{error}" for error in (matrix_draft.get("errors") or [matrix_draft.get("status")]))
+
+    if not errors:
+        report_draft = generate_toolchain_collection_report_draft_from_matrix(collection_id, {
+            **payload,
+            "case_id": case_id,
+            "finding_ids": [
+                str(row.get("finding_id") or "").strip()
+                for row in (matrix_draft or {}).get("rows") or []
+                if str(row.get("finding_id") or "").strip()
+            ],
+            "title": payload.get("report_title") or payload.get("title") or "복합 도구 결과 기반 Korean Red Team Report v2 draft",
+        })
+        if report_draft.get("errors") or not report_draft.get("report_generated"):
+            errors.extend(f"report_draft:{error}" for error in (report_draft.get("errors") or [report_draft.get("status")]))
+
+    report = (report_draft or {}).get("report") or {}
+    report_id = str(report.get("report_id") or "").strip()
+    if not errors:
+        export_approval = approve_report_export(report_id, {
+            **payload,
+            "case_id": case_id,
+            "approved_by": export_approver,
+            "approver_role": "executive_sponsor",
+            "_actor_context": {
+                **resolve_actor_context(
+                    {"case_id": case_id, "approver_role": "executive_sponsor"},
+                    actor_id=export_approver,
+                    actor_role="executive_sponsor",
+                ),
+                "resolved": True,
+            },
+        })
+        if export_approval.get("errors") or export_approval.get("status") != "ExportApproved":
+            errors.extend(f"export_approval:{error}" for error in (export_approval.get("errors") or [export_approval.get("status")]))
+
+    if not errors:
+        export_result = export_report(report_id, {
+            "case_id": case_id,
+            "approval_id": (export_approval or {}).get("approval_id"),
+        })
+        if export_result.get("errors") or export_result.get("status") != "Exported":
+            errors.extend(f"export:{error}" for error in (export_result.get("errors") or [export_result.get("status")]))
+
+    if not errors:
+        completion_gate = verify_toolchain_collection_completion_gate(collection_id, {
+            "case_id": case_id,
+            "report_id": report_id,
+            "approval_id": (export_approval or {}).get("approval_id"),
+            "export_id": (export_result or {}).get("export_id"),
+        })
+        if completion_gate.get("errors") or not completion_gate.get("complete"):
+            gate_errors = completion_gate.get("errors") or [
+                str((item or {}).get("reason") or (item or {}).get("gate") or item)
+                for item in (completion_gate.get("blockers") or [])
+            ]
+            errors.extend(f"completion_gate:{error}" for error in gate_errors)
+
+    completed = not errors and bool((completion_gate or {}).get("complete"))
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_e2e_closure",
+        "closure_id": closure_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": "collection_e2e_complete" if completed else "blocked",
+        "complete": completed,
+        "requested_by": requested_by,
+        "reviewed_by": reviewer or None,
+        "lead_approver": lead_approver or None,
+        "business_owner_approver": business_owner or None,
+        "export_approver": export_approver or None,
+        "evidence_approval": evidence_approval,
+        "finding_promotion": finding_promotion,
+        "finding_severity_approval": severity_approval,
+        "matrix_draft": matrix_draft,
+        "report_draft": report_draft,
+        "export_approval": export_approval,
+        "export": export_result,
+        "completion_gate": completion_gate,
+        "report_id": report_id or None,
+        "approval_id": (export_approval or {}).get("approval_id"),
+        "export_id": (export_result or {}).get("export_id"),
+        "candidate_evidence_count": len(set(candidate_evidence_ids)),
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "requires_explicit_human_approver_fields": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "complete=true인 경우에도 최종 산출물은 사람이 보고서와 Evidence 연결을 검토합니다.",
+            "blocked이면 errors에 표시된 단계부터 다시 수행합니다.",
+            "이 API는 scanner 명령이나 능동 스캔을 실행하지 않고 기존 collection 산출물만 닫습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-e2e-closures", closure_id)
+    if collection is not None:
+        collection["e2e_closure_id"] = closure_id
+        collection["e2e_closure_status"] = result["status"]
+        collection["completion_gate_id"] = (completion_gate or {}).get("gate_id") or collection.get("completion_gate_id")
+        collection["completion_gate_status"] = (completion_gate or {}).get("status") or collection.get("completion_gate_status")
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
 def verify_toolchain_collection_completion_gate(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     collection = load_json_record(collection_id, "toolchain-result-collections", case_id)

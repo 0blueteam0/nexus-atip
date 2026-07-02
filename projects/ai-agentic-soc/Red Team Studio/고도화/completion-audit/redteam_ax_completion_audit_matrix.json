@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 30,
+    "proved": 31,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -513,19 +513,37 @@
       "proof_summary": "The /api/redteam/v2/toolchains/build-artifact-manifest API scans a workspace directory for Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP output filename patterns, computes SHA-256 and content type per selected file, records unmatched files and alternatives, emits an import_payload compatible with /toolchains/import-artifact-manifest, and persists a builder artifact with commands_executed_by_api=false, active_scan_executed=false, and trusted_as_instruction=false. Regression coverage builds a six-tool manifest from fixture files and submits the generated payload to the existing import API. RedTeam2 UI exposes a Korean source-folder input and '폴더에서 manifest 만들기' button that fills the manifest JSON textarea.",
       "residual_gap": "This proves the helper path with representative workspace files, not that real organization scanner output folders have been processed or that the resulting Evidence/Finding/Matrix/Report/export/completion gates have completed.",
       "next_action": "Run the builder against a real operator scanner-output folder, review the generated manifest, import it, and drive the resulting collection through the full Evidence/Finding/Matrix/Report/export/completion-gate lane."
+    },
+    {
+      "id": "RTA-COMP-032",
+      "requirement": "Operators need a beginner-friendly, explicit-approval helper to close an imported scanner collection from Evidence approval through Finding promotion, two-person severity approval, Matrix, Report v2 draft, export approval, export, and completion gate without executing scanner commands.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The close-e2e API requires explicit Evidence reviewer, red_team_lead, business_owner, and executive_sponsor fields, blocks missing approvers, then closes an existing imported scanner collection through Evidence approval, Finding promotion, two-person severity approval, Matrix ready, Report v2 draft, export approval/export, and completion gate. Regression uses manifest-imported Nuclei/ZAP artifacts and proves collection_e2e_complete with commands_executed_by_api=false, active_scan_executed=false, trusted_as_instruction=false. RedTeam2 UI exposes Korean approver inputs and a beginner-friendly ?? ?? button.",
+      "residual_gap": "This proves the closure helper on controlled fixtures. Actual operating scanner folders still need to be submitted/imported, reviewed by real approvers, closed via close-e2e, and preserved as operating evidence."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
-    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, or live service import path, collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion.",
-    "Actual operating toolchain collection Evidence candidates must be batch-approved, promoted, severity-approved, passed through Matrix/report draft gates, final export approval/export verification, and the collection completion gate across real scanner outputs."
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, or close-e2e collection closure path and preserved as real operating evidence.",
+    "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
-    "Run /api/redteam/v2/toolchains/build-artifact-manifest against a real operator scanner-output folder, review/import the manifest, then run /api/redteam/v2/toolchains/{toolchain_id}/collect-results and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates.",
-    "Repeat the now-tested collection final export approval/export verification lane against real approved toolchain collection Findings.",
-    "Run /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate against real operating scanner collections and require complete=true."
+    "Run /api/redteam/v2/toolchains/build-artifact-manifest against a real operator scanner-output folder, review/import the manifest, collect results, then close the resulting collection with /api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e.",
+    "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
+    "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ]
 }

@@ -180,6 +180,12 @@ def main() -> int:
         "운영 산출물 manifest 가져오기",
         "운영 산출물 manifest는 source_path와 sha256을 확인한 뒤",
         "도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다",
+        "복합 Collection 전체 닫기 API",
+        "/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e",
+        "명시된 사람 승인자 정보를 받아 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 draft, export 승인, export, completion gate를 순서대로 수행하지만 scanner 명령과 능동 스캔은 실행하지 않습니다",
+        "복합 Collection 전체 닫기 승인자",
+        "사람 승인 필드가 비어 있으면 실행하지 않습니다",
+        "전체 닫기: 승인·보고서·Export",
     ]
     missing_safety_terms = [term for term in required_safety_terms if term not in redteam2_panel]
     if missing_safety_terms:

@@ -1927,6 +1927,106 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(imported_body["imported_count"], 6)
         self.assertFalse(imported_body["commands_executed_by_api"])
 
+    def test_v2_toolchain_collection_close_e2e_closes_imported_manifest_without_scanner_execution(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-CLOSE-E2E-001"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = [
+            ("TOOL-NUCLEI-001", "nuclei-close.jsonl", '{"template-id":"close-panel","info":{"name":"Close E2E panel candidate","severity":"medium"},"matched-at":"https://app.example.test/admin"}'),
+            ("TOOL-ZAP-001", "zap-close.json", '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Close E2E ZAP passive alert","riskdesc":"Low","confidence":"Medium","instances":[{"uri":"https://app.example.test/login"}]}]}]}'),
+        ]
+        artifacts = []
+        for tool_id, name, content in fixtures:
+            path = source_dir / name
+            path.write_text(content, encoding="utf-8", newline="\n")
+            artifacts.append({
+                "tool_id": tool_id,
+                "source_path": str(path),
+                "sha256": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+                "content_type": "application/jsonl" if name.endswith(".jsonl") else "application/json",
+            })
+
+        imported = self.client.post("/api/redteam/v2/toolchains/import-artifact-manifest", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-CLOSE-E2E-001",
+            "requested_by": "analyst@example.com",
+            "objective": "운영자 scanner 산출물을 명령 실행 없이 가져와 전체 closure API를 검증한다.",
+            "artifacts": artifacts,
+        })
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["status"], "imported")
+        self.assertEqual(imported_body["imported_count"], 2)
+        self.assertFalse(imported_body["commands_executed_by_api"])
+        self.assertFalse(imported_body["active_scan_executed"])
+        self.assertFalse(imported_body["trusted_as_instruction"])
+
+        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-CLOSE-E2E-001/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "운영 산출물 import 결과를 closure API 입력 collection으로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        collection = collected.json()
+        self.assertEqual(collection["status"], "collected")
+        self.assertEqual(collection["evidence_candidate_count"], 2)
+        self.assertFalse(collection["commands_executed_by_api"])
+        self.assertFalse(collection["raw_output_trusted_as_instruction"])
+
+        missing_approvers = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{collection['collection_id']}/close-e2e",
+            json={
+                "case_id": case_id,
+                "reviewed_by": "lead@example.com",
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+            },
+        )
+        self.assertEqual(missing_approvers.status_code, 200)
+        missing_body = missing_approvers.json()
+        self.assertEqual(missing_body["status"], "blocked")
+        self.assertFalse(missing_body["complete"])
+        self.assertIn("export_approver_required", missing_body["errors"])
+
+        closed = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{collection['collection_id']}/close-e2e",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+                "reviewed_by": "lead@example.com",
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+                "export_approver": "executive-sponsor@example.com",
+                "report_title": "Close E2E Korean Red Team Report v2",
+            },
+        )
+        self.assertEqual(closed.status_code, 200)
+        body = closed.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_collection_e2e_closure")
+        self.assertEqual(body["status"], "collection_e2e_complete")
+        self.assertTrue(body["complete"])
+        self.assertEqual(body["candidate_evidence_count"], 2)
+        self.assertEqual(body["evidence_approval"]["status"], "evidence_approved")
+        self.assertEqual(body["evidence_approval"]["approved_count"], 2)
+        self.assertEqual(body["finding_promotion"]["status"], "finding_drafts_created")
+        self.assertEqual(body["finding_promotion"]["created_count"], 2)
+        self.assertEqual(body["finding_severity_approval"]["status"], "findings_severity_approved")
+        self.assertEqual(body["finding_severity_approval"]["approved_count"], 2)
+        self.assertEqual(body["matrix_draft"]["status"], "matrix_draft_ready")
+        self.assertEqual(body["matrix_draft"]["ready_claim_count"], 2)
+        self.assertEqual(body["report_draft"]["status"], "report_draft_generated")
+        self.assertEqual(body["report_draft"]["report"]["gate_status"], "pass")
+        self.assertEqual(body["export_approval"]["status"], "ExportApproved")
+        self.assertEqual(body["export"]["status"], "Exported")
+        self.assertEqual(body["completion_gate"]["status"], "collection_e2e_complete")
+        self.assertTrue(body["completion_gate"]["complete"])
+        self.assertEqual(body["completion_gate"]["blocker_count"], 0)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_explicit_human_approver_fields"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

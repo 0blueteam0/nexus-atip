@@ -1584,3 +1584,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영 산출물 폴더 경로`, `폴더에서 manifest 만들기` 버튼, 자동 JSON 반영 추가
 - [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 builder anchor 반영
 - [ ] 실제 운영 scanner 폴더에서 builder를 실행하고 생성 manifest를 제출해 Evidence/Finding/Matrix/Report/export/completion gate 완료
+
+## 98. Slice 90 복합 Collection 전체 닫기 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e` API 추가
+- [x] Evidence 검토자, red_team_lead, business_owner, executive_sponsor 승인자 입력이 모두 없으면 blocked 처리
+- [x] 기존 collection 산출물에서 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report v2 draft, export 승인, export, completion gate를 순서대로 수행
+- [x] API는 scanner 명령, active scan, Docker/WSL/network 실행, raw output instruction 신뢰를 수행하지 않음
+- [x] regression test가 manifest import 기반 Nuclei/ZAP collection을 close-e2e API 하나로 `collection_e2e_complete`까지 닫음
+- [x] RedTeam2 UI에 `복합 Collection 전체 닫기 승인자` 입력과 `전체 닫기: 승인·보고서·Export` 버튼 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 close-e2e anchor 반영
+- [ ] 실제 운영 scanner 산출물 collection을 close-e2e API로 닫고 운영 승인·보고서 export·completion gate 실측 증거 확보

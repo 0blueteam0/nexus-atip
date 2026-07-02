@@ -334,6 +334,11 @@ def generate_toolchain_collection_report_draft_from_matrix(collection_id: str, p
     return redteam_v2_models.generate_toolchain_collection_report_draft_from_matrix(collection_id, payload)
 
 
+@router.post("/toolchain-result-collections/{collection_id}/close-e2e")
+def close_toolchain_collection_e2e(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.close_toolchain_collection_e2e(collection_id, payload)
+
+
 @router.post("/toolchain-result-collections/{collection_id}/completion-gate")
 def verify_toolchain_collection_completion_gate(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.verify_toolchain_collection_completion_gate(collection_id, payload)

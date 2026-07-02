@@ -3165,6 +3165,10 @@ export default {
       ].join('\n---REDTEAM-AX-TOOL---\n'),
       compositeArtifactManifestSourceDir:'J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example',
       compositeArtifactManifestJson:'{\n  "artifacts": [\n    {"tool_id":"TOOL-NUCLEI-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/nuclei.jsonl","sha256":"<sha256>","content_type":"application/x-ndjson"},\n    {"tool_id":"TOOL-OPENVAS-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/openvas.xml","sha256":"<sha256>","content_type":"application/xml"},\n    {"tool_id":"TOOL-TRIVY-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/trivy.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-SCA-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/sca.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-NPM-AUDIT-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/npm-audit.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-ZAP-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/zap.json","sha256":"<sha256>","content_type":"application/json"}\n  ]\n}',
+      compositeClosureReviewer:'lead@example.com',
+      compositeClosureLead:'lead@example.com',
+      compositeClosureBusinessOwner:'business-owner@example.com',
+      compositeClosureExportApprover:'executive-sponsor@example.com',
       credentialToolId:'TOOL-OPENVAS-001',
       credentialRef:'vault://redteam/openvas/lab-readonly',
       credentialEndpointRef:'https://openvas.lab.example',
@@ -4047,6 +4051,58 @@ export default {
     }
   }
 ,
+  async closeRedTeam2ToolchainCollectionE2E() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const collection = this.state.redteam2ToolchainCollectionState?.result || {};
+    if (!collection.collection_id) {
+      this.toast('먼저 복합 결과 회수로 collection을 만드세요', 'warn');
+      return;
+    }
+    const payload = {
+      case_id:caseId,
+      requested_by:'current-analyst',
+      reviewed_by:String(draft.compositeClosureReviewer || 'lead@example.com').trim(),
+      lead_approver:String(draft.compositeClosureLead || 'lead@example.com').trim(),
+      business_owner_approver:String(draft.compositeClosureBusinessOwner || 'business-owner@example.com').trim(),
+      export_approver:String(draft.compositeClosureExportApprover || 'executive-sponsor@example.com').trim(),
+      report_title:'복합 도구 결과 기반 Korean Red Team Report v2 draft',
+    };
+    if (!payload.reviewed_by || !payload.lead_approver || !payload.business_owner_approver || !payload.export_approver) {
+      this.toast('Evidence 검토자, 레드팀 리드, 업무 소유자, 최종 후원자 입력이 모두 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainClosureState:{ ...(s.redteam2ToolchainClosureState || {}), status:'closing', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchain-result-collections/${encodeURIComponent(collection.collection_id)}/close-e2e`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'blocked' || data.errors?.length) throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ToolchainClosureState:{ ...(s.redteam2ToolchainClosureState || {}), status:data.status || 'collection_e2e_complete', result:data, checkedAt:new Date().toISOString(), error:null },
+        redteam2ToolchainEvidenceApprovalState:data.evidence_approval ? { ...(s.redteam2ToolchainEvidenceApprovalState || {}), status:data.evidence_approval.status, result:data.evidence_approval, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainEvidenceApprovalState || {}),
+        redteam2ToolchainFindingPromotionState:data.finding_promotion ? { ...(s.redteam2ToolchainFindingPromotionState || {}), status:data.finding_promotion.status, result:data.finding_promotion, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainFindingPromotionState || {}),
+        redteam2ToolchainFindingSeverityState:data.finding_severity_approval ? { ...(s.redteam2ToolchainFindingSeverityState || {}), status:data.finding_severity_approval.status, result:data.finding_severity_approval, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainFindingSeverityState || {}),
+        redteam2ToolchainMatrixState:data.matrix_draft ? { ...(s.redteam2ToolchainMatrixState || {}), status:data.matrix_draft.status, result:data.matrix_draft, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainMatrixState || {}),
+        redteam2ToolchainReportDraftState:data.report_draft ? { ...(s.redteam2ToolchainReportDraftState || {}), status:data.report_draft.status, result:data.report_draft, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainReportDraftState || {}),
+        redteam2ToolchainCompletionGateState:data.completion_gate ? { ...(s.redteam2ToolchainCompletionGateState || {}), status:data.completion_gate.status, result:data.completion_gate, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainCompletionGateState || {}),
+        redteam2ReportExportState:data.report_draft?.report?.report_id
+          ? { ...(s.redteam2ReportExportState || {}), status:'ready', report:data.report_draft.report, approval:data.export_approval, exported:data.export, collectionReportDraft:data.report_draft, checkedAt:new Date().toISOString(), error:null }
+          : (s.redteam2ReportExportState || {}),
+      }));
+      this.toast(data.complete ? '복합 collection 전체 닫기 완료' : '복합 collection 전체 닫기 차단', data.complete ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 collection 전체 닫기: ${collection.collection_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainClosureState:{ ...(s.redteam2ToolchainClosureState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('복합 collection 전체 닫기 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4776,6 +4832,7 @@ export default {
     const toolchainMatrixState = this.state.redteam2ToolchainMatrixState || {};
     const toolchainReportDraftState = this.state.redteam2ToolchainReportDraftState || {};
     const toolchainCompletionGateState = this.state.redteam2ToolchainCompletionGateState || {};
+    const toolchainClosureState = this.state.redteam2ToolchainClosureState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -4794,6 +4851,7 @@ export default {
     const toolchainMatrix = toolchainMatrixState.result || {};
     const toolchainReportDraft = toolchainReportDraftState.result || {};
     const toolchainCompletionGate = toolchainCompletionGateState.result || {};
+    const toolchainClosure = toolchainClosureState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -4933,6 +4991,8 @@ export default {
       hold_until_evidence_and_finding_approved:'Evidence/Finding 승인 전 보류',
       not_run_no_ready_rows:'준비된 행 없음 · 검증 미실행',
       report_draft_generated:'보고서 draft 생성됨',
+      closing:'전체 닫기 중',
+      collection_e2e_complete:'Collection E2E 완료',
       collected:'결과 회수 완료',
       collecting:'결과 회수 중',
       collected_with_blocks:'일부 결과 회수 차단',
@@ -5398,6 +5458,7 @@ export default {
       ['Finding 심각도 2인 승인', koValue(toolchainFindingSeverity.status || toolchainFindingSeverityState.status || '대기'), toolchainFindingSeverityState.error || `${toolchainFindingSeverity.approved_count ?? 0}개 승인 · ${toolchainFindingSeverity.pending_count ?? 0}개 대기`],
       ['Collection Matrix 초안', koValue(toolchainMatrix.status || toolchainMatrixState.status || '대기'), toolchainMatrixState.error || `${toolchainMatrix.ready_claim_count ?? 0}개 ready · ${toolchainMatrix.held_claim_count ?? 0}개 보류`],
       ['Collection Report v2 draft', koValue(toolchainReportDraft.status || toolchainReportDraftState.status || '대기'), toolchainReportDraftState.error || (toolchainReportDraft.report_generated ? 'draft 생성됨 · 최종 export 승인 필요' : 'Matrix ready 이후 생성')],
+      ['Collection 전체 닫기 API', koValue(toolchainClosure.status || toolchainClosureState.status || '대기'), toolchainClosureState.error || toolchainClosure.closure_id || '/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e'],
       ['Collection E2E 완료 게이트', koValue(toolchainCompletionGate.status || toolchainCompletionGateState.status || '대기'), toolchainCompletionGateState.error || `${toolchainCompletionGate.blocker_count ?? '-'}개 blocker · ${toolchainCompletionGate.complete ? '완료 증거 사용 가능' : 'export 완료 후 점검'}`],
       ['저장 산출물', toolchainRun.artifact_path ? '저장됨' : '미저장', toolchainRun.artifact_path || '복합 실행 후 생성'],
     ];
@@ -5443,6 +5504,7 @@ export default {
       ['최종 export 승인', toolchainReportDraft.requires_final_export_approval ? '별도 필요' : '미확인', 'draft 생성은 export 승인이 아님'],
     ];
     const toolchainCompletionRows = [
+      ['전체 닫기', toolchainClosure.complete ? '완료' : koValue(toolchainClosure.status || toolchainClosureState.status || '대기'), toolchainClosure.complete ? 'Evidence 승인부터 export까지 닫힘' : (toolchainClosureState.error || '명시 승인자 입력 후 실행')],
       ['완료 상태', toolchainCompletionGate.complete ? '완료' : koValue(toolchainCompletionGate.status || toolchainCompletionGateState.status || '대기'), toolchainCompletionGate.complete ? 'collection E2E 완료 증거' : (toolchainCompletionGateState.error || '보고서 내보내기 뒤 점검')],
       ['Evidence', `${toolchainCompletionGate.approved_evidence_count ?? 0}/${toolchainCompletionGate.candidate_evidence_count ?? 0}개 승인`, '모든 후보 Evidence 승인 필요'],
       ['Finding', `${toolchainCompletionGate.approved_finding_count ?? 0}/${toolchainCompletionGate.promoted_finding_count ?? 0}개 2인 승인`, 'red_team_lead와 business_owner 승인 필요'],
@@ -5828,6 +5890,7 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 최종 export 게이트는 Report v2 draft의 report_id를 최종 게이트 패널에 자동 연결한 뒤 Executive Sponsor 승인을 받은 경우에만 내보내기를 허용합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection E2E 완료 게이트는 /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate 입니다. 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 한 번에 점검합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 전체 닫기 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e 입니다. 명시된 사람 승인자 정보를 받아 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 draft, export 승인, export, completion gate를 순서대로 수행하지만 scanner 명령과 능동 스캔은 실행하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 산출물 manifest는 source_path와 sha256을 확인한 뒤 /api/redteam/v2/toolchains/import-artifact-manifest로 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '복합 처리 방식',
@@ -5883,6 +5946,18 @@ export default {
                 style:{ ...inputStyle, resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
                 placeholder:'{"artifacts":[{"tool_id":"TOOL-NUCLEI-001","source_path":"...","sha256":"...","content_type":"application/x-ndjson"}]}',
               })),
+            h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'8px', display:'grid', gap:'8px' } },
+              h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '복합 Collection 전체 닫기 승인자'),
+              h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '초보 사용자는 아래 승인자 4명을 채운 뒤 전체 닫기 버튼을 누르면 됩니다. 이 버튼은 기존 collection 산출물만 사용하고, 사람 승인 필드가 비어 있으면 실행하지 않습니다.'),
+              h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:'8px' } },
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'Evidence 검토자',
+                  h('input', { value:draft.compositeClosureReviewer || '', onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeClosureReviewer:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '레드팀 리드',
+                  h('input', { value:draft.compositeClosureLead || '', onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeClosureLead:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '업무 소유자',
+                  h('input', { value:draft.compositeClosureBusinessOwner || '', onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeClosureBusinessOwner:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '최종 후원자',
+                  h('input', { value:draft.compositeClosureExportApprover || '', onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeClosureExportApprover:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })))),
             h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
               h('button', {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
@@ -5929,6 +6004,11 @@ export default {
                 disabled:toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.coral}`, background:toolchainReportDraftState.status === 'generating' ? C.raised : C.bg, color:(toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready') ? C.muted : C.coral, cursor:(toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready') ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainReportDraftState.status === 'generating' ? 'Report 생성 중' : 'Report v2 draft 생성'),
+              h('button', {
+                onClick:()=>this.closeRedTeam2ToolchainCollectionE2E(),
+                disabled:toolchainClosureState.status === 'closing' || !toolchainCollection.collection_id,
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainClosureState.status === 'closing' ? C.raised : C.green, color:(toolchainClosureState.status === 'closing' || !toolchainCollection.collection_id) ? C.muted : '#fff', cursor:(toolchainClosureState.status === 'closing' || !toolchainCollection.collection_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainClosureState.status === 'closing' ? '전체 닫는 중' : '전체 닫기: 승인·보고서·Export'),
               h('button', {
                 onClick:()=>this.verifyRedTeam2ToolchainCompletionGate(),
                 disabled:toolchainCompletionGateState.status === 'checking' || !reportExported.export_id,
