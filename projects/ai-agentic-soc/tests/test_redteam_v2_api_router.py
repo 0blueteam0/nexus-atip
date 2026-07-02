@@ -55,6 +55,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("strict_live_readiness_promotion", body)
         self.assertIn("live_readiness_remediation", body)
         self.assertIn("operator_evidence_collection", body)
+        self.assertIn("operator_evidence_submission", body)
         self.assertIsInstance(body["blockers"], list)
         self.assertGreaterEqual(len(body["operator_next_steps"]), 1)
         for artifact in (
@@ -65,6 +66,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             body["strict_live_readiness_promotion"],
             body["live_readiness_remediation"],
             body["operator_evidence_collection"],
+            body["operator_evidence_submission"],
         ):
             self.assertIn("exists", artifact)
             self.assertIn("path", artifact)

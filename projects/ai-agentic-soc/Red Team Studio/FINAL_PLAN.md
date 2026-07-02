@@ -1372,3 +1372,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 operator evidence package anchor 추가
 - [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-COLLECTION-PACKAGE` 추가
 - [ ] 운영자가 Docker/WSL/OpenVAS/ZAP 증거를 첨부한 뒤 `--require-inputs-ready`, `--require-clear`, strict promotion 통과
+
+## 81. Slice 73 Operator Evidence Submission Validation 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_operator_evidence_submission_validator.py` 추가
+- [x] 운영자 제출 manifest의 artifact path, SHA-256, expected status, 사람 승인 상태를 검증
+- [x] 기본 실행은 제출 manifest 없이 `awaiting_operator_evidence_submission` artifact를 만들고 명령을 실행하지 않음
+- [x] `--submission-manifest`와 `--require-approved`로 운영 검증 단계에서 모든 제출 증거가 승인/일치하지 않으면 non-zero 종료
+- [x] `/api/redteam/v2/runtime-readiness`에 `operator_evidence_submission` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `증거 제출 검증`, `승인된 제출 증거`, `운영자 제출 증거 검증` 표 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 submission validation anchor 추가
+- [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-SUBMISSION-VALIDATION` 추가
+- [ ] 운영자가 실제 Docker/WSL/OpenVAS/ZAP/promotion artifact를 제출한 manifest로 `--require-approved` 통과

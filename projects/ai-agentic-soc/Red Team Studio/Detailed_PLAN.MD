@@ -743,3 +743,14 @@ Create Case
 - RedTeam2 runtime readiness panel은 `증거 수집 패키지`, `수집할 증거 항목`, `운영자 증거 수집 패키지` 표를 표시한다.
 - accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-COLLECTION-PACKAGE`가 추가된다.
 - 이 slice는 남은 실측 blocker를 더 쉽게 수집/검토 가능한 evidence package로 만든 것이며, Docker/WSL/OpenVAS/ZAP readiness 성공을 완료로 주장하지 않는다.
+
+## 28. Slice 73 반영 사항
+
+- `고도화/sanity/redteam_ax_operator_evidence_submission_validator.py`는 operator evidence collection package의 제출 manifest를 검증한다.
+- 검증 항목은 artifact path 존재, 제출 sha256과 실제 sha256 일치, artifact JSON status와 expected status 일치, `review_status=approved` 여부다.
+- 기본 실행은 제출 manifest 없이 `awaiting_operator_evidence_submission` artifact를 생성하고 Docker, WSL, scanner, network 명령을 실행하지 않는다.
+- 운영 검증에서는 `--submission-manifest <path> --require-approved`로 모든 OEC 항목이 승인된 증거와 일치하지 않으면 non-zero로 종료한다.
+- `/api/redteam/v2/runtime-readiness`는 `operator_evidence_submission` artifact를 함께 반환하고 blocker 목록에 남은 제출 검증 item 수를 포함한다.
+- RedTeam2 runtime readiness panel은 `증거 제출 검증`, `승인된 제출 증거`, `운영자 제출 증거 검증` 표를 표시한다.
+- accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-SUBMISSION-VALIDATION`이 추가된다.
+- 이 slice는 운영자가 가져온 증거를 검증 가능한 manifest로 닫는 경로이며, 실제 Docker/WSL/OpenVAS/ZAP 증거 제출 자체는 아직 남은 조건이다.

@@ -1,0 +1,141 @@
+{
+  "kind": "redteam_ax_operator_evidence_submission_validation",
+  "schema_version": "0.1",
+  "created_at": "2026-07-02T12:48:40Z",
+  "source_package_artifact": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-operator-evidence-collection/latest_operator_evidence_collection_package.json",
+  "submission_manifest_path": "",
+  "status": "awaiting_operator_evidence_submission",
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "commands_executed_by_validator": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "secret_material_collected": false,
+  "requires_human_validation": true,
+  "expected_item_count": 5,
+  "submitted_item_count": 5,
+  "approved_item_count": 0,
+  "blocked_item_count": 5,
+  "missing_items": [],
+  "unknown_items": [],
+  "validation_items": [
+    {
+      "item_id": "OEC-LRR-DOCKER-001",
+      "artifact_path": "",
+      "expected_status": "passed",
+      "review_status": "pending_human_review",
+      "exists": false,
+      "sha256_expected": "",
+      "sha256_actual": "",
+      "artifact_status": "missing",
+      "status_match": false,
+      "sha256_match": false,
+      "approved": false,
+      "errors": [
+        "artifact_path_missing"
+      ]
+    },
+    {
+      "item_id": "OEC-LRR-WSL-001",
+      "artifact_path": "",
+      "expected_status": "ready",
+      "review_status": "pending_human_review",
+      "exists": false,
+      "sha256_expected": "",
+      "sha256_actual": "",
+      "artifact_status": "missing",
+      "status_match": false,
+      "sha256_match": false,
+      "approved": false,
+      "errors": [
+        "artifact_path_missing"
+      ]
+    },
+    {
+      "item_id": "OEC-LRR-SCANNER-ENDPOINT-001",
+      "artifact_path": "",
+      "expected_status": "ready",
+      "review_status": "pending_human_review",
+      "exists": false,
+      "sha256_expected": "",
+      "sha256_actual": "",
+      "artifact_status": "missing",
+      "status_match": false,
+      "sha256_match": false,
+      "approved": false,
+      "errors": [
+        "artifact_path_missing"
+      ]
+    },
+    {
+      "item_id": "OEC-LRR-SCANNER-IMPORT-001",
+      "artifact_path": "",
+      "expected_status": "passed",
+      "review_status": "pending_human_review",
+      "exists": false,
+      "sha256_expected": "",
+      "sha256_actual": "",
+      "artifact_status": "missing",
+      "status_match": false,
+      "sha256_match": false,
+      "approved": false,
+      "errors": [
+        "artifact_path_missing"
+      ]
+    },
+    {
+      "item_id": "OEC-LRR-PROMOTION-001",
+      "artifact_path": "",
+      "expected_status": "promotion_ready",
+      "review_status": "pending_human_review",
+      "exists": false,
+      "sha256_expected": "",
+      "sha256_actual": "",
+      "artifact_status": "missing",
+      "status_match": false,
+      "sha256_match": false,
+      "approved": false,
+      "errors": [
+        "artifact_path_missing"
+      ]
+    }
+  ],
+  "operator_submission_manifest_template": {
+    "case_id": "CASE-V2-LIVE-READINESS-PROMOTION",
+    "operator_identity": "<operator@example.com>",
+    "roe_reference": "<approved ROE id>",
+    "attached_artifacts": [
+      {
+        "item_id": "OEC-LRR-DOCKER-001",
+        "artifact_path": "",
+        "sha256": "",
+        "review_status": "pending_human_review"
+      },
+      {
+        "item_id": "OEC-LRR-WSL-001",
+        "artifact_path": "",
+        "sha256": "",
+        "review_status": "pending_human_review"
+      },
+      {
+        "item_id": "OEC-LRR-SCANNER-ENDPOINT-001",
+        "artifact_path": "",
+        "sha256": "",
+        "review_status": "pending_human_review"
+      },
+      {
+        "item_id": "OEC-LRR-SCANNER-IMPORT-001",
+        "artifact_path": "",
+        "sha256": "",
+        "review_status": "pending_human_review"
+      },
+      {
+        "item_id": "OEC-LRR-PROMOTION-001",
+        "artifact_path": "",
+        "sha256": "",
+        "review_status": "pending_human_review"
+      }
+    ]
+  },
+  "markdown_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-operator-evidence-collection/latest_operator_evidence_submission_validation.md"
+}
