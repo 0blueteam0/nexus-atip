@@ -1,12 +1,12 @@
 {
   "kind": "redteam_ax_v2_live_browser_parser_smoke",
-  "created_at": "2026-07-02T02:16:14.638784Z",
+  "created_at": "2026-07-02T02:22:26.490991Z",
   "frontend_url": "http://127.0.0.1:5177",
   "backend_url": "http://127.0.0.1:8765",
-  "allow_browser_automation": false,
+  "allow_browser_automation": true,
   "safe_by_default": true,
   "commands_executed_by_api": false,
-  "browser_automation_executed": false,
+  "browser_automation_executed": true,
   "trusted_as_instruction": false,
   "requires_human_validation": true,
   "frontend_root": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react",
@@ -14,8 +14,8 @@
     "frontend_tcp": {
       "host": "127.0.0.1",
       "port": 5177,
-      "open": false,
-      "error": "timed out"
+      "open": true,
+      "error": null
     },
     "backend_tcp": {
       "host": "127.0.0.1",
@@ -25,10 +25,10 @@
     },
     "frontend_http": {
       "url": "http://127.0.0.1:5177/",
-      "ok": false,
-      "status_code": null,
-      "body_prefix": "",
-      "error": "<urlopen error [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다>"
+      "ok": true,
+      "status_code": 200,
+      "body_prefix": "<!DOCTYPE html>\n<html lang=\"ko\">\n  <head>\n    <script type=\"module\">import { injectIntoGlobalHook } from \"/@react-refresh\";\ninjectIntoGlobalHook(window);\nwindow.$RefreshReg$ = () => {};\nwindow.$RefreshSig$ = () => (type) => type;</script>\n\n    <script type=\"module\" src=\"/@vite/client\"></script>\n\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <title>AI Agentic SOC · Report Studio v4 (Idiomatic React)</title>\n  </head>\n  <body>\n    <div ",
+      "error": null
     },
     "backend_v2_health": {
       "url": "http://127.0.0.1:8765/api/redteam/v2/health",
@@ -45,8 +45,36 @@
       "error": null
     }
   },
-  "status": "blocked_live_services_not_ready",
-  "blockers": [
-    "live_frontend_5177_not_ready"
-  ]
+  "browser_smoke": {
+    "script_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\archive\\runs\\redteam-ax-v2-browser-smoke\\live_browser_parser_probe.mjs",
+    "command": {
+      "argv": [
+        "node.exe",
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\archive\\runs\\redteam-ax-v2-browser-smoke\\live_browser_parser_probe.mjs",
+        "http://127.0.0.1:5177/"
+      ],
+      "cwd": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react",
+      "exit_code": 0,
+      "stdout": "{\"url\":\"http://127.0.0.1:5177/\",\"checks\":{\"reportStudio\":true,\"redteamAnalysis\":true,\"redteamAnalysis2\":true,\"toolActionCard\":true,\"hitlGate\":true,\"evidenceGate\":true},\"title\":\"AI Agentic SOC 쨌 Report Studio v4 (Idiomatic React)\",\"finalUrl\":\"http://127.0.0.1:5177/reports\",\"bodyPrefix\":\"Agentic SOC\\nOPERATING SYSTEM\\nOPERATE\\n�쁽�솴\\n�븣由� �걧\\n�궗嫄�\\n����쓳\\n�뿄�듃\\nUNDERSTAND\\n�쐞�뿕 留λ씫\\n利앹쟻\\n�씤�뀛由ъ쟾�뒪\\n�깘吏�\\n硫붾え由�\\nBUILD\\n�뿉�씠�쟾�듃\\n�젅李�\\n�뒪�궗\\n�뿰�룞\\n�떎�뻾 �윴����엫\\nREPORTS\\n�뼚\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\\nGOVERN\\n�젙梨�\\n�룊媛�\\n媛먯궗\\nOUTCOMES\\nSOC �꽦怨�\\n寃쎌쁺 由ъ뒪�겕\\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\\n諛��룄 쨌 蹂댄넻\\n�옄�쑉�꽦 紐⑤뱶\\nShadow\\nAssisted\\nAI-led\\nBounded\\n紐낅졊\\n�뙓K\\n�젙\\n�젙愿��젣\\nTier-3 Analyst\\n�뜲�씠�꽣 �떊�꽑�룄\\nIdentity 2m\\nEndpoint 12m\\nNetwork 4m\\nCloud 3m\\n�슑 EDR FIN-WS-204 12m stale\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\\n蹂닿퀬�꽌 �깮�꽦\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\\nReports\\nReport catalog\\n�븙�꽦肄붾뱶 遺꾩꽍\\nWorkflow, evidence, HITL, report fields\\n�젅�뱶��� 遺꾩꽍\\nObjectives, campaigns, evidence\\n�젅�뱶��� 遺꾩꽍2\\nAX v2 ToolActionCard, HITL, evidence gates\\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\\n�긽�깭 �깉濡쒓퀬移�\\nToolActionCard 怨꾪쉷\\nv2 API\\nready\\ntool_action_card_required\\nv1 Backend\\nai-agentic-soc-redteam-backend\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\\nRAG/Wiki\\nready\\nJ:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-agentic-rag-kb-20260629/redteam_agentic_rag.sqlite\\nReadiness\\n-\\npipeline coverage\\nToolHub\\n6\\nToolActionCard + ROE + HITL before active execution\\nCase / ROE �엯�젰\\n蹂닿퀬�꽌\\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\\n����긽 �쑀�삎\\nIP\\nURL\\nDomain\\nCIDR\\n����긽\\nRisk Class\\nT0\\nT1\\nT2\\nT3\\nT4\\nT5\\nT6\\nT7\\nScope Ref\\nAnalysis Tool\\nNuclei\\nOpenVAS / Greenbone Community Edition\\nTrivy\\nSCA Dependency Analyzer\\nnpm audit\\nOWASP ZAP\\nExecution Mode\\n\",\"status\":\"passed\"}\n",
+      "stderr": ""
+    },
+    "result": {
+      "url": "http://127.0.0.1:5177/",
+      "checks": {
+        "reportStudio": true,
+        "redteamAnalysis": true,
+        "redteamAnalysis2": true,
+        "toolActionCard": true,
+        "hitlGate": true,
+        "evidenceGate": true
+      },
+      "title": "AI Agentic SOC 쨌 Report Studio v4 (Idiomatic React)",
+      "finalUrl": "http://127.0.0.1:5177/reports",
+      "bodyPrefix": "Agentic SOC\nOPERATING SYSTEM\nOPERATE\n�쁽�솴\n�븣由� �걧\n�궗嫄�\n����쓳\n�뿄�듃\nUNDERSTAND\n�쐞�뿕 留λ씫\n利앹쟻\n�씤�뀛由ъ쟾�뒪\n�깘吏�\n硫붾え由�\nBUILD\n�뿉�씠�쟾�듃\n�젅李�\n�뒪�궗\n�뿰�룞\n�떎�뻾 �윴����엫\nREPORTS\n�뼚\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\nGOVERN\n�젙梨�\n�룊媛�\n媛먯궗\nOUTCOMES\nSOC �꽦怨�\n寃쎌쁺 由ъ뒪�겕\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\n諛��룄 쨌 蹂댄넻\n�옄�쑉�꽦 紐⑤뱶\nShadow\nAssisted\nAI-led\nBounded\n紐낅졊\n�뙓K\n�젙\n�젙愿��젣\nTier-3 Analyst\n�뜲�씠�꽣 �떊�꽑�룄\nIdentity 2m\nEndpoint 12m\nNetwork 4m\nCloud 3m\n�슑 EDR FIN-WS-204 12m stale\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\n蹂닿퀬�꽌 �깮�꽦\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\nReports\nReport catalog\n�븙�꽦肄붾뱶 遺꾩꽍\nWorkflow, evidence, HITL, report fields\n�젅�뱶��� 遺꾩꽍\nObjectives, campaigns, evidence\n�젅�뱶��� 遺꾩꽍2\nAX v2 ToolActionCard, HITL, evidence gates\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\n�긽�깭 �깉濡쒓퀬移�\nToolActionCard 怨꾪쉷\nv2 API\nready\ntool_action_card_required\nv1 Backend\nai-agentic-soc-redteam-backend\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\nRAG/Wiki\nready\nJ:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-agentic-rag-kb-20260629/redteam_agentic_rag.sqlite\nReadiness\n-\npipeline coverage\nToolHub\n6\nToolActionCard + ROE + HITL before active execution\nCase / ROE �엯�젰\n蹂닿퀬�꽌\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\n����긽 �쑀�삎\nIP\nURL\nDomain\nCIDR\n����긽\nRisk Class\nT0\nT1\nT2\nT3\nT4\nT5\nT6\nT7\nScope Ref\nAnalysis Tool\nNuclei\nOpenVAS / Greenbone Community Edition\nTrivy\nSCA Dependency Analyzer\nnpm audit\nOWASP ZAP\nExecution Mode\n",
+      "status": "passed"
+    },
+    "status": "passed"
+  },
+  "status": "passed",
+  "blockers": []
 }

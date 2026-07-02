@@ -101,6 +101,9 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const result = { url, checks: {} };
 try {
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+  await page.getByRole('button', { name: /보고서 스튜디오|Report Studio/ }).click({ timeout: 10000 }).catch(() => {});
+  await page.getByRole('button', { name: /레드팀 분석2|RedTeam AX v2/ }).click({ timeout: 10000 }).catch(() => {});
+  await page.waitForTimeout(2500);
   result.title = await page.title();
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
@@ -108,6 +111,9 @@ try {
   result.checks.reportStudio = bodyText.includes('보고서 스튜디오') || bodyText.includes('Report Studio');
   result.checks.redteamAnalysis = bodyText.includes('레드팀 분석');
   result.checks.redteamAnalysis2 = bodyText.includes('레드팀 분석2') || bodyText.includes('RedTeam AX v2');
+  result.checks.toolActionCard = bodyText.includes('ToolActionCard');
+  result.checks.hitlGate = bodyText.includes('HITL');
+  result.checks.evidenceGate = bodyText.includes('Evidence Card') || bodyText.includes('Claim-Evidence Matrix');
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
   result.status = 'failed_browser_probe';

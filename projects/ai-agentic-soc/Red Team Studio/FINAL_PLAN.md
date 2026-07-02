@@ -934,5 +934,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 현재 환경 증거: `8765` v1/v2 health ready, `5177` not listening
 - [x] smoke artifact: `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json`
 - [x] evidence field가 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
-- [ ] `5177` frontend ready 후 `--allow-browser --require-live` 실측 통과
-- [ ] Report Studio `레드팀 분석2` DOM/parser evidence smoke
+- [x] `5177` frontend ready 후 `--allow-browser --require-live` 실측 통과 - slice 38 완료
+- [x] Report Studio `레드팀 분석2` DOM/parser evidence smoke - slice 38 완료
+
+## 46. Slice 38 Live Report Studio RedTeam2 Browser Smoke 체크리스트
+
+- [x] Vite frontend를 `http://127.0.0.1:5177/`에서 live 기동해 readiness 확인
+- [x] backend `http://127.0.0.1:8765/api/redteam/v2/health` ready 상태와 함께 browser smoke 수행
+- [x] Playwright가 `보고서 스튜디오` 메뉴를 열고 `레드팀 분석2` 탭으로 이동
+- [x] DOM에서 `레드팀 분석2`, `RedTeam AX v2`, `ToolActionCard`, `HITL`, `Evidence Card`/`Claim-Evidence Matrix` 확인
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py --allow-browser --require-live` exit 0 통과
+- [x] smoke artifact: `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json`
+- [ ] 다음 live browser smoke: ToolActionCard 계획 생성 버튼 클릭 후 API 생성 결과와 Evidence/queue DOM 반영까지 검증
