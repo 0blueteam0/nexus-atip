@@ -88,7 +88,7 @@ def node_executable() -> str:
     return "node"
 
 
-def playwright_browser_smoke(frontend_url: str, timeout: int) -> dict[str, Any]:
+def playwright_browser_smoke(frontend_url: str, timeout: int, allow_action: bool) -> dict[str, Any]:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     script_path = ARTIFACT_DIR / "live_browser_parser_probe.mjs"
     script_path.write_text(
@@ -96,14 +96,38 @@ def playwright_browser_smoke(frontend_url: str, timeout: int) -> dict[str, Any]:
 import { chromium } from 'playwright';
 
 const url = process.argv[2];
+const allowAction = process.argv[3] === 'allow-action';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
-const result = { url, checks: {} };
+const result = { url, checks: {}, apiResponses: [] };
 try {
+  page.on('response', async (response) => {
+    const responseUrl = response.url();
+    if (!responseUrl.includes('/api/redteam/v2/')) return;
+    let body = '';
+    let parsed = null;
+    try {
+      body = await response.text();
+      parsed = JSON.parse(body);
+    } catch {}
+    result.apiResponses.push({
+      url: responseUrl,
+      endpoint: new URL(responseUrl).pathname,
+      status: response.status(),
+      kind: parsed && parsed.kind ? parsed.kind : null,
+      actionId: parsed && parsed.action_id ? parsed.action_id : null,
+      itemCount: parsed && parsed.count != null ? parsed.count : null,
+      bodyPrefix: body.slice(0, 500),
+    });
+  });
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
   await page.getByRole('button', { name: /보고서 스튜디오|Report Studio/ }).click({ timeout: 10000 }).catch(() => {});
   await page.getByRole('button', { name: /레드팀 분석2|RedTeam AX v2/ }).click({ timeout: 10000 }).catch(() => {});
   await page.waitForTimeout(2500);
+  if (allowAction) {
+    await page.getByRole('button', { name: /ToolActionCard 계획/ }).click({ timeout: 10000 });
+    await page.waitForTimeout(3000);
+  }
   result.title = await page.title();
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
@@ -114,6 +138,26 @@ try {
   result.checks.toolActionCard = bodyText.includes('ToolActionCard');
   result.checks.hitlGate = bodyText.includes('HITL');
   result.checks.evidenceGate = bodyText.includes('Evidence Card') || bodyText.includes('Claim-Evidence Matrix');
+  if (allowAction) {
+    const planResponse = result.apiResponses.find((item) => item.url.endsWith('/api/redteam/v2/tool-actions/plan'));
+    result.toolActionPlan = {
+      responseFound: Boolean(planResponse),
+      responseStatus: planResponse ? planResponse.status : null,
+      actionId: planResponse ? planResponse.actionId : null,
+      actionIdPresent: Boolean(planResponse && /^TAC-[A-Z0-9-]+$/.test(planResponse.actionId || '')) || /TAC-[A-Z0-9-]+/.test(bodyText),
+      requestApprovalVisible: bodyText.includes('Request Approval'),
+      roeVisible: bodyText.includes('ROE'),
+      hitlVisible: bodyText.includes('HITL'),
+      governedRunnerNotClicked: true,
+    };
+    result.checks.toolActionPlanCreated = result.toolActionPlan.responseFound
+      && result.toolActionPlan.responseStatus === 200
+      && result.toolActionPlan.actionIdPresent
+      && result.toolActionPlan.requestApprovalVisible
+      && result.toolActionPlan.roeVisible
+      && result.toolActionPlan.hitlVisible
+      && result.toolActionPlan.governedRunnerNotClicked;
+  }
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
   result.status = 'failed_browser_probe';
@@ -126,7 +170,8 @@ console.log(JSON.stringify(result));
         encoding="utf-8",
         newline="\n",
     )
-    probe = run_command([node_executable(), str(script_path), frontend_url], cwd=FRONTEND_ROOT, timeout=timeout)
+    action_arg = "allow-action" if allow_action else "dom-only"
+    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg], cwd=FRONTEND_ROOT, timeout=timeout)
     parsed: dict[str, Any] | None = None
     if probe.get("stdout"):
         try:
@@ -155,6 +200,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "frontend_url": frontend_url,
         "backend_url": backend_url,
         "allow_browser_automation": allow_browser,
+        "allow_browser_action_smoke": args.allow_action,
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "browser_automation_executed": False,
@@ -187,12 +233,16 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         result["status"] = "preflight_ready_browser_smoke_not_requested"
         result["blockers"] = ["browser_smoke_requires_allow_browser"]
         return result, 2 if args.require_live else 0
+    if args.allow_action and not allow_browser:
+        result["status"] = "blocked_action_smoke_requires_browser"
+        result["blockers"] = ["action_smoke_requires_allow_browser"]
+        return result, 2 if args.require_live else 0
     if not (FRONTEND_ROOT / "node_modules" / "playwright").exists():
         result["status"] = "blocked_playwright_dependency_not_installed"
         result["blockers"] = ["frontend_node_modules_playwright_not_found"]
         return result, 2 if args.require_live else 0
     result["browser_automation_executed"] = True
-    browser = playwright_browser_smoke(frontend_url + "/", args.timeout)
+    browser = playwright_browser_smoke(frontend_url + "/", args.timeout, args.allow_action)
     result["browser_smoke"] = browser
     result["status"] = "passed" if browser.get("status") == "passed" else "failed_browser_dom_parser_smoke"
     result["blockers"] = [] if result["status"] == "passed" else [browser.get("status") or "browser_smoke_failed"]
@@ -202,6 +252,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="RedTeam AX live Report Studio browser/parser readiness smoke.")
     parser.add_argument("--allow-browser", action="store_true", help="Opt in to Playwright browser automation.")
+    parser.add_argument("--allow-action", action="store_true", help="Opt in to a safe UI ToolActionCard planning click. No runner execution is triggered.")
     parser.add_argument("--require-live", action="store_true", help="Return non-zero if live services/browser smoke are not ready.")
     parser.add_argument("--frontend-url", default="http://127.0.0.1:5177")
     parser.add_argument("--backend-url", default="http://127.0.0.1:8765")

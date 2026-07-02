@@ -945,4 +945,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] DOM에서 `레드팀 분석2`, `RedTeam AX v2`, `ToolActionCard`, `HITL`, `Evidence Card`/`Claim-Evidence Matrix` 확인
 - [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py --allow-browser --require-live` exit 0 통과
 - [x] smoke artifact: `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json`
-- [ ] 다음 live browser smoke: ToolActionCard 계획 생성 버튼 클릭 후 API 생성 결과와 Evidence/queue DOM 반영까지 검증
+- [x] ToolActionCard 계획 생성 버튼 클릭 후 API 생성 결과와 queue/HITL/ROE DOM 반영 검증 - slice 39 완료
+- [ ] 다음 live browser smoke: Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증
+
+## 47. Slice 39 Live ToolActionCard Planning Browser Smoke 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py`에 `--allow-action` opt-in 추가
+- [x] 기본 `--allow-browser` DOM smoke는 기존처럼 runner/action을 클릭하지 않음
+- [x] `--allow-action`은 `보고서 스튜디오` -> `레드팀 분석2` -> `ToolActionCard 계획`까지만 클릭하고 governed runner는 클릭하지 않음
+- [x] `/api/redteam/v2/tool-actions/plan` 200 응답과 `TAC-*` action id를 browser smoke artifact에 요약 저장
+- [x] DOM에서 `Request Approval`, `ROE`, `HITL`, `ToolActionCard` 표시 확인
+- [x] API 응답 본문 전체를 저장하지 않고 endpoint/status/kind/actionId 요약으로 잘림 없는 JSON evidence 유지
+- [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
+- [x] 현재 live backend에서 RedTeam2 경로는 통과하지만 `/api/malax/latest`, `/api/malax/runs`는 SQLite `disk I/O error` 500을 기록함
+- [ ] MALAX sqlite disk I/O error의 원인 격리 및 Report Studio live noise 제거
