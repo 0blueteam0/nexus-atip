@@ -349,6 +349,10 @@ try {
   result.checks.toolActionCard = bodyText.includes('ToolActionCard');
   result.checks.hitlGate = bodyText.includes('HITL');
   result.checks.evidenceGate = bodyText.includes('Evidence Card') || bodyText.includes('Claim-Evidence Matrix');
+  result.checks.scannerGuidance = bodyText.includes('분석도구 실행 안내')
+    && bodyText.includes('버튼을 누르기 전에 확인')
+    && bodyText.includes('승인 후 실행')
+    && bodyText.includes('Evidence Card 생성 후 Claim-Evidence Matrix 연결');
   result.checks.agenticRagPanel = (bodyText.includes('Agentic RAG 충분성 검증') || bodyText.includes('Agentic RAG SCA / Citation Verifier'))
     && (bodyText.includes('Agentic RAG 검증 실행') || bodyText.includes('Run Agentic RAG SCA'))
     && (bodyText.includes('인용 검증') || bodyText.includes('Citation Verifier'));

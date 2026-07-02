@@ -1061,4 +1061,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Report Studio `레드팀 분석2` payload가 Agentic RAG result/sca/citation/matrix candidate를 Report v2 API에 전달
 - [x] Agentic RAG/도구 허브/Report Gate 핵심 표시를 한국어 사용자 기준으로 보강
 - [x] live browser smoke가 Agentic RAG 검증 후 Report v2 생성, Agentic RAG report section, held claim 0건을 확인하도록 확장
-- [ ] 다음 slice: 화면 전체 영문 라벨을 한국어 사용자 수준 기준으로 일괄 정리하고 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 도구 실행 가이드를 초급자 친화적으로 보강
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 도구 실행 가이드를 초급자 친화적으로 보강 - slice 48 완료
+
+## 56. Slice 48 Korean Beginner Scanner Tool Guidance 체크리스트
+
+- [x] `SPEC/24_OPEN_SOURCE_TOOL_INTEGRATION_CATALOG.md`의 도구 위험등급과 기본 정책을 UI 안내 기준으로 재확인
+- [x] `SPEC/25_TOOL_ACTION_CARD_AND_WEBAPP_SPEC.md`의 “버튼 실행 전 위험도와 승인 조건 표시” 요구를 Report Studio `레드팀 분석2`에 반영
+- [x] 분석도구 선택 영역의 핵심 라벨을 `위험 등급`, `승인 범위 ID`, `분석도구`, `실행 방식`, `실행 환경`으로 한국어화
+- [x] 선택 도구 설치/검증 표를 한국어 사용자 기준으로 재작성
+- [x] `분석도구 실행 안내` 패널 추가: 선택 도구 설명, 처음 할 일, 안전한 실행 모드, 금지/주의 옵션, Evidence 연결을 표시
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 각각에 초급자용 다음 절차와 안전 모드 설명 추가
+- [x] browser smoke DOM 체크에 scanner guidance 확인 추가
+- [ ] 다음 slice: 화면 전체 잔여 영문 라벨을 한국어 사용자 수준 기준으로 일괄 정리하고 wrapper/execution-plan/runner 영역 설명을 초급자 친화적으로 보강
