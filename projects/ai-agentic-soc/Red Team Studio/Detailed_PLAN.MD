@@ -682,3 +682,16 @@ Create Case
 - `고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py`는 runtime readiness API 호출, Korean visible copy, read-only safety flags를 검사한다.
 - accepted gate manifest에는 `GATE-FRONTEND-RUNTIME-READINESS-CONTRACT`가 추가된다.
 - 이 slice는 실행 버튼이 막히는 이유를 사용자에게 노출하는 visibility 개선이며, Docker daemon ready 상태와 조직 OpenVAS/ZAP endpoint 실측 성공을 완료로 주장하지 않는다.
+
+## 22. Slice 67 반영 사항
+
+- `고도화/sanity/redteam_ax_external_scanner_service_import_live_smoke.py`는 조직/실서비스 OpenVAS/ZAP read-only endpoint에서 실제 report import를 수행하기 위한 live harness다.
+- 기본 실행은 네트워크를 호출하지 않고 `blocked_external_scanner_import_not_ready` 또는 `configured_network_import_not_requested` artifact를 남긴다.
+- `--allow-network` 또는 `REDTEAM_AX_EXTERNAL_SCANNER_IMPORT_ALLOW_NETWORK=1`가 있을 때만 backend scanner-service-import adapter를 통해 endpoint를 읽는다.
+- `--require-ready`는 OpenVAS와 ZAP 양쪽 import가 모두 `passed`가 아니면 non-zero로 종료해 운영 검증 단계에서 fail-fast 한다.
+- harness는 endpoint URL에 credential, secret query, mutating path term이 있으면 import 전에 차단한다.
+- 실제 import 경로는 v2 credential authorization API와 scanner service import API를 모두 통과하므로 external vault reference, read-only scope, ROE target ref, secret material negative control을 검증한다.
+- `/api/redteam/v2/runtime-readiness`는 새 `external_scanner_service_import_live` artifact도 함께 반환한다.
+- RedTeam2 runtime readiness panel은 `실서비스 가져오기` 상태를 표시해 조직 endpoint import가 아직 실행되지 않았는지, 실제 read-only import가 수행됐는지 구분한다.
+- accepted gate manifest에는 `GATE-EXTERNAL-SCANNER-SERVICE-IMPORT-LIVE`가 추가된다.
+- 이 slice는 조직 endpoint 실측을 수행할 수 있는 검증 경로를 닫지만, 현재 환경에 endpoint/vault env가 없으면 blocker artifact가 정직한 최신 상태다.

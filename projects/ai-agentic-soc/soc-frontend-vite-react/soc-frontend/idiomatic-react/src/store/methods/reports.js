@@ -4429,6 +4429,8 @@ export default {
     const containerRuntime = containerRuntimeArtifact.data || {};
     const externalScannerArtifact = runtimeReadiness.external_scanner_services || {};
     const externalScanner = externalScannerArtifact.data || {};
+    const externalServiceImportArtifact = runtimeReadiness.external_scanner_service_import_live || {};
+    const externalServiceImport = externalServiceImportArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4491,6 +4493,8 @@ export default {
       blocked_runtime_or_external_readiness:'실측 조건 차단',
       blocked_container_runtime_not_ready:'Docker 실행 환경 차단',
       blocked_external_scanner_services_not_ready:'외부 스캐너 서비스 차단',
+      blocked_external_scanner_import_not_ready:'외부 서비스 가져오기 차단',
+      configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
       not_configured:'설정 필요',
       container_runtime_ready:'컨테이너 실행 환경 준비됨',
@@ -4675,6 +4679,7 @@ export default {
       ['컨테이너 smoke', koValue(containerRuntime.status || containerRuntimeArtifact.status || '미확인'), containerRuntime.artifact_path || containerRuntimeArtifact.path || 'latest_container_runtime_smoke.json'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
+      ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
       ['네트워크 probe', externalScanner.network_probe_allowed ? '허용됨' : '기본 차단', externalScanner.network_probe_allowed ? '관리자가 명시 허용한 경우만 확인' : '기본값은 외부 서비스 호출 없음'],
       ['외부 vault reference', externalScanner.vault_reference_ready ? '준비됨' : '설정 필요', 'secret 값은 저장하지 않고 승인된 외부 vault reference만 사용'],
       ['API 명령 실행', koBool(runtimeReadiness.commands_executed_by_api ?? false), '상태 조회 API는 Docker나 scanner를 실행하지 않음'],
@@ -5069,6 +5074,7 @@ export default {
             ['런타임 준비', koValue(runtimeReadiness.status || '미확인'), runtimeReadiness.status === 'ready' ? C.green : C.amber, (runtimeReadiness.blockers || []).length ? `${(runtimeReadiness.blockers || []).length}개 차단 조건` : '차단 조건 없음'],
             ['Docker Desktop', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.ready ? C.green : C.amber, containerRuntime.runtime_preflight?.blocker || containerRuntime.status || '상태 미확인'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
+            ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
           ].map(card)),
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },

@@ -54,6 +54,8 @@ def main() -> int:
         "Docker Desktop daemon",
         "조직 OpenVAS/ZAP read-only report endpoint",
         "외부 vault reference",
+        "실서비스 가져오기",
+        "조직 endpoint import 미실행",
         "런타임 상태 새로고침",
     ]
     missing_panel_terms = [term for term in required_panel_terms if term not in panel]
@@ -64,6 +66,7 @@ def main() -> int:
         "commands_executed_by_api",
         "active_scan_executed",
         "trusted_as_instruction",
+        "external_scanner_service_import_live",
         "상태 조회 API는 Docker나 scanner를 실행하지 않음",
         "항상 아니오 유지",
     ]

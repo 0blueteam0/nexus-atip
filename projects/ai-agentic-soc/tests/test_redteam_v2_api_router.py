@@ -50,9 +50,10 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertIn("container_runtime", body)
         self.assertIn("external_scanner_services", body)
+        self.assertIn("external_scanner_service_import_live", body)
         self.assertIsInstance(body["blockers"], list)
         self.assertGreaterEqual(len(body["operator_next_steps"]), 1)
-        for artifact in (body["container_runtime"], body["external_scanner_services"]):
+        for artifact in (body["container_runtime"], body["external_scanner_services"], body["external_scanner_service_import_live"]):
             self.assertIn("exists", artifact)
             self.assertIn("path", artifact)
             self.assertIn("status", artifact)

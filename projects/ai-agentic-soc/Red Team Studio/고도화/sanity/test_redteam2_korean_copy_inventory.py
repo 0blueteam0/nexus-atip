@@ -44,6 +44,8 @@ REQUIRED_KOREAN_ANCHORS = [
     "Docker Desktop daemon",
     "조직 OpenVAS/ZAP read-only report endpoint",
     "외부 vault reference",
+    "실서비스 가져오기",
+    "조직 endpoint import 미실행",
     "케이스 RBAC 정책",
     "평가 맥락",
     "최종 게이트",

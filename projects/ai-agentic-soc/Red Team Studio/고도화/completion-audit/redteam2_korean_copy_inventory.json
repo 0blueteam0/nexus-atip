@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1065,
-  "korean_literal_count": 895,
+  "literal_count": 1075,
+  "korean_literal_count": 905,
   "english_only_literal_count": 166,
-  "english_only_literal_ratio": 0.1559,
+  "english_only_literal_ratio": 0.1544,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -31,12 +31,12 @@
     "쉬운 설명": 1,
     "먼저": 8,
     "사람": 14,
-    "승인": 103,
+    "승인": 104,
     "수동": 5,
     "업로드": 17,
     "증거": 18,
-    "차단": 33,
-    "필요": 52,
+    "차단": 34,
+    "필요": 53,
     "주의": 1
   },
   "sample_korean_literals": [
@@ -67,6 +67,8 @@
     "실측 조건 차단",
     "Docker 실행 환경 차단",
     "외부 스캐너 서비스 차단",
+    "외부 서비스 가져오기 차단",
+    "설정됨 · 가져오기 실행 전",
     "설정됨 · 네트워크 확인 전",
     "설정 필요",
     "컨테이너 실행 환경 준비됨",
@@ -77,9 +79,7 @@
     "마스킹 완료",
     "검토 필요",
     "허용",
-    "마스킹 필요",
-    "격리",
-    "충분"
+    "마스킹 필요"
   ],
   "sample_english_only_literals": [
     "8px 9px",

@@ -1,0 +1,76 @@
+{
+  "kind": "redteam_ax_external_scanner_service_import_live_smoke",
+  "created_at": "2026-07-02T08:01:20Z",
+  "case_id": "CASE-V2-EXTERNAL-SCANNER-SERVICE-IMPORT-LIVE-001",
+  "status": "blocked_external_scanner_import_not_ready",
+  "safe_by_default": true,
+  "network_import_allowed": false,
+  "service_endpoint_fetch_executed": false,
+  "scanner_commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "secret_material_stored": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "tools": [
+    {
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_name": "OpenVAS",
+      "endpoint_env": "REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT",
+      "vault_ref_env": "REDTEAM_AX_OPENVAS_VAULT_REF",
+      "endpoint_configured": false,
+      "external_vault_ref_configured": false,
+      "endpoint_url": "",
+      "credential_ref": "",
+      "token_scopes": [
+        "read:reports"
+      ],
+      "status": "blocked",
+      "blockers": [
+        "REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing",
+        "REDTEAM_AX_OPENVAS_VAULT_REF_missing"
+      ],
+      "secret_material_stored": false,
+      "active_scan_executed": false,
+      "trusted_as_instruction": false
+    },
+    {
+      "tool_id": "TOOL-ZAP-001",
+      "tool_name": "OWASP ZAP",
+      "endpoint_env": "REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT",
+      "vault_ref_env": "REDTEAM_AX_ZAP_VAULT_REF",
+      "endpoint_configured": false,
+      "external_vault_ref_configured": false,
+      "endpoint_url": "",
+      "credential_ref": "",
+      "token_scopes": [
+        "read:alerts",
+        "read:reports"
+      ],
+      "status": "blocked",
+      "blockers": [
+        "REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing",
+        "REDTEAM_AX_ZAP_VAULT_REF_missing"
+      ],
+      "secret_material_stored": false,
+      "active_scan_executed": false,
+      "trusted_as_instruction": false
+    }
+  ],
+  "blockers": {
+    "OpenVAS": [
+      "REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing",
+      "REDTEAM_AX_OPENVAS_VAULT_REF_missing"
+    ],
+    "OWASP ZAP": [
+      "REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing",
+      "REDTEAM_AX_ZAP_VAULT_REF_missing"
+    ]
+  },
+  "operator_next_steps": [
+    "Set REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT to an approved read-only OpenVAS report URL.",
+    "Set REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT to an approved read-only ZAP alert/report URL.",
+    "Set REDTEAM_AX_OPENVAS_VAULT_REF and REDTEAM_AX_ZAP_VAULT_REF to external vault references, not secret values.",
+    "Rerun with REDTEAM_AX_EXTERNAL_SCANNER_IMPORT_ALLOW_NETWORK=1 or --allow-network after ROE approves read-only endpoint import.",
+    "Use --require-ready in controlled validation when both organization endpoints must pass."
+  ]
+}

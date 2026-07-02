@@ -2378,12 +2378,18 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     external_artifact = read_readiness_artifact(
         PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-external-scanner-readiness" / "latest_external_scanner_service_readiness.json"
     )
+    service_import_artifact = read_readiness_artifact(
+        PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-external-scanner-service-import-live" / "latest_external_scanner_service_import_live_smoke.json"
+    )
     container_data = container_artifact.get("data") or {}
     external_data = external_artifact.get("data") or {}
+    service_import_data = service_import_artifact.get("data") or {}
     container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
     external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
+    service_import_status = str(service_import_data.get("status") or service_import_artifact.get("status") or "unknown")
     container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
     external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
+    service_import_ready = service_import_status in {"passed", "ready", "external_scanner_service_import_live_ready"}
     blockers: list[str] = []
     if not container_ready:
         blocker = (
@@ -2398,6 +2404,16 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.extend(f"external_scanner:{item}" for item in external_blockers)
         else:
             blockers.append(f"external_scanner:{external_status}")
+    if not service_import_ready:
+        import_blockers = service_import_data.get("blockers") or []
+        if isinstance(import_blockers, dict) and import_blockers:
+            for name, values in import_blockers.items():
+                for value in values or []:
+                    blockers.append(f"external_service_import:{name}:{value}")
+        elif isinstance(import_blockers, list) and import_blockers:
+            blockers.extend(f"external_service_import:{item}" for item in import_blockers)
+        else:
+            blockers.append(f"external_service_import:{service_import_status}")
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": "ready" if container_ready and external_ready else "blocked_runtime_or_external_readiness",
@@ -2407,6 +2423,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "trusted_as_instruction": False,
         "container_runtime": container_artifact,
         "external_scanner_services": external_artifact,
+        "external_scanner_service_import_live": service_import_artifact,
         "blockers": blockers,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",

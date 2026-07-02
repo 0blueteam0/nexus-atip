@@ -1295,3 +1295,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 `GATE-FRONTEND-RUNTIME-READINESS-CONTRACT` 추가
 - [ ] `REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT`, `REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT`, `REDTEAM_AX_OPENVAS_VAULT_REF`, `REDTEAM_AX_ZAP_VAULT_REF`가 준비된 조직 환경에서 `--allow-network --require-ready` 실측 통과
 - [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과
+
+## 75. Slice 67 External Scanner Service Import Live Harness 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_external_scanner_service_import_live_smoke.py` 추가
+- [x] 기본 실행은 네트워크 import를 수행하지 않고 endpoint/vault/env blocker artifact를 남김
+- [x] `--allow-network` 또는 `REDTEAM_AX_EXTERNAL_SCANNER_IMPORT_ALLOW_NETWORK=1`가 있을 때만 조직 OpenVAS/ZAP read-only endpoint import 수행
+- [x] `--require-ready`는 OpenVAS/ZAP 양쪽 import가 모두 통과하지 않으면 non-zero 종료
+- [x] OpenVAS/ZAP credential은 external vault reference만 사용하고 secret query, credential-in-URL, mutating path term을 차단
+- [x] 실제 import는 `/api/redteam/v2/tool-credential-authorizations/{tool_id}`와 `/api/redteam/v2/scanner-service-imports/{tool_id}` backend 경로를 통과
+- [x] negative control로 secret material 제출이 invalid로 차단되는지 검사
+- [x] `/api/redteam/v2/runtime-readiness`에 `external_scanner_service_import_live` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `실서비스 가져오기` 상태 표시
+- [x] accepted gate manifest에 `GATE-EXTERNAL-SCANNER-SERVICE-IMPORT-LIVE` 추가
+- [ ] 조직/실서비스 endpoint env가 준비된 환경에서 `redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready` 통과
+- [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과
