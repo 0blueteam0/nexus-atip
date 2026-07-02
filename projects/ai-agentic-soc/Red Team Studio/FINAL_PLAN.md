@@ -1310,3 +1310,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 `GATE-EXTERNAL-SCANNER-SERVICE-IMPORT-LIVE` 추가
 - [ ] 조직/실서비스 endpoint env가 준비된 환경에서 `redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready` 통과
 - [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과
+
+## 76. Slice 68 WSL Runtime Readiness Evidence 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_wsl_runtime_readiness.py` 추가
+- [x] 기본 실행은 `wsl.exe -l -v`만 확인하고 WSL 배포판을 시작하지 않음
+- [x] `--allow-start`는 선택된 WSL 배포판에서 `uname`과 도구 경로만 확인하며 능동 스캔, 외부 네트워크 호출, 도구 실행을 수행하지 않음
+- [x] 현재 환경의 WSL blocker를 `archive/runs/redteam-ax-v2-wsl-runtime-readiness/latest_wsl_runtime_readiness.json`에 기록
+- [x] `/api/redteam/v2/runtime-readiness`에 `wsl_runtime` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `WSL 실행 환경`과 `WSL 배포판` 상태 표시
+- [x] `tests/test_redteam_v2_api_router.py::test_runtime_readiness_status_is_read_only_artifact_projection`가 `wsl_runtime` projection을 검사
+- [x] frontend runtime readiness contract와 Korean copy inventory에 WSL 앵커 추가
+- [x] accepted gate manifest에 `GATE-WSL-RUNTIME-READINESS` 추가
+- [ ] WSL 배포판 mount/start 오류 복구 후 `redteam_ax_wsl_runtime_readiness.py --allow-start --require-ready` 통과
+- [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과

@@ -4431,6 +4431,8 @@ export default {
     const externalScanner = externalScannerArtifact.data || {};
     const externalServiceImportArtifact = runtimeReadiness.external_scanner_service_import_live || {};
     const externalServiceImport = externalServiceImportArtifact.data || {};
+    const wslRuntimeArtifact = runtimeReadiness.wsl_runtime || {};
+    const wslRuntime = wslRuntimeArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4494,6 +4496,13 @@ export default {
       blocked_container_runtime_not_ready:'Docker 실행 환경 차단',
       blocked_external_scanner_services_not_ready:'외부 스캐너 서비스 차단',
       blocked_external_scanner_import_not_ready:'외부 서비스 가져오기 차단',
+      blocked_wsl_executable_not_found:'WSL 실행 파일 없음',
+      blocked_wsl_list_failed:'WSL 목록 확인 실패',
+      blocked_wsl_distribution_not_found:'WSL 배포판 없음',
+      blocked_wsl_distribution_start_failed:'WSL 실행 환경 차단',
+      wsl_listed_start_not_requested:'WSL 목록 확인됨 · 시작 확인 전',
+      wsl_ready_tools_missing:'WSL 준비됨 · 도구 경로 확인 필요',
+      wsl_runtime_ready:'WSL 실행 환경 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
       not_configured:'설정 필요',
@@ -4677,6 +4686,8 @@ export default {
       ['전체 상태', koValue(runtimeReadiness.status || '미확인'), (runtimeReadiness.blockers || []).join(', ') || '실측 조건 차단 없음'],
       ['Docker Desktop daemon', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.blocker || containerRuntime.stderr || containerRuntime.status || 'Docker Desktop 상태 확인 필요'],
       ['컨테이너 smoke', koValue(containerRuntime.status || containerRuntimeArtifact.status || '미확인'), containerRuntime.artifact_path || containerRuntimeArtifact.path || 'latest_container_runtime_smoke.json'],
+      ['WSL 실행 환경', koValue(wslRuntime.status || wslRuntimeArtifact.status || '미확인'), (wslRuntime.blockers || []).join(', ') || wslRuntime.selected_distro || 'Docker 대체/보조 실행 환경 readiness 증거'],
+      ['WSL 배포판', wslRuntime.selected_distro || '-', (wslRuntime.distros || []).map(item => `${item.name}:${item.state}`).join(', ') || 'wsl.exe -l -v 결과 없음'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
       ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
@@ -5073,6 +5084,7 @@ export default {
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
             ['런타임 준비', koValue(runtimeReadiness.status || '미확인'), runtimeReadiness.status === 'ready' ? C.green : C.amber, (runtimeReadiness.blockers || []).length ? `${(runtimeReadiness.blockers || []).length}개 차단 조건` : '차단 조건 없음'],
             ['Docker Desktop', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.ready ? C.green : C.amber, containerRuntime.runtime_preflight?.blocker || containerRuntime.status || '상태 미확인'],
+            ['WSL 실행 환경', koValue(wslRuntime.status || wslRuntimeArtifact.status || '미확인'), ['ready','wsl_runtime_ready'].includes(wslRuntime.status) ? C.green : C.amber, wslRuntime.selected_distro || 'WSL 배포판 readiness 확인'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],

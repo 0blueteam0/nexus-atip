@@ -52,6 +52,8 @@ def main() -> int:
         "실행 환경 준비도 / 남은 실측 조건",
         "실제 실행 버튼이 막히는 이유",
         "Docker Desktop daemon",
+        "WSL 실행 환경",
+        "WSL 배포판",
         "조직 OpenVAS/ZAP read-only report endpoint",
         "외부 vault reference",
         "실서비스 가져오기",
@@ -67,6 +69,7 @@ def main() -> int:
         "active_scan_executed",
         "trusted_as_instruction",
         "external_scanner_service_import_live",
+        "wsl_runtime",
         "상태 조회 API는 Docker나 scanner를 실행하지 않음",
         "항상 아니오 유지",
     ]

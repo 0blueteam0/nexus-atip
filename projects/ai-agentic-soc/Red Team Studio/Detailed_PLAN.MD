@@ -695,3 +695,13 @@ Create Case
 - RedTeam2 runtime readiness panel은 `실서비스 가져오기` 상태를 표시해 조직 endpoint import가 아직 실행되지 않았는지, 실제 read-only import가 수행됐는지 구분한다.
 - accepted gate manifest에는 `GATE-EXTERNAL-SCANNER-SERVICE-IMPORT-LIVE`가 추가된다.
 - 이 slice는 조직 endpoint 실측을 수행할 수 있는 검증 경로를 닫지만, 현재 환경에 endpoint/vault env가 없으면 blocker artifact가 정직한 최신 상태다.
+
+## 23. Slice 68 반영 사항
+
+- `고도화/sanity/redteam_ax_wsl_runtime_readiness.py`는 Docker Desktop daemon이 막힌 환경에서 WSL 대체/보조 실행 환경의 준비도를 증거화하는 read-only readiness lane이다.
+- 기본 실행은 WSL 목록만 확인하고, `--allow-start`가 있을 때만 선택된 배포판에서 `uname` 및 `node`, `npm`, `trivy`, `nuclei`, `docker`, `podman` 경로를 확인한다.
+- 이 sanity는 능동 스캔, 외부 네트워크 호출, scanner 실행을 수행하지 않으며 `active_scan_executed=false`, `trusted_as_instruction=false`를 artifact에 남긴다.
+- 현재 환경에서는 `Ubuntu-22.04` 배포판 시작이 실패해 `blocked_wsl_distribution_start_failed` artifact가 생성된다.
+- `/api/redteam/v2/runtime-readiness`는 `wsl_runtime` artifact를 함께 반환하고, RedTeam2 runtime readiness panel은 `WSL 실행 환경`과 `WSL 배포판` 상태를 표시한다.
+- accepted gate manifest에는 `GATE-WSL-RUNTIME-READINESS`가 추가된다.
+- 이 slice는 WSL 실측 성공을 완료로 주장하지 않고, Docker daemon/WSL 배포판/조직 OpenVAS/ZAP endpoint blocker를 더 명확히 드러내는 visibility 및 evidence 개선이다.

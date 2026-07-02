@@ -42,6 +42,8 @@ REQUIRED_KOREAN_ANCHORS = [
     "실행 환경 준비도",
     "남은 실측 조건",
     "Docker Desktop daemon",
+    "WSL 실행 환경",
+    "WSL 배포판",
     "조직 OpenVAS/ZAP read-only report endpoint",
     "외부 vault reference",
     "실서비스 가져오기",

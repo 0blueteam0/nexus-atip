@@ -2381,15 +2381,21 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     service_import_artifact = read_readiness_artifact(
         PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-external-scanner-service-import-live" / "latest_external_scanner_service_import_live_smoke.json"
     )
+    wsl_artifact = read_readiness_artifact(
+        PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-wsl-runtime-readiness" / "latest_wsl_runtime_readiness.json"
+    )
     container_data = container_artifact.get("data") or {}
     external_data = external_artifact.get("data") or {}
     service_import_data = service_import_artifact.get("data") or {}
+    wsl_data = wsl_artifact.get("data") or {}
     container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
     external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
     service_import_status = str(service_import_data.get("status") or service_import_artifact.get("status") or "unknown")
+    wsl_status = str(wsl_data.get("status") or wsl_artifact.get("status") or "unknown")
     container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
     external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
     service_import_ready = service_import_status in {"passed", "ready", "external_scanner_service_import_live_ready"}
+    wsl_ready = wsl_status in {"passed", "ready", "wsl_runtime_ready"}
     blockers: list[str] = []
     if not container_ready:
         blocker = (
@@ -2414,9 +2420,19 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.extend(f"external_service_import:{item}" for item in import_blockers)
         else:
             blockers.append(f"external_service_import:{service_import_status}")
+    if not wsl_ready:
+        wsl_blockers = wsl_data.get("blockers") or []
+        if isinstance(wsl_blockers, list) and wsl_blockers:
+            blockers.extend(f"wsl_runtime:{item}" for item in wsl_blockers)
+        else:
+            blockers.append(f"wsl_runtime:{wsl_status}")
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
-        "status": "ready" if container_ready and external_ready else "blocked_runtime_or_external_readiness",
+        "status": (
+            "ready"
+            if container_ready and external_ready and service_import_ready and wsl_ready
+            else "blocked_runtime_or_external_readiness"
+        ),
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "active_scan_executed": False,
@@ -2424,9 +2440,11 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "container_runtime": container_artifact,
         "external_scanner_services": external_artifact,
         "external_scanner_service_import_live": service_import_artifact,
+        "wsl_runtime": wsl_artifact,
         "blockers": blockers,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",
+            "Repair or recreate the WSL distribution if the WSL readiness artifact reports a distro start or mount failure.",
             "Configure REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT and REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT for approved read-only imports.",
             "Store scanner credentials outside the app and reference them through an approved external vault reference.",
             "Rerun container runtime and external scanner readiness sanity gates after the environment is prepared.",
