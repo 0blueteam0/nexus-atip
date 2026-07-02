@@ -181,7 +181,7 @@ try {
     await page.waitForTimeout(3000);
     afterRequestBodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
     requestApprovalButtonVisibleAfterSubmit = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
-    const executeButtonAfterSubmit = page.getByRole('button', { name: /Execute Governed Runner/ }).first();
+    const executeButtonAfterSubmit = page.getByRole('button', { name: /승인된 실행 시작|Execute Governed Runner/ }).first();
     executeButtonVisibleAfterSubmit = await executeButtonAfterSubmit.isVisible({ timeout: 2000 }).catch(() => false);
     executeButtonDisabledAfterSubmit = executeButtonVisibleAfterSubmit ? await executeButtonAfterSubmit.isDisabled().catch(() => false) : null;
   }
@@ -340,7 +340,7 @@ try {
   result.bodyPrefix = bodyText.slice(0, 1000);
   const requestApprovalButtonVisible = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
   const approveHitlButtonVisible = await page.getByRole('button', { name: /Approve HITL/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
-  const executeButton = page.getByRole('button', { name: /Execute Governed Runner/ }).first();
+  const executeButton = page.getByRole('button', { name: /승인된 실행 시작|Execute Governed Runner/ }).first();
   const executeButtonVisible = await executeButton.isVisible({ timeout: 2000 }).catch(() => false);
   const executeButtonDisabled = executeButtonVisible ? await executeButton.isDisabled().catch(() => false) : null;
   result.checks.reportStudio = bodyText.includes('보고서 스튜디오') || bodyText.includes('Report Studio');
@@ -353,6 +353,10 @@ try {
     && bodyText.includes('버튼을 누르기 전에 확인')
     && bodyText.includes('승인 후 실행')
     && bodyText.includes('Evidence Card 생성 후 Claim-Evidence Matrix 연결');
+  result.checks.runnerGuidance = bodyText.includes('도구 래퍼 신뢰 고정')
+    && bodyText.includes('실행 전에 경로, 버전, SHA-256 해시를 확인')
+    && bodyText.includes('도구 실행 계획 / 샌드박스 정책')
+    && bodyText.includes('PlanReady와 실행 토큰이 없으면 실행 버튼은 비활성화');
   result.checks.agenticRagPanel = (bodyText.includes('Agentic RAG 충분성 검증') || bodyText.includes('Agentic RAG SCA / Citation Verifier'))
     && (bodyText.includes('Agentic RAG 검증 실행') || bodyText.includes('Run Agentic RAG SCA'))
     && (bodyText.includes('인용 검증') || bodyText.includes('Citation Verifier'));

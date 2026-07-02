@@ -4,7 +4,7 @@
   "task": "RedTeam AX Korean wrapper execution runner UI guidance slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-124504-Red-Team-Studio-RedTeam-AX-Korean-wrapper-execution-runner-UI-guidance-slice",
   "created_at": "2026-07-02T12:45:04+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-02T12:48:11+09:00"
+  ]
 }

@@ -1072,4 +1072,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `분석도구 실행 안내` 패널 추가: 선택 도구 설명, 처음 할 일, 안전한 실행 모드, 금지/주의 옵션, Evidence 연결을 표시
 - [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 각각에 초급자용 다음 절차와 안전 모드 설명 추가
 - [x] browser smoke DOM 체크에 scanner guidance 확인 추가
-- [ ] 다음 slice: 화면 전체 잔여 영문 라벨을 한국어 사용자 수준 기준으로 일괄 정리하고 wrapper/execution-plan/runner 영역 설명을 초급자 친화적으로 보강
+- [x] wrapper/execution-plan/runner 영역 설명을 초급자 친화적으로 보강 - slice 49 완료
+
+## 57. Slice 49 Korean Wrapper Execution Runner Guidance 체크리스트
+
+- [x] `SPEC/26_TOOL_EXECUTION_SANDBOX_AND_APPROVAL_SPEC.md`의 Plan-only, sandbox, lab, manual/controlled execution 분리 원칙 재확인
+- [x] `SPEC/31_TOOLING_SECURITY_POLICY_SPEC.md`의 승인 없는 high-risk 실행 차단, tool output은 evidence candidate라는 원칙을 UI 안내에 반영
+- [x] `도구 래퍼 신뢰 고정 / 버전 확인` 패널로 제목과 설명을 한국어 사용자 기준으로 변경
+- [x] 래퍼 해시, 버전 확인, 신뢰 고정 요청/승인/해제 버튼을 한국어로 정리
+- [x] `도구 실행 계획 / 샌드박스 정책` 패널로 제목과 설명을 한국어 사용자 기준으로 변경
+- [x] 실행 계획, 네트워크, 파일시스템, 래퍼, 격리, 실행 토큰 표를 한국어화
+- [x] 통제 실행 명령과 승인된 실행 시작 버튼을 한국어화하고 기존 smoke와 호환되는 한영 정규식 유지
+- [x] browser smoke DOM 체크에 runner/wrapper guidance 확인 추가
+- [ ] 다음 slice: sanitizer, visual evidence, file upload, RBAC/report metadata 영역의 잔여 영문 라벨을 한국어 사용자 수준으로 정리
