@@ -314,6 +314,16 @@ def approve_toolchain_collection_finding_severity(collection_id: str, payload: d
     return redteam_v2_models.approve_toolchain_collection_finding_severity(collection_id, payload)
 
 
+@router.post("/toolchain-result-collections/{collection_id}/matrix-draft")
+def build_toolchain_collection_claim_evidence_matrix_draft(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_toolchain_collection_claim_evidence_matrix_draft(collection_id, payload)
+
+
+@router.post("/toolchain-result-collections/{collection_id}/matrix-draft/report-draft")
+def generate_toolchain_collection_report_draft_from_matrix(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.generate_toolchain_collection_report_draft_from_matrix(collection_id, payload)
+
+
 @router.post("/tool-runs/{run_id}/import-output")
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_output(run_id, payload)

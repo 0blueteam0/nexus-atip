@@ -1510,3 +1510,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `Finding 심각도 2인 승인` 버튼과 승인 결과 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 collection severity approval anchor 추가
 - [ ] 실제 운영 collection 전체의 Matrix draft ready, Report v2 draft, final export approval까지 완료
+
+## 92. Slice 84 복합 Toolchain Collection Matrix/Report Draft Bridge 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft` API 추가
+- [x] API는 collection의 approved/promoted Finding과 backend Evidence/Finding store를 읽어 Claim-Evidence Matrix row를 구성
+- [x] 승인된 Evidence와 2인 severity 승인된 Finding만 `ready_for_report_validation` row로 포함
+- [x] held row는 report validation payload에서 제외하고 blocker를 보존
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft` API 추가
+- [x] Matrix ready, held row 0건, report gate pass일 때만 Korean Red Team Report v2 draft 생성
+- [x] API는 도구 실행, 능동 스캔, Finding 생성, report Claim 자동 삽입, final export approval을 수행하지 않음
+- [x] regression test가 collection Evidence 승인 -> Finding 생성 -> severity 2인 승인 -> Matrix ready -> Report v2 draft generated 경로를 검증
+- [x] RedTeam2 UI에 `Matrix 초안 생성`, `Report v2 draft 생성` 버튼과 결과 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 collection Matrix/report bridge anchor 추가
+- [ ] 실제 운영 collection 전체의 final export approval과 export 검증 완료

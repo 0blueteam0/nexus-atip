@@ -148,6 +148,8 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolchainEvidenceApproval
 - ToolchainFindingPromotion
 - ToolchainFindingSeverityApproval
+- ToolchainCollectionMatrixDraft
+- ToolchainCollectionReportDraft
 - ToolResultAnalysisBrief
 - ToolResultFindingClaimReview
 - EvidenceLinker
@@ -174,6 +176,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 9. 복합 Toolchain Evidence 후보는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence`로 사람 identity binding을 거쳐 승인하며, 이 API는 Finding 생성이나 보고서 Claim 삽입을 수행하지 않는다.
 10. 승인된 collection Evidence는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings`로 `pending_review` Finding 초안이 될 수 있지만, severity 2인 승인과 Claim-Evidence Matrix 검증 전에는 보고서 Claim으로 사용할 수 없다.
 11. collection에서 생성된 Finding 초안은 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity`로 red_team_lead와 business_owner의 2인 severity 승인을 받아야 하며, 이후에도 Matrix/report gate 통과 전에는 보고서 Claim으로 확정하지 않는다.
+12. collection approved Finding은 `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft`와 `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft`를 통해 Matrix ready와 Report v2 draft까지 갈 수 있지만, final export approval은 별도 HITL gate로 유지한다.
 
 ## 남은 작업
 

@@ -6065,6 +6065,216 @@ def generate_tool_result_report_draft_from_matrix(payload: dict[str, Any]) -> di
     return append_artifact_metadata(result, "tool-result-report-drafts", report_request_id)
 
 
+def build_toolchain_collection_claim_evidence_matrix_draft(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    requested_ids = {
+        str(item).strip()
+        for item in (payload.get("finding_ids") or [])
+        if str(item).strip()
+    }
+    errors: list[str] = []
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+
+    collection_finding_ids = {
+        str(item).strip()
+        for item in (collection or {}).get("approved_finding_ids") or (collection or {}).get("promoted_finding_ids") or []
+        if str(item).strip()
+    }
+    finding_ids = sorted(requested_ids or collection_finding_ids)
+    missing_requested = sorted(requested_ids - collection_finding_ids)
+    if missing_requested:
+        errors.extend(f"finding_not_from_collection:{finding_id}" for finding_id in missing_requested)
+    if collection is not None and not finding_ids:
+        errors.append("approved_collection_findings_required")
+
+    rows: list[dict[str, Any]] = []
+    ready_claims: list[dict[str, Any]] = []
+    ready_findings: list[dict[str, Any]] = []
+    held_claims: list[dict[str, Any]] = []
+    for finding_id in finding_ids:
+        finding = load_json_record(finding_id, "findings", case_id)
+        evidence_ids = [str(item).strip() for item in (finding or {}).get("evidence_ids") or [] if str(item).strip()]
+        severity_final = str((finding or {}).get("severity_final") or "").strip().lower()
+        claim_id = stable_id("C-TCF", [collection_id, finding_id, evidence_ids])
+        claim_row = {
+            "claim_id": claim_id,
+            "statement_ko": (finding or {}).get("observation") or (finding or {}).get("title") or "승인된 도구 결과 Finding",
+            "support_level": "supported",
+            "evidence_ids": evidence_ids,
+            "source": "toolchain_collection_matrix_draft",
+            "finding_id": finding_id,
+        }
+        finding_row = {
+            "finding_id": finding_id,
+            "title": (finding or {}).get("title") or "Toolchain collection finding",
+            "severity_final": severity_final,
+            "evidence_ids": evidence_ids,
+        }
+        evidence_issues = evidence_approval_issues(case_id, evidence_ids)
+        finding_issues = finding_approval_issues(case_id, [finding_row])
+        claim_issues: list[dict[str, Any]] = []
+        if finding is None:
+            finding_issues.append({"type": "missing_finding", "id": finding_id})
+        if not evidence_ids:
+            claim_issues.append({"type": "claim_without_evidence", "id": claim_id})
+        row_issues = [*evidence_issues, *finding_issues, *claim_issues]
+        ready = not row_issues
+        row = {
+            "collection_id": collection_id,
+            "case_id": case_id,
+            "finding_id": finding_id,
+            "status": "ready_for_report_validation" if ready else "hold_until_evidence_and_finding_approved",
+            "claim": claim_row,
+            "finding": finding_row,
+            "stored_finding_status": (finding or {}).get("status") or "missing",
+            "stored_finding_approval_status": (finding or {}).get("approval_status") or "missing",
+            "evidence_issues": evidence_issues,
+            "finding_issues": finding_issues,
+            "claim_issues": claim_issues,
+            "blocking_items": row_issues,
+            "report_claim_inserted": False,
+            "finding_created": False,
+            "requires_human_validation": True,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+        }
+        rows.append(row)
+        if ready:
+            ready_claims.append(claim_row)
+            ready_findings.append(finding_row)
+        else:
+            held_claims.append({
+                "finding_id": finding_id,
+                "claim_id": claim_id,
+                "hold_reason": "Approved Evidence and two-person Finding severity approval are required before report validation.",
+                "blocking_items": row_issues,
+            })
+
+    report_payload_preview = {
+        "case_id": case_id,
+        "title": payload.get("title") or "Red Team Report v2 collection matrix draft",
+        "claims": ready_claims,
+        "findings": ready_findings,
+        "tool_actions": [],
+        "held_claims": held_claims,
+    }
+    validation_preview = (
+        validate_report(report_payload_preview)
+        if ready_claims
+        else {
+            "kind": "redteam_ax_v2_report_validation_preview",
+            "case_id": case_id,
+            "gate_status": "not_run_no_ready_rows",
+            "blocking_items": [],
+        }
+    )
+    draft_id = stable_id("TCCEM", [collection_id, case_id, finding_ids, len(ready_claims), len(held_claims), now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_claim_evidence_matrix_draft",
+        "draft_id": draft_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": "matrix_draft_ready" if ready_claims and not held_claims and not errors else "matrix_draft_held",
+        "finding_count": len(finding_ids),
+        "ready_claim_count": len(ready_claims),
+        "held_claim_count": len(held_claims),
+        "rows": rows,
+        "report_validation_payload_preview": report_payload_preview,
+        "validation_preview": validation_preview,
+        "report_claim_inserted": False,
+        "finding_created": False,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "ready row만 Report v2 draft 입력으로 사용합니다.",
+            "held row가 있으면 Evidence 승인과 Finding severity 2인 승인을 먼저 완료합니다.",
+            "초안 API는 보고서 Claim을 자동 삽입하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-claim-evidence-matrix-drafts", draft_id)
+    if collection is not None and not errors:
+        collection["claim_evidence_matrix_draft_id"] = draft_id
+        collection["claim_evidence_matrix_status"] = result["status"]
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
+def generate_toolchain_collection_report_draft_from_matrix(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    matrix_draft = build_toolchain_collection_claim_evidence_matrix_draft(collection_id, payload)
+    errors = list(matrix_draft.get("errors") or [])
+    if int(matrix_draft.get("ready_claim_count") or 0) <= 0:
+        errors.append("matrix_draft_has_no_ready_rows")
+    if int(matrix_draft.get("held_claim_count") or 0) > 0:
+        errors.append("matrix_draft_has_held_rows")
+    validation_preview = matrix_draft.get("validation_preview") or {}
+    if validation_preview.get("gate_status") not in {"pass"}:
+        errors.append(f"report_validation_not_pass:{validation_preview.get('gate_status') or 'unknown'}")
+
+    report_request_id = stable_id("TCCRPT", [collection_id, matrix_draft.get("draft_id"), errors, now_utc()])
+    if errors:
+        result = {
+            "kind": "redteam_ax_v2_toolchain_collection_report_draft_from_matrix",
+            "report_request_id": report_request_id,
+            "collection_id": collection_id,
+            "case_id": matrix_draft.get("case_id") or "CASE-UNSPECIFIED",
+            "status": "blocked",
+            "report_generated": False,
+            "report": None,
+            "matrix_draft": matrix_draft,
+            "validation_preview": validation_preview,
+            "safe_by_default": True,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "requires_final_export_approval": True,
+            "errors": errors,
+            "next_human_actions_ko": [
+                "Matrix draft의 held row를 0건으로 만듭니다.",
+                "report gate blocker가 0건인 경우에만 Report v2 draft를 생성합니다.",
+                "최종 export 전 사람 승인을 별도로 수행합니다.",
+            ],
+        }
+        return append_artifact_metadata(result, "toolchain-report-drafts", report_request_id)
+
+    report_payload = dict(matrix_draft.get("report_validation_payload_preview") or {})
+    report_payload["title"] = payload.get("title") or report_payload.get("title") or "Red Team Report v2 collection draft"
+    report = generate_report(report_payload)
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_report_draft_from_matrix",
+        "report_request_id": report_request_id,
+        "collection_id": collection_id,
+        "case_id": matrix_draft.get("case_id") or report.get("case_id") or "CASE-UNSPECIFIED",
+        "status": "report_draft_generated" if report.get("gate_status") == "pass" else "blocked",
+        "report_generated": report.get("gate_status") == "pass",
+        "report": report,
+        "matrix_draft": matrix_draft,
+        "validation_preview": validation_preview,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "requires_final_export_approval": True,
+        "errors": [] if report.get("gate_status") == "pass" else [f"report_gate:{report.get('gate_status') or 'unknown'}"],
+        "next_human_actions_ko": [
+            "생성된 Report v2 draft를 사람이 검토합니다.",
+            "최종 export 전 별도 approval gate를 통과시킵니다.",
+            "재시험 계획과 Evidence Card 연결을 검증합니다.",
+        ],
+    }
+    return append_artifact_metadata(result, "toolchain-report-drafts", report_request_id)
+
+
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip() or "CASE-UNSPECIFIED"
     evidence_ids = [str(item).strip() for item in (payload.get("evidence_ids") or []) if str(item).strip()]

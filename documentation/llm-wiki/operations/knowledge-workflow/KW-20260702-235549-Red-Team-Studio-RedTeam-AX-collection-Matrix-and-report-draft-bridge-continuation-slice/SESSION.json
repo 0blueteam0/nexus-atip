@@ -4,7 +4,7 @@
   "task": "RedTeam AX collection Matrix and report draft bridge continuation slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-235549-Red-Team-Studio-RedTeam-AX-collection-Matrix-and-report-draft-bridge-continuation-slice",
   "created_at": "2026-07-02T23:55:49+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T00:05:26+09:00"
+  ]
 }

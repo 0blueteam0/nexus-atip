@@ -1479,6 +1479,50 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertFalse(item["errors"])
             self.assertFalse(item["pending_conditions"])
 
+        matrix = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/matrix-draft",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "title": "Collection Matrix Draft Test",
+            },
+        )
+        self.assertEqual(matrix.status_code, 200)
+        matrix_body = matrix.json()
+        self.assertEqual(matrix_body["kind"], "redteam_ax_v2_toolchain_collection_claim_evidence_matrix_draft")
+        self.assertEqual(matrix_body["status"], "matrix_draft_ready")
+        self.assertEqual(matrix_body["ready_claim_count"], 2)
+        self.assertEqual(matrix_body["held_claim_count"], 0)
+        self.assertEqual(matrix_body["validation_preview"]["gate_status"], "pass")
+        self.assertFalse(matrix_body["report_claim_inserted"])
+        self.assertFalse(matrix_body["finding_created"])
+        self.assertFalse(matrix_body["commands_executed_by_api"])
+        self.assertFalse(matrix_body["active_scan_executed"])
+        for row in matrix_body["rows"]:
+            self.assertEqual(row["status"], "ready_for_report_validation")
+            self.assertFalse(row["blocking_items"])
+            self.assertIn(row["finding_id"], finding_ids)
+
+        report_draft = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/matrix-draft/report-draft",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "title": "Collection Report Draft Test",
+            },
+        )
+        self.assertEqual(report_draft.status_code, 200)
+        report_body = report_draft.json()
+        self.assertEqual(report_body["kind"], "redteam_ax_v2_toolchain_collection_report_draft_from_matrix")
+        self.assertEqual(report_body["status"], "report_draft_generated")
+        self.assertTrue(report_body["report_generated"])
+        self.assertEqual(report_body["report"]["gate_status"], "pass")
+        self.assertTrue(report_body["requires_final_export_approval"])
+        self.assertFalse(report_body["commands_executed_by_api"])
+        self.assertFalse(report_body["active_scan_executed"])
+        self.assertFalse(report_body["trusted_as_instruction"])
+        self.assertFalse(report_body["report"].get("errors"))
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

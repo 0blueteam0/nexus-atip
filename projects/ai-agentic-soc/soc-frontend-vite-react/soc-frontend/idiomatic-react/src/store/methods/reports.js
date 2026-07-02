@@ -3854,6 +3854,74 @@ export default {
     }
   }
 ,
+  async buildRedTeam2ToolchainMatrixDraft() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const collection = this.state.redteam2ToolchainCollectionState?.result || {};
+    const severity = this.state.redteam2ToolchainFindingSeverityState?.result || {};
+    const findingIds = (severity.approvals || []).map(item => item.finding_id).filter(Boolean);
+    if (!collection.collection_id || !findingIds.length || severity.status !== 'findings_severity_approved') {
+      this.toast('먼저 Finding 심각도 2인 승인을 완료하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainMatrixState:{ ...(s.redteam2ToolchainMatrixState || {}), status:'building', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchain-result-collections/${encodeURIComponent(collection.collection_id)}/matrix-draft`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          finding_ids:findingIds,
+          title:'복합 도구 결과 Claim-Evidence Matrix 초안',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ToolchainMatrixState:{ ...(s.redteam2ToolchainMatrixState || {}), status:data.status || 'matrix_draft_ready', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(`Matrix 초안: ready ${data.ready_claim_count || 0}개`, data.status === 'matrix_draft_ready' ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 collection Matrix 초안: ${data.collection_id} · ready ${data.ready_claim_count || 0}개`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainMatrixState:{ ...(s.redteam2ToolchainMatrixState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Matrix 초안 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async generateRedTeam2ToolchainReportDraft() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const collection = this.state.redteam2ToolchainCollectionState?.result || {};
+    const matrix = this.state.redteam2ToolchainMatrixState?.result || {};
+    const findingIds = (matrix.rows || []).map(row => row.finding_id).filter(Boolean);
+    if (!collection.collection_id || !findingIds.length || matrix.status !== 'matrix_draft_ready') {
+      this.toast('먼저 Matrix 초안 ready 상태를 확인하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainReportDraftState:{ ...(s.redteam2ToolchainReportDraftState || {}), status:'generating', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchain-result-collections/${encodeURIComponent(collection.collection_id)}/matrix-draft/report-draft`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          finding_ids:findingIds,
+          title:'복합 도구 결과 기반 Korean Red Team Report v2 draft',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ToolchainReportDraftState:{ ...(s.redteam2ToolchainReportDraftState || {}), status:data.status || 'report_draft_generated', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(data.report_generated ? 'Report v2 draft 생성 완료' : 'Report v2 draft 차단됨', data.report_generated ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 collection Report v2 draft: ${data.collection_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainReportDraftState:{ ...(s.redteam2ToolchainReportDraftState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Report v2 draft 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4543,6 +4611,8 @@ export default {
     const toolchainEvidenceApprovalState = this.state.redteam2ToolchainEvidenceApprovalState || {};
     const toolchainFindingPromotionState = this.state.redteam2ToolchainFindingPromotionState || {};
     const toolchainFindingSeverityState = this.state.redteam2ToolchainFindingSeverityState || {};
+    const toolchainMatrixState = this.state.redteam2ToolchainMatrixState || {};
+    const toolchainReportDraftState = this.state.redteam2ToolchainReportDraftState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -4558,6 +4628,8 @@ export default {
     const toolchainEvidenceApproval = toolchainEvidenceApprovalState.result || {};
     const toolchainFindingPromotion = toolchainFindingPromotionState.result || {};
     const toolchainFindingSeverity = toolchainFindingSeverityState.result || {};
+    const toolchainMatrix = toolchainMatrixState.result || {};
+    const toolchainReportDraft = toolchainReportDraftState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -4708,6 +4780,7 @@ export default {
       finding_draft_created:'Finding 초안 생성됨',
       findings_severity_approved:'Finding 심각도 승인 완료',
       findings_severity_partially_approved:'Finding 심각도 일부 승인',
+      building:'초안 구성 중',
       approving:'승인 중',
       awaiting_tool_result_analysis_brief:'도구 결과 분석 브리프 대기',
       promotion_inputs_ready:'승격 입력 준비됨',
@@ -4916,6 +4989,8 @@ export default {
       ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
       ['복합 Finding 초안 생성 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings', '승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다'],
       ['복합 Finding 심각도 2인 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity', 'collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다'],
+      ['복합 Collection Matrix 초안 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft', '승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며 held row는 보고서 입력에서 제외합니다'],
+      ['복합 Collection Report v2 draft API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft', 'Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다'],
       ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
       ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
@@ -5154,6 +5229,8 @@ export default {
       ['Evidence 후보 승인', koValue(toolchainEvidenceApproval.status || toolchainEvidenceApprovalState.status || '대기'), toolchainEvidenceApprovalState.error || `${toolchainEvidenceApproval.approved_count ?? 0}개 승인 · ${toolchainEvidenceApproval.invalid_count ?? 0}개 오류`],
       ['Finding 초안 생성', koValue(toolchainFindingPromotion.status || toolchainFindingPromotionState.status || '대기'), toolchainFindingPromotionState.error || `${toolchainFindingPromotion.created_count ?? 0}개 생성 · ${toolchainFindingPromotion.blocked_count ?? 0}개 차단`],
       ['Finding 심각도 2인 승인', koValue(toolchainFindingSeverity.status || toolchainFindingSeverityState.status || '대기'), toolchainFindingSeverityState.error || `${toolchainFindingSeverity.approved_count ?? 0}개 승인 · ${toolchainFindingSeverity.pending_count ?? 0}개 대기`],
+      ['Collection Matrix 초안', koValue(toolchainMatrix.status || toolchainMatrixState.status || '대기'), toolchainMatrixState.error || `${toolchainMatrix.ready_claim_count ?? 0}개 ready · ${toolchainMatrix.held_claim_count ?? 0}개 보류`],
+      ['Collection Report v2 draft', koValue(toolchainReportDraft.status || toolchainReportDraftState.status || '대기'), toolchainReportDraftState.error || (toolchainReportDraft.report_generated ? 'draft 생성됨 · 최종 export 승인 필요' : 'Matrix ready 이후 생성')],
       ['저장 산출물', toolchainRun.artifact_path ? '저장됨' : '미저장', toolchainRun.artifact_path || '복합 실행 후 생성'],
     ];
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
@@ -5186,6 +5263,17 @@ export default {
       `${koValue(item.lead_approval_status)} / ${koValue(item.business_owner_approval_status)}`,
       item.pending_conditions?.length ? item.pending_conditions.join(', ') : (item.errors || []).join(', ') || `${koSeverity(item.severity_final)} 승인`,
     ]);
+    const toolchainMatrixRows = (toolchainMatrix.rows || []).map(row => [
+      row.finding_id || '-',
+      koValue(row.status),
+      row.claim?.claim_id || '-',
+      (row.blocking_items || []).length ? `${row.blocking_items.length}개 차단` : 'report gate 입력 가능',
+    ]);
+    const toolchainReportRows = [
+      ['draft 상태', koValue(toolchainReportDraft.status || toolchainReportDraftState.status || '대기'), toolchainReportDraftState.error || toolchainReportDraft.report_request_id || '-'],
+      ['report gate', koValue(toolchainReportDraft.report?.gate_status || toolchainReportDraft.validation_preview?.gate_status || '대기'), toolchainReportDraft.report_generated ? '통과' : 'Matrix ready 필요'],
+      ['최종 export 승인', toolchainReportDraft.requires_final_export_approval ? '별도 필요' : '미확인', 'draft 생성은 export 승인이 아님'],
+    ];
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
       ['미리보기 상태', koValue(visualPreview.status || visualRedactionState.status || '대기'), visualRedactionState.error || visualPreview.preview_id || '스크린샷/이미지 증거를 선택하세요'],
@@ -5501,6 +5589,10 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '복합 Collection Matrix 초안 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft 입니다. 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며, held row는 보고서 입력에서 제외합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고, 최종 export 승인은 별도로 남깁니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Claim-Evidence Matrix 초안 API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft 입니다. 승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함하고, held row는 Evidence/Finding 승인 전 보류합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Matrix 기반 Report v2 draft API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft 입니다. held row 0건과 report gate pass일 때만 한국어 Report v2 draft를 생성하며, export 전 최종 사람 승인은 별도로 필요합니다.'),
@@ -5551,6 +5643,8 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence 입니다. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들고, severity 2인 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. red_team_lead와 business_owner가 같은 severity를 승인해야 Finding이 approved가 되며, 보고서 생성은 Matrix gate 이후에만 진행합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection Matrix 초안 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft 입니다. 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며 held row는 보고서 입력에서 제외합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
                 h('textarea', {
@@ -5594,13 +5688,25 @@ export default {
                 disabled:toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status),
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainFindingSeverityState.status === 'approving' ? C.raised : C.bg, color:(toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status)) ? C.muted : C.green, cursor:(toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status)) ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainFindingSeverityState.status === 'approving' ? '심각도 승인 중' : 'Finding 심각도 2인 승인'),
+              h('button', {
+                onClick:()=>this.buildRedTeam2ToolchainMatrixDraft(),
+                disabled:toolchainMatrixState.status === 'building' || toolchainFindingSeverity.status !== 'findings_severity_approved',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.teal}`, background:toolchainMatrixState.status === 'building' ? C.raised : C.bg, color:(toolchainMatrixState.status === 'building' || toolchainFindingSeverity.status !== 'findings_severity_approved') ? C.muted : C.teal, cursor:(toolchainMatrixState.status === 'building' || toolchainFindingSeverity.status !== 'findings_severity_approved') ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainMatrixState.status === 'building' ? 'Matrix 구성 중' : 'Matrix 초안 생성'),
+              h('button', {
+                onClick:()=>this.generateRedTeam2ToolchainReportDraft(),
+                disabled:toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.coral}`, background:toolchainReportDraftState.status === 'generating' ? C.raised : C.bg, color:(toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready') ? C.muted : C.coral, cursor:(toolchainReportDraftState.status === 'generating' || toolchainMatrix.status !== 'matrix_draft_ready') ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainReportDraftState.status === 'generating' ? 'Report 생성 중' : 'Report v2 draft 생성'),
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),
-            this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']])),
+            this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']]),
+            this.renderTable(['Finding ID','Matrix 상태','Claim ID','차단/결과'], toolchainMatrixRows.length ? toolchainMatrixRows : [['대기','-','심각도 승인 뒤 Matrix 초안 생성 버튼을 누르세요','-']]),
+            this.renderTable(['Report v2','상태','근거'], toolchainReportRows)),
           executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
           runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),
       smallPanel('도구 출력 Sanitizer 미리보기',

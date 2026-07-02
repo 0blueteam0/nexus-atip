@@ -858,3 +858,13 @@ Create Case
 - RedTeam2 UI는 `Finding 심각도 2인 승인` 버튼과 Finding별 lead/business owner 승인 상태 표를 제공한다.
 - regression test는 복합 npm audit + Trivy collection에서 Evidence 승인, Finding 초안 생성, Finding severity 2인 승인까지 이어지는 경로를 검증한다.
 - 이 slice는 collection Finding을 Matrix ready 직전 상태로 이동시키지만, 실제 운영 collection 전체의 Matrix draft ready, Report v2 draft, final export approval은 후속 단계로 남긴다.
+
+## 39. Slice 84 반영 사항
+
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft`는 collection의 approved/promoted Finding ID와 backend Evidence/Finding store를 읽어 collection 전용 Claim-Evidence Matrix draft를 만든다.
+- 각 row는 승인된 Evidence와 2인 severity 승인된 Finding만 `ready_for_report_validation` 상태가 되며, 차단 row는 `held_claims`에 blocker를 남긴다.
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft`는 Matrix ready, held row 0건, report validation gate pass 조건에서만 Korean Red Team Report v2 draft를 생성한다.
+- 두 API 모두 도구 실행, 능동 스캔, Finding 생성, report Claim 자동 삽입, final export approval을 수행하지 않는다.
+- RedTeam2 UI는 `Matrix 초안 생성`과 `Report v2 draft 생성` 버튼, Matrix row 표, Report gate/export 승인 필요 표를 제공한다.
+- regression test는 복합 npm audit + Trivy collection에서 Evidence 승인, Finding 생성, severity 2인 승인, Matrix ready, Report v2 draft generated까지 이어지는 controlled lane을 검증한다.
+- 이 slice는 collection approved Findings를 Report v2 draft까지 연결하지만, 실제 운영 collection 전체의 최종 export approval과 export 검증은 후속 단계로 남긴다.
