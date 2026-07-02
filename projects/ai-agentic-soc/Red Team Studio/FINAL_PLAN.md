@@ -1736,3 +1736,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 새 anchor 반영
 - [x] regression test가 npm audit/Trivy collection의 agent ID와 Evidence 후보 제한 문구를 검증
 - [ ] 실제 운영 도구 산출물 collection에서 agent summary를 확인하고 Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료
+
+## 110. Slice 102 SCA CycloneDX SBOM 정규화 체크리스트
+
+- [x] SCA normalizer가 CycloneDX `components`를 컴포넌트 인벤토리 Evidence 후보로 생성
+- [x] 컴포넌트 `bom-ref`, package URL, version, license, supplier를 Evidence 후보에 보존
+- [x] CycloneDX `vulnerabilities[].affects`를 `affected_component_refs`와 `affected_components`로 연결
+- [x] 취약점 후보에 `requires_component_match_review=true`를 표시해 사람 검토 전 Claim 확정을 차단
+- [x] RedTeam2 SCA 안내를 `CycloneDX SBOM`, `컴포넌트 인벤토리 Evidence`, `취약점 후보 Evidence`, affects 검토 제한 기준으로 갱신
+- [x] frontend runtime readiness contract와 Korean copy inventory에 SCA/SBOM anchor 반영
+- [x] regression test가 SCA CycloneDX SBOM + npm audit 복합 import 후 collection에서 `AGENT-SCA-ANALYST-001`, `sca_json`, 컴포넌트 Evidence, 취약점 후보, affects 연결을 검증
+- [ ] 실제 운영 SBOM/SCA 산출물을 제출해 Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료

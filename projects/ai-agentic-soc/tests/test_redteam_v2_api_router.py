@@ -1611,6 +1611,98 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(completion_body["trusted_as_instruction"])
         self.assertTrue(Path(completion_body["artifact_path"]).exists())
 
+    def test_v2_toolchain_collect_results_normalizes_sca_cyclonedx_components_and_affects(self) -> None:
+        case_id = f"CASE-V2-SCA-CYCLONEDX-COLLECT-001-{uuid.uuid4().hex[:8]}"
+        toolchain_id = f"TCHAIN-SCA-CYCLONEDX-{uuid.uuid4().hex[:8]}"
+        sbom = {
+            "bomFormat": "CycloneDX",
+            "specVersion": "1.5",
+            "components": [
+                {
+                    "bom-ref": "pkg:pypi/example-lib@1.0.0",
+                    "type": "library",
+                    "name": "example-lib",
+                    "version": "1.0.0",
+                    "purl": "pkg:pypi/example-lib@1.0.0",
+                    "licenses": [{"license": {"id": "MIT"}}],
+                    "supplier": {"name": "Example Supplier"},
+                }
+            ],
+            "vulnerabilities": [
+                {
+                    "id": "CVE-2099-0001",
+                    "source": {"name": "test-advisory-db"},
+                    "ratings": [{"severity": "high"}],
+                    "affects": [{"ref": "pkg:pypi/example-lib@1.0.0"}],
+                }
+            ],
+        }
+
+        executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": "analyst@example.com",
+            "objective": "CycloneDX SBOM을 SCA Evidence 후보로 정규화한다.",
+            "tools": [
+                {
+                    "tool_id": "TOOL-SCA-001",
+                    "execution_mode": "offline_parse",
+                    "imported_json": sbom,
+                },
+                {
+                    "tool_id": "TOOL-NPM-AUDIT-001",
+                    "execution_mode": "offline_parse",
+                    "imported_json": {
+                        "vulnerabilities": {
+                            "vite": {
+                                "name": "vite",
+                                "severity": "moderate",
+                                "via": ["CVE-TEST-NPM"],
+                                "range": "<5.0.0",
+                                "fixAvailable": True,
+                            }
+                        }
+                    },
+                }
+            ],
+        })
+        self.assertEqual(executed.status_code, 200)
+        executed_body = executed.json()
+        self.assertEqual(executed_body["status"], "imported")
+        self.assertEqual(executed_body["imported_count"], 2)
+        self.assertFalse(executed_body["commands_executed_by_api"])
+
+        collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "SCA CycloneDX SBOM 결과를 Evidence 후보로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        body = collected.json()
+        self.assertEqual(body["status"], "collected")
+        sca_step = next(step for step in body["steps"] if step["tool_id"] == "TOOL-SCA-001")
+        sca_summary = next(item for item in body["analysis_agent_summaries"] if item["tool_id"] == "TOOL-SCA-001")
+        self.assertEqual(sca_summary["agent_id"], "AGENT-SCA-ANALYST-001")
+        self.assertEqual(sca_step["normalized_result"]["parser"], "sca_json")
+        self.assertEqual(sca_step["normalized_result"]["structured_item_count"], 2)
+
+        analyzed = self.client.post(
+            f"/api/redteam/v2/tool-runs/{sca_step['run_id']}/agent-analyze",
+            json={"case_id": case_id, "summary": "SCA SBOM 재분석", "result_type": "sca_evidence_candidate"},
+        )
+        self.assertEqual(analyzed.status_code, 200)
+        structured_items = analyzed.json()["structured_items"]
+        component = next(item for item in structured_items if item["item_type"] == "sca_component_inventory_evidence")
+        vulnerability = next(item for item in structured_items if item["item_type"] == "sca_vulnerability_candidate")
+        self.assertEqual(component["package_name"], "example-lib")
+        self.assertEqual(component["licenses"], ["MIT"])
+        self.assertEqual(component["supplier"], "Example Supplier")
+        self.assertEqual(vulnerability["vulnerability_id"], "CVE-2099-0001")
+        self.assertEqual(vulnerability["affected_component_refs"], ["pkg:pypi/example-lib@1.0.0"])
+        self.assertEqual(vulnerability["affected_components"][0]["package_name"], "example-lib")
+        self.assertTrue(vulnerability["requires_component_match_review"])
+        self.assertFalse(vulnerability["trusted_as_instruction"])
+
     def test_v2_toolchain_six_named_tools_imported_outputs_complete_collection_e2e(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-SIX-TOOLS-E2E-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-SIX-TOOLS-E2E-{uuid.uuid4().hex[:8]}"

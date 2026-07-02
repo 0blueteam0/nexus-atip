@@ -5794,10 +5794,10 @@ export default {
         evidence:'Trivy JSON은 SCA 취약점 후보와 패키지/버전 근거로 변환됩니다.',
       },
       'TOOL-SCA-001': {
-        summary:'의존성 목록, lockfile, SBOM을 분석해 취약 패키지 후보를 찾는 경로입니다.',
-        beginnerNext:'package-lock, SBOM, dependency manifest 같은 이미 존재하는 파일을 업로드하고 LLM 에이전트가 보고서 표현을 제한하게 하세요.',
+        summary:'의존성 목록, lockfile, CycloneDX SBOM을 분석해 취약 패키지와 컴포넌트 존재 근거를 분리하는 경로입니다.',
+        beginnerNext:'package-lock, CycloneDX SBOM, dependency manifest 같은 이미 존재하는 파일을 업로드하고 LLM 에이전트가 보고서 표현을 제한하게 하세요.',
         safeMode:'권장 시작: offline_parse. 패키지 다운로드나 사설 registry 접근은 승인 전 금지합니다.',
-        evidence:'SCA 결과는 Claim-Evidence Matrix에서 “취약 컴포넌트가 존재한다” 수준의 근거로만 사용합니다.',
+        evidence:'SCA 결과는 컴포넌트 인벤토리 Evidence와 취약점 후보 Evidence로 나뉘며, affects 연결은 사람이 검토하기 전 Claim으로 확정하지 않습니다.',
       },
       'TOOL-NPM-AUDIT-001': {
         summary:'Node.js lockfile 기반 의존성 취약점 점검입니다. 자동 수정은 하지 않고 JSON 결과만 증거화합니다.',

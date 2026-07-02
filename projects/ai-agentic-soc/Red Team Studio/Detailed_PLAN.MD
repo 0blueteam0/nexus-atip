@@ -1031,3 +1031,13 @@ Create Case
 - RedTeam2 UI는 `LLM 분석 에이전트 요약` 표를 추가해 결과 회수 뒤 도구별 normalizer 판단과 증거 사용 제한을 표시한다.
 - regression test는 npm audit/Trivy mock 복합 실행 후 collection 결과가 두 개의 agent summary를 만들고, NPM/Trivy 에이전트 ID, Evidence 후보 문구, untrusted data 제한, 사람 검토 조건을 보존하는지 검증한다.
 - 이 slice는 결과 회수의 설명 가능성을 높이지만, 실제 운영 도구 산출물 전체의 Evidence 승인, Finding 승격, severity 2인 승인, Matrix/report/export/completion gate는 계속 별도 완료 조건으로 남아 있다.
+
+## 57. Slice 102 반영 사항
+
+- SCA normalizer가 CycloneDX SBOM의 `components`를 `sca_component_inventory_evidence`로 정규화하도록 확장했다.
+- 컴포넌트 Evidence는 `component_ref`, `package_name`, `version`, `package_url`, `licenses`, `supplier`, `claim_scope=component_presence_only_until_vulnerability_evidence_approved`를 포함한다.
+- CycloneDX `vulnerabilities[].affects`는 `affected_component_refs`와 `affected_components`로 연결되어, 취약점 후보가 어떤 컴포넌트 인벤토리 Evidence에 기대는지 추적할 수 있다.
+- 취약점 후보에는 `requires_component_match_review=true`를 남겨 사람이 affects/component match를 확인하기 전에는 보고서 Claim으로 확정하지 않게 했다.
+- RedTeam2 UI의 SCA 안내 문구를 CycloneDX SBOM, 컴포넌트 인벤토리 Evidence, 취약점 후보 Evidence, affects 검토 제한 기준으로 갱신했다.
+- regression test는 SCA CycloneDX SBOM과 npm audit 결과를 복합 operator-import로 첨부하고, collect-results가 SCA agent summary, `sca_json` parser, 컴포넌트 Evidence 1건, 취약점 후보 1건, affects 연결을 생성하는지 검증한다.
+- 이 slice는 목표의 SCA 사용성을 강화하지만, 실제 운영 SBOM과 실제 승인자 기반 Evidence/Finding/Report/export/completion gate 완료는 여전히 남아 있다.

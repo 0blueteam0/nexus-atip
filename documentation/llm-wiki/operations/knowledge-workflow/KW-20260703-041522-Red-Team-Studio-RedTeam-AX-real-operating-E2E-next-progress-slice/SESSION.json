@@ -4,7 +4,7 @@
   "task": "RedTeam AX real operating E2E next progress slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-041522-Red-Team-Studio-RedTeam-AX-real-operating-E2E-next-progress-slice",
   "created_at": "2026-07-03T04:15:22+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T04:28:13+09:00"
+  ]
 }

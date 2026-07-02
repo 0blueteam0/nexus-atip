@@ -6121,12 +6121,77 @@ def _normalize_openvas_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     return items
 
 
+def _component_license_names(value: Any) -> list[str]:
+    names: list[str] = []
+    if not isinstance(value, list):
+        return names
+    for item in value:
+        if isinstance(item, str) and item.strip():
+            names.append(item.strip())
+        elif isinstance(item, dict):
+            license_obj = item.get("license") if isinstance(item.get("license"), dict) else item
+            name = license_obj.get("id") or license_obj.get("name") or license_obj.get("expression")
+            if name:
+                names.append(str(name))
+    return names
+
+
+def _component_supplier_name(value: Any) -> str | None:
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    if isinstance(value, dict):
+        name = value.get("name") or value.get("url")
+        return str(name) if name else None
+    return None
+
+
+def _sca_affected_component_refs(value: Any) -> list[str]:
+    refs: list[str] = []
+    if not isinstance(value, list):
+        return refs
+    for item in value:
+        if isinstance(item, str) and item.strip():
+            refs.append(item.strip())
+        elif isinstance(item, dict):
+            ref = item.get("ref") or item.get("bom-ref") or item.get("bom_ref") or item.get("purl")
+            if ref:
+                refs.append(str(ref))
+    return refs
+
+
 def _normalize_sca_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for raw in raw_values:
         parsed = _coerce_json(raw)
         if not isinstance(parsed, dict):
             continue
+        component_lookup: dict[str, dict[str, Any]] = {}
+        components = parsed.get("components") or parsed.get("packages") or []
+        if isinstance(components, dict):
+            components = components.values()
+        for component in components:
+            if not isinstance(component, dict):
+                continue
+            component_ref = str(component.get("bom-ref") or component.get("ref") or component.get("purl") or component.get("name") or "").strip()
+            package_name = component.get("name") or component.get("package_name") or component.get("purl")
+            component_record = {
+                "item_type": "sca_component_inventory_evidence",
+                "tool": "sca",
+                "component_ref": component_ref or None,
+                "package_name": package_name,
+                "version": component.get("version"),
+                "package_url": component.get("purl"),
+                "licenses": _component_license_names(component.get("licenses")),
+                "supplier": _component_supplier_name(component.get("supplier")),
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "claim_scope": "component_presence_only_until_vulnerability_evidence_approved",
+                "confidence": 0.65,
+            }
+            if component_ref:
+                component_lookup[component_ref] = component_record
+            if package_name or component_ref:
+                items.append(component_record)
         vulnerabilities = parsed.get("vulnerabilities") or parsed.get("findings") or []
         if isinstance(vulnerabilities, dict):
             vulnerabilities = vulnerabilities.values()
@@ -6140,15 +6205,32 @@ def _normalize_sca_output(raw_values: list[Any]) -> list[dict[str, Any]]:
                     rating_severity = first_rating.get("severity")
             severity = _severity(finding.get("severity") or rating_severity)
             package = finding.get("package") if isinstance(finding.get("package"), dict) else {}
+            affects = _sca_affected_component_refs(finding.get("affects"))
+            affected_components = [
+                {
+                    "component_ref": ref,
+                    "package_name": component_lookup.get(ref, {}).get("package_name"),
+                    "version": component_lookup.get(ref, {}).get("version"),
+                    "package_url": component_lookup.get(ref, {}).get("package_url"),
+                }
+                for ref in affects
+            ]
+            primary_ref = affects[0] if affects else None
+            matched_component = component_lookup.get(primary_ref or "", {})
             items.append({
                 "item_type": "sca_vulnerability_candidate",
                 "tool": "sca",
-                "package_name": finding.get("package_name") or package.get("name") or finding.get("component") or finding.get("name"),
+                "package_name": finding.get("package_name") or package.get("name") or finding.get("component") or matched_component.get("package_name") or finding.get("name"),
                 "vulnerability_id": finding.get("id") or finding.get("vulnerability_id") or finding.get("cve"),
                 "severity": severity,
                 "source": finding.get("source") or finding.get("bom-ref"),
+                "affected_component_refs": affects,
+                "affected_components": affected_components,
+                "package_url": package.get("purl") or matched_component.get("package_url"),
+                "version": package.get("version") or matched_component.get("version"),
                 "trusted_as_instruction": False,
                 "requires_human_validation": True,
+                "requires_component_match_review": bool(affects),
                 "confidence": _confidence_for_severity(severity),
             })
     return items

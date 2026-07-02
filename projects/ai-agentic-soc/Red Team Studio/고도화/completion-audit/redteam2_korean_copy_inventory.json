@@ -14,7 +14,7 @@
     "ToolActionCard": 10,
     "HITL": 12,
     "Evidence Card": 41,
-    "Claim-Evidence Matrix": 12,
+    "Claim-Evidence Matrix": 11,
     "Agentic RAG": 9,
     "SCA": 9,
     "Nuclei": 6,
@@ -30,7 +30,7 @@
   "beginner_signal_terms": {
     "쉬운 설명": 1,
     "먼저": 10,
-    "사람": 48,
+    "사람": 49,
     "승인": 216,
     "수동": 5,
     "업로드": 17,
