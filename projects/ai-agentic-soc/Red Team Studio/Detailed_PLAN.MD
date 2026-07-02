@@ -816,3 +816,13 @@ Create Case
 - API는 export 승인을 수행하지 않으며, `commands_executed_by_api=false`, `active_scan_executed=false`, `requires_human_validation=true`를 유지한다.
 - RedTeam2 runtime readiness panel은 `Matrix 기반 Report v2 draft API`와 `held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성` 조건을 표시한다.
 - 이 slice는 approved Matrix row에서 report draft까지 잇는 controlled lane이며, 실제 운영 후보 전체 ready와 final export approval은 후속 작업으로 남긴다.
+
+## 35. Slice 80 반영 사항
+
+- `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`는 기존 governed toolchain run을 읽어 복합 실행 결과를 한 번에 회수한다.
+- API는 새 도구 명령을 실행하지 않고 저장된 stdout/stderr artifact만 읽는다. 각 artifact는 Sanitizer를 먼저 통과하고 raw output은 LLM 명령이 아니라 untrusted data로만 취급한다.
+- Sanitizer가 quarantine하지 않은 step은 기존 도구별 analysis agent normalizer를 호출해 normalized result를 만들고, 유효한 normalized result에 대해서만 Evidence Card 후보를 생성한다.
+- 생성된 Evidence Card는 `candidate` 상태이며 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않는다.
+- RedTeam2 UI는 `여러 분석도구 실행` 뒤 `결과 회수·Evidence 후보` 버튼을 제공하고, 회수 단계별 Sanitizer/normalizer/Evidence 후보 상태를 한국어 표로 표시한다.
+- API regression test는 npm audit + Trivy mock runner 결과를 회수해 2개 normalized result와 2개 Evidence 후보가 생성되는 경로를 검증한다.
+- 이 slice는 여러 도구를 복합적으로 사용한 뒤 결과를 회수·증거화하는 operational lane을 강화하지만, 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 결과 승인과 Matrix/report 반영은 후속 HITL 작업으로 남긴다.

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 20,
+    "proved": 21,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -350,14 +350,32 @@
       "proof_summary": "The matrix-draft/report-draft API first creates a Matrix draft, blocks report generation when no ready rows exist or held rows remain, and calls the existing Korean Report v2 generator only when the Matrix validation preview passes. API tests cover held-row blocking and ready-row report draft generation with Claim-Evidence Matrix sections.",
       "residual_gap": "This proves the controlled report-draft lane for selected ready candidates, not real operating completion across all tool result candidates or final export approval.",
       "next_action": "Run the report-draft API only after all real operating candidates have approved Evidence, promoted Findings, two-person severity approvals, and Matrix draft ready status."
+    },
+    {
+      "id": "RTA-COMP-022",
+      "requirement": "Governed multi-toolchain execution must have a result collection API that reads stored runner artifacts, sanitizes untrusted output, runs tool-specific analysis normalizers, and creates only candidate Evidence Cards before human approval.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/{toolchain_id}/collect-results API loads an existing governed toolchain run, reads stored stdout/stderr artifacts without executing new tool commands, runs sanitizer preview, invokes the registered tool-specific analysis normalizer, and creates candidate Evidence Cards only for valid normalized results. Regression tests cover npm audit + Trivy composite runner outputs producing two normalized results and two Evidence candidates. RedTeam2 UI exposes a Korean result collection button and status table.",
+      "residual_gap": "This proves the collection lane for governed toolchain artifacts, not that all real Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP operating outputs have been collected, approved, promoted to Findings, and included in the final Matrix/report.",
+      "next_action": "Use the collection API against real governed toolchain outputs, approve resulting Evidence Cards, promote Findings, complete severity approvals, then rerun Matrix and Report v2 draft gates."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
-    "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness."
+    "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
-    "Run Docker/container runtime live smoke when Docker is available and approved."
+    "Run Docker/container runtime live smoke when Docker is available and approved.",
+    "Run /api/redteam/v2/toolchains/{toolchain_id}/collect-results against real governed scanner outputs and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates."
   ]
 }

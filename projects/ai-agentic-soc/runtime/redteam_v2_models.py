@@ -3425,6 +3425,127 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return record
 
 
+def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
+    requested_by = str(payload.get("requested_by") or payload.get("analyst") or "").strip()
+    create_evidence_candidates = bool(payload.get("create_evidence_candidates", True))
+    errors: list[str] = []
+    warnings: list[str] = []
+    collected_steps: list[dict[str, Any]] = []
+    if toolchain is None:
+        errors.append("toolchain_run_required")
+    if not requested_by:
+        errors.append("requested_by_required")
+
+    for step in (toolchain or {}).get("steps") or []:
+        run = step.get("run") if isinstance(step, dict) else None
+        run_id = str((run or {}).get("run_id") or "")
+        step_record = {
+            "index": step.get("index") if isinstance(step, dict) else None,
+            "tool_id": step.get("tool_id") if isinstance(step, dict) else None,
+            "run_id": run_id,
+            "status": "skipped",
+            "errors": [],
+            "sanitize_preview": None,
+            "normalized_result": None,
+            "evidence_candidate": None,
+        }
+        if not run_id:
+            step_record["status"] = "blocked"
+            step_record["errors"].append("tool_run_required_for_collection")
+            collected_steps.append(step_record)
+            continue
+
+        preview = preview_tool_output_sanitizer(run_id, {"case_id": case_id})
+        step_record["sanitize_preview"] = {
+            "preview_id": preview.get("preview_id"),
+            "status": preview.get("status"),
+            "requires_human_review": preview.get("requires_human_review"),
+            "redaction_count": len((preview.get("sanitizer") or {}).get("redactions") or []),
+            "errors": preview.get("errors") or [],
+        }
+        if preview.get("errors"):
+            step_record["errors"].extend(preview.get("errors") or [])
+        if preview.get("status") == "quarantine":
+            step_record["status"] = "quarantined"
+            step_record["errors"].append("tool_output_quarantined")
+            collected_steps.append(step_record)
+            continue
+
+        normalized = agent_analyze_tool_run(run_id, {
+            "case_id": case_id,
+            "summary": payload.get("summary") or "Composite toolchain output collected for analyst review.",
+            "result_type": payload.get("result_type") or "toolchain_result_evidence_candidate",
+        })
+        step_record["normalized_result"] = {
+            "result_id": normalized.get("result_id"),
+            "status": normalized.get("status"),
+            "structured_item_count": len(normalized.get("structured_items") or []),
+            "parser": (normalized.get("parser_report") or {}).get("parser"),
+            "input_source": (normalized.get("parser_report") or {}).get("input_source"),
+            "errors": normalized.get("errors") or [],
+        }
+        if normalized.get("errors"):
+            step_record["errors"].extend(normalized.get("errors") or [])
+
+        if normalized.get("status") == "Normalized" and create_evidence_candidates:
+            evidence = create_evidence_from_tool_run(run_id, {
+                "case_id": case_id,
+                "result_id": normalized.get("result_id"),
+                "summary": payload.get("evidence_summary") or f"{step_record['tool_id']} toolchain output evidence candidate.",
+                "validation_status": "candidate",
+            })
+            step_record["evidence_candidate"] = {
+                "evidence_id": evidence.get("evidence_id"),
+                "validation_status": evidence.get("validation_status"),
+                "status": "created" if not evidence.get("errors") else "invalid",
+                "errors": evidence.get("errors") or [],
+            }
+            if evidence.get("errors"):
+                step_record["errors"].extend(evidence.get("errors") or [])
+
+        step_record["status"] = "collected" if not step_record["errors"] else "collected_with_errors"
+        collected_steps.append(step_record)
+
+    collected_count = sum(1 for step in collected_steps if step.get("status") == "collected")
+    evidence_count = sum(1 for step in collected_steps if (step.get("evidence_candidate") or {}).get("evidence_id"))
+    blocked_count = sum(1 for step in collected_steps if step.get("status") in {"blocked", "quarantined", "collected_with_errors"})
+    if toolchain is not None and not collected_steps:
+        warnings.append("toolchain_has_no_collectable_runs")
+    result = {
+        "kind": "redteam_ax_v2_toolchain_result_collection",
+        "collection_id": str(payload.get("collection_id") or stable_id("TCC", [toolchain_id, case_id, requested_by, collected_steps, now_utc()])),
+        "toolchain_id": toolchain_id,
+        "case_id": case_id,
+        "requested_by": requested_by,
+        "status": "invalid" if errors else ("collected_with_blocks" if blocked_count else "collected"),
+        "errors": errors,
+        "warnings": warnings,
+        "toolchain_status": (toolchain or {}).get("status"),
+        "step_count": len(collected_steps),
+        "collected_count": collected_count,
+        "blocked_count": blocked_count,
+        "evidence_candidate_count": evidence_count,
+        "commands_executed_by_api": False,
+        "raw_output_trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "requires_evidence_approval_before_finding": True,
+        "steps": collected_steps,
+        "policy": "Toolchain collection only reads stored runner artifacts, sanitizes untrusted output, invokes normalizer agents, and creates candidate Evidence Cards for analyst approval.",
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-result-collections", result["collection_id"])
+    if toolchain is not None and not errors:
+        collections = list(toolchain.get("result_collections") or [])
+        if result["collection_id"] not in collections:
+            collections.append(result["collection_id"])
+        toolchain["result_collections"] = collections
+        toolchain["result_collection_status"] = result["status"]
+        append_artifact_metadata(toolchain, "toolchain-runs", toolchain_id)
+    return result
+
+
 def _coerce_json(value: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value

@@ -3703,6 +3703,40 @@ export default {
     }
   }
 ,
+  async collectRedTeam2ToolchainResults() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const toolchainRun = this.state.redteam2ToolchainState?.result || {};
+    const toolchainId = toolchainRun.toolchain_id || `${reportId}-TOOLCHAIN-LOCAL-RUNNER`;
+    if (!toolchainRun.toolchain_id) {
+      this.toast('먼저 여러 분석도구 실행을 완료하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainCollectionState:{ ...(s.redteam2ToolchainCollectionState || {}), status:'collecting', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchains/${encodeURIComponent(toolchainId)}/collect-results`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          requested_by:'current-analyst',
+          summary:'복합 분석도구 실행 결과를 한국어 Evidence Card 후보로 회수한다.',
+          create_evidence_candidates:true,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ToolchainCollectionState:{ ...(s.redteam2ToolchainCollectionState || {}), status:data.status || 'collected', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(`복합 결과 회수: ${data.status}`, data.evidence_candidate_count ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 복합 결과 회수: ${data.toolchain_id} · Evidence 후보 ${data.evidence_candidate_count || 0}개`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainCollectionState:{ ...(s.redteam2ToolchainCollectionState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('복합 결과 회수 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4388,6 +4422,7 @@ export default {
     const executionPlanState = this.state.redteam2ExecutionPlanState || {};
     const runnerState = this.state.redteam2RunnerState || {};
     const toolchainState = this.state.redteam2ToolchainState || {};
+    const toolchainCollectionState = this.state.redteam2ToolchainCollectionState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -4399,6 +4434,7 @@ export default {
     const executionPlan = executionPlanState.plan || {};
     const runnerRun = runnerState.run || {};
     const toolchainRun = toolchainState.result || {};
+    const toolchainCollection = toolchainCollectionState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -4538,6 +4574,9 @@ export default {
       hold_until_evidence_and_finding_approved:'Evidence/Finding 승인 전 보류',
       not_run_no_ready_rows:'준비된 행 없음 · 검증 미실행',
       report_draft_generated:'보고서 draft 생성됨',
+      collected:'결과 회수 완료',
+      collecting:'결과 회수 중',
+      collected_with_blocks:'일부 결과 회수 차단',
       awaiting_tool_result_analysis_brief:'도구 결과 분석 브리프 대기',
       promotion_inputs_ready:'승격 입력 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
@@ -4741,6 +4780,7 @@ export default {
       ['LLM 원시 출력 신뢰', koBool(toolResultAnalysis.llm_raw_tool_output_trusted ?? false), 'llm_raw_tool_output_trusted는 항상 아니오 유지'],
       ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReviewArtifact.path || 'latest_tool_result_finding_claim_review.json'],
       ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, `${findingClaimReview.candidate_count ?? 0}개 후보 중 Evidence 승인 전 보류`],
+      ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
       ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
       ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
@@ -4974,6 +5014,8 @@ export default {
       ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
+      ['복합 결과 회수', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
+      ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
       ['저장 산출물', toolchainRun.artifact_path ? '저장됨' : '미저장', toolchainRun.artifact_path || '복합 실행 후 생성'],
     ];
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
@@ -4981,6 +5023,12 @@ export default {
       koValue(step.status),
       step.run?.run_id || step.plan?.execution_plan_id || (step.errors || []).join(', ') || '-',
       (step.run?.raw_artifacts || []).length ? `${step.run.raw_artifacts.length}개 출력` : '출력 없음',
+    ]);
+    const toolchainCollectionRows = (toolchainCollection.steps || []).map(step => [
+      `${Number(step.index ?? 0) + 1}. ${step.tool_id || '-'}`,
+      koValue(step.status),
+      step.normalized_result?.result_id || step.sanitize_preview?.preview_id || (step.errors || []).join(', ') || '-',
+      step.evidence_candidate?.evidence_id || 'Evidence 후보 대기',
     ]);
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
@@ -5249,6 +5297,7 @@ export default {
             ['LLM 분석 에이전트', `${(toolResultAnalysis.tool_agents || []).length}개`, (toolResultAnalysis.tool_agents || []).length ? C.green : C.amber, '도구별 결과 해석 보조'],
             ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReview.status === 'finding_claim_review_ready' ? C.green : C.amber, `${findingClaimReview.candidate_count ?? 0}개 후보`],
             ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, findingClaimReview.held_candidate_count ? C.amber : C.green, 'Evidence 승인 전 보류'],
+            ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', C.blue, '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
             ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', C.blue, '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
             ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', C.blue, 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
@@ -5337,6 +5386,7 @@ export default {
           h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
             h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행합니다. 각 단계는 별도 ToolActionCard, 실행 계획, 실행 토큰, 래퍼 신뢰 고정 조건을 통과해야 하며 결과 stdout/stderr는 산출물로 회수됩니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
                 h('textarea', {
@@ -5360,9 +5410,15 @@ export default {
                 disabled:toolchainState.status === 'executing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainState.status === 'executing' ? '복합 실행 중' : '여러 분석도구 실행'),
+              h('button', {
+                onClick:()=>this.collectRedTeam2ToolchainResults(),
+                disabled:toolchainCollectionState.status === 'collecting' || !toolchainRun.toolchain_id,
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.teal}`, background:toolchainCollectionState.status === 'collecting' ? C.raised : C.bg, color:(toolchainCollectionState.status === 'collecting' || !toolchainRun.toolchain_id) ? C.muted : C.teal, cursor:(toolchainCollectionState.status === 'collecting' || !toolchainRun.toolchain_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainCollectionState.status === 'collecting' ? '결과 회수 중' : '결과 회수·Evidence 후보'),
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
-            this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']])),
+            this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
+            this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']])),
           executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
           runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),
       smallPanel('도구 출력 Sanitizer 미리보기',

@@ -1461,3 +1461,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 runtime readiness panel에 `Matrix 기반 Report v2 draft API`와 held row 0건/report gate pass 조건을 한국어로 표시
 - [x] frontend runtime readiness contract와 Korean copy inventory에 report-draft 조건 추가
 - [ ] 실제 운영 후보 전체가 ready가 된 뒤 이 API로 최종 Report v2 draft를 생성하고 export 승인/검증까지 통과
+
+## 88. Slice 80 복합 도구 결과 회수 API 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` API 추가
+- [x] API는 기존 governed toolchain run artifact를 읽고 새 도구 명령을 실행하지 않음
+- [x] 각 step의 저장된 stdout/stderr artifact를 Sanitizer로 먼저 확인
+- [x] 격리되지 않은 raw output은 LLM 명령이 아니라 untrusted data로만 취급
+- [x] 도구별 analysis agent normalizer를 호출해 normalized result를 생성
+- [x] normalized result가 유효한 경우에만 Evidence Card 후보를 생성하고 승인 전 Finding/Claim 확정은 차단
+- [x] API regression test가 npm audit + Trivy 복합 실행 결과 회수, normalizer, Evidence 후보 생성을 검증
+- [x] RedTeam2 UI에 `결과 회수·Evidence 후보` 버튼, `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 안내, 회수 단계 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 복합 결과 회수 anchor 추가
+- [ ] 실제 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 운영 결과 전체를 같은 collection API로 회수하고 Evidence 승인/Claim-Evidence Matrix까지 연결

@@ -1281,6 +1281,94 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertGreaterEqual(analyzed_body["parser_report"]["artifact_input_count"], 1)
         self.assertFalse(analyzed_body.get("trusted_as_instruction", False))
 
+    def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001"
+
+        def trusted_manifest(profile: dict) -> dict:
+            command_name = profile.get("command_name") or profile.get("name")
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": profile["tool_id"],
+                "tool_name": profile["name"],
+                "availability": {
+                    "status": "available",
+                    "command_name": command_name,
+                    "resolved_path": command_name,
+                },
+                "pinning_status": "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+                "runner_preflight": {
+                    "runner_can_use_wrapper": True,
+                    "blocking_controls": [],
+                    "human_review_required": False,
+                },
+                "actual_sha256": "e" * 64,
+                "expected_sha256": "e" * 64,
+                "expected_sha256_source": "test_approved_pin",
+            }
+
+        class Completed:
+            def __init__(self, argv: list[str]) -> None:
+                self.returncode = 0
+                if argv[0] == "npm.cmd":
+                    self.stdout = '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":["CVE-TEST-1"],"range":"<5.0.0","fixAvailable":true}}}'
+                else:
+                    self.stdout = '{"Results":[{"Target":"package-lock.json","Vulnerabilities":[{"VulnerabilityID":"CVE-TEST-2","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Synthetic trivy finding"}]}]}'
+                self.stderr = ""
+
+        with patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=trusted_manifest), \
+             patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)):
+            executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-COLLECT-RESULTS-001",
+                "requested_by": "analyst@example.com",
+                "objective": "여러 도구 실행 결과를 일괄 회수하고 Evidence Card 후보로 만든다.",
+                "tools": [
+                    {
+                        "tool_id": "TOOL-NPM-AUDIT-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["npm.cmd", "audit", "--json", "--package-lock-only"],
+                    },
+                    {
+                        "tool_id": "TOOL-TRIVY-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["trivy", "fs", "--format", "json", "--offline-scan", "."],
+                    },
+                ],
+            })
+
+        self.assertEqual(executed.status_code, 200)
+        self.assertEqual(executed.json()["status"], "executed")
+
+        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-COLLECT-RESULTS-001/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "복합 분석도구 실행 결과를 한국어 보고서 후보 증거로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        body = collected.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_result_collection")
+        self.assertEqual(body["status"], "collected")
+        self.assertEqual(body["step_count"], 2)
+        self.assertEqual(body["collected_count"], 2)
+        self.assertEqual(body["blocked_count"], 0)
+        self.assertEqual(body["evidence_candidate_count"], 2)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["raw_output_trusted_as_instruction"])
+        self.assertTrue(body["requires_human_validation"])
+        self.assertTrue(body["requires_evidence_approval_before_finding"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+        for step in body["steps"]:
+            self.assertEqual(step["status"], "collected")
+            self.assertEqual(step["sanitize_preview"]["status"], "allow")
+            self.assertEqual(step["sanitize_preview"]["redaction_count"], 0)
+            self.assertEqual(step["normalized_result"]["status"], "Normalized")
+            self.assertGreaterEqual(step["normalized_result"]["structured_item_count"], 1)
+            self.assertEqual(step["normalized_result"]["input_source"], "stored_artifacts")
+            self.assertEqual(step["evidence_candidate"]["status"], "created")
+            self.assertEqual(step["evidence_candidate"]["validation_status"], "candidate")
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)
