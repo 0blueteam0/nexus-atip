@@ -4267,7 +4267,9 @@ export default {
     const runnerRows = [
       ['Runner Status', runnerRun.status || runnerState.status || 'idle', runnerState.error || runnerRun.run_id || 'PlanReady + issued token required'],
       ['Attempt', runnerRun.runner_attempt?.status || '-', runnerRun.runner_attempt?.artifact_path || String(runnerRun.runner_attempt?.exit_code ?? 'not executed')],
+      ['Backend', runnerRun.runner_attempt?.runner_backend || executionPlan.environment_constraints?.isolation_readiness?.requested_backend || 'local_subprocess_shim', runnerRun.runner_attempt?.container_dry_run ? 'container dry-run launch plan only' : 'governed execution backend'],
       ['Command', (runnerRun.runner_attempt?.runner_argv || []).join(' ') || draft.runnerCommandArgv || '-', 'shell=false, child process allowlist enforced by backend'],
+      ['Container Launch', runnerRun.runner_attempt?.container_launch?.image_digest || '-', runnerRun.runner_attempt?.container_launch?.container_argv ? runnerRun.runner_attempt.container_launch.container_argv.slice(0, 6).join(' ') : 'not requested'],
       ['Output Artifacts', (runnerRun.raw_artifacts || []).length, (runnerRun.raw_artifacts || []).map(item => item.source_path_or_ref).join(', ') || 'stdout/stderr artifact pending'],
     ];
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;

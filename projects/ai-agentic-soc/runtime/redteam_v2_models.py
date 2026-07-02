@@ -1671,6 +1671,10 @@ EPHEMERAL_CONTAINER_REQUIRED_CONTROLS = [
 ]
 
 
+def truthy_env(name: str) -> bool:
+    return os.environ.get(name, "").lower() in {"1", "true", "yes"}
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()
@@ -1679,17 +1683,19 @@ def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[st
         requested_backend = "local_subprocess_shim" if execution_mode in {"dry_run", "sandbox_execute"} else "manual_or_api_controlled"
     requested_backend = requested_backend.lower()
     attestation = payload.get("isolation_attestation") or {}
-    env_enabled = os.environ.get("REDTEAM_AX_CONTAINER_RUNNER_ENABLED", "").lower() in {"1", "true", "yes"}
+    env_enabled = truthy_env("REDTEAM_AX_CONTAINER_RUNNER_ENABLED")
     image_digest = str(
         payload.get("image_digest")
         or attestation.get("image_digest")
         or os.environ.get("REDTEAM_AX_CONTAINER_IMAGE_DIGEST")
         or ""
     ).strip()
-    runtime_attested = bool(attestation.get("container_runtime_attested")) or os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME_ATTESTED", "").lower() in {"1", "true", "yes"}
-    network_attested = bool(attestation.get("network_deny_or_allowlist_enforced")) or os.environ.get("REDTEAM_AX_CONTAINER_NETWORK_ATTESTED", "").lower() in {"1", "true", "yes"}
-    cleanup_attested = bool(attestation.get("ephemeral_cleanup_attested")) or os.environ.get("REDTEAM_AX_CONTAINER_CLEANUP_ATTESTED", "").lower() in {"1", "true", "yes"}
-    mount_attested = bool(attestation.get("workspace_read_only_mount")) and bool(attestation.get("case_write_mount_only"))
+    runtime_attested = bool(attestation.get("container_runtime_attested")) or truthy_env("REDTEAM_AX_CONTAINER_RUNTIME_ATTESTED")
+    network_attested = bool(attestation.get("network_deny_or_allowlist_enforced")) or truthy_env("REDTEAM_AX_CONTAINER_NETWORK_ATTESTED")
+    cleanup_attested = bool(attestation.get("ephemeral_cleanup_attested")) or truthy_env("REDTEAM_AX_CONTAINER_CLEANUP_ATTESTED")
+    mount_attested = (
+        bool(attestation.get("workspace_read_only_mount")) and bool(attestation.get("case_write_mount_only"))
+    ) or truthy_env("REDTEAM_AX_CONTAINER_MOUNT_ATTESTED")
 
     blocking_controls: list[str] = []
     if requested_backend == "ephemeral_container":
@@ -1728,6 +1734,7 @@ def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[st
         "required_controls": EPHEMERAL_CONTAINER_REQUIRED_CONTROLS,
         "container_policy": {
             "ephemeral": True,
+            "runtime": os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME") or "docker",
             "image_digest": image_digest or None,
             "network_default": "deny",
             "network_allowlist_required_for_egress": True,
@@ -1736,6 +1743,11 @@ def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[st
             "host_secret_mounts_allowed": False,
             "shell_expansion_allowed": False,
             "privileged_container_allowed": False,
+            "resource_limits": {
+                "cpus": os.environ.get("REDTEAM_AX_CONTAINER_CPUS") or "1",
+                "memory": os.environ.get("REDTEAM_AX_CONTAINER_MEMORY") or "512m",
+                "pids_limit": int(os.environ.get("REDTEAM_AX_CONTAINER_PIDS_LIMIT") or 128),
+            },
         },
         "local_shim_policy": {
             "allowed_for": ["dry_run", "sandbox_execute"],
@@ -1807,9 +1819,10 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     plan_id = str(payload.get("execution_plan_id") or stable_id("TEP", [case_id, action_id, tool_id, execution_mode, requested_by, now_utc()]))
     runner = runner_for_execution_mode(execution_mode, profile)
     wrapper_manifest = tool_wrapper_manifest_for_profile(profile) if profile else None
-    runner_uses_wrapper = runner in {"sandbox", "local_cli", "api"}
-    wrapper_preflight_blocked = bool(wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner_uses_wrapper)
     isolation_readiness = runner_isolation_readiness({**payload, "execution_mode": execution_mode})
+    runner_backend = str(isolation_readiness.get("requested_backend") or "")
+    runner_uses_wrapper = runner in {"sandbox", "local_cli", "api"} and runner_backend != "ephemeral_container"
+    wrapper_preflight_blocked = bool(wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner_uses_wrapper)
     isolation_blocked = bool(isolation_readiness.get("runner_token_blocked")) and runner == "sandbox"
     if wrapper_preflight_blocked:
         warnings.append("wrapper_sha256_pin_required_before_runner_execution")
@@ -1818,7 +1831,7 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     token_issued = not errors and not approval_required and not wrapper_preflight_blocked and not isolation_blocked
     execution_token = {
         "token_id": stable_id("EXT", [plan_id, action_id, tool_id, execution_mode]) if token_issued else None,
-        "status": "issued" if token_issued else ("blocked" if errors or (wrapper_preflight_blocked and not approval_required) else "approval_required"),
+        "status": "issued" if token_issued else ("blocked" if errors or ((wrapper_preflight_blocked or isolation_blocked) and not approval_required) else "approval_required"),
         "action_id": action_id,
         "allowed_tool_id": tool_id,
         "allowed_environment": payload.get("environment") or (action or {}).get("environment") or "approved_scope",
@@ -1943,6 +1956,178 @@ def write_runner_output_artifact(case_id: str, run_id: str, stream_name: str, co
     }
 
 
+def write_runner_json_artifact(case_id: str, run_id: str, stream_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+    output_dir = case_dir(case_id) / "runner-output" / safe_name(run_id)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = output_dir / f"{safe_name(stream_name)}.json"
+    artifact_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
+    return {
+        "artifact_id": stable_id("ART", [run_id, stream_name, sha256_file(artifact_path)]),
+        "source_path_or_ref": artifact_path.as_posix(),
+        "hash": sha256_file(artifact_path),
+        "content_type": "application/json",
+        "summary": f"Governed runner {stream_name} captured as untrusted tool execution metadata.",
+        "imported_at": now_utc(),
+    }
+
+
+def container_runtime_executable() -> str:
+    configured = os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME") or "docker"
+    return shutil.which(configured) or ""
+
+
+def build_ephemeral_container_command(
+    case_id: str,
+    run_id: str,
+    plan: dict[str, Any],
+    argv: list[str],
+) -> dict[str, Any]:
+    isolation = plan.get("environment_constraints", {}).get("isolation_readiness") or {}
+    container_policy = isolation.get("container_policy") or {}
+    image_digest = str(container_policy.get("image_digest") or "").strip()
+    runtime_name = str(container_policy.get("runtime") or os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME") or "docker").strip()
+    runtime_path = container_runtime_executable()
+    case_path = case_dir(case_id)
+    resources = container_policy.get("resource_limits") or {}
+    network_policy = plan.get("environment_constraints", {}).get("network_policy") or {}
+    network_args = ["--network", "none"]
+    if network_policy.get("egress_allowed"):
+        network_args = ["--network", "none"]
+    docker_args = [
+        runtime_path or runtime_name,
+        "run",
+        "--rm",
+        "--name",
+        safe_name(f"rtax-{run_id}")[:60],
+        *network_args,
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--cpus",
+        str(resources.get("cpus") or "1"),
+        "--memory",
+        str(resources.get("memory") or "512m"),
+        "--pids-limit",
+        str(resources.get("pids_limit") or 128),
+        "--mount",
+        f"type=bind,src={PROJECT_ROOT.as_posix()},dst=/workspace,readonly",
+        "--mount",
+        f"type=bind,src={case_path.as_posix()},dst=/case",
+        "--workdir",
+        "/case",
+        image_digest,
+        *argv,
+    ]
+    return {
+        "runtime_name": runtime_name,
+        "runtime_path": runtime_path or None,
+        "image_digest": image_digest or None,
+        "container_argv": docker_args,
+        "network_args": network_args,
+        "mounts": [
+            {"source": PROJECT_ROOT.as_posix(), "target": "/workspace", "mode": "readonly"},
+            {"source": case_path.as_posix(), "target": "/case", "mode": "write"},
+        ],
+        "resource_limits": resources,
+        "trusted_as_instruction": False,
+    }
+
+
+def governed_container_runner_attempt(
+    case_id: str,
+    action_id: str,
+    run_id: str,
+    plan: dict[str, Any],
+    argv: list[str],
+    attempt: dict[str, Any],
+    payload: dict[str, Any],
+) -> tuple[dict[str, Any], list[str], list[dict[str, Any]]]:
+    errors: list[str] = []
+    raw_artifacts: list[dict[str, Any]] = []
+    isolation = plan.get("environment_constraints", {}).get("isolation_readiness") or {}
+    if isolation.get("requested_backend") != "ephemeral_container":
+        errors.append("ephemeral_container_backend_not_requested")
+    if isolation.get("status") != "container_ready":
+        errors.append("ephemeral_container_not_ready")
+    if isolation.get("commands_executed_by_api") is not False:
+        errors.append("container_readiness_must_be_side_effect_free")
+    launch_plan = build_ephemeral_container_command(case_id, run_id, plan, argv)
+    if not launch_plan.get("image_digest"):
+        errors.append("container_image_digest_required")
+    dry_run = bool(payload.get("container_dry_run")) or truthy_env("REDTEAM_AX_CONTAINER_RUNNER_DRY_RUN")
+    runtime_path = str(launch_plan.get("runtime_path") or "")
+    if not dry_run and not runtime_path:
+        errors.append("container_runtime_executable_not_found")
+
+    attempt.update({
+        "runner_backend": "ephemeral_container",
+        "container_launch": launch_plan,
+        "container_dry_run": dry_run,
+        "cwd": case_dir(case_id).as_posix(),
+    })
+    raw_artifacts.append(write_runner_json_artifact(case_id, run_id, "container-launch-plan", {
+        "kind": "redteam_ax_v2_container_launch_plan",
+        "case_id": case_id,
+        "action_id": action_id,
+        "run_id": run_id,
+        "tool_id": attempt.get("tool_id"),
+        "execution_plan_id": attempt.get("execution_plan_id"),
+        "container_launch": launch_plan,
+        "dry_run": dry_run,
+        "trusted_as_instruction": False,
+        "created_at": now_utc(),
+    }))
+    if errors:
+        attempt.update({"status": "blocked", "errors": [*attempt.get("errors", []), *errors], "completed_at": now_utc()})
+        return attempt, errors, raw_artifacts
+    if dry_run:
+        attempt.update({
+            "status": "container_launch_prepared",
+            "completed_at": now_utc(),
+            "exit_code": None,
+            "stdout_bytes": 0,
+            "stderr_bytes": 0,
+            "output_truncated": False,
+        })
+        return attempt, errors, raw_artifacts
+    try:
+        completed = subprocess.run(
+            launch_plan["container_argv"],
+            cwd=case_dir(case_id).as_posix(),
+            capture_output=True,
+            text=True,
+            timeout=attempt["timeout_seconds"],
+            shell=False,
+        )
+        stdout = (completed.stdout or "")[: attempt["max_output_bytes"]]
+        stderr = (completed.stderr or "")[: attempt["max_output_bytes"]]
+        attempt.update({
+            "status": "executed" if completed.returncode == 0 else "failed",
+            "completed_at": now_utc(),
+            "exit_code": completed.returncode,
+            "stdout_bytes": len(stdout.encode("utf-8")),
+            "stderr_bytes": len(stderr.encode("utf-8")),
+            "output_truncated": len((completed.stdout or "").encode("utf-8")) > attempt["max_output_bytes"] or len((completed.stderr or "").encode("utf-8")) > attempt["max_output_bytes"],
+        })
+        if stdout:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stdout", stdout))
+        if stderr:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stderr", stderr))
+    except subprocess.TimeoutExpired as exc:
+        attempt.update({"status": "timeout", "completed_at": now_utc(), "exit_code": None})
+        errors.append("container_runner_timeout")
+        if exc.stdout:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stdout", str(exc.stdout)[: attempt["max_output_bytes"]]))
+        if exc.stderr:
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stderr", str(exc.stderr)[: attempt["max_output_bytes"]]))
+    except OSError as exc:
+        attempt.update({"status": "failed_to_start", "completed_at": now_utc(), "exit_code": None})
+        errors.append(f"container_runner_start_failed:{exc.__class__.__name__}")
+    return attempt, errors, raw_artifacts
+
+
 def governed_runner_attempt(
     case_id: str,
     action_id: str,
@@ -1981,7 +2166,8 @@ def governed_runner_attempt(
             errors.append("execution_plan_action_mismatch")
         if plan.get("execution_mode") != execution_mode:
             errors.append("execution_plan_mode_mismatch")
-        if plan.get("wrapper_manifest", {}).get("requires_pin_before_runner"):
+        plan_backend = plan.get("environment_constraints", {}).get("isolation_readiness", {}).get("requested_backend")
+        if plan_backend != "ephemeral_container" and plan.get("wrapper_manifest", {}).get("requires_pin_before_runner"):
             errors.append("wrapper_preflight_not_trusted")
     allowed, reason = runner_command_allowed(profile, argv, plan)
     if not allowed:
@@ -2009,6 +2195,9 @@ def governed_runner_attempt(
     }
     if errors:
         return attempt, errors, raw_artifacts
+
+    if (plan or {}).get("environment_constraints", {}).get("isolation_readiness", {}).get("requested_backend") == "ephemeral_container":
+        return governed_container_runner_attempt(case_id, action_id, run_id, plan, argv, attempt, payload)
 
     try:
         completed = subprocess.run(
@@ -2100,6 +2289,8 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
             status = "invalid"
         elif runner_attempt.get("status") == "executed":
             status = "RunnerExecuted"
+        elif runner_attempt.get("status") == "container_launch_prepared":
+            status = "ContainerLaunchPrepared"
         else:
             status = "RunnerFailed"
     availability = command_availability(str((profile or {}).get("command_name") or ""))

@@ -4,9 +4,11 @@ import base64
 import importlib
 import hashlib
 import io
+import os
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -428,6 +430,76 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["policy_decision"]["decision"], "deny_runner")
         self.assertEqual(body["execution_token"]["status"], "blocked")
         self.assertIn("container_runner_not_enabled", body["warnings"])
+
+    def test_v2_ephemeral_container_launcher_prepares_dry_run_after_attestation(self) -> None:
+        case_id = "CASE-V2-CONTAINER-LAUNCHER-001"
+        action_id = "TAC-TRIVY-CONTAINER-LAUNCHER-001"
+        image_digest = "ghcr.io/aqua-security/trivy@sha256:" + ("c" * 64)
+        env = {
+            "REDTEAM_AX_CONTAINER_RUNNER_ENABLED": "1",
+            "REDTEAM_AX_CONTAINER_RUNTIME_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_NETWORK_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_MOUNT_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_CLEANUP_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_RUNNER_DRY_RUN": "1",
+            "REDTEAM_AX_CONTAINER_IMAGE_DIGEST": image_digest,
+        }
+        with patch.dict(os.environ, env, clear=False):
+            planned = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+                "case_id": case_id,
+                "action_id": action_id,
+                "title": "Trivy ephemeral container launcher dry run",
+                "objective": "Prepare governed container launcher without invoking Docker.",
+                "tool_id": "TOOL-TRIVY-001",
+                "requested_by": "analyst@example.com",
+            })
+            self.assertEqual(planned.status_code, 200)
+            plan = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execution-plan", json={
+                "case_id": case_id,
+                "tool_id": "TOOL-TRIVY-001",
+                "execution_mode": "sandbox_execute",
+                "runner_backend": "ephemeral_container",
+                "requested_by": "analyst@example.com",
+                "max_runtime_seconds": 20,
+            })
+            self.assertEqual(plan.status_code, 200)
+            plan_body = plan.json()
+            self.assertEqual(plan_body["status"], "PlanReady")
+            self.assertEqual(plan_body["execution_token"]["status"], "issued")
+            self.assertEqual(plan_body["environment_constraints"]["isolation_readiness"]["status"], "container_ready")
+            self.assertFalse(plan_body["policy_decision"]["runner_preflight_blocked"])
+            self.assertFalse(plan_body["policy_decision"]["runner_isolation_blocked"])
+
+            executed = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execute-governed", json={
+                "case_id": case_id,
+                "tool_id": "TOOL-TRIVY-001",
+                "execution_mode": "sandbox_execute",
+                "requested_by": "analyst@example.com",
+                "execution_plan_id": plan_body["execution_plan_id"],
+                "execution_token_id": plan_body["execution_token"]["token_id"],
+                "runner_argv": ["trivy", "--version"],
+                "container_dry_run": True,
+            })
+        self.assertEqual(executed.status_code, 200)
+        body = executed.json()
+        self.assertEqual(body["status"], "ContainerLaunchPrepared")
+        self.assertEqual(body["policy_decision"]["decision"], "allow_runner_execution")
+        attempt = body["runner_attempt"]
+        self.assertEqual(attempt["status"], "container_launch_prepared")
+        self.assertEqual(attempt["runner_backend"], "ephemeral_container")
+        self.assertTrue(attempt["container_dry_run"])
+        container_argv = attempt["container_launch"]["container_argv"]
+        self.assertIn("--network", container_argv)
+        self.assertIn("none", container_argv)
+        self.assertIn("--read-only", container_argv)
+        self.assertIn("--cap-drop", container_argv)
+        self.assertIn("ALL", container_argv)
+        self.assertIn(image_digest, container_argv)
+        self.assertEqual(container_argv[-2:], ["trivy", "--version"])
+        self.assertTrue(body["raw_artifacts"])
+        launch_artifact = next(item for item in body["raw_artifacts"] if item["content_type"] == "application/json")
+        self.assertTrue(Path(launch_artifact["source_path_or_ref"]).exists())
+        self.assertEqual(len(launch_artifact["hash"]), 64)
 
     def test_v2_governed_runner_requires_issued_token_and_captures_approved_dry_run_output(self) -> None:
         case_id = "CASE-V2-GOVERNED-RUNNER-NPM-001"

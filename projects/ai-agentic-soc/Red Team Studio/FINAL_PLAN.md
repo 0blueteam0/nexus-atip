@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 30 container runner isolation readiness gate UX/API complete, full goal active  
+상태: implementation slice 31 gated ephemeral container launcher dry-run UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 30 RedTeam2 runner backend/isolation readiness UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 31 RedTeam2 container launch result UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 30 runner isolation readiness endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 30 ephemeral container readiness/attestation gate 반영
+- `runtime/redteam_v2_models.py` - slice 31 gated ephemeral container launcher dry-run backend 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -759,6 +759,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
 - [x] tool install readiness/onboarding registry - slice 29 완료
 - [x] container/ephemeral runner isolation readiness gate - slice 30 완료
+- [x] gated ephemeral container launcher dry-run backend - slice 31 완료
 - [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper manifest smoke
 
@@ -792,6 +793,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 rotate, revoke, manifest approved_pin 제외, runner hard-block을 검증
 - [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
 - [x] container/ephemeral runner isolation readiness gate - slice 30 완료
+- [x] gated ephemeral container launcher dry-run backend - slice 31 완료
 - [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper revoke/hard-block smoke
 
@@ -808,6 +810,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` Tool Execution Plan 패널에서 governed runner argv 입력과 실행 버튼 제공
 - [x] API unittest가 unissued token 차단과 approved npm sandbox dry-run output capture를 검증
 - [x] container/ephemeral isolation readiness와 attestation blocker를 execution plan에 노출 - slice 30 완료
+- [x] issued token 이후 gated ephemeral container launcher dry-run artifact 생성 - slice 31 완료
 - [ ] 실제 container/ephemeral isolation, network namespace enforcement, cgroup/resource limit enforcement
 - [ ] live 5177/8765 browser governed runner smoke
 
@@ -837,7 +840,24 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` Case 입력에 Runner Backend 선택 추가
 - [x] `레드팀 분석2` Tool Execution Plan 패널에 Isolation status/card/table 추가
 - [x] API unittest가 isolation readiness endpoint와 container backend preflight block을 검증
-- [ ] 실제 ephemeral container launcher 구현
+- [x] issued token 이후 ephemeral container launcher command 구성 및 dry-run artifact 저장 - slice 31 완료
+- [ ] 실제 ephemeral container launcher 실측 실행
 - [ ] container network namespace/egress enforcement 실측 검증
 - [ ] cgroup/resource limit, read-only rootfs, secret mount 차단 실측 검증
 - [ ] live 5177/8765 browser runner backend smoke
+
+## 39. Slice 31 Gated Ephemeral Container Launcher Dry-Run 체크리스트
+
+- [x] `execute-governed` runner path에서 `ephemeral_container` backend 분기 추가
+- [x] container backend는 host wrapper SHA-256 pin 대신 image digest attestation을 trust root로 사용
+- [x] PlanReady와 issued execution token 없이는 container launcher가 동작하지 않음
+- [x] Docker/Podman command는 `--rm`, `--network none`, `--read-only`, `--cap-drop ALL`, `no-new-privileges`, CPU/memory/pids limit, read-only workspace mount, case write mount로 구성
+- [x] `REDTEAM_AX_CONTAINER_RUNNER_DRY_RUN=1` 또는 payload `container_dry_run=true`일 때 Docker를 호출하지 않고 launch plan artifact만 저장
+- [x] container launch plan artifact는 `trusted_as_instruction=false` JSON evidence로 저장
+- [x] `execute-governed` 응답에 `ContainerLaunchPrepared` 상태 추가
+- [x] `레드팀 분석2` runner 결과 표에 backend와 container launch 정보를 표시
+- [x] API unittest가 attested container PlanReady, issued token, dry-run launch plan artifact를 검증
+- [ ] 실제 Docker/Podman runtime 실행 smoke
+- [ ] allowlist egress를 `--network none` 이상으로 통제할 전용 network policy 구현
+- [ ] container stdout/stderr scanner result normalizer E2E
+- [ ] live 5177/8765 browser container dry-run smoke
