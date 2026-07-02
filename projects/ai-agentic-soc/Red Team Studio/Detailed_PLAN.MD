@@ -826,3 +826,14 @@ Create Case
 - RedTeam2 UI는 `여러 분석도구 실행` 뒤 `결과 회수·Evidence 후보` 버튼을 제공하고, 회수 단계별 Sanitizer/normalizer/Evidence 후보 상태를 한국어 표로 표시한다.
 - API regression test는 npm audit + Trivy mock runner 결과를 회수해 2개 normalized result와 2개 Evidence 후보가 생성되는 경로를 검증한다.
 - 이 slice는 여러 도구를 복합적으로 사용한 뒤 결과를 회수·증거화하는 operational lane을 강화하지만, 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 결과 승인과 Matrix/report 반영은 후속 HITL 작업으로 남긴다.
+
+## 36. Slice 81 반영 사항
+
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence`는 collection artifact가 만든 Evidence 후보를 batch로 승인한다.
+- API는 기존 `approve_evidence_card` 정책을 재사용하므로 actor header, reviewer, reviewer role identity binding을 동일하게 검증한다.
+- collection에 포함되지 않은 Evidence ID는 `evidence_candidate_not_in_collection`으로 차단한다.
+- 승인 batch artifact는 `toolchain-evidence-approvals`에 저장되고, collection artifact에는 `evidence_approval_status`, `approved_evidence_ids`를 기록한다.
+- API는 Evidence 후보 승인만 수행한다. Finding 생성, severity 승인, Claim-Evidence Matrix ready 전환, 보고서 Claim 삽입은 후속 HITL 단계로 유지한다.
+- RedTeam2 UI는 `Evidence 후보 승인` 버튼과 승인 결과 표를 제공해 초급 사용자가 결과 회수 이후 무엇이 승인됐는지 확인할 수 있게 한다.
+- regression test는 복합 npm audit + Trivy collection 후 Evidence 후보 2개를 red_team_lead identity로 승인하고, 명령 실행/능동 스캔/Finding 생성/보고서 삽입이 발생하지 않음을 검증한다.
+- 이 slice는 collection 이후 Evidence approval lane을 닫지만, 실제 운영 후보 전체의 Finding 승격, severity 2인 승인, Matrix/report/export 완료는 후속 작업이다.

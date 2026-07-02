@@ -1369,6 +1369,35 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(step["evidence_candidate"]["status"], "created")
             self.assertEqual(step["evidence_candidate"]["validation_status"], "candidate")
 
+        evidence_ids = [step["evidence_candidate"]["evidence_id"] for step in body["steps"]]
+        approved = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/approve-evidence",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "reviewed_by": "lead@example.com",
+                "reviewer_role": "red_team_lead",
+                "decision": "approve",
+                "evidence_ids": evidence_ids,
+            },
+        )
+        self.assertEqual(approved.status_code, 200)
+        approval_body = approved.json()
+        self.assertEqual(approval_body["kind"], "redteam_ax_v2_toolchain_collection_evidence_approval")
+        self.assertEqual(approval_body["status"], "evidence_approved")
+        self.assertEqual(approval_body["approved_count"], 2)
+        self.assertEqual(approval_body["candidate_count"], 2)
+        self.assertFalse(approval_body["commands_executed_by_api"])
+        self.assertFalse(approval_body["active_scan_executed"])
+        self.assertFalse(approval_body["finding_created"])
+        self.assertFalse(approval_body["report_claim_inserted"])
+        self.assertTrue(approval_body["requires_human_validation"])
+        self.assertTrue(Path(approval_body["artifact_path"]).exists())
+        for item in approval_body["approvals"]:
+            self.assertEqual(item["status"], "approved")
+            self.assertEqual(item["identity_binding"], "bound")
+            self.assertFalse(item["errors"])
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

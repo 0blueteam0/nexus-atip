@@ -290,6 +290,20 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)
 
 
+@router.post("/toolchain-result-collections/{collection_id}/approve-evidence")
+def approve_toolchain_collection_evidence(
+    collection_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.approve_toolchain_collection_evidence(
+        collection_id,
+        with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session),
+    )
+
+
 @router.post("/tool-runs/{run_id}/import-output")
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_output(run_id, payload)

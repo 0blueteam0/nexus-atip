@@ -3546,6 +3546,99 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
     return result
 
 
+def approve_toolchain_collection_evidence(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    reviewer = str(payload.get("reviewed_by") or payload.get("approver") or payload.get("approved_by") or "").strip()
+    reviewer_role = normalize_approver_role(payload.get("reviewer_role") or payload.get("approver_role") or "red_team_lead")
+    requested_ids = {
+        str(item).strip()
+        for item in (payload.get("evidence_ids") or [])
+        if str(item).strip()
+    }
+    errors: list[str] = []
+    warnings: list[str] = []
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+    if not reviewer:
+        errors.append("reviewed_by_required")
+
+    candidate_ids: list[str] = []
+    for step in (collection or {}).get("steps") or []:
+        evidence_candidate = step.get("evidence_candidate") if isinstance(step, dict) else None
+        evidence_id = str((evidence_candidate or {}).get("evidence_id") or "").strip()
+        if evidence_id and (not requested_ids or evidence_id in requested_ids):
+            candidate_ids.append(evidence_id)
+    if collection is not None and not candidate_ids:
+        errors.append("evidence_candidates_required")
+    missing_requested_ids = sorted(requested_ids - set(candidate_ids))
+    if missing_requested_ids:
+        errors.extend(f"evidence_candidate_not_in_collection:{evidence_id}" for evidence_id in missing_requested_ids)
+
+    approval_id = stable_id("TCEVA", [collection_id, case_id, reviewer, reviewer_role, sorted(candidate_ids), now_utc()])
+    approvals: list[dict[str, Any]] = []
+    if not errors:
+        for evidence_id in candidate_ids:
+            approval = approve_evidence_card(evidence_id, {
+                **payload,
+                "case_id": case_id,
+                "reviewed_by": reviewer,
+                "reviewer_role": reviewer_role,
+                "decision": payload.get("decision") or "approve",
+            })
+            approvals.append({
+                "evidence_id": evidence_id,
+                "approval_id": approval.get("approval_id"),
+                "status": approval.get("status"),
+                "identity_binding": approval.get("identity_binding"),
+                "errors": approval.get("errors") or [],
+            })
+            if approval.get("errors"):
+                errors.extend(f"evidence_approval:{evidence_id}:{error}" for error in approval.get("errors") or [])
+
+    approved_count = sum(1 for item in approvals if item.get("status") == "approved")
+    rejected_count = sum(1 for item in approvals if item.get("status") == "rejected")
+    invalid_count = sum(1 for item in approvals if item.get("errors") or item.get("status") == "invalid")
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_evidence_approval",
+        "approval_batch_id": approval_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": "invalid" if errors else ("evidence_rejected" if rejected_count else "evidence_approved"),
+        "decision": str(payload.get("decision") or "approve").strip().lower(),
+        "reviewed_by": reviewer,
+        "reviewer_role": reviewer_role,
+        "approved_count": approved_count,
+        "rejected_count": rejected_count,
+        "invalid_count": invalid_count,
+        "candidate_count": len(candidate_ids),
+        "evidence_ids": candidate_ids,
+        "approvals": approvals,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "finding_created": False,
+        "report_claim_inserted": False,
+        "requires_human_validation": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "승인된 Evidence ID를 Finding 후보 검토 패키지에 연결합니다.",
+            "Finding 생성 후 red_team_lead와 business_owner의 severity 2인 승인을 완료합니다.",
+            "Claim-Evidence Matrix 초안에서 held row가 0건인지 확인합니다.",
+        ],
+    }
+    append_artifact_metadata(result, "toolchain-evidence-approvals", approval_id)
+    if collection is not None and not errors:
+        collection["evidence_approval_batch_id"] = approval_id
+        collection["evidence_approval_status"] = result["status"]
+        collection["approved_evidence_ids"] = candidate_ids if result["status"] == "evidence_approved" else []
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
 def _coerce_json(value: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value

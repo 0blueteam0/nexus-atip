@@ -1474,3 +1474,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `결과 회수·Evidence 후보` 버튼, `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 안내, 회수 단계 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 복합 결과 회수 anchor 추가
 - [ ] 실제 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 운영 결과 전체를 같은 collection API로 회수하고 Evidence 승인/Claim-Evidence Matrix까지 연결
+
+## 89. Slice 81 복합 Toolchain Evidence 후보 승인 API 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence` API 추가
+- [x] API는 collection artifact의 Evidence 후보를 읽어 선택 또는 전체 batch 승인
+- [x] actor header와 reviewer identity binding을 기존 Evidence approval 정책과 동일하게 강제
+- [x] 승인 결과는 `toolchain-evidence-approvals` artifact로 저장
+- [x] API는 Evidence만 승인하고 Finding 생성, severity 승인, 보고서 Claim 삽입은 수행하지 않음
+- [x] regression test가 collection으로 생성된 npm audit + Trivy Evidence 후보 2개 batch 승인을 검증
+- [x] RedTeam2 UI에 `Evidence 후보 승인` 버튼, 승인 상태 행, 승인 결과 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 approval API anchor 추가
+- [ ] 실제 운영 collection의 모든 Evidence 후보를 사람 검토로 승인하고 Finding 승격/Matrix ready까지 연결
