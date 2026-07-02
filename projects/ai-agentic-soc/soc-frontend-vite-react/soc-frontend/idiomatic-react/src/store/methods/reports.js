@@ -3903,7 +3903,9 @@ export default {
 ,
   redTeam2ReportPayload() {
     const draft = this.redTeam2ReportExportDraft();
-    const evidenceIds = String(draft.evidenceId || '')
+    const agenticCandidate = this.state.redteam2AgenticRagState?.matrixCandidate || {};
+    const useAgenticCandidate = agenticCandidate.status === 'ready_for_report_claim';
+    const evidenceIds = String(useAgenticCandidate ? (agenticCandidate.evidence_ids || []).join(',') : (draft.evidenceId || ''))
       .split(',')
       .map(x => x.trim())
       .filter(Boolean);
@@ -3921,9 +3923,10 @@ export default {
       case_id:String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim(),
       title:String(draft.title || 'Korean Red Team Report v2').trim(),
       claims:[{
-        claim_id:String(draft.claimId || 'C-REDTEAM2-001').trim(),
+        claim_id:String((useAgenticCandidate && agenticCandidate.claim_id) || draft.claimId || 'C-REDTEAM2-001').trim(),
         support_level:evidenceIds.length ? 'supported' : 'unsupported',
         evidence_ids:evidenceIds,
+        source:useAgenticCandidate ? 'agentic_rag_sca_citation_verifier' : 'manual_report_studio',
       }],
       findings:[{
         finding_id:String(draft.findingId || 'F-REDTEAM2-001').trim(),
@@ -4044,6 +4047,10 @@ export default {
   async generateRedTeam2ReportDraft() {
     this.setState(s => ({ redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), status:'generating', error:null } }));
     try {
+      const agenticCandidate = this.state.redteam2AgenticRagState?.matrixCandidate || {};
+      if (agenticCandidate.status === 'hold_unsupported_claim') {
+        throw new Error(`Agentic RAG unsupported claim hold: ${agenticCandidate.hold_reason || 'citation verifier did not approve all material claims'}`);
+      }
       const evidence = await this.ensureRedTeam2ApprovedEvidence();
       await this.ensureRedTeam2ApprovedFinding(evidence);
       const payload = this.redTeam2ReportPayload();
@@ -4090,16 +4097,35 @@ export default {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.errors?.length) throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      const firstClaim = (data.claims || [])[0] || {};
+      const candidateEvidenceIds = (firstClaim.evidence_ids || [evidence.evidence_id]).filter(Boolean);
+      const unsupportedCount = data.citation_verification?.unsupported_claim_count ?? 0;
+      const candidateReady = data.sca_report?.decision === 'sufficient'
+        && data.sca_report?.answerable === true
+        && unsupportedCount === 0
+        && candidateEvidenceIds.length > 0;
+      const matrixCandidate = {
+        status:candidateReady ? 'ready_for_report_claim' : 'hold_unsupported_claim',
+        claim_id:firstClaim.claim_id || claimId,
+        evidence_ids:candidateEvidenceIds,
+        support_level:candidateReady ? 'supported' : 'unsupported',
+        source:'agentic_rag_sca_citation_verifier',
+        hold_reason:candidateReady ? null : ((data.sca_report?.missing_facts || []).join(', ') || `${unsupportedCount} unsupported claims`),
+      };
       this.setState(s => ({
         redteam2AgenticRagState:{
           ...(s.redteam2AgenticRagState || {}),
           status:'ready',
           result:data,
           evidence,
+          matrixCandidate,
           checkedAt:new Date().toISOString(),
           error:null,
         },
         redteam2ReportExportState:{ ...(s.redteam2ReportExportState || {}), evidence, checkedAt:new Date().toISOString() },
+        redteam2ReportExportDraft:candidateReady
+          ? { ...this.redTeam2ReportExportDraft(), claimId:matrixCandidate.claim_id, evidenceId:matrixCandidate.evidence_ids.join(',') }
+          : this.redTeam2ReportExportDraft(),
       }));
       this.toast(`Agentic RAG SCA: ${data.sca_report?.decision || 'completed'}`, data.sca_report?.decision === 'sufficient' ? 'success' : 'warn');
       this.logAudit('현재 분석가', `레드팀 분석2 Agentic RAG SCA: ${caseId} · ${data.sca_report?.decision || 'unknown'}`);
@@ -4194,6 +4220,7 @@ export default {
     const agenticRagResult = agenticRagState.result || {};
     const agenticSca = agenticRagResult.sca_report || {};
     const agenticVerifier = agenticRagResult.citation_verification || {};
+    const agenticMatrixCandidate = agenticRagState.matrixCandidate || {};
     const uploadedImport = fileUploadState.imported || {};
     const uploadedArtifact = uploadedImport.artifact || {};
     const uploadedNormalized = fileUploadState.normalized || {};
@@ -4383,6 +4410,8 @@ export default {
       ['Answerable', String(agenticSca.answerable ?? false), (agenticSca.missing_facts || []).join(', ') || 'no missing facts'],
       ['Citations', (agenticRagResult.citations || []).length, (agenticRagResult.citations || []).map(item => item.citation_id).join(', ') || 'approved EvidenceCard required'],
       ['Unsupported Claims', agenticVerifier.unsupported_claim_count ?? '-', 'must be 0 before report use'],
+      ['Claim-Evidence Matrix Candidate', agenticMatrixCandidate.status || 'not prepared', agenticMatrixCandidate.claim_id || 'run SCA to prepare candidate'],
+      ['Unsupported Claim Hold', agenticMatrixCandidate.status === 'hold_unsupported_claim' ? 'blocked' : agenticMatrixCandidate.status === 'ready_for_report_claim' ? 'clear' : 'not checked', agenticMatrixCandidate.hold_reason || 'unsupported material claims are held before report generation'],
       ['Selected Corpora', (agenticRagResult.selected_corpora || []).length, (agenticRagResult.selected_corpora || []).join(', ') || 'redteam_ax_v2_evidence_store pending'],
       ['Commands Executed', String(agenticRagResult.commands_executed_by_api ?? false), 'must stay false'],
       ['Trusted As Instruction', String(agenticRagResult.trusted_as_instruction ?? false), 'must stay false'],
@@ -4481,6 +4510,7 @@ export default {
             ['SCA', agenticSca.decision || '-', agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : C.sec, `score ${agenticSca.sufficient_context_score ?? '-'}`],
             ['Citation Verifier', agenticVerifier.all_material_claims_supported ? 'supported' : 'pending', agenticVerifier.unsupported_claim_count === 0 ? C.green : C.amber, `${agenticVerifier.unsupported_claim_count ?? '-'} unsupported`],
             ['Evidence', agenticRagState.evidence?.evidence_id || '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url || 'approved EvidenceCard auto-prepared'],
+            ['Matrix Candidate', agenticMatrixCandidate.status || '-', agenticMatrixCandidate.status === 'ready_for_report_claim' ? C.green : agenticMatrixCandidate.status === 'hold_unsupported_claim' ? C.coral : C.sec, agenticMatrixCandidate.claim_id || 'not prepared'],
             ['Corpora', (agenticRagResult.selected_corpora || []).length || '-', C.blue, (agenticRagResult.selected_corpora || []).slice(0, 3).join(', ') || 'run SCA'],
           ].map(card)),
           this.renderTable(['Agentic RAG','Status','Evidence'], agenticRagRows),

@@ -1038,4 +1038,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` safe-by-default 상태 표시
 - [x] live browser smoke에 `--allow-agentic-rag` opt-in 추가
 - [x] browser smoke가 Agentic RAG SCA 버튼, API 응답, citation verifier, no-runner invariant를 검증
-- [ ] 다음 slice: Agentic RAG 결과를 Report v2 draft의 Claim-Evidence Matrix 후보로 자동 반영하고 unsupported claim 보류 UI 추가
+- [x] Agentic RAG 결과를 Report v2 draft의 Claim-Evidence Matrix 후보로 자동 반영하고 unsupported claim 보류 UI 추가 - slice 46 완료
+
+## 54. Slice 46 Agentic RAG Claim-Evidence Matrix Candidate 체크리스트
+
+- [x] Agentic RAG SCA 결과가 `sufficient`이고 unsupported claim이 0이면 `ready_for_report_claim` 후보 생성
+- [x] 후보 claim ID와 approved evidence IDs를 Report v2 draft 입력값에 자동 반영
+- [x] Report v2 payload가 준비된 Agentic RAG 후보를 `agentic_rag_sca_citation_verifier` source로 사용
+- [x] Agentic RAG 결과가 unsupported이면 `hold_unsupported_claim` 상태로 표시
+- [x] `hold_unsupported_claim` 상태에서는 Report v2 draft 생성 전 차단
+- [x] UI 표에 `Claim-Evidence Matrix Candidate`와 `Unsupported Claim Hold` 상태 표시
+- [x] live browser smoke가 candidate visible, hold clear, no-runner invariant를 검증
+- [ ] 다음 slice: Report v2 artifact에 Agentic RAG citation verifier metadata와 보류 claim 감사 로그를 영구 기록

@@ -475,6 +475,8 @@ try {
       commandsExecutedByApi: ragResponse ? ragResponse.commandsExecutedByApi : null,
       trustedAsInstruction: ragResponse ? ragResponse.trustedAsInstruction : null,
       requiresHumanValidation: ragResponse ? ragResponse.requiresHumanValidation : null,
+      matrixCandidateVisible: bodyText.includes('Claim-Evidence Matrix Candidate') && bodyText.includes('ready_for_report_claim'),
+      unsupportedHoldClearVisible: bodyText.includes('Unsupported Claim Hold') && bodyText.includes('clear'),
       governedRunnerNotClicked: true,
       governedRunnerNotExecuted: true,
     };
@@ -489,6 +491,8 @@ try {
       && result.agenticRag.commandsExecutedByApi === false
       && result.agenticRag.trustedAsInstruction === false
       && result.agenticRag.requiresHumanValidation === true
+      && result.agenticRag.matrixCandidateVisible === true
+      && result.agenticRag.unsupportedHoldClearVisible === true
       && result.agenticRag.governedRunnerNotClicked
       && result.agenticRag.governedRunnerNotExecuted;
   }
