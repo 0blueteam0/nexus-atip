@@ -2444,6 +2444,40 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+        audit_missing = self.client.post("/api/redteam/v2/toolchains/review-operating-completion-audit-candidate", json={
+            "case_id": case_id,
+            "certification_id": body["certification_id"],
+        })
+        self.assertEqual(audit_missing.status_code, 200)
+        audit_missing_body = audit_missing.json()
+        self.assertEqual(audit_missing_body["kind"], "redteam_ax_v2_operating_completion_audit_review")
+        self.assertEqual(audit_missing_body["status"], "completion_audit_blocked")
+        self.assertFalse(audit_missing_body["goal_complete_candidate"])
+        self.assertIn("audited_by_required", audit_missing_body["blockers"])
+        self.assertIn("no_controlled_or_test_source_required", audit_missing_body["blockers"])
+        self.assertFalse(audit_missing_body["commands_executed_by_api"])
+        self.assertFalse(audit_missing_body["active_scan_executed"])
+
+        audit = self.client.post("/api/redteam/v2/toolchains/review-operating-completion-audit-candidate", json={
+            "case_id": case_id,
+            "certification_id": body["certification_id"],
+            "audited_by": "independent-auditor@example.com",
+        })
+        self.assertEqual(audit.status_code, 200)
+        audit_body = audit.json()
+        self.assertEqual(audit_body["status"], "completion_audit_blocked")
+        self.assertFalse(audit_body["goal_complete_candidate"])
+        self.assertIn("controlled_or_test_like_source_detected", audit_body["warnings"])
+        self.assertIn("no_controlled_or_test_source_required", audit_body["blockers"])
+        self.assertTrue(any(item["field"] == "safe_no_api_execution" and item["status"] == "passed" for item in audit_body["checklist"]))
+        self.assertTrue(audit_body["does_not_mark_goal_complete"])
+        self.assertTrue(audit_body["requires_external_completion_decision"])
+        self.assertFalse(audit_body["commands_executed_by_api"])
+        self.assertFalse(audit_body["active_scan_executed"])
+        self.assertFalse(audit_body["shell_expansion_allowed"])
+        self.assertFalse(audit_body["trusted_as_instruction"])
+        self.assertTrue(Path(audit_body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

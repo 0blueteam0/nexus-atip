@@ -969,3 +969,13 @@ Create Case
 - RedTeam2 UI는 `운영 closure 증거 인증` 버튼과 `운영 closure 증거 검사`, `운영 closure 실측 attestation` 표를 추가했다.
 - regression test는 attestation 누락 차단, 전체 attestation 충족 시 completion audit 후보 생성, controlled source warning, 안전 플래그 유지를 검증한다.
 - 이 slice는 최종 완료 감사 후보 패키지를 만들지만, 실제 조직 산출물과 실제 승인자의 사실성 검토는 여전히 별도 completion audit에서 필요하다.
+
+## 51. Slice 96 반영 사항
+
+- `/api/redteam/v2/toolchains/review-operating-completion-audit-candidate`는 인증된 reviewed close 증거를 독립 completion audit checklist로 다시 검토하는 API다.
+- API는 certification ready, certification error 0건, controlled/test 산출물 아님, report gate pass, completion gate complete, 명령 실행 없음 safe flags를 확인한다.
+- controlled/test-like source warning 또는 `CASE-V2-*`, fixture, operator-scanner-outputs 경로가 감지되면 `no_controlled_or_test_source_required` blocker로 남기고 `goal_complete_candidate=false`를 유지한다.
+- API는 `audited_by`를 필수로 요구하며 `does_not_mark_goal_complete=true`, `requires_external_completion_decision=true`로 전체 스레드 완료 판단과 분리한다.
+- RedTeam2 UI는 `운영 completion audit 검토` 버튼과 `운영 completion audit checklist`, `운영 completion audit blocker` 표를 추가했다.
+- regression test는 otherwise-ready controlled fixture certification이 독립 감사에서 차단되고, blocker/warning/safe flags/artifact 보존이 유지되는지 검증한다.
+- 이 slice는 최종 완료 오판 방지 게이트를 강화하지만, 실제 조직 scanner 산출물 폴더와 실제 승인자로 certification 및 completion audit review를 통과한 운영 실측 증거는 아직 필요하다.

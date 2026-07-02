@@ -1660,3 +1660,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 attestation 누락 차단과 completion audit 후보 생성을 검증
 - [x] RedTeam2 UI에 `운영 closure 증거 인증` 버튼과 증거/attestation 표 추가
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 certification을 생성하고 독립 completion audit에서 goal 완료 여부 검증
+
+## 104. Slice 96 운영 completion audit 독립 검토 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/review-operating-completion-audit-candidate` API 추가
+- [x] certification artifact를 `certification_id`로 로드하고 `ready_for_completion_audit_review` 상태를 검사
+- [x] `audited_by` 독립 감사자 identity 필수화
+- [x] certification error 0건, report gate pass, completion gate complete, safe no-execution flags 검사
+- [x] controlled/test-like source warning 또는 fixture성 경로를 `no_controlled_or_test_source_required` blocker로 차단
+- [x] `goal_complete_candidate`는 모든 checklist가 통과할 때만 true가 되며 `does_not_mark_goal_complete=true` 유지
+- [x] regression test가 otherwise-ready controlled fixture certification이 completion audit에서 차단되는지 검증
+- [x] RedTeam2 UI에 `운영 completion audit 검토` 버튼과 checklist/blocker 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 completion audit anchor 반영
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 submission package, human review, reviewed close, certification, completion audit review를 순서대로 통과

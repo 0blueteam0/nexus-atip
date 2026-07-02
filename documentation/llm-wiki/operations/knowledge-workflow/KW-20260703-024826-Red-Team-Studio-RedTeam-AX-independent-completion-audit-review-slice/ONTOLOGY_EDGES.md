@@ -1,0 +1,6 @@
+﻿# Ontology Edges
+
+- OperatingCompletionAuditReview validates ReviewedOperatingCloseEvidenceCertification
+- OperatingCompletionAuditReview blocks ControlledOrTestLikeSource
+- OperatingCompletionAuditReview produces CompletionAuditBlocker
+- RedTeam2 UI invokes review-operating-completion-audit-candidate

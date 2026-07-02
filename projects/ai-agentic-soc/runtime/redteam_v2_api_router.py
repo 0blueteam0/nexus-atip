@@ -320,6 +320,11 @@ def certify_reviewed_operating_close_evidence(payload: dict[str, Any]) -> dict[s
     return redteam_v2_models.certify_reviewed_operating_close_evidence(payload)
 
 
+@router.post("/toolchains/review-operating-completion-audit-candidate")
+def review_operating_completion_audit_candidate(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.review_operating_completion_audit_candidate(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

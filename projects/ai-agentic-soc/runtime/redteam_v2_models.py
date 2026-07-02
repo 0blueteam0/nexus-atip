@@ -3053,6 +3053,122 @@ def certify_reviewed_operating_close_evidence(payload: dict[str, Any]) -> dict[s
     return result
 
 
+def review_operating_completion_audit_candidate(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    certification = payload.get("certification") if isinstance(payload.get("certification"), dict) else None
+    certification_id = str(payload.get("certification_id") or (certification or {}).get("certification_id") or "").strip()
+    if certification is None and certification_id:
+        certification = load_json_record(certification_id, "toolchain-reviewed-operating-close-evidence-certifications", case_id=case_id)
+    certification = certification or {}
+    auditor = str(payload.get("audited_by") or payload.get("reviewed_by") or "").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if not certification:
+        errors.append("certification_required")
+    if certification and certification.get("kind") != "redteam_ax_v2_reviewed_operating_close_evidence_certification":
+        errors.append("invalid_certification_kind")
+    if certification and not certification.get("ready_for_completion_audit_review"):
+        errors.append("certification_not_ready_for_completion_audit_review")
+    if not auditor:
+        errors.append("audited_by_required")
+
+    certification_errors = list(certification.get("errors") or [])
+    certification_warnings = list(certification.get("warnings") or [])
+    if certification_errors:
+        errors.append("certification_has_errors")
+    if certification_warnings:
+        warnings.extend(str(item) for item in certification_warnings)
+
+    source_dir = str(certification.get("source_dir") or "")
+    source_dir_lower = source_dir.lower()
+    case_id_lower = str(case_id).lower()
+    controlled_source = (
+        "controlled_or_test_like_source_detected" in certification_warnings
+        or "case-v2-" in case_id_lower
+        or "fixture" in source_dir_lower
+        or "operator-scanner-outputs" in source_dir_lower
+    )
+
+    checklist = [
+        {
+            "field": "certification_ready",
+            "title_ko": "인증 후보 준비",
+            "status": "passed" if certification.get("ready_for_completion_audit_review") else "blocked",
+            "evidence": certification.get("certification_id") or certification_id or "missing_certification",
+        },
+        {
+            "field": "no_certification_errors",
+            "title_ko": "인증 오류 0건",
+            "status": "passed" if not certification_errors else "blocked",
+            "evidence": f"errors={len(certification_errors)}",
+        },
+        {
+            "field": "no_controlled_or_test_source",
+            "title_ko": "controlled/test 산출물 아님",
+            "status": "blocked" if controlled_source else "passed",
+            "evidence": source_dir or "source_dir_missing",
+        },
+        {
+            "field": "report_gate_pass",
+            "title_ko": "보고서 gate pass",
+            "status": "passed" if (certification.get("report_gate_snapshot") or {}).get("gate_status") == "pass" else "blocked",
+            "evidence": (certification.get("report_gate_snapshot") or {}).get("gate_status") or "missing",
+        },
+        {
+            "field": "completion_gate_complete",
+            "title_ko": "completion gate complete",
+            "status": "passed" if (certification.get("completion_gate_snapshot") or {}).get("complete") else "blocked",
+            "evidence": (certification.get("completion_gate_snapshot") or {}).get("gate_id") or "completion_gate_missing",
+        },
+        {
+            "field": "safe_no_api_execution",
+            "title_ko": "감사 API 명령 실행 없음",
+            "status": "passed",
+            "evidence": "commands=false active_scan=false shell=false",
+        },
+    ]
+    for item in checklist:
+        if item["status"] != "passed":
+            errors.append(f"{item['field']}_required")
+
+    blockers = sorted(set(errors))
+    audit_ready = not blockers
+    audit_id = stable_id("OCAUDIT", [case_id, certification_id or certification.get("certification_id"), auditor, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_operating_completion_audit_review",
+        "audit_id": audit_id,
+        "certification_id": certification_id or certification.get("certification_id"),
+        "execution_id": certification.get("execution_id"),
+        "review_id": certification.get("review_id"),
+        "package_id": certification.get("package_id"),
+        "case_id": case_id,
+        "toolchain_id": certification.get("toolchain_id"),
+        "status": "goal_complete_candidate" if audit_ready else "completion_audit_blocked",
+        "goal_complete_candidate": audit_ready,
+        "audited_by": auditor or None,
+        "checklist": checklist,
+        "blockers": blockers,
+        "warnings": warnings,
+        "source_dir": source_dir or None,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "requires_external_completion_decision": True,
+        "next_human_actions_ko": [
+            "completion_audit_blocked이면 blockers를 해소한 뒤 실제 운영 산출물로 다시 인증합니다.",
+            "controlled/test 산출물 경고가 있으면 goal_complete_candidate가 될 수 없습니다.",
+            "goal_complete_candidate 상태여도 전체 스레드 목표 완료는 전체 회귀/보안/보고서 게이트 재검증 뒤 별도로 판단합니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operating-completion-audit-reviews", audit_id)
+    return result
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()
