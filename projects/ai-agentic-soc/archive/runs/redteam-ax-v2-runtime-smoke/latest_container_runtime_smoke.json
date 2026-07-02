@@ -1,0 +1,30 @@
+{
+  "kind": "redteam_ax_v2_container_runtime_smoke",
+  "created_at": "2026-07-02T02:06:58.030089Z",
+  "allow_real_execution": false,
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "runtime_preflight": {
+    "runtime": "docker",
+    "runtime_path": "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+    "ready": false,
+    "blocker": "docker_daemon_unavailable_or_not_started",
+    "version_probe": {
+      "argv": [
+        "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "exit_code": 1,
+      "stdout": "{\"Client\":{\"Version\":\"29.5.3\",\"ApiVersion\":\"1.54\",\"DefaultAPIVersion\":\"1.54\",\"GitCommit\":\"d1c06ef\",\"GoVersion\":\"go1.26.4\",\"Os\":\"windows\",\"Arch\":\"amd64\",\"BuildTime\":\"Wed Jun  3 18:03:06 2026\",\"Context\":\"desktop-linux\"},\"Server\":null}\n",
+      "stderr": "Error response from daemon: Docker Desktop is unable to start\n"
+    }
+  },
+  "status": "blocked_container_runtime_not_ready",
+  "blockers": [
+    "docker_daemon_unavailable_or_not_started"
+  ]
+}

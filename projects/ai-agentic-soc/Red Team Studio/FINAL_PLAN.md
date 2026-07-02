@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 35 Nuclei parser launch JSON hardening complete, full goal active
+상태: implementation slice 36 real container runtime smoke harness complete, Docker daemon blocker evidenced, full goal active
 작성일: 2026-07-01
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -908,5 +908,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Nuclei JSONL normalizer가 `template-id`/`template_id`/`template` 또는 `info`가 없는 JSON 객체를 finding 후보에서 제외
 - [x] container launch plan JSON은 `container_launch_evidence`로만 남고 `scanner_finding_candidate`로 중복 승격되지 않음
 - [x] Nuclei/ZAP/OpenVAS container stdout parser smoke에서 scanner candidate가 정확히 1개인지 회귀 검증
-- [ ] 실제 Docker/Podman runtime stdout/stderr smoke
+- [x] 실제 Docker runtime smoke harness 추가 및 현재 daemon blocker evidence 기록 - slice 36 완료
+- [ ] Docker daemon ready 상태에서 `--allow-real` 실제 stdout/stderr smoke 통과
 - [ ] live 5177/8765 browser parser smoke
+
+## 44. Slice 36 Real Container Runtime Smoke Harness 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_container_runtime_smoke.py` 추가
+- [x] 기본 실행은 Docker/Podman 컨테이너를 실행하지 않고 runtime daemon/image/readiness를 preflight로 기록
+- [x] `--allow-real` 또는 `REDTEAM_AX_REAL_CONTAINER_SMOKE=1` 없이는 실제 컨테이너 실행 차단
+- [x] local image digest가 없으면 pull 없이 `blocked_container_image_digest_not_available_locally`로 차단
+- [x] 실제 실행 opt-in 시 FastAPI `ephemeral_container` runner path를 사용해 stdout/stderr raw artifact capture 검증
+- [x] 현재 환경 증거: Docker CLI는 있으나 daemon은 `Server:null`, `Docker Desktop is unable to start`
+- [x] smoke artifact: `archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json`
+- [ ] Docker Desktop/daemon ready 후 `--allow-real --require-real` 실측 통과
+- [ ] Trivy/Nuclei/ZAP/OpenVAS 실제 scanner result stdout parser E2E
