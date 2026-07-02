@@ -98,6 +98,7 @@ def playwright_browser_smoke(
     allow_action: bool,
     allow_approval_request: bool,
     allow_approval_grant: bool,
+    allow_evidence_matrix: bool,
 ) -> dict[str, Any]:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     script_path = ARTIFACT_DIR / "live_browser_parser_probe.mjs"
@@ -109,6 +110,7 @@ const url = process.argv[2];
 const allowAction = process.argv[3] === 'allow-action';
 const allowApprovalRequest = process.argv[4] === 'allow-approval-request';
 const allowApprovalGrant = process.argv[5] === 'allow-approval-grant';
+const allowEvidenceMatrix = process.argv[6] === 'allow-evidence-matrix';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const result = { url, checks: {}, apiResponses: [] };
@@ -192,6 +194,115 @@ try {
         };
       }, { actionId: approvedActionId });
       result.apiResponses.push(manualRunResponse);
+    }
+  }
+  if (allowEvidenceMatrix) {
+    const approvalResponse = result.apiResponses.find((item) => item.url.includes('/approve') && item.endpoint.includes('/tool-actions/'));
+    const approvedActionId = approvalResponse ? approvalResponse.actionId : null;
+    if (approvedActionId) {
+      const matrixFlow = await page.evaluate(async ({ actionId }) => {
+        const caseId = 'RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001';
+        const apiPost = async (endpoint, payload, headers = {}) => {
+          const response = await fetch(`http://127.0.0.1:8765${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...headers },
+            body: JSON.stringify(payload),
+          });
+          const body = await response.text();
+          let parsed = null;
+          try { parsed = JSON.parse(body); } catch {}
+          return {
+            url: response.url,
+            endpoint: new URL(response.url).pathname,
+            status: response.status,
+            kind: parsed && parsed.kind ? parsed.kind : null,
+            runId: parsed && parsed.run_id ? parsed.run_id : null,
+            resultId: parsed && parsed.result_id ? parsed.result_id : null,
+            evidenceId: parsed && parsed.evidence_id ? parsed.evidence_id : (parsed && parsed.evidence && parsed.evidence.evidence_id ? parsed.evidence.evidence_id : null),
+            reportId: parsed && parsed.report_id ? parsed.report_id : null,
+            statusField: parsed && parsed.status ? parsed.status : null,
+            gateStatus: parsed && parsed.gate_status ? parsed.gate_status : null,
+            validation: parsed && parsed.validation ? {
+              unsupportedClaimCount: parsed.validation.unsupported_claim_count,
+              unapprovedHighRiskCount: parsed.validation.unapproved_high_risk_count,
+              findingWithoutEvidenceCount: parsed.validation.finding_without_evidence_count,
+              unapprovedEvidenceCount: parsed.validation.unapproved_evidence_count,
+              unverifiedEvidenceCount: parsed.validation.unverified_evidence_count,
+              blockingItems: parsed.validation.blocking_items,
+            } : null,
+            reportSections: parsed && parsed.report && Array.isArray(parsed.report.sections) ? parsed.report.sections : null,
+            errors: parsed && Array.isArray(parsed.errors) ? parsed.errors : null,
+            bodyPrefix: body.slice(0, 120),
+          };
+        };
+        const manualRun = await apiPost(`/api/redteam/v2/tool-actions/${encodeURIComponent(actionId)}/manual-run-record`, {
+          case_id: caseId,
+          executed_by: 'operator@example.com',
+          started_at: '2026-07-02T03:00:00Z',
+          ended_at: '2026-07-02T03:05:00Z',
+          notes: 'Approval grant smoke records operator-provided artifacts for Evidence Card and Claim-Evidence Matrix validation.',
+          uploaded_artifacts: [
+            'artifact://redteam2-live-approval-grant.png',
+            'artifact://redteam2-live-tool-output.json',
+          ],
+        });
+        const runId = manualRun.runId;
+        const imported = runId ? await apiPost(`/api/redteam/v2/tool-runs/${encodeURIComponent(runId)}/import-output`, {
+          case_id: caseId,
+          raw_artifacts: [
+            { source_path_or_ref: 'artifact://redteam2-live-approval-grant.png', content_type: 'image/png', summary: 'RedTeam2 HITL approval screen capture' },
+            { source_path_or_ref: 'artifact://redteam2-live-tool-output.json', content_type: 'application/json', summary: 'RedTeam2 live smoke metadata' },
+          ],
+        }) : null;
+        const normalized = runId ? await apiPost(`/api/redteam/v2/tool-runs/${encodeURIComponent(runId)}/normalize`, {
+          case_id: caseId,
+          result_type: 'visual_capture',
+          summary: 'RedTeam2 approved manual run artifacts are normalized as an evidence pack candidate.',
+          observations: ['The approved ToolActionCard flow produced operator-supplied artifacts for review.'],
+          limitations: ['The artifacts support workflow evidence only and do not prove exploit success.'],
+          structured_items: [{
+            item_type: 'screenshot',
+            source_path_or_ref: 'artifact://redteam2-live-approval-grant.png',
+            supports: ['C-LIVE-EVIDENCE-MATRIX-001'],
+            confidence: 0.9,
+          }],
+        }) : null;
+        const evidence = runId && normalized && normalized.resultId ? await apiPost(`/api/redteam/v2/tool-runs/${encodeURIComponent(runId)}/create-evidence`, {
+          case_id: caseId,
+          result_id: normalized.resultId,
+          summary: 'RedTeam2 approved manual run artifact Evidence Card candidate.',
+        }) : null;
+        const evidenceId = evidence ? evidence.evidenceId : null;
+        const evidenceApproval = evidenceId ? await apiPost(`/api/redteam/v2/evidence/${encodeURIComponent(evidenceId)}/approve`, {
+          case_id: caseId,
+          reviewed_by: 'lead@example.com',
+          reviewer_role: 'red_team_lead',
+          decision: 'approve',
+        }, {
+          'X-RedTeam-Actor': 'lead@example.com',
+          'X-RedTeam-Actor-Role': 'red_team_lead',
+        }) : null;
+        const report = evidenceId ? await apiPost('/api/redteam/v2/reports/generate', {
+          case_id: caseId,
+          title: 'RedTeam AX v2 live evidence matrix smoke report',
+          claims: [{
+            claim_id: 'C-LIVE-EVIDENCE-MATRIX-001',
+            support_level: 'supported',
+            evidence_ids: [evidenceId],
+          }],
+          findings: [],
+          tool_actions: [{
+            action_id: actionId,
+            risk_class: 'T3',
+            approval_required: true,
+            status: 'EvidenceCreated',
+          }],
+        }) : null;
+        return { manualRun, imported, normalized, evidence, evidenceApproval, report };
+      }, { actionId: approvedActionId });
+      for (const item of Object.values(matrixFlow)) {
+        if (item) result.apiResponses.push(item);
+      }
     }
   }
   result.title = await page.title();
@@ -288,6 +399,51 @@ try {
       && result.approvalGrant.governedRunnerNotClicked
       && result.approvalGrant.governedRunnerNotExecuted;
   }
+  if (allowEvidenceMatrix) {
+    const validManualRunResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/manual-run-record') && item.statusField === 'ManuallyExecuted');
+    const importResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/import-output'));
+    const normalizeResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/normalize'));
+    const evidenceResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/create-evidence') && item.evidenceId)
+      || result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/create-evidence'));
+    const evidenceApprovalResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/evidence/') && item.statusField === 'approved');
+    const reportResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/reports/generate') && item.gateStatus)
+      || result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/reports/generate'));
+    result.evidenceMatrix = {
+      validManualRunRecorded: Boolean(validManualRunResponse && validManualRunResponse.status === 200),
+      runId: validManualRunResponse ? validManualRunResponse.runId : null,
+      outputImported: Boolean(importResponse && importResponse.status === 200 && importResponse.statusField === 'OutputImported'),
+      normalized: Boolean(normalizeResponse && normalizeResponse.status === 200 && normalizeResponse.statusField === 'Normalized'),
+      evidenceCreated: Boolean(evidenceResponse && evidenceResponse.status === 200 && evidenceResponse.evidenceId),
+      evidenceId: evidenceResponse ? evidenceResponse.evidenceId : null,
+      evidenceApproved: Boolean(evidenceApprovalResponse && evidenceApprovalResponse.status === 200),
+      reportGenerated: Boolean(reportResponse && reportResponse.status === 200 && reportResponse.gateStatus === 'pass'),
+      claimEvidenceMatrixSection: Boolean(reportResponse && Array.isArray(reportResponse.reportSections) && reportResponse.reportSections.includes('Claim-Evidence Matrix')),
+      unsupportedClaimCount: reportResponse && reportResponse.validation ? reportResponse.validation.unsupportedClaimCount : null,
+      unapprovedHighRiskCount: reportResponse && reportResponse.validation ? reportResponse.validation.unapprovedHighRiskCount : null,
+      findingWithoutEvidenceCount: reportResponse && reportResponse.validation ? reportResponse.validation.findingWithoutEvidenceCount : null,
+      unapprovedEvidenceCount: reportResponse && reportResponse.validation ? reportResponse.validation.unapprovedEvidenceCount : null,
+      unverifiedEvidenceCount: reportResponse && reportResponse.validation ? reportResponse.validation.unverifiedEvidenceCount : null,
+      blockingItems: reportResponse && reportResponse.validation ? reportResponse.validation.blockingItems : null,
+      governedRunnerNotClicked: true,
+      governedRunnerNotExecuted: true,
+    };
+    result.checks.evidenceMatrixLinked = result.evidenceMatrix.validManualRunRecorded
+      && result.evidenceMatrix.outputImported
+      && result.evidenceMatrix.normalized
+      && result.evidenceMatrix.evidenceCreated
+      && result.evidenceMatrix.evidenceApproved
+      && result.evidenceMatrix.reportGenerated
+      && result.evidenceMatrix.claimEvidenceMatrixSection
+      && result.evidenceMatrix.unsupportedClaimCount === 0
+      && result.evidenceMatrix.unapprovedHighRiskCount === 0
+      && result.evidenceMatrix.findingWithoutEvidenceCount === 0
+      && result.evidenceMatrix.unapprovedEvidenceCount === 0
+      && result.evidenceMatrix.unverifiedEvidenceCount === 0
+      && Array.isArray(result.evidenceMatrix.blockingItems)
+      && result.evidenceMatrix.blockingItems.length === 0
+      && result.evidenceMatrix.governedRunnerNotClicked
+      && result.evidenceMatrix.governedRunnerNotExecuted;
+  }
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
   result.status = 'failed_browser_probe';
@@ -303,7 +459,8 @@ console.log(JSON.stringify(result));
     action_arg = "allow-action" if allow_action else "dom-only"
     approval_arg = "allow-approval-request" if allow_approval_request else "approval-request-disabled"
     grant_arg = "allow-approval-grant" if allow_approval_grant else "approval-grant-disabled"
-    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg, grant_arg], cwd=FRONTEND_ROOT, timeout=timeout)
+    matrix_arg = "allow-evidence-matrix" if allow_evidence_matrix else "evidence-matrix-disabled"
+    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg, grant_arg, matrix_arg], cwd=FRONTEND_ROOT, timeout=timeout)
     parsed: dict[str, Any] | None = None
     if probe.get("stdout"):
         try:
@@ -335,6 +492,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "allow_browser_action_smoke": args.allow_action,
         "allow_browser_approval_request_smoke": args.allow_approval_request,
         "allow_browser_approval_grant_smoke": args.allow_approval_grant,
+        "allow_browser_evidence_matrix_smoke": args.allow_evidence_matrix,
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "browser_automation_executed": False,
@@ -379,6 +537,10 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         result["status"] = "blocked_approval_grant_smoke_requires_approval_request"
         result["blockers"] = ["approval_grant_smoke_requires_allow_approval_request"]
         return result, 2 if args.require_live else 0
+    if args.allow_evidence_matrix and not args.allow_approval_grant:
+        result["status"] = "blocked_evidence_matrix_smoke_requires_approval_grant"
+        result["blockers"] = ["evidence_matrix_smoke_requires_allow_approval_grant"]
+        return result, 2 if args.require_live else 0
     if not (FRONTEND_ROOT / "node_modules" / "playwright").exists():
         result["status"] = "blocked_playwright_dependency_not_installed"
         result["blockers"] = ["frontend_node_modules_playwright_not_found"]
@@ -390,6 +552,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         args.allow_action,
         args.allow_approval_request,
         args.allow_approval_grant,
+        args.allow_evidence_matrix,
     )
     result["browser_smoke"] = browser
     result["status"] = "passed" if browser.get("status") == "passed" else "failed_browser_dom_parser_smoke"
@@ -403,6 +566,7 @@ def main() -> int:
     parser.add_argument("--allow-action", action="store_true", help="Opt in to a safe UI ToolActionCard planning click. No runner execution is triggered.")
     parser.add_argument("--allow-approval-request", action="store_true", help="Opt in to requesting HITL approval after ToolActionCard planning. No approval grant or runner execution is triggered.")
     parser.add_argument("--allow-approval-grant", action="store_true", help="Opt in to granting the HITL approval in the UI smoke. No runner execution is triggered.")
+    parser.add_argument("--allow-evidence-matrix", action="store_true", help="Opt in to importing approved manual-run artifacts through Evidence Card and Claim-Evidence Matrix validation. No runner execution is triggered.")
     parser.add_argument("--require-live", action="store_true", help="Return non-zero if live services/browser smoke are not ready.")
     parser.add_argument("--frontend-url", default="http://127.0.0.1:5177")
     parser.add_argument("--backend-url", default="http://127.0.0.1:8765")

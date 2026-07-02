@@ -995,4 +995,21 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] runner 실행 없이 `/manual-run-record`에 빈 `uploaded_artifacts`를 제출해 `uploaded_artifacts_required` evidence gate 확인
 - [x] `governedRunnerNotClicked=true`, `governedRunnerNotExecuted=true`, `commands_executed_by_api=false` 유지
 - [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
-- [ ] 다음 live browser smoke: valid manual run artifact upload/import -> Evidence Card candidate -> Claim-Evidence Matrix link
+- [x] valid manual run artifact upload/import -> Evidence Card candidate -> Claim-Evidence Matrix link - slice 43 완료
+
+## 51. Slice 43 Live Manual Artifact Evidence Matrix Smoke 체크리스트
+
+- [x] Agentic RAG 정본 기준 `Agentic RAG SPEC`의 핵심 요구인 claim-citation/evidence 연결과 unsupported claim 차단을 smoke 범위에 반영
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py`에 `--allow-evidence-matrix` opt-in 추가
+- [x] `--allow-evidence-matrix`는 `--allow-approval-grant` 없이는 차단되어 승인 없는 수동 산출물 증거화를 수행하지 않음
+- [x] 승인된 ToolActionCard에 대해 operator-provided `uploaded_artifacts`가 있는 valid ManualRunRecord 생성 검증
+- [x] ToolRunRecord `import-output`으로 image/json artifact metadata를 raw artifact로 등록
+- [x] ToolRunRecord `normalize`로 visual_capture Evidence Pack 후보를 생성하고 exploit success 단정 금지 limitation 유지
+- [x] `/tool-runs/{run_id}/create-evidence`로 Evidence Card candidate 생성 검증
+- [x] red_team_lead actor binding으로 Evidence Card approval 완료 검증
+- [x] supported claim이 approved evidence ID를 참조하는 Korean Red Team Report v2 draft 생성 검증
+- [x] report validation gate에서 `unsupported_claim_count=0`, `unapproved_high_risk_count=0`, `finding_without_evidence_count=0`, `unapproved_evidence_count=0`, `unverified_evidence_count=0`, `blocking_items=[]` 확인
+- [x] 보고서 섹션에 `Claim-Evidence Matrix` 포함 확인
+- [x] `governedRunnerNotClicked=true`, `governedRunnerNotExecuted=true`, `commands_executed_by_api=false` 유지
+- [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
+- [ ] 다음 slice: Agentic RAG SPEC 기반 corpus routing / SCA sufficient context / citation verifier API smoke를 RedTeam AX evidence store와 연결

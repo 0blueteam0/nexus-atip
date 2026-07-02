@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-02T02:58:12.217Z",
+  "updatedAt": "2026-07-02T03:09:07.460Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-07-02T02-58-11-963Z-codex-to-claude-system-redteam-ax",
+      "id": "2026-07-02T03-09-07-154Z-codex-to-claude-system-redteam-ax",
       "from": "codex",
       "to": "claude",
       "title": "RedTeam AX",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-02T02-58-11-963Z-codex-to-claude-system-redteam-ax.md",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-02T03-09-07-154Z-codex-to-claude-system-redteam-ax.md",
       "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-07-02T02:58:11.963Z",
+      "createdAt": "2026-07-02T03:09:07.154Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-07-02T03-09-07-154Z-codex-to-claude-system-redteam-ax",
+      "from": "codex",
+      "to": "claude",
+      "title": "RedTeam AX",
+      "status": "completed",
+      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-02T03-09-07-154Z-codex-to-claude-system-redteam-ax.md",
+      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-07-02T03:09:07.154Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-07-02T02-58-11-963Z-codex-to-claude-system-redteam-ax",
       "from": "codex",
