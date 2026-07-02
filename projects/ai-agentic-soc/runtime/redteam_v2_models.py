@@ -2848,11 +2848,14 @@ def _normalize_nuclei_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     for raw in raw_values:
         for finding in _jsonl_items(raw):
             info = finding.get("info") if isinstance(finding.get("info"), dict) else {}
+            template_id = finding.get("template-id") or finding.get("template_id") or finding.get("template")
+            if not template_id and not info:
+                continue
             severity = _severity(info.get("severity") or finding.get("severity"))
             items.append({
                 "item_type": "scanner_finding_candidate",
                 "tool": "nuclei",
-                "template_id": finding.get("template-id") or finding.get("template_id") or finding.get("template"),
+                "template_id": template_id,
                 "name": info.get("name") or finding.get("name") or finding.get("matcher-name"),
                 "severity": severity,
                 "target": finding.get("matched-at") or finding.get("host") or finding.get("ip") or finding.get("url"),

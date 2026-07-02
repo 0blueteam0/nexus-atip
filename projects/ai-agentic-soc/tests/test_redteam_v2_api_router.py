@@ -1063,7 +1063,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             item_types = {item["item_type"] for item in body["structured_items"]}
             self.assertIn("container_launch_evidence", item_types, tool_id)
             self.assertIn("scanner_finding_candidate", item_types, tool_id)
-            scanner_item = next(item for item in body["structured_items"] if item["item_type"] == "scanner_finding_candidate" and item.get(key) == expected)
+            scanner_candidates = [item for item in body["structured_items"] if item["item_type"] == "scanner_finding_candidate"]
+            self.assertEqual(len(scanner_candidates), 1, tool_id)
+            scanner_item = next(item for item in scanner_candidates if item.get(key) == expected)
             self.assertEqual(scanner_item[key], expected, tool_id)
             self.assertFalse(scanner_item["trusted_as_instruction"])
             self.assertTrue(scanner_item["requires_human_validation"])

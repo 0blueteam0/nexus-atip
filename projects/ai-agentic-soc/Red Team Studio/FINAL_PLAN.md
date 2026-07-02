@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 34 Nuclei/ZAP/OpenVAS container stdout parser smoke complete, full goal active
+상태: implementation slice 35 Nuclei parser launch JSON hardening complete, full goal active
 작성일: 2026-07-01
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -899,5 +899,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 각 normalized result가 `container_launch_evidence`와 `scanner_finding_candidate`를 동시에 포함
 - [x] 각 scanner candidate는 `trusted_as_instruction=false`, `requires_human_validation=true`
 - [x] 각 run에서 Evidence Card candidate 생성까지 검증
+- [x] Nuclei parser가 container launch JSON을 scanner finding 후보로 오인하지 않도록 hardening - slice 35 완료
 - [ ] 실제 Docker/Podman stdout/stderr artifact로 Nuclei/ZAP/OpenVAS smoke
+- [ ] live 5177/8765 browser parser smoke
+
+## 43. Slice 35 Nuclei Parser Launch JSON Hardening 체크리스트
+
+- [x] Nuclei JSONL normalizer가 `template-id`/`template_id`/`template` 또는 `info`가 없는 JSON 객체를 finding 후보에서 제외
+- [x] container launch plan JSON은 `container_launch_evidence`로만 남고 `scanner_finding_candidate`로 중복 승격되지 않음
+- [x] Nuclei/ZAP/OpenVAS container stdout parser smoke에서 scanner candidate가 정확히 1개인지 회귀 검증
+- [ ] 실제 Docker/Podman runtime stdout/stderr smoke
 - [ ] live 5177/8765 browser parser smoke
