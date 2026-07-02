@@ -1,0 +1,134 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-4FD93972D69D",
+  "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "TCHAIN-MULTI-INSTALLED-001 · Trivy",
+  "objective": "여러 설치 분석도구를 승인된 로컬 runner로 순차 실행하고 결과를 회수한다.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_profile": {
+    "tool_id": "TOOL-TRIVY-001",
+    "name": "trivy",
+    "category": "container_iac_dependency_scan",
+    "normalizer_id": "NORMALIZER-TRIVY-001",
+    "agent_id": "AGENT-TRIVY-ANALYST-001",
+    "default_policy": "offline_artifact_or_workspace_scan_only"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "container_scan_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "OutputImported",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+    "decision": "deny",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [
+      "target_scope_refs_required"
+    ],
+    "evaluated_at": "2026-07-02T04:36:17Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/roe/ROE-8310BE4E722C.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T04:36:17Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:36:17Z",
+      "execution_plan_id": "TEP-C32680B8C6F0",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:36:17Z",
+      "run_id": "TRUN-EF986D989249",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:36Z",
+      "execution_plan_id": "TEP-139E1E06894A",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:36Z",
+      "run_id": "TRUN-CEF423C8686C",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:46Z",
+      "execution_plan_id": "TEP-30E836740AF7",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:46Z",
+      "run_id": "TRUN-586EACC0A0E4",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:48Z",
+      "execution_plan_id": "TEP-5147CCBBA89C",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:48Z",
+      "run_id": "TRUN-BADA66C37DC9",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "sandbox_execute"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-actions/TAC-4FD93972D69D.json",
+  "execution_plans": [
+    "TEP-C32680B8C6F0",
+    "TEP-139E1E06894A",
+    "TEP-30E836740AF7",
+    "TEP-5147CCBBA89C"
+  ]
+}

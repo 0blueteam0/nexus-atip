@@ -1,0 +1,100 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-E97542DC3476",
+  "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+  "action_id": "TAC-C4152235CA8D",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "execution_mode": "sandbox_execute",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "RunnerExecuted",
+  "errors": [],
+  "target_scope_refs": [],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-22890DF5D6BC",
+      "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-output/TRUN-E97542DC3476/stdout.txt",
+      "hash": "d69631bdd5666d2fb87fe17fc203aafc6be466c1ae805228395f59c0b258e7aa",
+      "content_type": "text/plain",
+      "summary": "Governed runner stdout captured as untrusted tool output.",
+      "imported_at": "2026-07-02T04:37:46Z"
+    }
+  ],
+  "runner_attempt": {
+    "kind": "redteam_ax_v2_governed_runner_attempt",
+    "run_id": "TRUN-E97542DC3476",
+    "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+    "action_id": "TAC-C4152235CA8D",
+    "execution_plan_id": "TEP-C2A9285FF46E",
+    "execution_token_id": "EXT-D0E07A408401",
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "execution_mode": "sandbox_execute",
+    "runner_argv": [
+      "npm.cmd",
+      "--version"
+    ],
+    "shell": false,
+    "status": "executed",
+    "errors": [],
+    "started_at": "2026-07-02T04:37:46Z",
+    "completed_at": "2026-07-02T04:37:46Z",
+    "exit_code": 0,
+    "timeout_seconds": 120,
+    "max_output_bytes": 262144,
+    "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+    "stdout_bytes": 42,
+    "stderr_bytes": 0,
+    "output_truncated": false,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-attempts/RUNA-C510CDB3E184.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/audit.jsonl"
+  },
+  "normalized_results": [],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": false,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "dry_run",
+      "offline_parse",
+      "sandbox_execute"
+    ],
+    "denied_execution_modes": [
+      "lab_execute",
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_runner_execution"
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "npm.cmd",
+    "path": "C:\\Users\\alos\\AppData\\Local\\hermes\\node\\npm.cmd",
+    "checked_at": "2026-07-02T04:37:46Z"
+  },
+  "analysis_agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+  "normalizer_id": "NORMALIZER-NPM-AUDIT-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-NPM-AUDIT-001",
+    "run_id": "TRUN-E97542DC3476",
+    "classification": "internal",
+    "content_summary": "npm audit composite runner output.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-22890DF5D6BC",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-output/TRUN-E97542DC3476/stdout.txt",
+        "hash": "d69631bdd5666d2fb87fe17fc203aafc6be466c1ae805228395f59c0b258e7aa",
+        "content_type": "text/plain",
+        "summary": "Governed runner stdout captured as untrusted tool output.",
+        "imported_at": "2026-07-02T04:37:46Z"
+      }
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-runs/TRUN-E97542DC3476.json"
+}

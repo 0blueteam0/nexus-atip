@@ -1158,4 +1158,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] unknown tool, operator 누락, version command/output 누락, operator 실행 증명 누락은 `invalid`로 차단
 - [x] `tests/test_redteam_v2_api_router.py::test_v2_tool_install_version_evidence_records_operator_attested_versions` 추가
 - [x] completion audit matrix의 RTA-COMP-006을 `proved`로 갱신하되 실제 scanner binary/container runtime smoke는 RTA-COMP-015에 남김
-- [ ] 다음 slice: OpenVAS/ZAP credential vault contract 또는 final accepted gate manifest 구현
+- [x] 다음 slice: OpenVAS/ZAP credential vault contract 또는 final accepted gate manifest 구현 - 사용자 목표 갱신으로 복합 설치 도구 실행 orchestration slice 57 우선 완료
+
+## 65. Slice 57 Installed Toolchain Composite Runner 체크리스트
+
+- [x] SPEC 22/25/26/30 기준으로 버튼 실행은 ToolActionCard, ExecutionPlan, execution token, wrapper pin gate를 통과해야 함을 재확인
+- [x] `/api/redteam/v2/toolchains/execute-governed` endpoint 추가
+- [x] 복합 실행은 도구 2개 이상을 요구하고, 각 도구별 ToolActionCard와 ExecutionPlan을 생성한 뒤 PlanReady/token issued 단계만 runner로 전달
+- [x] 실제 실행은 기존 governed runner의 `subprocess.run(..., shell=False)`와 child process allowlist, wrapper preflight, execution token 검사를 재사용
+- [x] 복합 실행 결과는 `toolchain-runs` artifact에 steps, plan, run, raw_artifacts, `trusted_as_instruction=false`, `requires_human_validation=true`로 저장
+- [x] RedTeam2 프론트엔드에 한국어 `여러 분석도구 순차 실행` 입력/버튼/상태 표 추가
+- [x] frontend 입력은 분석도구 ID 목록과 실행 명령 목록을 받아 backend 복합 실행 API를 호출
+- [x] `tests/test_redteam_v2_api_router.py::test_v2_governed_toolchain_executes_multiple_installed_tool_steps` 추가
+- [x] node syntax check와 v2 API regression 통과
+- [ ] 다음 slice: 실제 설치 도구 기반 live smoke 또는 OpenVAS/ZAP credential vault contract 구현

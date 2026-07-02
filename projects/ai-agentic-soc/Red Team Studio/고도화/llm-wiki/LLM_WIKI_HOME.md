@@ -61,6 +61,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Completion audit | `../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md` | 전체 목표 완료/미완료 요구사항별 증거 장부 |
 | RedTeam2 Korean copy inventory | `../completion-audit/redteam2_korean_copy_inventory.json` | RedTeam2 visible copy의 한국어/초급자 UX sanity 결과 |
 | Scanner install evidence | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence` | Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP operator-attested version evidence |
+| Governed toolchain runner | `/api/redteam/v2/toolchains/execute-governed` | 여러 설치 분석도구를 ToolActionCard/ExecutionPlan/token/wrapper gate로 순차 실행하고 결과 회수 |
 
 ## 전체 인벤토리 요약
 
@@ -106,6 +107,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolProfile
 - ToolActionCard
 - ToolInstallVersionEvidence
+- GovernedToolchainExecution
 - ScriptManifest
 - ScriptFactory
 - ManualRunRecorder
@@ -135,6 +137,6 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
-- 실제 CLI/container runtime smoke 성공 증거
+- 실제 설치 CLI/container runtime smoke 성공 증거
 - OpenVAS/ZAP credential vault와 read-only token 정책
 - 전체 accepted gate manifest와 all-suite run artifact

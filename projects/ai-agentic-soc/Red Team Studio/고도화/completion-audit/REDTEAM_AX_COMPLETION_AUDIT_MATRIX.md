@@ -48,13 +48,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - MCP direct invocation denial guard와 artifact evidence
 - Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP registry와 분석 agent 매핑
 - Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP operator-attested version evidence capture
+- RedTeam2의 여러 분석도구 순차 실행 UI와 governed multi-toolchain execution API
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
 - LLM wiki의 Red Team Studio manifest, ChatShare, previous work index 연결
 
 ## 아직 완료로 주장하면 안 되는 항목
 
-- 실제 CLI/container runtime smoke 성공 증거
+- 실제 설치 CLI/container runtime smoke 성공 증거
 - OpenVAS/ZAP credential vault와 read-only token 정책
 - 전체 accepted gate manifest와 all-suite run artifact
 - Docker/container 환경 준비 후 real runtime smoke 성공 증거

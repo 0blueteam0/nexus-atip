@@ -75,10 +75,11 @@
       "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js"
       ],
-      "proof_summary": "API registry exposes all six tools and six analysis agents; tests validate required tool names, agent IDs, trust policy, normalizers, and frontend ToolHub selection.",
+      "proof_summary": "API registry exposes all six tools and six analysis agents; tests validate required tool names, agent IDs, trust policy, normalizers, frontend ToolHub selection, and governed multi-toolchain execution routing for multiple installed tool steps.",
       "next_action": "Tie future tool additions to the registry/agent contract test."
     },
     {
@@ -90,12 +91,13 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Install-readiness registry returns operator-run install plans, and /api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence records operator-attested version evidence for Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP without executing commands by API.",
-      "residual_gap": "This proves governed evidence capture, not that real scanner binaries or containers have run successfully in the local environment; runtime smoke remains tracked by RTA-COMP-015.",
-      "next_action": "Connect the captured install evidence to the front-end readiness panel and the final accepted gate manifest."
+      "proof_summary": "Install-readiness registry returns operator-run install plans, /api/redteam/v2/tool-install-readiness/{tool_id}/version-evidence records operator-attested version evidence, and /api/redteam/v2/toolchains/execute-governed routes multiple installed-tool runner steps through existing execution tokens and wrapper gates.",
+      "residual_gap": "This proves governed evidence capture and multi-tool orchestration contract, not that real scanner binaries or containers have run successfully in the local environment; runtime smoke remains tracked by RTA-COMP-015.",
+      "next_action": "Run a host-specific live smoke with installed tools or a ready container runner and attach artifact."
     },
     {
       "id": "RTA-COMP-007",
@@ -205,8 +207,8 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
       "proof_summary": "Container runtime harness exists and records blocker evidence, but the runtime environment has not provided a successful real container execution proof.",
-      "residual_gap": "Docker/container daemon availability remains an environmental blocker for real runtime proof.",
-      "next_action": "When Docker is available, rerun real container runtime smoke and attach artifact."
+      "residual_gap": "Docker/container daemon availability and real host scanner availability remain environmental blockers for full runtime proof.",
+      "next_action": "When Docker or approved scanner CLIs are available, rerun real runtime smoke and attach artifact."
     },
     {
       "id": "RTA-COMP-016",
@@ -221,7 +223,7 @@
     }
   ],
   "remaining_gaps": [
-    "Actual CLI/container installation automation and version command evidence collection.",
+    "Successful real CLI/container runtime smoke after environment readiness.",
     "OpenVAS/ZAP credential vault and read-only token policy.",
     "Full accepted gate manifest and all-suite run artifact.",
     "Successful real container runtime smoke after environment readiness."

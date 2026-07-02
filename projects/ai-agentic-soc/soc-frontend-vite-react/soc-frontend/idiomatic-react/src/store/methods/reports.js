@@ -3152,6 +3152,8 @@ export default {
       wrapperVersionCommand:'',
       wrapperVersionOutput:'',
       runnerBackend:'local_subprocess_shim',
+      compositeToolIds:'TOOL-NPM-AUDIT-001,TOOL-TRIVY-001',
+      compositeRunnerCommands:'npm.cmd --version\ntrivy --version',
       agenticRagQuery:'Agentic RAG SCA로 승인된 EvidenceCard가 report claim을 충분히 뒷받침하는지 검증하라.',
       agenticRagClaimText:'승인된 EvidenceCard가 RedTeam AX v2 보고서 claim의 근거로 연결되었다.',
       ...saved,
@@ -3539,6 +3541,61 @@ export default {
     } catch (err) {
       this.setState(s => ({ redteam2RunnerState:{ ...(s.redteam2RunnerState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
       this.toast('Governed runner 실행 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async executeRedTeam2CompositeToolchain() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const toolIds = String(draft.compositeToolIds || '')
+      .split(/[,\n]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+    const commands = String(draft.compositeRunnerCommands || '')
+      .split(/\n/)
+      .map(item => item.trim())
+      .filter(Boolean);
+    if (toolIds.length < 2) {
+      this.toast('복합 실행에는 분석도구를 2개 이상 입력하세요', 'warn');
+      return;
+    }
+    const tools = toolIds.map((toolId, index) => ({
+      tool_id:toolId,
+      execution_mode:'sandbox_execute',
+      runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
+      runner_argv:(commands[index] || '').split(/\s+/).filter(Boolean),
+      target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+      objective:`${reportId} 복합 분석도구 실행 ${index + 1}`,
+    }));
+    if (tools.some(step => !step.runner_argv.length)) {
+      this.toast('각 분석도구에 실행 명령을 한 줄씩 입력하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'executing', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/execute-governed', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          toolchain_id:`${reportId}-TOOLCHAIN-LOCAL-RUNNER`,
+          requested_by:'current-analyst',
+          objective:String(draft.objective || '').trim() || '여러 설치 분석도구를 승인된 로컬 runner로 순차 실행하고 결과를 회수한다.',
+          target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+          runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
+          tools,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:data.status || 'executed', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(`복합 분석도구 실행: ${data.status}`, data.executed_count ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 복합 도구 실행: ${data.toolchain_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('복합 분석도구 실행 실패: ' + (err?.message || String(err)), 'warn');
     }
   }
 ,
@@ -4226,6 +4283,7 @@ export default {
     const visualRedactionState = this.state.redteam2VisualRedactionState || {};
     const executionPlanState = this.state.redteam2ExecutionPlanState || {};
     const runnerState = this.state.redteam2RunnerState || {};
+    const toolchainState = this.state.redteam2ToolchainState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
@@ -4234,6 +4292,7 @@ export default {
     const wrapperPinState = this.state.redteam2WrapperPinState || {};
     const executionPlan = executionPlanState.plan || {};
     const runnerRun = runnerState.run || {};
+    const toolchainRun = toolchainState.result || {};
     const agenticRagResult = agenticRagState.result || {};
     const agenticSca = agenticRagResult.sca_report || {};
     const agenticVerifier = agenticRagResult.citation_verification || {};
@@ -4572,6 +4631,20 @@ export default {
       ['컨테이너 시작', runnerRun.runner_attempt?.container_launch?.image_digest || '-', runnerRun.runner_attempt?.container_launch?.container_argv ? runnerRun.runner_attempt.container_launch.container_argv.slice(0, 6).join(' ') : '요청 없음'],
       ['출력 산출물', (runnerRun.raw_artifacts || []).length, (runnerRun.raw_artifacts || []).map(item => item.source_path_or_ref).join(', ') || 'stdout/stderr 산출물 대기'],
     ];
+    const toolchainRows = [
+      ['복합 실행 상태', koValue(toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainRun.toolchain_id || '두 개 이상 분석도구와 명령을 입력하세요'],
+      ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
+      ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
+      ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
+      ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
+      ['저장 산출물', toolchainRun.artifact_path ? '저장됨' : '미저장', toolchainRun.artifact_path || '복합 실행 후 생성'],
+    ];
+    const toolchainStepRows = (toolchainRun.steps || []).map(step => [
+      `${step.index + 1}. ${step.tool_name || step.tool_id}`,
+      koValue(step.status),
+      step.run?.run_id || step.plan?.execution_plan_id || (step.errors || []).join(', ') || '-',
+      (step.run?.raw_artifacts || []).length ? `${step.run.raw_artifacts.length}개 출력` : '출력 없음',
+    ]);
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
       ['미리보기 상태', koValue(visualPreview.status || visualRedactionState.status || '대기'), visualRedactionState.error || visualPreview.preview_id || '스크린샷/이미지 증거를 선택하세요'],
@@ -4772,6 +4845,35 @@ export default {
           this.renderTable(['실행 항목','상태','근거'], runnerRows),
           executionPlan.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `plan: ${executionPlan.artifact_path}`) : null,
           runnerRun.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `run: ${runnerRun.artifact_path}`) : null,
+          h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
+            h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행합니다. 각 단계는 별도 ToolActionCard, 실행 계획, 실행 토큰, 래퍼 신뢰 고정 조건을 통과해야 하며 결과 stdout/stderr는 산출물로 회수됩니다.'),
+            h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
+              h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
+                h('textarea', {
+                  value:draft.compositeToolIds || '',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeToolIds:e.target.value }),
+                  rows:2,
+                  style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                  placeholder:'TOOL-NPM-AUDIT-001,TOOL-TRIVY-001',
+                })),
+              h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '실행 명령 목록',
+                h('textarea', {
+                  value:draft.compositeRunnerCommands || '',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeRunnerCommands:e.target.value }),
+                  rows:2,
+                  style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                  placeholder:'npm.cmd --version\ntrivy --version',
+                }))),
+            h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+              h('button', {
+                onClick:()=>this.executeRedTeam2CompositeToolchain(),
+                disabled:toolchainState.status === 'executing',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainState.status === 'executing' ? '복합 실행 중' : '여러 분석도구 실행'),
+              h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
+            this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
+            this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']])),
           executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
           runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),
       smallPanel('도구 출력 Sanitizer 미리보기',

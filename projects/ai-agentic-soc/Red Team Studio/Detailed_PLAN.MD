@@ -573,3 +573,12 @@ Create Case
 - `/api/redteam/v2/tool-install-version-evidence`는 case/tool별 scanner install evidence registry를 반환한다.
 - 이 기능은 scanner를 설치하거나 실행하지 않는다. `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true`가 contract다.
 - 실제 scanner binary/container runtime smoke 성공 증거는 별도 최종 게이트 항목으로 남긴다.
+
+## 12. Slice 57 반영 사항
+
+- `/api/redteam/v2/toolchains/execute-governed`는 여러 분석도구를 하나의 요청으로 순차 계획/실행/기록한다.
+- 각 도구 단계는 기존 단일 실행과 동일하게 ToolActionCard, ExecutionPlan, execution token, wrapper pin, runner allowlist를 통과해야 한다.
+- 실제 실행은 설치된 로컬 명령을 `shell=false` subprocess로 호출하며 stdout/stderr는 `runner-output` artifact로 회수한다.
+- RedTeam2 화면에는 초급자용 한국어 `여러 분석도구 순차 실행` 영역을 추가하고, 분석도구 ID 목록과 명령 목록을 입력해 복합 실행 API를 호출한다.
+- 복합 실행 결과는 `toolchain-runs`에 저장되고, 도구 출력은 계속 LLM 명령이 아니라 untrusted data로만 취급한다.
+- 실제 설치 도구 또는 Docker/container가 없는 환경에서는 테스트가 mock runner로 계약을 검증하며, real runtime smoke 성공 증거는 별도 최종 게이트로 유지한다.

@@ -1,0 +1,215 @@
+{
+  "kind": "redteam_ax_v2_governed_toolchain_execution",
+  "toolchain_id": "TCHAIN-MULTI-INSTALLED-001",
+  "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+  "requested_by": "analyst@example.com",
+  "status": "executed",
+  "errors": [],
+  "warnings": [],
+  "tool_count": 2,
+  "executed_count": 2,
+  "blocked_count": 0,
+  "commands_executed_by_api": true,
+  "shell_expansion_allowed": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "steps": [
+    {
+      "index": 0,
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "tool_name": "npm audit",
+      "action_id": "TAC-C4152235CA8D",
+      "execution_mode": "sandbox_execute",
+      "status": "executed",
+      "errors": [],
+      "plan": {
+        "execution_plan_id": "TEP-0566F219B78F",
+        "status": "PlanReady",
+        "policy_decision": {
+          "decision": "allow_plan",
+          "risk_class": "T0",
+          "safe_by_default": true,
+          "high_risk_direct_execution": false,
+          "runner_preflight_blocked": false,
+          "runner_isolation_blocked": false
+        },
+        "execution_token": {
+          "token_id": "EXT-422726ED1745",
+          "status": "issued",
+          "action_id": "TAC-C4152235CA8D",
+          "allowed_tool_id": "TOOL-NPM-AUDIT-001",
+          "allowed_environment": "approved_scope",
+          "allowed_scope_refs": [],
+          "expires_at": "",
+          "max_runtime_seconds": 120,
+          "max_targets": 1,
+          "network_policy": "deny",
+          "revoked": false
+        },
+        "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-execution-plans/TEP-0566F219B78F.json"
+      },
+      "run": {
+        "run_id": "TRUN-0E074E988E4B",
+        "status": "RunnerExecuted",
+        "policy_decision": {
+          "risk_class": "T0",
+          "requires_human_approval": false,
+          "requires_two_person_approval": false,
+          "allowed_execution_modes": [
+            "plan_only",
+            "dry_run",
+            "offline_parse",
+            "sandbox_execute"
+          ],
+          "denied_execution_modes": [
+            "lab_execute",
+            "controlled_production_execute",
+            "prohibited"
+          ],
+          "decision": "allow_runner_execution"
+        },
+        "runner_attempt": {
+          "kind": "redteam_ax_v2_governed_runner_attempt",
+          "run_id": "TRUN-0E074E988E4B",
+          "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+          "action_id": "TAC-C4152235CA8D",
+          "execution_plan_id": "TEP-0566F219B78F",
+          "execution_token_id": "EXT-422726ED1745",
+          "tool_id": "TOOL-NPM-AUDIT-001",
+          "execution_mode": "sandbox_execute",
+          "runner_argv": [
+            "npm.cmd",
+            "--version"
+          ],
+          "shell": false,
+          "status": "executed",
+          "errors": [],
+          "started_at": "2026-07-02T04:37:48Z",
+          "completed_at": "2026-07-02T04:37:48Z",
+          "exit_code": 0,
+          "timeout_seconds": 120,
+          "max_output_bytes": 262144,
+          "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+          "stdout_bytes": 42,
+          "stderr_bytes": 0,
+          "output_truncated": false,
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-attempts/RUNA-F6647440D12A.json",
+          "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/audit.jsonl"
+        },
+        "raw_artifacts": [
+          {
+            "artifact_id": "ART-D63295130674",
+            "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-output/TRUN-0E074E988E4B/stdout.txt",
+            "hash": "d69631bdd5666d2fb87fe17fc203aafc6be466c1ae805228395f59c0b258e7aa",
+            "content_type": "text/plain",
+            "summary": "Governed runner stdout captured as untrusted tool output.",
+            "imported_at": "2026-07-02T04:37:48Z"
+          }
+        ],
+        "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-runs/TRUN-0E074E988E4B.json",
+        "analysis_agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+        "normalizer_id": "NORMALIZER-NPM-AUDIT-001"
+      }
+    },
+    {
+      "index": 1,
+      "tool_id": "TOOL-TRIVY-001",
+      "tool_name": "trivy",
+      "action_id": "TAC-4FD93972D69D",
+      "execution_mode": "sandbox_execute",
+      "status": "executed",
+      "errors": [],
+      "plan": {
+        "execution_plan_id": "TEP-5147CCBBA89C",
+        "status": "PlanReady",
+        "policy_decision": {
+          "decision": "allow_plan",
+          "risk_class": "T0",
+          "safe_by_default": true,
+          "high_risk_direct_execution": false,
+          "runner_preflight_blocked": false,
+          "runner_isolation_blocked": false
+        },
+        "execution_token": {
+          "token_id": "EXT-692E4B35E803",
+          "status": "issued",
+          "action_id": "TAC-4FD93972D69D",
+          "allowed_tool_id": "TOOL-TRIVY-001",
+          "allowed_environment": "approved_scope",
+          "allowed_scope_refs": [],
+          "expires_at": "",
+          "max_runtime_seconds": 120,
+          "max_targets": 1,
+          "network_policy": "deny",
+          "revoked": false
+        },
+        "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-execution-plans/TEP-5147CCBBA89C.json"
+      },
+      "run": {
+        "run_id": "TRUN-BADA66C37DC9",
+        "status": "RunnerExecuted",
+        "policy_decision": {
+          "risk_class": "T0",
+          "requires_human_approval": false,
+          "requires_two_person_approval": false,
+          "allowed_execution_modes": [
+            "plan_only",
+            "dry_run",
+            "offline_parse",
+            "sandbox_execute"
+          ],
+          "denied_execution_modes": [
+            "lab_execute",
+            "controlled_production_execute",
+            "prohibited"
+          ],
+          "decision": "allow_runner_execution"
+        },
+        "runner_attempt": {
+          "kind": "redteam_ax_v2_governed_runner_attempt",
+          "run_id": "TRUN-BADA66C37DC9",
+          "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+          "action_id": "TAC-4FD93972D69D",
+          "execution_plan_id": "TEP-5147CCBBA89C",
+          "execution_token_id": "EXT-692E4B35E803",
+          "tool_id": "TOOL-TRIVY-001",
+          "execution_mode": "sandbox_execute",
+          "runner_argv": [
+            "trivy",
+            "--version"
+          ],
+          "shell": false,
+          "status": "executed",
+          "errors": [],
+          "started_at": "2026-07-02T04:37:48Z",
+          "completed_at": "2026-07-02T04:37:48Z",
+          "exit_code": 0,
+          "timeout_seconds": 120,
+          "max_output_bytes": 262144,
+          "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+          "stdout_bytes": 40,
+          "stderr_bytes": 0,
+          "output_truncated": false,
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-attempts/RUNA-E10A8340D0BA.json",
+          "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/audit.jsonl"
+        },
+        "raw_artifacts": [
+          {
+            "artifact_id": "ART-C20AB3846AE1",
+            "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/runner-output/TRUN-BADA66C37DC9/stdout.txt",
+            "hash": "328d528e739b8087ee9402792c52289a1428e3027b4f7ad19f4bffcba4e0f724",
+            "content_type": "text/plain",
+            "summary": "Governed runner stdout captured as untrusted tool output.",
+            "imported_at": "2026-07-02T04:37:48Z"
+          }
+        ],
+        "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-runs/TRUN-BADA66C37DC9.json",
+        "analysis_agent_id": "AGENT-TRIVY-ANALYST-001",
+        "normalizer_id": "NORMALIZER-TRIVY-001"
+      }
+    }
+  ],
+  "policy": "Composite execution reuses ToolActionCard, ExecutionPlan, execution token, wrapper pinning, and runner allowlist gates per tool.",
+  "created_at": "2026-07-02T04:37:48Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/toolchain-runs/TCHAIN-MULTI-INSTALLED-001.json"
+}

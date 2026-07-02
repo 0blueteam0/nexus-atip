@@ -1,0 +1,134 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-C4152235CA8D",
+  "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "TCHAIN-MULTI-INSTALLED-001 · npm audit",
+  "objective": "여러 설치 분석도구를 승인된 로컬 runner로 순차 실행하고 결과를 회수한다.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_profile": {
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "name": "npm audit",
+    "category": "software_composition_analysis",
+    "normalizer_id": "NORMALIZER-NPM-AUDIT-001",
+    "agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+    "default_policy": "workspace_lockfile_required"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "dependency_advisory_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "OutputImported",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+    "decision": "deny",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [
+      "target_scope_refs_required"
+    ],
+    "evaluated_at": "2026-07-02T04:36:17Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/roe/ROE-8310BE4E722C.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T04:36:17Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:36:17Z",
+      "execution_plan_id": "TEP-F4375007C01F",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:36:17Z",
+      "run_id": "TRUN-AD23E101DE29",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:36Z",
+      "execution_plan_id": "TEP-C71C0369B75B",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:36Z",
+      "run_id": "TRUN-603184972652",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:46Z",
+      "execution_plan_id": "TEP-C2A9285FF46E",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:46Z",
+      "run_id": "TRUN-E97542DC3476",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:37:48Z",
+      "execution_plan_id": "TEP-0566F219B78F",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:37:48Z",
+      "run_id": "TRUN-0E074E988E4B",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "execution_mode": "sandbox_execute"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-actions/TAC-C4152235CA8D.json",
+  "execution_plans": [
+    "TEP-F4375007C01F",
+    "TEP-C71C0369B75B",
+    "TEP-C2A9285FF46E",
+    "TEP-0566F219B78F"
+  ]
+}

@@ -782,6 +782,85 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(Path(executed_body["raw_artifacts"][0]["source_path_or_ref"]).exists())
         self.assertEqual(len(executed_body["raw_artifacts"][0]["hash"]), 64)
 
+    def test_v2_governed_toolchain_executes_multiple_installed_tool_steps(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001"
+
+        def trusted_manifest(profile: dict) -> dict:
+            command_name = profile.get("command_name") or profile.get("name")
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": profile["tool_id"],
+                "tool_name": profile["name"],
+                "availability": {
+                    "status": "available",
+                    "command_name": command_name,
+                    "resolved_path": command_name,
+                },
+                "pinning_status": "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+                "runner_preflight": {
+                    "runner_can_use_wrapper": True,
+                    "blocking_controls": [],
+                    "human_review_required": False,
+                },
+                "actual_sha256": "d" * 64,
+                "expected_sha256": "d" * 64,
+                "expected_sha256_source": "test_approved_pin",
+            }
+
+        class Completed:
+            def __init__(self, argv: list[str]) -> None:
+                self.returncode = 0
+                self.stdout = f"{argv[0]} synthetic installed version output"
+                self.stderr = ""
+
+        with patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=trusted_manifest), \
+             patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)) as runner:
+            response = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-MULTI-INSTALLED-001",
+                "requested_by": "analyst@example.com",
+                "objective": "여러 설치 분석도구를 승인된 로컬 runner로 순차 실행하고 결과를 회수한다.",
+                "tools": [
+                    {
+                        "tool_id": "TOOL-NPM-AUDIT-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["npm.cmd", "--version"],
+                    },
+                    {
+                        "tool_id": "TOOL-TRIVY-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["trivy", "--version"],
+                    },
+                ],
+            })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_governed_toolchain_execution")
+        self.assertEqual(body["status"], "executed")
+        self.assertEqual(body["tool_count"], 2)
+        self.assertEqual(body["executed_count"], 2)
+        self.assertEqual(body["blocked_count"], 0)
+        self.assertTrue(body["commands_executed_by_api"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_human_validation"])
+        self.assertEqual(runner.call_count, 2)
+        tool_ids = {step["tool_id"] for step in body["steps"]}
+        self.assertEqual(tool_ids, {"TOOL-NPM-AUDIT-001", "TOOL-TRIVY-001"})
+        for step in body["steps"]:
+            self.assertEqual(step["status"], "executed")
+            self.assertEqual(step["plan"]["status"], "PlanReady")
+            self.assertEqual(step["plan"]["execution_token"]["status"], "issued")
+            self.assertEqual(step["run"]["status"], "RunnerExecuted")
+            self.assertEqual(step["run"]["runner_attempt"]["status"], "executed")
+            self.assertFalse(step["run"]["runner_attempt"]["shell"])
+            self.assertTrue(step["run"]["raw_artifacts"])
+            self.assertTrue(Path(step["run"]["raw_artifacts"][0]["source_path_or_ref"]).exists())
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

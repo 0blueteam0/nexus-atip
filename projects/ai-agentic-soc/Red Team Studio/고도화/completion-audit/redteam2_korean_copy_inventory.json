@@ -3,15 +3,15 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 873,
-  "korean_literal_count": 730,
-  "english_only_literal_count": 139,
-  "english_only_literal_ratio": 0.1592,
+  "literal_count": 909,
+  "korean_literal_count": 760,
+  "english_only_literal_count": 145,
+  "english_only_literal_ratio": 0.1595,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
     "RedTeam AX": 1,
-    "ToolActionCard": 9,
+    "ToolActionCard": 11,
     "HITL": 10,
     "Evidence Card": 7,
     "Claim-Evidence Matrix": 5,
@@ -24,13 +24,13 @@
     "OWASP ZAP": 2,
     "Sanitizer": 2,
     "RBAC": 5,
-    "API": 6,
+    "API": 7,
     "ROE": 6
   },
   "beginner_signal_terms": {
     "쉬운 설명": 1,
     "먼저": 8,
-    "사람": 12,
+    "사람": 14,
     "승인": 82,
     "수동": 5,
     "업로드": 17,
@@ -120,8 +120,8 @@
     "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
     "npm.cmd --version",
     "8px 10px",
-    "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-    "8px 10px"
+    "minmax(180px, .8fr) minmax(240px, 1.2fr)",
+    "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
   ],
   "policy": {
     "max_english_only_literal_ratio": 0.35,

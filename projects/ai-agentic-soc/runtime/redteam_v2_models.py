@@ -2495,6 +2495,142 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
     return run_record
 
 
+def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("executed_by") or "").strip()
+    chain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("tools") or payload.get("steps") or [], now_utc()]))
+    raw_steps = payload.get("tools") or payload.get("steps") or []
+    errors: list[str] = []
+    warnings: list[str] = []
+    steps: list[dict[str, Any]] = []
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not isinstance(raw_steps, list) or len(raw_steps) < 2:
+        errors.append("at_least_two_tool_steps_required_for_composite_execution")
+    if isinstance(raw_steps, list) and len(raw_steps) > 6:
+        errors.append("too_many_tool_steps_requested")
+
+    if not errors:
+        for index, raw_step in enumerate(raw_steps):
+            step = raw_step if isinstance(raw_step, dict) else {}
+            tool_id = str(step.get("tool_id") or "").strip()
+            profile = analysis_tool_profile(tool_id)
+            action_id = str(step.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id]))
+            execution_mode = str(step.get("execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip()
+            step_record: dict[str, Any] = {
+                "index": index,
+                "tool_id": tool_id,
+                "tool_name": (profile or {}).get("name"),
+                "action_id": action_id,
+                "execution_mode": execution_mode,
+                "status": "pending",
+                "errors": [],
+                "plan": None,
+                "run": None,
+            }
+            if profile is None:
+                step_record["status"] = "invalid"
+                step_record["errors"].append("tool_profile_not_registered")
+                steps.append(step_record)
+                continue
+
+            action = load_tool_action(action_id, case_id)
+            if action is None:
+                action = plan_tool_action({
+                    "case_id": case_id,
+                    "action_id": action_id,
+                    "title": step.get("title") or f"{chain_id} · {profile.get('display_name') or tool_id}",
+                    "objective": step.get("objective") or payload.get("objective") or "Composite RedTeam AX analyzer execution",
+                    "tool_id": tool_id,
+                    "requested_by": requested_by,
+                    "target_scope_refs": step.get("target_scope_refs") or payload.get("target_scope_refs") or [],
+                    "environment": step.get("environment") or payload.get("environment") or "approved_scope",
+                    "inputs": step.get("inputs") or {},
+                })
+            plan = build_tool_execution_plan(action_id, {
+                "case_id": case_id,
+                "tool_id": tool_id,
+                "execution_mode": execution_mode,
+                "requested_by": requested_by,
+                "target_scope_refs": step.get("target_scope_refs") or payload.get("target_scope_refs") or [],
+                "environment": step.get("environment") or payload.get("environment") or "approved_scope",
+                "runner_backend": step.get("runner_backend") or payload.get("runner_backend"),
+                "max_runtime_seconds": step.get("max_runtime_seconds") or payload.get("max_runtime_seconds"),
+                "max_output_bytes": step.get("max_output_bytes") or payload.get("max_output_bytes"),
+                "network_allowlist": step.get("network_allowlist") or payload.get("network_allowlist"),
+            })
+            step_record["plan"] = {
+                "execution_plan_id": plan.get("execution_plan_id"),
+                "status": plan.get("status"),
+                "policy_decision": plan.get("policy_decision"),
+                "execution_token": plan.get("execution_token"),
+                "artifact_path": plan.get("artifact_path"),
+            }
+            runner_argv = normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
+            if runner_argv and plan.get("status") == "PlanReady":
+                run = governed_tool_execution(action_id, {
+                    "case_id": case_id,
+                    "tool_id": tool_id,
+                    "execution_mode": execution_mode,
+                    "requested_by": requested_by,
+                    "target_scope_refs": step.get("target_scope_refs") or payload.get("target_scope_refs") or [],
+                    "environment": step.get("environment") or payload.get("environment") or "approved_scope",
+                    "execution_plan_id": plan.get("execution_plan_id"),
+                    "execution_token_id": (plan.get("execution_token") or {}).get("token_id"),
+                    "runner_argv": runner_argv,
+                    "max_runtime_seconds": step.get("max_runtime_seconds") or payload.get("max_runtime_seconds"),
+                    "max_output_bytes": step.get("max_output_bytes") or payload.get("max_output_bytes"),
+                    "container_dry_run": step.get("container_dry_run") or payload.get("container_dry_run"),
+                    "container_mock_stdout": step.get("container_mock_stdout"),
+                    "container_mock_stderr": step.get("container_mock_stderr"),
+                    "output_summary": step.get("output_summary") or f"{profile.get('display_name') or tool_id} composite runner output.",
+                })
+                step_record["run"] = {
+                    "run_id": run.get("run_id"),
+                    "status": run.get("status"),
+                    "policy_decision": run.get("policy_decision"),
+                    "runner_attempt": run.get("runner_attempt"),
+                    "raw_artifacts": run.get("raw_artifacts") or [],
+                    "artifact_path": run.get("artifact_path"),
+                    "analysis_agent_id": run.get("analysis_agent_id"),
+                    "normalizer_id": run.get("normalizer_id"),
+                }
+                step_record["status"] = "executed" if run.get("status") in {"RunnerExecuted", "ContainerLaunchPrepared"} else "run_recorded"
+                if run.get("errors"):
+                    step_record["errors"].extend(run.get("errors") or [])
+            elif runner_argv:
+                step_record["status"] = "blocked"
+                step_record["errors"].append("execution_plan_not_ready_for_runner")
+                warnings.append(f"{tool_id}:execution_plan_not_ready_for_runner")
+            else:
+                step_record["status"] = "planned"
+            steps.append(step_record)
+
+    executed_count = sum(1 for step in steps if step.get("status") == "executed")
+    blocked_count = sum(1 for step in steps if step.get("status") in {"blocked", "invalid"} or step.get("errors"))
+    record = {
+        "kind": "redteam_ax_v2_governed_toolchain_execution",
+        "toolchain_id": chain_id,
+        "case_id": case_id,
+        "requested_by": requested_by,
+        "status": "invalid" if errors else ("completed_with_blocks" if blocked_count else ("executed" if executed_count else "planned")),
+        "errors": errors,
+        "warnings": warnings,
+        "tool_count": len(raw_steps) if isinstance(raw_steps, list) else 0,
+        "executed_count": executed_count,
+        "blocked_count": blocked_count,
+        "commands_executed_by_api": executed_count > 0,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "steps": steps,
+        "policy": "Composite execution reuses ToolActionCard, ExecutionPlan, execution token, wrapper pinning, and runner allowlist gates per tool.",
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(record, "toolchain-runs", chain_id)
+    return record
+
+
 def _coerce_json(value: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value

@@ -1,0 +1,1 @@
+trivy synthetic installed version output

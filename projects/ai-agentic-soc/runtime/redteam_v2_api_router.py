@@ -241,6 +241,11 @@ def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str
     return redteam_v2_models.governed_tool_execution(action_id, payload)
 
 
+@router.post("/toolchains/execute-governed")
+def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.governed_toolchain_execution(payload)
+
+
 @router.post("/tool-runs/{run_id}/import-output")
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_output(run_id, payload)

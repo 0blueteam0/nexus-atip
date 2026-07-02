@@ -1,0 +1,163 @@
+{
+  "kind": "redteam_ax_v2_tool_execution_plan",
+  "execution_plan_id": "TEP-0566F219B78F",
+  "case_id": "CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001",
+  "action_id": "TAC-C4152235CA8D",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "execution_mode": "sandbox_execute",
+  "runner": "sandbox",
+  "wrapper_manifest": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "tool_name": "npm audit",
+    "availability": {
+      "status": "available",
+      "command_name": "npm.cmd",
+      "resolved_path": "npm.cmd"
+    },
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "actual_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "expected_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "expected_sha256_source": "test_approved_pin"
+  },
+  "wrapper_preflight": {
+    "runner_can_use_wrapper": true,
+    "blocking_controls": [],
+    "human_review_required": false
+  },
+  "status": "PlanReady",
+  "errors": [],
+  "warnings": [],
+  "requires_approval": false,
+  "approvals_required": [],
+  "policy_decision": {
+    "decision": "allow_plan",
+    "risk_class": "T0",
+    "safe_by_default": true,
+    "high_risk_direct_execution": false,
+    "runner_preflight_blocked": false,
+    "runner_isolation_blocked": false
+  },
+  "environment_constraints": {
+    "network_policy": {
+      "mode": "deny",
+      "default": "deny",
+      "allowlist": [],
+      "egress_allowed": false
+    },
+    "filesystem_policy": {
+      "mode": "workspace_only",
+      "workspace_root": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "allowed_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001"
+      ],
+      "write_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001"
+      ]
+    },
+    "isolation_readiness": {
+      "kind": "redteam_ax_v2_runner_isolation_readiness",
+      "requested_backend": "local_subprocess_shim",
+      "status": "shim_ready",
+      "commands_executed_by_api": false,
+      "runner_token_blocked": false,
+      "blocking_controls": [],
+      "required_controls": [
+        "container_runtime_attested",
+        "image_digest_pinned",
+        "network_deny_or_allowlist_enforced",
+        "workspace_read_only_mount",
+        "case_write_mount_only",
+        "no_host_secret_mounts",
+        "process_timeout_enforced",
+        "stdout_stderr_artifact_capture",
+        "ephemeral_cleanup_attested"
+      ],
+      "container_policy": {
+        "ephemeral": true,
+        "runtime": "docker",
+        "image_digest": null,
+        "network_default": "deny",
+        "network_allowlist_required_for_egress": true,
+        "workspace_mount": "read_only",
+        "case_artifact_mount": "write_only",
+        "host_secret_mounts_allowed": false,
+        "shell_expansion_allowed": false,
+        "privileged_container_allowed": false,
+        "resource_limits": {
+          "cpus": "1",
+          "memory": "512m",
+          "pids_limit": 128
+        }
+      },
+      "local_shim_policy": {
+        "allowed_for": [
+          "dry_run",
+          "sandbox_execute"
+        ],
+        "safe_by_default": true,
+        "note": "Local subprocess shim is a transitional dry-run backend; ephemeral container remains required before live scanner execution is considered complete."
+      },
+      "operator_actions": [
+        "enable_dedicated_container_runner",
+        "pin_runner_image_digest",
+        "attest_network_deny_or_allowlist",
+        "attest_read_only_workspace_and_case_write_mounts",
+        "attest_ephemeral_cleanup",
+        "rerun_execution_plan_with_runner_backend_ephemeral_container"
+      ],
+      "evidence_pipeline": {
+        "raw_stdout_stderr": "Evidence Card raw_artifact only",
+        "trusted_as_instruction": false,
+        "normalization_required": true,
+        "claim_evidence_matrix_required": true
+      }
+    },
+    "max_runtime_seconds": 120,
+    "max_output_bytes": 5242880,
+    "process_policy": {
+      "child_process_allowlist": [
+        "npm.cmd"
+      ],
+      "shell_expansion_allowed": false
+    },
+    "secret_policy": {
+      "mask_environment": true,
+      "mask_logs": true
+    }
+  },
+  "execution_token": {
+    "token_id": "EXT-422726ED1745",
+    "status": "issued",
+    "action_id": "TAC-C4152235CA8D",
+    "allowed_tool_id": "TOOL-NPM-AUDIT-001",
+    "allowed_environment": "approved_scope",
+    "allowed_scope_refs": [],
+    "expires_at": "",
+    "max_runtime_seconds": 120,
+    "max_targets": 1,
+    "network_policy": "deny",
+    "revoked": false
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command_name": "npm.cmd",
+    "resolved_path": "npm.cmd"
+  },
+  "audit": {
+    "requested_by": "analyst@example.com",
+    "created_at": "2026-07-02T04:37:48Z",
+    "command_abstraction_only": true,
+    "runner_will_execute": false
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOLCHAIN-LOCAL-RUNNER-001/tool-execution-plans/TEP-0566F219B78F.json"
+}
