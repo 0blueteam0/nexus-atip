@@ -3913,7 +3913,16 @@ export default {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
-      this.setState(s => ({ redteam2ToolchainReportDraftState:{ ...(s.redteam2ToolchainReportDraftState || {}), status:data.status || 'report_draft_generated', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      const generatedReport = data.report || {};
+      this.setState(s => ({
+        redteam2ToolchainReportDraftState:{ ...(s.redteam2ToolchainReportDraftState || {}), status:data.status || 'report_draft_generated', result:data, error:null, checkedAt:new Date().toISOString() },
+        redteam2ReportExportState:data.report_generated && generatedReport.report_id
+          ? { ...(s.redteam2ReportExportState || {}), status:'ready', report:generatedReport, collectionReportDraft:data, checkedAt:new Date().toISOString(), error:null }
+          : (s.redteam2ReportExportState || {}),
+        redteam2ReportExportDraft:data.report_generated && generatedReport.report_id
+          ? { ...this.redTeam2ReportExportDraft(), caseId:generatedReport.case_id || caseId, title:generatedReport.title || '복합 도구 결과 기반 Korean Red Team Report v2 draft' }
+          : this.redTeam2ReportExportDraft(),
+      }));
       this.toast(data.report_generated ? 'Report v2 draft 생성 완료' : 'Report v2 draft 차단됨', data.report_generated ? 'success' : 'warn');
       this.logAudit('현재 분석가', `레드팀 분석2 collection Report v2 draft: ${data.collection_id} · ${data.status}`);
     } catch (err) {
@@ -5545,6 +5554,7 @@ export default {
             ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', C.blue, '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
             ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', C.blue, '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
             ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', C.blue, 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
+            ['복합 Collection 최종 export 게이트', '/api/redteam/v2/reports/{report_id}/approve-export → /api/redteam/v2/reports/{report_id}/export', C.amber, 'collection Report v2 draft의 report_id를 최종 게이트 패널에 연결하고 Executive Sponsor 승인 뒤에만 내보냅니다'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
@@ -5592,6 +5602,8 @@ export default {
               '복합 Collection Matrix 초안 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft 입니다. 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며, held row는 보고서 입력에서 제외합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               '복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고, 최종 export 승인은 별도로 남깁니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '복합 Collection 최종 export 게이트는 /api/redteam/v2/reports/{report_id}/approve-export 승인 뒤 /api/redteam/v2/reports/{report_id}/export 로 내보냅니다. collection Report v2 draft의 report_id가 자동으로 최종 게이트 패널에 연결됩니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Claim-Evidence Matrix 초안 API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft 입니다. 승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함하고, held row는 Evidence/Finding 승인 전 보류합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
@@ -5645,6 +5657,7 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. red_team_lead와 business_owner가 같은 severity를 승인해야 Finding이 approved가 되며, 보고서 생성은 Matrix gate 이후에만 진행합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection Matrix 초안 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft 입니다. 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며 held row는 보고서 입력에서 제외합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 최종 export 게이트는 Report v2 draft의 report_id를 최종 게이트 패널에 자동 연결한 뒤 Executive Sponsor 승인을 받은 경우에만 내보내기를 허용합니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
                 h('textarea', {
@@ -5837,6 +5850,8 @@ export default {
         ].map(card))),
       smallPanel('Report v2 최종 게이트 / 내보내기',
         h('div', { style:{ display:'grid', gap:'10px' } },
+          reportState.collectionReportDraft?.collection_id ? h('div', { style:{ fontSize:'10.5px', color:C.green, lineHeight:1.5 } },
+            `복합 collection Report v2 draft가 최종 게이트에 연결됨: ${reportState.collectionReportDraft.collection_id} · ${reportState.report?.report_id || '-'}`) : null,
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '케이스 ID',
               h('input', { value:reportDraft.caseId, onChange:e=>this.updateRedTeam2ReportExportDraft({ caseId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),

@@ -868,3 +868,11 @@ Create Case
 - RedTeam2 UI는 `Matrix 초안 생성`과 `Report v2 draft 생성` 버튼, Matrix row 표, Report gate/export 승인 필요 표를 제공한다.
 - regression test는 복합 npm audit + Trivy collection에서 Evidence 승인, Finding 생성, severity 2인 승인, Matrix ready, Report v2 draft generated까지 이어지는 controlled lane을 검증한다.
 - 이 slice는 collection approved Findings를 Report v2 draft까지 연결하지만, 실제 운영 collection 전체의 최종 export approval과 export 검증은 후속 단계로 남긴다.
+
+## 40. Slice 85 반영 사항
+
+- collection Report v2 draft가 생성되면 RedTeam2 UI는 생성된 `report_id`를 `redteam2ReportExportState.report`에 연결해 기존 `내보내기 승인`과 `보고서 내보내기` 버튼이 같은 report를 대상으로 동작하게 한다.
+- UI는 `복합 Collection 최종 export 게이트`와 `/api/redteam/v2/reports/{report_id}/approve-export -> /api/redteam/v2/reports/{report_id}/export` 흐름을 한국어로 표시한다.
+- regression test는 복합 npm audit + Trivy collection을 Evidence 승인, Finding 생성, severity 2인 승인, Matrix ready, Report v2 draft generated, Executive Sponsor export approval, export artifact 생성까지 검증한다.
+- export approval은 기존 report gate snapshot을 재검사하며 `gate_status=pass`, unsupported claim 0건, evidence 없는 Finding 0건, export errors 0건을 요구한다.
+- 이 slice는 테스트된 collection path의 final export approval/export verification lane을 닫지만, 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 출력에 대한 live collection/export 완료는 후속 운영 증거가 필요하다.

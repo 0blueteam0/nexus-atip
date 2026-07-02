@@ -1523,6 +1523,40 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(report_body["trusted_as_instruction"])
         self.assertFalse(report_body["report"].get("errors"))
 
+        export_approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report']['report_id']}/approve-export",
+            headers=self.session_headers("executive-sponsor@example.com"),
+            json={
+                "case_id": case_id,
+                "approved_by": "executive-sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
+        self.assertEqual(export_approval.status_code, 200)
+        export_approval_body = export_approval.json()
+        self.assertEqual(export_approval_body["kind"], "redteam_ax_v2_report_export_approval")
+        self.assertEqual(export_approval_body["status"], "ExportApproved")
+        self.assertEqual(export_approval_body["gate_snapshot"]["gate_status"], "pass")
+        self.assertEqual(export_approval_body["gate_snapshot"]["unsupported_claim_count"], 0)
+        self.assertEqual(export_approval_body["gate_snapshot"]["finding_without_evidence_count"], 0)
+
+        exported = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report']['report_id']}/export",
+            json={
+                "case_id": case_id,
+                "approval_id": export_approval_body["approval_id"],
+            },
+        )
+        self.assertEqual(exported.status_code, 200)
+        exported_body = exported.json()
+        self.assertEqual(exported_body["kind"], "redteam_ax_v2_report_export")
+        self.assertEqual(exported_body["status"], "Exported")
+        self.assertEqual(exported_body["report_id"], report_body["report"]["report_id"])
+        self.assertEqual(exported_body["approval_id"], export_approval_body["approval_id"])
+        self.assertEqual(exported_body["gate_snapshot"]["gate_status"], "pass")
+        self.assertFalse(exported_body["errors"])
+        self.assertTrue(Path(exported_body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

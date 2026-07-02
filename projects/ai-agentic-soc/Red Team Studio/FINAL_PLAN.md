@@ -1523,4 +1523,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 collection Evidence 승인 -> Finding 생성 -> severity 2인 승인 -> Matrix ready -> Report v2 draft generated 경로를 검증
 - [x] RedTeam2 UI에 `Matrix 초안 생성`, `Report v2 draft 생성` 버튼과 결과 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 collection Matrix/report bridge anchor 추가
+- [x] 테스트된 collection Report v2 draft를 final export approval/export verification lane으로 연결 - slice 85 완료
 - [ ] 실제 운영 collection 전체의 final export approval과 export 검증 완료
+
+## 93. Slice 85 복합 Collection Report 최종 Export Gate 체크리스트
+
+- [x] collection Report v2 draft 생성 결과의 `report_id`를 RedTeam2 최종 게이트 state에 자동 연결
+- [x] UI에 `복합 Collection 최종 export 게이트`와 approve-export/export API 흐름을 한국어로 표시
+- [x] regression test가 collection Report v2 draft 이후 `/api/redteam/v2/reports/{report_id}/approve-export`를 Executive Sponsor actor context로 승인
+- [x] regression test가 승인 ID로 `/api/redteam/v2/reports/{report_id}/export`를 호출해 `Exported`와 export artifact 존재를 검증
+- [x] gate snapshot에서 `gate_status=pass`, unsupported claim 0건, evidence 없는 Finding 0건, export errors 0건을 확인
+- [ ] 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 collection 결과를 같은 최종 export lane으로 통과

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 25,
+    "proved": 26,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -429,19 +429,35 @@
       ],
       "proof_summary": "The /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft API builds collection-specific Claim-Evidence Matrix rows from approved Evidence and two-person approved Findings only, excluding held rows from report validation payloads. The /matrix-draft/report-draft API generates Korean Report v2 drafts only when Matrix rows are ready and report validation passes, while preserving commands_executed_by_api=false, active_scan_executed=false, report_claim_inserted=false, and requires_final_export_approval=true. Regression coverage exercises npm audit + Trivy collection through Evidence approval, Finding promotion, severity approval, Matrix ready, and Report v2 draft generation. RedTeam2 UI exposes Korean Matrix and Report draft controls.",
       "residual_gap": "This proves controlled Report v2 draft generation for tested collection outputs, not final export approval or live operating collection completion across all real scanner outputs.",
-      "next_action": "Add final export approval and export verification for collection Report v2 drafts, then run against real operating collection outputs."
+      "next_action": "Run the collection Report v2 draft through the existing final export approval/export gate, then repeat with real operating collection outputs."
+    },
+    {
+      "id": "RTA-COMP-027",
+      "requirement": "Collection Report v2 drafts must be connectable to the final export approval and export verification gate without bypassing report validation.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "Regression coverage now drives a toolchain collection through Evidence approval, Finding promotion, two-person severity approval, Matrix ready, Report v2 draft generation, Executive Sponsor export approval, and report export artifact creation. The export approval uses the existing report gate snapshot and asserts gate_status=pass, unsupported_claim_count=0, finding_without_evidence_count=0, and no export errors. RedTeam2 UI maps a generated collection Report v2 draft into the final Report export state so the same approve-export and export buttons operate on the collection report_id.",
+      "residual_gap": "This proves final export approval/export verification for the tested npm audit + Trivy collection path, not that all real operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs have completed the full lane.",
+      "next_action": "Run the same collection Matrix/report/export lane against real governed operating scanner outputs after runtime/service readiness blockers are cleared."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
     "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion.",
-    "Actual operating toolchain collection Evidence candidates must be batch-approved, promoted, severity-approved, passed through Matrix/report draft gates, then completed through final export approval and export verification."
+    "Actual operating toolchain collection Evidence candidates must be batch-approved, promoted, severity-approved, passed through Matrix/report draft gates, then completed through final export approval and export verification across real scanner outputs."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
     "Run /api/redteam/v2/toolchains/{toolchain_id}/collect-results against real governed scanner outputs and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates.",
-    "Add final export approval and export verification for collection Report v2 drafts, then run the whole lane against real approved toolchain collection Findings."
+    "Repeat the now-tested collection final export approval/export verification lane against real approved toolchain collection Findings."
   ]
 }

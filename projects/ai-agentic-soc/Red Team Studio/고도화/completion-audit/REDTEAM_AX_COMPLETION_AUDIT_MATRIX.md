@@ -54,6 +54,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 승인된 toolchain result collection Evidence만 `pending_review` Finding 초안으로 승격하고 승인 전 Evidence는 차단하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API와 한국어 UI
 - collection에서 생성된 Finding 초안을 red_team_lead와 business_owner 2인 severity 승인으로 `approved` 상태까지 이동시키되 Matrix/report Claim 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API와 한국어 UI
 - collection approved Finding을 Claim-Evidence Matrix ready row와 Korean Report v2 draft로 연결하되 final export approval은 별도 gate로 유지하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft` 및 `/matrix-draft/report-draft` API와 한국어 UI
+- collection Report v2 draft의 `report_id`를 기존 `/api/redteam/v2/reports/{report_id}/approve-export` 및 `/export` 게이트로 연결하고, Executive Sponsor 승인과 gate snapshot pass 뒤 export artifact 생성을 검증하는 regression test와 한국어 UI 연결 상태 표시
 - 설치된 `npm.cmd --version`의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 공식 release checksum으로 검증한 portable Nuclei v3.10.0 및 Trivy v0.72.0 CLI의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 격리 venv 기반 OpenVAS `gvm-cli` 및 OWASP ZAP `zap-cli` wrapper의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
@@ -85,9 +86,9 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - tool result analysis brief의 Claim-Evidence 후보를 실제 Finding/Report claim으로 승인 연결한 증거
 - 모든 real finding/claim review 후보를 실제 운영 Evidence 승인 후 Finding으로 승격하고, 2인 severity 승인과 Report claim validation까지 통과시킨 증거
 - 모든 real finding/claim review 후보의 Matrix draft가 ready가 되고 최종 Korean Red Team Report v2에 반영된 증거
-- 모든 real Matrix row가 ready인 상태에서 Report v2 draft 생성, 최종 export 승인, export 검증까지 완료한 증거
+- 모든 real Matrix row가 ready인 상태에서 Report v2 draft 생성, 최종 export 승인, export 검증까지 완료한 운영 실측 증거
 - 실제 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 운영 결과 전체를 복합 결과 회수 API로 회수하고, Evidence 승인·Finding 승격·Claim-Evidence Matrix까지 닫은 증거
-- 실제 운영 toolchain collection Evidence 후보 전체를 batch 승인, promote-findings, approve-finding-severity, Matrix/report draft API로 처리하고, 이후 final export approval/export verification gate까지 닫은 증거
+- 실제 운영 toolchain collection Evidence 후보 전체를 batch 승인, promote-findings, approve-finding-severity, Matrix/report draft API로 처리하고, 이후 final export approval/export verification gate까지 닫은 운영 실측 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness/import blocker artifact만 존재한다.
 - RedTeam2 runtime readiness panel은 blocker를 보여주는 visibility 증거이며, blocker가 모두 ready로 바뀐 운영 실측 증거는 아직 아니다.
 
