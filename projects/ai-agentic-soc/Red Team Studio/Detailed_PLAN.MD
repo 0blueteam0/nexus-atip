@@ -785,3 +785,13 @@ Create Case
 - RedTeam2 runtime readiness panel은 `Finding/Claim 검토 패키지`와 `보류된 Finding/Claim 후보`를 한국어로 표시한다.
 - accepted gate manifest에는 `GATE-TOOL-RESULT-FINDING-CLAIM-REVIEW`가 추가된다.
 - 이 slice는 Evidence/Claim/Finding 승격 전 검토 lane이며, 실제 Finding 생성·severity 승인·보고서 claim 사용은 후속 HITL 단계로 남긴다.
+
+## 32. Slice 77 반영 사항
+
+- `/api/redteam/v2/tool-result-finding-claim-review`는 최신 Finding/Claim 검토 패키지를 read-only로 반환한다.
+- `/api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding`는 선택한 후보를 기존 Finding 생성 정책에 연결한다.
+- Evidence Card가 승인되지 않았거나 backend Evidence store에서 검증되지 않은 후보는 `blocked`로 반환하며 `finding_created=false`, `report_claim_inserted=false`, `commands_executed_by_api=false`를 유지한다.
+- 같은 Evidence ID가 backend Evidence store에서 승인되어 있으면 promotion API는 기존 `/api/redteam/v2/findings` 생성 함수를 호출해 `pending_review` Finding 초안을 만든다.
+- 생성된 Finding은 여전히 severity 2인 승인이 필요하며, Claim-Evidence Matrix와 보고서 Claim 삽입은 별도 검증 전까지 금지된다.
+- RedTeam2 runtime readiness panel은 `Finding 초안 생성 API`와 promote-finding 조건을 표시해 초급 운영자가 다음 버튼이 왜 막혔는지 알 수 있게 한다.
+- 이 slice는 후보와 Finding API 사이의 안전한 연결이며, 실제 운영 후보 전체 승격과 최종 보고서 통과는 후속 HITL 작업으로 남긴다.

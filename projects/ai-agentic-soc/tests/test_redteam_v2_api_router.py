@@ -150,6 +150,67 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(owner_body["finding"]["severity_final"], severity)
         return owner_body["finding"]
 
+    def test_tool_result_finding_claim_review_endpoint_lists_candidates(self) -> None:
+        response = self.client.get("/api/redteam/v2/tool-result-finding-claim-review")
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_tool_result_finding_claim_review")
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["finding_created"])
+        self.assertFalse(body["report_claim_inserted"])
+        self.assertTrue(body["requires_human_validation"])
+        self.assertIn("artifact_path", body)
+        self.assertIsInstance(body["candidates"], list)
+
+    def test_tool_result_candidate_promotion_blocks_unapproved_evidence(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        response = self.client.post(
+            f"/api/redteam/v2/tool-result-finding-claim-review/{candidate['candidate_id']}/promote-finding",
+            json={
+                "case_id": "CASE-V2-PROMOTION-BLOCKED-001",
+                "requested_by": "analyst@example.com",
+                "allow_unapproved_draft": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "blocked")
+        self.assertFalse(body["finding_created"])
+        self.assertFalse(body["report_claim_inserted"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertIn("candidate_evidence_not_approved", body["errors"])
+        self.assertIn("force_flags_ignored_until_evidence_approved", body["warnings"])
+
+    def test_tool_result_candidate_promotion_creates_finding_after_evidence_approval(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        evidence_id = candidate["finding_payload"]["evidence_ids"][0]
+        case_id = "CASE-V2-PROMOTION-APPROVED-001"
+        self.create_approved_evidence(case_id, evidence_id)
+
+        response = self.client.post(
+            f"/api/redteam/v2/tool-result-finding-claim-review/{candidate['candidate_id']}/promote-finding",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertIn(body["status"], {"finding_created", "finding_created_pending_review_with_errors"})
+        self.assertTrue(body["finding_created"])
+        self.assertFalse(body["report_claim_inserted"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertEqual(body["finding"]["case_id"], case_id)
+        self.assertEqual(body["finding"]["status"], "pending_review")
+        self.assertEqual(body["finding"]["approval_status"], "pending")
+        self.assertEqual(body["finding"]["evidence_ids"], [evidence_id])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def create_offline_tool_run(self, case_id: str, action_id: str, tool_id: str) -> dict:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
             "case_id": case_id,

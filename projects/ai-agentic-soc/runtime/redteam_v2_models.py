@@ -29,6 +29,13 @@ DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
+TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH = (
+    PROJECT_ROOT
+    / "archive"
+    / "runs"
+    / "redteam-ax-v2-tool-result-analysis"
+    / "latest_tool_result_finding_claim_review.json"
+)
 TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
 TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
 TOOL_CREDENTIAL_VAULT_APPROVER_ROLES = {"red_team_lead", "control_team"}
@@ -5213,6 +5220,130 @@ def agentic_rag_sca_query(case_id: str, payload: dict[str, Any]) -> dict[str, An
 def normalize_severity(value: Any) -> str:
     severity = str(value or "medium").strip().lower()
     return severity if severity in FINDING_SEVERITIES else "medium"
+
+
+def latest_tool_result_finding_claim_review() -> dict[str, Any]:
+    data = read_json_artifact(TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH)
+    if data is None:
+        return {
+            "kind": "redteam_ax_tool_result_finding_claim_review",
+            "status": "missing",
+            "artifact_path": TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH.as_posix(),
+            "safe_by_default": True,
+            "commands_executed_by_api": False,
+            "finding_created": False,
+            "report_claim_inserted": False,
+            "requires_human_validation": True,
+            "candidate_count": 0,
+            "held_candidate_count": 0,
+            "ready_candidate_count": 0,
+            "candidates": [],
+            "errors": ["tool_result_finding_claim_review_artifact_missing"],
+        }
+    return {**data, "artifact_path": TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH.as_posix()}
+
+
+def tool_result_finding_candidate(candidate_id: str, package: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    review = package or latest_tool_result_finding_claim_review()
+    for candidate in review.get("candidates") or []:
+        if str(candidate.get("candidate_id") or "").strip() == candidate_id:
+            return candidate
+    return None
+
+
+def promote_tool_result_candidate_to_finding(candidate_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    review = latest_tool_result_finding_claim_review()
+    candidate = tool_result_finding_candidate(candidate_id, review)
+    case_id_override = str(payload.get("case_id") or "").strip()
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if candidate is None:
+        errors.append("tool_result_finding_candidate_not_found")
+    if not requested_by:
+        errors.append("requested_by_required")
+
+    candidate_status = str((candidate or {}).get("status") or "missing")
+    evidence_review = (candidate or {}).get("evidence_review") if isinstance((candidate or {}).get("evidence_review"), dict) else {}
+    finding_payload = dict((candidate or {}).get("finding_payload") or {})
+    if case_id_override:
+        finding_payload["case_id"] = case_id_override
+
+    evidence_ids = [str(item).strip() for item in (finding_payload.get("evidence_ids") or []) if str(item).strip()]
+    evidence_issues = evidence_approval_issues(str(finding_payload.get("case_id") or "CASE-UNSPECIFIED"), evidence_ids)
+    evidence_store_approved = bool(evidence_ids) and not evidence_issues
+    candidate_ready = candidate_status == "ready_for_finding_review" or evidence_store_approved
+    if candidate is not None and candidate_status != "ready_for_finding_review":
+        warnings.append(f"candidate_status_from_package:{candidate_status}")
+    if candidate is not None and not evidence_review.get("approved") and evidence_store_approved:
+        warnings.append("candidate_package_evidence_review_stale_but_store_approved")
+    if candidate is not None and not candidate_ready:
+        errors.append(f"candidate_status_not_ready:{candidate_status}")
+    if candidate is not None and not evidence_review.get("approved") and not evidence_store_approved:
+        errors.append("candidate_evidence_not_approved")
+    if evidence_issues:
+        errors.extend(f"evidence:{issue['type']}:{issue['id']}" for issue in evidence_issues)
+    if payload.get("force") or payload.get("allow_unapproved_draft"):
+        warnings.append("force_flags_ignored_until_evidence_approved")
+
+    promotion_id = stable_id("TFPROMO", [candidate_id, requested_by, case_id_override, now_utc()])
+    if errors:
+        result = {
+            "kind": "redteam_ax_v2_tool_result_candidate_promotion",
+            "promotion_id": promotion_id,
+            "candidate_id": candidate_id,
+            "case_id": finding_payload.get("case_id") or case_id_override or "CASE-UNSPECIFIED",
+            "status": "blocked",
+            "finding_created": False,
+            "report_claim_inserted": False,
+            "safe_by_default": True,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "candidate_status": candidate_status,
+            "candidate": candidate,
+            "evidence_issues": evidence_issues,
+            "warnings": warnings,
+            "errors": errors,
+            "next_human_actions_ko": [
+                "Evidence Card를 승인한 뒤 다시 시도합니다.",
+                "원본 도구 출력과 정규화 결과를 비교합니다.",
+                "Finding 생성 후 severity 2인 승인을 완료해야 보고서에 사용할 수 있습니다.",
+            ],
+        }
+        return append_artifact_metadata(result, "finding-candidate-promotions", promotion_id)
+
+    finding = create_finding(finding_payload)
+    if finding.get("errors"):
+        errors.extend(str(error) for error in finding.get("errors") or [])
+    result = {
+        "kind": "redteam_ax_v2_tool_result_candidate_promotion",
+        "promotion_id": promotion_id,
+        "candidate_id": candidate_id,
+        "case_id": finding.get("case_id") or finding_payload.get("case_id") or "CASE-UNSPECIFIED",
+        "status": "finding_created" if not errors else "finding_created_pending_review_with_errors",
+        "finding_created": True,
+        "report_claim_inserted": False,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "candidate_status": candidate_status,
+        "candidate": candidate,
+        "finding": finding,
+        "claim_candidate": candidate.get("claim_candidate") if candidate else None,
+        "evidence_issues": evidence_issues,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "생성된 Finding의 severity를 red_team_lead와 business_owner가 각각 승인합니다.",
+            "Claim-Evidence Matrix에서 Claim 후보와 승인된 Evidence ID를 다시 검증합니다.",
+            "보고서 export 전 report gate가 0건 blocker인지 확인합니다.",
+        ],
+    }
+    return append_artifact_metadata(result, "finding-candidate-promotions", promotion_id)
 
 
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:

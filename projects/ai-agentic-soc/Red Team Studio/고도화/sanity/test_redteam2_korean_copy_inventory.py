@@ -59,6 +59,8 @@ REQUIRED_KOREAN_ANCHORS = [
     "LLM 분석 에이전트",
     "Finding/Claim 검토 패키지",
     "보류된 Finding/Claim 후보",
+    "Finding 초안 생성 API",
+    "Finding 초안 생성 API는 Evidence 승인 후에만 /api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding API로 사용할 수 있고",
     "운영자 조치 runbook 단계",
     "운영자 증거 수집 패키지",
     "운영자 제출 증거 검증",

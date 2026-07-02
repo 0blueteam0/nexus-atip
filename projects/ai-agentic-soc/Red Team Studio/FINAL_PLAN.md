@@ -1422,3 +1422,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 Finding/Claim 검토 anchor 추가
 - [x] accepted gate manifest에 `GATE-TOOL-RESULT-FINDING-CLAIM-REVIEW` 추가
 - [ ] Evidence Card 승인 후 실제 `/api/redteam/v2/findings` 생성, 2인 severity 승인, Report claim validation 통과
+
+## 85. Slice 77 Tool Result Candidate Promotion API 체크리스트
+
+- [x] `/api/redteam/v2/tool-result-finding-claim-review` 조회 API 추가
+- [x] `/api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding` promotion API 추가
+- [x] Evidence 승인 전 promotion은 `blocked`, `finding_created=false`, `report_claim_inserted=false`로 차단
+- [x] backend Evidence store에서 같은 Evidence ID가 승인된 경우에만 기존 `/api/redteam/v2/findings` 생성 정책을 호출
+- [x] force/allow_unapproved_draft 플래그는 Evidence 승인 전 무시하고 warning으로 기록
+- [x] 생성된 Finding은 `pending_review` 상태로 남고 severity 2인 승인 전 보고서 Claim 삽입은 계속 금지
+- [x] RedTeam2 패널에 `Finding 초안 생성 API`와 promote-finding 조건을 한국어로 표시
+- [x] API regression test, frontend runtime readiness contract, Korean copy inventory에 promotion 경로 추가
+- [ ] 실제 운영 Evidence Card 승인 후 모든 도구 후보를 Finding으로 승격하고 2인 severity 승인 및 Report claim validation 통과

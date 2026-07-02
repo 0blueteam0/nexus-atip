@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 17,
+    "proved": 18,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -302,6 +302,22 @@
       "proof_summary": "The review package reads the tool result analysis brief, creates Finding draft payloads and Claim candidates per Evidence-linked tool result, preserves finding_created=false and report_claim_inserted=false, and holds candidates until Evidence Card approval and two-person Finding severity approval are complete. RedTeam2 shows the package and held candidate count in Korean.",
       "residual_gap": "This proves pre-promotion packaging, not actual Finding creation, severity approval, or report claim insertion.",
       "next_action": "After Evidence Cards are approved, create Findings through /api/redteam/v2/findings, complete severity approvals, and regenerate the report gate with zero unsupported claim and evidence-less Finding counts."
+    },
+    {
+      "id": "RTA-COMP-019",
+      "requirement": "Tool result Finding/Claim review candidates must have a governed API path that blocks unapproved evidence and creates only pending-review Findings after Evidence Card approval.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The v2 API exposes the latest Finding/Claim review package and a per-candidate promote-finding endpoint. Promotion blocks when Evidence is not approved, ignores force flags, never inserts report claims, and only calls the existing create_finding path when backend Evidence store approval is present. API tests cover listing, blocked promotion, and approved-evidence pending-review Finding creation.",
+      "residual_gap": "This proves the governed promotion API path, not that all real operating candidates have approved Evidence Cards, two-person severity approvals, or final report claim validation.",
+      "next_action": "Use the promotion API after actual Evidence Card approval, then complete severity approvals and report validation for each real tool result candidate."
     }
   ],
   "remaining_gaps": [

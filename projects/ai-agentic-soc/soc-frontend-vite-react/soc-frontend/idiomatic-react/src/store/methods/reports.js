@@ -4825,6 +4825,7 @@ export default {
     const findingClaimDefaultRows = [
       ['Finding 후보 없음', '대기', '도구 결과 분석 브리프와 Evidence ID가 필요'],
       ['보고서 claim 삽입', '아니오', 'Evidence 승인과 Finding severity 승인 전에는 자동 삽입하지 않음'],
+      ['Finding 초안 생성 API', '승인 후 사용', '/api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding'],
       ['사람 검토', '필수', '오탐 가능성, 자산 영향도, 재현 근거를 검토해야 함'],
     ];
     const findingClaimRows = (findingClaimReview.candidates || []).map(item => [
@@ -4834,6 +4835,7 @@ export default {
         item.finding_payload?.finding_id ? `Finding: ${item.finding_payload.finding_id}` : null,
         item.claim_candidate?.claim_id ? `Claim: ${item.claim_candidate.claim_id}` : null,
         item.source_refs?.evidence_id ? `Evidence: ${item.source_refs.evidence_id}` : null,
+        item.candidate_id ? `승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/${item.candidate_id}/promote-finding` : null,
       ].filter(Boolean).join(' · '),
     ]);
     const toolGuideProfiles = {
@@ -5277,7 +5279,7 @@ export default {
           h('div', { style:{ display:'grid', gap:'6px' } },
             h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, 'Finding/Claim 검토 패키지'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
-              '도구 결과를 Finding 초안과 보고서 Claim 후보로 연결하기 전 사람이 검토할 목록입니다. Evidence 승인과 Finding severity 2인 승인 전에는 보고서에 자동 삽입하지 않습니다.'),
+              '도구 결과를 Finding 초안과 보고서 Claim 후보로 연결하기 전 사람이 검토할 목록입니다. Finding 초안 생성 API는 Evidence 승인 후에만 /api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding API로 사용할 수 있고, Finding severity 2인 승인 전에는 보고서에 자동 삽입하지 않습니다.'),
             this.renderTable(['후보','검토 상태','Finding/Claim/Evidence'], findingClaimRows.length ? findingClaimRows : findingClaimDefaultRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },

@@ -364,6 +364,16 @@ def query_case_agentic_rag(case_id: str, payload: dict[str, Any]) -> dict[str, A
     return redteam_v2_models.agentic_rag_sca_query(case_id, payload)
 
 
+@router.get("/tool-result-finding-claim-review")
+def latest_tool_result_finding_claim_review() -> dict[str, Any]:
+    return redteam_v2_models.latest_tool_result_finding_claim_review()
+
+
+@router.post("/tool-result-finding-claim-review/{candidate_id}/promote-finding")
+def promote_tool_result_candidate_to_finding(candidate_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.promote_tool_result_candidate_to_finding(candidate_id, payload)
+
+
 @router.post("/findings")
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.create_finding(payload)
