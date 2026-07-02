@@ -132,6 +132,55 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["errors"])
         return body
 
+    def create_container_stdout_tool_run(self, case_id: str, action_id: str, tool_id: str, raw_stdout: str) -> dict:
+        image_digest = "ghcr.io/redteam-ax/test-runner@sha256:" + ("d" * 64)
+        env = {
+            "REDTEAM_AX_CONTAINER_RUNNER_ENABLED": "1",
+            "REDTEAM_AX_CONTAINER_RUNTIME_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_NETWORK_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_MOUNT_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_CLEANUP_ATTESTED": "1",
+            "REDTEAM_AX_CONTAINER_RUNNER_DRY_RUN": "1",
+            "REDTEAM_AX_CONTAINER_IMAGE_DIGEST": image_digest,
+        }
+        with patch.dict(os.environ, env, clear=False):
+            planned = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+                "case_id": case_id,
+                "action_id": action_id,
+                "title": f"{tool_id} container stdout parser fixture",
+                "objective": "Normalize approved container stdout tool output fixture",
+                "tool_id": tool_id,
+                "requested_by": "analyst@example.com",
+            })
+            self.assertEqual(planned.status_code, 200)
+            plan = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execution-plan", json={
+                "case_id": case_id,
+                "tool_id": tool_id,
+                "execution_mode": "dry_run",
+                "runner_backend": "ephemeral_container",
+                "requested_by": "analyst@example.com",
+                "max_runtime_seconds": 20,
+            })
+            self.assertEqual(plan.status_code, 200)
+            plan_body = plan.json()
+            self.assertEqual(plan_body["status"], "PlanReady")
+            executed = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execute-governed", json={
+                "case_id": case_id,
+                "tool_id": tool_id,
+                "execution_mode": "dry_run",
+                "requested_by": "analyst@example.com",
+                "execution_plan_id": plan_body["execution_plan_id"],
+                "execution_token_id": plan_body["execution_token"]["token_id"],
+                "runner_argv": [str((plan_body.get("wrapper_manifest") or {}).get("command_name") or "scanner"), "--version"],
+                "container_dry_run": True,
+                "container_mock_stdout": raw_stdout,
+            })
+        self.assertEqual(executed.status_code, 200)
+        body = executed.json()
+        self.assertEqual(body["status"], "ContainerLaunchPrepared")
+        self.assertTrue(any(item.get("summary", "").endswith("stdout captured as untrusted tool output.") for item in body["raw_artifacts"]))
+        return body
+
     def test_v2_health_advertises_safe_tool_action_policy(self) -> None:
         response = self.client.get("/api/redteam/v2/health")
 
@@ -961,6 +1010,74 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(body["structured_items"][0][key], expected, tool_id)
             self.assertFalse(body["structured_items"][0]["trusted_as_instruction"], tool_id)
             self.assertTrue(body["structured_items"][0]["requires_human_validation"], tool_id)
+
+    def test_v2_container_stdout_parser_smoke_for_nuclei_zap_and_openvas(self) -> None:
+        cases = [
+            (
+                "TOOL-NUCLEI-001",
+                "TAC-CONTAINER-NUCLEI-STDOUT-001",
+                '{"template-id":"container-panel","matched-at":"https://app.example.test/admin","info":{"name":"Container Exposed Panel","severity":"medium","tags":["container"]}}',
+                "container_launch_plan+nuclei_jsonl",
+                "template_id",
+                "container-panel",
+            ),
+            (
+                "TOOL-ZAP-001",
+                "TAC-CONTAINER-ZAP-STDOUT-001",
+                json.dumps({
+                    "site": [{
+                        "@name": "https://app.example.test",
+                        "alerts": [{
+                            "pluginid": "10020",
+                            "name": "Missing Anti-clickjacking Header",
+                            "riskdesc": "Medium",
+                            "confidence": "Medium",
+                            "instances": [{"uri": "https://app.example.test/login"}],
+                        }],
+                    }],
+                }),
+                "container_launch_plan+zap_json",
+                "alert_id",
+                "10020",
+            ),
+            (
+                "TOOL-OPENVAS-001",
+                "TAC-CONTAINER-OPENVAS-STDOUT-001",
+                "<report><results><result><id>r-container</id><name>Container OpenVAS Finding</name><threat>High</threat><severity>7.5</severity><host>192.0.2.20</host><port>443/tcp</port><description>Sample container stdout description</description></result></results></report>",
+                "container_launch_plan+openvas_xml",
+                "result_id",
+                "r-container",
+            ),
+        ]
+        for tool_id, action_id, stdout, parser, key, expected in cases:
+            case_id = f"CASE-V2-{action_id}"
+            run = self.create_container_stdout_tool_run(case_id, action_id, tool_id, stdout)
+            normalized = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/agent-analyze", json={
+                "case_id": case_id,
+                "summary": f"{tool_id} container stdout normalized as governed evidence.",
+            })
+            self.assertEqual(normalized.status_code, 200, tool_id)
+            body = normalized.json()
+            self.assertEqual(body["status"], "Normalized", tool_id)
+            self.assertEqual(body["parser_report"]["parser"], parser, tool_id)
+            item_types = {item["item_type"] for item in body["structured_items"]}
+            self.assertIn("container_launch_evidence", item_types, tool_id)
+            self.assertIn("scanner_finding_candidate", item_types, tool_id)
+            scanner_item = next(item for item in body["structured_items"] if item["item_type"] == "scanner_finding_candidate" and item.get(key) == expected)
+            self.assertEqual(scanner_item[key], expected, tool_id)
+            self.assertFalse(scanner_item["trusted_as_instruction"])
+            self.assertTrue(scanner_item["requires_human_validation"])
+            evidence = self.client.post(f"/api/redteam/v2/tool-runs/{run['run_id']}/create-evidence", json={
+                "case_id": case_id,
+                "created_by": "analyst@example.com",
+                "summary": f"{tool_id} container stdout evidence candidate.",
+            })
+            self.assertEqual(evidence.status_code, 200, tool_id)
+            evidence_body = evidence.json()
+            self.assertEqual(evidence_body["kind"], "redteam_ax_v2_evidence_candidate", tool_id)
+            evidence_types = {entry.get("item_type") for entry in evidence_body["normalized_fields"]["structured_items"]}
+            self.assertIn("container_launch_evidence", evidence_types, tool_id)
+            self.assertIn("scanner_finding_candidate", evidence_types, tool_id)
 
     def test_v2_tool_run_file_import_requires_sha256_and_feeds_agent_parser(self) -> None:
         case_id = "CASE-V2-FILE-INGEST-NUCLEI-001"

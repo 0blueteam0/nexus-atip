@@ -1,7 +1,7 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 33 container stdout scanner result normalization E2E complete, full goal active  
-작성일: 2026-07-01  
+상태: implementation slice 34 Nuclei/ZAP/OpenVAS container stdout parser smoke complete, full goal active
+작성일: 2026-07-01
 정본 상세 설계: `Detailed_PLAN.MD`
 
 ## 1. 실행 목표
@@ -887,5 +887,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 모든 combined structured item은 `trusted_as_instruction=false`, `requires_human_validation=true`
 - [x] Evidence Card candidate가 combined normalized result를 보존
 - [x] API unittest가 ContainerLaunchPrepared -> stdout artifact -> agent-analyze -> Evidence Card E2E를 검증
+- [x] Nuclei/ZAP/OpenVAS container stdout dry-run parser smoke - slice 34 완료
 - [ ] 실제 Docker/Podman stdout/stderr artifact로 동일 E2E smoke
-- [ ] Nuclei/ZAP/OpenVAS container stdout/stderr parser smoke
+- [ ] Nuclei/ZAP/OpenVAS 실제 runtime container stdout/stderr parser smoke
+
+## 42. Slice 34 Nuclei ZAP OpenVAS Container Stdout Parser Smoke 체크리스트
+
+- [x] Nuclei container stdout fixture가 `container_launch_plan+nuclei_jsonl`로 정규화
+- [x] ZAP container stdout fixture가 `container_launch_plan+zap_json`으로 정규화
+- [x] OpenVAS container stdout fixture가 `container_launch_plan+openvas_xml`로 정규화
+- [x] 각 normalized result가 `container_launch_evidence`와 `scanner_finding_candidate`를 동시에 포함
+- [x] 각 scanner candidate는 `trusted_as_instruction=false`, `requires_human_validation=true`
+- [x] 각 run에서 Evidence Card candidate 생성까지 검증
+- [ ] 실제 Docker/Podman stdout/stderr artifact로 Nuclei/ZAP/OpenVAS smoke
+- [ ] live 5177/8765 browser parser smoke
