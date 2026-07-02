@@ -4236,6 +4236,52 @@ export default {
     }
   }
 ,
+  async importRedTeam2OperatorEvidenceCards() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-operator-evidence-card-import');
+    const reviewedBy = String(draft.operatorEvidenceImportReviewer || draft.compositeClosureReviewer || 'lead@example.com').trim();
+    const reviewerRole = String(draft.operatorEvidenceImportReviewerRole || 'red_team_lead').trim();
+    const reviewCreatedEvidence = draft.operatorEvidenceImportApprove === true;
+    const candidateIds = String(draft.operatorEvidenceImportCandidateIds || '')
+      .split(/[,\n]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+    const payload = {
+      case_id:caseId,
+      candidate_ids:candidateIds,
+      review_created_evidence:reviewCreatedEvidence,
+      human_review_confirmed:reviewCreatedEvidence,
+      reviewed_by:reviewCreatedEvidence ? reviewedBy : undefined,
+      reviewer_role:reviewCreatedEvidence ? reviewerRole : undefined,
+    };
+    this.setState(s => ({ redteam2OperatorEvidenceCardImportState:{ ...(s.redteam2OperatorEvidenceCardImportState || {}), status:'importing', error:null } }));
+    try {
+      const headers = { 'Content-Type':'application/json' };
+      if (reviewCreatedEvidence) {
+        headers['X-RedTeam-Actor'] = reviewedBy;
+        headers['X-RedTeam-Actor-Role'] = reviewerRole;
+        headers['X-RedTeam-Session'] = `dev:${reviewedBy}`;
+      }
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/operator-evidence-card-import', {
+        method:'POST',
+        headers,
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2OperatorEvidenceCardImportState:{ ...(s.redteam2OperatorEvidenceCardImportState || {}), status:data.status || 'operator_evidence_card_import_blocked', result:data, checkedAt:new Date().toISOString(), error:null },
+      }));
+      this.toast(data.approved_evidence_count ? '운영 Evidence Card 등록·승인 완료' : data.created_evidence_count ? '운영 Evidence Card 후보 등록 완료' : '운영 Evidence Card import 보완 필요', data.errors?.length ? 'warn' : 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 운영 Evidence Card 후보 import: ${data.import_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2OperatorEvidenceCardImportState:{ ...(s.redteam2OperatorEvidenceCardImportState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('운영 Evidence Card 후보 import 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async prepareRedTeam2OperatingClosureSubmissionPackage() {
     const draft = this.redTeam2AnalysisDraft();
     const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
@@ -5169,6 +5215,7 @@ export default {
     const toolchainClosureState = this.state.redteam2ToolchainClosureState || {};
     const realOperatingEvidenceReadinessState = this.state.redteam2RealOperatingEvidenceReadinessState || {};
     const operatorEvidenceSubmissionManifestState = this.state.redteam2OperatorEvidenceSubmissionManifestState || {};
+    const operatorEvidenceCardImportState = this.state.redteam2OperatorEvidenceCardImportState || {};
     const operatingClosurePackageState = this.state.redteam2OperatingClosurePackageState || {};
     const operatingClosureReviewState = this.state.redteam2OperatingClosureReviewState || {};
     const reviewedOperatingCloseState = this.state.redteam2ReviewedOperatingCloseState || {};
@@ -5195,6 +5242,7 @@ export default {
     const toolchainClosure = toolchainClosureState.result || {};
     const realOperatingEvidenceReadiness = realOperatingEvidenceReadinessState.result || {};
     const operatorEvidenceSubmissionManifest = operatorEvidenceSubmissionManifestState.result || {};
+    const operatorEvidenceCardImport = operatorEvidenceCardImportState.result || {};
     const operatingClosurePackage = operatingClosurePackageState.result || {};
     const operatingClosureReview = operatingClosureReviewState.result || {};
     const reviewedOperatingClose = reviewedOperatingCloseState.result || {};
@@ -5579,6 +5627,7 @@ export default {
       ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
       ['실제 운영 증거 사전 점검 API', '/api/redteam/v2/toolchains/real-operating-evidence-readiness', 'CASE-V2, fixture, operator-scanner-outputs 같은 테스트 경로를 운영 closure 전에 차단합니다'],
       ['운영 증거 제출 manifest 초안 API', '/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft', '운영자가 첨부한 artifact_path의 sha256과 status를 확인해 validator용 submission_manifest 초안을 만들고 사람 승인 전까지 완료로 보지 않습니다'],
+      ['운영 Evidence Card 후보 import API', '/api/redteam/v2/toolchains/operator-evidence-card-import', '승인된 operator 제출 증거 후보를 Evidence Card로 등록하고 명시적 사람 검토가 있을 때만 승인 기록을 남깁니다'],
       ['운영 closure 제출 패키지 API', '/api/redteam/v2/toolchains/operating-closure-submission-package', 'source_dir, 승인자 4명, runtime blocker, close-operating payload를 실행 전 검증합니다'],
       ['운영 closure 사람 검토 API', '/api/redteam/v2/toolchains/operating-closure-human-review', '제출 패키지 체크리스트, 승인자 서명, blocker 처리 방침을 실행 전 기록합니다'],
       ['검토 완료 운영 closure 실행 API', '/api/redteam/v2/toolchains/execute-reviewed-operating-close', '사람 검토 record의 승인된 close payload만 사용해 별도 HITL close를 실행합니다'],
@@ -5666,6 +5715,20 @@ export default {
       ...(operatorEvidenceSubmissionManifest.errors || []).map(item => ['차단', item, '수정 후 다시 초안 생성']),
       ...(operatorEvidenceSubmissionManifest.missing_items || []).map(item => ['누락', item, '첨부 JSON에 item_id와 artifact_path 추가']),
       ...(operatorEvidenceSubmissionManifest.unknown_items || []).map(item => ['알 수 없는 item', item, 'collection package의 item_id와 맞춤']),
+    ];
+    const operatorEvidenceCardImportRows = (operatorEvidenceCardImport.import_rows || []).map(item => [
+      item.evidence_id || item.candidate_id || '-',
+      koValue(item.approval_status || item.evidence_status || '미확인'),
+      [
+        item.source_item_id ? `원본: ${item.source_item_id}` : null,
+        item.evidence_artifact_path ? `Evidence: ${item.evidence_artifact_path}` : null,
+        (item.errors || []).length ? `오류: ${(item.errors || []).slice(0, 3).join(', ')}` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
+    const operatorEvidenceCardImportSummaryRows = [
+      ['상태', koValue(operatorEvidenceCardImport.status || operatorEvidenceCardImportState.status || '대기'), operatorEvidenceCardImportState.error || operatorEvidenceCardImport.import_id || 'Evidence Card 후보 import 버튼을 누르세요'],
+      ['생성된 Evidence Card', `${operatorEvidenceCardImport.created_evidence_count ?? 0}개`, `${operatorEvidenceCardImport.approved_evidence_count ?? 0}개 승인됨`],
+      ['사람 검토 확인', koBool(operatorEvidenceCardImport.human_review_confirmed ?? draft.operatorEvidenceImportApprove === true), '체크한 경우에만 승인 API를 호출'],
     ];
     const operatorImportDefaultRows = [
       ['Evidence Card 후보 없음', '대기', '승인된 제출 증거가 있어야 Evidence Card 후보 payload를 만들 수 있음'],
@@ -5847,6 +5910,7 @@ export default {
       ['Collection Matrix 초안', koValue(toolchainMatrix.status || toolchainMatrixState.status || '대기'), toolchainMatrixState.error || `${toolchainMatrix.ready_claim_count ?? 0}개 ready · ${toolchainMatrix.held_claim_count ?? 0}개 보류`],
       ['Collection Report v2 draft', koValue(toolchainReportDraft.status || toolchainReportDraftState.status || '대기'), toolchainReportDraftState.error || (toolchainReportDraft.report_generated ? 'draft 생성됨 · 최종 export 승인 필요' : 'Matrix ready 이후 생성')],
       ['운영 증거 제출 manifest 초안', koValue(operatorEvidenceSubmissionManifest.status || operatorEvidenceSubmissionManifestState.status || '대기'), operatorEvidenceSubmissionManifestState.error || operatorEvidenceSubmissionManifest.submission_manifest_artifact_path || '/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft'],
+      ['운영 Evidence Card 후보 import', koValue(operatorEvidenceCardImport.status || operatorEvidenceCardImportState.status || '대기'), operatorEvidenceCardImportState.error || `${operatorEvidenceCardImport.created_evidence_count ?? 0}개 생성 · ${operatorEvidenceCardImport.approved_evidence_count ?? 0}개 승인`],
       ['운영 closure 제출 패키지', koValue(operatingClosurePackage.status || operatingClosurePackageState.status || '대기'), operatingClosurePackageState.error || operatingClosurePackage.package_id || '/api/redteam/v2/toolchains/operating-closure-submission-package'],
       ['Collection 전체 닫기 API', koValue(toolchainClosure.status || toolchainClosureState.status || '대기'), toolchainClosureState.error || toolchainClosure.closure_id || '/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e'],
       ['Collection E2E 완료 게이트', koValue(toolchainCompletionGate.status || toolchainCompletionGateState.status || '대기'), toolchainCompletionGateState.error || `${toolchainCompletionGate.blocker_count ?? '-'}개 blocker · ${toolchainCompletionGate.complete ? '완료 증거 사용 가능' : 'export 완료 후 점검'}`],
@@ -6229,6 +6293,7 @@ export default {
             ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', C.blue, 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
             ['실제 운영 증거 사전 점검 API', '/api/redteam/v2/toolchains/real-operating-evidence-readiness', C.amber, 'CASE-V2, fixture, operator-scanner-outputs 같은 테스트 경로를 운영 closure 전에 차단합니다'],
             ['운영 증거 제출 manifest 초안 API', '/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft', C.blue, '운영자가 첨부한 artifact_path의 sha256과 status를 확인해 validator용 submission_manifest 초안을 만들고 사람 승인 전까지 완료로 보지 않습니다'],
+            ['운영 Evidence Card 후보 import API', '/api/redteam/v2/toolchains/operator-evidence-card-import', C.blue, '승인된 operator 제출 증거 후보를 Evidence Card로 등록하고 명시적 사람 검토가 있을 때만 승인 기록을 남깁니다'],
             ['운영 closure 제출 패키지 API', '/api/redteam/v2/toolchains/operating-closure-submission-package', C.blue, 'source_dir, 승인자 4명, runtime blocker, close-operating payload를 실행 전 검증합니다'],
             ['운영 closure 사람 검토 API', '/api/redteam/v2/toolchains/operating-closure-human-review', C.violet, '제출 패키지 체크리스트, 승인자 서명, blocker 처리 방침을 실행 전 기록합니다'],
             ['검토 완료 운영 closure 실행 API', '/api/redteam/v2/toolchains/execute-reviewed-operating-close', C.green, '사람 검토 record의 승인된 close payload만 사용해 별도 HITL close를 실행합니다'],
@@ -6434,7 +6499,40 @@ export default {
                   rows:6,
                   style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
                   placeholder:'[{"item_id":"OEC-LRR-DOCKER-001","artifact_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/.../latest_container_runtime_smoke.json","review_status":"pending_human_review"}]',
-                }))),
+                })),
+              h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:'8px' } },
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'Evidence Card 검토자',
+                  h('input', {
+                    value:draft.operatorEvidenceImportReviewer || draft.compositeClosureReviewer || '',
+                    onChange:e=>this.updateRedTeam2AnalysisDraft({ operatorEvidenceImportReviewer:e.target.value }),
+                    style:{ ...inputStyle, marginTop:'5px' },
+                    placeholder:'lead@example.com',
+                  })),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '검토자 역할',
+                  h('select', {
+                    value:draft.operatorEvidenceImportReviewerRole || 'red_team_lead',
+                    onChange:e=>this.updateRedTeam2AnalysisDraft({ operatorEvidenceImportReviewerRole:e.target.value }),
+                    style:{ ...inputStyle, marginTop:'5px' },
+                  },
+                    h('option', { value:'red_team_lead' }, 'red_team_lead'),
+                    h('option', { value:'control_team' }, 'control_team'),
+                    h('option', { value:'legal_privacy' }, 'legal_privacy'),
+                    h('option', { value:'data_owner' }, 'data_owner')))),
+              h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'Evidence Card 후보 ID 선택',
+                h('textarea', {
+                  value:draft.operatorEvidenceImportCandidateIds || '',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ operatorEvidenceImportCandidateIds:e.target.value }),
+                  rows:3,
+                  style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                  placeholder:'비워두면 최신 import plan의 모든 후보를 사용합니다. 여러 개는 줄바꿈 또는 쉼표로 구분합니다.',
+                })),
+              h('label', { style:{ display:'flex', gap:'8px', alignItems:'center', fontSize:'10.5px', color:C.text, fontWeight:800 } },
+                h('input', {
+                  type:'checkbox',
+                  checked:draft.operatorEvidenceImportApprove === true,
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ operatorEvidenceImportApprove:e.target.checked }),
+                }),
+                '사람 검토를 완료했으며 생성된 Evidence Card를 바로 승인 기록으로 남김')),
             h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'8px', display:'grid', gap:'8px' } },
               h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '복합 Collection 전체 닫기 승인자'),
               h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '초보 사용자는 아래 승인자 4명을 채운 뒤 전체 닫기 버튼을 누르면 됩니다. 이 버튼은 기존 collection 산출물만 사용하고, 사람 승인 필드가 비어 있으면 실행하지 않습니다.'),
@@ -6458,6 +6556,11 @@ export default {
                 disabled:operatorEvidenceSubmissionManifestState.status === 'drafting',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:operatorEvidenceSubmissionManifestState.status === 'drafting' ? C.raised : C.bg, color:operatorEvidenceSubmissionManifestState.status === 'drafting' ? C.muted : C.blue, cursor:operatorEvidenceSubmissionManifestState.status === 'drafting' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, operatorEvidenceSubmissionManifestState.status === 'drafting' ? '제출 manifest 초안 중' : '운영 증거 제출 manifest 초안'),
+              h('button', {
+                onClick:()=>this.importRedTeam2OperatorEvidenceCards(),
+                disabled:operatorEvidenceCardImportState.status === 'importing',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:operatorEvidenceCardImportState.status === 'importing' ? C.raised : C.bg, color:operatorEvidenceCardImportState.status === 'importing' ? C.muted : C.violet, cursor:operatorEvidenceCardImportState.status === 'importing' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, operatorEvidenceCardImportState.status === 'importing' ? 'Evidence Card 등록 중' : '운영 Evidence Card 후보 import'),
               h('button', {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
                 disabled:toolchainState.status === 'executing',
@@ -6556,6 +6659,8 @@ export default {
             this.renderTable(['실제 운영 증거 blocker','조치','경고'], realOperatingEvidenceBlockerRows.length ? realOperatingEvidenceBlockerRows : [['없음','현재 표시된 blocker 없음','-']]),
             this.renderTable(['운영 증거 제출 manifest 항목','상태','파일/hash/검토'], operatorEvidenceSubmissionManifestRows.length ? operatorEvidenceSubmissionManifestRows : [['대기','-','운영 증거 제출 manifest 초안 버튼을 누르세요']]),
             this.renderTable(['운영 증거 제출 manifest 누락','항목','조치'], operatorEvidenceSubmissionManifestBlockerRows.length ? operatorEvidenceSubmissionManifestBlockerRows : [['없음','현재 표시된 누락 없음','-']]),
+            this.renderTable(['운영 Evidence Card import','상태','근거'], operatorEvidenceCardImportSummaryRows),
+            this.renderTable(['Evidence Card ID','승인 상태','원본/저장 위치'], operatorEvidenceCardImportRows.length ? operatorEvidenceCardImportRows : [['대기','-','운영 Evidence Card 후보 import 버튼을 누르세요']]),
             this.renderTable(['운영 closure 제출 항목','상태','근거'], operatingClosurePackageRows.length ? operatingClosurePackageRows : [['대기','-','운영 closure 제출 패키지 확인 버튼을 누르세요']]),
             this.renderTable(['운영 closure 승인자','상태','입력값'], operatingClosureApproverRows.length ? operatingClosureApproverRows : [['대기','-','승인자 4명 입력 필요']]),
             this.renderTable(['운영 closure 사람 검토','상태','설명'], operatingClosureReviewRows.length ? operatingClosureReviewRows : [['대기','-','제출 패키지 확인 뒤 사람 검토 기록 버튼을 누르세요']]),

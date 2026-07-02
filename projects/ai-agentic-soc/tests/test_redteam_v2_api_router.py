@@ -2236,6 +2236,102 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("OEC-TEST-DOCKER-001:artifact_path_missing", blocked_body["errors"])
         self.assertIn("OEC-TEST-WSL-001", blocked_body["missing_items"])
 
+    def test_v2_operator_evidence_card_import_creates_and_approves_candidates_with_human_review(self) -> None:
+        case_id = f"CASE-V2-OPERATOR-EVIDENCE-CARD-IMPORT-001-{uuid.uuid4().hex[:8]}"
+        artifact_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-evidence"
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        docker_artifact = artifact_dir / "container-runtime.json"
+        wsl_artifact = artifact_dir / "wsl-runtime.json"
+        docker_artifact.write_text(json.dumps({"status": "passed"}), encoding="utf-8", newline="\n")
+        wsl_artifact.write_text(json.dumps({"status": "ready"}), encoding="utf-8", newline="\n")
+        import_plan = {
+            "kind": "redteam_ax_operator_evidence_card_import_plan",
+            "status": "evidence_card_import_ready",
+            "source_validation_artifact": "artifact://operator-validation.json",
+            "case_id": case_id,
+            "evidence_card_candidates": [
+                {
+                    "evidence_id": f"EV-OEC-DOCKER-{uuid.uuid4().hex[:8]}",
+                    "case_id": case_id,
+                    "source_path_or_url": docker_artifact.as_posix(),
+                    "summary": "Operator-approved Docker runtime evidence.",
+                    "evidence_type": "operator_live_readiness_artifact",
+                    "validation_status": "verified",
+                    "source_item_id": "OEC-TEST-DOCKER-001",
+                    "source_sha256": hashlib.sha256(docker_artifact.read_bytes()).hexdigest(),
+                    "source_artifact_status": "passed",
+                    "claim_evidence_matrix_hint": {"claim_scope": "runtime_readiness"},
+                },
+                {
+                    "evidence_id": f"EV-OEC-WSL-{uuid.uuid4().hex[:8]}",
+                    "case_id": case_id,
+                    "source_path_or_url": wsl_artifact.as_posix(),
+                    "summary": "Operator-approved WSL runtime evidence.",
+                    "evidence_type": "operator_live_readiness_artifact",
+                    "validation_status": "verified",
+                    "source_item_id": "OEC-TEST-WSL-001",
+                    "source_sha256": hashlib.sha256(wsl_artifact.read_bytes()).hexdigest(),
+                    "source_artifact_status": "ready",
+                    "claim_evidence_matrix_hint": {"claim_scope": "runtime_readiness"},
+                },
+            ],
+        }
+
+        created = self.client.post("/api/redteam/v2/toolchains/operator-evidence-card-import", json={
+            "case_id": case_id,
+            "import_plan": import_plan,
+        })
+        self.assertEqual(created.status_code, 200)
+        created_body = created.json()
+        self.assertEqual(created_body["kind"], "redteam_ax_v2_operator_evidence_card_import")
+        self.assertEqual(created_body["status"], "operator_evidence_cards_created_pending_review")
+        self.assertEqual(created_body["created_evidence_count"], 2)
+        self.assertEqual(created_body["approved_evidence_count"], 0)
+        self.assertFalse(created_body["commands_executed_by_api"])
+        self.assertFalse(created_body["active_scan_executed"])
+        self.assertFalse(created_body["trusted_as_instruction"])
+        self.assertTrue(created_body["does_not_mark_goal_complete"])
+        self.assertTrue(Path(created_body["artifact_path"]).exists())
+
+        approved = self.client.post(
+            "/api/redteam/v2/toolchains/operator-evidence-card-import",
+            headers={
+                "X-RedTeam-Actor": "lead@example.com",
+                "X-RedTeam-Actor-Role": "red_team_lead",
+                "X-RedTeam-Session": "dev:lead@example.com",
+            },
+            json={
+                "case_id": case_id,
+                "import_plan": import_plan,
+                "review_created_evidence": True,
+                "human_review_confirmed": True,
+                "reviewed_by": "lead@example.com",
+                "reviewer_role": "red_team_lead",
+            },
+        )
+        self.assertEqual(approved.status_code, 200)
+        approved_body = approved.json()
+        self.assertEqual(approved_body["status"], "operator_evidence_cards_approved")
+        self.assertEqual(approved_body["created_evidence_count"], 2)
+        self.assertEqual(approved_body["approved_evidence_count"], 2)
+        self.assertTrue(all(row["approval_status"] == "approved" for row in approved_body["import_rows"]))
+        first_evidence = json.loads(Path(approved_body["import_rows"][0]["evidence_artifact_path"]).read_text(encoding="utf-8"))
+        self.assertEqual(first_evidence["approval_status"], "approved")
+        self.assertEqual(first_evidence["validation_status"], "approved")
+
+        blocked = self.client.post("/api/redteam/v2/toolchains/operator-evidence-card-import", json={
+            "case_id": case_id,
+            "import_plan": import_plan,
+            "review_created_evidence": True,
+            "reviewed_by": "lead@example.com",
+        })
+        self.assertEqual(blocked.status_code, 200)
+        blocked_body = blocked.json()
+        self.assertEqual(blocked_body["status"], "operator_evidence_card_import_blocked")
+        self.assertEqual(blocked_body["created_evidence_count"], 0)
+        self.assertTrue(all(row["approval_status"] == "blocked" for row in blocked_body["import_rows"]))
+        self.assertIn("human_review_confirmed_required", blocked_body["errors"])
+
     def test_v2_real_operating_evidence_readiness_blocks_fixture_source(self) -> None:
         case_id = f"CASE-V2-REAL-OPERATING-READINESS-001-{uuid.uuid4().hex[:8]}"
         source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"

@@ -1700,3 +1700,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 manifest draft anchor 추가
 - [x] regression test가 ready draft와 누락 blocker를 검증
 - [ ] 실제 운영자가 생성된 manifest를 검토해 `review_status=approved`로 바꾸고 `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved` 통과
+
+## 107. Slice 99 운영 Evidence Card 후보 import 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/operator-evidence-card-import` API 추가
+- [x] operator Evidence Card import plan 후보를 실제 Evidence Card artifact로 등록
+- [x] `candidate_ids` 선택 import 지원
+- [x] 기본 생성 상태는 `pending_review`로 유지
+- [x] `review_created_evidence=true`, `human_review_confirmed=true`, reviewer identity, actor header가 맞을 때만 Evidence 승인 API 호출
+- [x] 기존 `approve_evidence_card` actor context binding 재사용
+- [x] `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true` 유지
+- [x] RedTeam2에 `운영 Evidence Card 후보 import` 버튼, 후보 ID 선택, 검토자/역할, 사람 검토 완료 체크박스 추가
+- [x] RedTeam2에 `운영 Evidence Card import` 및 Evidence Card row 표 추가
+- [x] regression test가 pending 생성, 사람 검토 승인, human review 누락 blocker를 검증
+- [ ] 실제 운영 validator 통과 결과에서 생성된 Evidence Card 후보 전체를 import/approve하고 Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료

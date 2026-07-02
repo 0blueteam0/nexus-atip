@@ -315,6 +315,18 @@ def build_operator_evidence_submission_manifest_draft(payload: dict[str, Any]) -
     return redteam_v2_models.build_operator_evidence_submission_manifest_draft(payload)
 
 
+@router.post("/toolchains/operator-evidence-card-import")
+def import_operator_evidence_card_candidates(
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.import_operator_evidence_card_candidates(
+        with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session)
+    )
+
+
 @router.post("/toolchains/operating-closure-human-review")
 def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.record_operating_toolchain_closure_human_review(payload)

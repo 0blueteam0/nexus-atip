@@ -3022,6 +3022,163 @@ def build_operator_evidence_submission_manifest_draft(payload: dict[str, Any]) -
     return result
 
 
+def import_operator_evidence_card_candidates(payload: dict[str, Any]) -> dict[str, Any]:
+    import_plan = payload.get("import_plan") if isinstance(payload.get("import_plan"), dict) else None
+    plan_path_value = payload.get("import_plan_path")
+    errors: list[str] = []
+    warnings: list[str] = []
+    if import_plan is None:
+        plan_path = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-operator-evidence-collection" / "latest_operator_evidence_card_import_plan.json"
+        if plan_path_value:
+            resolved_path, path_errors = resolve_workspace_source_path(plan_path_value)
+            errors.extend(f"import_plan_path:{error}" for error in path_errors)
+            if resolved_path:
+                plan_path = resolved_path
+        if not errors:
+            import_plan = read_json_artifact(plan_path)
+            if import_plan is None:
+                errors.append("import_plan_not_readable")
+
+    import_plan = import_plan or {}
+    case_id = str(payload.get("case_id") or import_plan.get("case_id") or "CASE-V2-LIVE-READINESS-PROMOTION").strip()
+    reviewer = str(payload.get("reviewed_by") or payload.get("approver") or "").strip()
+    reviewer_role = normalize_approver_role(payload.get("reviewer_role") or payload.get("approver_role") or "red_team_lead")
+    review_created_evidence = bool(payload.get("review_created_evidence") is True or payload.get("approve_created_evidence") is True)
+    human_review_confirmed = bool(payload.get("human_review_confirmed") is True)
+    review_decision = str(payload.get("review_decision") or payload.get("decision") or "approve").strip().lower()
+
+    if import_plan.get("kind") and import_plan.get("kind") != "redteam_ax_operator_evidence_card_import_plan":
+        errors.append("invalid_import_plan_kind")
+    candidates = import_plan.get("evidence_card_candidates") if isinstance(import_plan.get("evidence_card_candidates"), list) else []
+    selected_ids = [str(item).strip() for item in (payload.get("candidate_ids") or []) if str(item).strip()]
+    if selected_ids:
+        selected = [item for item in candidates if str(item.get("evidence_id") or "").strip() in set(selected_ids)]
+        missing_selected = sorted(set(selected_ids) - {str(item.get("evidence_id") or "").strip() for item in selected})
+        errors.extend(f"candidate_not_found:{item}" for item in missing_selected)
+    else:
+        selected = list(candidates)
+    if not selected:
+        errors.append("evidence_card_candidates_required")
+    if review_created_evidence and not human_review_confirmed:
+        errors.append("human_review_confirmed_required")
+    if review_created_evidence and not reviewer:
+        errors.append("reviewed_by_required")
+
+    rows: list[dict[str, Any]] = []
+    created_evidence: list[dict[str, Any]] = []
+    approvals: list[dict[str, Any]] = []
+    creation_allowed = not errors
+    for candidate in selected:
+        if not isinstance(candidate, dict):
+            warnings.append("candidate_entry_ignored")
+            continue
+        if not creation_allowed:
+            rows.append({
+                "candidate_id": candidate.get("evidence_id"),
+                "evidence_id": None,
+                "evidence_artifact_path": None,
+                "source_item_id": candidate.get("source_item_id"),
+                "source_path_or_url": candidate.get("source_path_or_url"),
+                "evidence_status": "not_created",
+                "validation_status": candidate.get("validation_status") or "verified",
+                "approval_status": "blocked",
+                "approval_id": None,
+                "errors": sorted(set(errors)),
+            })
+            continue
+        evidence_payload = {
+            "evidence_id": candidate.get("evidence_id"),
+            "case_id": candidate.get("case_id") or case_id,
+            "source_type": candidate.get("evidence_type") or "operator_live_readiness_artifact",
+            "source_path_or_url": candidate.get("source_path_or_url"),
+            "summary": candidate.get("summary"),
+            "hash": candidate.get("source_sha256"),
+            "validation_status": candidate.get("validation_status") or "verified",
+            "approval_status": "pending_review",
+            "review_required": True,
+            "normalized_fields": {
+                "source_item_id": candidate.get("source_item_id"),
+                "source_artifact_status": candidate.get("source_artifact_status"),
+                "source_sha256": candidate.get("source_sha256"),
+                "claim_evidence_matrix_hint": candidate.get("claim_evidence_matrix_hint") or {},
+                "operator_import_plan": import_plan.get("source_validation_artifact"),
+            },
+            "classification": candidate.get("classification") or "internal",
+        }
+        evidence = create_evidence_card(evidence_payload)
+        created_evidence.append(evidence)
+        approval: dict[str, Any] | None = None
+        if review_created_evidence and human_review_confirmed and not evidence.get("errors"):
+            approval = approve_evidence_card(str(evidence.get("evidence_id")), {
+                "case_id": evidence.get("case_id"),
+                "reviewed_by": reviewer,
+                "reviewer_role": reviewer_role,
+                "decision": review_decision,
+                "_actor_context": payload.get("_actor_context") or {},
+            })
+            approvals.append(approval)
+        row_errors = [*(evidence.get("errors") or [])]
+        if approval and approval.get("errors"):
+            row_errors.extend(f"approval:{error}" for error in approval.get("errors") or [])
+        rows.append({
+            "candidate_id": candidate.get("evidence_id"),
+            "evidence_id": evidence.get("evidence_id"),
+            "evidence_artifact_path": evidence.get("artifact_path"),
+            "source_item_id": candidate.get("source_item_id"),
+            "source_path_or_url": candidate.get("source_path_or_url"),
+            "evidence_status": evidence.get("approval_status"),
+            "validation_status": evidence.get("validation_status"),
+            "approval_status": (approval or {}).get("status") if approval else "pending_human_review",
+            "approval_id": (approval or {}).get("approval_id") if approval else None,
+            "errors": row_errors,
+        })
+
+    created_count = len([item for item in created_evidence if not item.get("errors")])
+    approved_count = len([item for item in approvals if item.get("status") == "approved"])
+    invalid_count = len([row for row in rows if row.get("errors")])
+    if any(approval.get("errors") for approval in approvals):
+        errors.append("evidence_approval_failed")
+    import_id = str(payload.get("import_id") or stable_id("OECIMP", [case_id, [row.get("evidence_id") for row in rows], reviewer, review_created_evidence, now_utc()]))
+    status = "operator_evidence_cards_approved" if review_created_evidence and approved_count == created_count and created_count and not errors else (
+        "operator_evidence_cards_created_pending_review" if created_count and not errors else "operator_evidence_card_import_blocked"
+    )
+    result = {
+        "kind": "redteam_ax_v2_operator_evidence_card_import",
+        "import_id": import_id,
+        "case_id": case_id,
+        "status": status,
+        "source_import_plan_status": import_plan.get("status"),
+        "selected_candidate_count": len(selected),
+        "created_evidence_count": created_count,
+        "approved_evidence_count": approved_count,
+        "invalid_count": invalid_count,
+        "review_created_evidence": review_created_evidence,
+        "human_review_confirmed": human_review_confirmed,
+        "reviewed_by": reviewer or None,
+        "reviewer_role": reviewer_role or None,
+        "import_rows": rows,
+        "created_evidence_ids": [item.get("evidence_id") for item in created_evidence if not item.get("errors")],
+        "approval_ids": [item.get("approval_id") for item in approvals if item.get("status") == "approved"],
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_human_review": True,
+        "does_not_mark_goal_complete": True,
+        "warnings": sorted(set(warnings)),
+        "errors": sorted(set(errors)),
+        "next_human_actions_ko": [
+            "pending_review Evidence Card는 검토자가 원본 artifact와 ROE를 확인한 뒤 승인합니다.",
+            "approved Evidence Card가 준비된 뒤 Finding 생성, 2인 severity 승인, Matrix/report/export gate로 이동합니다.",
+            "이 API는 Evidence Card 등록과 선택적 승인 기록만 수행하며 scanner나 네트워크 명령을 실행하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operator-evidence-card-imports", import_id)
+    return result
+
+
 def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     package = payload.get("submission_package") if isinstance(payload.get("submission_package"), dict) else None

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 39,
+    "proved": 40,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -680,6 +680,22 @@
       "proof_summary": "The operator-evidence-submission-manifest-draft API loads an operator evidence collection package, accepts item_id/artifact_path/review_status attachments, resolves only local workspace files, computes SHA-256, verifies JSON status against expected_attachment, persists a validator-compatible submission_manifest artifact, and returns safe flags with commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false, and does_not_mark_goal_complete=true. Regression coverage proves the ready draft and missing-field blocker paths. RedTeam2 exposes Korean input, button, API copy, item table, and blocker table.",
       "residual_gap": "This proves manifest draft construction, not that a real operator has reviewed every artifact, changed review_status to approved, run the submission validator with --require-approved, or produced approved Evidence Cards.",
       "next_action": "Fill the UI attachment JSON with real Docker/WSL/OpenVAS/ZAP/promotion artifact paths, review and approve the generated submission manifest, then run redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved."
+    },
+    {
+      "id": "RTA-COMP-041",
+      "requirement": "Approved operator Evidence Card import plan candidates must have a governed API/UI path into actual Evidence Card creation and explicit human review approval without executing scanners.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/operator-evidence-card-import API loads an operator Evidence Card import plan or inline plan, creates Evidence Cards from selected candidates, keeps default cards pending_review, and only calls the existing Evidence approval API when review_created_evidence=true, human_review_confirmed=true, and reviewer actor context is bound through headers. Regression coverage verifies pending creation, red_team_lead approval with actor/session headers, and blocker behavior when human review confirmation is missing. RedTeam2 exposes Korean reviewer fields, candidate selection, human-review checkbox, import button, summary table, and Evidence Card row table.",
+      "residual_gap": "This proves the governed import/review path, not that real organization operator artifacts have passed validator --require-approved or that all resulting Evidence Cards have been promoted into Findings, severity-approved, reported, exported, and completion-gated.",
+      "next_action": "After real operator submission validation passes, run operator-evidence-card-import with human review approval, then promote the approved Evidence Cards to Findings and complete severity, Matrix, Report v2, export, and completion-gate stages."
     }
   ],
   "remaining_gaps": [

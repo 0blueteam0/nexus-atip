@@ -1000,3 +1000,14 @@ Create Case
 - RedTeam2는 운영 증거 제출자, ROE 승인 참조, 운영 증거 제출 첨부 JSON 입력과 `운영 증거 제출 manifest 초안` 버튼, `운영 증거 제출 manifest 항목`, `운영 증거 제출 manifest 누락` 표를 제공한다.
 - regression test는 두 개의 기존 JSON artifact가 sha256/status ready 초안으로 들어가고, 제출자/ROE/artifact_path 누락은 blocker로 남는지 검증한다.
 - 이 slice는 제출 manifest 초안을 만들 뿐이며, 사람이 artifact를 검토해 `review_status=approved`로 바꾸고 `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved`를 통과하기 전에는 완료 증거로 사용하지 않는다.
+
+## 54. Slice 99 반영 사항
+
+- `/api/redteam/v2/toolchains/operator-evidence-card-import`는 operator Evidence Card import plan의 `evidence_card_candidates`를 실제 Evidence Card artifact로 등록한다.
+- API는 최신 import plan을 기본으로 읽거나 payload의 `import_plan`을 사용하며, `candidate_ids`가 있으면 선택 후보만 처리한다.
+- 기본 모드는 Evidence Card를 `pending_review`로 생성하고, `review_created_evidence=true`와 `human_review_confirmed=true`, reviewer identity, actor header가 모두 맞을 때만 기존 Evidence 승인 API를 호출한다.
+- 승인 path는 기존 `approve_evidence_card`의 actor context binding을 재사용해 reviewer와 authenticated actor가 일치하지 않으면 승인 실패로 남긴다.
+- 출력은 `import_rows`, `created_evidence_ids`, `approval_ids`, 생성/승인/invalid count, safe flags, 다음 human action을 포함한다.
+- RedTeam2는 `운영 Evidence Card 후보 import` 버튼, `Evidence Card 후보 ID 선택`, 검토자/역할, 사람 검토 완료 체크박스, `운영 Evidence Card import` 결과 표를 제공한다.
+- regression test는 후보 2개를 pending Evidence Card로 생성하는 경로와, `lead@example.com` actor context로 사람 검토 승인까지 완료하는 경로, human review confirmation 누락 blocker를 검증한다.
+- 이 slice는 승인된 operator submission evidence를 Evidence Card lane으로 연결하지만, 실제 운영 artifact 전체의 Finding 승격, 2인 severity 승인, Matrix/report/export/completion gate는 후속 단계로 남긴다.
