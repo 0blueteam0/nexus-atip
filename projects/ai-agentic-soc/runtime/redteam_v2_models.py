@@ -2899,6 +2899,32 @@ def write_runner_json_artifact(case_id: str, run_id: str, stream_name: str, payl
     }
 
 
+def write_imported_tool_output_artifact(case_id: str, run_id: str, stream_name: str, content: Any) -> dict[str, Any]:
+    if isinstance(content, (dict, list)):
+        return write_runner_output_artifact(case_id, run_id, stream_name, json.dumps(content, ensure_ascii=False))
+    return write_runner_output_artifact(case_id, run_id, stream_name, str(content))
+
+
+def imported_toolchain_step_artifacts(case_id: str, run_id: str, step: dict[str, Any]) -> list[dict[str, Any] | str]:
+    artifacts: list[dict[str, Any] | str] = []
+    raw_artifacts = step.get("raw_artifacts") or step.get("operator_artifacts") or []
+    if isinstance(raw_artifacts, list):
+        artifacts.extend(raw_artifacts)
+    elif raw_artifacts:
+        artifacts.append(raw_artifacts)
+
+    inline_fields = [
+        ("operator-output", step.get("operator_output")),
+        ("imported-output", step.get("imported_output")),
+        ("imported-stdout", step.get("imported_stdout")),
+        ("imported-json", step.get("imported_json")),
+    ]
+    for stream_name, value in inline_fields:
+        if value is not None:
+            artifacts.append(write_imported_tool_output_artifact(case_id, run_id, stream_name, value))
+    return artifacts
+
+
 def container_runtime_executable() -> str:
     configured = os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME") or "docker"
     return shutil.which(configured) or ""
@@ -3361,6 +3387,8 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                 "artifact_path": plan.get("artifact_path"),
             }
             runner_argv = normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
+            import_run_id = str(step.get("run_id") or stable_id("TRUN", [case_id, action_id, tool_id, execution_mode, requested_by, "toolchain-import", index]))
+            imported_artifacts = imported_toolchain_step_artifacts(case_id, import_run_id, step)
             if runner_argv and plan.get("status") == "PlanReady":
                 run = governed_tool_execution(action_id, {
                     "case_id": case_id,
@@ -3392,26 +3420,58 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                 step_record["status"] = "executed" if run.get("status") in {"RunnerExecuted", "ContainerLaunchPrepared"} else "run_recorded"
                 if run.get("errors"):
                     step_record["errors"].extend(run.get("errors") or [])
+            elif imported_artifacts and plan.get("status") == "PlanReady":
+                run = governed_tool_execution(action_id, {
+                    "case_id": case_id,
+                    "tool_id": tool_id,
+                    "execution_mode": execution_mode,
+                    "requested_by": requested_by,
+                    "target_scope_refs": step.get("target_scope_refs") or payload.get("target_scope_refs") or [],
+                    "environment": step.get("environment") or payload.get("environment") or "approved_scope",
+                    "run_id": import_run_id,
+                    "raw_artifacts": imported_artifacts,
+                    "output_summary": step.get("output_summary") or f"{profile.get('display_name') or tool_id} operator/imported output.",
+                    "notes": step.get("notes") or "Operator/imported output attached to governed toolchain as untrusted data; no scanner command executed by this import path.",
+                })
+                step_record["run"] = {
+                    "run_id": run.get("run_id"),
+                    "status": run.get("status"),
+                    "policy_decision": run.get("policy_decision"),
+                    "runner_attempt": run.get("runner_attempt"),
+                    "raw_artifacts": run.get("raw_artifacts") or [],
+                    "artifact_path": run.get("artifact_path"),
+                    "analysis_agent_id": run.get("analysis_agent_id"),
+                    "normalizer_id": run.get("normalizer_id"),
+                }
+                step_record["status"] = "imported" if run.get("status") in {"OutputImported", "PlanOnly"} else "run_recorded"
+                if run.get("errors"):
+                    step_record["errors"].extend(run.get("errors") or [])
             elif runner_argv:
                 step_record["status"] = "blocked"
                 step_record["errors"].append("execution_plan_not_ready_for_runner")
                 warnings.append(f"{tool_id}:execution_plan_not_ready_for_runner")
+            elif imported_artifacts:
+                step_record["status"] = "blocked"
+                step_record["errors"].append("execution_plan_not_ready_for_import")
+                warnings.append(f"{tool_id}:execution_plan_not_ready_for_import")
             else:
                 step_record["status"] = "planned"
             steps.append(step_record)
 
     executed_count = sum(1 for step in steps if step.get("status") == "executed")
+    imported_count = sum(1 for step in steps if step.get("status") == "imported")
     blocked_count = sum(1 for step in steps if step.get("status") in {"blocked", "invalid"} or step.get("errors"))
     record = {
         "kind": "redteam_ax_v2_governed_toolchain_execution",
         "toolchain_id": chain_id,
         "case_id": case_id,
         "requested_by": requested_by,
-        "status": "invalid" if errors else ("completed_with_blocks" if blocked_count else ("executed" if executed_count else "planned")),
+        "status": "invalid" if errors else ("completed_with_blocks" if blocked_count else ("executed" if executed_count else ("imported" if imported_count else "planned"))),
         "errors": errors,
         "warnings": warnings,
         "tool_count": len(raw_steps) if isinstance(raw_steps, list) else 0,
         "executed_count": executed_count,
+        "imported_count": imported_count,
         "blocked_count": blocked_count,
         "commands_executed_by_api": executed_count > 0,
         "shell_expansion_allowed": False,

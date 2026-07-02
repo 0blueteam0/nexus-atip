@@ -71,7 +71,6 @@ def main() -> int:
         "보류된 Finding/Claim 후보",
         "복합 도구 결과 회수 API",
         "/api/redteam/v2/toolchains/{toolchain_id}/collect-results",
-        "저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행",
         "복합 Evidence 후보 승인 API",
         "/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence",
         "레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동",
@@ -158,6 +157,16 @@ def main() -> int:
         "secret_material_collected",
         "상태 조회 API는 Docker나 scanner를 실행하지 않음",
         "항상 아니오 유지",
+        "저장된 stdout/stderr 또는 운영자 첨부 결과만 읽고",
+        "Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다",
+        "여러 분석도구 순차 실행·결과 첨부",
+        "운영자 결과 첨부 - 명령 실행 없음",
+        "승인된 로컬 runner 실행",
+        "Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 첨부합니다",
+        "첨부 모드는 도구 명령을 실행하지 않고 저장된 결과만 untrusted artifact로 기록합니다",
+        "운영자 결과 본문",
+        "---REDTEAM-AX-TOOL---",
+        "여러 도구 결과 첨부",
     ]
     missing_safety_terms = [term for term in required_safety_terms if term not in redteam2_panel]
     if missing_safety_terms:

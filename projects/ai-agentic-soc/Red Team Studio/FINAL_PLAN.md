@@ -1545,4 +1545,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 테스트 collection의 completion gate `complete=true`, blocker 0건, 명령 실행 없음, artifact 존재를 검증
 - [x] RedTeam2 UI에 `E2E 완료 게이트 점검` 버튼과 결과 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 completion gate anchor 추가
+- [x] 6개 지정 도구 전체 imported-output collection이 이 completion gate를 통과하는 sample E2E 계약 추가 - slice 87 완료
 - [ ] 실제 운영 scanner 전체 collection을 이 completion gate로 통과
+
+## 95. Slice 87 6개 지정 도구 운영자 결과 첨부 Full Collection E2E 체크리스트
+
+- [x] toolchain step에 `operator_output`, `imported_output`, `imported_json`, `raw_artifacts` 첨부 경로 추가
+- [x] 첨부 결과는 저장된 untrusted artifact로 기록하고 `OutputImported` run으로 남김
+- [x] imported-output 경로는 scanner 명령, shell expansion, 능동 스캔을 실행하지 않음
+- [x] toolchain summary에 `imported_count`를 추가해 실행 건수와 첨부 건수를 구분
+- [x] regression test가 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 결과를 하나의 collection으로 회수
+- [x] regression test가 Evidence 후보 6개 승인, Finding 초안 6개, 2인 severity 승인, Matrix ready 6개 row, Report v2 draft, 최종 export, completion gate `complete=true`를 검증
+- [x] RedTeam2 UI에 `운영자 결과 첨부 - 명령 실행 없음` / `승인된 로컬 runner 실행` 모드와 운영자 결과 본문 입력 추가
+- [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 imported-output full E2E anchor 반영
+- [ ] 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물을 imported-output 또는 live service import 경로로 제출하고 동일 completion gate 통과

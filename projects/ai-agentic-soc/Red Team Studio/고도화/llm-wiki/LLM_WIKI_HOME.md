@@ -153,6 +153,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolchainCollectionReportExportApproval
 - ToolchainCollectionReportExport
 - ToolchainCollectionCompletionGate
+- ToolchainImportedOutput
 - ToolResultAnalysisBrief
 - ToolResultFindingClaimReview
 - EvidenceLinker
@@ -182,6 +183,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 12. collection approved Finding은 `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft`와 `/api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft`를 통해 Matrix ready와 Report v2 draft까지 갈 수 있지만, final export approval은 별도 HITL gate로 유지한다.
 13. collection Report v2 draft가 생성한 `report_id`는 `/api/redteam/v2/reports/{report_id}/approve-export`에서 Executive Sponsor 승인과 report gate snapshot 재검사를 통과한 뒤에만 `/api/redteam/v2/reports/{report_id}/export`로 내보낼 수 있다.
 14. collection의 실제 완료 여부는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate`로 검증하며, 이 API는 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate pass, export 완료를 확인한다.
+15. Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 결과가 사람이 수행했거나 서비스에서 export된 산출물인 경우 `/api/redteam/v2/toolchains/execute-governed` step의 `operator_output`, `imported_output`, `imported_json`, `raw_artifacts`로 첨부한다. 이 경로는 도구 명령을 실행하지 않고 `OutputImported` run과 `imported_count`만 기록하며, 이후 collection/approval/Finding/Matrix/Report/export/completion gate는 동일하게 적용한다.
 
 ## 남은 작업
 
@@ -190,4 +192,4 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - Docker/container runtime live smoke 성공 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
-- 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP collection 전체가 Matrix/report/export gate를 통과한 증거
+- 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물이 imported-output 또는 live service import 경로로 제출되고 collection 전체가 Matrix/report/export/completion gate를 통과한 증거

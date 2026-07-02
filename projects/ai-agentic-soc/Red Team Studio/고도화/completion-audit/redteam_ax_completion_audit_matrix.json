@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 27,
+    "proved": 28,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -462,18 +462,33 @@
       "proof_summary": "The /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate API reads collection, report, report-export-approval, and export artifacts and checks that all Evidence candidates are approved, all approved Evidence has promoted Findings, all promoted Findings have two-person severity approval, Matrix status is matrix_draft_ready, report export gate snapshot passes, approval/report/export IDs match, and export status is Exported. Regression coverage verifies complete=true, blocker_count=0, no command execution, no active scan, no raw instruction trust, and artifact persistence for the tested npm audit + Trivy collection path. RedTeam2 UI exposes an E2E gate check button and Korean result table.",
       "residual_gap": "This proves the explicit completion gate for the tested collection path, not that all real operating scanner outputs have been collected and passed through the gate.",
       "next_action": "Run the completion gate against real governed Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP collection outputs after those outputs complete Evidence, Finding, Matrix, Report, approval, and export stages."
+    },
+    {
+      "id": "RTA-COMP-029",
+      "requirement": "Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP operator/service outputs must be attachable to one governed toolchain collection and pass the full Evidence, Finding, Matrix, Report, export, and completion-gate lane without executing scanner commands from the import path.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The governed toolchain execution path now accepts operator/imported output artifacts per step, stores inline output as untrusted artifacts, records run status OutputImported, increments imported_count, and keeps commands_executed_by_api=false. Regression coverage drives all six named tools through offline_parse imported outputs, collection normalization, six Evidence candidates, Evidence approval, six Finding drafts, two-person severity approval, Matrix ready rows, Korean Report v2 draft, Executive Sponsor export approval, export artifact, and completion gate complete=true with blocker_count=0. RedTeam2 UI now exposes an operator result attachment mode beside local runner execution and includes Korean guidance that attached outputs are not trusted as instructions.",
+      "residual_gap": "This proves the full six-tool imported-output contract with representative operator/service outputs, not that real organization OpenVAS/ZAP endpoints, Docker runtime, or every operating scanner artifact has been submitted and approved.",
+      "next_action": "Use the operator result attachment mode or live service import outputs with real governed Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP artifacts, then require the same completion gate complete=true."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
-    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output or live service import path, collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion.",
     "Actual operating toolchain collection Evidence candidates must be batch-approved, promoted, severity-approved, passed through Matrix/report draft gates, final export approval/export verification, and the collection completion gate across real scanner outputs."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
-    "Run /api/redteam/v2/toolchains/{toolchain_id}/collect-results against real governed scanner outputs and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates.",
+    "Run /api/redteam/v2/toolchains/{toolchain_id}/collect-results against real governed scanner outputs submitted through imported-output or live service import paths and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates.",
     "Repeat the now-tested collection final export approval/export verification lane against real approved toolchain collection Findings.",
     "Run /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate against real operating scanner collections and require complete=true."
   ]

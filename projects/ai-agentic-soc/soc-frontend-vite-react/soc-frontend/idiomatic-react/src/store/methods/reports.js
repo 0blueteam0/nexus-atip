@@ -3152,8 +3152,17 @@ export default {
       wrapperVersionCommand:'',
       wrapperVersionOutput:'',
       runnerBackend:'local_subprocess_shim',
-      compositeToolIds:'TOOL-NPM-AUDIT-001,TOOL-TRIVY-001',
+      compositeInputMode:'operator_import',
+      compositeToolIds:'TOOL-NUCLEI-001,TOOL-OPENVAS-001,TOOL-TRIVY-001,TOOL-SCA-001,TOOL-NPM-AUDIT-001,TOOL-ZAP-001',
       compositeRunnerCommands:'npm.cmd --version\ntrivy --version',
+      compositeImportedOutputs:[
+        '{"template-id":"sample-panel","info":{"name":"승인 범위 웹 패널 후보","severity":"low"},"matched-at":"http://127.0.0.1:30001/#/"}',
+        '<report><results><result><id>ov-sample</id><name>OpenVAS 승인 보고서 후보</name><threat>Low</threat><severity>2.0</severity><host>127.0.0.1</host><port>443/tcp</port><description>사람이 내보낸 OpenVAS 보고서 항목입니다.</description></result></results></report>',
+        '{"Results":[{"Target":"package-lock.json","Vulnerabilities":[{"VulnerabilityID":"CVE-SAMPLE-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"LOW","Title":"Trivy 후보"}]}]}',
+        '{"vulnerabilities":[{"id":"CVE-SAMPLE-SCA","package":{"name":"example-lib"},"severity":"low","source":"operator-sbom"}]}',
+        '{"vulnerabilities":{"vite":{"name":"vite","severity":"low","via":[{"source":"CVE-SAMPLE-NPM"}],"range":"<5.0.0","fixAvailable":true}}}',
+        '{"site":[{"@name":"http://127.0.0.1:30001","alerts":[{"pluginid":"10021","name":"ZAP passive 후보","riskdesc":"Low","confidence":"Medium","instances":[{"uri":"http://127.0.0.1:30001/#/"}]}]}]}',
+      ].join('\n---REDTEAM-AX-TOOL---\n'),
       credentialToolId:'TOOL-OPENVAS-001',
       credentialRef:'vault://redteam/openvas/lab-readonly',
       credentialEndpointRef:'https://openvas.lab.example',
@@ -3661,19 +3670,40 @@ export default {
       .split(/\n/)
       .map(item => item.trim())
       .filter(Boolean);
+    const inputMode = String(draft.compositeInputMode || 'runner').trim();
+    const importedOutputs = String(draft.compositeImportedOutputs || '')
+      .split(/\n---REDTEAM-AX-TOOL---\n/)
+      .map(item => item.trim());
     if (toolIds.length < 2) {
       this.toast('복합 실행에는 분석도구를 2개 이상 입력하세요', 'warn');
       return;
     }
-    const tools = toolIds.map((toolId, index) => ({
-      tool_id:toolId,
-      execution_mode:'sandbox_execute',
-      runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
-      runner_argv:(commands[index] || '').split(/\s+/).filter(Boolean),
-      target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
-      objective:`${reportId} 복합 분석도구 실행 ${index + 1}`,
-    }));
-    if (tools.some(step => !step.runner_argv.length)) {
+    const tools = toolIds.map((toolId, index) => {
+      const base = {
+        tool_id:toolId,
+        target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+        objective:`${reportId} 복합 분석도구 ${index + 1}`,
+      };
+      if (inputMode === 'operator_import') {
+        return {
+          ...base,
+          execution_mode:'offline_parse',
+          imported_output:importedOutputs[index] || '',
+          output_summary:'사람이 승인 범위에서 수행하거나 서비스에서 내보낸 결과를 첨부합니다.',
+        };
+      }
+      return {
+        ...base,
+        execution_mode:'sandbox_execute',
+        runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
+        runner_argv:(commands[index] || '').split(/\s+/).filter(Boolean),
+      };
+    });
+    if (inputMode === 'operator_import' && tools.some(step => !String(step.imported_output || '').trim())) {
+      this.toast('운영자 결과 첨부 모드에서는 도구 수만큼 결과 본문을 구분선으로 나누어 입력하세요', 'warn');
+      return;
+    }
+    if (inputMode !== 'operator_import' && tools.some(step => !step.runner_argv.length)) {
       this.toast('각 분석도구에 실행 명령을 한 줄씩 입력하세요', 'warn');
       return;
     }
@@ -3695,7 +3725,7 @@ export default {
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
       this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:data.status || 'executed', result:data, error:null, checkedAt:new Date().toISOString() } }));
-      this.toast(`복합 분석도구 실행: ${data.status}`, data.executed_count ? 'success' : 'warn');
+      this.toast(`복합 분석도구 처리: ${data.status}`, (data.executed_count || data.imported_count) ? 'success' : 'warn');
       this.logAudit('현재 분석가', `레드팀 분석2 복합 도구 실행: ${data.toolchain_id} · ${data.status}`);
     } catch (err) {
       this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
@@ -5269,7 +5299,7 @@ export default {
     ];
     const toolchainRows = [
       ['복합 실행 상태', koValue(toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainRun.toolchain_id || '두 개 이상 분석도구와 명령을 입력하세요'],
-      ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
+      ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
       ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
@@ -5698,9 +5728,9 @@ export default {
           executionPlan.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `plan: ${executionPlan.artifact_path}`) : null,
           runnerRun.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `run: ${runnerRun.artifact_path}`) : null,
           h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
-            h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행합니다. 각 단계는 별도 ToolActionCard, 실행 계획, 실행 토큰, 래퍼 신뢰 고정 조건을 통과해야 하며 결과 stdout/stderr는 산출물로 회수됩니다.'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
+            h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행·결과 첨부'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행하거나, 사람이 승인 범위에서 수행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 첨부합니다. 첨부 모드는 도구 명령을 실행하지 않고 저장된 결과만 untrusted artifact로 기록합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr 또는 운영자 첨부 결과만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence 입니다. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들고, severity 2인 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. red_team_lead와 business_owner가 같은 severity를 승인해야 Finding이 approved가 되며, 보고서 생성은 Matrix gate 이후에만 진행합니다.'),
@@ -5709,14 +5739,24 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 최종 export 게이트는 Report v2 draft의 report_id를 최종 게이트 패널에 자동 연결한 뒤 Executive Sponsor 승인을 받은 경우에만 내보내기를 허용합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection E2E 완료 게이트는 /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate 입니다. 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 한 번에 점검합니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
+              h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '복합 처리 방식',
+                h('select', {
+                  value:draft.compositeInputMode || 'operator_import',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeInputMode:e.target.value }),
+                  style:{ ...inputStyle, marginTop:'5px' },
+                },
+                  h('option', { value:'operator_import' }, '운영자 결과 첨부 - 명령 실행 없음'),
+                  h('option', { value:'runner' }, '승인된 로컬 runner 실행'))),
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
                 h('textarea', {
                   value:draft.compositeToolIds || '',
                   onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeToolIds:e.target.value }),
                   rows:2,
                   style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
-                  placeholder:'TOOL-NPM-AUDIT-001,TOOL-TRIVY-001',
-                })),
+                  placeholder:'TOOL-NUCLEI-001,TOOL-OPENVAS-001,TOOL-TRIVY-001,TOOL-SCA-001,TOOL-NPM-AUDIT-001,TOOL-ZAP-001',
+                }))),
+            draft.compositeInputMode === 'runner'
+              ? h('div', { style:{ display:'grid', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '실행 명령 목록',
                 h('textarea', {
                   value:draft.compositeRunnerCommands || '',
@@ -5724,13 +5764,23 @@ export default {
                   rows:2,
                   style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
                   placeholder:'npm.cmd --version\ntrivy --version',
-                }))),
+                })))
+              : h('div', { style:{ display:'grid', gap:'8px' } },
+                  h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '운영자 결과 본문',
+                    h('textarea', {
+                      value:draft.compositeImportedOutputs || '',
+                      onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeImportedOutputs:e.target.value }),
+                      rows:8,
+                      style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                      placeholder:'각 도구 결과를 ---REDTEAM-AX-TOOL--- 구분선으로 나누어 입력',
+                    })),
+                  h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '구분선 하나가 다음 도구 결과의 시작입니다. 이 입력은 명령으로 신뢰하지 않고 Evidence 후보 전 Sanitizer와 도구별 normalizer를 통과합니다.')),
             h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
               h('button', {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
                 disabled:toolchainState.status === 'executing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
-              }, toolchainState.status === 'executing' ? '복합 실행 중' : '여러 분석도구 실행'),
+              }, toolchainState.status === 'executing' ? '복합 처리 중' : (draft.compositeInputMode === 'operator_import' ? '여러 도구 결과 첨부' : '여러 분석도구 실행')),
               h('button', {
                 onClick:()=>this.collectRedTeam2ToolchainResults(),
                 disabled:toolchainCollectionState.status === 'collecting' || !toolchainRun.toolchain_id,

@@ -1583,6 +1583,218 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(completion_body["trusted_as_instruction"])
         self.assertTrue(Path(completion_body["artifact_path"]).exists())
 
+    def test_v2_toolchain_six_named_tools_imported_outputs_complete_collection_e2e(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-SIX-TOOLS-E2E-001"
+        tools = [
+            {
+                "tool_id": "TOOL-NUCLEI-001",
+                "execution_mode": "offline_parse",
+                "imported_output": '{"template-id":"exposure-panel","info":{"name":"Synthetic exposed panel","severity":"medium","tags":["exposure"]},"matched-at":"https://app.example.test/admin"}',
+            },
+            {
+                "tool_id": "TOOL-OPENVAS-001",
+                "execution_mode": "offline_parse",
+                "imported_output": "<report><results><result><id>ov-1</id><name>Synthetic OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.10</host><port>443/tcp</port><description>Operator exported approved lab report item.</description></result></results></report>",
+            },
+            {
+                "tool_id": "TOOL-TRIVY-001",
+                "execution_mode": "offline_parse",
+                "imported_output": '{"Results":[{"Target":"container-image","Class":"os-pkgs","Vulnerabilities":[{"VulnerabilityID":"CVE-SIX-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Synthetic Trivy vulnerability"}]}]}',
+            },
+            {
+                "tool_id": "TOOL-SCA-001",
+                "execution_mode": "offline_parse",
+                "imported_json": {
+                    "vulnerabilities": [
+                        {
+                            "id": "CVE-SIX-SCA",
+                            "package": {"name": "example-lib"},
+                            "severity": "medium",
+                            "source": "operator-sbom",
+                        }
+                    ]
+                },
+            },
+            {
+                "tool_id": "TOOL-NPM-AUDIT-001",
+                "execution_mode": "offline_parse",
+                "imported_output": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-SIX-NPM"}],"range":"<5.0.0","fixAvailable":true}}}',
+            },
+            {
+                "tool_id": "TOOL-ZAP-001",
+                "execution_mode": "offline_parse",
+                "imported_output": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Synthetic ZAP passive alert","riskdesc":"Low","confidence":"Medium","cweid":"16","wascid":"15","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+            },
+        ]
+
+        executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-SIX-TOOLS-E2E-001",
+            "requested_by": "analyst@example.com",
+            "objective": "Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 운영자 산출물을 하나의 collection으로 끝까지 검증한다.",
+            "tools": tools,
+        })
+        self.assertEqual(executed.status_code, 200)
+        executed_body = executed.json()
+        self.assertEqual(executed_body["kind"], "redteam_ax_v2_governed_toolchain_execution")
+        self.assertEqual(executed_body["status"], "imported")
+        self.assertEqual(executed_body["tool_count"], 6)
+        self.assertEqual(executed_body["executed_count"], 0)
+        self.assertEqual(executed_body["imported_count"], 6)
+        self.assertEqual(executed_body["blocked_count"], 0)
+        self.assertFalse(executed_body["commands_executed_by_api"])
+        self.assertFalse(executed_body["trusted_as_instruction"])
+        self.assertTrue(executed_body["requires_human_validation"])
+        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        })
+        for step in executed_body["steps"]:
+            self.assertEqual(step["status"], "imported")
+            self.assertEqual(step["plan"]["status"], "PlanReady")
+            self.assertEqual(step["run"]["status"], "OutputImported")
+            self.assertIsNone(step["run"]["runner_attempt"])
+            self.assertTrue(step["run"]["raw_artifacts"])
+
+        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-SIX-TOOLS-E2E-001/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "6개 지정 분석도구 운영자 산출물을 Evidence 후보로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        body = collected.json()
+        self.assertEqual(body["status"], "collected")
+        self.assertEqual(body["step_count"], 6)
+        self.assertEqual(body["collected_count"], 6)
+        self.assertEqual(body["blocked_count"], 0)
+        self.assertEqual(body["evidence_candidate_count"], 6)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["raw_output_trusted_as_instruction"])
+        for step in body["steps"]:
+            self.assertEqual(step["status"], "collected")
+            self.assertEqual(step["normalized_result"]["status"], "Normalized")
+            self.assertGreaterEqual(step["normalized_result"]["structured_item_count"], 1)
+            self.assertEqual(step["normalized_result"]["input_source"], "stored_artifacts")
+            self.assertEqual(step["evidence_candidate"]["status"], "created")
+
+        evidence_ids = [step["evidence_candidate"]["evidence_id"] for step in body["steps"]]
+        approved = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/approve-evidence",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "reviewed_by": "lead@example.com",
+                "reviewer_role": "red_team_lead",
+                "decision": "approve",
+                "evidence_ids": evidence_ids,
+            },
+        )
+        self.assertEqual(approved.status_code, 200)
+        self.assertEqual(approved.json()["approved_count"], 6)
+
+        promoted = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/promote-findings",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+                "evidence_ids": evidence_ids,
+                "owner": "security-owner",
+                "sla": "30 days",
+            },
+        )
+        self.assertEqual(promoted.status_code, 200)
+        promotion_body = promoted.json()
+        self.assertEqual(promotion_body["status"], "finding_drafts_created")
+        self.assertEqual(promotion_body["created_count"], 6)
+        finding_ids = [item["finding_id"] for item in promotion_body["promotions"]]
+
+        severity_approved = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/approve-finding-severity",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+            },
+        )
+        self.assertEqual(severity_approved.status_code, 200)
+        self.assertEqual(severity_approved.json()["approved_count"], 6)
+
+        matrix = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/matrix-draft",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "title": "Six Tool Collection Matrix Draft Test",
+            },
+        )
+        self.assertEqual(matrix.status_code, 200)
+        self.assertEqual(matrix.json()["ready_claim_count"], 6)
+
+        report_draft = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/matrix-draft/report-draft",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "title": "Six Tool Collection Report Draft Test",
+            },
+        )
+        self.assertEqual(report_draft.status_code, 200)
+        report_body = report_draft.json()
+        self.assertEqual(report_body["status"], "report_draft_generated")
+        self.assertEqual(report_body["report"]["gate_status"], "pass")
+        self.assertFalse(report_body["report"].get("errors"))
+
+        export_approval = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report']['report_id']}/approve-export",
+            headers=self.session_headers("executive-sponsor@example.com"),
+            json={
+                "case_id": case_id,
+                "approved_by": "executive-sponsor@example.com",
+                "approver_role": "executive_sponsor",
+            },
+        )
+        self.assertEqual(export_approval.status_code, 200)
+        export_approval_body = export_approval.json()
+        self.assertEqual(export_approval_body["gate_snapshot"]["unsupported_claim_count"], 0)
+        self.assertEqual(export_approval_body["gate_snapshot"]["finding_without_evidence_count"], 0)
+        exported = self.client.post(
+            f"/api/redteam/v2/reports/{report_body['report']['report_id']}/export",
+            json={
+                "case_id": case_id,
+                "approval_id": export_approval_body["approval_id"],
+            },
+        )
+        self.assertEqual(exported.status_code, 200)
+        exported_body = exported.json()
+        self.assertEqual(exported_body["status"], "Exported")
+
+        completion_gate = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/completion-gate",
+            json={
+                "case_id": case_id,
+                "report_id": report_body["report"]["report_id"],
+                "approval_id": export_approval_body["approval_id"],
+                "export_id": exported_body["export_id"],
+            },
+        )
+        self.assertEqual(completion_gate.status_code, 200)
+        completion_body = completion_gate.json()
+        self.assertEqual(completion_body["status"], "collection_e2e_complete")
+        self.assertTrue(completion_body["complete"])
+        self.assertEqual(completion_body["candidate_evidence_count"], 6)
+        self.assertEqual(completion_body["approved_evidence_count"], 6)
+        self.assertEqual(completion_body["promoted_finding_count"], 6)
+        self.assertEqual(completion_body["approved_finding_count"], 6)
+        self.assertEqual(completion_body["blocker_count"], 0)
+        self.assertFalse(completion_body["commands_executed_by_api"])
+        self.assertFalse(completion_body["active_scan_executed"])
+        self.assertFalse(completion_body["trusted_as_instruction"])
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

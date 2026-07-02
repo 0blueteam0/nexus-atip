@@ -885,3 +885,11 @@ Create Case
 - RedTeam2 UI는 `E2E 완료 게이트 점검` 버튼과 Evidence/Finding/Matrix/Report/Export 결과 표를 제공한다.
 - regression test는 복합 npm audit + Trivy collection의 기존 lane 끝에서 completion gate가 `collection_e2e_complete`, blocker 0건, 명령 실행 없음으로 통과하는지 검증한다.
 - 이 slice는 테스트된 collection의 완료 검증 증거를 만들지만, 실제 운영 scanner 전체 collection이 같은 게이트를 통과했다는 실측 증거는 후속 작업으로 남긴다.
+
+## 42. Slice 87 반영 사항
+
+- `/api/redteam/v2/toolchains/execute-governed`는 이제 step별 `operator_output`, `imported_output`, `imported_json`, `raw_artifacts`를 받아 저장된 untrusted artifact로 기록할 수 있다.
+- imported-output 경로는 `offline_parse` 중심으로 동작하며 scanner 명령, 능동 스캔, shell expansion을 실행하지 않는다. 결과 run은 `OutputImported`, toolchain은 `imported_count`로 표시된다.
+- Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 도구의 대표 운영자/서비스 결과가 하나의 toolchain collection으로 들어가고, Evidence 후보 6개, Evidence 승인, Finding 초안 6개, 2인 severity 승인, Matrix ready 6개 row, Report v2 draft, 최종 export, completion gate `complete=true`까지 통과하는 regression test를 추가했다.
+- RedTeam2 UI는 `운영자 결과 첨부 - 명령 실행 없음`과 `승인된 로컬 runner 실행` 모드를 분리한다. 첨부 모드는 `---REDTEAM-AX-TOOL---` 구분선으로 도구별 결과를 입력하고, 사용자가 실행과 첨부를 혼동하지 않도록 한국어 안내를 표시한다.
+- 이 slice는 6개 지정 도구 전체가 같은 collection/report/export/completion lane을 통과할 수 있음을 증명하지만, 실제 조직 OpenVAS/ZAP endpoint, Docker runtime, 운영 scanner artifact 제출·승인 완료를 대신 증명하지는 않는다.
