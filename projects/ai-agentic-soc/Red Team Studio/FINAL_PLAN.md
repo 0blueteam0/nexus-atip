@@ -1572,3 +1572,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영 산출물 manifest 가져오기` textarea/button과 `source_path`/`sha256` 한국어 안내 추가
 - [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 manifest import anchor 반영
 - [ ] 실제 운영 scanner 파일 manifest를 제출하고 Evidence 승인, Finding 승격, severity 승인, Matrix/Report v2, export, completion gate까지 통과
+
+## 97. Slice 89 운영 산출물 Manifest Builder 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/build-artifact-manifest` API 추가
+- [x] workspace 내부 폴더만 읽고 Docker/WSL/scanner/network/shell/active scan 실행 없음
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 파일명 패턴으로 도구별 후보 선택
+- [x] 선택 파일마다 SHA-256과 content type을 계산해 `/toolchains/import-artifact-manifest` payload 생성
+- [x] unmatched 파일과 대체 후보를 기록해 운영자가 검토 가능
+- [x] regression test가 builder payload를 기존 import API에 제출해 6개 파일 `OutputImported` 경로를 검증
+- [x] RedTeam2 UI에 `운영 산출물 폴더 경로`, `폴더에서 manifest 만들기` 버튼, 자동 JSON 반영 추가
+- [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 builder anchor 반영
+- [ ] 실제 운영 scanner 폴더에서 builder를 실행하고 생성 manifest를 제출해 Evidence/Finding/Matrix/Report/export/completion gate 완료

@@ -290,6 +290,11 @@ def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any
     return redteam_v2_models.import_toolchain_artifact_manifest(payload)
 
 
+@router.post("/toolchains/build-artifact-manifest")
+def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_toolchain_artifact_manifest(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

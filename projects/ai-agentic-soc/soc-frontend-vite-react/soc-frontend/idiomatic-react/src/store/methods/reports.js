@@ -3163,6 +3163,7 @@ export default {
         '{"vulnerabilities":{"vite":{"name":"vite","severity":"low","via":[{"source":"CVE-SAMPLE-NPM"}],"range":"<5.0.0","fixAvailable":true}}}',
         '{"site":[{"@name":"http://127.0.0.1:30001","alerts":[{"pluginid":"10021","name":"ZAP passive 후보","riskdesc":"Low","confidence":"Medium","instances":[{"uri":"http://127.0.0.1:30001/#/"}]}]}]}',
       ].join('\n---REDTEAM-AX-TOOL---\n'),
+      compositeArtifactManifestSourceDir:'J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example',
       compositeArtifactManifestJson:'{\n  "artifacts": [\n    {"tool_id":"TOOL-NUCLEI-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/nuclei.jsonl","sha256":"<sha256>","content_type":"application/x-ndjson"},\n    {"tool_id":"TOOL-OPENVAS-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/openvas.xml","sha256":"<sha256>","content_type":"application/xml"},\n    {"tool_id":"TOOL-TRIVY-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/trivy.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-SCA-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/sca.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-NPM-AUDIT-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/npm-audit.json","sha256":"<sha256>","content_type":"application/json"},\n    {"tool_id":"TOOL-ZAP-001","source_path":"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example/zap.json","sha256":"<sha256>","content_type":"application/json"}\n  ]\n}',
       credentialToolId:'TOOL-OPENVAS-001',
       credentialRef:'vault://redteam/openvas/lab-readonly',
@@ -3731,6 +3732,48 @@ export default {
     } catch (err) {
       this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
       this.toast('복합 분석도구 실행 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async buildRedTeam2ToolchainArtifactManifest() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const sourceDir = String(draft.compositeArtifactManifestSourceDir || '').trim();
+    if (!sourceDir) {
+      this.toast('운영 산출물 폴더 경로를 입력하세요', 'warn');
+      return;
+    }
+    const toolIds = String(draft.compositeToolIds || '')
+      .split(/[,\n]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+    this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'manifest-building', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/build-artifact-manifest', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          toolchain_id:`${reportId}-TOOLCHAIN-ARTIFACT-MANIFEST`,
+          requested_by:'current-analyst',
+          source_dir:sourceDir,
+          tool_ids:toolIds,
+          objective:'운영 산출물 폴더에서 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 파일을 찾아 SHA-256 manifest를 생성한다.',
+          target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      const nextManifest = data.import_payload ? JSON.stringify(data.import_payload, null, 2) : String(draft.compositeArtifactManifestJson || '');
+      this.updateRedTeam2AnalysisDraft({ compositeArtifactManifestJson:nextManifest });
+      this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:data.status || 'manifest-built', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(`운영 산출물 manifest 생성: ${data.artifact_count || 0}개`, data.status === 'ready_for_import' ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 운영 산출물 manifest 생성: ${data.toolchain_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('운영 산출물 manifest 생성 실패: ' + (err?.message || String(err)), 'warn');
     }
   }
 ,
@@ -5107,6 +5150,7 @@ export default {
       ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReviewArtifact.path || 'latest_tool_result_finding_claim_review.json'],
       ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, `${findingClaimReview.candidate_count ?? 0}개 후보 중 Evidence 승인 전 보류`],
       ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
+      ['운영 산출물 manifest builder API', '/api/redteam/v2/toolchains/build-artifact-manifest', '운영 산출물 폴더에서 scanner 결과 파일을 찾아 SHA-256 manifest를 만들고 명령은 실행하지 않습니다'],
       ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
       ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
       ['복합 Finding 초안 생성 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings', '승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다'],
@@ -5673,6 +5717,7 @@ export default {
             ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReview.status === 'finding_claim_review_ready' ? C.green : C.amber, `${findingClaimReview.candidate_count ?? 0}개 후보`],
             ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, findingClaimReview.held_candidate_count ? C.amber : C.green, 'Evidence 승인 전 보류'],
             ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', C.blue, '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
+            ['운영 산출물 manifest builder API', '/api/redteam/v2/toolchains/build-artifact-manifest', C.blue, '운영 산출물 폴더에서 scanner 결과 파일을 찾아 SHA-256 manifest를 만들고 명령은 실행하지 않습니다'],
             ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', C.blue, 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
             ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', C.blue, '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
             ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', C.blue, '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
@@ -5822,8 +5867,15 @@ export default {
                     })),
                    h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '구분선 하나가 다음 도구 결과의 시작입니다. 이 입력은 명령으로 신뢰하지 않고 Evidence 후보 전 Sanitizer와 도구별 normalizer를 통과합니다.')),
             h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'8px', display:'grid', gap:'8px' } },
-              h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영 산출물 manifest 가져오기'),
-              h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '운영 산출물 manifest는 source_path와 sha256을 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.'),
+              h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영 산출물 manifest 만들기·가져오기'),
+              h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '운영 산출물 manifest builder는 폴더 안의 scanner 결과 파일을 찾아 SHA-256을 계산합니다. 운영 산출물 manifest는 source_path와 sha256을 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.'),
+              h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '운영 산출물 폴더 경로',
+                h('input', {
+                  value:draft.compositeArtifactManifestSourceDir || '',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeArtifactManifestSourceDir:e.target.value }),
+                  style:{ ...inputStyle, marginTop:'5px', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                  placeholder:'J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/example',
+                })),
               h('textarea', {
                 value:draft.compositeArtifactManifestJson || '',
                 onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeArtifactManifestJson:e.target.value }),
@@ -5837,6 +5889,11 @@ export default {
                 disabled:toolchainState.status === 'executing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainState.status === 'executing' ? '복합 처리 중' : (draft.compositeInputMode === 'operator_import' ? '여러 도구 결과 첨부' : '여러 분석도구 실행')),
+              h('button', {
+                onClick:()=>this.buildRedTeam2ToolchainArtifactManifest(),
+                disabled:toolchainState.status === 'manifest-building',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.teal}`, background:toolchainState.status === 'manifest-building' ? C.raised : C.bg, color:toolchainState.status === 'manifest-building' ? C.muted : C.teal, cursor:toolchainState.status === 'manifest-building' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainState.status === 'manifest-building' ? 'manifest 만드는 중' : '폴더에서 manifest 만들기'),
               h('button', {
                 onClick:()=>this.importRedTeam2ToolchainArtifactManifest(),
                 disabled:toolchainState.status === 'manifest-importing',

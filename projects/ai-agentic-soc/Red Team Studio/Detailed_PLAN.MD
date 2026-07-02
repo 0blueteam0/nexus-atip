@@ -903,3 +903,12 @@ Create Case
 - RedTeam2 UI는 `운영 산출물 manifest 가져오기` textarea와 버튼을 제공한다. 초급 운영자에게 `source_path`와 `sha256` 확인, 명령·능동 스캔 미실행, 검증된 파일만 toolchain collection으로 연결한다는 문구를 표시한다.
 - regression test는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 fixture 파일을 source_path/SHA-256 manifest로 가져오고, bad SHA-256 negative case와 이후 `/collect-results` Evidence 후보 6개 생성을 검증한다.
 - 이 slice는 실제 파일 기반 운영 산출물 제출 경로를 닫지만, 실제 조직 scanner 산출물의 사람 승인, Evidence 승인, Finding 승격, Matrix/Report/export/completion gate 완료는 후속 운영 실측 증거가 필요하다.
+
+## 44. Slice 89 반영 사항
+
+- `/api/redteam/v2/toolchains/build-artifact-manifest`는 운영자가 지정한 workspace 폴더에서 scanner 결과 파일을 찾고 SHA-256을 계산해 import payload를 만든다.
+- builder는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP의 일반 파일명 패턴을 사용해 도구별 후보를 하나씩 선택하고, 같은 도구의 대체 후보와 unmatched 파일을 기록한다.
+- API는 workspace 내부 디렉터리만 읽고 Docker, WSL, scanner, network, shell, active scan을 실행하지 않는다. 반환 record에는 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`가 남는다.
+- RedTeam2 UI는 `운영 산출물 폴더 경로` 입력, `폴더에서 manifest 만들기` 버튼, builder가 만든 JSON을 `운영 산출물 manifest 가져오기` textarea에 자동 반영하는 흐름을 제공한다.
+- regression test는 6개 scanner 파일과 unmatched JSON 파일이 있는 폴더에서 manifest를 만들고, 생성된 import payload를 기존 `/toolchains/import-artifact-manifest`에 제출해 6개 파일이 `OutputImported`로 들어가는지 검증한다.
+- 이 slice는 운영자의 SHA-256 manifest 작성 부담을 줄이지만, 실제 운영 scanner 산출물의 제출·승인·보고서 완료 자체를 대신하지 않는다.

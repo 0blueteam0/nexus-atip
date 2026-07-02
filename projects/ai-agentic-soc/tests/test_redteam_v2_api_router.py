@@ -1878,6 +1878,55 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertGreaterEqual(step["normalized_result"]["structured_item_count"], 1)
             self.assertEqual(step["evidence_candidate"]["status"], "created")
 
+    def test_v2_toolchain_artifact_manifest_builder_maps_workspace_files_without_execution(self) -> None:
+        case_id = "CASE-V2-TOOLCHAIN-ARTIFACT-MANIFEST-BUILDER-001"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "2026-nuclei-results.jsonl": '{"template-id":"builder-panel","info":{"name":"Builder panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "openvas-report.xml": "<report><results><result><id>builder-openvas</id><name>Builder OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.20</host><port>443/tcp</port></result></results></report>",
+            "trivy-container.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-BUILDER-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "service-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-BUILDER-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "npm-audit-web.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-BUILDER-NPM"}]}}}',
+            "zap-passive-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Builder ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+            "operator-notes.json": '{"note":"not a scanner artifact"}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        built = self.client.post("/api/redteam/v2/toolchains/build-artifact-manifest", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-ARTIFACT-MANIFEST-BUILDER-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "objective": "운영자 산출물 디렉터리에서 6개 scanner 파일 manifest를 생성한다.",
+        })
+        self.assertEqual(built.status_code, 200)
+        built_body = built.json()
+        self.assertEqual(built_body["kind"], "redteam_ax_v2_toolchain_artifact_manifest_builder")
+        self.assertEqual(built_body["status"], "ready_for_import")
+        self.assertEqual(built_body["artifact_count"], 6)
+        self.assertEqual(built_body["unmatched_file_count"], 1)
+        self.assertFalse(built_body["commands_executed_by_api"])
+        self.assertFalse(built_body["active_scan_executed"])
+        self.assertFalse(built_body["trusted_as_instruction"])
+        self.assertTrue(Path(built_body["artifact_path"]).exists())
+
+        import_payload = built_body["import_payload"]
+        self.assertEqual(import_payload["toolchain_id"], "TCHAIN-ARTIFACT-MANIFEST-BUILDER-001")
+        self.assertEqual(len(import_payload["artifacts"]), 6)
+        for artifact in import_payload["artifacts"]:
+            self.assertRegex(artifact["sha256"], r"^[a-f0-9]{64}$")
+            self.assertTrue(Path(artifact["source_path"]).exists())
+            self.assertIn("detected_by", artifact)
+
+        imported = self.client.post("/api/redteam/v2/toolchains/import-artifact-manifest", json=import_payload)
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["status"], "imported")
+        self.assertEqual(imported_body["imported_count"], 6)
+        self.assertFalse(imported_body["commands_executed_by_api"])
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

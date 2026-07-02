@@ -154,6 +154,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolchainCollectionReportExport
 - ToolchainCollectionCompletionGate
 - ToolchainImportedOutput
+- ToolchainArtifactManifestBuilder
 - ToolchainArtifactManifestImport
 - ToolResultAnalysisBrief
 - ToolResultFindingClaimReview
@@ -185,7 +186,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 13. collection Report v2 draft가 생성한 `report_id`는 `/api/redteam/v2/reports/{report_id}/approve-export`에서 Executive Sponsor 승인과 report gate snapshot 재검사를 통과한 뒤에만 `/api/redteam/v2/reports/{report_id}/export`로 내보낼 수 있다.
 14. collection의 실제 완료 여부는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate`로 검증하며, 이 API는 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate pass, export 완료를 확인한다.
 15. Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 결과가 사람이 수행했거나 서비스에서 export된 산출물인 경우 `/api/redteam/v2/toolchains/execute-governed` step의 `operator_output`, `imported_output`, `imported_json`, `raw_artifacts`로 첨부한다. 이 경로는 도구 명령을 실행하지 않고 `OutputImported` run과 `imported_count`만 기록하며, 이후 collection/approval/Finding/Matrix/Report/export/completion gate는 동일하게 적용한다.
-16. 운영자가 scanner 결과 파일을 이미 보유한 경우 `/api/redteam/v2/toolchains/import-artifact-manifest`에 `tool_id`, `source_path`, `sha256`, `content_type` manifest를 제출한다. 이 API는 workspace path와 SHA-256을 검증한 뒤 파일을 raw artifact로 가져오며, 도구 명령·능동 스캔·shell expansion을 실행하지 않는다. 이후 `/collect-results`, Evidence 승인, Finding 승격, severity 승인, Matrix/Report/export/completion gate는 동일하게 적용한다.
+16. 운영자가 scanner 결과 파일을 이미 보유한 경우 먼저 `/api/redteam/v2/toolchains/build-artifact-manifest`로 workspace 폴더를 읽어 도구별 후보 파일과 SHA-256 manifest를 만들 수 있다. 이 builder는 파일명 패턴과 hash 계산만 수행하며 도구 명령·능동 스캔·network 호출을 실행하지 않는다.
+17. 검토된 manifest는 `/api/redteam/v2/toolchains/import-artifact-manifest`에 `tool_id`, `source_path`, `sha256`, `content_type` 형태로 제출한다. 이 API는 workspace path와 SHA-256을 검증한 뒤 파일을 raw artifact로 가져오며, 도구 명령·능동 스캔·shell expansion을 실행하지 않는다. 이후 `/collect-results`, Evidence 승인, Finding 승격, severity 승인, Matrix/Report/export/completion gate는 동일하게 적용한다.
 
 ## 남은 작업
 

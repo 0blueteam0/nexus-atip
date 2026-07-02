@@ -3632,6 +3632,158 @@ def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any
     return record
 
 
+def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()
+    chain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("source_dir"), "artifact-manifest-build"]))
+    raw_source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    requested_tool_ids = [
+        str(item).strip()
+        for item in (payload.get("tool_ids") or [
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        ])
+        if str(item).strip()
+    ]
+    recursive = bool(payload.get("recursive", False))
+    max_scan_files = int(payload.get("max_scan_files") or 200)
+    errors: list[str] = []
+    warnings: list[str] = []
+    candidate_files: list[Path] = []
+
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not raw_source_dir:
+        errors.append("source_dir_required")
+    if len(requested_tool_ids) > 6:
+        errors.append("too_many_tool_ids_for_manifest_builder")
+
+    source_dir: Path | None = None
+    if raw_source_dir:
+        source_dir = Path(raw_source_dir)
+        if not source_dir.is_absolute():
+            source_dir = PROJECT_ROOT / source_dir
+        source_dir = source_dir.resolve()
+        project_root = PROJECT_ROOT.resolve()
+        if not is_relative_to_path(source_dir, project_root):
+            errors.append("source_dir_outside_workspace")
+        elif not source_dir.exists():
+            errors.append("source_dir_not_found")
+        elif not source_dir.is_dir():
+            errors.append("source_dir_must_be_directory")
+
+    if not errors and source_dir is not None:
+        iterator = source_dir.rglob("*") if recursive else source_dir.glob("*")
+        for path in iterator:
+            if len(candidate_files) >= max_scan_files:
+                warnings.append("max_scan_files_reached")
+                break
+            if not path.is_file():
+                continue
+            if path.stat().st_size > MAX_TOOL_ARTIFACT_BYTES:
+                warnings.append(f"{path.name}:source_file_exceeds_max_bytes")
+                continue
+            if path.suffix.lower() not in {".json", ".jsonl", ".ndjson", ".xml", ".txt", ".sarif", ".cyclonedx"}:
+                continue
+            candidate_files.append(path)
+
+    def content_type_for(path: Path) -> str:
+        return {
+            ".json": "application/json",
+            ".jsonl": "application/x-ndjson",
+            ".ndjson": "application/x-ndjson",
+            ".xml": "application/xml",
+            ".txt": "text/plain",
+            ".sarif": "application/sarif+json",
+            ".cyclonedx": "application/json",
+        }.get(path.suffix.lower(), "application/octet-stream")
+
+    patterns_by_tool = {
+        "TOOL-NUCLEI-001": ["*nuclei*.jsonl", "*nuclei*.ndjson", "*nuclei*.json", "*nuclei*.txt"],
+        "TOOL-OPENVAS-001": ["*openvas*.xml", "*gvm*.xml", "*greenbone*.xml"],
+        "TOOL-TRIVY-001": ["*trivy*.json", "*trivy*.sarif"],
+        "TOOL-SCA-001": ["*sca*.json", "*sbom*.json", "*cyclonedx*.json", "*.cyclonedx"],
+        "TOOL-NPM-AUDIT-001": ["*npm-audit*.json", "*npm_audit*.json", "*audit*.json"],
+        "TOOL-ZAP-001": ["*zap*.json", "*owasp-zap*.json", "*zaproxy*.json"],
+    }
+    artifacts: list[dict[str, Any]] = []
+    unmatched_files: list[str] = []
+    used_paths: set[str] = set()
+
+    for tool_id in requested_tool_ids:
+        profile = analysis_tool_profile(tool_id)
+        if profile is None:
+            warnings.append(f"{tool_id}:tool_profile_not_registered")
+            continue
+        patterns = patterns_by_tool.get(tool_id, [])
+        matches = [
+            path
+            for path in candidate_files
+            if path.as_posix() not in used_paths and any(fnmatch(path.name.lower(), pattern) for pattern in patterns)
+        ]
+        matches.sort(key=lambda item: (item.stat().st_mtime, item.name), reverse=True)
+        if not matches:
+            warnings.append(f"{tool_id}:artifact_candidate_not_found")
+            continue
+        selected = matches[0]
+        used_paths.add(selected.as_posix())
+        artifacts.append({
+            "tool_id": tool_id,
+            "source_path": selected.as_posix(),
+            "sha256": sha256_file(selected),
+            "content_type": content_type_for(selected),
+            "summary": f"{profile.get('display_name') or tool_id} operator scanner output selected by manifest builder.",
+            "artifact_id": stable_id("ART", [case_id, chain_id, tool_id, selected.as_posix(), sha256_file(selected)]),
+            "detected_by": "filename_pattern",
+            "candidate_count": len(matches),
+            "alternative_paths": [path.as_posix() for path in matches[1:5]],
+        })
+
+    for path in candidate_files:
+        if path.as_posix() not in used_paths:
+            unmatched_files.append(path.as_posix())
+
+    if not errors and len(artifacts) < 2:
+        warnings.append("at_least_two_artifacts_required_for_import_ready_manifest")
+
+    import_payload = {
+        "case_id": case_id,
+        "toolchain_id": chain_id,
+        "requested_by": requested_by,
+        "objective": payload.get("objective") or "Operator scanner artifact manifest prepared from workspace files.",
+        "target_scope_refs": payload.get("target_scope_refs") or [],
+        "artifacts": artifacts,
+    }
+    record = {
+        "kind": "redteam_ax_v2_toolchain_artifact_manifest_builder",
+        "case_id": case_id,
+        "toolchain_id": chain_id,
+        "requested_by": requested_by,
+        "status": "invalid" if errors else ("ready_for_import" if len(artifacts) >= 2 else "needs_more_artifacts"),
+        "errors": errors,
+        "warnings": warnings,
+        "source_dir": source_dir.as_posix() if source_dir is not None else raw_source_dir,
+        "recursive": recursive,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "hash_algorithm": "sha256",
+        "tool_count": len(requested_tool_ids),
+        "artifact_count": len(artifacts),
+        "unmatched_file_count": len(unmatched_files),
+        "unmatched_files": unmatched_files[:20],
+        "import_payload": import_payload,
+        "policy": "Manifest builder scans workspace files only, computes SHA-256, and prepares an import payload; scanner commands and active scans are not executed.",
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(record, "toolchain-runs", f"{chain_id}-manifest-builder")
+    return record
+
+
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
