@@ -1725,3 +1725,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 진행 상태 anchor 반영
 - [x] regression test가 두 개 설치 도구 mock 실행의 한국어 진행 상태와 100% 완료 진행률을 검증
 - [ ] 실제 설치된 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 실행 또는 운영자 제출 결과를 이용해 Evidence/Finding/Matrix/report/export/completion gate까지 완료
+
+## 109. Slice 101 도구 결과 LLM 에이전트 요약 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 응답에 `analysis_agent_summaries` 추가
+- [x] 각 step에 `analysis_agent_summary`를 붙여 도구별 LLM 분석 에이전트, normalizer, parser, sanitizer 상태, Evidence 후보 ID를 추적
+- [x] `trusted_as_instruction=false`, `requires_human_validation=true`, `requires_evidence_approval_before_finding=true`를 agent summary에도 명시
+- [x] 한국어 `summary_ko`, `next_action_ko`, `evidence_use_limit_ko`로 승인 전 Finding/Report Claim 금지 조건 표시
+- [x] RedTeam2 UI에 `LLM 분석 에이전트 요약` 및 `증거 사용 제한` 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 새 anchor 반영
+- [x] regression test가 npm audit/Trivy collection의 agent ID와 Evidence 후보 제한 문구를 검증
+- [ ] 실제 운영 도구 산출물 collection에서 agent summary를 확인하고 Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료

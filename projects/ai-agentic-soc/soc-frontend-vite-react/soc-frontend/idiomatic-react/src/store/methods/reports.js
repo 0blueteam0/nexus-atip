@@ -5906,6 +5906,7 @@ export default {
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
       ['복합 결과 회수', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
       ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
+      ['LLM 분석 에이전트 요약', `${toolchainCollection.analysis_agent_summary_count ?? 0}개`, '도구별 normalizer와 Evidence 사용 제한을 표시'],
       ['Evidence 후보 승인', koValue(toolchainEvidenceApproval.status || toolchainEvidenceApprovalState.status || '대기'), toolchainEvidenceApprovalState.error || `${toolchainEvidenceApproval.approved_count ?? 0}개 승인 · ${toolchainEvidenceApproval.invalid_count ?? 0}개 오류`],
       ['Finding 초안 생성', koValue(toolchainFindingPromotion.status || toolchainFindingPromotionState.status || '대기'), toolchainFindingPromotionState.error || `${toolchainFindingPromotion.created_count ?? 0}개 생성 · ${toolchainFindingPromotion.blocked_count ?? 0}개 차단`],
       ['Finding 심각도 2인 승인', koValue(toolchainFindingSeverity.status || toolchainFindingSeverityState.status || '대기'), toolchainFindingSeverityState.error || `${toolchainFindingSeverity.approved_count ?? 0}개 승인 · ${toolchainFindingSeverity.pending_count ?? 0}개 대기`],
@@ -5935,6 +5936,12 @@ export default {
       koValue(step.status),
       step.normalized_result?.result_id || step.sanitize_preview?.preview_id || (step.errors || []).join(', ') || '-',
       step.evidence_candidate?.evidence_id || 'Evidence 후보 대기',
+    ]);
+    const toolchainAgentSummaryRows = (toolchainCollection.analysis_agent_summaries || []).map(item => [
+      item.agent_name || item.agent_id || item.tool_id || '-',
+      item.summary_ko || '-',
+      item.next_action_ko || '결과 회수 뒤 표시됩니다',
+      item.evidence_use_limit_ko || '승인된 Evidence Card와 심각도 승인 전에는 보고서 주장에 사용할 수 없습니다.',
     ]);
     const toolchainEvidenceApprovalRows = (toolchainEvidenceApproval.approvals || []).map(item => [
       item.evidence_id || '-',
@@ -6659,6 +6666,7 @@ export default {
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
+            this.renderTable(['LLM 분석 에이전트 요약','요약','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),
             this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']]),

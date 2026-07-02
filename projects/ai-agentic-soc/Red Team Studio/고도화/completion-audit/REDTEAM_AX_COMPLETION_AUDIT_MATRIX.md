@@ -5,7 +5,7 @@ zk_type: evidence
 para: Projects
 status: active_incomplete
 created: 2026-07-02
-updated: 2026-07-02
+updated: 2026-07-03
 canonical_path: J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md
 project: Red Team Studio
 source_path:
@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 41 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 42 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -51,6 +51,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2의 여러 분석도구 순차 실행 UI와 governed multi-toolchain execution API
 - governed multi-toolchain execution API가 `progress_percent`, `progress_events`, `status_ko`, `operator_message_ko`, `next_action_ko`를 반환하고 RedTeam2 UI가 `도구 진행` 표로 한국어 진행 상태를 표시하는 계약
 - governed multi-toolchain run의 저장 stdout/stderr artifact를 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성으로 일괄 회수하는 `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` API와 한국어 UI
+- toolchain result collection이 `analysis_agent_summaries`와 step별 `analysis_agent_summary`로 도구별 LLM 분석 에이전트, normalizer, sanitizer/parser 맥락, Evidence 사용 제한, 승인 전 Claim 금지를 한국어 UI에 표시하는 계약
 - toolchain result collection의 Evidence 후보를 actor/reviewer identity binding으로 batch 승인하고 Finding/Claim/Report 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence` API와 한국어 UI
 - 승인된 toolchain result collection Evidence만 `pending_review` Finding 초안으로 승격하고 승인 전 Evidence는 차단하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API와 한국어 UI
 - collection에서 생성된 Finding 초안을 red_team_lead와 business_owner 2인 severity 승인으로 `approved` 상태까지 이동시키되 Matrix/report Claim 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API와 한국어 UI

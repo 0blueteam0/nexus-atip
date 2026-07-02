@@ -1370,11 +1370,16 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["collected_count"], 2)
         self.assertEqual(body["blocked_count"], 0)
         self.assertEqual(body["evidence_candidate_count"], 2)
+        self.assertEqual(body["analysis_agent_summary_count"], 2)
+        self.assertEqual(len(body["analysis_agent_summaries"]), 2)
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["raw_output_trusted_as_instruction"])
         self.assertTrue(body["requires_human_validation"])
         self.assertTrue(body["requires_evidence_approval_before_finding"])
         self.assertTrue(Path(body["artifact_path"]).exists())
+        agent_ids = {item["agent_id"] for item in body["analysis_agent_summaries"]}
+        self.assertIn("AGENT-NPM-AUDIT-ANALYST-001", agent_ids)
+        self.assertIn("AGENT-TRIVY-ANALYST-001", agent_ids)
         for step in body["steps"]:
             self.assertEqual(step["status"], "collected")
             self.assertEqual(step["sanitize_preview"]["status"], "allow")
@@ -1384,6 +1389,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(step["normalized_result"]["input_source"], "stored_artifacts")
             self.assertEqual(step["evidence_candidate"]["status"], "created")
             self.assertEqual(step["evidence_candidate"]["validation_status"], "candidate")
+            agent_summary = step["analysis_agent_summary"]
+            self.assertFalse(agent_summary["trusted_as_instruction"])
+            self.assertTrue(agent_summary["requires_human_validation"])
+            self.assertTrue(agent_summary["requires_evidence_approval_before_finding"])
+            self.assertIn("Evidence 후보", agent_summary["summary_ko"])
+            self.assertIn("승인 전", agent_summary["summary_ko"])
+            self.assertIn("untrusted data", agent_summary["evidence_use_limit_ko"])
 
         evidence_ids = [step["evidence_candidate"]["evidence_id"] for step in body["steps"]]
         blocked_promotion = self.client.post(

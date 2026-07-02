@@ -4926,6 +4926,7 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
     errors: list[str] = []
     warnings: list[str] = []
     collected_steps: list[dict[str, Any]] = []
+    analysis_agent_summaries: list[dict[str, Any]] = []
     if toolchain is None:
         errors.append("toolchain_run_required")
     if not requested_by:
@@ -4971,12 +4972,17 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
             "summary": payload.get("summary") or "Composite toolchain output collected for analyst review.",
             "result_type": payload.get("result_type") or "toolchain_result_evidence_candidate",
         })
+        agent = normalized.get("analysis_agent") if isinstance(normalized.get("analysis_agent"), dict) else {}
+        sanitizer = normalized.get("sanitizer_report") if isinstance(normalized.get("sanitizer_report"), dict) else {}
+        parser_report = normalized.get("parser_report") if isinstance(normalized.get("parser_report"), dict) else {}
+        structured_item_count = len(normalized.get("structured_items") or [])
+        agent_name = str(agent.get("name") or agent.get("agent_id") or "LLM result normalizer agent")
         step_record["normalized_result"] = {
             "result_id": normalized.get("result_id"),
             "status": normalized.get("status"),
-            "structured_item_count": len(normalized.get("structured_items") or []),
-            "parser": (normalized.get("parser_report") or {}).get("parser"),
-            "input_source": (normalized.get("parser_report") or {}).get("input_source"),
+            "structured_item_count": structured_item_count,
+            "parser": parser_report.get("parser"),
+            "input_source": parser_report.get("input_source"),
             "errors": normalized.get("errors") or [],
         }
         if normalized.get("errors"):
@@ -4997,6 +5003,39 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
             }
             if evidence.get("errors"):
                 step_record["errors"].extend(evidence.get("errors") or [])
+
+        evidence_id = (step_record.get("evidence_candidate") or {}).get("evidence_id")
+        agent_summary = {
+            "tool_id": step_record["tool_id"],
+            "run_id": run_id,
+            "result_id": normalized.get("result_id"),
+            "agent_id": agent.get("agent_id"),
+            "agent_name": agent_name,
+            "normalizer_id": normalized.get("normalizer_id"),
+            "parser": parser_report.get("parser"),
+            "input_source": parser_report.get("input_source"),
+            "sanitizer_status": sanitizer.get("status") or sanitizer.get("decision"),
+            "redaction_count": len(sanitizer.get("redactions") or []),
+            "structured_item_count": structured_item_count,
+            "evidence_id": evidence_id,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "requires_evidence_approval_before_finding": True,
+            "summary_ko": (
+                f"{step_record['tool_id']} 결과를 {agent_name}가 정규화했습니다. "
+                f"구조화 항목 {structured_item_count}건은 Evidence 후보이며 승인 전 Finding/Report Claim으로 확정하지 않습니다."
+            ),
+            "next_action_ko": (
+                "Evidence 후보를 검토·승인한 뒤 Finding 초안 생성 단계로 이동하세요."
+                if evidence_id else "정규화 결과와 sanitizer 오류를 먼저 확인한 뒤 Evidence 후보 생성을 재시도하세요."
+            ),
+            "evidence_use_limit_ko": (
+                "원시 도구 출력은 LLM 명령이 아니라 untrusted data이며, 승인된 Evidence Card와 "
+                "2인 severity 승인 전에는 보고서 주장에 사용할 수 없습니다."
+            ),
+        }
+        step_record["analysis_agent_summary"] = agent_summary
+        analysis_agent_summaries.append(agent_summary)
 
         step_record["status"] = "collected" if not step_record["errors"] else "collected_with_errors"
         collected_steps.append(step_record)
@@ -5020,6 +5059,8 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         "collected_count": collected_count,
         "blocked_count": blocked_count,
         "evidence_candidate_count": evidence_count,
+        "analysis_agent_summary_count": len(analysis_agent_summaries),
+        "analysis_agent_summaries": analysis_agent_summaries,
         "commands_executed_by_api": False,
         "raw_output_trusted_as_instruction": False,
         "requires_human_validation": True,

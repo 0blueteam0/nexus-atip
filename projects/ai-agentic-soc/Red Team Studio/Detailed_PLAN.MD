@@ -1021,3 +1021,13 @@ Create Case
 - RedTeam2 UI는 복합 실행 표에 `진행률`, `다음 행동` row를 추가하고, 별도 `도구 진행` 표로 execution plan, runner start, runner finish 또는 artifact import 이벤트를 표시한다.
 - regression test는 두 개 설치 도구 mock 실행이 `progress_percent=100`, `completed_step_count=2`, 한국어 `next_action_ko`, `operator_summary_ko`, `progress_events`, step `status_ko`를 반환하는지 검증한다.
 - 이 slice는 사용자가 프론트 버튼 실행 후 진행/결과 상태를 더 명확히 볼 수 있게 하지만, 실제 조직 승인 환경에서 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체를 실행하고 Evidence/Finding/Report/export gate를 닫는 작업은 아직 남아 있다.
+
+## 56. Slice 101 반영 사항
+
+- `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 응답에 `analysis_agent_summaries`와 `analysis_agent_summary_count`를 추가했다.
+- 각 collection step은 `analysis_agent_summary`를 포함해 도구 ID, run/result ID, LLM 분석 에이전트, normalizer, parser, sanitizer 상태, structured item 수, Evidence 후보 ID를 함께 표시한다.
+- 모든 summary는 `trusted_as_instruction=false`, `requires_human_validation=true`, `requires_evidence_approval_before_finding=true`를 고정해 원시 도구 출력을 LLM 명령이나 보고서 주장으로 취급하지 않도록 한다.
+- 한국어 `summary_ko`, `next_action_ko`, `evidence_use_limit_ko`를 제공해 초급 운영자가 “정규화된 항목은 Evidence 후보일 뿐이며 승인 전 Finding/Report Claim이 아니다”를 바로 확인할 수 있게 했다.
+- RedTeam2 UI는 `LLM 분석 에이전트 요약` 표를 추가해 결과 회수 뒤 도구별 normalizer 판단과 증거 사용 제한을 표시한다.
+- regression test는 npm audit/Trivy mock 복합 실행 후 collection 결과가 두 개의 agent summary를 만들고, NPM/Trivy 에이전트 ID, Evidence 후보 문구, untrusted data 제한, 사람 검토 조건을 보존하는지 검증한다.
+- 이 slice는 결과 회수의 설명 가능성을 높이지만, 실제 운영 도구 산출물 전체의 Evidence 승인, Finding 승격, severity 2인 승인, Matrix/report/export/completion gate는 계속 별도 완료 조건으로 남아 있다.

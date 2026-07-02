@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 41,
+    "proved": 42,
     "partial": 1
   },
   "audit_items": [
@@ -712,6 +712,24 @@
       "proof_summary": "The /api/redteam/v2/toolchains/execute-governed response now returns completed_step_count, progress_percent, current_stage_ko, operator_summary_ko, next_action_ko, progress_events, and per-step status_ko/operator_message_ko/progress_percent. Regression coverage verifies two governed installed-tool runner steps reach progress_percent=100, return Korean next action and summary text, and expose runner_start/runner_finish progress events. RedTeam2 UI adds progress and next-action rows plus a Korean tool progress table using these response fields.",
       "residual_gap": "This proves progress/status visibility for governed runner and import paths, not that all actual organization-approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP runs have been executed and closed through Evidence, Finding, Matrix, Report, export, and completion gates.",
       "next_action": "Run the governed toolchain path with real installed tools or approved operator artifacts, collect results, approve Evidence, promote Findings, approve severity with two people, generate Matrix/Report v2, approve/export, and verify completion gate."
+    },
+    {
+      "id": "RTA-COMP-043",
+      "requirement": "Toolchain result collection must expose per-tool LLM analysis agent summaries, sanitizer/parser context, Evidence-use limits, and human-approval constraints before findings or report claims can be created.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The collect-results API now returns analysis_agent_summaries and per-step analysis_agent_summary rows with agent identity, normalizer, parser, sanitizer status, structured item counts, Evidence candidate IDs, trusted_as_instruction=false, requires_human_validation=true, and requires_evidence_approval_before_finding=true. RedTeam2 displays a Korean LLM analysis agent summary table and evidence-use limitation. Regression and frontend sanity anchors verify the NPM audit and Trivy collection path.",
+      "residual_gap": "This proves visibility and guardrail metadata during collection, not that real organization tool outputs have been approved, promoted to findings, severity-approved, reported, exported, and completion-gated.",
+      "next_action": "Run collection on real approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs, review the LLM agent summaries, approve Evidence Cards, then complete Finding, severity, Matrix, Report v2, export, and completion-gate stages."
     }
   ],
   "remaining_gaps": [
@@ -728,5 +746,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T03:58:00+09:00"
+  "last_updated": "2026-07-03T04:00:39Z"
 }
