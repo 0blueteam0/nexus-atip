@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 34,
+    "proved": 35,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -588,18 +588,37 @@
       "proof_summary": "The /api/redteam/v2/toolchains/operating-closure-human-review API loads or accepts an operating closure submission package, requires six checklist confirmations, four approver signoffs matching the package approvers, runtime blocker disposition, and final_close_authorized=true before returning ready_for_human_close_execution with an approved_close_api_payload. Regression proves incomplete review is review_required, complete review stores an artifact, and commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false, requires_separate_close_execution=true. RedTeam2 exposes Korean '운영 closure 사람 검토 기록' controls and checklist/signature tables.",
       "residual_gap": "This proves the HITL review-record lane with controlled workspace files. It does not prove that real organization scanner outputs and real approver identities have completed final close.",
       "next_action": "After generating a real operating closure submission package, record the human review with real approver signoffs and blocker disposition, then execute the close-operating API as a separate HITL step."
+    },
+    {
+      "id": "RTA-COMP-036",
+      "requirement": "Final operating scanner closure must have a guarded API path that refuses arbitrary close payload overrides and executes only an approved close payload from a ready human review record.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/execute-reviewed-operating-close API requires a ready operating-closure-human-review record, refuses override_close_api_payload by warning and ignoring it, and calls the existing close-operating-artifact-manifest-e2e lane only with approved_close_api_payload from the review artifact. Regression proves missing review and incomplete review block, complete review returns reviewed_operating_close_complete, override payload is ignored, and commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false. RedTeam2 exposes Korean '검토 완료 운영 closure 실행' controls.",
+      "residual_gap": "This proves the guarded reviewed close execution path with controlled workspace files. It does not prove that a real organization scanner folder and real approver identities have been used.",
+      "next_action": "Run submission package, human review, and execute-reviewed-operating-close against a real operator scanner-output folder with real approver identities."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
-    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
     "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
-    "Run /api/redteam/v2/toolchains/operating-closure-submission-package against a real operator scanner-output folder with real approver identities, record /operating-closure-human-review with real signoffs and blocker disposition, then run /close-operating-artifact-manifest-e2e after reviewing blockers.",
+    "Run /api/redteam/v2/toolchains/operating-closure-submission-package against a real operator scanner-output folder with real approver identities, record /operating-closure-human-review with real signoffs and blocker disposition, then run /execute-reviewed-operating-close after reviewing blockers.",
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ]

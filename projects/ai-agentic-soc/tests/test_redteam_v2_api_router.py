@@ -2246,6 +2246,109 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(review["requires_separate_close_execution"])
         self.assertTrue(Path(review["artifact_path"]).exists())
 
+    def test_v2_execute_reviewed_operating_close_requires_ready_human_review(self) -> None:
+        case_id = f"CASE-V2-REVIEWED-OPERATING-CLOSE-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "execute-nuclei.jsonl": '{"template-id":"execute-panel","info":{"name":"Execute panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "execute-openvas.xml": "<report><results><result><id>execute-openvas</id><name>Execute OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.42</host><port>443/tcp</port></result></results></report>",
+            "execute-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-EXECUTE-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "execute-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-EXECUTE-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "execute-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-EXECUTE-NPM"}]}}}',
+            "execute-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Execute ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        missing = self.client.post("/api/redteam/v2/toolchains/execute-reviewed-operating-close", json={
+            "case_id": case_id,
+            "requested_by": "operator@example.com",
+        })
+        self.assertEqual(missing.status_code, 200)
+        missing_body = missing.json()
+        self.assertEqual(missing_body["status"], "blocked")
+        self.assertIn("human_review_required", missing_body["errors"])
+        self.assertFalse(missing_body["commands_executed_by_api"])
+        self.assertFalse(missing_body["active_scan_executed"])
+
+        package = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-REVIEWED-OPERATING-CLOSE-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(package.status_code, 200)
+        package_body = package.json()
+
+        incomplete_review = self.client.post("/api/redteam/v2/toolchains/operating-closure-human-review", json={
+            "case_id": case_id,
+            "package_id": package_body["package_id"],
+            "reviewed_by": "lead@example.com",
+            "source_dir_verified": True,
+        }).json()
+        blocked = self.client.post("/api/redteam/v2/toolchains/execute-reviewed-operating-close", json={
+            "case_id": case_id,
+            "review_id": incomplete_review["review_id"],
+            "requested_by": "operator@example.com",
+        })
+        self.assertEqual(blocked.status_code, 200)
+        blocked_body = blocked.json()
+        self.assertEqual(blocked_body["status"], "blocked")
+        self.assertIn("human_review_not_ready", blocked_body["errors"])
+        self.assertIsNone(blocked_body["close_result"])
+
+        ready_review = self.client.post("/api/redteam/v2/toolchains/operating-closure-human-review", json={
+            "case_id": case_id,
+            "package_id": package_body["package_id"],
+            "reviewed_by": "lead@example.com",
+            "runtime_blocker_disposition": "accepted",
+            "final_close_authorized": True,
+            "checklist": {
+                "source_dir_verified": True,
+                "manifest_reviewed": True,
+                "approvers_verified": True,
+                "runtime_blockers_reviewed": True,
+                "close_payload_reviewed": True,
+                "no_scanner_execution_confirmed": True,
+            },
+            "approver_signoffs": {
+                "reviewed_by": "lead@example.com",
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+                "export_approver": "executive-sponsor@example.com",
+            },
+        }).json()
+        reviewed_close = self.client.post("/api/redteam/v2/toolchains/execute-reviewed-operating-close", json={
+            "case_id": case_id,
+            "review_id": ready_review["review_id"],
+            "requested_by": "operator@example.com",
+            "override_close_api_payload": {
+                "source_dir": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/not-used",
+            },
+        })
+        self.assertEqual(reviewed_close.status_code, 200)
+        body = reviewed_close.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_reviewed_operating_close_execution")
+        self.assertEqual(body["status"], "reviewed_operating_close_complete")
+        self.assertTrue(body["complete"])
+        self.assertEqual(body["review_id"], ready_review["review_id"])
+        self.assertEqual(body["approved_close_api_payload_used"]["source_dir"], source_dir.as_posix())
+        self.assertIn("override_close_api_payload_ignored", body["warnings"])
+        self.assertEqual(body["close_result"]["status"], "operating_collection_e2e_complete")
+        self.assertTrue(body["close_result"]["complete"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_ready_human_review"])
+        self.assertTrue(body["refuses_payload_override"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

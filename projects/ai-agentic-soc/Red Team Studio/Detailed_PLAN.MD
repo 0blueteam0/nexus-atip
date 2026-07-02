@@ -948,3 +948,13 @@ Create Case
 - RedTeam2 UI는 `운영 closure 사람 검토 기록` 버튼과 `운영 closure 사람 검토`, `운영 closure 서명` 표를 추가했다.
 - regression test는 checklist/signoff/final authorization 누락 시 `review_required`, 모든 검토 항목 충족 시 `ready_for_human_close_execution`과 승인된 close payload 보존을 검증한다.
 - 이 slice는 실제 close 전 사람 검토 증적을 강화하지만, 실제 조직 scanner 산출물 폴더와 실제 승인자로 final close를 수행한 운영 실측 증거는 아직 필요하다.
+
+## 49. Slice 94 반영 사항
+
+- `/api/redteam/v2/toolchains/execute-reviewed-operating-close`는 ready human review record의 `approved_close_api_payload`만 사용해 운영 close를 실행하는 guarded API다.
+- API는 `review_id`가 없거나 human review가 `ready_for_human_close_execution`이 아니면 `blocked`로 남긴다.
+- `override_close_api_payload`가 전달되면 warning으로 기록하고 무시해, 사람이 검토하지 않은 payload로 final close를 우회하지 못하게 한다.
+- 내부적으로 기존 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e` lane을 호출하지만 scanner, Docker, WSL, network scan, shell expansion을 실행하지 않고 기존 운영 산출물 파일만 사용한다.
+- RedTeam2 UI는 `검토 완료 운영 closure 실행` 버튼과 E2E 상태 row를 추가했다.
+- regression test는 review 누락/incomplete review 차단, complete review 기반 `reviewed_operating_close_complete`, override payload 무시, 안전 플래그 유지를 검증한다.
+- 이 slice는 reviewed close 실행 경로를 통제하지만, 실제 조직 산출물 폴더와 실제 승인자로 실행한 운영 실측 증거는 아직 필요하다.

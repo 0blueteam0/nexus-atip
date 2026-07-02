@@ -310,6 +310,11 @@ def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> 
     return redteam_v2_models.record_operating_toolchain_closure_human_review(payload)
 
 
+@router.post("/toolchains/execute-reviewed-operating-close")
+def execute_reviewed_operating_toolchain_close(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.execute_reviewed_operating_toolchain_close(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

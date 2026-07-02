@@ -2863,6 +2863,79 @@ def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> 
     return result
 
 
+def execute_reviewed_operating_toolchain_close(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    review = payload.get("human_review") if isinstance(payload.get("human_review"), dict) else None
+    review_id = str(payload.get("review_id") or (review or {}).get("review_id") or "").strip()
+    if review is None and review_id:
+        review = load_json_record(review_id, "toolchain-operating-closure-human-reviews", case_id=case_id)
+    review = review or {}
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or review.get("reviewed_by") or "current-analyst").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if not review:
+        errors.append("human_review_required")
+    if review and review.get("kind") != "redteam_ax_v2_operating_closure_human_review":
+        errors.append("invalid_human_review_kind")
+    if review and not review.get("ready_for_human_close_execution"):
+        errors.append("human_review_not_ready")
+    approved_payload = review.get("approved_close_api_payload") if isinstance(review.get("approved_close_api_payload"), dict) else None
+    if not approved_payload:
+        errors.append("approved_close_api_payload_required")
+    if payload.get("override_close_api_payload"):
+        warnings.append("override_close_api_payload_ignored")
+    if not requested_by:
+        errors.append("requested_by_required")
+
+    execution_id = stable_id("OCEXEC", [case_id, review_id, requested_by, now_utc()])
+    close_result: dict[str, Any] | None = None
+    if not errors and approved_payload is not None:
+        close_payload = {
+            **approved_payload,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "human_review_id": review.get("review_id") or review_id,
+            "package_id": review.get("package_id"),
+        }
+        close_result = close_operating_toolchain_artifact_manifest_e2e(close_payload)
+        if close_result.get("errors") or not close_result.get("complete"):
+            errors.extend(f"close:{error}" for error in (close_result.get("errors") or [close_result.get("status")]))
+
+    complete = not errors and bool((close_result or {}).get("complete"))
+    result = {
+        "kind": "redteam_ax_v2_reviewed_operating_close_execution",
+        "execution_id": execution_id,
+        "review_id": review.get("review_id") or review_id or None,
+        "package_id": review.get("package_id") or None,
+        "case_id": case_id,
+        "toolchain_id": (approved_payload or {}).get("toolchain_id") or review.get("toolchain_id") or payload.get("toolchain_id"),
+        "status": "reviewed_operating_close_complete" if complete else "blocked",
+        "complete": complete,
+        "requested_by": requested_by,
+        "close_result": close_result,
+        "approved_close_api_payload_used": approved_payload if not errors else None,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_existing_operator_artifacts": True,
+        "requires_ready_human_review": True,
+        "refuses_payload_override": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "blocked이면 human review ready 상태와 approved_close_api_payload를 먼저 확인합니다.",
+            "이 API는 사람이 검토한 payload만 사용하며 override payload는 무시합니다.",
+            "scanner, Docker, WSL, 네트워크 스캔 명령은 실행하지 않고 기존 운영 산출물 close lane만 호출합니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-reviewed-operating-close-executions", execution_id)
+    return result
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()

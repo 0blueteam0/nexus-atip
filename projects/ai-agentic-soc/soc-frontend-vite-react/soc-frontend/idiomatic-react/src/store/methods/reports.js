@@ -4249,6 +4249,42 @@ export default {
     }
   }
 ,
+  async executeRedTeam2ReviewedOperatingClose() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-operating-close');
+    const review = this.state.redteam2OperatingClosureReviewState?.result || {};
+    if (!review.review_id) {
+      this.toast('먼저 운영 closure 사람 검토 기록을 완료하세요', 'warn');
+      return;
+    }
+    const payload = {
+      case_id:caseId,
+      review_id:review.review_id,
+      requested_by:'current-analyst',
+    };
+    this.setState(s => ({ redteam2ReviewedOperatingCloseState:{ ...(s.redteam2ReviewedOperatingCloseState || {}), status:'reviewed-closing', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/execute-reviewed-operating-close', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.errors?.length) throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ReviewedOperatingCloseState:{ ...(s.redteam2ReviewedOperatingCloseState || {}), status:data.status || 'blocked', result:data, checkedAt:new Date().toISOString(), error:null },
+        redteam2ToolchainClosureState:data.close_result ? { ...(s.redteam2ToolchainClosureState || {}), status:data.close_result.status, result:data.close_result, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainClosureState || {}),
+      }));
+      this.toast(data.complete ? '검토 완료 운영 closure 실행 완료' : '검토 완료 운영 closure 실행 차단', data.complete ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 검토 완료 운영 closure 실행: ${data.review_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ReviewedOperatingCloseState:{ ...(s.redteam2ReviewedOperatingCloseState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('검토 완료 운영 closure 실행 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4981,6 +5017,7 @@ export default {
     const toolchainClosureState = this.state.redteam2ToolchainClosureState || {};
     const operatingClosurePackageState = this.state.redteam2OperatingClosurePackageState || {};
     const operatingClosureReviewState = this.state.redteam2OperatingClosureReviewState || {};
+    const reviewedOperatingCloseState = this.state.redteam2ReviewedOperatingCloseState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -5002,6 +5039,7 @@ export default {
     const toolchainClosure = toolchainClosureState.result || {};
     const operatingClosurePackage = operatingClosurePackageState.result || {};
     const operatingClosureReview = operatingClosureReviewState.result || {};
+    const reviewedOperatingClose = reviewedOperatingCloseState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -5150,6 +5188,8 @@ export default {
       ready_for_human_close_execution:'사람 검토 완료',
       review_required:'사람 검토 보완 필요',
       recording:'사람 검토 기록 중',
+      'reviewed-closing':'검토 완료 closure 실행 중',
+      reviewed_operating_close_complete:'검토 완료 운영 closure 완료',
       collected:'결과 회수 완료',
       collecting:'결과 회수 중',
       collected_with_blocks:'일부 결과 회수 차단',
@@ -5371,6 +5411,7 @@ export default {
       ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
       ['운영 closure 제출 패키지 API', '/api/redteam/v2/toolchains/operating-closure-submission-package', 'source_dir, 승인자 4명, runtime blocker, close-operating payload를 실행 전 검증합니다'],
       ['운영 closure 사람 검토 API', '/api/redteam/v2/toolchains/operating-closure-human-review', '제출 패키지 체크리스트, 승인자 서명, blocker 처리 방침을 실행 전 기록합니다'],
+      ['검토 완료 운영 closure 실행 API', '/api/redteam/v2/toolchains/execute-reviewed-operating-close', '사람 검토 record의 승인된 close payload만 사용해 별도 HITL close를 실행합니다'],
       ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
       ['복합 Finding 초안 생성 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings', '승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다'],
       ['복합 Finding 심각도 2인 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity', 'collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다'],
@@ -5667,6 +5708,7 @@ export default {
     const toolchainCompletionRows = [
       ['운영 closure 제출 패키지', operatingClosurePackage.ready_for_operating_close ? '준비 완료' : koValue(operatingClosurePackage.status || operatingClosurePackageState.status || '대기'), operatingClosurePackage.ready_for_operating_close ? 'close-operating payload 검토 가능' : (operatingClosurePackageState.error || 'source_dir과 승인자 4명 확인')],
       ['운영 closure 사람 검토', operatingClosureReview.ready_for_human_close_execution ? '검토 기록 완료' : koValue(operatingClosureReview.status || operatingClosureReviewState.status || '대기'), operatingClosureReview.ready_for_human_close_execution ? '승인된 close payload 보관됨' : (operatingClosureReviewState.error || '제출 패키지 확인 뒤 사람 검토 기록')],
+      ['검토 완료 운영 closure 실행', reviewedOperatingClose.complete ? '완료' : koValue(reviewedOperatingClose.status || reviewedOperatingCloseState.status || '대기'), reviewedOperatingClose.complete ? 'human review payload로 close 완료' : (reviewedOperatingCloseState.error || '사람 검토 완료 뒤 실행')],
       ['전체 닫기', toolchainClosure.complete ? '완료' : koValue(toolchainClosure.status || toolchainClosureState.status || '대기'), toolchainClosure.complete ? 'Evidence 승인부터 export까지 닫힘' : (toolchainClosureState.error || '명시 승인자 입력 후 실행')],
       ['완료 상태', toolchainCompletionGate.complete ? '완료' : koValue(toolchainCompletionGate.status || toolchainCompletionGateState.status || '대기'), toolchainCompletionGate.complete ? 'collection E2E 완료 증거' : (toolchainCompletionGateState.error || '보고서 내보내기 뒤 점검')],
       ['Evidence', `${toolchainCompletionGate.approved_evidence_count ?? 0}/${toolchainCompletionGate.candidate_evidence_count ?? 0}개 승인`, '모든 후보 Evidence 승인 필요'],
@@ -5966,6 +6008,7 @@ export default {
             ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', C.blue, 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
             ['운영 closure 제출 패키지 API', '/api/redteam/v2/toolchains/operating-closure-submission-package', C.blue, 'source_dir, 승인자 4명, runtime blocker, close-operating payload를 실행 전 검증합니다'],
             ['운영 closure 사람 검토 API', '/api/redteam/v2/toolchains/operating-closure-human-review', C.violet, '제출 패키지 체크리스트, 승인자 서명, blocker 처리 방침을 실행 전 기록합니다'],
+            ['검토 완료 운영 closure 실행 API', '/api/redteam/v2/toolchains/execute-reviewed-operating-close', C.green, '사람 검토 record의 승인된 close payload만 사용해 별도 HITL close를 실행합니다'],
             ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', C.blue, '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
             ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', C.blue, '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
             ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', C.blue, 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
@@ -6077,7 +6120,7 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 최종 export 게이트는 Report v2 draft의 report_id를 최종 게이트 패널에 자동 연결한 뒤 Executive Sponsor 승인을 받은 경우에만 내보내기를 허용합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection E2E 완료 게이트는 /api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate 입니다. 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 한 번에 점검합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Collection 전체 닫기 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e 입니다. 명시된 사람 승인자 정보를 받아 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 draft, export 승인, export, completion gate를 순서대로 수행하지만 scanner 명령과 능동 스캔은 실행하지 않습니다.'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 closure 제출 패키지 API는 /api/redteam/v2/toolchains/operating-closure-submission-package 입니다. source_dir, 승인자 4명, runtime blocker, close-operating payload를 먼저 검증하고 scanner 명령은 실행하지 않습니다. 사람 검토 API는 /api/redteam/v2/toolchains/operating-closure-human-review 입니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 closure 제출 패키지 API는 /api/redteam/v2/toolchains/operating-closure-submission-package 입니다. source_dir, 승인자 4명, runtime blocker, close-operating payload를 먼저 검증하고 scanner 명령은 실행하지 않습니다. 사람 검토 API는 /api/redteam/v2/toolchains/operating-closure-human-review 이며, 검토 완료 실행 API는 /api/redteam/v2/toolchains/execute-reviewed-operating-close 입니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 산출물 전체 닫기 API는 /api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e 입니다. 기존 운영 scanner 폴더를 manifest로 만들고 가져오기, 결과 회수, close-e2e까지 이어서 수행하지만 scanner, Docker, WSL, 네트워크 스캔 명령은 실행하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 산출물 manifest는 source_path와 sha256을 확인한 뒤 /api/redteam/v2/toolchains/import-artifact-manifest로 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
@@ -6217,6 +6260,11 @@ export default {
                 disabled:operatingClosureReviewState.status === 'recording' || !operatingClosurePackage.package_id,
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:operatingClosureReviewState.status === 'recording' ? C.raised : C.bg, color:(operatingClosureReviewState.status === 'recording' || !operatingClosurePackage.package_id) ? C.muted : C.violet, cursor:(operatingClosureReviewState.status === 'recording' || !operatingClosurePackage.package_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, operatingClosureReviewState.status === 'recording' ? '사람 검토 기록 중' : '운영 closure 사람 검토 기록'),
+              h('button', {
+                onClick:()=>this.executeRedTeam2ReviewedOperatingClose(),
+                disabled:reviewedOperatingCloseState.status === 'reviewed-closing' || !operatingClosureReview.review_id,
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:reviewedOperatingCloseState.status === 'reviewed-closing' ? C.raised : C.bg, color:(reviewedOperatingCloseState.status === 'reviewed-closing' || !operatingClosureReview.review_id) ? C.muted : C.green, cursor:(reviewedOperatingCloseState.status === 'reviewed-closing' || !operatingClosureReview.review_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, reviewedOperatingCloseState.status === 'reviewed-closing' ? '검토 완료 closure 실행 중' : '검토 완료 운영 closure 실행'),
               h('button', {
                 onClick:()=>this.closeRedTeam2OperatingArtifactManifestE2E(),
                 disabled:toolchainClosureState.status === 'operating-closing',

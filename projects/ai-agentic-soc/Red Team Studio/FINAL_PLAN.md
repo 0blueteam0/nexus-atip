@@ -1632,3 +1632,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영 closure 사람 검토 기록` 버튼과 검토/서명 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 human review anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 제출 패키지와 사람 검토 기록을 만든 뒤 close-operating API를 별도 HITL로 실행해 운영 실측 증거 확보
+
+## 102. Slice 94 검토 완료 운영 closure 실행 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/execute-reviewed-operating-close` API 추가
+- [x] `review_id`로 ready human review artifact를 로드하지 못하면 blocked 처리
+- [x] human review가 `ready_for_human_close_execution`이 아니면 close 실행 차단
+- [x] `approved_close_api_payload`가 없으면 close 실행 차단
+- [x] `override_close_api_payload`는 warning으로 기록하고 무시
+- [x] 기존 close-operating-artifact-manifest-e2e lane은 human review의 승인 payload로만 호출
+- [x] API는 scanner 명령, active scan, Docker/WSL/network 실행, shell expansion, raw output instruction 신뢰를 수행하지 않음
+- [x] regression test가 누락 review, incomplete review, ready review 기반 close 완료, override payload 무시를 검증
+- [x] RedTeam2 UI에 `검토 완료 운영 closure 실행` 버튼과 상태 row 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 reviewed close anchor 반영
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 submission package, human review, execute-reviewed-operating-close를 순서대로 실행해 운영 실측 증거 확보
