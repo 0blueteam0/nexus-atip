@@ -304,6 +304,82 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(preview["findings"][0]["finding_id"], finding["finding_id"])
         self.assertEqual(body["validation_preview"]["gate_status"], "pass")
 
+    def test_tool_result_report_draft_from_matrix_blocks_held_rows(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        response = self.client.post(
+            "/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft",
+            json={
+                "case_id": "CASE-V2-MATRIX-REPORT-HELD-001",
+                "candidate_ids": [candidate["candidate_id"]],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_tool_result_report_draft_from_matrix")
+        self.assertEqual(body["status"], "blocked")
+        self.assertFalse(body["report_generated"])
+        self.assertIsNone(body["report"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertIn("matrix_draft_has_no_ready_rows", body["errors"])
+        self.assertIn("matrix_draft_has_held_rows", body["errors"])
+        self.assertEqual(body["matrix_draft"]["held_claim_count"], 1)
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
+    def test_tool_result_report_draft_from_matrix_generates_after_matrix_ready(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        evidence_id = candidate["finding_payload"]["evidence_ids"][0]
+        case_id = "CASE-V2-MATRIX-REPORT-READY-001"
+        self.create_approved_evidence(case_id, evidence_id)
+
+        promotion = self.client.post(
+            f"/api/redteam/v2/tool-result-finding-claim-review/{candidate['candidate_id']}/promote-finding",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+            },
+        )
+        self.assertEqual(promotion.status_code, 200)
+        finding = promotion.json()["finding"]
+        severity = finding["severity_draft"]
+        for actor, role in (("lead@example.com", "red_team_lead"), ("owner@example.com", "business_owner")):
+            approval = self.client.post(
+                f"/api/redteam/v2/findings/{finding['finding_id']}/approve-severity",
+                headers=self.actor_headers(actor, role),
+                json={
+                    "case_id": case_id,
+                    "approved_by": actor,
+                    "approver_role": role,
+                    "severity_final": severity,
+                },
+            )
+            self.assertEqual(approval.status_code, 200)
+
+        response = self.client.post(
+            "/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft",
+            json={
+                "case_id": case_id,
+                "candidate_ids": [candidate["candidate_id"]],
+                "title": "Tool Result Matrix Report Draft Fixture",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "report_draft_generated")
+        self.assertTrue(body["report_generated"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertEqual(body["matrix_draft"]["ready_claim_count"], 1)
+        self.assertEqual(body["matrix_draft"]["held_claim_count"], 0)
+        self.assertEqual(body["validation_preview"]["gate_status"], "pass")
+        report = body["report"]
+        self.assertEqual(report["gate_status"], "pass")
+        self.assertIn("Claim-Evidence Matrix", report["report"]["sections"])
+        self.assertTrue(Path(report["report"]["artifact_path"]).exists())
+
     def create_offline_tool_run(self, case_id: str, action_id: str, tool_id: str) -> dict:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
             "case_id": case_id,

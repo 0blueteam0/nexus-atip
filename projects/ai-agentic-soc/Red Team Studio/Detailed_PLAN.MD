@@ -806,3 +806,13 @@ Create Case
 - API는 초안 artifact를 남기지만 Finding 생성, Claim 자동 삽입, 도구 실행, 능동 스캔을 하지 않는다.
 - RedTeam2 runtime readiness panel은 `Claim-Evidence Matrix 초안 API`와 “승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함” 조건을 한국어로 표시한다.
 - 이 slice는 최종 보고서 직전의 안전한 staging lane이며, 실제 운영 후보 전체의 승인·검증·보고서 반영은 후속 HITL 작업으로 남긴다.
+
+## 34. Slice 79 반영 사항
+
+- `/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft`는 Matrix draft를 기반으로 Korean Red Team Report v2 draft 생성을 시도한다.
+- API는 내부에서 Matrix draft를 먼저 만들고, ready row가 없거나 held row가 있으면 Report v2 draft 생성을 차단한다.
+- Matrix draft의 `validation_preview.gate_status`가 `pass`인 경우에만 기존 `generate_report`를 호출한다.
+- 생성된 report는 기존 Report v2 renderer와 gate를 사용하므로 문서 통제, Campaign Walkthrough, Evidence Card Index, Claim-Evidence Matrix, Findings, 재시험 계획 구조를 그대로 따른다.
+- API는 export 승인을 수행하지 않으며, `commands_executed_by_api=false`, `active_scan_executed=false`, `requires_human_validation=true`를 유지한다.
+- RedTeam2 runtime readiness panel은 `Matrix 기반 Report v2 draft API`와 `held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성` 조건을 표시한다.
+- 이 slice는 approved Matrix row에서 report draft까지 잇는 controlled lane이며, 실제 운영 후보 전체 ready와 final export approval은 후속 작업으로 남긴다.

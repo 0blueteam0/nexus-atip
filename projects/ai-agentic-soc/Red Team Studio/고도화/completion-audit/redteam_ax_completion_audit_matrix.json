@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 19,
+    "proved": 20,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -334,6 +334,22 @@
       "proof_summary": "The matrix-draft API builds per-candidate Claim-Evidence rows from the tool result Finding/Claim review package, holds rows until Evidence Card approval and two-person Finding severity approval are complete, includes only ready rows in report_validation_payload_preview, and runs the existing report validation gate only when ready rows exist. API tests cover both held and ready paths.",
       "residual_gap": "This proves guarded report-validation staging for selected candidates, not that every real operating candidate has been approved or that the final Korean report has been generated from all real tool results.",
       "next_action": "After real Evidence approvals and Finding severity approvals, run matrix-draft for all candidates and then generate/validate the final report with zero blockers."
+    },
+    {
+      "id": "RTA-COMP-021",
+      "requirement": "Approved Matrix draft rows must have a governed path into Korean Red Team Report v2 draft generation while held rows continue to block report generation.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The matrix-draft/report-draft API first creates a Matrix draft, blocks report generation when no ready rows exist or held rows remain, and calls the existing Korean Report v2 generator only when the Matrix validation preview passes. API tests cover held-row blocking and ready-row report draft generation with Claim-Evidence Matrix sections.",
+      "residual_gap": "This proves the controlled report-draft lane for selected ready candidates, not real operating completion across all tool result candidates or final export approval.",
+      "next_action": "Run the report-draft API only after all real operating candidates have approved Evidence, promoted Findings, two-person severity approvals, and Matrix draft ready status."
     }
   ],
   "remaining_gaps": [

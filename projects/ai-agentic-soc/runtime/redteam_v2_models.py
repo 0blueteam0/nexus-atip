@@ -5492,6 +5492,69 @@ def build_tool_result_claim_evidence_matrix_draft(payload: dict[str, Any]) -> di
     return append_artifact_metadata(result, "claim-evidence-matrix-drafts", draft_id)
 
 
+def generate_tool_result_report_draft_from_matrix(payload: dict[str, Any]) -> dict[str, Any]:
+    matrix_draft = build_tool_result_claim_evidence_matrix_draft(payload)
+    errors = list(matrix_draft.get("errors") or [])
+    if int(matrix_draft.get("ready_claim_count") or 0) <= 0:
+        errors.append("matrix_draft_has_no_ready_rows")
+    if int(matrix_draft.get("held_claim_count") or 0) > 0:
+        errors.append("matrix_draft_has_held_rows")
+    validation_preview = matrix_draft.get("validation_preview") or {}
+    if validation_preview.get("gate_status") not in {"pass"}:
+        errors.append(f"report_validation_not_pass:{validation_preview.get('gate_status') or 'unknown'}")
+
+    report_request_id = stable_id("TCRPT", [matrix_draft.get("draft_id"), errors, now_utc()])
+    if errors:
+        result = {
+            "kind": "redteam_ax_v2_tool_result_report_draft_from_matrix",
+            "report_request_id": report_request_id,
+            "case_id": matrix_draft.get("case_id") or "CASE-UNSPECIFIED",
+            "status": "blocked",
+            "report_generated": False,
+            "report": None,
+            "matrix_draft": matrix_draft,
+            "validation_preview": validation_preview,
+            "safe_by_default": True,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "errors": errors,
+            "next_human_actions_ko": [
+                "held row의 Evidence Card 승인과 Finding severity 2인 승인을 완료합니다.",
+                "Matrix draft의 모든 row가 ready_for_report_validation인지 확인합니다.",
+                "report gate blocker가 0건인 경우에만 Report v2 draft를 생성합니다.",
+            ],
+        }
+        return append_artifact_metadata(result, "tool-result-report-drafts", report_request_id)
+
+    report_payload = dict(matrix_draft.get("report_validation_payload_preview") or {})
+    report_payload["title"] = payload.get("title") or report_payload.get("title") or "Red Team Report v2 tool result draft"
+    report = generate_report(report_payload)
+    result = {
+        "kind": "redteam_ax_v2_tool_result_report_draft_from_matrix",
+        "report_request_id": report_request_id,
+        "case_id": matrix_draft.get("case_id") or report.get("case_id") or "CASE-UNSPECIFIED",
+        "status": "report_draft_generated" if report.get("gate_status") == "pass" else "blocked",
+        "report_generated": report.get("gate_status") == "pass",
+        "report": report,
+        "matrix_draft": matrix_draft,
+        "validation_preview": validation_preview,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "errors": [] if report.get("gate_status") == "pass" else [f"report_gate:{report.get('gate_status') or 'unknown'}"],
+        "next_human_actions_ko": [
+            "생성된 Report v2 draft를 사람이 검토합니다.",
+            "export 전 최종 승인과 report gate snapshot을 다시 확인합니다.",
+            "재시험 계획과 Evidence Card 연결이 누락되지 않았는지 검토합니다.",
+        ],
+    }
+    return append_artifact_metadata(result, "tool-result-report-drafts", report_request_id)
+
+
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip() or "CASE-UNSPECIFIED"
     evidence_ids = [str(item).strip() for item in (payload.get("evidence_ids") or []) if str(item).strip()]

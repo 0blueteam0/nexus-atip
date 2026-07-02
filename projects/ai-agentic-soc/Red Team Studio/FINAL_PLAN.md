@@ -1448,3 +1448,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 runtime readiness panel에 `Claim-Evidence Matrix 초안 API`와 승인 조건을 한국어로 표시
 - [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 Matrix draft API 반영
 - [ ] 실제 운영 후보 전체에 대해 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix draft ready, 최종 Report claim validation까지 통과
+
+## 87. Slice 79 Matrix 기반 Report v2 Draft API 체크리스트
+
+- [x] `/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft` API 추가
+- [x] API는 먼저 Matrix draft를 생성하고 ready/held row 상태를 검사
+- [x] ready row가 없거나 held row가 있으면 `blocked`, `report_generated=false`로 반환
+- [x] Matrix draft의 validation preview가 `pass`가 아닐 때 Report v2 draft 생성을 차단
+- [x] 모든 선택 후보가 `ready_for_report_validation`이면 기존 `generate_report`를 호출해 Korean Red Team Report v2 draft를 생성
+- [x] API는 도구 실행, 능동 스캔, export 승인을 수행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `requires_human_validation=true`를 유지
+- [x] API regression test가 held row 차단과 ready row report draft 생성 경로를 검증
+- [x] RedTeam2 runtime readiness panel에 `Matrix 기반 Report v2 draft API`와 held row 0건/report gate pass 조건을 한국어로 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 report-draft 조건 추가
+- [ ] 실제 운영 후보 전체가 ready가 된 뒤 이 API로 최종 Report v2 draft를 생성하고 export 승인/검증까지 통과
