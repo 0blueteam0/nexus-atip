@@ -958,4 +958,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API 응답 본문 전체를 저장하지 않고 endpoint/status/kind/actionId 요약으로 잘림 없는 JSON evidence 유지
 - [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
 - [x] 현재 live backend에서 RedTeam2 경로는 통과하지만 `/api/malax/latest`, `/api/malax/runs`는 SQLite `disk I/O error` 500을 기록함
-- [ ] MALAX sqlite disk I/O error의 원인 격리 및 Report Studio live noise 제거
+- [x] MALAX sqlite disk I/O error의 UI polling 500 noise 격리 - slice 40 완료
+- [ ] MALAX sqlite disk I/O error의 workspace/storage 원인 격리 및 복구
+
+## 48. Slice 40 MALAX Bridge Degraded Response 체크리스트
+
+- [x] `/api/malax/latest`가 MALAX core RecordStore 오류를 만나도 HTTP 500 대신 `degraded=true` payload 반환
+- [x] `/api/malax/latest` degraded payload는 내부 경로를 노출하지 않고 `core_bridge_error_type`과 `reason=malax_core_unavailable`만 반환
+- [x] `/api/malax/runs`가 MALAX core RecordStore 오류를 만나도 legacy run fallback 배열을 반환
+- [x] `tests/test_malax_bridge_degraded.py`가 SQLite `OperationalError` 회귀를 검증
+- [x] RedTeam v2 API 라우터 회귀 42개 통과
+- [x] 실제 live backend에서 `/api/malax/latest`, `/api/malax/runs` polling 500 로그가 사라지는지 확인
+- [x] polling이 있는 live Report Studio에서 browser smoke가 `networkidle`에 묶이지 않도록 `domcontentloaded` 기준으로 안정화
+- [ ] 다음 live browser smoke: Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증

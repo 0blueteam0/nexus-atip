@@ -120,7 +120,8 @@ try {
       bodyPrefix: body.slice(0, 500),
     });
   });
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.locator('body').waitFor({ state: 'visible', timeout: 10000 });
   await page.getByRole('button', { name: /보고서 스튜디오|Report Studio/ }).click({ timeout: 10000 }).catch(() => {});
   await page.getByRole('button', { name: /레드팀 분석2|RedTeam AX v2/ }).click({ timeout: 10000 }).catch(() => {});
   await page.waitForTimeout(2500);
