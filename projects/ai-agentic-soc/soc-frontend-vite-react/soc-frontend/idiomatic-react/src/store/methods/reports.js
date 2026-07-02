@@ -4437,6 +4437,8 @@ export default {
     const strictPromotion = strictPromotionArtifact.data || {};
     const liveRemediationArtifact = runtimeReadiness.live_readiness_remediation || {};
     const liveRemediation = liveRemediationArtifact.data || {};
+    const operatorEvidenceArtifact = runtimeReadiness.operator_evidence_collection || {};
+    const operatorEvidence = operatorEvidenceArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4510,6 +4512,8 @@ export default {
       blocked_strict_live_readiness_promotion:'실측 승격 게이트 차단',
       promotion_ready:'실측 승격 준비 완료',
       ready_for_operator_remediation:'운영자 조치 runbook 준비됨',
+      ready_for_operator_evidence_collection:'운영자 증거 수집 패키지 준비됨',
+      operator_evidence_inputs_ready:'증거 입력 준비됨',
       promotion_inputs_ready:'승격 입력 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
@@ -4701,13 +4705,17 @@ export default {
       ['승격 gate 결과', `${strictPromotion.passed_gate_count ?? 0}/${strictPromotion.promotion_gate_count ?? 4} 통과`, strictPromotion.failed_gate_count != null ? `${strictPromotion.failed_gate_count}개 실패` : 'strict promotion artifact 필요'],
       ['조치 runbook', koValue(liveRemediation.status || liveRemediationArtifact.status || '미확인'), liveRemediation.markdown_artifact_path || liveRemediationArtifact.path || 'latest_live_readiness_remediation_runbook.md'],
       ['남은 조치 단계', `${liveRemediation.blocked_step_count ?? '-'}개`, `${liveRemediation.step_count ?? 5}개 단계 중 운영자 조치 필요`],
+      ['증거 수집 패키지', koValue(operatorEvidence.status || operatorEvidenceArtifact.status || '미확인'), operatorEvidence.markdown_artifact_path || operatorEvidenceArtifact.path || 'latest_operator_evidence_collection_package.md'],
+      ['수집할 증거 항목', `${operatorEvidence.blocked_collection_item_count ?? '-'}개`, `${operatorEvidence.collection_item_count ?? 5}개 항목 중 운영자 증거 필요`],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
       ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
       ['네트워크 probe', externalScanner.network_probe_allowed ? '허용됨' : '기본 차단', externalScanner.network_probe_allowed ? '관리자가 명시 허용한 경우만 확인' : '기본값은 외부 서비스 호출 없음'],
       ['외부 vault reference', externalScanner.vault_reference_ready ? '준비됨' : '설정 필요', 'secret 값은 저장하지 않고 승인된 외부 vault reference만 사용'],
       ['API 명령 실행', koBool(runtimeReadiness.commands_executed_by_api ?? false), '상태 조회 API는 Docker나 scanner를 실행하지 않음'],
+      ['패키지 명령 실행', koBool(operatorEvidence.commands_executed_by_package ?? false), '증거 수집 패키지는 명령을 실행하지 않음'],
       ['능동 스캔 실행', koBool(runtimeReadiness.active_scan_executed ?? false), '항상 아니오여야 함'],
+      ['Secret 수집', koBool(operatorEvidence.secret_material_collected ?? false), 'secret 값은 수집하지 않음'],
       ['명령으로 신뢰 여부', koBool(runtimeReadiness.trusted_as_instruction ?? false), '항상 아니오 유지'],
     ];
     const liveRemediationDefaultStepRows = [
@@ -4724,6 +4732,22 @@ export default {
         item.owner ? `담당: ${koRole(item.owner)}` : null,
         (item.blockers || []).length ? `차단: ${(item.blockers || []).slice(0, 2).join(', ')}` : '차단 조건 없음',
         item.verification_command ? `확인: ${item.verification_command}` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
+    const operatorEvidenceDefaultRows = [
+      ['Docker Desktop daemon 준비 증거', '미확인', 'container runtime smoke 산출물을 Evidence Card 후보로 첨부'],
+      ['WSL 실행 환경 증거', '미확인', 'WSL readiness 산출물을 Evidence Card 후보로 첨부'],
+      ['OpenVAS/ZAP endpoint/vault 증거', '미확인', 'secret 값 없이 endpoint ref와 vault ref 승인 증거 첨부'],
+      ['Read-only report import 증거', '미확인', 'OpenVAS/ZAP read-only import 산출물 첨부'],
+      ['Strict promotion 증거', '미확인', 'strict live readiness promotion artifact 첨부'],
+    ];
+    const operatorEvidenceRows = (operatorEvidence.collection_items || []).map(item => [
+      item.title || item.item_id || '-',
+      koValue(item.current_step_status || '미확인'),
+      [
+        item.owner ? `담당: ${koRole(item.owner)}` : null,
+        (item.blockers || []).length ? `차단: ${(item.blockers || []).slice(0, 2).join(', ')}` : '차단 조건 없음',
+        item.required_evidence ? `증거: ${item.required_evidence}` : null,
       ].filter(Boolean).join(' · '),
     ]);
     const toolGuideProfiles = {
@@ -5118,6 +5142,8 @@ export default {
             ['승격 gate 결과', `${strictPromotion.passed_gate_count ?? 0}/${strictPromotion.promotion_gate_count ?? 4} 통과`, strictPromotion.failed_gate_count ? C.amber : C.green, strictPromotion.failed_gate_count != null ? `${strictPromotion.failed_gate_count}개 실패` : 'strict promotion artifact 필요'],
             ['조치 runbook', koValue(liveRemediation.status || liveRemediationArtifact.status || '미확인'), liveRemediation.blocked_step_count ? C.amber : C.green, `${liveRemediation.blocked_step_count ?? '-'}개 단계 남음`],
             ['남은 조치 단계', `${liveRemediation.blocked_step_count ?? '-'}개`, liveRemediation.blocked_step_count ? C.amber : C.green, `${liveRemediation.step_count ?? 5}개 단계 중 운영자 조치 필요`],
+            ['증거 수집 패키지', koValue(operatorEvidence.status || operatorEvidenceArtifact.status || '미확인'), operatorEvidence.blocked_collection_item_count ? C.amber : C.green, `${operatorEvidence.blocked_collection_item_count ?? '-'}개 항목 남음`],
+            ['수집할 증거 항목', `${operatorEvidence.blocked_collection_item_count ?? '-'}개`, operatorEvidence.blocked_collection_item_count ? C.amber : C.green, `${operatorEvidence.collection_item_count ?? 5}개 항목 중 운영자 증거 필요`],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
@@ -5133,6 +5159,11 @@ export default {
             h('div', { style:{ fontSize:'10px', color:C.muted, lineHeight:1.5 } },
               '기본 순서: Docker Desktop daemon 준비 → WSL 배포판 mount/start 복구 → OpenVAS/ZAP read-only endpoint와 vault reference 설정 → read-only report import 실측 → strict live readiness promotion'),
             this.renderTable(['조치 단계','상태','담당/차단/확인'], liveRemediationStepRows.length ? liveRemediationStepRows : liveRemediationDefaultStepRows)),
+          h('div', { style:{ display:'grid', gap:'6px' } },
+            h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영자 증거 수집 패키지'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '아래 항목은 실행 증거를 Evidence Card 후보로 첨부하기 위한 제출 목록입니다. 이 패키지는 명령을 실행하지 않고 secret 값을 수집하지 않습니다.'),
+            this.renderTable(['증거 항목','상태','담당/차단/필요 증거'], operatorEvidenceRows.length ? operatorEvidenceRows : operatorEvidenceDefaultRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
                 (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))

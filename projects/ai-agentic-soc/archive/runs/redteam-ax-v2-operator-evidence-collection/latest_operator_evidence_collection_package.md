@@ -1,0 +1,115 @@
+# RedTeam AX Operator Evidence Collection Package
+
+- status: `ready_for_operator_evidence_collection`
+- created_at: `2026-07-02T12:26:22Z`
+- collection_item_count: `5`
+- blocked_collection_item_count: `5`
+
+## Safety Boundary
+
+- This package does not execute commands.
+- Do not paste API keys, passwords, bearer tokens, cookies, or scanner secrets.
+- Attach generated sanity artifacts only after human review.
+
+## Collection Items
+
+### OEC-LRR-DOCKER-001 Docker Desktop daemon 준비
+
+- owner: `platform_operator`
+- current_step_status: `blocked`
+- blockers: `real_container_smoke_requires_allow_real`
+- required_evidence: `latest_container_runtime_smoke.json status=passed`
+
+Operator actions:
+- Docker Desktop을 시작하고 engine 상태가 Running인지 확인한다.
+- 프록시/VPN/Windows service 오류가 있으면 Docker Desktop 진단 로그를 확인한다.
+- 승인된 local image digest가 준비될 때까지 pull 또는 이미지 변경을 promotion gate가 자동 수행하지 않는다.
+
+Verification command:
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_container_runtime_smoke.py" --allow-real --require-real
+```
+
+### OEC-LRR-WSL-001 WSL 배포판 mount/start 복구
+
+- owner: `platform_operator`
+- current_step_status: `blocked`
+- blockers: `wsl_distribution_start_failed`
+- required_evidence: `latest_wsl_runtime_readiness.json status=ready`
+
+Operator actions:
+- wsl.exe -l -v로 대상 배포판 이름과 상태를 확인한다.
+- 현재 Ubuntu-22.04 VHDX mount/start 오류가 있으면 백업 후 복구하거나 새 승인된 분석 배포판을 만든다.
+- 배포판 안에서 node/npm/trivy/nuclei/docker/podman 경로가 필요한 경우 설치 증거를 남긴다.
+
+Verification command:
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_wsl_runtime_readiness.py" --allow-start --require-ready
+```
+
+### OEC-LRR-SCANNER-ENDPOINT-001 OpenVAS/ZAP read-only endpoint와 vault reference 설정
+
+- owner: `red_team_lead`
+- current_step_status: `blocked`
+- blockers: `OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing`
+- required_evidence: `latest_external_scanner_service_readiness.json status=ready`
+
+Operator actions:
+- REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT에 승인된 read-only OpenVAS report URL을 설정한다.
+- REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT에 승인된 read-only ZAP alert/report URL을 설정한다.
+- REDTEAM_AX_OPENVAS_VAULT_REF와 REDTEAM_AX_ZAP_VAULT_REF에는 secret 값이 아니라 외부 vault reference만 설정한다.
+- endpoint URL에 credential query, write/admin/delete/scan mutating path term이 없는지 확인한다.
+
+Verification command:
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_external_scanner_service_readiness.py" --allow-network --require-ready
+```
+
+### OEC-LRR-SCANNER-IMPORT-001 OpenVAS/ZAP read-only report import 실측
+
+- owner: `control_team`
+- current_step_status: `blocked`
+- blockers: `OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
+- required_evidence: `latest_external_scanner_service_import_live_smoke.json status=passed`
+
+Operator actions:
+- ROE가 승인한 endpoint에서만 read-only import를 수행한다.
+- backend credential authorization과 scanner-service-import API를 통과해야 한다.
+- import 결과가 Evidence Card와 normalized parser output으로 연결되는지 확인한다.
+
+Verification command:
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_external_scanner_service_import_live_smoke.py" --allow-network --require-ready
+```
+
+### OEC-LRR-PROMOTION-001 최종 strict live readiness promotion
+
+- owner: `red_team_lead`
+- current_step_status: `blocked`
+- blockers: `PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-WSL-RUNTIME-READY:wsl_distribution_start_failed, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing, PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
+- required_evidence: `latest_strict_live_readiness_promotion.json status=promotion_ready`
+
+Operator actions:
+- 위 네 단계를 모두 통과한 뒤에만 최종 promotion gate를 실행한다.
+- 통제된 검증 환경에서 --allow-container --allow-network --require-promotion을 함께 사용한다.
+- 통과 artifact를 completion audit RTA-COMP-015에 첨부한다.
+
+Verification command:
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_strict_live_readiness_promotion.py" --allow-container --allow-network --require-promotion
+```
+
+## Final Validation
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_live_readiness_remediation_runbook.py" --require-clear
+```
+
+```powershell
+.\.venv\Scripts\python.exe "Red Team Studio\고도화\sanity\redteam_ax_strict_live_readiness_promotion.py" --allow-container --allow-network --require-promotion
+```

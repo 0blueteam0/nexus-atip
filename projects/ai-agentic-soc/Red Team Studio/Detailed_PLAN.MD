@@ -733,3 +733,13 @@ Create Case
 - `고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py`는 runbook 단계 표, 사람 수행 안내, 상태 조회 API가 명령을 실행하지 않는다는 문구를 검사한다.
 - `고도화/sanity/test_redteam2_korean_copy_inventory.py`는 runbook 단계 visibility anchor를 추가로 검사한다.
 - 이 slice는 UI visibility를 강화하지만 Docker/WSL/OpenVAS/ZAP readiness blocker를 해결했다고 주장하지 않는다.
+
+## 27. Slice 72 반영 사항
+
+- `고도화/sanity/redteam_ax_operator_evidence_collection_package.py`는 live readiness remediation runbook을 운영자 증거 제출 목록으로 변환한다.
+- 산출물은 `latest_operator_evidence_collection_package.json`과 `.md`이며, 각 항목은 owner, blocker, action, verification command, required evidence, expected attachment status를 포함한다.
+- 패키지는 명령을 실행하지 않고 secret 값을 수집하지 않으며, 첨부 artifact는 Evidence Card 후보로 등록한 뒤 사람이 승인하는 흐름을 전제로 한다.
+- `/api/redteam/v2/runtime-readiness`는 `operator_evidence_collection` artifact를 read-only projection으로 반환하고, blocker 목록에 남은 collection item 수를 포함한다.
+- RedTeam2 runtime readiness panel은 `증거 수집 패키지`, `수집할 증거 항목`, `운영자 증거 수집 패키지` 표를 표시한다.
+- accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-COLLECTION-PACKAGE`가 추가된다.
+- 이 slice는 남은 실측 blocker를 더 쉽게 수집/검토 가능한 evidence package로 만든 것이며, Docker/WSL/OpenVAS/ZAP readiness 성공을 완료로 주장하지 않는다.

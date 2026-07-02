@@ -1359,3 +1359,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract가 runbook 단계명, 사람 수행 안내, 상태 조회 API non-execution 문구를 검사
 - [x] Korean copy inventory에 runbook 단계 visibility anchor 추가
 - [ ] runbook의 모든 단계가 ready가 된 뒤 `--require-clear` 통과
+
+## 80. Slice 72 Operator Evidence Collection Package 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_operator_evidence_collection_package.py` 추가
+- [x] live readiness remediation runbook의 각 단계에서 운영자 증거 수집 항목을 생성
+- [x] JSON/Markdown 산출물을 `archive/runs/redteam-ax-v2-operator-evidence-collection/`에 생성
+- [x] 각 항목은 source step, owner, blocker, 사람이 수행할 action, verification command, required evidence, expected attachment status를 포함
+- [x] 패키지는 `commands_executed_by_package=false`, `active_scan_executed=false`, `secret_material_collected=false`, `requires_human_validation=true`를 유지
+- [x] `/api/redteam/v2/runtime-readiness`에 `operator_evidence_collection` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `증거 수집 패키지`, `수집할 증거 항목`, `운영자 증거 수집 패키지` 표 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 operator evidence package anchor 추가
+- [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-COLLECTION-PACKAGE` 추가
+- [ ] 운영자가 Docker/WSL/OpenVAS/ZAP 증거를 첨부한 뒤 `--require-inputs-ready`, `--require-clear`, strict promotion 통과
