@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 31 gated ephemeral container launcher dry-run UX/API complete, full goal active  
+상태: implementation slice 32 container launch evidence normalization E2E complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -41,7 +41,7 @@ Frontend:
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 30 runner isolation readiness endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 31 gated ephemeral container launcher dry-run backend 반영
+- `runtime/redteam_v2_models.py` - slice 32 container launch artifact normalization/evidence path 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -857,7 +857,21 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `execute-governed` 응답에 `ContainerLaunchPrepared` 상태 추가
 - [x] `레드팀 분석2` runner 결과 표에 backend와 container launch 정보를 표시
 - [x] API unittest가 attested container PlanReady, issued token, dry-run launch plan artifact를 검증
+- [x] container launch artifact agent-analyze 및 Evidence Card 생성 E2E - slice 32 완료
 - [ ] 실제 Docker/Podman runtime 실행 smoke
 - [ ] allowlist egress를 `--network none` 이상으로 통제할 전용 network policy 구현
 - [ ] container stdout/stderr scanner result normalizer E2E
 - [ ] live 5177/8765 browser container dry-run smoke
+
+## 40. Slice 32 Container Launch Evidence Normalization E2E 체크리스트
+
+- [x] runner artifact reader가 `source_path_or_ref` 로컬 파일도 hash 검증 후 읽도록 보강
+- [x] `ContainerLaunchPrepared` 상태의 ToolRunRecord를 `agent-analyze` 대상 상태로 허용
+- [x] `redteam_ax_v2_container_launch_plan` JSON parser 추가
+- [x] container launch plan을 `container_launch_evidence` structured item으로 정규화
+- [x] 정규화 항목에 image digest, runtime, network deny, read-only rootfs, dropped capabilities, no-new-privileges, mount/resource limits, dry-run 상태 포함
+- [x] container launch evidence는 `trusted_as_instruction=false`, `requires_human_validation=true`를 강제
+- [x] `/tool-runs/{run_id}/create-evidence`가 container launch normalized result를 Evidence Card Draft로 승격
+- [x] API unittest가 ContainerLaunchPrepared -> agent-analyze -> Evidence Card E2E를 검증
+- [ ] 실제 container stdout/stderr scanner result를 tool-specific parser로 연결
+- [ ] live 5177/8765 browser evidence creation smoke

@@ -501,6 +501,38 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(Path(launch_artifact["source_path_or_ref"]).exists())
         self.assertEqual(len(launch_artifact["hash"]), 64)
 
+        normalized = self.client.post(f"/api/redteam/v2/tool-runs/{body['run_id']}/agent-analyze", json={
+            "case_id": case_id,
+            "summary": "Container launch plan normalized as execution-control evidence.",
+        })
+        self.assertEqual(normalized.status_code, 200)
+        normalized_body = normalized.json()
+        self.assertEqual(normalized_body["status"], "Normalized")
+        self.assertEqual(normalized_body["result_type"], "container_launch_evidence")
+        self.assertEqual(normalized_body["parser_report"]["parser"], "container_launch_plan")
+        self.assertEqual(normalized_body["parser_report"]["input_source"], "stored_artifacts")
+        item = normalized_body["structured_items"][0]
+        self.assertEqual(item["item_type"], "container_launch_evidence")
+        self.assertFalse(item["trusted_as_instruction"])
+        self.assertTrue(item["requires_human_validation"])
+        self.assertTrue(item["read_only_rootfs"])
+        self.assertTrue(item["capabilities_dropped"])
+        self.assertEqual(item["network_policy"], "deny")
+
+        evidence = self.client.post(f"/api/redteam/v2/tool-runs/{body['run_id']}/create-evidence", json={
+            "case_id": case_id,
+            "created_by": "analyst@example.com",
+            "summary": "Ephemeral container launcher dry-run policy evidence.",
+        })
+        self.assertEqual(evidence.status_code, 200)
+        evidence_body = evidence.json()
+        self.assertEqual(evidence_body["kind"], "redteam_ax_v2_evidence_candidate")
+        self.assertEqual(evidence_body["approval_status"], "pending_review")
+        self.assertEqual(evidence_body["validation_status"], "candidate")
+        self.assertEqual(evidence_body["source_type"], "tool_normalized_result")
+        self.assertEqual(evidence_body["normalized_fields"]["result_type"], "container_launch_evidence")
+        self.assertIn("container_launch_evidence", {entry.get("item_type") for entry in evidence_body["normalized_fields"]["structured_items"]})
+
     def test_v2_governed_runner_requires_issued_token_and_captures_approved_dry_run_output(self) -> None:
         case_id = "CASE-V2-GOVERNED-RUNNER-NPM-001"
         action_id = "TAC-NPM-RUNNER-001"

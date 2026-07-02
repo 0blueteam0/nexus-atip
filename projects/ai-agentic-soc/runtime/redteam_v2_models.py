@@ -3039,6 +3039,35 @@ def _normalize_sca_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     return items
 
 
+def _normalize_container_launch_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        if not isinstance(parsed, dict) or parsed.get("kind") != "redteam_ax_v2_container_launch_plan":
+            continue
+        launch = parsed.get("container_launch") if isinstance(parsed.get("container_launch"), dict) else {}
+        container_argv = launch.get("container_argv") if isinstance(launch.get("container_argv"), list) else []
+        items.append({
+            "item_type": "container_launch_evidence",
+            "tool": "ephemeral_container_runner",
+            "run_id": parsed.get("run_id"),
+            "execution_plan_id": parsed.get("execution_plan_id"),
+            "image_digest": launch.get("image_digest"),
+            "runtime_name": launch.get("runtime_name"),
+            "network_policy": "deny" if "--network" in container_argv and "none" in container_argv else "review_required",
+            "read_only_rootfs": "--read-only" in container_argv,
+            "capabilities_dropped": "--cap-drop" in container_argv and "ALL" in container_argv,
+            "no_new_privileges": "no-new-privileges" in container_argv,
+            "mounts": launch.get("mounts") or [],
+            "resource_limits": launch.get("resource_limits") or {},
+            "dry_run": bool(parsed.get("dry_run")),
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "confidence": 0.7,
+        })
+    return items
+
+
 def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     raw_values = _raw_output_values(payload)
     if not raw_values:
@@ -3046,7 +3075,11 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     profile = analysis_tool_profile(tool_id)
     name = str((profile or {}).get("name") or tool_id).lower()
     parser = "generic"
-    if name == "nuclei":
+    container_items = _normalize_container_launch_output(raw_values)
+    if container_items:
+        parser = "container_launch_plan"
+        items = container_items
+    elif name == "nuclei":
         parser = "nuclei_jsonl"
         items = _normalize_nuclei_output(raw_values)
     elif name == "trivy":
@@ -3098,8 +3131,11 @@ def artifact_raw_output_values(tool_run: dict[str, Any] | None) -> tuple[list[st
         if not isinstance(artifact, dict):
             skipped_artifacts += 1
             continue
-        storage_path = artifact.get("storage_path") or artifact.get("stored_path")
+        storage_path = artifact.get("storage_path") or artifact.get("stored_path") or artifact.get("source_path_or_ref")
         if not storage_path:
+            skipped_artifacts += 1
+            continue
+        if str(storage_path).startswith(("artifact://", "tool-run://", "http://", "https://")):
             skipped_artifacts += 1
             continue
         path = Path(str(storage_path)).resolve()
@@ -3134,7 +3170,7 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
     errors: list[str] = []
     if tool_run is None:
         errors.append("tool_run_record_required")
-    elif tool_run.get("status") not in {"OutputImported", "Normalized", "EvidenceCreated"}:
+    elif tool_run.get("status") not in {"OutputImported", "ContainerLaunchPrepared", "Normalized", "EvidenceCreated"}:
         errors.append("tool_run_output_must_be_imported")
 
     tool_id = str((tool_run or {}).get("tool_id") or payload.get("tool_id") or "")
@@ -3201,7 +3237,7 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
         "tool_id": tool_id,
         "normalizer_id": (profile or {}).get("normalizer_id"),
         "analysis_agent": agent,
-        "result_type": payload.get("result_type") or "scanner_finding_candidate",
+        "result_type": payload.get("result_type") or ("container_launch_evidence" if parser_report.get("parser") == "container_launch_plan" else "scanner_finding_candidate"),
         "summary": payload.get("summary") or f"{(profile or {}).get('display_name') or tool_id} output normalized as evidence candidates.",
         "observations": payload.get("observations") or [
             "Tool output was parsed as candidate evidence only; analyst validation is required before report claims."
