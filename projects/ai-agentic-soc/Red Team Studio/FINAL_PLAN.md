@@ -1384,3 +1384,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 submission validation anchor 추가
 - [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-SUBMISSION-VALIDATION` 추가
 - [ ] 운영자가 실제 Docker/WSL/OpenVAS/ZAP/promotion artifact를 제출한 manifest로 `--require-approved` 통과
+
+## 82. Slice 74 Operator Evidence Card Import Plan 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py` 추가
+- [x] 승인/검증된 operator submission item만 Evidence Card 후보 payload로 변환
+- [x] 기본 실행은 Evidence Card를 자동 생성하지 않고 `awaiting_approved_operator_evidence` artifact를 남김
+- [x] 후보 payload는 `source_path_or_url`, `summary`, `validation_status=verified`, `approval_status=pending_review`, Claim-Evidence Matrix hint를 포함
+- [x] `/api/redteam/v2/runtime-readiness`에 `operator_evidence_card_import_plan` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `Evidence Card 후보 계획`, `Evidence Card 후보 수`, `Evidence Card 후보 import 계획` 표 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 Evidence Card import plan anchor 추가
+- [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-CARD-IMPORT-PLAN` 추가
+- [ ] 승인된 운영자 제출 증거가 생긴 뒤 Evidence Card API로 후보를 실제 생성하고 사람 검토 통과

@@ -1,0 +1,63 @@
+{
+  "kind": "redteam_ax_operator_evidence_card_import_plan",
+  "schema_version": "0.1",
+  "created_at": "2026-07-02T12:59:32Z",
+  "source_validation_artifact": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-operator-evidence-collection/latest_operator_evidence_submission_validation.json",
+  "status": "awaiting_approved_operator_evidence",
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "commands_executed_by_planner": false,
+  "evidence_cards_created": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "secret_material_collected": false,
+  "requires_human_validation": true,
+  "case_id": "CASE-V2-LIVE-READINESS-PROMOTION",
+  "candidate_count": 0,
+  "blocked_item_count": 5,
+  "evidence_card_candidates": [],
+  "blocked_items": [
+    {
+      "item_id": "OEC-LRR-DOCKER-001",
+      "artifact_path": "",
+      "errors": [
+        "artifact_path_missing"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "item_id": "OEC-LRR-WSL-001",
+      "artifact_path": "",
+      "errors": [
+        "artifact_path_missing"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "item_id": "OEC-LRR-SCANNER-ENDPOINT-001",
+      "artifact_path": "",
+      "errors": [
+        "artifact_path_missing"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "item_id": "OEC-LRR-SCANNER-IMPORT-001",
+      "artifact_path": "",
+      "errors": [
+        "artifact_path_missing"
+      ],
+      "review_status": "pending_human_review"
+    },
+    {
+      "item_id": "OEC-LRR-PROMOTION-001",
+      "artifact_path": "",
+      "errors": [
+        "artifact_path_missing"
+      ],
+      "review_status": "pending_human_review"
+    }
+  ],
+  "next_api": "POST /api/redteam/v2/evidence after human review of each candidate",
+  "markdown_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-operator-evidence-collection/latest_operator_evidence_card_import_plan.md"
+}

@@ -2412,6 +2412,13 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         / "redteam-ax-v2-operator-evidence-collection"
         / "latest_operator_evidence_submission_validation.json"
     )
+    operator_import_plan_artifact = read_readiness_artifact(
+        PROJECT_ROOT
+        / "archive"
+        / "runs"
+        / "redteam-ax-v2-operator-evidence-collection"
+        / "latest_operator_evidence_card_import_plan.json"
+    )
     container_data = container_artifact.get("data") or {}
     external_data = external_artifact.get("data") or {}
     service_import_data = service_import_artifact.get("data") or {}
@@ -2420,6 +2427,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     remediation_data = remediation_artifact.get("data") or {}
     operator_evidence_data = operator_evidence_artifact.get("data") or {}
     operator_submission_data = operator_submission_artifact.get("data") or {}
+    operator_import_plan_data = operator_import_plan_artifact.get("data") or {}
     container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
     external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
     service_import_status = str(service_import_data.get("status") or service_import_artifact.get("status") or "unknown")
@@ -2430,6 +2438,9 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     operator_submission_status = str(
         operator_submission_data.get("status") or operator_submission_artifact.get("status") or "unknown"
     )
+    operator_import_plan_status = str(
+        operator_import_plan_data.get("status") or operator_import_plan_artifact.get("status") or "unknown"
+    )
     container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
     external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
     service_import_ready = service_import_status in {"passed", "ready", "external_scanner_service_import_live_ready"}
@@ -2438,6 +2449,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     remediation_ready = remediation_status in {"passed", "ready", "promotion_inputs_ready"}
     operator_evidence_ready = operator_evidence_status in {"passed", "ready", "operator_evidence_inputs_ready"}
     operator_submission_ready = operator_submission_status in {"passed", "ready", "operator_evidence_submitted_ready"}
+    operator_import_plan_ready = operator_import_plan_status in {"passed", "ready", "evidence_card_import_ready"}
     blockers: list[str] = []
     if not container_ready:
         blocker = (
@@ -2492,6 +2504,12 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.append(f"operator_evidence_submission:{blocked_submission_count}_blocked_items")
         else:
             blockers.append(f"operator_evidence_submission:{operator_submission_status}")
+    if not operator_import_plan_ready:
+        blocked_import_count = operator_import_plan_data.get("blocked_item_count")
+        if blocked_import_count is not None:
+            blockers.append(f"operator_evidence_card_import:{blocked_import_count}_blocked_items")
+        else:
+            blockers.append(f"operator_evidence_card_import:{operator_import_plan_status}")
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": (
@@ -2505,6 +2523,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
                 and remediation_ready
                 and operator_evidence_ready
                 and operator_submission_ready
+                and operator_import_plan_ready
             )
             else "blocked_runtime_or_external_readiness"
         ),
@@ -2520,6 +2539,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "live_readiness_remediation": remediation_artifact,
         "operator_evidence_collection": operator_evidence_artifact,
         "operator_evidence_submission": operator_submission_artifact,
+        "operator_evidence_card_import_plan": operator_import_plan_artifact,
         "blockers": blockers,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",

@@ -754,3 +754,14 @@ Create Case
 - RedTeam2 runtime readiness panel은 `증거 제출 검증`, `승인된 제출 증거`, `운영자 제출 증거 검증` 표를 표시한다.
 - accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-SUBMISSION-VALIDATION`이 추가된다.
 - 이 slice는 운영자가 가져온 증거를 검증 가능한 manifest로 닫는 경로이며, 실제 Docker/WSL/OpenVAS/ZAP 증거 제출 자체는 아직 남은 조건이다.
+
+## 29. Slice 74 반영 사항
+
+- `고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py`는 operator evidence submission validation 결과를 Evidence Card 후보 payload로 변환한다.
+- 승인되고 hash/status 검증이 끝난 submission item만 후보가 되며, 현재 기본 artifact는 승인된 제출 증거가 없어 `awaiting_approved_operator_evidence` 상태다.
+- 이 script는 Evidence Card를 자동 생성하지 않는다. 후보 payload는 `POST /api/redteam/v2/evidence`에 전달하기 전 사람 검토를 요구한다.
+- 후보 payload는 `source_path_or_url`, summary, `validation_status=verified`, `approval_status=pending_review`, source item/hash/status, Claim-Evidence Matrix hint를 포함한다.
+- `/api/redteam/v2/runtime-readiness`는 `operator_evidence_card_import_plan` artifact를 함께 반환하고 blocker 목록에 남은 import item 수를 포함한다.
+- RedTeam2 runtime readiness panel은 `Evidence Card 후보 계획`, `Evidence Card 후보 수`, `Evidence Card 후보 import 계획` 표를 표시한다.
+- accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-CARD-IMPORT-PLAN`이 추가된다.
+- 이 slice는 운영자 증거를 Evidence Card/Claim-Evidence Matrix 흐름으로 잇는 planning lane이며, 실제 Evidence Card 생성/승인은 후속 운영 단계로 남긴다.

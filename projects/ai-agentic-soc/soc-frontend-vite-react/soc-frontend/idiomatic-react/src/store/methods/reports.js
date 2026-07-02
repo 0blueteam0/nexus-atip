@@ -4441,6 +4441,8 @@ export default {
     const operatorEvidence = operatorEvidenceArtifact.data || {};
     const operatorSubmissionArtifact = runtimeReadiness.operator_evidence_submission || {};
     const operatorSubmission = operatorSubmissionArtifact.data || {};
+    const operatorImportPlanArtifact = runtimeReadiness.operator_evidence_card_import_plan || {};
+    const operatorImportPlan = operatorImportPlanArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4519,6 +4521,9 @@ export default {
       awaiting_operator_evidence_submission:'운영자 증거 제출 대기',
       operator_evidence_submission_blocked:'운영자 증거 제출 차단',
       operator_evidence_submitted_ready:'운영자 제출 증거 검증됨',
+      awaiting_approved_operator_evidence:'승인된 운영자 증거 대기',
+      evidence_card_import_partially_ready:'Evidence Card 일부 후보 준비',
+      evidence_card_import_ready:'Evidence Card 후보 준비 완료',
       promotion_inputs_ready:'승격 입력 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
@@ -4714,6 +4719,8 @@ export default {
       ['수집할 증거 항목', `${operatorEvidence.blocked_collection_item_count ?? '-'}개`, `${operatorEvidence.collection_item_count ?? 5}개 항목 중 운영자 증거 필요`],
       ['증거 제출 검증', koValue(operatorSubmission.status || operatorSubmissionArtifact.status || '미확인'), operatorSubmission.markdown_artifact_path || operatorSubmissionArtifact.path || 'latest_operator_evidence_submission_validation.md'],
       ['승인된 제출 증거', `${operatorSubmission.approved_item_count ?? 0}/${operatorSubmission.expected_item_count ?? 5}개`, `${operatorSubmission.blocked_item_count ?? '-'}개 제출 항목 차단`],
+      ['Evidence Card 후보 계획', koValue(operatorImportPlan.status || operatorImportPlanArtifact.status || '미확인'), operatorImportPlan.markdown_artifact_path || operatorImportPlanArtifact.path || 'latest_operator_evidence_card_import_plan.md'],
+      ['Evidence Card 후보 수', `${operatorImportPlan.candidate_count ?? 0}개`, `${operatorImportPlan.blocked_item_count ?? '-'}개 항목이 아직 차단됨`],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
       ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
@@ -4771,6 +4778,20 @@ export default {
         `sha256: ${item.sha256_match ? '일치' : '불일치'}`,
         `사람 승인: ${item.approved ? '승인됨' : koValue(item.review_status || '미확인')}`,
         (item.errors || []).length ? `오류: ${(item.errors || []).slice(0, 3).join(', ')}` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
+    const operatorImportDefaultRows = [
+      ['Evidence Card 후보 없음', '대기', '승인된 제출 증거가 있어야 Evidence Card 후보 payload를 만들 수 있음'],
+      ['자동 생성 여부', '아니오', '이 계획은 Evidence Card를 자동 생성하지 않음'],
+      ['Claim-Evidence 연결', '대기', 'Evidence Card 승인 후 Claim-Evidence Matrix에 연결'],
+    ];
+    const operatorImportRows = (operatorImportPlan.evidence_card_candidates || []).map(item => [
+      item.evidence_id || '-',
+      koValue(item.approval_status || 'pending_review'),
+      [
+        item.source_item_id ? `원본: ${item.source_item_id}` : null,
+        item.source_artifact_status ? `상태: ${item.source_artifact_status}` : null,
+        item.source_sha256 ? `sha256: ${String(item.source_sha256).slice(0, 12)}...` : null,
       ].filter(Boolean).join(' · '),
     ]);
     const toolGuideProfiles = {
@@ -5169,6 +5190,8 @@ export default {
             ['수집할 증거 항목', `${operatorEvidence.blocked_collection_item_count ?? '-'}개`, operatorEvidence.blocked_collection_item_count ? C.amber : C.green, `${operatorEvidence.collection_item_count ?? 5}개 항목 중 운영자 증거 필요`],
             ['증거 제출 검증', koValue(operatorSubmission.status || operatorSubmissionArtifact.status || '미확인'), operatorSubmission.blocked_item_count ? C.amber : C.green, `${operatorSubmission.blocked_item_count ?? '-'}개 항목 차단`],
             ['승인된 제출 증거', `${operatorSubmission.approved_item_count ?? 0}/${operatorSubmission.expected_item_count ?? 5}개`, operatorSubmission.status === 'operator_evidence_submitted_ready' ? C.green : C.amber, 'sha256/status/사람 승인 검증'],
+            ['Evidence Card 후보 계획', koValue(operatorImportPlan.status || operatorImportPlanArtifact.status || '미확인'), operatorImportPlan.status === 'evidence_card_import_ready' ? C.green : C.amber, `${operatorImportPlan.candidate_count ?? 0}개 후보`],
+            ['Evidence Card 후보 수', `${operatorImportPlan.candidate_count ?? 0}개`, operatorImportPlan.candidate_count ? C.green : C.amber, `${operatorImportPlan.blocked_item_count ?? '-'}개 항목 차단`],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
@@ -5194,6 +5217,11 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               '제출 manifest의 artifact path, sha256, expected status, 사람 승인 상태를 읽기 전용으로 확인합니다. 이 검증은 Docker, WSL, scanner, 네트워크 명령을 실행하지 않습니다.'),
             this.renderTable(['제출 항목','검증 상태','status/hash/승인'], operatorSubmissionRows.length ? operatorSubmissionRows : operatorSubmissionDefaultRows)),
+          h('div', { style:{ display:'grid', gap:'6px' } },
+            h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, 'Evidence Card 후보 import 계획'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '검증이 끝난 운영자 증거만 Evidence Card 후보 payload로 묶습니다. 이 단계는 Evidence Card를 자동 생성하지 않고 Claim-Evidence Matrix 연결 전 사람 검토를 요구합니다.'),
+            this.renderTable(['Evidence 후보','상태','원본/status/hash'], operatorImportRows.length ? operatorImportRows : operatorImportDefaultRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
                 (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))

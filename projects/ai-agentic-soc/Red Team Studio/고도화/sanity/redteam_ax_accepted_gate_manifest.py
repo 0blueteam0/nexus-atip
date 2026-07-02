@@ -246,6 +246,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 60,
         },
         {
+            "gate_id": "GATE-OPERATOR-EVIDENCE-CARD-IMPORT-PLAN",
+            "name": "Operator evidence card import plan artifact",
+            "category": "operator_evidence_card_import_plan",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -271,6 +279,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_live_readiness_remediation_runbook.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_collection_package.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_submission_validator.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py",
             ],
             "timeout_seconds": 60,
         },
