@@ -1,0 +1,233 @@
+{
+  "kind": "redteam_ax_completion_audit_matrix",
+  "schema_version": "0.1",
+  "created_at": "2026-07-02T13:18:00+09:00",
+  "goal_status": "active_incomplete",
+  "decision_rule": "Only requirements marked proved with current authoritative evidence may be claimed complete. partial, gap, blocked, or unverified keeps the thread goal active.",
+  "source_of_truth": [
+    "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC",
+    "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Agentic RAG SPEC",
+    "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+    "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
+  ],
+  "status_counts": {
+    "proved": 10,
+    "partial": 3,
+    "gap": 2,
+    "blocked": 1
+  },
+  "audit_items": [
+    {
+      "id": "RTA-COMP-001",
+      "requirement": "Report Studio must keep the original Red Team analysis and add an independent Korean beginner-facing RedTeam AX v2 workbench as 레드팀 분석2.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py"
+      ],
+      "proof_summary": "Tab registry exposes 레드팀 분석 and 레드팀 분석2; browser smoke checks reportStudio, redteamAnalysis, redteamAnalysis2, Korean body text, and RedTeam AX v2 markers.",
+      "next_action": "Continue UI coverage only when new panels are added."
+    },
+    {
+      "id": "RTA-COMP-002",
+      "requirement": "Frontend user-facing RedTeam AX content must be Korean and understandable to non-expert operators.",
+      "status": "partial",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json"
+      ],
+      "proof_summary": "Recent slices localize ToolActionCard, scanner guidance, runner, sanitizer, visual evidence, file upload, RBAC, role/severity/status displays and smoke validates koreanDisplayMapping.",
+      "residual_gap": "A full static Korean/no-English UX audit over every RedTeam2 visible label has not been automated yet.",
+      "next_action": "Add UI copy inventory check for RedTeam2 visible strings and permitted technical terms."
+    },
+    {
+      "id": "RTA-COMP-003",
+      "requirement": "Cases must operate through ROE, HITL, guardrails, and ToolActionCard before any tool/script/MCP/LLM-agent action.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py"
+      ],
+      "proof_summary": "API tests cover health policy, ROE deny, high-risk ToolAction HITL, approval queue, actor-bound approval, T4/T5 controls, and manual-run invalid without ToolActionCard.",
+      "next_action": "Keep regression cases mandatory for future execution changes."
+    },
+    {
+      "id": "RTA-COMP-004",
+      "requirement": "Only approved tools, scripts, MCP, and LLM agents may be used; direct MCP/tool invocation must be denied by default.",
+      "status": "partial",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_mcp_gateway_adapter.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC/07_MCP_GATEWAY_SPEC.md"
+      ],
+      "proof_summary": "v2 API enforces ToolAction and approval controls for exposed routes; MCP gateway spec exists.",
+      "residual_gap": "An end-to-end MCP direct invocation denial smoke tied to the live gateway is not part of the current v2 browser/API regression set.",
+      "next_action": "Add explicit MCP direct invoke deny test or gateway smoke before claiming full completion."
+    },
+    {
+      "id": "RTA-COMP-005",
+      "requirement": "Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP must be registered, selectable, safety-classified, and routed to LLM analysis agents.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js"
+      ],
+      "proof_summary": "API registry exposes all six tools and six analysis agents; tests validate required tool names, agent IDs, trust policy, normalizers, and frontend ToolHub selection.",
+      "next_action": "Tie future tool additions to the registry/agent contract test."
+    },
+    {
+      "id": "RTA-COMP-006",
+      "requirement": "Tool installation integration and version-command evidence must be available for the scanner toolchain.",
+      "status": "gap",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_toolchain_readiness.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "Install-readiness registry returns operator-run install plans and safe version evidence placeholders without executing commands by API.",
+      "residual_gap": "FINAL_PLAN still lists actual CLI/container installation automation and version command evidence collection as incomplete.",
+      "next_action": "Implement operator-safe install evidence capture workflow and per-tool version proof artifacts."
+    },
+    {
+      "id": "RTA-COMP-007",
+      "requirement": "Every material artifact, image, log, tool result, and analysis judgment must flow into Evidence Card and Claim-Evidence Matrix tracking.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py"
+      ],
+      "proof_summary": "Sample E2E covers manual artifacts, raw imports, normalization, Evidence Card creation/approval, Finding link, report validation, and Claim-Evidence Matrix report section.",
+      "next_action": "Add new artifact types to the same evidence path instead of bypassing it."
+    },
+    {
+      "id": "RTA-COMP-008",
+      "requirement": "High-risk execution must be human approved, human performed or reviewed, and AI must remain planner/evidence/analyzer/report-draft assistant.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json"
+      ],
+      "proof_summary": "Tests and live smoke preserve commands_executed_by_api=false for unsafe flows, require approvals and uploaded artifacts, and block runner paths before required gates.",
+      "next_action": "Maintain no-runner invariant in live smoke when adding new browser actions."
+    },
+    {
+      "id": "RTA-COMP-009",
+      "requirement": "Korean Red Team Report v2 must combine Volkis-style Campaign Walkthrough with malware-report-style document control and evidence forms.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_report_compiler.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC/09_REPORT_V2_SPEC.md"
+      ],
+      "proof_summary": "Sample E2E generated report contains 문서 통제, Campaign Walkthrough, Claim-Evidence Matrix, zero gate counts, export approval block, executive approval, and exported artifact.",
+      "next_action": "Add visual regression for report preview only if report rendering UI changes."
+    },
+    {
+      "id": "RTA-COMP-010",
+      "requirement": "Agentic RAG canonical requirements must support SCA sufficient context, corpus routing, citation verifier, and unsupported claim hold.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_agentic_rag.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Agentic RAG SPEC"
+      ],
+      "proof_summary": "API tests cover approved-evidence SCA sufficiency, retrieve-again when claims lack approved evidence, report metadata persistence, and hold audit for unsupported claims.",
+      "next_action": "Keep Agentic RAG SPEC as canonical for future RAG changes."
+    },
+    {
+      "id": "RTA-COMP-011",
+      "requirement": "Red Team Studio folder, previous work index, and ChatShare transcript must be LLM-wiki indexed and callable.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/RED_TEAM_STUDIO_FILE_MANIFEST.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/chatshare-output/chatgpt/레드팀_수행과정_20260701-110739.conversation.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-work-folder-inventory-20260701/WORK_FOLDER_INDEX.md"
+      ],
+      "proof_summary": "LLM wiki home links local manifest, top-dir/extension summaries, previous work index, and complete public ChatShare extraction package.",
+      "next_action": "Add qmd/kdq or graph index integration if downstream tooling requires it."
+    },
+    {
+      "id": "RTA-COMP-012",
+      "requirement": "All tests, security gates, sample case E2E, report verification, and regression checks must pass before final completion.",
+      "status": "partial",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_plan_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py"
+      ],
+      "proof_summary": "Current narrow regression suite has passed in recent slices: plan contract, build, v2 API, sample E2E, and live smoke.",
+      "residual_gap": "The objective asks for full tests/security gate/regression; a full suite manifest and all-suite run artifact are not yet present.",
+      "next_action": "Create final verification harness that enumerates and runs the accepted full gate set."
+    },
+    {
+      "id": "RTA-COMP-013",
+      "requirement": "Final gate must prove unsupported claim, unapproved high-risk execution, and evidence-less Finding counts are all zero.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_release_gate.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py"
+      ],
+      "proof_summary": "Report validation tests block non-zero counts and sample E2E verifies zero unsupported_claim, unapproved_high_risk, finding_without_evidence, unapproved evidence/finding/severity before export.",
+      "next_action": "Use this gate as final objective audit input, not as sole proof of unrelated install/runtime requirements."
+    },
+    {
+      "id": "RTA-COMP-014",
+      "requirement": "OpenVAS and ZAP API credential vault and read-only token policy must exist for scanner integration.",
+      "status": "gap",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC/31_TOOLING_SECURITY_POLICY_SPEC.md"
+      ],
+      "proof_summary": "The requirement is explicitly tracked as incomplete in FINAL_PLAN.",
+      "residual_gap": "No credential vault contract/API/UI smoke has been verified for OpenVAS/ZAP.",
+      "next_action": "Design and implement credential vault contract with safe placeholder/read-only policy tests."
+    },
+    {
+      "id": "RTA-COMP-015",
+      "requirement": "Actual CLI/container runtime smoke must prove governed runtime readiness where applicable.",
+      "status": "blocked",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "Container runtime harness exists and records blocker evidence, but the runtime environment has not provided a successful real container execution proof.",
+      "residual_gap": "Docker/container daemon availability remains an environmental blocker for real runtime proof.",
+      "next_action": "When Docker is available, rerun real container runtime smoke and attach artifact."
+    },
+    {
+      "id": "RTA-COMP-016",
+      "requirement": "Completion audit itself must remain machine-checkable and prevent accidental goal-complete claims while gaps remain.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_completion_audit_matrix.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_completion_audit_matrix.py"
+      ],
+      "proof_summary": "The matrix declares goal_status active_incomplete, contains proved and unresolved statuses, and is validated by a sanity test.",
+      "next_action": "Update this matrix after each future slice until unresolved statuses reach zero with authoritative evidence."
+    }
+  ],
+  "remaining_gaps": [
+    "Automated full UX copy audit for non-expert Korean RedTeam2 labels.",
+    "Live MCP direct invocation denial smoke.",
+    "Actual CLI/container installation automation and version command evidence collection.",
+    "OpenVAS/ZAP credential vault and read-only token policy.",
+    "Full accepted gate manifest and all-suite run artifact.",
+    "Successful real container runtime smoke after environment readiness."
+  ],
+  "next_slice_candidates": [
+    "Add RedTeam2 Korean copy inventory checker.",
+    "Add MCP direct invoke deny regression.",
+    "Implement scanner install evidence capture workflow.",
+    "Design OpenVAS/ZAP credential vault contract.",
+    "Create final verification harness for all accepted gates."
+  ]
+}

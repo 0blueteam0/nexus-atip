@@ -1116,4 +1116,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `subprocess.run(..., text=True)` 호출에 `encoding="utf-8"`을 명시해 Node JSON stdout을 UTF-8로 읽도록 변경
 - [x] `stdout_decoded_as_utf8` 회귀 체크 추가: `보고서 스튜디오`, `레드팀 분석2` 문자열이 stdout에 보존되지 않으면 smoke status를 실패로 전환
 - [x] live browser smoke artifact에 readable Korean bodyPrefix와 `stdout_decoded_as_utf8=true`가 남도록 검증
-- [ ] 다음 slice: 전체 RedTeam AX 요구사항별 completion audit matrix 작성 및 남은 기능 gap 선별
+- [x] 다음 slice: 전체 RedTeam AX 요구사항별 completion audit matrix 작성 및 남은 기능 gap 선별 - slice 53 완료
+
+## 61. Slice 53 Completion Audit Matrix 체크리스트
+
+- [x] `고도화/completion-audit/redteam_ax_completion_audit_matrix.json` 추가
+- [x] `고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md` 추가
+- [x] 전체 목표를 `active_incomplete`로 유지하고 `proved`, `partial`, `gap`, `blocked` 상태를 분리
+- [x] `레드팀 분석2`, ROE/HITL/ToolActionCard, Evidence Card, Claim-Evidence Matrix, Report v2, Agentic RAG, 도구 registry, LLM wiki 요구사항을 증거 경로에 연결
+- [x] 실제 CLI/container 설치 자동화, OpenVAS/ZAP credential vault, full gate manifest, real container runtime smoke 같은 잔여 gap을 명시
+- [x] `고도화/sanity/test_completion_audit_matrix.py`로 매트릭스 구조, 필수 요구사항 ID, 핵심 용어, evidence ref 존재 여부 검증
+- [ ] 다음 slice: RedTeam2 전체 visible copy의 한국어/초급자 UX inventory checker 또는 MCP direct invoke deny smoke 중 하나 구현

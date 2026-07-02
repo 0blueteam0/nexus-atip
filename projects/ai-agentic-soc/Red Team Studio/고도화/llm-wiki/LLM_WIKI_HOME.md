@@ -5,7 +5,7 @@ zk_type: index
 para: Projects
 status: active
 created: 2026-07-01
-updated: 2026-07-01
+updated: 2026-07-02
 canonical_path: J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md
 project: Red Team Studio
 source_path:
@@ -21,6 +21,8 @@ related:
   - ../../redteam_ax_plan.md
   - ../../Detailed_PLAN.MD
   - ../../FINAL_PLAN.md
+  - ../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md
+  - ../completion-audit/redteam_ax_completion_audit_matrix.json
   - ./RED_TEAM_STUDIO_FILE_MANIFEST.json
   - ./RED_TEAM_STUDIO_TOP_DIR_SUMMARY.json
   - ./RED_TEAM_STUDIO_EXTENSION_SUMMARY.json
@@ -41,6 +43,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 4. 디렉터리 분포는 `./RED_TEAM_STUDIO_TOP_DIR_SUMMARY.json`을 확인한다.
 5. 확장자 분포는 `./RED_TEAM_STUDIO_EXTENSION_SUMMARY.json`을 확인한다.
 6. ChatShare 추출 패키지는 `../chatshare-output/chatgpt/레드팀_수행과정_20260701-110739.HANDOFF_PACKAGE_MANIFEST.json`부터 연다.
+7. 전체 목표 완료 여부는 `../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md`와 `../completion-audit/redteam_ax_completion_audit_matrix.json`에서 요구사항별 증거 상태를 확인한다.
 
 ## 핵심 자료 지도
 
@@ -54,6 +57,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Existing work index | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-work-folder-inventory-20260701/WORK_FOLDER_INDEX.md` | 기존 runtime/frontend/archive 지도 |
 | Existing frontend | `J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react` | `레드팀 분석2` UI 구현 대상 |
 | Existing backend | `J:/PortableApps/genai/projects/ai-agentic-soc/runtime` | `/api/redteam/v2` 구현 대상 |
+| Completion audit | `../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md` | 전체 목표 완료/미완료 요구사항별 증거 장부 |
 
 ## 전체 인벤토리 요약
 
@@ -127,5 +131,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
-- RedTeam AX v2 API schema 문서화
-- `레드팀 분석2` UI 구현 후 screenshot evidence 연결
+- RedTeam2 전체 visible copy 한국어/초급자 UX inventory checker
+- MCP direct invoke deny smoke
+- 실제 CLI/container 설치 자동화와 version command evidence 수집
+- OpenVAS/ZAP credential vault와 read-only token 정책
+- 전체 accepted gate manifest와 all-suite run artifact
