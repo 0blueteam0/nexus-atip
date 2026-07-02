@@ -3159,6 +3159,10 @@ export default {
       credentialEndpointRef:'https://openvas.lab.example',
       credentialScopes:'read:reports,read:scan_status',
       credentialPurpose:'승인된 케이스의 OpenVAS/ZAP 읽기 전용 결과를 가져와 Evidence 후보로 연결',
+      serviceImportToolId:'TOOL-ZAP-001',
+      serviceImportAuthorizationId:'',
+      serviceImportEndpointUrl:'http://127.0.0.1:18080/JSON/core/view/alerts/',
+      serviceImportTimeout:'10',
       agenticRagQuery:'Agentic RAG SCA로 승인된 EvidenceCard가 report claim을 충분히 뒷받침하는지 검증하라.',
       agenticRagClaimText:'승인된 EvidenceCard가 RedTeam AX v2 보고서 claim의 근거로 연결되었다.',
       ...saved,
@@ -3548,6 +3552,50 @@ export default {
     } catch (err) {
       this.setState(s => ({ redteam2CredentialVaultState:{ ...(s.redteam2CredentialVaultState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
       this.toast('접속권한 승인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async importRedTeam2ScannerServiceReport() {
+    const draft = this.redTeam2AnalysisDraft();
+    const caseId = this.redTeamOperationCaseId(draft.reportId, draft.target);
+    const serviceImportToolId = String(draft.serviceImportToolId || draft.credentialToolId || 'TOOL-ZAP-001').trim();
+    const selectedAuthorization = this.state.redteam2CredentialVaultState?.authorization || {};
+    const authorizationId = String(draft.serviceImportAuthorizationId || selectedAuthorization.authorization_id || '').trim();
+    const endpointUrl = String(draft.serviceImportEndpointUrl || selectedAuthorization.endpoint_ref || draft.credentialEndpointRef || '').trim();
+    const timeout = Number(draft.serviceImportTimeout || 10);
+    if (!authorizationId) {
+      this.toast('서비스 결과 가져오기는 먼저 승인 기록 ID가 필요합니다', 'warn');
+      return;
+    }
+    if (!endpointUrl) {
+      this.toast('서비스 결과 가져오기 endpoint URL을 입력하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ServiceImportState:{ ...(s.redteam2ServiceImportState || {}), status:'importing', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/scanner-service-imports/${encodeURIComponent(serviceImportToolId)}`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          authorization_id:authorizationId,
+          endpoint_url:endpointUrl,
+          requested_by:'current-analyst',
+          target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED-LOCAL-LAB').trim()].filter(Boolean),
+          timeout_seconds:Number.isFinite(timeout) && timeout > 0 ? timeout : 10,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ServiceImportState:{ ...(s.redteam2ServiceImportState || {}), status:data.status || 'ready', result:data, error:null, checkedAt:new Date().toISOString() },
+        redteam2AnalysisDraft:{ ...this.redTeam2AnalysisDraft(), serviceImportToolId, serviceImportAuthorizationId:authorizationId, serviceImportEndpointUrl:endpointUrl, serviceImportTimeout:String(Number.isFinite(timeout) && timeout > 0 ? timeout : 10) },
+      }));
+      this.toast(`읽기 전용 서비스 결과 가져오기 완료: ${data.status || 'ready'}`, 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 scanner service import: ${serviceImportToolId} · ${data.status || 'ready'}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ServiceImportState:{ ...(s.redteam2ServiceImportState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('서비스 결과 가져오기 실패: ' + (err?.message || String(err)), 'warn');
     }
   }
 ,
@@ -4339,6 +4387,7 @@ export default {
     const runnerState = this.state.redteam2RunnerState || {};
     const toolchainState = this.state.redteam2ToolchainState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
+    const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
@@ -4348,6 +4397,10 @@ export default {
     const executionPlan = executionPlanState.plan || {};
     const runnerRun = runnerState.run || {};
     const toolchainRun = toolchainState.result || {};
+    const serviceImportResult = serviceImportState.result || {};
+    const serviceImportEvidence = serviceImportResult.evidence || {};
+    const serviceImportArtifact = serviceImportResult.artifact || {};
+    const serviceImportNormalized = serviceImportResult.normalized_result || {};
     const agenticRagResult = agenticRagState.result || {};
     const agenticSca = agenticRagResult.sca_report || {};
     const agenticVerifier = agenticRagResult.citation_verification || {};
@@ -4587,6 +4640,17 @@ export default {
       ['scope', (selectedCredentialAuthorization.token_scopes || []).join(', ') || draft.credentialScopes || '-', 'allowlist와 비교됨'],
       ['명령 실행', koBool(selectedCredentialAuthorization.commands_executed_by_api ?? false), '권한 승인 API는 도구를 실행하지 않음'],
       ['LLM 명령 신뢰', koBool(selectedCredentialAuthorization.trusted_as_instruction ?? false), '항상 아니오 유지'],
+    ];
+    const serviceImportRows = [
+      ['가져오기 상태', koValue(serviceImportResult.status || serviceImportState.status || '대기'), serviceImportState.error || serviceImportResult.import_id || '승인된 OpenVAS/ZAP 서비스 결과를 읽기 전용으로 가져오세요'],
+      ['도구', serviceImportResult.tool_id || draft.serviceImportToolId || '-', 'OpenVAS report 또는 ZAP passive alert 결과'],
+      ['승인 ID', serviceImportResult.authorization_id || draft.serviceImportAuthorizationId || selectedCredentialAuthorization.authorization_id || '-', '승인 기록 ID만 전송하고 secret 값은 전송하지 않음'],
+      ['endpoint', serviceImportResult.endpoint_url || draft.serviceImportEndpointUrl || selectedCredentialAuthorization.endpoint_ref || '-', '승인된 읽기 전용 서비스 URL'],
+      ['능동 스캔 실행', koBool(serviceImportResult.active_scan_executed ?? false), '항상 아니오여야 함'],
+      ['Secret 저장', koBool(serviceImportResult.secret_material_stored ?? false), 'API key, 비밀번호, bearer token 값 저장 금지'],
+      ['명령으로 신뢰 여부', koBool(serviceImportResult.trusted_as_instruction ?? false), '항상 아니오 유지'],
+      ['Evidence', serviceImportEvidence.evidence_id || '-', serviceImportEvidence.approval_status || 'Evidence 후보'],
+      ['파서', serviceImportNormalized.parser_report?.parser || '-', serviceImportNormalized.parser_report?.parsed_item_count != null ? `구조화 항목 ${serviceImportNormalized.parser_report.parsed_item_count}건` : '가져오기 후 정규화'],
     ];
     const toolGuideProfiles = {
       'TOOL-NUCLEI-001': {
@@ -4921,6 +4985,53 @@ export default {
             h('span', { style:{ fontSize:'10px', color:credentialVaultState.error ? C.coral : selectedCredentialAuthorization.status === 'authorized' ? C.green : C.sec, fontWeight:900 } }, credentialVaultState.error || koValue(selectedCredentialAuthorization.status || credentialVaultState.status || 'idle'))),
           this.renderTable(['접속 정책','상태','근거'], credentialPolicyRows),
           this.renderTable(['승인 기록','상태','근거'], credentialAuthorizationRows))),
+      smallPanel('OpenVAS/ZAP 서비스 결과 가져오기',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } },
+            '읽기 전용 서비스 결과 가져오기는 이미 승인된 OpenVAS 보고서 또는 ZAP passive alert 결과만 회수합니다. 능동 스캔은 실행하지 않습니다. secret 값은 입력하지 않고, 승인 기록 ID와 endpoint URL만 사용합니다.'),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(150px, .7fr) minmax(220px, 1fr) minmax(240px, 1.1fr) minmax(120px, .5fr)', gap:'8px' } },
+            h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '서비스 도구',
+              h('select', { value:draft.serviceImportToolId || draft.credentialToolId || 'TOOL-ZAP-001', onChange:e=>this.updateRedTeam2AnalysisDraft({ serviceImportToolId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+                h('option', { value:'TOOL-ZAP-001' }, 'OWASP ZAP passive alert'),
+                h('option', { value:'TOOL-OPENVAS-001' }, 'OpenVAS / Greenbone report'))),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '승인 기록 ID',
+              h('input', {
+                value:draft.serviceImportAuthorizationId || selectedCredentialAuthorization.authorization_id || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ serviceImportAuthorizationId:e.target.value }),
+                style:{ ...inputStyle, marginTop:'5px' },
+                placeholder:'AUTH-...',
+              })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '읽기 전용 endpoint URL',
+              h('input', {
+                value:draft.serviceImportEndpointUrl || selectedCredentialAuthorization.endpoint_ref || '',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ serviceImportEndpointUrl:e.target.value }),
+                style:{ ...inputStyle, marginTop:'5px' },
+                placeholder:'http://127.0.0.1:18080/JSON/core/view/alerts/',
+              })),
+            h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'timeout 초',
+              h('input', {
+                type:'number',
+                min:'1',
+                max:'60',
+                value:draft.serviceImportTimeout || '10',
+                onChange:e=>this.updateRedTeam2AnalysisDraft({ serviceImportTimeout:e.target.value }),
+                style:{ ...inputStyle, marginTop:'5px' },
+              }))),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('button', {
+              onClick:()=>this.importRedTeam2ScannerServiceReport(),
+              disabled:serviceImportState.status === 'importing',
+              style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:serviceImportState.status === 'importing' ? C.raised : C.bg, color:serviceImportState.status === 'importing' ? C.muted : C.green, cursor:serviceImportState.status === 'importing' ? 'not-allowed' : 'pointer', fontWeight:900 },
+            }, serviceImportState.status === 'importing' ? '가져오는 중' : '읽기 전용 서비스 결과 가져오기'),
+            h('span', { style:{ fontSize:'10px', color:serviceImportState.error ? C.coral : serviceImportResult.status === 'ready' || serviceImportResult.status === 'OutputImported' || serviceImportResult.status === 'Normalized' ? C.green : C.sec, fontWeight:900 } }, serviceImportState.error || koValue(serviceImportResult.status || serviceImportState.status || 'idle'))),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['서비스 가져오기', koValue(serviceImportResult.status || serviceImportState.status), serviceImportState.error ? C.coral : serviceImportResult.import_id ? C.green : C.sec, serviceImportResult.import_id || '대기'],
+            ['도구', serviceImportResult.tool_id || draft.serviceImportToolId || '-', C.sec, serviceImportResult.tool_name || 'OpenVAS/ZAP'],
+            ['Evidence', serviceImportEvidence.evidence_id || '-', serviceImportEvidence.evidence_id ? C.green : C.sec, serviceImportEvidence.source_path_or_url || 'Evidence 후보'],
+            ['저장 산출물', serviceImportArtifact.storage_path ? '저장됨' : '미저장', serviceImportArtifact.storage_path ? C.green : C.sec, serviceImportArtifact.sha256 || serviceImportArtifact.content_type || '-'],
+          ].map(card)),
+          this.renderTable(['서비스 결과','상태','근거'], serviceImportRows),
+          serviceImportArtifact.storage_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `stored: ${serviceImportArtifact.storage_path}`) : null)),
       smallPanel('도구 실행 계획 / 샌드박스 정책',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } }, '실행 계획은 실제 실행 전에 위험도, 승인, 네트워크, 파일 쓰기 위치, 래퍼 신뢰, 실행 토큰을 한 번에 확인하는 단계입니다. PlanReady와 실행 토큰이 없으면 실행 버튼은 비활성화됩니다.'),

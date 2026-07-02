@@ -1255,3 +1255,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 service import smoke 포함
 - [ ] 조직/실서비스 OpenVAS/ZAP endpoint에서 동일 import smoke 실측
 - [ ] Docker daemon ready 후 실제 container runtime smoke 실측
+
+## 72. Slice 64 RedTeam2 Service Import Frontend Contract 체크리스트
+
+- [x] RedTeam2 화면에 `OpenVAS/ZAP 서비스 결과 가져오기` 패널 추가
+- [x] 패널은 `authorization_id`, 승인된 endpoint URL, timeout만 입력받고 secret 값 입력란을 만들지 않음
+- [x] `읽기 전용 서비스 결과 가져오기` 버튼은 `/api/redteam/v2/scanner-service-imports/{tool_id}`를 호출
+- [x] UI 설명에 `능동 스캔은 실행하지 않습니다`, `secret 값은 입력하지 않고`, `읽기 전용 서비스 결과`를 명시
+- [x] 가져오기 결과는 active scan 실행 여부, secret 저장 여부, LLM 명령 신뢰 여부, parser 구조화 항목, Evidence 후보를 표로 표시
+- [x] `고도화/sanity/redteam_ax_frontend_service_import_contract.py` 추가
+- [x] Korean copy inventory에 서비스 결과 가져오기 앵커 추가
+- [x] accepted gate manifest에 `GATE-FRONTEND-SERVICE-IMPORT-CONTRACT` 추가
+- [ ] 조직/실서비스 OpenVAS/ZAP endpoint에서 동일 import smoke 실측
+- [ ] Docker daemon ready 후 실제 container runtime smoke 실측

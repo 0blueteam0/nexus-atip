@@ -646,3 +646,16 @@ Create Case
 - negative control은 secret material 제출이 `invalid`로 거부되는지 검증한다.
 - accepted gate manifest에 `GATE-OPENVAS-ZAP-SERVICE-IMPORT-SMOKE`를 추가한다.
 - 이 slice는 service import adapter와 endpoint report ingestion 경로를 입증하지만, 조직/실서비스 OpenVAS/ZAP endpoint 실측 증거는 별도 완료 조건으로 남긴다.
+
+## 19. Slice 64 반영 사항
+
+- RedTeam2 화면에 `OpenVAS/ZAP 서비스 결과 가져오기` 패널을 추가한다.
+- 이 패널은 새 `/api/redteam/v2/scanner-service-imports/{tool_id}` read-only adapter를 직접 호출하는 UI 경로다.
+- 입력값은 서비스 도구, 승인 기록 ID, 읽기 전용 endpoint URL, timeout으로 제한한다.
+- API key, 비밀번호, bearer token, secret 값 입력란은 만들지 않으며 frontend 계약 테스트도 service import method segment에 secret material payload term이 없는지 확인한다.
+- visible copy는 초급자에게 `능동 스캔은 실행하지 않습니다`, `secret 값은 입력하지 않고`, `읽기 전용 서비스 결과`를 명확히 설명한다.
+- 결과 표는 가져오기 상태, 도구, 승인 ID, endpoint, active scan 실행 여부, secret 저장 여부, LLM 명령 신뢰 여부, Evidence 후보, parser 구조화 항목을 보여준다.
+- `고도화/sanity/redteam_ax_frontend_service_import_contract.py`는 API 경로, payload 제한, 결과 표시 anchor를 검사한다.
+- `고도화/sanity/test_redteam2_korean_copy_inventory.py`는 서비스 결과 가져오기 한국어 앵커를 추가로 검사한다.
+- accepted gate manifest에는 `GATE-FRONTEND-SERVICE-IMPORT-CONTRACT`를 추가해 UI/API 연결 회귀를 고정한다.
+- 이 slice는 로컬 서비스 import backend smoke와 frontend 호출 경로를 연결하지만, 조직/실서비스 OpenVAS/ZAP endpoint 실측과 Docker daemon 기반 container runtime smoke는 여전히 환경 의존 완료 조건으로 남긴다.

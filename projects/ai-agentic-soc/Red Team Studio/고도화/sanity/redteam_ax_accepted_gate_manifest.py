@@ -18,6 +18,18 @@ AUDIT_MATRIX = REDTEAM_ROOT / "고도화" / "completion-audit" / "redteam_ax_com
 INSTALLED_TOOL_SMOKE = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-installed-tool-live-smoke" / "latest_installed_tool_live_smoke.json"
 
 
+def project_python() -> str:
+    candidates = [
+        PROJECT_ROOT / ".venv" / "Scripts" / "python.exe",
+        PROJECT_ROOT / ".venv" / "bin" / "python",
+        Path(sys.executable),
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return str(candidate)
+    return sys.executable
+
+
 def now_utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -87,7 +99,7 @@ def load_json(path: Path) -> dict:
 
 
 def accepted_gates() -> list[dict]:
-    py = sys.executable
+    py = project_python()
     return [
         {
             "gate_id": "GATE-API-REGRESSION",
@@ -162,6 +174,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 120,
         },
         {
+            "gate_id": "GATE-FRONTEND-SERVICE-IMPORT-CONTRACT",
+            "name": "Report Studio RedTeam2 scanner service import frontend contract",
+            "category": "frontend_service_import_contract",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_frontend_service_import_contract.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -177,6 +197,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
             ],
             "timeout_seconds": 60,

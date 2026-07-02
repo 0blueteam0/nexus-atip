@@ -66,8 +66,9 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Scanner CLI live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json` | 공식 checksum 검증 portable Nuclei v3.10.0/Trivy v0.72.0 CLI를 governed runner로 실행하고 Evidence Card까지 연결 |
 | OpenVAS/ZAP CLI live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json` | 격리 venv 기반 `gvm-cli`/`zap-cli` shim을 governed runner로 실행하고 Evidence Card까지 연결 |
 | OpenVAS/ZAP service import smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json` | 승인된 read-only vault reference와 로컬 서비스 endpoint에서 OpenVAS XML/ZAP JSON report를 가져와 sanitizer, parser, Evidence Card까지 연결 |
+| RedTeam2 service import frontend contract | `../sanity/redteam_ax_frontend_service_import_contract.py` | `OpenVAS/ZAP 서비스 결과 가져오기` 패널이 read-only service import API를 호출하고 secret material 입력/전송 없이 Evidence 후보를 표시하는지 검증 |
 | Credential authorization | `/api/redteam/v2/tool-credential-authorizations` | OpenVAS/ZAP 외부 vault reference만 승인하고 read-only scope, actor binding, secret material 금지를 검증 |
-| Accepted gate manifest | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` | API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, Python compile, frontend JS check, frontend build 통과 증거 |
+| Accepted gate manifest | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` | API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, Python compile, frontend JS check, frontend build 통과 증거 |
 
 ## 전체 인벤토리 요약
 
