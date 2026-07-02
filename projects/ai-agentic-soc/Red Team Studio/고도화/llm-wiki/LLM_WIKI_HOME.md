@@ -65,8 +65,9 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Installed tool live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json` | 설치된 `npm.cmd --version`을 governed runner로 실행하고 sanitizer, agent normalization, Evidence Card까지 연결 |
 | Scanner CLI live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json` | 공식 checksum 검증 portable Nuclei v3.10.0/Trivy v0.72.0 CLI를 governed runner로 실행하고 Evidence Card까지 연결 |
 | OpenVAS/ZAP CLI live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json` | 격리 venv 기반 `gvm-cli`/`zap-cli` shim을 governed runner로 실행하고 Evidence Card까지 연결 |
+| OpenVAS/ZAP service import smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json` | 승인된 read-only vault reference와 로컬 서비스 endpoint에서 OpenVAS XML/ZAP JSON report를 가져와 sanitizer, parser, Evidence Card까지 연결 |
 | Credential authorization | `/api/redteam/v2/tool-credential-authorizations` | OpenVAS/ZAP 외부 vault reference만 승인하고 read-only scope, actor binding, secret material 금지를 검증 |
-| Accepted gate manifest | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` | API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, Python compile, frontend JS check, frontend build 통과 증거 |
+| Accepted gate manifest | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` | API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, Python compile, frontend JS check, frontend build 통과 증거 |
 
 ## 전체 인벤토리 요약
 
@@ -144,4 +145,4 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
 - Docker/container runtime live smoke 성공 증거
-- OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
+- 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거

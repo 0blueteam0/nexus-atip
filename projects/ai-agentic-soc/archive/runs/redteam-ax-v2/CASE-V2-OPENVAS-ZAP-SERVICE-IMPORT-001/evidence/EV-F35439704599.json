@@ -1,0 +1,43 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-F35439704599",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/normalized-results/NR-49941C0CD11B.json",
+  "collected_at": "2026-07-02T07:19:43Z",
+  "hash": "SHA256-9150461DEF13",
+  "summary": "OWASP ZAP service report import evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TSVC-0B36186B3D38",
+    "result_id": "NR-49941C0CD11B",
+    "result_type": "scanner_finding_candidate",
+    "structured_items": [
+      {
+        "item_type": "scanner_finding_candidate",
+        "tool": "owasp-zap",
+        "alert_id": "10021",
+        "name": "X-Content-Type-Options Header Missing",
+        "severity": "1",
+        "confidence_label": "Medium",
+        "target": "http://127.0.0.1:5177/report-studio",
+        "cwe_id": "693",
+        "wasc_id": "15",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.55
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/evidence/EV-F35439704599.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/audit.jsonl"
+}

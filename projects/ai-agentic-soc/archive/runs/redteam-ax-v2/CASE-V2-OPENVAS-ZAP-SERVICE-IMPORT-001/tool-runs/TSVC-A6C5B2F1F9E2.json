@@ -1,0 +1,84 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TSVC-A6C5B2F1F9E2",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "action_id": "TAC-A02EAB86CD74",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "execution_mode": "service_report_import",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "status": "EvidenceCreated",
+  "errors": [],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-C3B090ACA103",
+      "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/TSVC-A6C5B2F1F9E2/openvas-report.xml",
+      "hash": "93a8a78c2f84ed8d753f4586f5f21500de0eb50775681fe7c9ca8ba65e089fba",
+      "sha256": "93a8a78c2f84ed8d753f4586f5f21500de0eb50775681fe7c9ca8ba65e089fba",
+      "content_type": "application/xml",
+      "summary": "OpenVAS / Greenbone Community Edition read-only service report imported as untrusted output.",
+      "imported_at": "2026-07-02T07:19:43Z"
+    }
+  ],
+  "normalized_results": [
+    "NR-2922D97B6F66"
+  ],
+  "evidence_candidates": [
+    "EV-6EAEA6DA6B81"
+  ],
+  "analysis_agent_id": "AGENT-OPENVAS-ANALYST-001",
+  "normalizer_id": "NORMALIZER-OPENVAS-001",
+  "service_import": {
+    "authorization_id": "TCRED-3D1526CF58E7",
+    "endpoint_url": "http://127.0.0.1:6525/openvas/report.xml",
+    "endpoint_ref": "http://127.0.0.1:6525/openvas/report.xml",
+    "read_only": true,
+    "active_scan_executed": false,
+    "secret_material_stored": false,
+    "service_fetch": {
+      "method": "http_get",
+      "executed": true,
+      "commands_executed_by_api": false,
+      "scanner_commands_executed_by_api": false,
+      "endpoint": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "path": "/openvas/report.xml",
+        "loopback": true
+      },
+      "metadata": {
+        "status_code": 200,
+        "content_type": "application/xml; charset=utf-8",
+        "bytes_read": 416
+      }
+    }
+  },
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-OPENVAS-001",
+    "run_id": "TSVC-A6C5B2F1F9E2",
+    "classification": "internal",
+    "content_summary": "Scanner service report imported as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-C3B090ACA103",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/TSVC-A6C5B2F1F9E2/openvas-report.xml",
+        "hash": "93a8a78c2f84ed8d753f4586f5f21500de0eb50775681fe7c9ca8ba65e089fba",
+        "sha256": "93a8a78c2f84ed8d753f4586f5f21500de0eb50775681fe7c9ca8ba65e089fba",
+        "content_type": "application/xml",
+        "summary": "OpenVAS / Greenbone Community Edition read-only service report imported as untrusted output.",
+        "imported_at": "2026-07-02T07:19:43Z"
+      }
+    ]
+  },
+  "notes": "Read-only scanner service report import; no scan, spider, attack mode, or mutating command was executed by RedTeam AX.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-runs/TSVC-A6C5B2F1F9E2.json",
+  "sanitizer_previews": [
+    "SAN-D9C0A88A4720"
+  ]
+}

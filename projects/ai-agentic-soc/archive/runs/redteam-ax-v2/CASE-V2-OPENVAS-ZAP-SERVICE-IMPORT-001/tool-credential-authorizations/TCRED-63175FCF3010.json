@@ -1,0 +1,46 @@
+{
+  "kind": "redteam_ax_v2_tool_credential_authorization",
+  "authorization_id": "TCRED-63175FCF3010",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "status": "authorized",
+  "credential_ref": "vault://redteam-ax/tool-openvas-001/readonly",
+  "endpoint_ref": "http://127.0.0.1:50062/openvas/report.xml",
+  "token_scopes": [
+    "read:reports"
+  ],
+  "read_only": true,
+  "purpose": "Read-only scanner report import smoke; no active scan or mutating operation.",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "approved_at": "2026-07-02T07:22:58Z",
+  "expires_at": null,
+  "commands_executed_by_api": false,
+  "secret_material_stored": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "runner_unlocks": [],
+  "policy": {
+    "credential_mode": "external_vault_reference_only",
+    "read_only_required": true,
+    "allowed_token_scopes": [
+      "read:reports",
+      "read:scan_status",
+      "read:targets"
+    ],
+    "secret_material_policy": "Never submit API keys, passwords, cookies, or bearer tokens to this API. Store them in an external vault and submit only a vault reference.",
+    "runner_policy": "ToolActionCard and execution token may reference the credential authorization id, but runner receives only a short-lived external broker reference."
+  },
+  "actor_context": {
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "auth_provider": "request_headers",
+    "identity_binding": "bound"
+  },
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-credential-authorizations/TCRED-63175FCF3010.json"
+}

@@ -209,16 +209,18 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Installed npm audit, Nuclei, Trivy, OpenVAS gvm-cli, and OWASP ZAP CLI wrapper paths were exercised through the governed runner using low-risk metadata commands. Nuclei v3.10.0 and Trivy v0.72.0 were installed as checksum-verified portable official release binaries; OpenVAS/ZAP wrappers run from an isolated tools/redteam-ax venv via hash-pinned .cmd shims. Each passed ToolActionCard, ExecutionPlan, wrapper pin, execution token, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation.",
-      "residual_gap": "Docker/container runtime live smoke is not successful in this environment because Docker CLI is installed but the daemon reports unable to start. OpenVAS service report import and ZAP daemon passive-alert import remain service-endpoint integration work beyond CLI wrapper readiness.",
-      "next_action": "When Docker daemon and OpenVAS/ZAP service endpoints are available, rerun live runtime and service import smokes and attach artifacts."
+      "proof_summary": "Installed npm audit, Nuclei, Trivy, OpenVAS gvm-cli, and OWASP ZAP CLI wrapper paths were exercised through the governed runner using low-risk metadata commands. Nuclei v3.10.0 and Trivy v0.72.0 were installed as checksum-verified portable official release binaries; OpenVAS/ZAP wrappers run from an isolated tools/redteam-ax venv via hash-pinned .cmd shims. Each passed ToolActionCard, ExecutionPlan, wrapper pin, execution token, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation. OpenVAS XML and ZAP JSON service report import now has a read-only endpoint adapter smoke using authorized external vault references, local HTTP report endpoints, sanitizer, tool-specific parser, agent normalization, Evidence Card creation, and negative secret-material rejection.",
+      "residual_gap": "Docker/container runtime live smoke is not successful in this environment because Docker CLI is installed but the daemon reports unable to start. OpenVAS/ZAP service import contract is proved against controlled local read-only endpoints; actual organization OpenVAS/ZAP service endpoint evidence remains environment-dependent.",
+      "next_action": "When Docker daemon and organization OpenVAS/ZAP endpoints are available, rerun live runtime and external service import smokes and attach artifacts."
     },
     {
       "id": "RTA-COMP-016",
@@ -234,10 +236,10 @@
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
-    "OpenVAS service report import and OWASP ZAP daemon passive-alert import after service endpoint readiness."
+    "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness."
   ],
   "next_slice_candidates": [
-    "Run OpenVAS and OWASP ZAP service endpoint live import smokes when endpoints are available.",
+    "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved."
   ]
 }

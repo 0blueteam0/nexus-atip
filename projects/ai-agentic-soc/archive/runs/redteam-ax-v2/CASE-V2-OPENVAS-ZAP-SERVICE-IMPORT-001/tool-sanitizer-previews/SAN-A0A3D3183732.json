@@ -1,0 +1,42 @@
+{
+  "kind": "redteam_ax_v2_tool_output_sanitizer_preview",
+  "preview_id": "SAN-A0A3D3183732",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "run_id": "TSVC-B599EE6E77AA",
+  "action_id": "TAC-A02EAB86CD74",
+  "tool_id": "TOOL-OPENVAS-001",
+  "input_source": "stored_artifacts",
+  "artifact_report": {
+    "artifact_input_count": 1,
+    "artifact_checked_count": 1,
+    "artifact_skipped_count": 0,
+    "artifact_errors": []
+  },
+  "status": "allow",
+  "errors": [],
+  "trusted_as_instruction": false,
+  "trusted_as_data": true,
+  "requires_human_review": false,
+  "sanitizer": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "decision": "allow",
+    "prompt_injection_score": 0.0,
+    "secret_detection_score": 0.0,
+    "redactions": [],
+    "indicators": [],
+    "sanitized_outputs": [
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<report>\n  <results>\n    <result>\n      <id>ov-result-001</id>\n      <name>TLS certificate uses weak signature algorithm</name>\n      <host>127.0.0.1</host>\n      <port>443/tcp</port>\n      <threat>Medium</threat>\n      <severity>5.0</severity>\n      <description>Read-only fixture report for RedTeam AX service import smoke.</description>\n    </result>\n  </results>\n</report>\n"
+    ],
+    "sanitized_summary": "No prompt injection or secret indicators detected.",
+    "warnings": []
+  },
+  "sanitized_output_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<report>\n  <results>\n    <result>\n      <id>ov-result-001</id>\n      <name>TLS certificate uses weak signature algorithm</name>\n      <host>127.0.0.1</host>\n      <port>443/tcp</port>\n      <threat>Medium</threat>\n      <severity>5.0</severity>\n      <description>Read-only fixture report for RedTeam AX service import smoke.</description>\n    </result>\n  </results>\n</report>\n",
+  "policy": {
+    "prompt_injection_threshold_quarantine": 0.85,
+    "secret_redaction_required": true,
+    "raw_output_trust": "data_only_never_instruction"
+  },
+  "created_at": "2026-07-02T07:22:58Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-sanitizer-previews/SAN-A0A3D3183732.json"
+}

@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 36 real container runtime smoke harness complete, Docker daemon blocker evidenced, full goal active
+상태: implementation slice 63 OpenVAS/ZAP read-only service import smoke complete, Docker daemon and organization service endpoint evidence remain, full goal active
 작성일: 2026-07-01
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -1239,4 +1239,19 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 각 도구 runner output을 sanitizer preview, agent normalization, Evidence Card 생성까지 연결
 - [x] `archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json`에 OpenVAS/ZAP passed 및 service endpoint residual blocker 저장
 - [x] accepted gate manifest에 OpenVAS/ZAP CLI live smoke를 포함
-- [ ] 다음 slice: Docker daemon 복구 후 container runtime live smoke 또는 OpenVAS/ZAP service endpoint import smoke 구현
+- [x] 다음 slice: Docker daemon 복구 후 container runtime live smoke 또는 OpenVAS/ZAP service endpoint import smoke 구현 - OpenVAS/ZAP read-only service import smoke slice 63 완료
+
+## 71. Slice 63 OpenVAS/ZAP Read-only Service Import Smoke 체크리스트
+
+- [x] `/api/redteam/v2/scanner-service-imports/{tool_id}` API 추가
+- [x] OpenVAS/ZAP service import는 `TOOL-OPENVAS-001`, `TOOL-ZAP-001`만 허용
+- [x] 승인된 `ToolCredentialAuthorization`의 external vault reference와 read-only scope가 없으면 차단
+- [x] endpoint URL은 authorization의 `endpoint_ref`와 일치해야 하며 URL 내 credential/secret query를 차단
+- [x] active scan, attack mode, spider, scan start/delete 같은 mutating service operation 요청을 차단
+- [x] 로컬 read-only HTTP endpoint에서 OpenVAS XML report와 ZAP JSON alerts를 가져오는 smoke 추가
+- [x] 가져온 report를 `ToolRunRecord` raw artifact로 저장하고 `trusted_as_instruction=false` 유지
+- [x] OpenVAS/ZAP tool-specific parser, sanitizer preview, agent normalization, Evidence Card 생성까지 연결
+- [x] secret material 제출 negative control이 `invalid`로 차단됨을 검증
+- [x] accepted gate manifest에 service import smoke 포함
+- [ ] 조직/실서비스 OpenVAS/ZAP endpoint에서 동일 import smoke 실측
+- [ ] Docker daemon ready 후 실제 container runtime smoke 실측

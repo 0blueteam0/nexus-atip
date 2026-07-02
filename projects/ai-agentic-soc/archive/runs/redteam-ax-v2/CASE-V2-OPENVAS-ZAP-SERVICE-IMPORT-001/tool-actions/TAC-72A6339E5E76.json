@@ -1,0 +1,138 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-72A6339E5E76",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "OWASP ZAP 읽기 전용 서비스 결과 가져오기",
+  "objective": "승인된 읽기 전용 scanner service endpoint에서 report/alert 결과를 가져와 증거 후보로 정규화한다.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_profile": {
+    "tool_id": "TOOL-ZAP-001",
+    "name": "owasp-zap",
+    "category": "web_validation",
+    "normalizer_id": "NORMALIZER-ZAP-001",
+    "agent_id": "AGENT-ZAP-ANALYST-001",
+    "default_policy": "approved_scope_passive_or_lab_active_scan"
+  },
+  "risk_class": "T1",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "inputs": {
+    "service_report_import": true,
+    "credential_authorization_id": "TCRED-0251880D69EE",
+    "active_scan": false
+  },
+  "expected_outputs": [
+    "scanner_finding_candidate",
+    "web_validation_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+    "decision": "allow",
+    "risk_class": "T1",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-02T07:19:43Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/roe/ROE-9E53CEEE3082.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T07:19:43Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "scanner_service_report_imported",
+      "at": "2026-07-02T07:19:43Z",
+      "run_id": "TSVC-0B36186B3D38",
+      "tool_id": "TOOL-ZAP-001"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T07:19:43Z",
+      "run_id": "TSVC-0B36186B3D38",
+      "result_id": "NR-49941C0CD11B",
+      "agent_id": "AGENT-ZAP-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T07:19:43Z",
+      "run_id": "TSVC-0B36186B3D38",
+      "evidence_id": "EV-F35439704599"
+    },
+    {
+      "event": "scanner_service_report_imported",
+      "at": "2026-07-02T07:21:59Z",
+      "run_id": "TSVC-416A72428D03",
+      "tool_id": "TOOL-ZAP-001"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T07:21:59Z",
+      "run_id": "TSVC-416A72428D03",
+      "result_id": "NR-467C93B60CFB",
+      "agent_id": "AGENT-ZAP-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T07:21:59Z",
+      "run_id": "TSVC-416A72428D03",
+      "evidence_id": "EV-5647ED7259FD"
+    },
+    {
+      "event": "scanner_service_report_imported",
+      "at": "2026-07-02T07:22:58Z",
+      "run_id": "TSVC-5637560377E0",
+      "tool_id": "TOOL-ZAP-001"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T07:22:59Z",
+      "run_id": "TSVC-5637560377E0",
+      "result_id": "NR-0F0810B9B3A5",
+      "agent_id": "AGENT-ZAP-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T07:22:59Z",
+      "run_id": "TSVC-5637560377E0",
+      "evidence_id": "EV-1885958DA64B"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-actions/TAC-72A6339E5E76.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/audit.jsonl"
+}

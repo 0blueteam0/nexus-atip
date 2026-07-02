@@ -1,0 +1,71 @@
+{
+  "kind": "redteam_ax_v2_scanner_service_report_import",
+  "import_id": "SVCIMP-F01848A15E4A",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "status": "passed",
+  "errors": [],
+  "authorization_id": "TCRED-3D1526CF58E7",
+  "endpoint_url": "http://127.0.0.1:6525/openvas/report.xml",
+  "service_fetch": {
+    "method": "http_get",
+    "executed": true,
+    "commands_executed_by_api": false,
+    "scanner_commands_executed_by_api": false,
+    "endpoint": {
+      "scheme": "http",
+      "host": "127.0.0.1",
+      "path": "/openvas/report.xml",
+      "loopback": true
+    },
+    "metadata": {
+      "status_code": 200,
+      "content_type": "application/xml; charset=utf-8",
+      "bytes_read": 416
+    }
+  },
+  "tool_run": {
+    "run_id": "TSVC-A6C5B2F1F9E2",
+    "status": "OutputImported",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-runs/TSVC-A6C5B2F1F9E2.json"
+  },
+  "sanitize_preview": {
+    "status": "allow",
+    "trusted_as_instruction": false
+  },
+  "agent_analyze": {
+    "status": "Normalized",
+    "result_id": "NR-2922D97B6F66",
+    "parser_report": {
+      "parser": "openvas_xml",
+      "raw_output_count": 1,
+      "parsed_item_count": 1,
+      "container_launch_item_count": 0,
+      "trusted_as_instruction": false,
+      "artifact_input_count": 1,
+      "artifact_checked_count": 1,
+      "artifact_skipped_count": 0,
+      "artifact_errors": [],
+      "input_source": "stored_artifacts",
+      "sanitizer_decision": "allow",
+      "sanitizer_redaction_count": 0
+    },
+    "structured_item_count": 1
+  },
+  "evidence": {
+    "status": null,
+    "evidence_id": "EV-6EAEA6DA6B81",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/evidence/EV-6EAEA6DA6B81.json"
+  },
+  "policy": {
+    "read_only": true,
+    "active_scan_executed": false,
+    "scanner_commands_executed_by_api": false,
+    "secret_material_stored": false,
+    "trusted_as_instruction": false,
+    "requires_human_validation": true
+  },
+  "created_at": "2026-07-02T07:19:43Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/SVCIMP-F01848A15E4A.json"
+}

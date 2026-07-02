@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report>
+  <results>
+    <result>
+      <id>ov-result-001</id>
+      <name>TLS certificate uses weak signature algorithm</name>
+      <host>127.0.0.1</host>
+      <port>443/tcp</port>
+      <threat>Medium</threat>
+      <severity>5.0</severity>
+      <description>Read-only fixture report for RedTeam AX service import smoke.</description>
+    </result>
+  </results>
+</report>

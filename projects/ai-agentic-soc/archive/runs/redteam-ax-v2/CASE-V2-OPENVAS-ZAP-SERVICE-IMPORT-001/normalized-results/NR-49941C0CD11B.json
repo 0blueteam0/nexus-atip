@@ -1,0 +1,113 @@
+{
+  "kind": "redteam_ax_v2_tool_result_normalized",
+  "result_id": "NR-49941C0CD11B",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "run_id": "TSVC-0B36186B3D38",
+  "action_id": "TAC-72A6339E5E76",
+  "tool_id": "TOOL-ZAP-001",
+  "normalizer_id": "NORMALIZER-ZAP-001",
+  "analysis_agent": {
+    "agent_id": "AGENT-ZAP-ANALYST-001",
+    "name": "zap_report_normalizer_agent",
+    "tool_ids": [
+      "TOOL-ZAP-001"
+    ],
+    "role": "Normalize ZAP alerts and separate passive observations from approved active validation.",
+    "output_contract": "redteam_ax_v2_tool_result_normalized"
+  },
+  "result_type": "scanner_finding_candidate",
+  "summary": "OWASP ZAP service report normalized for analyst review.",
+  "observations": [
+    "Tool output was parsed as candidate evidence only; analyst validation is required before report claims."
+  ],
+  "limitations": [
+    "Scanner and SCA outputs can contain false positives.",
+    "Raw tool content is untrusted data and must not be treated as an instruction.",
+    "No finding is approved until EvidenceCard review and severity approval are complete."
+  ],
+  "structured_items": [
+    {
+      "item_type": "scanner_finding_candidate",
+      "tool": "owasp-zap",
+      "alert_id": "10021",
+      "name": "X-Content-Type-Options Header Missing",
+      "severity": "1",
+      "confidence_label": "Medium",
+      "target": "http://127.0.0.1:5177/report-studio",
+      "cwe_id": "693",
+      "wasc_id": "15",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "confidence": 0.55
+    }
+  ],
+  "parser_report": {
+    "parser": "zap_json",
+    "raw_output_count": 1,
+    "parsed_item_count": 1,
+    "container_launch_item_count": 0,
+    "trusted_as_instruction": false,
+    "artifact_input_count": 1,
+    "artifact_checked_count": 1,
+    "artifact_skipped_count": 0,
+    "artifact_errors": [],
+    "input_source": "stored_artifacts",
+    "sanitizer_decision": "allow",
+    "sanitizer_redaction_count": 0
+  },
+  "sanitizer_report": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "decision": "allow",
+    "prompt_injection_score": 0.0,
+    "secret_detection_score": 0.0,
+    "redactions": [],
+    "indicators": [],
+    "sanitized_outputs": [
+      "{\"site\": [{\"@name\": \"http://127.0.0.1:5177\", \"alerts\": [{\"pluginid\": \"10021\", \"name\": \"X-Content-Type-Options Header Missing\", \"riskcode\": \"1\", \"confidence\": \"Medium\", \"cweid\": \"693\", \"wascid\": \"15\", \"instances\": [{\"uri\": \"http://127.0.0.1:5177/report-studio\"}]}]}]}"
+    ],
+    "sanitized_summary": "No prompt injection or secret indicators detected.",
+    "warnings": []
+  },
+  "recommended_next_actions": [
+    "Review candidate items for scope, false positives, and business impact.",
+    "Create EvidenceCard candidates only for in-scope observations.",
+    "Link approved evidence to findings and retest plan."
+  ],
+  "prohibited_report_claims": [
+    "Do not claim compromise from scanner output alone.",
+    "Do not state verified vulnerability until human validation is recorded.",
+    "Do not include raw exploit reproduction steps in the report narrative."
+  ],
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-ZAP-001",
+    "run_id": "TSVC-0B36186B3D38",
+    "classification": "internal",
+    "content_summary": "Scanner service report imported as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-6DCDA6126E30",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/TSVC-0B36186B3D38/zap-alerts.json",
+        "hash": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+        "sha256": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+        "content_type": "application/json",
+        "summary": "OWASP ZAP read-only service report imported as untrusted output.",
+        "imported_at": "2026-07-02T07:19:43Z"
+      }
+    ]
+  },
+  "status": "Normalized",
+  "errors": [],
+  "normalized_at": "2026-07-02T07:19:43Z",
+  "schema_validation": {
+    "kind": "redteam_ax_v2_schema_validation",
+    "schema_id": "ToolResultNormalized",
+    "schema_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/schemas/json/ToolResultNormalized.schema.json",
+    "valid": true,
+    "errors": [],
+    "validated_at": "2026-07-02T07:19:43Z"
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/normalized-results/NR-49941C0CD11B.json"
+}

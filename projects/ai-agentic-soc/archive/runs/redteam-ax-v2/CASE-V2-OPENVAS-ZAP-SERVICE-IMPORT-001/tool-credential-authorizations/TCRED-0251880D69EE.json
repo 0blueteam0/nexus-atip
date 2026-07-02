@@ -1,0 +1,48 @@
+{
+  "kind": "redteam_ax_v2_tool_credential_authorization",
+  "authorization_id": "TCRED-0251880D69EE",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "status": "authorized",
+  "credential_ref": "vault://redteam-ax/tool-zap-001/readonly",
+  "endpoint_ref": "http://127.0.0.1:6525/zap/alerts.json",
+  "token_scopes": [
+    "read:alerts",
+    "read:reports"
+  ],
+  "read_only": true,
+  "purpose": "Read-only scanner report import smoke; no active scan or mutating operation.",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "approved_at": "2026-07-02T07:19:43Z",
+  "expires_at": null,
+  "commands_executed_by_api": false,
+  "secret_material_stored": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "runner_unlocks": [],
+  "policy": {
+    "credential_mode": "external_vault_reference_only",
+    "read_only_required": true,
+    "allowed_token_scopes": [
+      "read:alerts",
+      "read:spider_status",
+      "read:context",
+      "read:reports"
+    ],
+    "secret_material_policy": "Never submit ZAP API keys or session tokens to this API. Store them in an external vault and submit only a vault reference.",
+    "runner_policy": "Passive/read-only API use may be planned after approval; active scan still requires separate HITL approval."
+  },
+  "actor_context": {
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "auth_provider": "request_headers",
+    "identity_binding": "bound"
+  },
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-credential-authorizations/TCRED-0251880D69EE.json"
+}

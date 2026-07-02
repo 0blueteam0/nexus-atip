@@ -14,6 +14,9 @@ from datetime import datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 try:
     from runtime.redteam_mcp_gateway_adapter import deny_direct_mcp_invocation
@@ -29,6 +32,9 @@ SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas
 TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
 TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
 TOOL_CREDENTIAL_VAULT_APPROVER_ROLES = {"red_team_lead", "control_team"}
+SERVICE_IMPORT_TOOLS = {"TOOL-OPENVAS-001", "TOOL-ZAP-001"}
+SERVICE_IMPORT_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+MAX_SERVICE_REPORT_BYTES = 2 * 1024 * 1024
 PROMPT_INJECTION_PATTERNS = [
     "ignore all previous instructions",
     "ignore previous instructions",
@@ -1452,6 +1458,296 @@ def list_tool_credential_authorizations(case_id: str | None = None, tool_id: str
         "trusted_as_instruction": False,
         "items": records,
     }
+
+
+def _service_import_content_type(tool_id: str) -> str:
+    if tool_id == "TOOL-OPENVAS-001":
+        return "application/xml"
+    if tool_id == "TOOL-ZAP-001":
+        return "application/json"
+    return "text/plain"
+
+
+def _service_import_filename(tool_id: str) -> str:
+    if tool_id == "TOOL-OPENVAS-001":
+        return "openvas-report.xml"
+    if tool_id == "TOOL-ZAP-001":
+        return "zap-alerts.json"
+    return "service-report.txt"
+
+
+def _service_import_endpoint_allowed(endpoint_url: str, endpoint_ref: str, target_scope_refs: list[str]) -> tuple[bool, list[str], dict[str, Any]]:
+    errors: list[str] = []
+    parsed = urlparse(endpoint_url)
+    ref = str(endpoint_ref or "").strip().rstrip("/")
+    endpoint = endpoint_url.strip().rstrip("/")
+    if parsed.scheme not in {"http", "https"}:
+        errors.append("endpoint_url_scheme_must_be_http_or_https")
+    if parsed.username or parsed.password:
+        errors.append("endpoint_url_must_not_embed_credentials")
+    if not parsed.hostname:
+        errors.append("endpoint_url_host_required")
+    query_lower = (parsed.query or "").lower()
+    if any(token in query_lower for token in ["api_key", "apikey", "token", "password", "secret", "cookie"]):
+        errors.append("endpoint_url_query_must_not_contain_secret_material")
+    if ref and endpoint != ref and not endpoint.startswith(f"{ref}/"):
+        errors.append("endpoint_url_must_match_authorized_endpoint_ref")
+    if parsed.hostname not in SERVICE_IMPORT_LOOPBACK_HOSTS and not target_scope_refs:
+        errors.append("target_scope_refs_required_for_non_loopback_service_endpoint")
+    return not errors, errors, {
+        "scheme": parsed.scheme,
+        "host": parsed.hostname,
+        "path": parsed.path,
+        "loopback": parsed.hostname in SERVICE_IMPORT_LOOPBACK_HOSTS if parsed.hostname else False,
+    }
+
+
+def _fetch_service_report(endpoint_url: str, accept: str, timeout: int) -> tuple[str, dict[str, Any], list[str]]:
+    errors: list[str] = []
+    try:
+        request = Request(endpoint_url, method="GET", headers={"Accept": accept, "User-Agent": "RedTeam-AX-service-import/1.0"})
+        with urlopen(request, timeout=timeout) as response:
+            content = response.read(MAX_SERVICE_REPORT_BYTES + 1)
+            if len(content) > MAX_SERVICE_REPORT_BYTES:
+                errors.append("service_report_exceeds_max_bytes")
+                content = content[:MAX_SERVICE_REPORT_BYTES]
+            text = content.decode("utf-8", errors="replace")
+            metadata = {
+                "status_code": getattr(response, "status", None),
+                "content_type": response.headers.get("Content-Type", ""),
+                "bytes_read": len(content),
+            }
+            return text, metadata, errors
+    except HTTPError as exc:
+        return "", {"status_code": exc.code, "reason": str(exc.reason)}, [f"service_endpoint_http_error:{exc.code}"]
+    except URLError as exc:
+        return "", {"reason": str(exc.reason)}, ["service_endpoint_unreachable"]
+    except TimeoutError:
+        return "", {"timeout": True}, ["service_endpoint_timeout"]
+
+
+def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    resolved_tool_id = str(tool_id or "").strip().upper()
+    profile = analysis_tool_profile(resolved_tool_id)
+    case_id = str(payload.get("case_id") or "CASE-V2-SERVICE-IMPORT-001").strip()
+    action_id = str(payload.get("action_id") or stable_id("TAC", [case_id, resolved_tool_id, "service-report-import"])).strip()
+    authorization_id = str(payload.get("authorization_id") or payload.get("credential_authorization_id") or "").strip()
+    endpoint_url = str(payload.get("endpoint_url") or "").strip()
+    target_scope_refs = [str(item or "").strip() for item in (payload.get("target_scope_refs") or []) if str(item or "").strip()]
+    requested_by = str(payload.get("requested_by") or "analyst@example.com").strip()
+    timeout = int(payload.get("timeout") or 10)
+    errors: list[str] = []
+
+    if resolved_tool_id not in SERVICE_IMPORT_TOOLS:
+        errors.append("service_report_import_supported_only_for_openvas_or_zap")
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not case_id:
+        errors.append("case_id_required")
+    if not authorization_id:
+        errors.append("credential_authorization_id_required")
+    if not endpoint_url and "raw_report" not in payload:
+        errors.append("endpoint_url_or_raw_report_required")
+    if _payload_contains_secret_material(payload):
+        errors.append("secret_material_must_not_be_submitted")
+    prohibited = {"active_scan", "attack_mode", "spider", "start_scan", "delete_task", "write_context"}
+    if any(bool(payload.get(key)) for key in prohibited):
+        errors.append("active_or_mutating_service_operation_prohibited")
+
+    authorization = load_json_record(authorization_id, "tool-credential-authorizations", case_id) if authorization_id else None
+    if authorization is None and authorization_id:
+        records = list_tool_credential_authorizations(case_id=case_id, tool_id=resolved_tool_id).get("items") or []
+        authorization = next((item for item in records if item.get("authorization_id") == authorization_id), None)
+    if authorization is None:
+        errors.append("authorized_read_only_credential_reference_required")
+    elif authorization.get("status") != "authorized":
+        errors.append("credential_authorization_must_be_authorized")
+    elif str(authorization.get("tool_id") or "").upper() != resolved_tool_id:
+        errors.append("credential_authorization_tool_mismatch")
+    elif not authorization.get("read_only"):
+        errors.append("credential_authorization_must_be_read_only")
+
+    endpoint_policy: dict[str, Any] = {}
+    if endpoint_url and authorization is not None:
+        allowed, endpoint_errors, endpoint_policy = _service_import_endpoint_allowed(
+            endpoint_url,
+            str(authorization.get("endpoint_ref") or ""),
+            target_scope_refs or list(authorization.get("target_scope_refs") or []),
+        )
+        if not allowed:
+            errors.extend(endpoint_errors)
+
+    content_type = _service_import_content_type(resolved_tool_id)
+    raw_report = payload.get("raw_report")
+    service_fetch: dict[str, Any] = {
+        "method": "provided_report",
+        "executed": False,
+        "commands_executed_by_api": False,
+    }
+    if raw_report is None and not errors:
+        fetched, fetch_metadata, fetch_errors = _fetch_service_report(endpoint_url, content_type, timeout)
+        raw_report = fetched
+        service_fetch = {
+            "method": "http_get",
+            "executed": True,
+            "commands_executed_by_api": False,
+            "scanner_commands_executed_by_api": False,
+            "endpoint": endpoint_policy,
+            "metadata": fetch_metadata,
+        }
+        errors.extend(fetch_errors)
+    raw_text = raw_value_to_text(raw_report) if raw_report is not None else ""
+    if not raw_text:
+        errors.append("service_report_empty")
+
+    if errors:
+        return {
+            "kind": "redteam_ax_v2_scanner_service_report_import",
+            "case_id": case_id,
+            "tool_id": resolved_tool_id,
+            "status": "invalid",
+            "errors": errors,
+            "authorization_id": authorization_id,
+            "endpoint_url": endpoint_url,
+            "service_fetch": service_fetch,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "secret_material_stored": False,
+        }
+
+    action = load_tool_action(action_id, case_id)
+    if action is None:
+        action = plan_tool_action({
+            "case_id": case_id,
+            "action_id": action_id,
+            "title": payload.get("title") or f"{(profile or {}).get('display_name') or resolved_tool_id} 읽기 전용 서비스 결과 가져오기",
+            "objective": payload.get("objective") or "승인된 읽기 전용 scanner service endpoint에서 report/alert 결과를 가져와 증거 후보로 정규화한다.",
+            "tool_id": resolved_tool_id,
+            "risk_class": "T1",
+            "requested_by": requested_by,
+            "target_scope_refs": target_scope_refs or list(authorization.get("target_scope_refs") or []),
+            "inputs": {
+                "service_report_import": True,
+                "credential_authorization_id": authorization_id,
+                "active_scan": False,
+            },
+        })
+
+    run_id = str(payload.get("run_id") or stable_id("TSVC", [case_id, action_id, resolved_tool_id, endpoint_url, raw_text, now_utc()]))
+    report_dir = case_dir(case_id) / "service-report-imports" / safe_name(run_id)
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / _service_import_filename(resolved_tool_id)
+    report_path.write_text(raw_text, encoding="utf-8", newline="\n")
+    report_hash = sha256_file(report_path)
+    raw_artifact = {
+        "artifact_id": stable_id("ART", [run_id, report_path.as_posix(), report_hash]),
+        "source_path_or_ref": report_path.as_posix(),
+        "hash": report_hash,
+        "sha256": report_hash,
+        "content_type": content_type,
+        "summary": f"{(profile or {}).get('display_name') or resolved_tool_id} read-only service report imported as untrusted output.",
+        "imported_at": now_utc(),
+    }
+    tool_run = {
+        "kind": "redteam_ax_v2_tool_run_record",
+        "run_id": run_id,
+        "case_id": case_id,
+        "action_id": action_id,
+        "tool_id": resolved_tool_id,
+        "tool_name": (profile or {}).get("name"),
+        "execution_mode": "service_report_import",
+        "environment": payload.get("environment") or "approved_scope",
+        "executed_by": requested_by,
+        "status": "OutputImported",
+        "errors": [],
+        "target_scope_refs": target_scope_refs or list(authorization.get("target_scope_refs") or []),
+        "raw_artifacts": [raw_artifact],
+        "normalized_results": [],
+        "evidence_candidates": [],
+        "analysis_agent_id": (profile or {}).get("agent_id"),
+        "normalizer_id": (profile or {}).get("normalizer_id"),
+        "service_import": {
+            "authorization_id": authorization_id,
+            "endpoint_url": endpoint_url,
+            "endpoint_ref": authorization.get("endpoint_ref"),
+            "read_only": True,
+            "active_scan_executed": False,
+            "secret_material_stored": False,
+            "service_fetch": service_fetch,
+        },
+        "untrusted_output_envelope": {
+            "trusted_as_instruction": False,
+            "trusted_as_data": True,
+            "source_tool_id": resolved_tool_id,
+            "run_id": run_id,
+            "classification": payload.get("data_classification") or "internal",
+            "content_summary": "Scanner service report imported as untrusted data for normalizer review.",
+            "raw_content_ref": [raw_artifact],
+        },
+        "notes": payload.get("notes") or "Read-only scanner service report import; no scan, spider, attack mode, or mutating command was executed by RedTeam AX.",
+    }
+    append_artifact_metadata(tool_run, "tool-runs", run_id)
+    if action is not None:
+        action["status"] = "OutputImported"
+        action.setdefault("audit_events", []).append({"event": "scanner_service_report_imported", "at": now_utc(), "run_id": run_id, "tool_id": resolved_tool_id})
+        persist_tool_action(action, {"event": "scanner_service_report_imported", "run_id": run_id, "tool_id": resolved_tool_id})
+
+    sanitizer = preview_tool_output_sanitizer(run_id, {"case_id": case_id})
+    normalized = agent_analyze_tool_run(run_id, {
+        "case_id": case_id,
+        "summary": payload.get("summary") or f"{(profile or {}).get('display_name') or resolved_tool_id} service report normalized for analyst review.",
+        "result_type": "scanner_finding_candidate",
+    })
+    evidence = {}
+    if normalized.get("status") == "Normalized":
+        evidence = create_evidence_from_tool_run(run_id, {
+            "case_id": case_id,
+            "result_id": normalized.get("result_id"),
+            "summary": payload.get("evidence_summary") or f"{(profile or {}).get('display_name') or resolved_tool_id} service report import evidence candidate.",
+        })
+
+    import_record = {
+        "kind": "redteam_ax_v2_scanner_service_report_import",
+        "import_id": stable_id("SVCIMP", [case_id, run_id, resolved_tool_id, report_hash]),
+        "case_id": case_id,
+        "tool_id": resolved_tool_id,
+        "tool_name": (profile or {}).get("name"),
+        "status": "passed" if normalized.get("status") == "Normalized" and evidence.get("status") != "invalid" else "failed",
+        "errors": [] if normalized.get("status") == "Normalized" else normalized.get("errors", []),
+        "authorization_id": authorization_id,
+        "endpoint_url": endpoint_url,
+        "service_fetch": service_fetch,
+        "tool_run": {
+            "run_id": run_id,
+            "status": tool_run.get("status"),
+            "artifact_path": tool_run.get("artifact_path"),
+        },
+        "sanitize_preview": {
+            "status": sanitizer.get("status"),
+            "trusted_as_instruction": sanitizer.get("trusted_as_instruction"),
+        },
+        "agent_analyze": {
+            "status": normalized.get("status"),
+            "result_id": normalized.get("result_id"),
+            "parser_report": normalized.get("parser_report"),
+            "structured_item_count": len(normalized.get("structured_items") or []),
+        },
+        "evidence": {
+            "status": evidence.get("status"),
+            "evidence_id": evidence.get("evidence_id"),
+            "artifact_path": evidence.get("artifact_path"),
+        },
+        "policy": {
+            "read_only": True,
+            "active_scan_executed": False,
+            "scanner_commands_executed_by_api": False,
+            "secret_material_stored": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+        },
+        "created_at": now_utc(),
+    }
+    return append_artifact_metadata(import_record, "service-report-imports", import_record["import_id"])
 
 
 def record_tool_install_version_evidence(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:

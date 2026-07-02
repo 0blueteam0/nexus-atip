@@ -154,6 +154,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 240,
         },
         {
+            "gate_id": "GATE-OPENVAS-ZAP-SERVICE-IMPORT-SMOKE",
+            "name": "Read-only OpenVAS and ZAP service report import smoke",
+            "category": "scanner_service_import_smoke",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py"],
+            "timeout_seconds": 120,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -168,6 +176,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
             ],
             "timeout_seconds": 60,

@@ -1,0 +1,84 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TSVC-0B36186B3D38",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "action_id": "TAC-72A6339E5E76",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "execution_mode": "service_report_import",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "status": "EvidenceCreated",
+  "errors": [],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-6DCDA6126E30",
+      "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/TSVC-0B36186B3D38/zap-alerts.json",
+      "hash": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+      "sha256": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+      "content_type": "application/json",
+      "summary": "OWASP ZAP read-only service report imported as untrusted output.",
+      "imported_at": "2026-07-02T07:19:43Z"
+    }
+  ],
+  "normalized_results": [
+    "NR-49941C0CD11B"
+  ],
+  "evidence_candidates": [
+    "EV-F35439704599"
+  ],
+  "analysis_agent_id": "AGENT-ZAP-ANALYST-001",
+  "normalizer_id": "NORMALIZER-ZAP-001",
+  "service_import": {
+    "authorization_id": "TCRED-0251880D69EE",
+    "endpoint_url": "http://127.0.0.1:6525/zap/alerts.json",
+    "endpoint_ref": "http://127.0.0.1:6525/zap/alerts.json",
+    "read_only": true,
+    "active_scan_executed": false,
+    "secret_material_stored": false,
+    "service_fetch": {
+      "method": "http_get",
+      "executed": true,
+      "commands_executed_by_api": false,
+      "scanner_commands_executed_by_api": false,
+      "endpoint": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "path": "/zap/alerts.json",
+        "loopback": true
+      },
+      "metadata": {
+        "status_code": 200,
+        "content_type": "application/json; charset=utf-8",
+        "bytes_read": 266
+      }
+    }
+  },
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-ZAP-001",
+    "run_id": "TSVC-0B36186B3D38",
+    "classification": "internal",
+    "content_summary": "Scanner service report imported as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-6DCDA6126E30",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/service-report-imports/TSVC-0B36186B3D38/zap-alerts.json",
+        "hash": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+        "sha256": "75348a927886b5075f9da5af921cd27bd9be7617ae22011ef86d1d4aaadd5e70",
+        "content_type": "application/json",
+        "summary": "OWASP ZAP read-only service report imported as untrusted output.",
+        "imported_at": "2026-07-02T07:19:43Z"
+      }
+    ]
+  },
+  "notes": "Read-only scanner service report import; no scan, spider, attack mode, or mutating command was executed by RedTeam AX.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-runs/TSVC-0B36186B3D38.json",
+  "sanitizer_previews": [
+    "SAN-084A5B9DF1A8"
+  ]
+}

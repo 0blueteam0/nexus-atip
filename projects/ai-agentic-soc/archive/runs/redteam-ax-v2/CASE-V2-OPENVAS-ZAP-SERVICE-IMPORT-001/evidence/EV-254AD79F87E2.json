@@ -1,0 +1,43 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-254AD79F87E2",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/normalized-results/NR-D5F1599CA975.json",
+  "collected_at": "2026-07-02T07:21:59Z",
+  "hash": "SHA256-D0B641EAAB46",
+  "summary": "OpenVAS / Greenbone Community Edition service report import evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TSVC-7B93B0FE1881",
+    "result_id": "NR-D5F1599CA975",
+    "result_type": "scanner_finding_candidate",
+    "structured_items": [
+      {
+        "item_type": "scanner_finding_candidate",
+        "tool": "openvas",
+        "result_id": "ov-result-001",
+        "name": "TLS certificate uses weak signature algorithm",
+        "severity": "medium",
+        "cvss": "5.0",
+        "host": "127.0.0.1",
+        "port": "443/tcp",
+        "description": "Read-only fixture report for RedTeam AX service import smoke.",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.72
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/evidence/EV-254AD79F87E2.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/audit.jsonl"
+}

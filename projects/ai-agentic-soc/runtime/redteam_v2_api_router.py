@@ -164,6 +164,11 @@ def authorize_tool_credential_reference(
     )
 
 
+@router.post("/scanner-service-imports/{tool_id}")
+def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.import_scanner_service_report(tool_id, payload)
+
+
 @router.get("/tool-wrapper-manifests")
 def list_tool_wrapper_manifests() -> dict[str, Any]:
     return redteam_v2_models.list_tool_wrapper_manifests()

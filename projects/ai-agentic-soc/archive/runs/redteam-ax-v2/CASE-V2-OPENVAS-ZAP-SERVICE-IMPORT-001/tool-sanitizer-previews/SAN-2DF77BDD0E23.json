@@ -1,0 +1,42 @@
+{
+  "kind": "redteam_ax_v2_tool_output_sanitizer_preview",
+  "preview_id": "SAN-2DF77BDD0E23",
+  "case_id": "CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001",
+  "run_id": "TSVC-5637560377E0",
+  "action_id": "TAC-72A6339E5E76",
+  "tool_id": "TOOL-ZAP-001",
+  "input_source": "stored_artifacts",
+  "artifact_report": {
+    "artifact_input_count": 1,
+    "artifact_checked_count": 1,
+    "artifact_skipped_count": 0,
+    "artifact_errors": []
+  },
+  "status": "allow",
+  "errors": [],
+  "trusted_as_instruction": false,
+  "trusted_as_data": true,
+  "requires_human_review": false,
+  "sanitizer": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "decision": "allow",
+    "prompt_injection_score": 0.0,
+    "secret_detection_score": 0.0,
+    "redactions": [],
+    "indicators": [],
+    "sanitized_outputs": [
+      "{\"site\": [{\"@name\": \"http://127.0.0.1:5177\", \"alerts\": [{\"pluginid\": \"10021\", \"name\": \"X-Content-Type-Options Header Missing\", \"riskcode\": \"1\", \"confidence\": \"Medium\", \"cweid\": \"693\", \"wascid\": \"15\", \"instances\": [{\"uri\": \"http://127.0.0.1:5177/report-studio\"}]}]}]}"
+    ],
+    "sanitized_summary": "No prompt injection or secret indicators detected.",
+    "warnings": []
+  },
+  "sanitized_output_preview": "{\"site\": [{\"@name\": \"http://127.0.0.1:5177\", \"alerts\": [{\"pluginid\": \"10021\", \"name\": \"X-Content-Type-Options Header Missing\", \"riskcode\": \"1\", \"confidence\": \"Medium\", \"cweid\": \"693\", \"wascid\": \"15\", \"instances\": [{\"uri\": \"http://127.0.0.1:5177/report-studio\"}]}]}]}",
+  "policy": {
+    "prompt_injection_threshold_quarantine": 0.85,
+    "secret_redaction_required": true,
+    "raw_output_trust": "data_only_never_instruction"
+  },
+  "created_at": "2026-07-02T07:22:58Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-SERVICE-IMPORT-001/tool-sanitizer-previews/SAN-2DF77BDD0E23.json"
+}

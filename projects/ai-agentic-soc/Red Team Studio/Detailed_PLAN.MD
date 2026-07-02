@@ -631,3 +631,18 @@ Create Case
 - 두 CLI 모두 ToolActionCard, `dry_run` ExecutionPlan, issued token, wrapper pin, child-process allowlist, `shell=false` governed runner, sanitizer preview, agent normalization, Evidence Card 생성까지 통과했다.
 - 최신 smoke artifact는 `archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json`이다.
 - 이 slice는 OpenVAS/ZAP CLI wrapper runtime readiness를 입증하지만, 실제 OpenVAS service report import와 ZAP daemon passive-alert import endpoint는 별도 완료 조건으로 남긴다.
+
+## 18. Slice 63 반영 사항
+
+- `/api/redteam/v2/scanner-service-imports/{tool_id}`는 OpenVAS/ZAP read-only service report import adapter다.
+- 지원 도구는 `TOOL-OPENVAS-001`, `TOOL-ZAP-001`로 제한한다.
+- import 요청은 승인된 `ToolCredentialAuthorization`의 `authorization_id`, external vault reference, endpoint reference, read-only token scope, target scope ref를 요구한다.
+- RedTeam AX는 secret 값을 저장하거나 scanner service로 전달하지 않는다. payload 또는 endpoint URL에 credential/secret material이 포함되면 invalid로 차단한다.
+- active scan, attack mode, spider, scan start/delete 등 mutating service operation flag는 모두 차단한다.
+- service fetch는 HTTP GET read-only report retrieval만 수행하며 scanner command 실행으로 계산하지 않는다.
+- 가져온 OpenVAS XML/ZAP JSON은 case workspace의 `service-report-imports` 아래 raw artifact로 저장하고 `trusted_as_instruction=false`, `requires_human_validation=true`를 유지한다.
+- raw artifact는 기존 sanitizer, tool-specific parser, analysis agent normalization, Evidence Card 생성 경로를 통과한다.
+- `고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py`는 로컬 임시 HTTP endpoint로 OpenVAS XML과 ZAP JSON을 제공해 adapter 계약을 검증한다.
+- negative control은 secret material 제출이 `invalid`로 거부되는지 검증한다.
+- accepted gate manifest에 `GATE-OPENVAS-ZAP-SERVICE-IMPORT-SMOKE`를 추가한다.
+- 이 slice는 service import adapter와 endpoint report ingestion 경로를 입증하지만, 조직/실서비스 OpenVAS/ZAP endpoint 실측 증거는 별도 완료 조건으로 남긴다.
