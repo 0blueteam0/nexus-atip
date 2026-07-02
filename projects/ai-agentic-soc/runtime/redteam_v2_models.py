@@ -2083,12 +2083,16 @@ def governed_container_runner_attempt(
         attempt.update({"status": "blocked", "errors": [*attempt.get("errors", []), *errors], "completed_at": now_utc()})
         return attempt, errors, raw_artifacts
     if dry_run:
+        if payload.get("container_mock_stdout"):
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stdout", str(payload.get("container_mock_stdout"))))
+        if payload.get("container_mock_stderr"):
+            raw_artifacts.append(write_runner_output_artifact(case_id, run_id, "stderr", str(payload.get("container_mock_stderr"))))
         attempt.update({
             "status": "container_launch_prepared",
             "completed_at": now_utc(),
             "exit_code": None,
-            "stdout_bytes": 0,
-            "stderr_bytes": 0,
+            "stdout_bytes": len(str(payload.get("container_mock_stdout") or "").encode("utf-8")),
+            "stderr_bytes": len(str(payload.get("container_mock_stderr") or "").encode("utf-8")),
             "output_truncated": False,
         })
         return attempt, errors, raw_artifacts
@@ -3076,10 +3080,7 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     name = str((profile or {}).get("name") or tool_id).lower()
     parser = "generic"
     container_items = _normalize_container_launch_output(raw_values)
-    if container_items:
-        parser = "container_launch_plan"
-        items = container_items
-    elif name == "nuclei":
+    if name == "nuclei":
         parser = "nuclei_jsonl"
         items = _normalize_nuclei_output(raw_values)
     elif name == "trivy":
@@ -3099,10 +3100,14 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
         items = _normalize_sca_output(raw_values)
     else:
         items = []
+    if container_items:
+        items = [*container_items, *items]
+        parser = f"container_launch_plan+{parser}" if parser != "generic" else "container_launch_plan"
     return items, {
         "parser": parser,
         "raw_output_count": len(raw_values),
         "parsed_item_count": len(items),
+        "container_launch_item_count": len(container_items),
         "trusted_as_instruction": False,
     }
 

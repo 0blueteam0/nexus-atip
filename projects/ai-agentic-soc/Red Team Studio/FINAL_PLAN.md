@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 32 container launch evidence normalization E2E complete, full goal active  
+상태: implementation slice 33 container stdout scanner result normalization E2E complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -41,7 +41,7 @@ Frontend:
 Backend:
 
 - `runtime/redteam_v2_api_router.py` - slice 30 runner isolation readiness endpoint 반영
-- `runtime/redteam_v2_models.py` - slice 32 container launch artifact normalization/evidence path 반영
+- `runtime/redteam_v2_models.py` - slice 33 container stdout scanner result normalization E2E 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -858,9 +858,10 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` runner 결과 표에 backend와 container launch 정보를 표시
 - [x] API unittest가 attested container PlanReady, issued token, dry-run launch plan artifact를 검증
 - [x] container launch artifact agent-analyze 및 Evidence Card 생성 E2E - slice 32 완료
+- [x] container stdout scanner result normalizer E2E - slice 33 완료
 - [ ] 실제 Docker/Podman runtime 실행 smoke
 - [ ] allowlist egress를 `--network none` 이상으로 통제할 전용 network policy 구현
-- [ ] container stdout/stderr scanner result normalizer E2E
+- [ ] real runtime container stdout/stderr scanner result smoke
 - [ ] live 5177/8765 browser container dry-run smoke
 
 ## 40. Slice 32 Container Launch Evidence Normalization E2E 체크리스트
@@ -873,5 +874,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] container launch evidence는 `trusted_as_instruction=false`, `requires_human_validation=true`를 강제
 - [x] `/tool-runs/{run_id}/create-evidence`가 container launch normalized result를 Evidence Card Draft로 승격
 - [x] API unittest가 ContainerLaunchPrepared -> agent-analyze -> Evidence Card E2E를 검증
-- [ ] 실제 container stdout/stderr scanner result를 tool-specific parser로 연결
+- [x] dry-run container stdout Trivy scanner result를 tool-specific parser로 연결 - slice 33 완료
+- [ ] 실제 container stdout/stderr scanner result를 runtime smoke로 검증
 - [ ] live 5177/8765 browser evidence creation smoke
+
+## 41. Slice 33 Container Stdout Scanner Result Normalization E2E 체크리스트
+
+- [x] dry-run container launcher가 `container_mock_stdout`/`container_mock_stderr`를 runner stdout/stderr artifact로 저장
+- [x] container launch plan과 scanner stdout이 같은 ToolRunRecord에 공존
+- [x] parser가 `container_launch_plan+trivy_json`처럼 launch evidence와 scanner parser 결과를 결합
+- [x] structured items에 `container_launch_evidence`와 `sca_vulnerability_candidate`를 동시에 포함
+- [x] 모든 combined structured item은 `trusted_as_instruction=false`, `requires_human_validation=true`
+- [x] Evidence Card candidate가 combined normalized result를 보존
+- [x] API unittest가 ContainerLaunchPrepared -> stdout artifact -> agent-analyze -> Evidence Card E2E를 검증
+- [ ] 실제 Docker/Podman stdout/stderr artifact로 동일 E2E smoke
+- [ ] Nuclei/ZAP/OpenVAS container stdout/stderr parser smoke

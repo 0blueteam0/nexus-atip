@@ -4,6 +4,7 @@ import base64
 import importlib
 import hashlib
 import io
+import json
 import os
 import sys
 import unittest
@@ -445,6 +446,23 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             "REDTEAM_AX_CONTAINER_IMAGE_DIGEST": image_digest,
         }
         with patch.dict(os.environ, env, clear=False):
+            trivy_stdout = {
+                "SchemaVersion": 2,
+                "Results": [{
+                    "Target": "container:image",
+                    "Class": "os-pkgs",
+                    "Type": "alpine",
+                    "Vulnerabilities": [{
+                        "VulnerabilityID": "CVE-2099-0001",
+                        "PkgName": "openssl",
+                        "InstalledVersion": "1.0.0",
+                        "FixedVersion": "1.0.1",
+                        "Severity": "HIGH",
+                        "Title": "Synthetic Trivy container stdout finding",
+                        "PrimaryURL": "https://example.test/CVE-2099-0001",
+                    }],
+                }],
+            }
             planned = self.client.post("/api/redteam/v2/tool-actions/plan", json={
                 "case_id": case_id,
                 "action_id": action_id,
@@ -479,6 +497,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 "execution_token_id": plan_body["execution_token"]["token_id"],
                 "runner_argv": ["trivy", "--version"],
                 "container_dry_run": True,
+                "container_mock_stdout": json.dumps(trivy_stdout),
             })
         self.assertEqual(executed.status_code, 200)
         body = executed.json()
@@ -498,7 +517,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(container_argv[-2:], ["trivy", "--version"])
         self.assertTrue(body["raw_artifacts"])
         launch_artifact = next(item for item in body["raw_artifacts"] if item["content_type"] == "application/json")
+        stdout_artifact = next(item for item in body["raw_artifacts"] if item["summary"].endswith("stdout captured as untrusted tool output."))
         self.assertTrue(Path(launch_artifact["source_path_or_ref"]).exists())
+        self.assertTrue(Path(stdout_artifact["source_path_or_ref"]).exists())
         self.assertEqual(len(launch_artifact["hash"]), 64)
 
         normalized = self.client.post(f"/api/redteam/v2/tool-runs/{body['run_id']}/agent-analyze", json={
@@ -508,16 +529,23 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(normalized.status_code, 200)
         normalized_body = normalized.json()
         self.assertEqual(normalized_body["status"], "Normalized")
-        self.assertEqual(normalized_body["result_type"], "container_launch_evidence")
-        self.assertEqual(normalized_body["parser_report"]["parser"], "container_launch_plan")
+        self.assertEqual(normalized_body["result_type"], "scanner_finding_candidate")
+        self.assertEqual(normalized_body["parser_report"]["parser"], "container_launch_plan+trivy_json")
         self.assertEqual(normalized_body["parser_report"]["input_source"], "stored_artifacts")
-        item = normalized_body["structured_items"][0]
-        self.assertEqual(item["item_type"], "container_launch_evidence")
-        self.assertFalse(item["trusted_as_instruction"])
-        self.assertTrue(item["requires_human_validation"])
-        self.assertTrue(item["read_only_rootfs"])
-        self.assertTrue(item["capabilities_dropped"])
-        self.assertEqual(item["network_policy"], "deny")
+        item_types = {item["item_type"] for item in normalized_body["structured_items"]}
+        self.assertIn("container_launch_evidence", item_types)
+        self.assertIn("sca_vulnerability_candidate", item_types)
+        launch_item = next(item for item in normalized_body["structured_items"] if item["item_type"] == "container_launch_evidence")
+        scanner_item = next(item for item in normalized_body["structured_items"] if item["item_type"] == "sca_vulnerability_candidate")
+        self.assertFalse(launch_item["trusted_as_instruction"])
+        self.assertTrue(launch_item["requires_human_validation"])
+        self.assertTrue(launch_item["read_only_rootfs"])
+        self.assertTrue(launch_item["capabilities_dropped"])
+        self.assertEqual(launch_item["network_policy"], "deny")
+        self.assertEqual(scanner_item["tool"], "trivy")
+        self.assertEqual(scanner_item["vulnerability_id"], "CVE-2099-0001")
+        self.assertEqual(scanner_item["package_name"], "openssl")
+        self.assertFalse(scanner_item["trusted_as_instruction"])
 
         evidence = self.client.post(f"/api/redteam/v2/tool-runs/{body['run_id']}/create-evidence", json={
             "case_id": case_id,
@@ -530,8 +558,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(evidence_body["approval_status"], "pending_review")
         self.assertEqual(evidence_body["validation_status"], "candidate")
         self.assertEqual(evidence_body["source_type"], "tool_normalized_result")
-        self.assertEqual(evidence_body["normalized_fields"]["result_type"], "container_launch_evidence")
+        self.assertEqual(evidence_body["normalized_fields"]["result_type"], "scanner_finding_candidate")
         self.assertIn("container_launch_evidence", {entry.get("item_type") for entry in evidence_body["normalized_fields"]["structured_items"]})
+        self.assertIn("sca_vulnerability_candidate", {entry.get("item_type") for entry in evidence_body["normalized_fields"]["structured_items"]})
 
     def test_v2_governed_runner_requires_issued_token_and_captures_approved_dry_run_output(self) -> None:
         case_id = "CASE-V2-GOVERNED-RUNNER-NPM-001"
