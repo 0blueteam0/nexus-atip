@@ -921,5 +921,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실제 실행 opt-in 시 FastAPI `ephemeral_container` runner path를 사용해 stdout/stderr raw artifact capture 검증
 - [x] 현재 환경 증거: Docker CLI는 있으나 daemon은 `Server:null`, `Docker Desktop is unable to start`
 - [x] smoke artifact: `archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json`
+- [x] live browser/parser smoke readiness harness 추가 및 5177 blocker evidence 기록 - slice 37 완료
 - [ ] Docker Desktop/daemon ready 후 `--allow-real --require-real` 실측 통과
 - [ ] Trivy/Nuclei/ZAP/OpenVAS 실제 scanner result stdout parser E2E
+- [ ] 5177 frontend ready 후 `--allow-browser --require-live` browser parser smoke 통과
+
+## 45. Slice 37 Live Browser Parser Smoke Readiness 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py` 추가
+- [x] 기본 실행은 브라우저 자동화 없이 `5177/8765` readiness evidence 기록
+- [x] `--allow-browser` 또는 `REDTEAM_AX_LIVE_BROWSER_SMOKE=1` 없이는 Playwright browser automation 차단
+- [x] 현재 환경 증거: `8765` v1/v2 health ready, `5177` not listening
+- [x] smoke artifact: `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json`
+- [x] evidence field가 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
+- [ ] `5177` frontend ready 후 `--allow-browser --require-live` 실측 통과
+- [ ] Report Studio `레드팀 분석2` DOM/parser evidence smoke

@@ -1,0 +1,52 @@
+{
+  "kind": "redteam_ax_v2_live_browser_parser_smoke",
+  "created_at": "2026-07-02T02:16:14.638784Z",
+  "frontend_url": "http://127.0.0.1:5177",
+  "backend_url": "http://127.0.0.1:8765",
+  "allow_browser_automation": false,
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "browser_automation_executed": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "frontend_root": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react",
+  "readiness": {
+    "frontend_tcp": {
+      "host": "127.0.0.1",
+      "port": 5177,
+      "open": false,
+      "error": "timed out"
+    },
+    "backend_tcp": {
+      "host": "127.0.0.1",
+      "port": 8765,
+      "open": true,
+      "error": null
+    },
+    "frontend_http": {
+      "url": "http://127.0.0.1:5177/",
+      "ok": false,
+      "status_code": null,
+      "body_prefix": "",
+      "error": "<urlopen error [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다>"
+    },
+    "backend_v2_health": {
+      "url": "http://127.0.0.1:8765/api/redteam/v2/health",
+      "ok": true,
+      "status_code": 200,
+      "body_prefix": "{\"kind\":\"redteam_ax_v2_health\",\"service\":\"redteam-ax-v2\",\"status\":\"ready\",\"safe_by_default\":true,\"execution_policy\":\"tool_action_card_required\",\"high_risk_mode\":\"human_approved_manual_run\",\"report_gate\":{\"unsupported_claim_count\":0,\"unapproved_high_risk_count\":0,\"finding_without_evidence_count\":0,\"unapproved_finding_count\":0,\"unapproved_final_severity_count\":0},\"actor_context_provider\":\"local_dev_session_or_request_headers\"}",
+      "error": null
+    },
+    "backend_v1_health": {
+      "url": "http://127.0.0.1:8765/api/redteam/health",
+      "ok": true,
+      "status_code": 200,
+      "body_prefix": "{\"ok\":true,\"service\":\"ai-agentic-soc-redteam-backend\",\"frontend_modified\":true,\"source_root\":\"J:/Red Team Studio\",\"versions\":[\"v1.0\",\"v1.1\",\"v1.2\"]}",
+      "error": null
+    }
+  },
+  "status": "blocked_live_services_not_ready",
+  "blockers": [
+    "live_frontend_5177_not_ready"
+  ]
+}

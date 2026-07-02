@@ -1,0 +1,67 @@
+---
+type: tool_decision
+status: draft
+project: Red-Team-Studio
+task: Implement RedTeam AX v2 live browser parser smoke readiness slice
+created: 2026-07-02T11:11:12+09:00
+---
+
+# Tool Decision
+
+## 작업 목표
+
+## 필요한 능력
+
+## 후보 도구 비교
+
+| 도구 | 장점 | 단점 | 기존 도구와 결합 | 판정 |
+|---|---|---|---|---|
+| 후보 1 |  |  |  |  |
+| 후보 2 |  |  |  |  |
+| 후보 3 |  |  |  |  |
+| 후보 4 |  |  |  |  |
+| 후보 5 |  |  |  |  |
+
+## 선택한 도구 또는 도구 체인
+
+## 선택 이유
+
+## 버린 대안과 이유
+
+## 실패 시 fallback
+
+## 실제 사용 결과
+
+## 다음 재사용 규칙
+
+
+
+## Autofill Tool Decision
+
+Selected tool chain: local repository inspection, scoped edits, command validation, and artifact-backed handoff.
+
+Reason: this path preserves quality while avoiding a manual end-of-turn evidence-writing bottleneck.
+
+Autofill timestamp: 2026-07-02T11:18:02+09:00
+Project: Red-Team-Studio
+Task: Implement RedTeam AX v2 live browser parser smoke readiness slice
+Agent: codex
+Status: ready_for_handoff
+Summary: Slice 37 added a safe-by-default RedTeam AX live Report Studio browser/parser smoke readiness harness. The harness records 5177 frontend and 8765 backend readiness without browser automation by default, preserves trusted_as_instruction=false and commands_executed_by_api=false, and gates Playwright execution behind --allow-browser or REDTEAM_AX_LIVE_BROWSER_SMOKE=1. Current evidence shows backend 8765 v1/v2 health ready and frontend 5177 not listening.
+Next action: Continue from the recorded handoff and latest evidence.
+Artifacts:
+- J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py
+- J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json
+- J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md
+Commands:
+- python Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py -> exit 0, blocked_live_services_not_ready, blocker live_frontend_5177_not_ready
+- python -m py_compile Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py -> exit 0
+- J:/PortableApps/genai/projects/ai-agentic-soc/.venv/Scripts/python.exe -m unittest discover -s tests -p test_redteam_v2_api_router.py -> exit 0, 42 tests OK
+- J:/PortableApps/genai/projects/ai-agentic-soc/.venv/Scripts/python.exe -m unittest discover -s tests -p test_redteam_v2_sample_e2e.py -> exit 0, 1 test OK
+- node --check reports.js -> exit 0
+- npm.cmd run build -> exit 0
+- python Red Team Studio/고도화/sanity/test_plan_contract.py -> exit 0
+Risks:
+- Live browser DOM/parser smoke remains blocked until http://127.0.0.1:5177 is running. The harness records this as evidence and exits non-zero only with --require-live.
+
+Fallback: if autofill close fails, inspect `QUALITY_GATE_RESULT.json`, fill only the named thin or missing files, and rerun `knowledge_workflow.py close`.
