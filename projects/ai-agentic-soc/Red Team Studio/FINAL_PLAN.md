@@ -1747,3 +1747,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 SCA/SBOM anchor 반영
 - [x] regression test가 SCA CycloneDX SBOM + npm audit 복합 import 후 collection에서 `AGENT-SCA-ANALYST-001`, `sca_json`, 컴포넌트 Evidence, 취약점 후보, affects 연결을 검증
 - [ ] 실제 운영 SBOM/SCA 산출물을 제출해 Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료
+
+## 111. Slice 103 실제 운영 6개 분석도구 coverage readiness 체크리스트
+
+- [x] manifest builder가 기본 6개 도구별 `tool_coverage`를 반환
+- [x] present/missing tool IDs와 `tool_coverage_complete`를 manifest builder artifact에 보존
+- [x] real operating evidence readiness가 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 산출물 전체를 기본 필수 조건으로 검사
+- [x] 누락 시 `all_required_tool_artifacts_required` blocker와 `missing_required_tool_ids` 반환
+- [x] checklist에 `필수 6개 분석도구 산출물` 항목 추가
+- [x] RedTeam2 UI에 `필수 분석도구 산출물` 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 6개 도구 coverage anchor 반영
+- [x] regression test가 2개 fixture 차단과 6개 산출물 coverage complete 통과를 검증
+- [ ] 실제 조직 산출물 폴더에서 6개 도구 coverage complete를 통과한 뒤 operating closure submission, human review, reviewed close, certification, completion audit review까지 완료

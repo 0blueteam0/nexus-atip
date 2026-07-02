@@ -2784,18 +2784,38 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         })
 
     manifest_builder: dict[str, Any] | None = None
+    required_tool_ids = [
+        str(item).strip()
+        for item in (payload.get("required_tool_ids") or [
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        ])
+        if str(item).strip()
+    ]
+    require_all_named_tools = bool(payload.get("require_all_named_tools", True))
+    missing_required_tool_ids: list[str] = []
     if source_dir:
         manifest_builder = build_toolchain_artifact_manifest({
             "case_id": case_id,
             "toolchain_id": toolchain_id,
             "requested_by": requested_by,
             "source_dir": source_dir,
+            "tool_ids": required_tool_ids,
             "objective": payload.get("objective") or "실제 운영 scanner 산출물 폴더인지 closure 전에 점검한다.",
         })
         if manifest_builder.get("errors"):
             errors.extend(f"manifest_builder:{error}" for error in manifest_builder.get("errors") or [])
         if (manifest_builder.get("artifact_count") or 0) < 2:
             errors.append("at_least_two_real_scanner_artifacts_required")
+        if require_all_named_tools:
+            present_tool_ids = set(manifest_builder.get("present_tool_ids") or [])
+            missing_required_tool_ids = [tool_id for tool_id in required_tool_ids if tool_id not in present_tool_ids]
+            if missing_required_tool_ids:
+                errors.append("all_required_tool_artifacts_required")
         if manifest_builder.get("unmatched_file_count"):
             warnings.append("source_dir_contains_unmatched_files")
 
@@ -2805,6 +2825,18 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
             "title_ko": "실제 운영 산출물 폴더와 manifest",
             "status": "passed" if manifest_builder and not manifest_builder.get("errors") and (manifest_builder.get("artifact_count") or 0) >= 2 else "blocked",
             "evidence": source_dir or "source_dir_required",
+        },
+        {
+            "field": "all_required_tool_artifacts_present",
+            "title_ko": "필수 6개 분석도구 산출물",
+            "status": "passed" if manifest_builder and not missing_required_tool_ids else "blocked",
+            "evidence": (
+                "Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 모두 탐지됨"
+                if manifest_builder and not missing_required_tool_ids
+                else ", ".join(missing_required_tool_ids) or "manifest_required"
+            ),
+            "required_tool_ids": required_tool_ids,
+            "missing_tool_ids": missing_required_tool_ids,
         },
         {
             "field": "no_controlled_or_test_source",
@@ -2842,6 +2874,11 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         "source_dir": source_dir or None,
         "manifest_builder": manifest_builder,
         "artifact_count": (manifest_builder or {}).get("artifact_count") or 0,
+        "required_tool_ids": required_tool_ids,
+        "present_tool_ids": (manifest_builder or {}).get("present_tool_ids") or [],
+        "missing_required_tool_ids": missing_required_tool_ids,
+        "tool_coverage_complete": bool(manifest_builder) and not missing_required_tool_ids,
+        "tool_coverage": (manifest_builder or {}).get("tool_coverage") or [],
         "unmatched_file_count": (manifest_builder or {}).get("unmatched_file_count") or 0,
         "approver_checks": approver_rows,
         "checklist": checklist,
@@ -2855,6 +2892,7 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         "next_api": "/api/redteam/v2/toolchains/operating-closure-submission-package",
         "next_human_actions_ko": [
             "blocked이면 source_dir이 실제 조직 scanner 산출물 폴더인지 먼저 확인합니다.",
+            "Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 결과 파일이 모두 있어야 운영 closure 제출로 이동합니다.",
             "CASE-V2, fixture, operator-scanner-outputs 같은 테스트 경로는 최종 완료 증거로 사용할 수 없습니다.",
             "ready 상태가 된 뒤 같은 source_dir과 승인자 4명으로 운영 closure 제출 패키지를 생성합니다.",
         ],
@@ -4847,11 +4885,20 @@ def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]
     artifacts: list[dict[str, Any]] = []
     unmatched_files: list[str] = []
     used_paths: set[str] = set()
+    tool_coverage: list[dict[str, Any]] = []
 
     for tool_id in requested_tool_ids:
         profile = analysis_tool_profile(tool_id)
         if profile is None:
             warnings.append(f"{tool_id}:tool_profile_not_registered")
+            tool_coverage.append({
+                "tool_id": tool_id,
+                "tool_name": None,
+                "status": "unregistered",
+                "candidate_count": 0,
+                "selected_path": None,
+                "required": True,
+            })
             continue
         patterns = patterns_by_tool.get(tool_id, [])
         matches = [
@@ -4862,19 +4909,41 @@ def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]
         matches.sort(key=lambda item: (item.stat().st_mtime, item.name), reverse=True)
         if not matches:
             warnings.append(f"{tool_id}:artifact_candidate_not_found")
+            tool_coverage.append({
+                "tool_id": tool_id,
+                "tool_name": profile.get("name"),
+                "display_name": profile.get("display_name"),
+                "status": "missing",
+                "candidate_count": 0,
+                "selected_path": None,
+                "required": True,
+                "patterns": patterns,
+            })
             continue
         selected = matches[0]
         used_paths.add(selected.as_posix())
+        selected_hash = sha256_file(selected)
         artifacts.append({
             "tool_id": tool_id,
             "source_path": selected.as_posix(),
-            "sha256": sha256_file(selected),
+            "sha256": selected_hash,
             "content_type": content_type_for(selected),
             "summary": f"{profile.get('display_name') or tool_id} operator scanner output selected by manifest builder.",
-            "artifact_id": stable_id("ART", [case_id, chain_id, tool_id, selected.as_posix(), sha256_file(selected)]),
+            "artifact_id": stable_id("ART", [case_id, chain_id, tool_id, selected.as_posix(), selected_hash]),
             "detected_by": "filename_pattern",
             "candidate_count": len(matches),
             "alternative_paths": [path.as_posix() for path in matches[1:5]],
+        })
+        tool_coverage.append({
+            "tool_id": tool_id,
+            "tool_name": profile.get("name"),
+            "display_name": profile.get("display_name"),
+            "status": "present",
+            "candidate_count": len(matches),
+            "selected_path": selected.as_posix(),
+            "sha256": selected_hash,
+            "required": True,
+            "patterns": patterns,
         })
 
     for path in candidate_files:
@@ -4908,6 +4977,10 @@ def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]
         "hash_algorithm": "sha256",
         "tool_count": len(requested_tool_ids),
         "artifact_count": len(artifacts),
+        "tool_coverage": tool_coverage,
+        "present_tool_ids": [item["tool_id"] for item in tool_coverage if item.get("status") == "present"],
+        "missing_tool_ids": [item["tool_id"] for item in tool_coverage if item.get("status") != "present"],
+        "tool_coverage_complete": bool(tool_coverage) and all(item.get("status") == "present" for item in tool_coverage),
         "unmatched_file_count": len(unmatched_files),
         "unmatched_files": unmatched_files[:20],
         "import_payload": import_payload,

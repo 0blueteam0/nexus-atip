@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 43,
+    "proved": 44,
     "partial": 1
   },
   "audit_items": [
@@ -748,6 +748,24 @@
       "proof_summary": "The SCA normalizer now turns CycloneDX components into sca_component_inventory_evidence with component refs, package URLs, versions, licenses, suppliers, and component-presence-only claim scope. CycloneDX vulnerabilities keep affected_component_refs and affected_components, set requires_component_match_review=true, and remain untrusted until human review. Regression coverage imports SCA CycloneDX plus npm audit through the governed toolchain path and verifies SCA agent summary, sca_json parser, component evidence, vulnerability candidate, and affects linkage. RedTeam2 Korean copy explains CycloneDX SBOM, component inventory Evidence, vulnerability candidate Evidence, and affects review limits.",
       "residual_gap": "This proves SBOM normalization and guardrail metadata, not that a real organization SBOM has been approved, promoted into Findings, severity-approved, reported, exported, and completion-gated.",
       "next_action": "Submit a real approved CycloneDX/SCA artifact through the governed import path, collect results, review component/vulnerability linkage, approve Evidence, and complete Finding, severity, Matrix, Report v2, export, and completion-gate stages."
+    },
+    {
+      "id": "RTA-COMP-045",
+      "requirement": "Real operating evidence readiness must require full Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP artifact coverage before operating closure submission can be considered ready.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The artifact manifest builder now emits tool_coverage, present_tool_ids, missing_tool_ids, and tool_coverage_complete for the six default tools. The real-operating-evidence-readiness API requires all six named tool artifacts by default, returns missing_required_tool_ids and all_required_tool_artifacts_required when coverage is incomplete, and exposes a checklist row for ?? 6? ???? ???. RedTeam2 renders a ?? ???? ??? table. Regression coverage verifies two-artifact fixture input is blocked and six-artifact input reaches real_operating_evidence_ready without executing scanners.",
+      "residual_gap": "This proves the readiness coverage gate, not that real organization artifacts and real approvers have completed operating closure submission, human review, reviewed close, certification, completion audit review, Report v2 export, and final completion gate.",
+      "next_action": "Run real-operating-evidence-readiness on a real scanner output folder containing all six tool outputs, then continue through operating closure submission, HITL review, reviewed close, certification, and completion audit review."
     }
   ],
   "remaining_gaps": [
@@ -764,5 +782,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T04:15:22Z"
+  "last_updated": "2026-07-03T04:29:30Z"
 }

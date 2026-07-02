@@ -1041,3 +1041,13 @@ Create Case
 - RedTeam2 UI의 SCA 안내 문구를 CycloneDX SBOM, 컴포넌트 인벤토리 Evidence, 취약점 후보 Evidence, affects 검토 제한 기준으로 갱신했다.
 - regression test는 SCA CycloneDX SBOM과 npm audit 결과를 복합 operator-import로 첨부하고, collect-results가 SCA agent summary, `sca_json` parser, 컴포넌트 Evidence 1건, 취약점 후보 1건, affects 연결을 생성하는지 검증한다.
 - 이 slice는 목표의 SCA 사용성을 강화하지만, 실제 운영 SBOM과 실제 승인자 기반 Evidence/Finding/Report/export/completion gate 완료는 여전히 남아 있다.
+
+## 58. Slice 103 반영 사항
+
+- `/api/redteam/v2/toolchains/build-artifact-manifest` 응답에 `tool_coverage`, `present_tool_ids`, `missing_tool_ids`, `tool_coverage_complete`를 추가했다.
+- manifest builder는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 기본 6개 도구별 후보 파일 탐지 상태와 선택된 파일 SHA-256을 보존한다.
+- `/api/redteam/v2/toolchains/real-operating-evidence-readiness`는 기본적으로 6개 필수 분석도구 산출물이 모두 있어야 `ready_for_operating_closure_submission=true`가 된다.
+- 누락 도구가 있으면 `all_required_tool_artifacts_required` blocker와 `missing_required_tool_ids`를 반환하고, checklist의 `필수 6개 분석도구 산출물` 항목을 blocked로 표시한다.
+- RedTeam2 UI는 `필수 분석도구 산출물` 표로 6개 도구별 산출물 있음/누락, 파일 경로, SHA-256 또는 후보 수를 보여준다.
+- regression test는 2개 fixture만 있는 source가 6개 필수 도구 누락으로 차단되는지, 6개 운영 산출물 이름이 모두 있는 source가 `tool_coverage_complete=true`로 readiness를 통과하는지 검증한다.
+- 이 slice는 실제 운영 closure 진입 전 “2개 파일만으로 ready”가 되는 오판을 줄이지만, 실제 조직 산출물과 실제 승인자로 downstream gate를 닫는 일은 여전히 남아 있다.

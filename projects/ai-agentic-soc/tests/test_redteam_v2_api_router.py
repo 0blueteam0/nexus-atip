@@ -2478,8 +2478,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["ready_for_operating_closure_submission"])
         self.assertIn("real_operating_source_required", body["blockers"])
         self.assertIn("no_controlled_or_test_source_required", body["blockers"])
+        self.assertIn("all_required_tool_artifacts_required", body["blockers"])
+        self.assertIn("TOOL-OPENVAS-001", body["missing_required_tool_ids"])
+        self.assertFalse(body["tool_coverage_complete"])
         self.assertIn("controlled_or_test_like_source_detected", body["warnings"])
         self.assertEqual(body["artifact_count"], 2)
+        self.assertEqual(len(body["tool_coverage"]), 6)
+        self.assertTrue(any(item["field"] == "all_required_tool_artifacts_present" and item["status"] == "blocked" for item in body["checklist"]))
         self.assertTrue(any(item["field"] == "safe_no_execution" and item["status"] == "passed" for item in body["checklist"]))
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["active_scan_executed"])
@@ -2487,6 +2492,51 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["next_api"], "/api/redteam/v2/toolchains/operating-closure-submission-package")
         self.assertTrue(Path(body["artifact_path"]).exists())
+
+    def test_v2_real_operating_evidence_readiness_requires_six_tool_coverage(self) -> None:
+        case_id = f"REAL-OPERATING-READINESS-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / f"real-client-scan-{uuid.uuid4().hex[:8]}"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "real-nuclei.jsonl": '{"template-id":"real-panel","info":{"name":"Real panel","severity":"medium"},"matched-at":"https://app.example.com/admin"}',
+            "real-openvas.xml": "<report><results><result><id>real-openvas</id><name>Real OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.41</host><port>443/tcp</port></result></results></report>",
+            "real-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-REAL-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "real-sbom-cyclonedx.json": '{"bomFormat":"CycloneDX","components":[{"bom-ref":"pkg:pypi/example@1.0.0","name":"example","version":"1.0.0"}],"vulnerabilities":[{"id":"CVE-REAL-SCA","affects":[{"ref":"pkg:pypi/example@1.0.0"}],"ratings":[{"severity":"medium"}]}]}',
+            "real-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-REAL-NPM"}]}}}',
+            "real-zap-alerts.json": '{"site":[{"@name":"https://app.example.com","alerts":[{"pluginid":"10021","name":"Real ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.com/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        response = self.client.post("/api/redteam/v2/toolchains/real-operating-evidence-readiness", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-REAL-OPERATING-READINESS-COVERAGE",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "evidence-reviewer@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "real_operating_evidence_ready")
+        self.assertTrue(body["ready_for_operating_closure_submission"])
+        self.assertEqual(body["artifact_count"], 6)
+        self.assertTrue(body["tool_coverage_complete"])
+        self.assertFalse(body["missing_required_tool_ids"])
+        self.assertEqual(set(body["present_tool_ids"]), {
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        })
+        self.assertTrue(all(item["status"] == "present" for item in body["tool_coverage"]))
+        self.assertTrue(any(item["field"] == "all_required_tool_artifacts_present" and item["status"] == "passed" for item in body["checklist"]))
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
 
     def test_v2_operating_closure_human_review_records_hitl_checklist_without_execution(self) -> None:
         case_id = f"CASE-V2-OPERATING-CLOSURE-REVIEW-001-{uuid.uuid4().hex[:8]}"
