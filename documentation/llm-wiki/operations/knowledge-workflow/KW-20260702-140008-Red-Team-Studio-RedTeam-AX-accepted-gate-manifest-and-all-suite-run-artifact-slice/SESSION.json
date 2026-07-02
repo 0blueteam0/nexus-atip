@@ -4,7 +4,7 @@
   "task": "RedTeam AX accepted gate manifest and all-suite run artifact slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-140008-Red-Team-Studio-RedTeam-AX-accepted-gate-manifest-and-all-suite-run-artifact-slice",
   "created_at": "2026-07-02T14:00:08+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-02T15:04:17+09:00"
+  ]
 }

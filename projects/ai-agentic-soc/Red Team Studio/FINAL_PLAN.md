@@ -1197,4 +1197,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 패널은 secret 값 입력란 없이 external vault reference, endpoint reference, read-only scope, 승인 목적만 입력
 - [x] `tests/test_redteam_v2_api_router.py::test_v2_openvas_zap_credential_vault_authorizes_read_only_external_refs_only` 추가
 - [x] completion audit matrix의 RTA-COMP-014를 `proved`로 갱신하고 남은 gap에서 credential vault 제거
-- [ ] 다음 slice: 전체 accepted gate manifest 또는 Nuclei/OpenVAS/Trivy/ZAP 추가 live smoke 구현
+- [x] 다음 slice: 전체 accepted gate manifest 또는 Nuclei/OpenVAS/Trivy/ZAP 추가 live smoke 구현 - 전체 accepted gate manifest slice 60 완료
+
+## 68. Slice 60 Accepted Gate Manifest 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_accepted_gate_manifest.py` 추가
+- [x] accepted gate 목록을 코드로 고정: API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS check, frontend build
+- [x] 각 gate는 `subprocess.run(..., shell=False)`로 실행하고 cwd, argv, timeout, exit_code, stdout/stderr excerpt, started/completed timestamp, duration을 manifest에 기록
+- [x] sample E2E가 unsupported claim, unapproved high-risk, evidence-less Finding 0건을 검증하는 gate임을 manifest에 명시
+- [x] `archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` 생성
+- [x] 최신 manifest 기준 accepted gate 9개, passed 9개, failed 0개
+- [x] completion audit matrix의 RTA-COMP-012를 `proved`로 갱신하고 남은 gap에서 accepted gate manifest 제거
+- [ ] 다음 slice: Nuclei/OpenVAS/Trivy/OWASP ZAP 또는 Docker/container runtime live smoke 구현

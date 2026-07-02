@@ -61,45 +61,45 @@
     "risk_class": "T0",
     "hitl_required": false,
     "failures": [],
-    "evaluated_at": "2026-07-02T04:48:04Z",
+    "evaluated_at": "2026-07-02T05:57:36Z",
     "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/roe/ROE-42FBD532F9DC.json",
     "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/audit.jsonl"
   },
   "audit_events": [
     {
       "event": "planned",
-      "at": "2026-07-02T04:48:04Z",
+      "at": "2026-07-02T05:57:36Z",
       "actor": "analyst@example.com"
     },
     {
       "event": "tool_execution_plan_created",
-      "at": "2026-07-02T04:48:04Z",
-      "execution_plan_id": "TEP-75D1EE23E54A",
+      "at": "2026-07-02T05:57:36Z",
+      "execution_plan_id": "TEP-9F60B7C5D187",
       "execution_mode": "sandbox_execute"
     },
     {
       "event": "governed_tool_execution_recorded",
-      "at": "2026-07-02T04:48:05Z",
-      "run_id": "TRUN-09DFF0CA7A4E",
+      "at": "2026-07-02T05:57:37Z",
+      "run_id": "TRUN-2241A3FE5BDC",
       "tool_id": "TOOL-NPM-AUDIT-001",
       "execution_mode": "sandbox_execute"
     },
     {
       "event": "analysis_agent_normalized_tool_run",
-      "at": "2026-07-02T04:48:05Z",
-      "run_id": "TRUN-09DFF0CA7A4E",
-      "result_id": "NR-7AA416B51884",
+      "at": "2026-07-02T05:57:37Z",
+      "run_id": "TRUN-2241A3FE5BDC",
+      "result_id": "NR-AB738498CC86",
       "agent_id": "AGENT-NPM-AUDIT-ANALYST-001"
     },
     {
       "event": "evidence_candidate_created",
-      "at": "2026-07-02T04:48:05Z",
-      "run_id": "TRUN-09DFF0CA7A4E",
-      "evidence_id": "EV-FFC941EBE7B6"
+      "at": "2026-07-02T05:57:37Z",
+      "run_id": "TRUN-2241A3FE5BDC",
+      "evidence_id": "EV-A87D837E9930"
     }
   ],
   "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-actions/TAC-NPM-INSTALLED-LIVE-SMOKE-001.json",
   "execution_plans": [
-    "TEP-75D1EE23E54A"
+    "TEP-9F60B7C5D187"
   ]
 }

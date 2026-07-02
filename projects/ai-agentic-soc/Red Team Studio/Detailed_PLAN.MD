@@ -601,3 +601,12 @@ Create Case
 - OpenVAS/ZAP authorization은 `commands_executed_by_api=false`, `secret_material_stored=false`, `trusted_as_instruction=false`, `runner_unlocks=[]`를 유지한다.
 - RedTeam2 화면에는 한국어 `OpenVAS/ZAP 읽기 전용 접속권한` 패널을 추가하고 secret 값 입력란 없이 vault reference만 입력하게 한다.
 - 이 slice는 credential vault contract를 닫지만 실제 OpenVAS/ZAP live API 호출이나 active scan 실행 증거는 만들지 않는다.
+
+## 15. Slice 60 반영 사항
+
+- `고도화/sanity/redteam_ax_accepted_gate_manifest.py`는 RedTeam AX의 현재 accepted gate set을 코드로 열거하고 실제 실행한다.
+- accepted gate set은 v2 API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS syntax check, frontend production build로 구성한다.
+- 각 gate 결과는 command argv, cwd, timeout, exit code, stdout/stderr excerpt, 시작/종료 시각, duration을 포함해 `archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json`에 저장한다.
+- manifest는 sample E2E가 unsupported claim, 승인 없는 high-risk execution, evidence-less Finding 0건을 검증하는 gate임을 명시한다.
+- 최신 실행 기준 accepted gate 9개가 모두 통과했고 failed gate는 0개다.
+- 이 slice는 전체 테스트/보안 게이트/보고서 검증/회귀 검증 증거 공백을 닫지만, Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container live runtime smoke는 여전히 별도 완료 조건으로 유지한다.

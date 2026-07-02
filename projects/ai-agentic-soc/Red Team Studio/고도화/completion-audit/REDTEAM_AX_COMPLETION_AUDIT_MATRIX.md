@@ -35,9 +35,9 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 13 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
-| `partial` | 2 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
-| `gap` | 1 | 계획에 명시된 미구현 또는 미검증 기능 |
+| `proved` | 14 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
+| `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
 
 ## 완료로 주장 가능한 주요 항목
@@ -51,6 +51,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2의 여러 분석도구 순차 실행 UI와 governed multi-toolchain execution API
 - 설치된 `npm.cmd --version`의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - OpenVAS/ZAP 외부 vault reference 기반 read-only credential authorization API와 한국어 UI
+- 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS check, frontend build 9/9 통과
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
 - LLM wiki의 Red Team Studio manifest, ChatShare, previous work index 연결
@@ -58,7 +59,6 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 ## 아직 완료로 주장하면 안 되는 항목
 
 - Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container runtime live smoke 성공 증거
-- 전체 accepted gate manifest와 all-suite run artifact
 
 ## 운영 규칙
 

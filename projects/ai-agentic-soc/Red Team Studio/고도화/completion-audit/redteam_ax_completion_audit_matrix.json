@@ -11,9 +11,9 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 13,
-    "partial": 2,
-    "gap": 1,
+    "proved": 14,
+    "partial": 1,
+    "gap": 0,
     "blocked": 0
   },
   "audit_items": [
@@ -163,16 +163,17 @@
     {
       "id": "RTA-COMP-012",
       "requirement": "All tests, security gates, sample case E2E, report verification, and regression checks must pass before final completion.",
-      "status": "partial",
+      "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_sample_e2e.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_plan_contract.py",
-        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py"
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_accepted_gate_manifest.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json"
       ],
-      "proof_summary": "Current narrow regression suite has passed in recent slices: plan contract, build, v2 API, sample E2E, and live smoke.",
-      "residual_gap": "The objective asks for full tests/security gate/regression; a full suite manifest and all-suite run artifact are not yet present.",
-      "next_action": "Create final verification harness that enumerates and runs the accepted full gate set."
+      "proof_summary": "Accepted gate manifest now enumerates and executes the current full accepted gate set: v2 API regression, sample E2E/report gate with zero-count assertions, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS check, and frontend build. The latest manifest records 9 accepted gates, 9 passed, 0 failed.",
+      "next_action": "Keep this accepted gate manifest mandatory after future RedTeam AX code, UI, report, or audit changes."
     },
     {
       "id": "RTA-COMP-013",
@@ -228,12 +229,10 @@
     }
   ],
   "remaining_gaps": [
-    "Nuclei/OpenVAS/Trivy/OWASP ZAP and Docker/container runtime live smoke after environment readiness.",
-    "Full accepted gate manifest and all-suite run artifact."
+    "Nuclei/OpenVAS/Trivy/OWASP ZAP and Docker/container runtime live smoke after environment readiness."
   ],
   "next_slice_candidates": [
     "Run additional installed scanner live smokes when scanner CLIs are available.",
-    "Design OpenVAS/ZAP credential vault contract.",
-    "Create final verification harness for all accepted gates."
+    "Run Docker/container runtime live smoke when Docker is available and approved."
   ]
 }
