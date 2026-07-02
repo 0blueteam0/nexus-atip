@@ -138,6 +138,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 120,
         },
         {
+            "gate_id": "GATE-SCANNER-CLI-LIVE-SMOKE",
+            "name": "Governed Nuclei and Trivy portable CLI live smoke",
+            "category": "scanner_cli_runtime_smoke",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_scanner_cli_live_smoke.py"],
+            "timeout_seconds": 180,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -150,6 +158,8 @@ def accepted_gates() -> list[dict]:
                 "runtime/redteam_v2_api_router.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_accepted_gate_manifest.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
             ],
             "timeout_seconds": 60,
         },

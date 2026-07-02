@@ -605,8 +605,18 @@ Create Case
 ## 15. Slice 60 반영 사항
 
 - `고도화/sanity/redteam_ax_accepted_gate_manifest.py`는 RedTeam AX의 현재 accepted gate set을 코드로 열거하고 실제 실행한다.
-- accepted gate set은 v2 API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS syntax check, frontend production build로 구성한다.
+- accepted gate set은 v2 API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, scanner CLI live smoke, Python compile, frontend JS syntax check, frontend production build로 구성한다.
 - 각 gate 결과는 command argv, cwd, timeout, exit code, stdout/stderr excerpt, 시작/종료 시각, duration을 포함해 `archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json`에 저장한다.
 - manifest는 sample E2E가 unsupported claim, 승인 없는 high-risk execution, evidence-less Finding 0건을 검증하는 gate임을 명시한다.
-- 최신 실행 기준 accepted gate 9개가 모두 통과했고 failed gate는 0개다.
-- 이 slice는 전체 테스트/보안 게이트/보고서 검증/회귀 검증 증거 공백을 닫지만, Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container live runtime smoke는 여전히 별도 완료 조건으로 유지한다.
+- 이 slice는 전체 테스트/보안 게이트/보고서 검증/회귀 검증 증거 공백을 닫지만, scanner/container live runtime smoke는 별도 완료 조건으로 유지한다.
+
+## 16. Slice 61 반영 사항
+
+- `고도화/sanity/redteam_ax_scanner_cli_live_smoke.py`는 Nuclei와 Trivy를 공식 GitHub release 자산으로 repo-local portable 설치한다.
+- Nuclei v3.10.0과 Trivy v0.72.0 archive는 각 release checksum 파일의 SHA-256 값과 비교해 검증한다.
+- 설치 위치는 `tools/redteam-ax/bin`이며 smoke 프로세스의 PATH 앞에 붙여 `/api/redteam/v2/tool-wrapper-manifests`가 실제 portable binary를 해석하게 한다.
+- 각 도구는 host version probe 후 wrapper pin request와 red_team_lead approval을 거쳐 `dry_run` execution plan, issued token, child-process allowlist, `shell=false` governed runner로 실행된다.
+- runner output은 sanitizer preview, agent normalization, Evidence Card 생성까지 같은 case archive에 연결한다.
+- 최신 smoke artifact는 `archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json`이며 Nuclei/Trivy passed, OpenVAS/ZAP/Docker blocked 사유를 함께 기록한다.
+- Docker container smoke는 `--require-real` 실행 시 Docker Desktop daemon unavailable blocker artifact를 남겼다.
+- 이 slice는 Nuclei/Trivy 실제 CLI runtime readiness를 입증하지만 OpenVAS/ZAP service/CLI와 Docker/container runtime readiness는 아직 완료 조건으로 남긴다.

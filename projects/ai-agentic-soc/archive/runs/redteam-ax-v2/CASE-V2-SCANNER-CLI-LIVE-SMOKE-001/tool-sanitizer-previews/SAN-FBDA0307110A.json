@@ -1,0 +1,42 @@
+{
+  "kind": "redteam_ax_v2_tool_output_sanitizer_preview",
+  "preview_id": "SAN-FBDA0307110A",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "run_id": "TRUN-CD802931AE50",
+  "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "input_source": "stored_artifacts",
+  "artifact_report": {
+    "artifact_input_count": 1,
+    "artifact_checked_count": 1,
+    "artifact_skipped_count": 0,
+    "artifact_errors": []
+  },
+  "status": "allow",
+  "errors": [],
+  "trusted_as_instruction": false,
+  "trusted_as_data": true,
+  "requires_human_review": false,
+  "sanitizer": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "decision": "allow",
+    "prompt_injection_score": 0.0,
+    "secret_detection_score": 0.0,
+    "redactions": [],
+    "indicators": [],
+    "sanitized_outputs": [
+      "[\u001b[34mINF\u001b[0m] Nuclei Engine Version: v3.10.0\n[\u001b[34mINF\u001b[0m] Nuclei Config Directory: C:\\Users\\alos\\AppData\\Roaming\\nuclei\n[\u001b[34mINF\u001b[0m] Nuclei Cache Directory: C:\\Users\\alos\\AppData\\Local\\nuclei\n[\u001b[34mINF\u001b[0m] PDCP Directory: C:\\Users\\alos\\.pdcp\n"
+    ],
+    "sanitized_summary": "No prompt injection or secret indicators detected.",
+    "warnings": []
+  },
+  "sanitized_output_preview": "[\u001b[34mINF\u001b[0m] Nuclei Engine Version: v3.10.0\n[\u001b[34mINF\u001b[0m] Nuclei Config Directory: C:\\Users\\alos\\AppData\\Roaming\\nuclei\n[\u001b[34mINF\u001b[0m] Nuclei Cache Directory: C:\\Users\\alos\\AppData\\Local\\nuclei\n[\u001b[34mINF\u001b[0m] PDCP Directory: C:\\Users\\alos\\.pdcp\n",
+  "policy": {
+    "prompt_injection_threshold_quarantine": 0.85,
+    "secret_redaction_required": true,
+    "raw_output_trust": "data_only_never_instruction"
+  },
+  "created_at": "2026-07-02T06:27:57Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-sanitizer-previews/SAN-FBDA0307110A.json"
+}

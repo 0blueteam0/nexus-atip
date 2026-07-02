@@ -1,0 +1,27 @@
+{
+  "kind": "redteam_ax_v2_governed_runner_attempt",
+  "run_id": "TRUN-052442430D7B",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+  "execution_plan_id": "TEP-204ABCACADF4",
+  "execution_token_id": "EXT-A4D49D2C44B5",
+  "tool_id": "TOOL-NUCLEI-001",
+  "execution_mode": "dry_run",
+  "runner_argv": [
+    "nuclei",
+    "-version"
+  ],
+  "shell": false,
+  "status": "executed",
+  "errors": [],
+  "started_at": "2026-07-02T06:25:10Z",
+  "completed_at": "2026-07-02T06:25:17Z",
+  "exit_code": 0,
+  "timeout_seconds": 30,
+  "max_output_bytes": 8192,
+  "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "stdout_bytes": 0,
+  "stderr_bytes": 248,
+  "output_truncated": false,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-BE96C21F3E0E.json"
+}

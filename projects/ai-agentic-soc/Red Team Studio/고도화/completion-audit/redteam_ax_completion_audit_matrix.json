@@ -207,14 +207,16 @@
       "status": "partial",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Installed npm audit tooling path was exercised through the governed runner using npm.cmd --version. The run passed ToolActionCard, ExecutionPlan, execution token, wrapper pin, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation.",
-      "residual_gap": "Nuclei, OpenVAS, Trivy, OWASP ZAP, and Docker/container runtime live smokes are not yet recorded in this environment.",
-      "next_action": "When approved scanner CLIs or Docker are available, rerun live runtime smokes for each remaining tool/runtime and attach artifacts."
+      "proof_summary": "Installed npm audit, Nuclei, and Trivy tooling paths were exercised through the governed runner using version commands. Nuclei v3.10.0 and Trivy v0.72.0 were installed as checksum-verified portable official release binaries under tools/redteam-ax, then passed ToolActionCard, ExecutionPlan, wrapper pin, execution token, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation.",
+      "residual_gap": "OpenVAS, OWASP ZAP, and Docker/container runtime live smokes are not yet successful in this environment; Docker CLI is installed but the daemon reports unable to start.",
+      "next_action": "When OpenVAS/ZAP CLI or service endpoints and a working Docker daemon are available, rerun live runtime smokes and attach artifacts."
     },
     {
       "id": "RTA-COMP-016",
@@ -229,10 +231,10 @@
     }
   ],
   "remaining_gaps": [
-    "Nuclei/OpenVAS/Trivy/OWASP ZAP and Docker/container runtime live smoke after environment readiness."
+    "OpenVAS/OWASP ZAP and Docker/container runtime live smoke after environment readiness."
   ],
   "next_slice_candidates": [
-    "Run additional installed scanner live smokes when scanner CLIs are available.",
+    "Run OpenVAS and OWASP ZAP live smokes when service endpoints or CLIs are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved."
   ]
 }

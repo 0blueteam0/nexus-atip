@@ -1,0 +1,179 @@
+{
+  "kind": "redteam_ax_scanner_cli_live_smoke",
+  "created_at": "2026-07-02T06:27:49Z",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "status": "passed",
+  "safe_by_default": true,
+  "commands_executed_by_api": true,
+  "shell_expansion_allowed": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "portable_tool_root": "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax",
+  "tools": [
+    {
+      "tool_id": "TOOL-NUCLEI-001",
+      "tool_name": "Nuclei",
+      "version": "v3.10.0",
+      "status": "passed",
+      "install": {
+        "asset_name": "nuclei_3.10.0_windows_amd64.zip",
+        "asset_url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.10.0/nuclei_3.10.0_windows_amd64.zip",
+        "checksums_url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.10.0/nuclei_3.10.0_checksums.txt",
+        "archive_path": "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/downloads/nuclei_3.10.0_windows_amd64.zip",
+        "archive_sha256": "c4c16fc832ba46b78e1a062966bb38e1793679dbdd79d5a5422b3b8605a606b3",
+        "checksum_verified": true,
+        "installed_path": "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/bin/nuclei.exe",
+        "installed_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110"
+      },
+      "host_version_probe": {
+        "argv": [
+          "nuclei",
+          "-version"
+        ],
+        "exit_code": 0,
+        "stdout_excerpt": "",
+        "stderr_excerpt": "[\u001b[34mINF\u001b[0m] Nuclei Engine Version: v3.10.0\n[\u001b[34mINF\u001b[0m] Nuclei Config Directory: C:\\Users\\alos\\AppData\\Roaming\\nuclei\n[\u001b[34mINF\u001b[0m] Nuclei Cache Directory: C:\\Users\\alos\\AppData\\Local\\nuclei\n[\u001b[34mINF\u001b[0m] PDCP Directory: C:\\Users\\alos\\.pdcp\n"
+      },
+      "pin_request": {
+        "status": "submitted",
+        "pin_request_id": "TWPINREQ-A45792A90CD2",
+        "errors": []
+      },
+      "pin_approval": {
+        "status": "approved",
+        "approval_id": "TWPINAP-29985AD0046E",
+        "errors": []
+      },
+      "governed": {
+        "action": {
+          "status": "ScopeValidated",
+          "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001"
+        },
+        "plan": {
+          "status": "PlanReady",
+          "execution_plan_id": "TEP-60BAA19B2437",
+          "token_status": "issued",
+          "pinning_status": "hash_match",
+          "errors": [],
+          "warnings": []
+        },
+        "run": {
+          "status": "RunnerExecuted",
+          "run_id": "TRUN-CD802931AE50",
+          "runner_status": "executed",
+          "exit_code": 0,
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-CD802931AE50.json",
+          "raw_artifact_count": 1,
+          "errors": []
+        },
+        "sanitize_preview": {
+          "status": "allow",
+          "trusted_as_instruction": false
+        },
+        "agent_analyze": {
+          "status": "Normalized",
+          "result_id": "NR-CD55910C687F",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-CD55910C687F.json"
+        },
+        "evidence": {
+          "status": null,
+          "evidence_id": "EV-F5759F3E5321",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-F5759F3E5321.json"
+        }
+      }
+    },
+    {
+      "tool_id": "TOOL-TRIVY-001",
+      "tool_name": "Trivy",
+      "version": "v0.72.0",
+      "status": "passed",
+      "install": {
+        "asset_name": "trivy_0.72.0_windows-64bit.zip",
+        "asset_url": "https://github.com/aquasecurity/trivy/releases/download/v0.72.0/trivy_0.72.0_windows-64bit.zip",
+        "checksums_url": "https://github.com/aquasecurity/trivy/releases/download/v0.72.0/trivy_0.72.0_checksums.txt",
+        "archive_path": "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/downloads/trivy_0.72.0_windows-64bit.zip",
+        "archive_sha256": "ed3cf122060f61818fe1f735fd97557954e16e10bc8b058af9852271cf2e91b3",
+        "checksum_verified": true,
+        "installed_path": "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/bin/trivy.exe",
+        "installed_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821"
+      },
+      "host_version_probe": {
+        "argv": [
+          "trivy",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout_excerpt": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-06-24 01:08:55.60783987 +0000 UTC\n  NextUpdate: 2026-06-25 01:08:55.607839589 +0000 UTC\n  DownloadedAt: 2026-06-24 03:21:44.6544352 +0000 UTC\n",
+        "stderr_excerpt": ""
+      },
+      "pin_request": {
+        "status": "submitted",
+        "pin_request_id": "TWPINREQ-2F8C57263ABB",
+        "errors": []
+      },
+      "pin_approval": {
+        "status": "approved",
+        "approval_id": "TWPINAP-37235D823937",
+        "errors": []
+      },
+      "governed": {
+        "action": {
+          "status": "ScopeValidated",
+          "action_id": "TAC-TRIVY-CLI-LIVE-SMOKE-001"
+        },
+        "plan": {
+          "status": "PlanReady",
+          "execution_plan_id": "TEP-3BF248F8E697",
+          "token_status": "issued",
+          "pinning_status": "hash_match",
+          "errors": [],
+          "warnings": []
+        },
+        "run": {
+          "status": "RunnerExecuted",
+          "run_id": "TRUN-2B9036AED6E8",
+          "runner_status": "executed",
+          "exit_code": 0,
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B9036AED6E8.json",
+          "raw_artifact_count": 1,
+          "errors": []
+        },
+        "sanitize_preview": {
+          "status": "allow",
+          "trusted_as_instruction": false
+        },
+        "agent_analyze": {
+          "status": "Normalized",
+          "result_id": "NR-DAF5E36B62B1",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-DAF5E36B62B1.json"
+        },
+        "evidence": {
+          "status": null,
+          "evidence_id": "EV-E8339678D59D",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-E8339678D59D.json"
+        }
+      }
+    }
+  ],
+  "blocked_tools": [
+    {
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_name": "OpenVAS",
+      "status": "blocked_service_or_cli_not_installed",
+      "reason": "gvm-cli/OpenVAS service is not present in this Windows session; read-only credential contract remains proved separately."
+    },
+    {
+      "tool_id": "TOOL-ZAP-001",
+      "tool_name": "OWASP ZAP",
+      "status": "blocked_service_or_cli_not_installed",
+      "reason": "zap-cli/ZAP daemon is not present in this Windows session; read-only credential contract remains proved separately."
+    },
+    {
+      "tool_id": "DOCKER-CONTAINER-RUNTIME",
+      "tool_name": "Docker",
+      "status": "blocked_daemon_unavailable",
+      "reason": "Docker CLI is installed but Docker Desktop daemon reports unable to start."
+    }
+  ],
+  "errors": []
+}

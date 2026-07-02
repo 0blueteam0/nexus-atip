@@ -1,0 +1,105 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "Nuclei installed CLI live smoke",
+  "objective": "Run Nuclei version command through governed RedTeam AX runner and capture output.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_profile": {
+    "tool_id": "TOOL-NUCLEI-001",
+    "name": "nuclei",
+    "category": "web_validation",
+    "normalizer_id": "NORMALIZER-NUCLEI-001",
+    "agent_id": "AGENT-NUCLEI-ANALYST-001",
+    "default_policy": "approved_templates_and_scope_required"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "scanner_finding_candidate",
+    "web_validation_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "decision": "allow",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-02T06:27:56Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/roe/ROE-4C96B0DAB0BC.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T06:27:56Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T06:27:56Z",
+      "execution_plan_id": "TEP-60BAA19B2437",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T06:27:57Z",
+      "run_id": "TRUN-CD802931AE50",
+      "tool_id": "TOOL-NUCLEI-001",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T06:27:57Z",
+      "run_id": "TRUN-CD802931AE50",
+      "result_id": "NR-CD55910C687F",
+      "agent_id": "AGENT-NUCLEI-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T06:27:57Z",
+      "run_id": "TRUN-CD802931AE50",
+      "evidence_id": "EV-F5759F3E5321"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-actions/TAC-NUCLEI-CLI-LIVE-SMOKE-001.json",
+  "execution_plans": [
+    "TEP-60BAA19B2437"
+  ]
+}

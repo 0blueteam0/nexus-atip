@@ -1,0 +1,38 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-E8339678D59D",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-DAF5E36B62B1.json",
+  "collected_at": "2026-07-02T06:28:06Z",
+  "hash": "SHA256-601A4141F3D0",
+  "summary": "Trivy governed CLI live smoke output evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TRUN-2B9036AED6E8",
+    "result_id": "NR-DAF5E36B62B1",
+    "result_type": "scanner_cli_runtime_evidence",
+    "structured_items": [
+      {
+        "item_type": "scanner_cli_runtime_evidence",
+        "tool_id": "TOOL-TRIVY-001",
+        "artifact_id": "ART-AFA9C73A541A",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/runner-output/TRUN-2B9036AED6E8/stdout.txt",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.7
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-E8339678D59D.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/audit.jsonl"
+}

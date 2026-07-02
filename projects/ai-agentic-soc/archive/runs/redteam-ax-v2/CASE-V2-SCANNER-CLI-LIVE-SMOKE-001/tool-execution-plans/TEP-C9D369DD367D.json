@@ -1,0 +1,204 @@
+{
+  "kind": "redteam_ax_v2_tool_execution_plan",
+  "execution_plan_id": "TEP-C9D369DD367D",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "execution_mode": "sandbox_execute",
+  "runner": "sandbox",
+  "wrapper_manifest": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-NUCLEI-001",
+    "tool_name": "nuclei",
+    "adapter_type": "cli_wrapper",
+    "command_name": "nuclei",
+    "availability": {
+      "status": "available",
+      "command": "nuclei",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\nuclei.EXE",
+      "checked_at": "2026-07-02T06:23:49Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\nuclei.EXE",
+    "expected_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-NUCLEI-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+      "tool_id": "TOOL-NUCLEI-001",
+      "tool_name": "nuclei",
+      "status": "approved",
+      "expected_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110",
+      "pin_request_id": "TWPINREQ-4235AF1C26A0",
+      "approval_id": "TWPINAP-394990D8BA55",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "v3.10.0",
+        "version_command": "nuclei -version",
+        "version_output_excerpt": "[\u001b[34mINF\u001b[0m] Nuclei Engine Version: v3.10.0\n[\u001b[34mINF\u001b[0m] Nuclei Config Directory: C:\\Users\\alos\\AppData\\Roaming\\nuclei\n[\u001b[34mINF\u001b[0m] Nuclei Cache Directory: C:\\Users\\alos\\AppData\\Local\\nuclei\n[\u001b[34mINF\u001b[0m] PDCP Directory: C:\\Users\\alos\\.pdcp\n",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T06:23:49Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NUCLEI-001.json"
+    },
+    "actual_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Install nuclei from the official ProjectDiscovery release and pin template sources.",
+    "checked_at": "2026-07-02T06:23:49Z"
+  },
+  "wrapper_preflight": {
+    "runner_can_use_wrapper": true,
+    "blocking_controls": [],
+    "human_review_required": false
+  },
+  "status": "invalid",
+  "errors": [
+    "execution_mode_not_allowed_for_tool"
+  ],
+  "warnings": [],
+  "requires_approval": false,
+  "approvals_required": [],
+  "policy_decision": {
+    "decision": "deny",
+    "risk_class": "T0",
+    "safe_by_default": true,
+    "high_risk_direct_execution": false,
+    "runner_preflight_blocked": false,
+    "runner_isolation_blocked": false
+  },
+  "environment_constraints": {
+    "network_policy": {
+      "mode": "deny",
+      "default": "deny",
+      "allowlist": [],
+      "egress_allowed": false
+    },
+    "filesystem_policy": {
+      "mode": "workspace_only",
+      "workspace_root": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "allowed_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001"
+      ],
+      "write_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001"
+      ]
+    },
+    "isolation_readiness": {
+      "kind": "redteam_ax_v2_runner_isolation_readiness",
+      "requested_backend": "local_subprocess_shim",
+      "status": "shim_ready",
+      "commands_executed_by_api": false,
+      "runner_token_blocked": false,
+      "blocking_controls": [],
+      "required_controls": [
+        "container_runtime_attested",
+        "image_digest_pinned",
+        "network_deny_or_allowlist_enforced",
+        "workspace_read_only_mount",
+        "case_write_mount_only",
+        "no_host_secret_mounts",
+        "process_timeout_enforced",
+        "stdout_stderr_artifact_capture",
+        "ephemeral_cleanup_attested"
+      ],
+      "container_policy": {
+        "ephemeral": true,
+        "runtime": "docker",
+        "image_digest": null,
+        "network_default": "deny",
+        "network_allowlist_required_for_egress": true,
+        "workspace_mount": "read_only",
+        "case_artifact_mount": "write_only",
+        "host_secret_mounts_allowed": false,
+        "shell_expansion_allowed": false,
+        "privileged_container_allowed": false,
+        "resource_limits": {
+          "cpus": "1",
+          "memory": "512m",
+          "pids_limit": 128
+        }
+      },
+      "local_shim_policy": {
+        "allowed_for": [
+          "dry_run",
+          "sandbox_execute"
+        ],
+        "safe_by_default": true,
+        "note": "Local subprocess shim is a transitional dry-run backend; ephemeral container remains required before live scanner execution is considered complete."
+      },
+      "operator_actions": [
+        "enable_dedicated_container_runner",
+        "pin_runner_image_digest",
+        "attest_network_deny_or_allowlist",
+        "attest_read_only_workspace_and_case_write_mounts",
+        "attest_ephemeral_cleanup",
+        "rerun_execution_plan_with_runner_backend_ephemeral_container"
+      ],
+      "evidence_pipeline": {
+        "raw_stdout_stderr": "Evidence Card raw_artifact only",
+        "trusted_as_instruction": false,
+        "normalization_required": true,
+        "claim_evidence_matrix_required": true
+      }
+    },
+    "max_runtime_seconds": 30,
+    "max_output_bytes": 8192,
+    "process_policy": {
+      "child_process_allowlist": [
+        "nuclei"
+      ],
+      "shell_expansion_allowed": false
+    },
+    "secret_policy": {
+      "mask_environment": true,
+      "mask_logs": true
+    }
+  },
+  "execution_token": {
+    "token_id": null,
+    "status": "blocked",
+    "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+    "allowed_tool_id": "TOOL-NUCLEI-001",
+    "allowed_environment": "approved_scope",
+    "allowed_scope_refs": [
+      "SCOPE-APPROVED-LOCAL-LAB"
+    ],
+    "expires_at": "",
+    "max_runtime_seconds": 30,
+    "max_targets": 1,
+    "network_policy": "deny",
+    "revoked": false
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "nuclei",
+    "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\nuclei.EXE",
+    "checked_at": "2026-07-02T06:23:49Z"
+  },
+  "audit": {
+    "requested_by": "analyst@example.com",
+    "created_at": "2026-07-02T06:23:50Z",
+    "command_abstraction_only": true,
+    "runner_will_execute": false
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-execution-plans/TEP-C9D369DD367D.json"
+}

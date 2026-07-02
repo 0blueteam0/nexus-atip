@@ -1,0 +1,80 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_approval",
+  "approval_id": "TWPINAP-37235D823937",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-TRIVY-001",
+  "pin_request_id": "TWPINREQ-2F8C57263ABB",
+  "status": "approved",
+  "decision": "approve",
+  "errors": [],
+  "approver": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "actor_context": {
+    "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "requested_role": "red_team_lead",
+    "roles": [
+      "red_team_lead"
+    ],
+    "case_roles": [
+      "red_team_lead"
+    ],
+    "effective_roles": [
+      "red_team_lead"
+    ],
+    "permissions": [
+      "evidence:approve",
+      "finding:approve_severity",
+      "tool_action:approve_t3"
+    ],
+    "authenticated": true,
+    "auth_provider": "request_headers",
+    "auth_strength": "header_bound",
+    "source": "request_headers",
+    "display_name": "Sample Red Team Lead",
+    "case_policy_source": "local_case_assignment_registry",
+    "errors": [],
+    "resolved": true
+  },
+  "identity_binding": "bound",
+  "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+  "manifest_before": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-TRIVY-001",
+    "tool_name": "trivy",
+    "adapter_type": "cli_wrapper",
+    "command_name": "trivy",
+    "availability": {
+      "status": "available",
+      "command": "trivy",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+      "checked_at": "2026-07-02T06:28:04Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+    "expected_sha256": null,
+    "expected_sha256_source": "not_configured",
+    "approved_pin": null,
+    "actual_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+    "hash_error": null,
+    "pinning_status": "hash_unpinned",
+    "trusted_for_runner": false,
+    "requires_pin_before_runner": true,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": false,
+      "blocking_controls": [
+        "wrapper_sha256_pin_required"
+      ],
+      "human_review_required": true
+    },
+    "installation_hint": "Install trivy CLI and use JSON output for offline workspace/container artifact scans.",
+    "checked_at": "2026-07-02T06:28:04Z"
+  },
+  "decided_at": "2026-07-02T06:28:04Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-wrapper-pin-approvals/TWPINAP-37235D823937.json"
+}

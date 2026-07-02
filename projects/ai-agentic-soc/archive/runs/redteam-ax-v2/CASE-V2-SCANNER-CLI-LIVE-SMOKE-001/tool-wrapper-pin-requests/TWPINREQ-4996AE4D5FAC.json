@@ -1,0 +1,65 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+  "pin_request_id": "TWPINREQ-4996AE4D5FAC",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_name": "trivy",
+  "status": "submitted",
+  "errors": [],
+  "warnings": [],
+  "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+  "existing_approved_pin": null,
+  "manifest_snapshot": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-TRIVY-001",
+    "tool_name": "trivy",
+    "adapter_type": "cli_wrapper",
+    "command_name": "trivy",
+    "availability": {
+      "status": "available",
+      "command": "trivy",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+      "checked_at": "2026-07-02T06:24:01Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+    "expected_sha256": null,
+    "expected_sha256_source": "not_configured",
+    "approved_pin": null,
+    "actual_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+    "hash_error": null,
+    "pinning_status": "hash_unpinned",
+    "trusted_for_runner": false,
+    "requires_pin_before_runner": true,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": false,
+      "blocking_controls": [
+        "wrapper_sha256_pin_required"
+      ],
+      "human_review_required": true
+    },
+    "installation_hint": "Install trivy CLI and use JSON output for offline workspace/container artifact scans.",
+    "checked_at": "2026-07-02T06:24:01Z"
+  },
+  "version_evidence": {
+    "operator_attested_version": "v0.72.0",
+    "version_command": "trivy --version",
+    "version_output_excerpt": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-06-24 01:08:55.60783987 +0000 UTC\n  NextUpdate: 2026-06-25 01:08:55.607839589 +0000 UTC\n  DownloadedAt: 2026-06-24 03:21:44.6544352 +0000 UTC\n",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-02T06:24:02Z",
+  "approval_policy": {
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "approval_mode": "single_approval",
+    "safe_by_default": true
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-wrapper-pin-requests/TWPINREQ-4996AE4D5FAC.json"
+}

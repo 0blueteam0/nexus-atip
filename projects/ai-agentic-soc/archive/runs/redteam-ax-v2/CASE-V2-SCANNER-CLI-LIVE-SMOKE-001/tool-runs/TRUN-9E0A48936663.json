@@ -1,0 +1,92 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-9E0A48936663",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "execution_mode": "sandbox_execute",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "invalid",
+  "errors": [
+    "execution_mode_not_allowed_for_tool",
+    "execution_plan_not_ready",
+    "execution_plan_policy_not_allow",
+    "execution_token_not_issued",
+    "execution_token_mismatch"
+  ],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [],
+  "runner_attempt": {
+    "kind": "redteam_ax_v2_governed_runner_attempt",
+    "run_id": "TRUN-9E0A48936663",
+    "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "action_id": "TAC-NUCLEI-CLI-LIVE-SMOKE-001",
+    "execution_plan_id": "TEP-C9D369DD367D",
+    "execution_token_id": null,
+    "tool_id": "TOOL-NUCLEI-001",
+    "execution_mode": "sandbox_execute",
+    "runner_argv": [
+      "nuclei",
+      "-version"
+    ],
+    "shell": false,
+    "status": "blocked",
+    "errors": [
+      "execution_plan_not_ready",
+      "execution_plan_policy_not_allow",
+      "execution_token_not_issued",
+      "execution_token_mismatch"
+    ],
+    "started_at": "2026-07-02T06:23:50Z",
+    "completed_at": null,
+    "exit_code": null,
+    "timeout_seconds": 30,
+    "max_output_bytes": 8192,
+    "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-C5C4D11AFCFE.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "normalized_results": [],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": true,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "dry_run",
+      "offline_parse",
+      "manual_operator_run",
+      "lab_execute"
+    ],
+    "denied_execution_modes": [
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "deny"
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "nuclei",
+    "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\nuclei.EXE",
+    "checked_at": "2026-07-02T06:23:50Z"
+  },
+  "analysis_agent_id": "AGENT-NUCLEI-ANALYST-001",
+  "normalizer_id": "NORMALIZER-NUCLEI-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-NUCLEI-001",
+    "run_id": "TRUN-9E0A48936663",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": []
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-9E0A48936663.json"
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "redteam_ax_v2_governed_runner_attempt",
+  "run_id": "TRUN-32842BC68E51",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-TRIVY-CLI-LIVE-SMOKE-001",
+  "execution_plan_id": "TEP-13BB1D1BA864",
+  "execution_token_id": "EXT-1D63EE25843A",
+  "tool_id": "TOOL-TRIVY-001",
+  "execution_mode": "sandbox_execute",
+  "runner_argv": [
+    "trivy",
+    "--version"
+  ],
+  "shell": false,
+  "status": "executed",
+  "errors": [],
+  "started_at": "2026-07-02T06:24:04Z",
+  "completed_at": "2026-07-02T06:24:04Z",
+  "exit_code": 0,
+  "timeout_seconds": 30,
+  "max_output_bytes": 8192,
+  "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "stdout_bytes": 207,
+  "stderr_bytes": 0,
+  "output_truncated": false,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-EB2BD0C1FA4B.json"
+}

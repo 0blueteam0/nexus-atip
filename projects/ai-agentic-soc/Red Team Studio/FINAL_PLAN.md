@@ -1202,10 +1202,25 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 ## 68. Slice 60 Accepted Gate Manifest 체크리스트
 
 - [x] `고도화/sanity/redteam_ax_accepted_gate_manifest.py` 추가
-- [x] accepted gate 목록을 코드로 고정: API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS check, frontend build
+- [x] accepted gate 목록을 코드로 고정: API regression, sample E2E/report gate, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, scanner CLI live smoke, Python compile, frontend JS check, frontend build
 - [x] 각 gate는 `subprocess.run(..., shell=False)`로 실행하고 cwd, argv, timeout, exit_code, stdout/stderr excerpt, started/completed timestamp, duration을 manifest에 기록
 - [x] sample E2E가 unsupported claim, unapproved high-risk, evidence-less Finding 0건을 검증하는 gate임을 manifest에 명시
 - [x] `archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json` 생성
-- [x] 최신 manifest 기준 accepted gate 9개, passed 9개, failed 0개
+- [x] 최신 manifest 기준 accepted gate 통과
 - [x] completion audit matrix의 RTA-COMP-012를 `proved`로 갱신하고 남은 gap에서 accepted gate manifest 제거
-- [ ] 다음 slice: Nuclei/OpenVAS/Trivy/OWASP ZAP 또는 Docker/container runtime live smoke 구현
+- [x] 다음 slice: Nuclei/OpenVAS/Trivy/OWASP ZAP 또는 Docker/container runtime live smoke 구현 - Nuclei/Trivy scanner CLI live smoke slice 61 완료
+
+## 69. Slice 61 Nuclei/Trivy Scanner CLI Live Smoke 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_scanner_cli_live_smoke.py` 추가
+- [x] 공식 GitHub release 자산을 repo-local `tools/redteam-ax`에 portable 다운로드
+- [x] `nuclei_3.10.0_windows_amd64.zip`과 `trivy_0.72.0_windows-64bit.zip`을 각 release checksum 파일로 SHA-256 검증
+- [x] `tools/redteam-ax/bin`을 smoke 프로세스 PATH 앞에 붙여 v2 wrapper manifest가 실제 portable 바이너리를 해석하도록 구성
+- [x] Nuclei `-version`과 Trivy `--version`을 operator host probe로 먼저 확인
+- [x] 각 도구 wrapper hash pin request 및 red_team_lead approval 수행
+- [x] 각 도구 ToolActionCard, ExecutionPlan, execution token, child-process allowlist, `shell=false` governed runner 통과
+- [x] 각 도구 runner output을 sanitizer preview, agent normalization, Evidence Card 생성까지 연결
+- [x] `archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json`에 Nuclei/Trivy passed, OpenVAS/ZAP/Docker blocked 사유 저장
+- [x] Docker `--require-real` smoke는 Docker Desktop daemon unavailable blocker artifact를 기록
+- [x] completion audit matrix의 RTA-COMP-015 residual gap을 OpenVAS/ZAP 및 Docker/container runtime으로 축소
+- [ ] 다음 slice: OpenVAS/ZAP service/CLI live smoke 또는 Docker daemon 복구 후 container runtime live smoke 구현

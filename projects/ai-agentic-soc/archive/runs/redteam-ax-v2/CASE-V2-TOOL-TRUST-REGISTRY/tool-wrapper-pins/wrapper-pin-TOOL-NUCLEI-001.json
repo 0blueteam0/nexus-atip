@@ -1,0 +1,24 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin",
+  "pin_id": "wrapper-pin-TOOL-NUCLEI-001",
+  "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+  "source_case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NUCLEI-001",
+  "tool_name": "nuclei",
+  "status": "approved",
+  "expected_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110",
+  "pin_request_id": "TWPINREQ-A45792A90CD2",
+  "approval_id": "TWPINAP-29985AD0046E",
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "version_evidence": {
+    "operator_attested_version": "v3.10.0",
+    "version_command": "nuclei -version",
+    "version_output_excerpt": "[\u001b[34mINF\u001b[0m] Nuclei Engine Version: v3.10.0\n[\u001b[34mINF\u001b[0m] Nuclei Config Directory: C:\\Users\\alos\\AppData\\Roaming\\nuclei\n[\u001b[34mINF\u001b[0m] Nuclei Cache Directory: C:\\Users\\alos\\AppData\\Local\\nuclei\n[\u001b[34mINF\u001b[0m] PDCP Directory: C:\\Users\\alos\\.pdcp\n",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "approved_at": "2026-07-02T06:27:55Z",
+  "safe_by_default": true,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NUCLEI-001.json"
+}

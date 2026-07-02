@@ -1,0 +1,38 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-0588F9237BE2",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-A27A2A81D98C.json",
+  "collected_at": "2026-07-02T06:25:17Z",
+  "hash": "SHA256-C982C696A9C9",
+  "summary": "Nuclei governed CLI live smoke output evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TRUN-052442430D7B",
+    "result_id": "NR-A27A2A81D98C",
+    "result_type": "scanner_cli_runtime_evidence",
+    "structured_items": [
+      {
+        "item_type": "scanner_cli_runtime_evidence",
+        "tool_id": "TOOL-NUCLEI-001",
+        "artifact_id": "ART-2068AF25C60B",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/runner-output/TRUN-052442430D7B/stderr.txt",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.7
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-0588F9237BE2.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/audit.jsonl"
+}

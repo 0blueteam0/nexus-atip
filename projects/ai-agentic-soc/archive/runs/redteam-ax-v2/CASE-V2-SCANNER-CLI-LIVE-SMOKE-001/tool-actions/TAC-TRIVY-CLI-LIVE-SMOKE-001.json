@@ -1,0 +1,105 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-TRIVY-CLI-LIVE-SMOKE-001",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "Trivy installed CLI live smoke",
+  "objective": "Run Trivy version command through governed RedTeam AX runner and capture output.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_profile": {
+    "tool_id": "TOOL-TRIVY-001",
+    "name": "trivy",
+    "category": "container_iac_dependency_scan",
+    "normalizer_id": "NORMALIZER-TRIVY-001",
+    "agent_id": "AGENT-TRIVY-ANALYST-001",
+    "default_policy": "offline_artifact_or_workspace_scan_only"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "container_scan_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "decision": "allow",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-02T06:28:05Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/roe/ROE-4C96B0DAB0BC.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T06:28:05Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T06:28:06Z",
+      "execution_plan_id": "TEP-3BF248F8E697",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T06:28:06Z",
+      "run_id": "TRUN-2B9036AED6E8",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T06:28:06Z",
+      "run_id": "TRUN-2B9036AED6E8",
+      "result_id": "NR-DAF5E36B62B1",
+      "agent_id": "AGENT-TRIVY-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T06:28:06Z",
+      "run_id": "TRUN-2B9036AED6E8",
+      "evidence_id": "EV-E8339678D59D"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-actions/TAC-TRIVY-CLI-LIVE-SMOKE-001.json",
+  "execution_plans": [
+    "TEP-3BF248F8E697"
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+  "pin_request_id": "TWPINREQ-30C24F86F1B1",
+  "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_name": "trivy",
+  "status": "submitted",
+  "errors": [],
+  "warnings": [
+    "existing_approved_pin_will_be_rotated_on_approval"
+  ],
+  "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+  "existing_approved_pin": {
+    "kind": "redteam_ax_v2_tool_wrapper_pin",
+    "pin_id": "wrapper-pin-TOOL-TRIVY-001",
+    "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+    "source_case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+    "tool_id": "TOOL-TRIVY-001",
+    "tool_name": "trivy",
+    "status": "approved",
+    "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+    "pin_request_id": "TWPINREQ-4996AE4D5FAC",
+    "approval_id": "TWPINAP-D900B1BE49DD",
+    "approved_by": "lead@example.com",
+    "approver_role": "red_team_lead",
+    "version_evidence": {
+      "operator_attested_version": "v0.72.0",
+      "version_command": "trivy --version",
+      "version_output_excerpt": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-06-24 01:08:55.60783987 +0000 UTC\n  NextUpdate: 2026-06-25 01:08:55.607839589 +0000 UTC\n  DownloadedAt: 2026-06-24 03:21:44.6544352 +0000 UTC\n",
+      "version_command_executed_by_operator": true,
+      "registry_executed_version_command": false
+    },
+    "approved_at": "2026-07-02T06:24:03Z",
+    "safe_by_default": true,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-TRIVY-001.json"
+  },
+  "manifest_snapshot": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-TRIVY-001",
+    "tool_name": "trivy",
+    "adapter_type": "cli_wrapper",
+    "command_name": "trivy",
+    "availability": {
+      "status": "available",
+      "command": "trivy",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+      "checked_at": "2026-07-02T06:25:24Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\trivy.EXE",
+    "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-TRIVY-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
+      "tool_id": "TOOL-TRIVY-001",
+      "tool_name": "trivy",
+      "status": "approved",
+      "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+      "pin_request_id": "TWPINREQ-4996AE4D5FAC",
+      "approval_id": "TWPINAP-D900B1BE49DD",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "v0.72.0",
+        "version_command": "trivy --version",
+        "version_output_excerpt": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-06-24 01:08:55.60783987 +0000 UTC\n  NextUpdate: 2026-06-25 01:08:55.607839589 +0000 UTC\n  DownloadedAt: 2026-06-24 03:21:44.6544352 +0000 UTC\n",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T06:24:03Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-TRIVY-001.json"
+    },
+    "actual_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Install trivy CLI and use JSON output for offline workspace/container artifact scans.",
+    "checked_at": "2026-07-02T06:25:24Z"
+  },
+  "version_evidence": {
+    "operator_attested_version": "v0.72.0",
+    "version_command": "trivy --version",
+    "version_output_excerpt": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-06-24 01:08:55.60783987 +0000 UTC\n  NextUpdate: 2026-06-25 01:08:55.607839589 +0000 UTC\n  DownloadedAt: 2026-06-24 03:21:44.6544352 +0000 UTC\n",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-02T06:25:25Z",
+  "approval_policy": {
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "approval_mode": "single_approval",
+    "safe_by_default": true
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-wrapper-pin-requests/TWPINREQ-30C24F86F1B1.json"
+}

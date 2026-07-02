@@ -1,0 +1,4 @@
+[[34mINF[0m] Nuclei Engine Version: v3.10.0
+[[34mINF[0m] Nuclei Config Directory: C:\Users\alos\AppData\Roaming\nuclei
+[[34mINF[0m] Nuclei Cache Directory: C:\Users\alos\AppData\Local\nuclei
+[[34mINF[0m] PDCP Directory: C:\Users\alos\.pdcp
