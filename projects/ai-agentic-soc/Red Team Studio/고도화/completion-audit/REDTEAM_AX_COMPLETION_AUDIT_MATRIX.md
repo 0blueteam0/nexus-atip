@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 31 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 32 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -60,6 +60,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 운영 산출물 폴더에서 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 탐지하고 SHA-256 manifest를 만드는 `/api/redteam/v2/toolchains/build-artifact-manifest` API와 한국어 UI
 - Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 운영 산출물 파일의 `source_path`와 `sha256` manifest를 검증해 명령 실행 없이 toolchain collection 입력으로 가져오는 `/api/redteam/v2/toolchains/import-artifact-manifest` API와 한국어 UI
 - 명시 승인자 입력을 요구하고 기존 collection 산출물만 사용해 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 draft, export 승인, export, completion gate를 순서대로 닫는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e` API와 한국어 UI
+- 기존 운영 scanner 산출물 폴더를 manifest 생성, import, 결과 회수, 명시 승인자 close-e2e, Report v2 export, completion gate까지 한 번에 연결하되 scanner/Docker/WSL/네트워크 명령은 실행하지 않는 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e` API와 한국어 UI
 - 설치된 `npm.cmd --version`의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 공식 release checksum으로 검증한 portable Nuclei v3.10.0 및 Trivy v0.72.0 CLI의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 격리 venv 기반 OpenVAS `gvm-cli` 및 OWASP ZAP `zap-cli` wrapper의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
@@ -96,6 +97,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 실제 운영 scanner 파일 manifest를 `/api/redteam/v2/toolchains/import-artifact-manifest`로 제출한 뒤 Evidence 승인, Finding 승격, severity 승인, Matrix/Report v2, export, completion gate까지 닫은 운영 실측 증거
 - 실제 운영 scanner 폴더에서 `/api/redteam/v2/toolchains/build-artifact-manifest`로 manifest를 만들고, 사람이 검토한 뒤 제출·승인·보고서 완료까지 닫은 운영 실측 증거
 - 실제 운영 scanner collection을 `/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e`로 닫고, real approver와 Report v2 export, completion gate `complete=true`를 확보한 운영 실측 증거
+- 실제 운영 scanner 폴더를 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`로 제출하고, real approver와 Report v2 export, completion gate `complete=true`를 확보한 운영 실측 증거
 - 실제 운영 toolchain collection Evidence 후보 전체를 batch 승인, promote-findings, approve-finding-severity, Matrix/report draft API로 처리하고, 이후 final export approval/export verification gate까지 닫은 운영 실측 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness/import blocker artifact만 존재한다.
 - RedTeam2 runtime readiness panel은 blocker를 보여주는 visibility 증거이며, blocker가 모두 ready로 바뀐 운영 실측 증거는 아직 아니다.

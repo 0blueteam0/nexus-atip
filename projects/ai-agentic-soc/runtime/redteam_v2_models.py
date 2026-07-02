@@ -6846,6 +6846,124 @@ def close_toolchain_collection_e2e(collection_id: str, payload: dict[str, Any]) 
     return result
 
 
+def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("source_dir") or payload.get("artifacts") or [], "operating-close-e2e"]))
+    raw_artifacts = payload.get("artifacts") or payload.get("items") or []
+    raw_source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    closure_id = stable_id("OPCLOSE", [case_id, toolchain_id, requested_by, raw_source_dir or raw_artifacts, now_utc()])
+    errors: list[str] = []
+    warnings: list[str] = []
+    manifest_builder: dict[str, Any] | None = None
+    manifest_import: dict[str, Any] | None = None
+    collection: dict[str, Any] | None = None
+    closure: dict[str, Any] | None = None
+
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not raw_source_dir and not isinstance(raw_artifacts, list):
+        errors.append("source_dir_or_artifacts_required")
+    if not raw_source_dir and isinstance(raw_artifacts, list) and len(raw_artifacts) < 2:
+        errors.append("at_least_two_artifacts_required_for_operating_close")
+
+    import_payload: dict[str, Any] | None = None
+    if not errors and raw_source_dir:
+        manifest_builder = build_toolchain_artifact_manifest({
+            **payload,
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": requested_by,
+            "source_dir": raw_source_dir,
+        })
+        if manifest_builder.get("errors") or manifest_builder.get("status") != "ready_for_import":
+            errors.extend(f"manifest_builder:{error}" for error in (manifest_builder.get("errors") or [manifest_builder.get("status")]))
+        else:
+            import_payload = dict(manifest_builder.get("import_payload") or {})
+    elif not errors:
+        import_payload = {
+            **payload,
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": requested_by,
+            "artifacts": raw_artifacts,
+        }
+
+    if not errors and import_payload is not None:
+        manifest_import = import_toolchain_artifact_manifest({
+            **import_payload,
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": requested_by,
+            "objective": import_payload.get("objective") or payload.get("objective") or "운영자가 제출한 scanner 산출물을 가져와 전체 close-e2e lane을 수행한다.",
+        })
+        if manifest_import.get("errors") or manifest_import.get("status") != "imported":
+            errors.extend(f"manifest_import:{error}" for error in (manifest_import.get("errors") or [manifest_import.get("status")]))
+
+    if not errors:
+        collection = collect_toolchain_results(toolchain_id, {
+            **payload,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "summary": payload.get("collection_summary") or "운영 scanner 산출물을 Evidence 후보 collection으로 회수한다.",
+        })
+        if collection.get("errors") or collection.get("status") != "collected":
+            errors.extend(f"collection:{error}" for error in (collection.get("errors") or [collection.get("status")]))
+
+    if not errors and collection is not None:
+        closure = close_toolchain_collection_e2e(str(collection.get("collection_id")), {
+            **payload,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "reviewed_by": payload.get("reviewed_by") or payload.get("evidence_reviewer"),
+            "lead_approver": payload.get("lead_approver") or payload.get("red_team_lead"),
+            "business_owner_approver": payload.get("business_owner_approver") or payload.get("business_owner"),
+            "export_approver": payload.get("export_approver") or payload.get("executive_sponsor"),
+            "report_title": payload.get("report_title") or "운영 scanner 산출물 기반 Korean Red Team Report v2",
+        })
+        if closure.get("errors") or not closure.get("complete"):
+            errors.extend(f"closure:{error}" for error in (closure.get("errors") or [closure.get("status")]))
+
+    completed = not errors and bool((closure or {}).get("complete"))
+    result = {
+        "kind": "redteam_ax_v2_operating_toolchain_artifact_manifest_e2e_closure",
+        "closure_id": closure_id,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "collection_id": (collection or {}).get("collection_id"),
+        "status": "operating_collection_e2e_complete" if completed else "blocked",
+        "complete": completed,
+        "requested_by": requested_by,
+        "source_dir": raw_source_dir or None,
+        "manifest_builder": manifest_builder,
+        "manifest_import": manifest_import,
+        "collection": collection,
+        "closure": closure,
+        "artifact_count": (manifest_import or {}).get("imported_count") or (manifest_builder or {}).get("artifact_count") or (len(raw_artifacts) if isinstance(raw_artifacts, list) else 0),
+        "candidate_evidence_count": (collection or {}).get("evidence_candidate_count") or 0,
+        "report_id": (closure or {}).get("report_id"),
+        "export_id": (closure or {}).get("export_id"),
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "requires_existing_operator_artifacts": True,
+        "requires_explicit_human_approver_fields": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "source_dir 또는 artifacts manifest는 이미 생성된 운영 scanner 산출물만 가리켜야 합니다.",
+            "blocked이면 manifest_builder, manifest_import, collection, closure 중 표시된 단계부터 수정합니다.",
+            "이 API는 scanner, Docker, WSL, 네트워크 스캔 명령을 실행하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operating-e2e-closures", closure_id)
+    return result
+
+
 def verify_toolchain_collection_completion_gate(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     collection = load_json_record(collection_id, "toolchain-result-collections", case_id)

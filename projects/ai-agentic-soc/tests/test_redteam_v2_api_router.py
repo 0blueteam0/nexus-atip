@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import unittest
+import uuid
 from pathlib import Path
 from unittest.mock import patch
 
@@ -728,7 +729,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(one.json()["pinning_status"], "import_only")
 
     def test_v2_tool_wrapper_pin_request_approval_rotate_and_revoke_updates_manifest(self) -> None:
-        case_id = "CASE-V2-WRAPPER-PIN-001"
+        case_id = f"CASE-V2-WRAPPER-PIN-001-{uuid.uuid4().hex[:8]}"
         expected_sha256 = "a" * 64
         request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/request", json={
             "case_id": case_id,
@@ -1282,7 +1283,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(analyzed_body.get("trusted_as_instruction", False))
 
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
-        case_id = "CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001"
+        case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"
+        toolchain_id = f"TCHAIN-COLLECT-RESULTS-{uuid.uuid4().hex[:8]}"
 
         def trusted_manifest(profile: dict) -> dict:
             command_name = profile.get("command_name") or profile.get("name")
@@ -1321,7 +1323,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
              patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)):
             executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
                 "case_id": case_id,
-                "toolchain_id": "TCHAIN-COLLECT-RESULTS-001",
+                "toolchain_id": toolchain_id,
                 "requested_by": "analyst@example.com",
                 "objective": "여러 도구 실행 결과를 일괄 회수하고 Evidence Card 후보로 만든다.",
                 "tools": [
@@ -1341,7 +1343,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(executed.status_code, 200)
         self.assertEqual(executed.json()["status"], "executed")
 
-        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-COLLECT-RESULTS-001/collect-results", json={
+        collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
             "case_id": case_id,
             "requested_by": "analyst@example.com",
             "summary": "복합 분석도구 실행 결과를 한국어 보고서 후보 증거로 회수한다.",
@@ -2024,6 +2026,74 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_explicit_human_approver_fields"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
+    def test_v2_operating_artifact_manifest_close_e2e_builds_imports_and_closes_without_scanner_execution(self) -> None:
+        case_id = f"CASE-V2-OPERATING-ARTIFACT-CLOSE-E2E-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "operating-nuclei.jsonl": '{"template-id":"operating-close-panel","info":{"name":"Operating close panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "operating-openvas.xml": "<report><results><result><id>operating-openvas</id><name>Operating OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.30</host><port>443/tcp</port></result></results></report>",
+            "operating-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-OPERATING-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "operating-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-OPERATING-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "operating-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-OPERATING-NPM"}]}}}',
+            "operating-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Operating ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        missing_approvers = self.client.post("/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSE-E2E-MISSING",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+        })
+        self.assertEqual(missing_approvers.status_code, 200)
+        missing_body = missing_approvers.json()
+        self.assertEqual(missing_body["kind"], "redteam_ax_v2_operating_toolchain_artifact_manifest_e2e_closure")
+        self.assertEqual(missing_body["status"], "blocked")
+        self.assertFalse(missing_body["complete"])
+        self.assertIn("closure:export_approver_required", missing_body["errors"])
+        self.assertFalse(missing_body["commands_executed_by_api"])
+        self.assertFalse(missing_body["active_scan_executed"])
+
+        closed = self.client.post("/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSE-E2E-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+            "report_title": "Operating Artifact Close E2E Korean Red Team Report v2",
+        })
+        self.assertEqual(closed.status_code, 200)
+        body = closed.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_operating_toolchain_artifact_manifest_e2e_closure")
+        self.assertEqual(body["status"], "operating_collection_e2e_complete")
+        self.assertTrue(body["complete"])
+        self.assertEqual(body["artifact_count"], 6)
+        self.assertEqual(body["candidate_evidence_count"], 6)
+        self.assertEqual(body["manifest_builder"]["status"], "ready_for_import")
+        self.assertEqual(body["manifest_builder"]["artifact_count"], 6)
+        self.assertEqual(body["manifest_import"]["status"], "imported")
+        self.assertEqual(body["manifest_import"]["imported_count"], 6)
+        self.assertEqual(body["collection"]["status"], "collected")
+        self.assertEqual(body["collection"]["evidence_candidate_count"], 6)
+        self.assertEqual(body["closure"]["status"], "collection_e2e_complete")
+        self.assertTrue(body["closure"]["complete"])
+        self.assertEqual(body["closure"]["completion_gate"]["blocker_count"], 0)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_existing_operator_artifacts"])
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 

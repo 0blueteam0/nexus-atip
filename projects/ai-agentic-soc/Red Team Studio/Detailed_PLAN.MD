@@ -921,3 +921,11 @@ Create Case
 - RedTeam2 UI는 `복합 Collection 전체 닫기 승인자` 입력과 `전체 닫기: 승인·보고서·Export` 버튼을 추가해 초급 사용자가 단계별 버튼을 몰라도 closure 진행 상태를 표로 확인할 수 있게 한다.
 - regression test는 manifest import로 만든 Nuclei/ZAP 운영 산출물 collection을 새 close-e2e API 하나로 닫고, `collection_e2e_complete`, blocker 0건, Report gate pass, Exported artifact, 명령 실행 없음 상태를 검증한다.
 - 이 slice는 테스트된 운영 산출물 collection closure lane을 단순화하지만, 실제 조직 scanner 산출물을 제출해 close-e2e까지 완료한 운영 실측 증거는 아직 필요하다.
+
+## 46. Slice 91 반영 사항
+
+- `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`는 기존 운영 scanner 산출물 폴더를 대상으로 manifest 생성, SHA-256 검증 import, 결과 회수, Evidence 후보 생성, 명시 승인자 close-e2e, Report v2 export, completion gate를 한 번에 수행한다.
+- API는 workspace의 기존 파일만 읽으며 scanner, Docker, WSL, network scan, shell expansion을 실행하지 않는다. 결과 record에는 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`를 남긴다.
+- RedTeam2 UI는 `운영 산출물 전체 닫기 API`, `전체 닫기용 운영 scanner 산출물 폴더`, `운영 산출물 전체 닫기` 버튼을 제공한다.
+- regression test는 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 기존 파일 fixture로 `operating_collection_e2e_complete`, artifact 6개, Evidence 후보 6개, completion blocker 0건을 검증한다.
+- 이 slice는 실제 운영자가 제출할 폴더 기반 one-click closure lane을 제공하지만, 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 운영 실측 증거는 아직 필요하다.

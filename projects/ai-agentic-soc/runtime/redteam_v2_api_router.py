@@ -295,6 +295,11 @@ def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]
     return redteam_v2_models.build_toolchain_artifact_manifest(payload)
 
 
+@router.post("/toolchains/close-operating-artifact-manifest-e2e")
+def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.close_operating_toolchain_artifact_manifest_e2e(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)
