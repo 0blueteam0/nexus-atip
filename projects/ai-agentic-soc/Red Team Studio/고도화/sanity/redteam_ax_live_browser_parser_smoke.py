@@ -177,16 +177,16 @@ try {
     await page.waitForTimeout(3000);
   }
   if (allowApprovalRequest) {
-    await page.getByRole('button', { name: /Request Approval/ }).first().click({ timeout: 10000 });
+    await page.getByRole('button', { name: /승인 요청|Request Approval/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(3000);
     afterRequestBodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
-    requestApprovalButtonVisibleAfterSubmit = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+    requestApprovalButtonVisibleAfterSubmit = await page.getByRole('button', { name: /승인 요청|Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
     const executeButtonAfterSubmit = page.getByRole('button', { name: /승인된 실행 시작|Execute Governed Runner/ }).first();
     executeButtonVisibleAfterSubmit = await executeButtonAfterSubmit.isVisible({ timeout: 2000 }).catch(() => false);
     executeButtonDisabledAfterSubmit = executeButtonVisibleAfterSubmit ? await executeButtonAfterSubmit.isDisabled().catch(() => false) : null;
   }
   if (allowApprovalGrant) {
-    await page.getByRole('button', { name: /Approve HITL/ }).first().click({ timeout: 10000 });
+    await page.getByRole('button', { name: /HITL 승인|Approve HITL/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(3000);
     const approvalResponse = result.apiResponses.find((item) => item.url.includes('/approve') && item.endpoint.includes('/tool-actions/'));
     const approvedActionId = approvalResponse ? approvalResponse.actionId : null;
@@ -338,8 +338,8 @@ try {
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
   result.bodyPrefix = bodyText.slice(0, 1000);
-  const requestApprovalButtonVisible = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
-  const approveHitlButtonVisible = await page.getByRole('button', { name: /Approve HITL/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+  const requestApprovalButtonVisible = await page.getByRole('button', { name: /승인 요청|Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+  const approveHitlButtonVisible = await page.getByRole('button', { name: /HITL 승인|Approve HITL/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
   const executeButton = page.getByRole('button', { name: /승인된 실행 시작|Execute Governed Runner/ }).first();
   const executeButtonVisible = await executeButton.isVisible({ timeout: 2000 }).catch(() => false);
   const executeButtonDisabled = executeButtonVisible ? await executeButton.isDisabled().catch(() => false) : null;
@@ -357,6 +357,22 @@ try {
     && bodyText.includes('실행 전에 경로, 버전, SHA-256 해시를 확인')
     && bodyText.includes('도구 실행 계획 / 샌드박스 정책')
     && bodyText.includes('PlanReady와 실행 토큰이 없으면 실행 버튼은 비활성화');
+  result.checks.sanitizerGuidance = bodyText.includes('도구 출력 Sanitizer 미리보기')
+    && bodyText.includes('도구 결과는 LLM 명령이 아니라 분석 자료')
+    && bodyText.includes('가드레일 예시 불러오기')
+    && bodyText.includes('명령으로 신뢰 여부');
+  result.checks.visualEvidenceGuidance = bodyText.includes('시각 증거 OCR 마스킹 미리보기')
+    && bodyText.includes('스크린샷은 화면에 보이는 사실만 말할 수 있습니다')
+    && bodyText.includes('이미지 마스킹 미리보기')
+    && bodyText.includes('스크린샷 단독 주장');
+  result.checks.fileUploadGuidance = bodyText.includes('도구 결과 파일 업로드')
+    && bodyText.includes('Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 결과 파일')
+    && bodyText.includes('도구 결과 업로드')
+    && bodyText.includes('업로드 파일도 LLM 명령으로 신뢰하지 않습니다');
+  result.checks.rbacReportMetadataGuidance = bodyText.includes('케이스 RBAC 정책')
+    && bodyText.includes('케이스별 역할 정책은 누가 승인, 실행, 검토, 내보내기를 할 수 있는지 정합니다')
+    && bodyText.includes('평가 맥락')
+    && bodyText.includes('보고서 제목');
   result.checks.agenticRagPanel = (bodyText.includes('Agentic RAG 충분성 검증') || bodyText.includes('Agentic RAG SCA / Citation Verifier'))
     && (bodyText.includes('Agentic RAG 검증 실행') || bodyText.includes('Run Agentic RAG SCA'))
     && (bodyText.includes('인용 검증') || bodyText.includes('Citation Verifier'));
@@ -367,8 +383,8 @@ try {
       responseStatus: planResponse ? planResponse.status : null,
       actionId: planResponse ? planResponse.actionId : null,
       actionIdPresent: Boolean(planResponse && /^TAC-[A-Z0-9-]+$/.test(planResponse.actionId || '')) || /TAC-[A-Z0-9-]+/.test(bodyText),
-      requestApprovalAvailable: (planResponse && Array.isArray(planResponse.allowedButtons) && planResponse.allowedButtons.includes('Request Approval')) || bodyText.includes('Request Approval'),
-      requestApprovalVisible: bodyText.includes('Request Approval'),
+      requestApprovalAvailable: (planResponse && Array.isArray(planResponse.allowedButtons) && planResponse.allowedButtons.includes('Request Approval')) || bodyText.includes('승인 요청') || bodyText.includes('Request Approval'),
+      requestApprovalVisible: bodyText.includes('승인 요청') || bodyText.includes('Request Approval'),
       roeVisible: bodyText.includes('ROE'),
       hitlVisible: bodyText.includes('HITL'),
       governedRunnerNotClicked: true,

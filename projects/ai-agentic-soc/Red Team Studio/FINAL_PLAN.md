@@ -1084,4 +1084,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실행 계획, 네트워크, 파일시스템, 래퍼, 격리, 실행 토큰 표를 한국어화
 - [x] 통제 실행 명령과 승인된 실행 시작 버튼을 한국어화하고 기존 smoke와 호환되는 한영 정규식 유지
 - [x] browser smoke DOM 체크에 runner/wrapper guidance 확인 추가
-- [ ] 다음 slice: sanitizer, visual evidence, file upload, RBAC/report metadata 영역의 잔여 영문 라벨을 한국어 사용자 수준으로 정리
+- [x] 다음 slice: sanitizer, visual evidence, file upload, RBAC/report metadata 영역의 잔여 영문 라벨을 한국어 사용자 수준으로 정리 - slice 50 완료
+
+## 58. Slice 50 Korean Sanitizer / Evidence / RBAC Report UX 체크리스트
+
+- [x] `도구 출력 Sanitizer 미리보기` 패널에 도구 결과는 LLM 명령이 아니라 분석 자료라는 초급자용 설명 추가
+- [x] sanitizer 입력 라벨, 버튼, 카드, 표 머리글과 판정/프롬프트 인젝션/비밀값/사람 검토 행을 한국어화
+- [x] `시각 증거 OCR 마스킹 미리보기` 패널에 스크린샷 단독 주장 제한과 비시각 Evidence 연결 안내 추가
+- [x] 시각 증거 업로드 버튼, OCR/마스킹 카드, 스크린샷 단독 주장/제한 증거 검토 행을 한국어화
+- [x] `도구 결과 파일 업로드` 패널에 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 결과 파일 업로드와 LLM 명령 불신 원칙 설명 추가
+- [x] 파일 업로드 상태, 해시, 저장 산출물, 스키마 검증, 파서, 명령 불신 행을 한국어화
+- [x] `케이스 RBAC 정책`, `평가 맥락`, Report v2 메타데이터 라벨을 한국어 사용자 기준으로 정리
+- [x] ToolActionCard 대기열 버튼과 가드레일/Evidence 게이트 제목·표 머리글을 한국어화
+- [x] browser smoke DOM 체크에 sanitizer, visual evidence, file upload, RBAC/report metadata guidance 확인 추가
+- [ ] 다음 slice: Agentic RAG, ToolActionCard 상태값, severity/role 선택지 등 남은 내부 상태값의 한국어 display mapping을 별도 helper로 정리
