@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1249,
-  "korean_literal_count": 1078,
+  "literal_count": 1273,
+  "korean_literal_count": 1102,
   "english_only_literal_count": 167,
-  "english_only_literal_ratio": 0.1337,
+  "english_only_literal_ratio": 0.1312,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -30,13 +30,13 @@
   "beginner_signal_terms": {
     "쉬운 설명": 1,
     "먼저": 8,
-    "사람": 20,
-    "승인": 117,
+    "사람": 22,
+    "승인": 121,
     "수동": 5,
     "업로드": 17,
-    "증거": 48,
+    "증거": 49,
     "차단": 42,
-    "필요": 62,
+    "필요": 63,
     "주의": 1
   },
   "sample_korean_literals": [

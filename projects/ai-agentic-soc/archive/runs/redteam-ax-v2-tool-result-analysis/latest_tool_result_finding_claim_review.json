@@ -1,0 +1,433 @@
+{
+  "kind": "redteam_ax_tool_result_finding_claim_review",
+  "created_at": "2026-07-02T13:26:25Z",
+  "status": "finding_claim_review_needs_evidence_approval",
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "finding_created": false,
+  "report_claim_inserted": false,
+  "requires_human_validation": true,
+  "source_brief_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-tool-result-analysis/latest_tool_result_analysis_brief.json",
+  "source_brief_status": "tool_result_analysis_ready",
+  "candidate_count": 5,
+  "held_candidate_count": 5,
+  "ready_candidate_count": 0,
+  "candidates": [
+    {
+      "candidate_id": "TFR-001",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "tool_label_ko": "npm audit 의존성 점검",
+      "agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+      "status": "hold_until_evidence_approved",
+      "finding_payload": {
+        "finding_id": "F-TOOL-REVIEW-001",
+        "case_id": "CASE-V2-TOOL-RESULT-REVIEW-001",
+        "title": "npm audit 실행 결과 검토 필요",
+        "severity_draft": "info",
+        "confidence": 0.5,
+        "observation": "npm audit 의존성 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
+        "evidence_ids": [
+          "EV-F52B2D2FC911"
+        ],
+        "root_cause": [
+          "의존성 점검 결과는 환경과 lockfile 범위를 확인한 뒤 판단해야 합니다."
+        ],
+        "business_impact": "현재 단계에서는 영향도 확정 전입니다. 승인된 Evidence와 자산 맥락 검토가 필요합니다.",
+        "recommendation": [
+          "package-lock과 실제 배포 범위를 확인한 뒤 필요한 패치 또는 예외 처리를 결정합니다."
+        ],
+        "owner": "business_owner",
+        "sla": "review_required",
+        "verification_method": "Evidence Card, normalized result, original tool run artifact review",
+        "retest_criteria": "Finding 승인 전 동일 Evidence ID와 원본 artifact가 검증되어야 합니다."
+      },
+      "claim_candidate": {
+        "claim_id": "C-TOOL-REVIEW-001",
+        "support_level": "supported",
+        "evidence_ids": [
+          "EV-F52B2D2FC911"
+        ],
+        "status": "hold_unsupported_claim",
+        "statement_ko": "npm audit 의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+        "hold_reason": "Evidence Card approval is required before report claim use."
+      },
+      "source_refs": {
+        "run_id": "TRUN-FB02001A3EA0",
+        "result_id": "NR-E26428D2F92B",
+        "evidence_id": "EV-F52B2D2FC911",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-FB02001A3EA0.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-E26428D2F92B.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-F52B2D2FC911.json"
+      },
+      "evidence_review": {
+        "exists": true,
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-F52B2D2FC911.json",
+        "approval_status": "pending_review",
+        "approved": false,
+        "errors": []
+      },
+      "human_actions_required_ko": [
+        "Evidence Card 승인 상태를 확인합니다.",
+        "원본 도구 출력과 정규화 결과를 비교합니다.",
+        "오탐 가능성과 자산 영향도를 사람이 판단합니다.",
+        "필요하면 /api/redteam/v2/findings로 Finding 초안을 만들고 2인 severity 승인을 받습니다."
+      ],
+      "not_performed": [
+        "finding_created",
+        "finding_approved",
+        "report_claim_inserted",
+        "tool_reexecuted",
+        "active_scan_executed"
+      ]
+    },
+    {
+      "candidate_id": "TFR-002",
+      "tool_id": "TOOL-NUCLEI-001",
+      "tool_label_ko": "Nuclei 웹 취약점 템플릿 점검",
+      "agent_id": "AGENT-NUCLEI-ANALYST-001",
+      "status": "hold_until_evidence_approved",
+      "finding_payload": {
+        "finding_id": "F-TOOL-REVIEW-002",
+        "case_id": "CASE-V2-TOOL-RESULT-REVIEW-001",
+        "title": "Nuclei 점검 결과 검토 필요",
+        "severity_draft": "info",
+        "confidence": 0.5,
+        "observation": "Nuclei 웹 취약점 템플릿 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
+        "evidence_ids": [
+          "EV-36E5A36DC2C1"
+        ],
+        "root_cause": [
+          "템플릿 기반 결과는 대상 범위, 템플릿 신뢰도, 재현 조건 확인이 필요합니다."
+        ],
+        "business_impact": "현재 단계에서는 영향도 확정 전입니다. 승인된 Evidence와 자산 맥락 검토가 필요합니다.",
+        "recommendation": [
+          "승인된 ROE 범위 안에서 오탐 가능성과 재현 근거를 사람이 검토합니다."
+        ],
+        "owner": "business_owner",
+        "sla": "review_required",
+        "verification_method": "Evidence Card, normalized result, original tool run artifact review",
+        "retest_criteria": "Finding 승인 전 동일 Evidence ID와 원본 artifact가 검증되어야 합니다."
+      },
+      "claim_candidate": {
+        "claim_id": "C-TOOL-REVIEW-002",
+        "support_level": "supported",
+        "evidence_ids": [
+          "EV-36E5A36DC2C1"
+        ],
+        "status": "hold_unsupported_claim",
+        "statement_ko": "Nuclei 웹 취약점 템플릿 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+        "hold_reason": "Evidence Card approval is required before report claim use."
+      },
+      "source_refs": {
+        "run_id": "TRUN-ECF11DCFC6EF",
+        "result_id": "NR-6B1C309E4EAF",
+        "evidence_id": "EV-36E5A36DC2C1",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-ECF11DCFC6EF.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-6B1C309E4EAF.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-36E5A36DC2C1.json"
+      },
+      "evidence_review": {
+        "exists": true,
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-36E5A36DC2C1.json",
+        "approval_status": "pending_review",
+        "approved": false,
+        "errors": []
+      },
+      "human_actions_required_ko": [
+        "Evidence Card 승인 상태를 확인합니다.",
+        "원본 도구 출력과 정규화 결과를 비교합니다.",
+        "오탐 가능성과 자산 영향도를 사람이 판단합니다.",
+        "필요하면 /api/redteam/v2/findings로 Finding 초안을 만들고 2인 severity 승인을 받습니다."
+      ],
+      "not_performed": [
+        "finding_created",
+        "finding_approved",
+        "report_claim_inserted",
+        "tool_reexecuted",
+        "active_scan_executed"
+      ]
+    },
+    {
+      "candidate_id": "TFR-003",
+      "tool_id": "TOOL-TRIVY-001",
+      "tool_label_ko": "Trivy 컨테이너/의존성 점검",
+      "agent_id": "AGENT-TRIVY-ANALYST-001",
+      "status": "hold_until_evidence_approved",
+      "finding_payload": {
+        "finding_id": "F-TOOL-REVIEW-003",
+        "case_id": "CASE-V2-TOOL-RESULT-REVIEW-001",
+        "title": "Trivy 점검 결과 검토 필요",
+        "severity_draft": "info",
+        "confidence": 0.5,
+        "observation": "Trivy 컨테이너/의존성 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
+        "evidence_ids": [
+          "EV-07CC00461F81"
+        ],
+        "root_cause": [
+          "컨테이너/의존성 취약점 후보는 실제 사용 여부와 보정 정보를 확인해야 합니다."
+        ],
+        "business_impact": "현재 단계에서는 영향도 확정 전입니다. 승인된 Evidence와 자산 맥락 검토가 필요합니다.",
+        "recommendation": [
+          "영향 받는 이미지, 패키지 버전, 예외 사유를 확인한 뒤 조치 계획을 작성합니다."
+        ],
+        "owner": "business_owner",
+        "sla": "review_required",
+        "verification_method": "Evidence Card, normalized result, original tool run artifact review",
+        "retest_criteria": "Finding 승인 전 동일 Evidence ID와 원본 artifact가 검증되어야 합니다."
+      },
+      "claim_candidate": {
+        "claim_id": "C-TOOL-REVIEW-003",
+        "support_level": "supported",
+        "evidence_ids": [
+          "EV-07CC00461F81"
+        ],
+        "status": "hold_unsupported_claim",
+        "statement_ko": "Trivy 컨테이너/의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+        "hold_reason": "Evidence Card approval is required before report claim use."
+      },
+      "source_refs": {
+        "run_id": "TRUN-464CFDA3781E",
+        "result_id": "NR-419DC030F743",
+        "evidence_id": "EV-07CC00461F81",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-464CFDA3781E.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-419DC030F743.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-07CC00461F81.json"
+      },
+      "evidence_review": {
+        "exists": true,
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-07CC00461F81.json",
+        "approval_status": "pending_review",
+        "approved": false,
+        "errors": []
+      },
+      "human_actions_required_ko": [
+        "Evidence Card 승인 상태를 확인합니다.",
+        "원본 도구 출력과 정규화 결과를 비교합니다.",
+        "오탐 가능성과 자산 영향도를 사람이 판단합니다.",
+        "필요하면 /api/redteam/v2/findings로 Finding 초안을 만들고 2인 severity 승인을 받습니다."
+      ],
+      "not_performed": [
+        "finding_created",
+        "finding_approved",
+        "report_claim_inserted",
+        "tool_reexecuted",
+        "active_scan_executed"
+      ]
+    },
+    {
+      "candidate_id": "TFR-004",
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_label_ko": "OpenVAS 취약점 스캐너",
+      "agent_id": "AGENT-OPENVAS-ANALYST-001",
+      "status": "hold_until_evidence_approved",
+      "finding_payload": {
+        "finding_id": "F-TOOL-REVIEW-004",
+        "case_id": "CASE-V2-TOOL-RESULT-REVIEW-001",
+        "title": "OpenVAS 결과 검토 필요",
+        "severity_draft": "info",
+        "confidence": 0.5,
+        "observation": "OpenVAS 취약점 스캐너 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
+        "evidence_ids": [
+          "EV-C405298203B0"
+        ],
+        "root_cause": [
+          "OpenVAS 결과는 스캔 범위, 인증 여부, 플러그인 신뢰도를 확인해야 합니다."
+        ],
+        "business_impact": "현재 단계에서는 영향도 확정 전입니다. 승인된 Evidence와 자산 맥락 검토가 필요합니다.",
+        "recommendation": [
+          "read-only report 근거와 자산 소유자 검토를 거쳐 Finding 확정 여부를 결정합니다."
+        ],
+        "owner": "business_owner",
+        "sla": "review_required",
+        "verification_method": "Evidence Card, normalized result, original tool run artifact review",
+        "retest_criteria": "Finding 승인 전 동일 Evidence ID와 원본 artifact가 검증되어야 합니다."
+      },
+      "claim_candidate": {
+        "claim_id": "C-TOOL-REVIEW-004",
+        "support_level": "supported",
+        "evidence_ids": [
+          "EV-C405298203B0"
+        ],
+        "status": "hold_unsupported_claim",
+        "statement_ko": "OpenVAS 취약점 스캐너 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+        "hold_reason": "Evidence Card approval is required before report claim use."
+      },
+      "source_refs": {
+        "run_id": "TRUN-B2E8CB947AAC",
+        "result_id": "NR-EBAE6A960341",
+        "evidence_id": "EV-C405298203B0",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-B2E8CB947AAC.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-EBAE6A960341.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-C405298203B0.json"
+      },
+      "evidence_review": {
+        "exists": true,
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-C405298203B0.json",
+        "approval_status": "pending_review",
+        "approved": false,
+        "errors": []
+      },
+      "human_actions_required_ko": [
+        "Evidence Card 승인 상태를 확인합니다.",
+        "원본 도구 출력과 정규화 결과를 비교합니다.",
+        "오탐 가능성과 자산 영향도를 사람이 판단합니다.",
+        "필요하면 /api/redteam/v2/findings로 Finding 초안을 만들고 2인 severity 승인을 받습니다."
+      ],
+      "not_performed": [
+        "finding_created",
+        "finding_approved",
+        "report_claim_inserted",
+        "tool_reexecuted",
+        "active_scan_executed"
+      ]
+    },
+    {
+      "candidate_id": "TFR-005",
+      "tool_id": "TOOL-ZAP-001",
+      "tool_label_ko": "OWASP ZAP 웹 보안 점검",
+      "agent_id": "AGENT-ZAP-ANALYST-001",
+      "status": "hold_until_evidence_approved",
+      "finding_payload": {
+        "finding_id": "F-TOOL-REVIEW-005",
+        "case_id": "CASE-V2-TOOL-RESULT-REVIEW-001",
+        "title": "OWASP ZAP 결과 검토 필요",
+        "severity_draft": "info",
+        "confidence": 0.5,
+        "observation": "OWASP ZAP 웹 보안 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
+        "evidence_ids": [
+          "EV-5B145E402AA0"
+        ],
+        "root_cause": [
+          "ZAP 결과는 passive/active scan 여부와 애플리케이션 맥락을 확인해야 합니다."
+        ],
+        "business_impact": "현재 단계에서는 영향도 확정 전입니다. 승인된 Evidence와 자산 맥락 검토가 필요합니다.",
+        "recommendation": [
+          "passive alert 원문, 재현 조건, 보완 통제를 검토한 뒤 보고서 claim으로 승격합니다."
+        ],
+        "owner": "business_owner",
+        "sla": "review_required",
+        "verification_method": "Evidence Card, normalized result, original tool run artifact review",
+        "retest_criteria": "Finding 승인 전 동일 Evidence ID와 원본 artifact가 검증되어야 합니다."
+      },
+      "claim_candidate": {
+        "claim_id": "C-TOOL-REVIEW-005",
+        "support_level": "supported",
+        "evidence_ids": [
+          "EV-5B145E402AA0"
+        ],
+        "status": "hold_unsupported_claim",
+        "statement_ko": "OWASP ZAP 웹 보안 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+        "hold_reason": "Evidence Card approval is required before report claim use."
+      },
+      "source_refs": {
+        "run_id": "TRUN-9D254488D761",
+        "result_id": "NR-108C3D9D4D5E",
+        "evidence_id": "EV-5B145E402AA0",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-9D254488D761.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-108C3D9D4D5E.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5B145E402AA0.json"
+      },
+      "evidence_review": {
+        "exists": true,
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5B145E402AA0.json",
+        "approval_status": "pending_review",
+        "approved": false,
+        "errors": []
+      },
+      "human_actions_required_ko": [
+        "Evidence Card 승인 상태를 확인합니다.",
+        "원본 도구 출력과 정규화 결과를 비교합니다.",
+        "오탐 가능성과 자산 영향도를 사람이 판단합니다.",
+        "필요하면 /api/redteam/v2/findings로 Finding 초안을 만들고 2인 severity 승인을 받습니다."
+      ],
+      "not_performed": [
+        "finding_created",
+        "finding_approved",
+        "report_claim_inserted",
+        "tool_reexecuted",
+        "active_scan_executed"
+      ]
+    }
+  ],
+  "claim_evidence_matrix_preview": [
+    {
+      "claim_id": "C-TOOL-REVIEW-001",
+      "support_level": "supported",
+      "evidence_ids": [
+        "EV-F52B2D2FC911"
+      ],
+      "status": "hold_unsupported_claim",
+      "statement_ko": "npm audit 의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+      "hold_reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "claim_id": "C-TOOL-REVIEW-002",
+      "support_level": "supported",
+      "evidence_ids": [
+        "EV-36E5A36DC2C1"
+      ],
+      "status": "hold_unsupported_claim",
+      "statement_ko": "Nuclei 웹 취약점 템플릿 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+      "hold_reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "claim_id": "C-TOOL-REVIEW-003",
+      "support_level": "supported",
+      "evidence_ids": [
+        "EV-07CC00461F81"
+      ],
+      "status": "hold_unsupported_claim",
+      "statement_ko": "Trivy 컨테이너/의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+      "hold_reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "claim_id": "C-TOOL-REVIEW-004",
+      "support_level": "supported",
+      "evidence_ids": [
+        "EV-C405298203B0"
+      ],
+      "status": "hold_unsupported_claim",
+      "statement_ko": "OpenVAS 취약점 스캐너 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+      "hold_reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "claim_id": "C-TOOL-REVIEW-005",
+      "support_level": "supported",
+      "evidence_ids": [
+        "EV-5B145E402AA0"
+      ],
+      "status": "hold_unsupported_claim",
+      "statement_ko": "OWASP ZAP 웹 보안 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
+      "hold_reason": "Evidence Card approval is required before report claim use."
+    }
+  ],
+  "blocked_items": [
+    {
+      "candidate_id": "TFR-001",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "candidate_id": "TFR-002",
+      "tool_id": "TOOL-NUCLEI-001",
+      "reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "candidate_id": "TFR-003",
+      "tool_id": "TOOL-TRIVY-001",
+      "reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "candidate_id": "TFR-004",
+      "tool_id": "TOOL-OPENVAS-001",
+      "reason": "Evidence Card approval is required before report claim use."
+    },
+    {
+      "candidate_id": "TFR-005",
+      "tool_id": "TOOL-ZAP-001",
+      "reason": "Evidence Card approval is required before report claim use."
+    }
+  ]
+}

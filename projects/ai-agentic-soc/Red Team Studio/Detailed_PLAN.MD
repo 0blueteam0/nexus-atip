@@ -775,3 +775,13 @@ Create Case
 - `/api/redteam/v2/runtime-readiness`는 `tool_result_analysis_brief` artifact를 함께 반환하고, RedTeam2 panel은 도구 결과 브리프와 분석 가능한 Evidence 수를 표시한다.
 - accepted gate manifest에는 `GATE-TOOL-RESULT-ANALYSIS-BRIEF`가 추가된다.
 - 이 slice는 여러 도구 결과를 Evidence/Claim 후보로 해석하는 분석 lane이며, 실제 취약점 Finding 확정과 보고서 claim 승인은 후속 HITL 단계로 남긴다.
+
+## 31. Slice 76 반영 사항
+
+- `고도화/sanity/redteam_ax_tool_result_finding_claim_review.py`는 tool result analysis brief의 Evidence pack을 Finding 초안 payload와 Claim-Evidence Matrix 후보로 변환한다.
+- Evidence Card가 승인되지 않은 후보는 `hold_until_evidence_approved` 및 `hold_unsupported_claim` 상태로 남기며 보고서 claim에 자동 삽입하지 않는다.
+- 산출물은 `latest_tool_result_finding_claim_review.json`과 `.md`이며, 후보별 Finding ID, Claim ID, Evidence ID, 사람 검토 행동, 수행하지 않은 작업 목록을 포함한다.
+- `/api/redteam/v2/runtime-readiness`는 `tool_result_finding_claim_review` artifact를 함께 반환하고 blocker 목록에 held candidate 수를 포함한다.
+- RedTeam2 runtime readiness panel은 `Finding/Claim 검토 패키지`와 `보류된 Finding/Claim 후보`를 한국어로 표시한다.
+- accepted gate manifest에는 `GATE-TOOL-RESULT-FINDING-CLAIM-REVIEW`가 추가된다.
+- 이 slice는 Evidence/Claim/Finding 승격 전 검토 lane이며, 실제 Finding 생성·severity 승인·보고서 claim 사용은 후속 HITL 단계로 남긴다.

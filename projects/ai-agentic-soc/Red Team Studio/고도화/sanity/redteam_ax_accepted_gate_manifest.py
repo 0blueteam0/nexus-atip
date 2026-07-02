@@ -262,6 +262,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 60,
         },
         {
+            "gate_id": "GATE-TOOL-RESULT-FINDING-CLAIM-REVIEW",
+            "name": "Tool result finding and claim review package artifact",
+            "category": "tool_result_finding_claim_review",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_tool_result_finding_claim_review.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -289,6 +297,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_submission_validator.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_tool_result_analysis_brief.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_tool_result_finding_claim_review.py",
             ],
             "timeout_seconds": 60,
         },

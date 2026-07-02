@@ -2426,6 +2426,13 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         / "redteam-ax-v2-tool-result-analysis"
         / "latest_tool_result_analysis_brief.json"
     )
+    finding_claim_review_artifact = read_readiness_artifact(
+        PROJECT_ROOT
+        / "archive"
+        / "runs"
+        / "redteam-ax-v2-tool-result-analysis"
+        / "latest_tool_result_finding_claim_review.json"
+    )
     container_data = container_artifact.get("data") or {}
     external_data = external_artifact.get("data") or {}
     service_import_data = service_import_artifact.get("data") or {}
@@ -2436,6 +2443,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     operator_submission_data = operator_submission_artifact.get("data") or {}
     operator_import_plan_data = operator_import_plan_artifact.get("data") or {}
     tool_result_analysis_data = tool_result_analysis_artifact.get("data") or {}
+    finding_claim_review_data = finding_claim_review_artifact.get("data") or {}
     container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
     external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
     service_import_status = str(service_import_data.get("status") or service_import_artifact.get("status") or "unknown")
@@ -2452,6 +2460,9 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     tool_result_analysis_status = str(
         tool_result_analysis_data.get("status") or tool_result_analysis_artifact.get("status") or "unknown"
     )
+    finding_claim_review_status = str(
+        finding_claim_review_data.get("status") or finding_claim_review_artifact.get("status") or "unknown"
+    )
     container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
     external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
     service_import_ready = service_import_status in {"passed", "ready", "external_scanner_service_import_live_ready"}
@@ -2462,6 +2473,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     operator_submission_ready = operator_submission_status in {"passed", "ready", "operator_evidence_submitted_ready"}
     operator_import_plan_ready = operator_import_plan_status in {"passed", "ready", "evidence_card_import_ready"}
     tool_result_analysis_ready = tool_result_analysis_status in {"passed", "ready", "tool_result_analysis_ready"}
+    finding_claim_review_ready = finding_claim_review_status in {"passed", "ready", "finding_claim_review_ready"}
     blockers: list[str] = []
     if not container_ready:
         blocker = (
@@ -2528,6 +2540,12 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.append(f"tool_result_analysis:{missing_evidence_count}_missing_evidence_links")
         else:
             blockers.append(f"tool_result_analysis:{tool_result_analysis_status}")
+    if not finding_claim_review_ready:
+        held_candidate_count = finding_claim_review_data.get("held_candidate_count")
+        if held_candidate_count is not None:
+            blockers.append(f"finding_claim_review:{held_candidate_count}_held_candidates")
+        else:
+            blockers.append(f"finding_claim_review:{finding_claim_review_status}")
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": (
@@ -2543,6 +2561,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
                 and operator_submission_ready
                 and operator_import_plan_ready
                 and tool_result_analysis_ready
+                and finding_claim_review_ready
             )
             else "blocked_runtime_or_external_readiness"
         ),
@@ -2560,6 +2579,7 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "operator_evidence_submission": operator_submission_artifact,
         "operator_evidence_card_import_plan": operator_import_plan_artifact,
         "tool_result_analysis_brief": tool_result_analysis_artifact,
+        "tool_result_finding_claim_review": finding_claim_review_artifact,
         "blockers": blockers,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",

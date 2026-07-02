@@ -4445,6 +4445,8 @@ export default {
     const operatorImportPlan = operatorImportPlanArtifact.data || {};
     const toolResultAnalysisArtifact = runtimeReadiness.tool_result_analysis_brief || {};
     const toolResultAnalysis = toolResultAnalysisArtifact.data || {};
+    const findingClaimReviewArtifact = runtimeReadiness.tool_result_finding_claim_review || {};
+    const findingClaimReview = findingClaimReviewArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4528,6 +4530,9 @@ export default {
       evidence_card_import_ready:'Evidence Card 후보 준비 완료',
       tool_result_analysis_ready:'도구 결과 분석 준비 완료',
       tool_result_analysis_needs_review:'도구 결과 분석 검토 필요',
+      finding_claim_review_ready:'Finding/Claim 검토 준비 완료',
+      finding_claim_review_needs_evidence_approval:'Finding/Claim 증거 승인 대기',
+      awaiting_tool_result_analysis_brief:'도구 결과 분석 브리프 대기',
       promotion_inputs_ready:'승격 입력 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
@@ -4728,6 +4733,8 @@ export default {
       ['도구 결과 LLM 분석 브리프', koValue(toolResultAnalysis.status || toolResultAnalysisArtifact.status || '미확인'), toolResultAnalysisArtifact.path || 'latest_tool_result_analysis_brief.json'],
       ['분석 가능한 도구 근거', `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개`, `${toolResultAnalysis.summary?.blocked_tool_count ?? '-'}개 도구/조건은 차단 또는 보류`],
       ['LLM 원시 출력 신뢰', koBool(toolResultAnalysis.llm_raw_tool_output_trusted ?? false), 'llm_raw_tool_output_trusted는 항상 아니오 유지'],
+      ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReviewArtifact.path || 'latest_tool_result_finding_claim_review.json'],
+      ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, `${findingClaimReview.candidate_count ?? 0}개 후보 중 Evidence 승인 전 보류`],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
       ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
@@ -4813,6 +4820,20 @@ export default {
         item.result_id ? `정규화: ${item.result_id}` : null,
         item.run_id ? `실행: ${item.run_id}` : null,
         item.agent_id ? `에이전트: ${item.agent_id}` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
+    const findingClaimDefaultRows = [
+      ['Finding 후보 없음', '대기', '도구 결과 분석 브리프와 Evidence ID가 필요'],
+      ['보고서 claim 삽입', '아니오', 'Evidence 승인과 Finding severity 승인 전에는 자동 삽입하지 않음'],
+      ['사람 검토', '필수', '오탐 가능성, 자산 영향도, 재현 근거를 검토해야 함'],
+    ];
+    const findingClaimRows = (findingClaimReview.candidates || []).map(item => [
+      item.finding_payload?.title || item.tool_label_ko || item.tool_id || '-',
+      koValue(item.status || '미확인'),
+      [
+        item.finding_payload?.finding_id ? `Finding: ${item.finding_payload.finding_id}` : null,
+        item.claim_candidate?.claim_id ? `Claim: ${item.claim_candidate.claim_id}` : null,
+        item.source_refs?.evidence_id ? `Evidence: ${item.source_refs.evidence_id}` : null,
       ].filter(Boolean).join(' · '),
     ]);
     const toolGuideProfiles = {
@@ -5216,6 +5237,8 @@ export default {
             ['도구 결과 분석 브리프', koValue(toolResultAnalysis.status || toolResultAnalysisArtifact.status || '미확인'), toolResultAnalysis.status === 'tool_result_analysis_ready' ? C.green : C.amber, `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개 근거`],
             ['분석 가능한 도구 근거', `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개`, (toolResultAnalysis.summary?.supported_evidence_count ?? 0) ? C.green : C.amber, `${toolResultAnalysis.summary?.blocked_tool_count ?? '-'}개 차단/보류`],
             ['LLM 분석 에이전트', `${(toolResultAnalysis.tool_agents || []).length}개`, (toolResultAnalysis.tool_agents || []).length ? C.green : C.amber, '도구별 결과 해석 보조'],
+            ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReview.status === 'finding_claim_review_ready' ? C.green : C.amber, `${findingClaimReview.candidate_count ?? 0}개 후보`],
+            ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, findingClaimReview.held_candidate_count ? C.amber : C.green, 'Evidence 승인 전 보류'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
@@ -5251,6 +5274,11 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Nuclei, Trivy, npm audit, OpenVAS, ZAP 결과를 한 묶음으로 정리합니다. LLM 에이전트는 근거 요약과 질문 초안만 만들며, 도구 재실행·능동 스캔·Finding 확정은 사람이 승인해야 합니다.'),
             this.renderTable(['도구','Evidence ID','정규화/실행/에이전트'], toolResultEvidenceRows.length ? toolResultEvidenceRows : toolResultEvidenceDefaultRows)),
+          h('div', { style:{ display:'grid', gap:'6px' } },
+            h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, 'Finding/Claim 검토 패키지'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '도구 결과를 Finding 초안과 보고서 Claim 후보로 연결하기 전 사람이 검토할 목록입니다. Evidence 승인과 Finding severity 2인 승인 전에는 보고서에 자동 삽입하지 않습니다.'),
+            this.renderTable(['후보','검토 상태','Finding/Claim/Evidence'], findingClaimRows.length ? findingClaimRows : findingClaimDefaultRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
                 (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))

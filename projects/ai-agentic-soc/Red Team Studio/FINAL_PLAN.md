@@ -1410,3 +1410,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 새 브리프 anchor 추가
 - [x] accepted gate manifest에 `GATE-TOOL-RESULT-ANALYSIS-BRIEF` 추가
 - [ ] 실제 운영 취약점 결과를 승인된 Evidence Card로 확정하고 Finding/Report claim에 연결
+
+## 84. Slice 76 Tool Result Finding/Claim Review Package 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_tool_result_finding_claim_review.py` 추가
+- [x] tool result analysis brief의 Evidence pack을 Finding 초안 payload와 보고서 Claim 후보로 변환
+- [x] Evidence Card가 승인되기 전 후보는 `hold_until_evidence_approved`와 `hold_unsupported_claim` 상태로 보류
+- [x] 패키지는 `finding_created=false`, `report_claim_inserted=false`, `active_scan_executed=false`를 유지
+- [x] `/api/redteam/v2/runtime-readiness`에 `tool_result_finding_claim_review` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `Finding/Claim 검토 패키지`, `보류된 Finding/Claim 후보` 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 Finding/Claim 검토 anchor 추가
+- [x] accepted gate manifest에 `GATE-TOOL-RESULT-FINDING-CLAIM-REVIEW` 추가
+- [ ] Evidence Card 승인 후 실제 `/api/redteam/v2/findings` 생성, 2인 severity 승인, Report claim validation 통과
