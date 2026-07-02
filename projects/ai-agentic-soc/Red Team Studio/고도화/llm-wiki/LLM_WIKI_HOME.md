@@ -157,6 +157,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolchainImportedOutput
 - ToolchainArtifactManifestBuilder
 - ToolchainArtifactManifestImport
+- OperatingClosureSubmissionPackage
 - OperatingToolchainArtifactManifestE2EClosure
 - ToolResultAnalysisBrief
 - ToolResultFindingClaimReview
@@ -191,7 +192,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 16. 운영자가 scanner 결과 파일을 이미 보유한 경우 먼저 `/api/redteam/v2/toolchains/build-artifact-manifest`로 workspace 폴더를 읽어 도구별 후보 파일과 SHA-256 manifest를 만들 수 있다. 이 builder는 파일명 패턴과 hash 계산만 수행하며 도구 명령·능동 스캔·network 호출을 실행하지 않는다.
 17. 검토된 manifest는 `/api/redteam/v2/toolchains/import-artifact-manifest`에 `tool_id`, `source_path`, `sha256`, `content_type` 형태로 제출한다. 이 API는 workspace path와 SHA-256을 검증한 뒤 파일을 raw artifact로 가져오며, 도구 명령·능동 스캔·shell expansion을 실행하지 않는다. 이후 `/collect-results`, Evidence 승인, Finding 승격, severity 승인, Matrix/Report/export/completion gate는 동일하게 적용한다.
 18. collection이 준비된 뒤 초급 운영자 workflow에서는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e`를 사용할 수 있다. 이 API는 명시된 Evidence 검토자, red_team_lead, business_owner, executive_sponsor 승인자 정보를 요구하고, 기존 collection 산출물만 사용해 Evidence 승인부터 export와 completion gate까지 순서대로 닫는다. scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
-19. 운영자가 scanner 산출물 폴더만 준비한 경우 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`를 사용할 수 있다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 closure artifact가 필요하다.
+19. 운영자가 scanner 산출물 폴더만 준비한 경우 먼저 `/api/redteam/v2/toolchains/operating-closure-submission-package`로 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 검증한다. 이 API는 기존 파일과 readiness artifact만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
+20. submission package가 검토된 뒤 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`를 사용할 수 있다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 closure artifact가 필요하다.
 
 ## 남은 작업
 
@@ -202,4 +204,5 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물이 imported-output, artifact manifest import, 또는 live service import 경로로 제출되고 collection 전체가 Matrix/report/export/completion gate를 통과한 증거
 - 실제 운영 scanner 산출물 collection을 close-e2e API로 닫고, Report v2 export와 completion gate complete=true를 확보한 증거
+- 실제 운영 scanner 산출물 폴더를 operating-closure-submission-package API로 검증하고 blocker/payload를 사람이 검토한 증거
 - 실제 운영 scanner 산출물 폴더를 close-operating-artifact-manifest-e2e API로 닫고, 실제 승인자 identity, Report v2 export, completion gate complete=true를 확보한 증거

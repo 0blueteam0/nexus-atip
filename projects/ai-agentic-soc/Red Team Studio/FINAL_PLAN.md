@@ -1606,3 +1606,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `전체 닫기용 운영 scanner 산출물 폴더` 입력과 `운영 산출물 전체 닫기` 버튼 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 operating close-e2e anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 운영 산출물 전체 닫기 API를 실행하고 Evidence/Report export/completion gate 실측 증거 확보
+
+## 100. Slice 92 운영 closure 제출 패키지 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/operating-closure-submission-package` API 추가
+- [x] `source_dir`, Evidence 검토자, red_team_lead, business_owner, executive_sponsor 승인자 4명 입력 검증
+- [x] manifest builder validation을 재사용해 scanner 산출물 후보와 SHA-256 close payload 준비
+- [x] runtime blocker, submission item, approver check, close-operating payload를 한 record에 보존
+- [x] API는 scanner 명령, active scan, Docker/WSL/network 실행, shell expansion, raw output instruction 신뢰를 수행하지 않음
+- [x] regression test가 승인자 누락 blocked와 6개 fixture 기반 `ready_for_operating_close`를 검증
+- [x] RedTeam2 UI에 `운영 closure 제출 패키지 확인` 버튼과 제출 항목/승인자 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 submission package anchor 반영
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 제출 패키지를 만들고, blocker 검토 후 close-operating API를 실행해 운영 실측 증거 확보

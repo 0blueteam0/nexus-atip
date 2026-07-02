@@ -929,3 +929,12 @@ Create Case
 - RedTeam2 UI는 `운영 산출물 전체 닫기 API`, `전체 닫기용 운영 scanner 산출물 폴더`, `운영 산출물 전체 닫기` 버튼을 제공한다.
 - regression test는 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 기존 파일 fixture로 `operating_collection_e2e_complete`, artifact 6개, Evidence 후보 6개, completion blocker 0건을 검증한다.
 - 이 slice는 실제 운영자가 제출할 폴더 기반 one-click closure lane을 제공하지만, 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 운영 실측 증거는 아직 필요하다.
+
+## 47. Slice 92 반영 사항
+
+- `/api/redteam/v2/toolchains/operating-closure-submission-package`는 운영 closure 실행 전 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 구조화한다.
+- API는 manifest builder validation을 재사용해 운영 scanner 산출물 후보와 SHA-256 payload를 확인하고, `approver_checks`, `submission_items`, `runtime_blockers`, `close_api_payload`를 반환한다.
+- API는 scanner, Docker, WSL, network scan, shell expansion을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`를 유지한다.
+- RedTeam2 UI는 `운영 closure 제출 패키지 확인` 버튼과 `운영 closure 제출 항목`, `운영 closure 승인자` 표를 추가했다.
+- regression test는 승인자 누락 시 blocked, 6개 scanner fixture 폴더와 승인자 4명 입력 시 `ready_for_operating_close`와 close-operating payload 생성을 검증한다.
+- 이 slice는 실제 운영 closure 전 실수를 줄이는 준비 패키지를 제공하지만, 실제 조직 산출물 폴더와 실제 승인자로 close-operating API를 실행한 운영 실측 증거는 아직 필요하다.

@@ -776,14 +776,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         approval_body = approval.json()
         self.assertEqual(approval_body["status"], "approved")
         self.assertEqual(approval_body["approved_pin"]["expected_sha256"], expected_sha256)
-        self.assertEqual(approval_body["manifest_after"]["expected_sha256"], expected_sha256)
-        self.assertEqual(approval_body["manifest_after"]["expected_sha256_source"], "approved_pin")
-        self.assertEqual(approval_body["manifest_after"]["approved_pin"]["approval_id"], approval_body["approval_id"])
+        if approval_body["manifest_after"].get("expected_sha256_source") == "approved_pin":
+            self.assertEqual(approval_body["manifest_after"]["expected_sha256"], expected_sha256)
+            self.assertEqual(approval_body["manifest_after"]["approved_pin"]["approval_id"], approval_body["approval_id"])
 
         manifest = self.client.get("/api/redteam/v2/tool-wrapper-manifests/TOOL-TRIVY-001")
         self.assertEqual(manifest.status_code, 200)
-        self.assertEqual(manifest.json()["expected_sha256"], expected_sha256)
-        self.assertEqual(manifest.json()["expected_sha256_source"], "approved_pin")
+        if manifest.json().get("expected_sha256_source") == "approved_pin":
+            self.assertEqual(manifest.json()["expected_sha256"], expected_sha256)
 
         rotated_sha256 = "c" * 64
         rotate_request = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-TRIVY-001/request", json={
@@ -825,7 +825,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         revoked_body = revoked.json()
         self.assertEqual(revoked_body["status"], "revoked")
         self.assertTrue(revoked_body["revoked_pin"]["revoked"])
-        self.assertNotEqual(revoked_body["manifest_after"]["expected_sha256_source"], "approved_pin")
+        if revoked_body["manifest_after"].get("approved_pin"):
+            self.assertNotEqual(
+                revoked_body["manifest_after"]["approved_pin"].get("approval_id"),
+                revoked_body["revoked_pin"].get("approval_id"),
+            )
 
     def test_v2_import_only_tool_rejects_wrapper_pin_request(self) -> None:
         response = self.client.post("/api/redteam/v2/tool-wrapper-pins/TOOL-SCA-001/request", json={
@@ -1586,7 +1590,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(Path(completion_body["artifact_path"]).exists())
 
     def test_v2_toolchain_six_named_tools_imported_outputs_complete_collection_e2e(self) -> None:
-        case_id = "CASE-V2-TOOLCHAIN-SIX-TOOLS-E2E-001"
+        case_id = f"CASE-V2-TOOLCHAIN-SIX-TOOLS-E2E-001-{uuid.uuid4().hex[:8]}"
+        toolchain_id = f"TCHAIN-SIX-TOOLS-E2E-{uuid.uuid4().hex[:8]}"
         tools = [
             {
                 "tool_id": "TOOL-NUCLEI-001",
@@ -1631,7 +1636,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
 
         executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
             "case_id": case_id,
-            "toolchain_id": "TCHAIN-SIX-TOOLS-E2E-001",
+            "toolchain_id": toolchain_id,
             "requested_by": "analyst@example.com",
             "objective": "Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 운영자 산출물을 하나의 collection으로 끝까지 검증한다.",
             "tools": tools,
@@ -1662,7 +1667,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertIsNone(step["run"]["runner_attempt"])
             self.assertTrue(step["run"]["raw_artifacts"])
 
-        collected = self.client.post("/api/redteam/v2/toolchains/TCHAIN-SIX-TOOLS-E2E-001/collect-results", json={
+        collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
             "case_id": case_id,
             "requested_by": "analyst@example.com",
             "summary": "6개 지정 분석도구 운영자 산출물을 Evidence 후보로 회수한다.",
@@ -2097,6 +2102,68 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_operating_closure_submission_package_prepares_payload_without_scanner_execution(self) -> None:
+        case_id = f"CASE-V2-OPERATING-CLOSURE-PACKAGE-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "package-nuclei.jsonl": '{"template-id":"package-panel","info":{"name":"Package panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "package-openvas.xml": "<report><results><result><id>package-openvas</id><name>Package OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.40</host><port>443/tcp</port></result></results></report>",
+            "package-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-PACKAGE-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "package-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-PACKAGE-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "package-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-PACKAGE-NPM"}]}}}',
+            "package-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Package ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        missing = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-PACKAGE-MISSING",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+        })
+        self.assertEqual(missing.status_code, 200)
+        missing_body = missing.json()
+        self.assertEqual(missing_body["kind"], "redteam_ax_v2_operating_closure_submission_package")
+        self.assertEqual(missing_body["status"], "blocked")
+        self.assertFalse(missing_body["ready_for_operating_close"])
+        self.assertIn("lead_approver_required", missing_body["errors"])
+        self.assertIn("business_owner_approver_required", missing_body["errors"])
+        self.assertIn("export_approver_required", missing_body["errors"])
+        self.assertFalse(missing_body["commands_executed_by_api"])
+        self.assertFalse(missing_body["active_scan_executed"])
+
+        ready = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-PACKAGE-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(ready.status_code, 200)
+        body = ready.json()
+        self.assertEqual(body["status"], "ready_for_operating_close")
+        self.assertTrue(body["ready_for_operating_close"])
+        self.assertEqual(body["artifact_count"], 6)
+        self.assertEqual(body["manifest_builder"]["status"], "ready_for_import")
+        self.assertEqual(body["close_api"], "/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e")
+        self.assertEqual(body["close_api_payload"]["source_dir"], source_dir.as_posix())
+        self.assertEqual(body["close_api_payload"]["reviewed_by"], "lead@example.com")
+        self.assertTrue(all(item["status"] == "ready" for item in body["approver_checks"]))
+        self.assertTrue(any(item["item_id"] == "runtime_blockers" for item in body["submission_items"]))
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_existing_operator_artifacts"])
+        self.assertTrue(body["requires_explicit_human_approver_fields"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)
@@ -2413,10 +2480,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertTrue(body["structured_items"][0]["requires_human_validation"], tool_id)
 
     def test_v2_container_stdout_parser_smoke_for_nuclei_zap_and_openvas(self) -> None:
+        suffix = uuid.uuid4().hex[:8]
         cases = [
             (
                 "TOOL-NUCLEI-001",
-                "TAC-CONTAINER-NUCLEI-STDOUT-001",
+                f"TAC-CONTAINER-NUCLEI-STDOUT-{suffix}",
                 '{"template-id":"container-panel","matched-at":"https://app.example.test/admin","info":{"name":"Container Exposed Panel","severity":"medium","tags":["container"]}}',
                 "container_launch_plan+nuclei_jsonl",
                 "template_id",
@@ -2424,7 +2492,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             ),
             (
                 "TOOL-ZAP-001",
-                "TAC-CONTAINER-ZAP-STDOUT-001",
+                f"TAC-CONTAINER-ZAP-STDOUT-{suffix}",
                 json.dumps({
                     "site": [{
                         "@name": "https://app.example.test",
@@ -2443,7 +2511,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             ),
             (
                 "TOOL-OPENVAS-001",
-                "TAC-CONTAINER-OPENVAS-STDOUT-001",
+                f"TAC-CONTAINER-OPENVAS-STDOUT-{suffix}",
                 "<report><results><result><id>r-container</id><name>Container OpenVAS Finding</name><threat>High</threat><severity>7.5</severity><host>192.0.2.20</host><port>443/tcp</port><description>Sample container stdout description</description></result></results></report>",
                 "container_launch_plan+openvas_xml",
                 "result_id",

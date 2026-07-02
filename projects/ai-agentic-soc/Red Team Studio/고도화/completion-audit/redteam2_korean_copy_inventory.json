@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1504,
-  "korean_literal_count": 1306,
-  "english_only_literal_count": 194,
-  "english_only_literal_ratio": 0.129,
+  "literal_count": 1534,
+  "korean_literal_count": 1335,
+  "english_only_literal_count": 195,
+  "english_only_literal_ratio": 0.1271,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -24,19 +24,19 @@
     "OWASP ZAP": 4,
     "Sanitizer": 8,
     "RBAC": 5,
-    "API": 52,
+    "API": 55,
     "ROE": 6
   },
   "beginner_signal_terms": {
     "쉬운 설명": 1,
-    "먼저": 8,
+    "먼저": 10,
     "사람": 27,
-    "승인": 190,
+    "승인": 197,
     "수동": 5,
     "업로드": 17,
     "증거": 51,
     "차단": 44,
-    "필요": 71,
+    "필요": 72,
     "주의": 1
   },
   "sample_korean_literals": [
@@ -52,6 +52,7 @@
     "해시 계산 중",
     "업로드 중",
     "미리보기 생성 중",
+    "준비 패키지 생성 중",
     "실행 중",
     "승인 기록 중",
     "승인됨",
@@ -78,8 +79,7 @@
     "실측 승격 게이트 차단",
     "실측 승격 준비 완료",
     "운영자 조치 runbook 준비됨",
-    "운영자 증거 수집 패키지 준비됨",
-    "증거 입력 준비됨"
+    "운영자 증거 수집 패키지 준비됨"
   ],
   "sample_english_only_literals": [
     "8px 9px",

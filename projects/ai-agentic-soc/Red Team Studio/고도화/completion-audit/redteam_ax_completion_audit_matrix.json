@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 32,
+    "proved": 33,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -550,18 +550,37 @@
       "proof_summary": "The /api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e API accepts a workspace source_dir or artifact manifest, builds a SHA-256 manifest when a folder is provided, imports the existing scanner files, collects toolchain Evidence candidates, calls close-e2e with explicit Evidence reviewer/red_team_lead/business_owner/executive_sponsor approvers, exports Report v2, and persists an operating closure record. Regression uses six existing operating-output fixture files and proves operating_collection_e2e_complete, artifact_count=6, candidate_evidence_count=6, completion blocker_count=0, commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, and trusted_as_instruction=false. RedTeam2 exposes a Korean source-folder input and '운영 산출물 전체 닫기' button.",
       "residual_gap": "This proves the single-path submit-and-close lane with controlled workspace files. Actual organization scanner output folders, real approver identities, external endpoint outputs, Docker/WSL readiness evidence, and final operating Evidence preservation remain required before the whole goal can be completed.",
       "next_action": "Run /api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e against a real operator scanner-output folder after the operator supplies approved artifacts and approver identities."
+    },
+    {
+      "id": "RTA-COMP-034",
+      "requirement": "Operators need a pre-close submission package that validates source_dir, four explicit approver identities, runtime blockers, and the close-operating API payload before attempting operating scanner collection closure.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/operating-closure-submission-package API builds a non-executing submission package from source_dir and approver fields, reuses manifest builder validation, records approver_checks, submission_items, runtime_blockers, and a close_api_payload for /close-operating-artifact-manifest-e2e, and persists a package artifact. Regression proves missing approvers block readiness, a six-tool source_dir returns ready_for_operating_close, close_api_payload contains the reviewed_by/lead/business/export approvers, and commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false. RedTeam2 exposes Korean '운영 closure 제출 패키지 확인' controls and result tables.",
+      "residual_gap": "This proves pre-close readiness packaging with controlled workspace files. Actual organization scanner output folders and real approver identities still must be submitted and closed to satisfy the full goal.",
+      "next_action": "Have the operator generate the submission package with a real source_dir and real approvers, then execute the close-operating API only after reviewing blockers and payload."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
-    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
     "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
-    "Run /api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e against a real operator scanner-output folder with real approver identities.",
+    "Run /api/redteam/v2/toolchains/operating-closure-submission-package against a real operator scanner-output folder with real approver identities, then run /close-operating-artifact-manifest-e2e after reviewing blockers.",
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ]

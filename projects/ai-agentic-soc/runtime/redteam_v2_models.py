@@ -2600,6 +2600,134 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     }
 
 
+def prepare_operating_toolchain_closure_submission_package(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("source_dir"), "operating-closure-submission"]))
+    source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    reviewer = str(payload.get("reviewed_by") or payload.get("evidence_reviewer") or "").strip()
+    lead_approver = str(payload.get("lead_approver") or payload.get("red_team_lead") or "").strip()
+    business_owner = str(payload.get("business_owner_approver") or payload.get("business_owner") or "").strip()
+    export_approver = str(payload.get("export_approver") or payload.get("executive_sponsor") or "").strip()
+    package_id = stable_id("OCSP", [case_id, toolchain_id, source_dir, reviewer, lead_approver, business_owner, export_approver, now_utc()])
+    runtime = latest_runtime_readiness_status()
+    errors: list[str] = []
+    warnings: list[str] = []
+    approver_checks: list[dict[str, Any]] = []
+    manifest_builder: dict[str, Any] | None = None
+
+    if not requested_by:
+        errors.append("requested_by_required")
+    if not source_dir:
+        errors.append("source_dir_required")
+
+    for field, value, role in [
+        ("reviewed_by", reviewer, "Evidence 검토자"),
+        ("lead_approver", lead_approver, "레드팀 리드"),
+        ("business_owner_approver", business_owner, "업무 소유자"),
+        ("export_approver", export_approver, "최종 후원자"),
+    ]:
+        approver_checks.append({
+            "field": field,
+            "role_ko": role,
+            "value": value or None,
+            "status": "ready" if value else "missing",
+            "required": True,
+        })
+        if not value:
+            errors.append(f"{field}_required")
+    if lead_approver and business_owner and lead_approver.lower() == business_owner.lower():
+        errors.append("distinct_finding_severity_approvers_required")
+        for item in approver_checks:
+            if item["field"] in {"lead_approver", "business_owner_approver"}:
+                item["status"] = "conflict"
+
+    if source_dir:
+        manifest_builder = build_toolchain_artifact_manifest({
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": requested_by,
+            "source_dir": source_dir,
+            "objective": payload.get("objective") or "운영 closure 제출 전 scanner 산출물 manifest와 승인자 준비 상태를 확인한다.",
+        })
+        if manifest_builder.get("errors"):
+            errors.extend(f"manifest_builder:{error}" for error in manifest_builder.get("errors") or [])
+        if (manifest_builder.get("artifact_count") or 0) < 2:
+            errors.append("at_least_two_scanner_artifacts_required")
+        if manifest_builder.get("unmatched_file_count"):
+            warnings.append("source_dir_contains_unmatched_files")
+
+    runtime_blockers = runtime.get("blockers") or []
+    close_payload = {
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "requested_by": requested_by,
+        "source_dir": source_dir,
+        "reviewed_by": reviewer,
+        "lead_approver": lead_approver,
+        "business_owner_approver": business_owner,
+        "export_approver": export_approver,
+        "report_title": payload.get("report_title") or "운영 scanner 산출물 기반 Korean Red Team Report v2",
+    }
+    submission_items = [
+        {
+            "item_id": "source_dir",
+            "title_ko": "운영 scanner 산출물 폴더",
+            "status": "ready" if source_dir and manifest_builder and not manifest_builder.get("errors") and (manifest_builder.get("artifact_count") or 0) >= 2 else "blocked",
+            "evidence": source_dir or "source_dir_required",
+        },
+        {
+            "item_id": "approvers",
+            "title_ko": "명시 승인자 4명",
+            "status": "ready" if all(item.get("status") == "ready" for item in approver_checks) else "blocked",
+            "evidence": ", ".join(item["field"] for item in approver_checks if item.get("status") != "ready") or "all_approvers_present",
+        },
+        {
+            "item_id": "runtime_blockers",
+            "title_ko": "실행 환경 blocker 기록",
+            "status": "ready" if not runtime_blockers else "blocked",
+            "evidence": ", ".join(runtime_blockers[:5]) if runtime_blockers else "runtime_readiness_ready",
+        },
+    ]
+    ready_for_close = not errors
+    result = {
+        "kind": "redteam_ax_v2_operating_closure_submission_package",
+        "package_id": package_id,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "requested_by": requested_by,
+        "status": "ready_for_operating_close" if ready_for_close else "blocked",
+        "ready_for_operating_close": ready_for_close,
+        "source_dir": source_dir or None,
+        "manifest_builder": manifest_builder,
+        "artifact_count": (manifest_builder or {}).get("artifact_count") or 0,
+        "unmatched_file_count": (manifest_builder or {}).get("unmatched_file_count") or 0,
+        "approver_checks": approver_checks,
+        "submission_items": submission_items,
+        "runtime_readiness_status": runtime.get("status"),
+        "runtime_blockers": runtime_blockers,
+        "close_api": "/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e",
+        "close_api_payload": close_payload,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_existing_operator_artifacts": True,
+        "requires_explicit_human_approver_fields": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "blocked 항목을 먼저 해결한 뒤 close_api_payload를 검토합니다.",
+            "실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 scanner 산출물 폴더와 실제 승인자 identity를 사용합니다.",
+            "이 패키지는 scanner, Docker, WSL, 네트워크 스캔 명령을 실행하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operating-closure-submission-packages", package_id)
+    return result
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()
