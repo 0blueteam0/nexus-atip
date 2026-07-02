@@ -1049,4 +1049,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `hold_unsupported_claim` 상태에서는 Report v2 draft 생성 전 차단
 - [x] UI 표에 `Claim-Evidence Matrix Candidate`와 `Unsupported Claim Hold` 상태 표시
 - [x] live browser smoke가 candidate visible, hold clear, no-runner invariant를 검증
-- [ ] 다음 slice: Report v2 artifact에 Agentic RAG citation verifier metadata와 보류 claim 감사 로그를 영구 기록
+- [x] Report v2 artifact에 Agentic RAG citation verifier metadata와 보류 claim 감사 로그를 영구 기록 - slice 47 완료
+
+## 55. Slice 47 Agentic RAG Report v2 Metadata Persistence 체크리스트
+
+- [x] 정본 경로를 `SPEC/05_AGENTIC_RAG_SPEC.md` 및 `Agentic RAG SPEC`로 확인하고 SCA score 0.82 미만 보류, unsupported material claim 0건 원칙을 반영
+- [x] Report v2 validation에 `agentic_rag_context`, `agentic_rag_report_usable`, unsupported/held claim count 추가
+- [x] Agentic RAG citation verifier가 실패하거나 `hold_unsupported_claim`이면 Report gate blocking item으로 차단
+- [x] Report v2 Markdown artifact에 `Agentic RAG Citation Verifier` 섹션과 selected corpus/citation/matrix candidate 메타데이터 기록
+- [x] 보류된 Agentic RAG claim은 `audit.jsonl`에 `agentic_rag_claim_hold` 이벤트로 영구 기록
+- [x] Report Studio `레드팀 분석2` payload가 Agentic RAG result/sca/citation/matrix candidate를 Report v2 API에 전달
+- [x] Agentic RAG/도구 허브/Report Gate 핵심 표시를 한국어 사용자 기준으로 보강
+- [x] live browser smoke가 Agentic RAG 검증 후 Report v2 생성, Agentic RAG report section, held claim 0건을 확인하도록 확장
+- [ ] 다음 slice: 화면 전체 영문 라벨을 한국어 사용자 수준 기준으로 일괄 정리하고 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 도구 실행 가이드를 초급자 친화적으로 보강

@@ -3904,6 +3904,7 @@ export default {
   redTeam2ReportPayload() {
     const draft = this.redTeam2ReportExportDraft();
     const agenticCandidate = this.state.redteam2AgenticRagState?.matrixCandidate || {};
+    const agenticResult = this.state.redteam2AgenticRagState?.result || null;
     const useAgenticCandidate = agenticCandidate.status === 'ready_for_report_claim';
     const evidenceIds = String(useAgenticCandidate ? (agenticCandidate.evidence_ids || []).join(',') : (draft.evidenceId || ''))
       .split(',')
@@ -3919,7 +3920,7 @@ export default {
         approval_required:action.approval_required,
         status:action.status,
       }));
-    return {
+    const payload = {
       case_id:String(draft.caseId || 'CASE-REDTEAM2-REPORT').trim(),
       title:String(draft.title || 'Korean Red Team Report v2').trim(),
       claims:[{
@@ -3936,6 +3937,22 @@ export default {
       }],
       tool_actions:toolActions,
     };
+    if (agenticResult) {
+      payload.agentic_rag_context = {
+        result_id:agenticResult.artifact_id || agenticResult.result_id || agenticResult.id || agenticResult.artifact_path,
+        query:agenticResult.query || this.redTeam2AnalysisDraft().agenticRagQuery,
+        selected_corpora:agenticResult.selected_corpora || [],
+        sca_report:agenticResult.sca_report || {},
+        citation_verification:agenticResult.citation_verification || {},
+        citations:agenticResult.citations || [],
+        matrix_candidate:agenticCandidate,
+        held_claims:agenticCandidate.status === 'hold_unsupported_claim'
+          ? [{ claim_id:agenticCandidate.claim_id, reason:agenticCandidate.hold_reason || '인용 검증기가 모든 핵심 주장을 승인하지 않았습니다.' }]
+          : [],
+        source:'redteam2_report_studio_agentic_rag_panel',
+      };
+    }
+    return payload;
   }
 ,
   async ensureRedTeam2ApprovedEvidence() {
@@ -4332,23 +4349,27 @@ export default {
       ['Revoke', wrapperPinState.revoke?.status || (selectedWrapper.approved_pin?.revoked ? 'revoked' : 'active/not set'), wrapperPinState.revoke?.revoke_id || selectedWrapper.approved_pin?.revoke_id || 'approved pin can be revoked by red_team_lead'],
       ['Expected Source', selectedWrapper.expected_sha256_source || '-', selectedWrapper.expected_sha256 || 'expected SHA-256 not configured'],
     ];
+    const agenticReportContext = reportResult.validation?.agentic_rag_context || {};
     const reportGateRows = reportResult.validation ? [
-      ['Gate', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `${(reportResult.validation.blocking_items || []).length} blockers` : 'none'],
-      ['Unsupported Claims', reportResult.validation.unsupported_claim_count ?? '-', 'must be 0'],
-      ['Unapproved High-Risk', reportResult.validation.unapproved_high_risk_count ?? '-', 'must be 0'],
-      ['Finding Without Evidence', reportResult.validation.finding_without_evidence_count ?? '-', 'must be 0'],
-      ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
-      ['Finding Approval', reportFinding.approval_status || 'not approved', reportFinding.finding_id || 'approved finding required'],
-      ['Final Severity', reportFinding.severity_final || 'not approved', 'Red Team Lead + Business Owner required'],
-      ['Final Approval', reportApproval.status || 'not approved', reportApproval.approval_id || 'Executive Sponsor required'],
-      ['Export', reportExported.status || 'not exported', reportExported.export_id || reportExported.errors?.join(', ') || '-'],
+      ['최종 게이트', reportResult.gate_status || '-', (reportResult.validation.blocking_items || []).length ? `차단 항목 ${(reportResult.validation.blocking_items || []).length}건` : '차단 항목 없음'],
+      ['근거 없는 주장', reportResult.validation.unsupported_claim_count ?? '-', '0건이어야 보고서 생성 가능'],
+      ['승인 없는 고위험 실행', reportResult.validation.unapproved_high_risk_count ?? '-', '0건이어야 보고서 생성 가능'],
+      ['근거 없는 Finding', reportResult.validation.finding_without_evidence_count ?? '-', '0건이어야 보고서 생성 가능'],
+      ['Evidence 승인', reportEvidence.approval_status || '미승인', reportEvidence.evidence_id || '승인된 Evidence Card 필요'],
+      ['Finding 승인', reportFinding.approval_status || '미승인', reportFinding.finding_id || '승인된 Finding 필요'],
+      ['최종 심각도', reportFinding.severity_final || '미승인', '레드팀 리드와 업무 소유자 승인 필요'],
+      ['Agentic RAG 검증', agenticReportContext.present ? (reportResult.validation.agentic_rag_report_usable ? '보고서 사용 가능' : '보류 또는 추가 근거 필요') : '미사용', agenticReportContext.result_id || 'Agentic RAG 실행 결과 없음'],
+      ['Agentic RAG 보류 주장', reportResult.validation.agentic_rag_held_claim_count ?? 0, '0건이어야 자동 보고서 반영'],
+      ['최종 승인', reportApproval.status || '미승인', reportApproval.approval_id || 'Executive Sponsor 승인 필요'],
+      ['내보내기', reportExported.status || '미내보냄', reportExported.export_id || reportExported.errors?.join(', ') || '-'],
     ] : [
-      ['Gate', 'not generated', 'Generate Report v2 draft first'],
-      ['Evidence Approval', reportEvidence.approval_status || 'not approved', reportEvidence.evidence_id || 'approved evidence required'],
-      ['Finding Approval', reportFinding.approval_status || 'not approved', reportFinding.finding_id || 'approved finding required'],
-      ['Final Severity', reportFinding.severity_final || 'not approved', 'Red Team Lead + Business Owner required'],
-      ['Final Approval', 'not approved', 'Executive Sponsor required'],
-      ['Export', 'not exported', 'Approval ID required'],
+      ['최종 게이트', '아직 생성 안 됨', '먼저 Report v2 초안을 생성하세요'],
+      ['Evidence 승인', reportEvidence.approval_status || '미승인', reportEvidence.evidence_id || '승인된 Evidence Card 필요'],
+      ['Finding 승인', reportFinding.approval_status || '미승인', reportFinding.finding_id || '승인된 Finding 필요'],
+      ['최종 심각도', reportFinding.severity_final || '미승인', '레드팀 리드와 업무 소유자 승인 필요'],
+      ['Agentic RAG 검증', agenticRagState.result ? '검증 결과 대기 중' : '미사용', agenticRagState.result?.artifact_id || '필요하면 먼저 Agentic RAG 검증 실행'],
+      ['최종 승인', '미승인', 'Executive Sponsor 승인 필요'],
+      ['내보내기', '미내보냄', '승인 ID 필요'],
     ];
     const sanitizerColor = sanitizerPreview.status === 'quarantine' ? C.coral : sanitizerPreview.status === 'redact' ? C.amber : sanitizerPreview.status === 'allow' ? C.green : C.sec;
     const sanitizerRows = [
@@ -4469,30 +4490,30 @@ export default {
               ].map(([id,label]) => h('option', { key:id, value:id }, label)))),
           h('label', { style:{ fontSize:'10.5px', color:C.muted, gridColumn:'1 / -1' } }, '목적',
             h('textarea', { value:draft.objective, onChange:e=>this.updateRedTeam2AnalysisDraft({ objective:e.target.value }), rows:3, style:{ ...inputStyle, marginTop:'5px', resize:'vertical' } })))),
-      smallPanel('Analysis ToolHub / LLM Agents',
+      smallPanel('분석 도구 허브 / LLM 분석 에이전트',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-            ['Selected Tool', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.default_policy || 'load registry'],
-            ['LLM Agent', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, 'normalizer / evidence candidate'],
-            ['Runtime', selectedTool.runtime_status || 'not loaded', selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command || 'import-only'],
-            ['Install', selectedInstall.status || 'not loaded', (selectedInstall.blocking_controls || []).length ? C.amber : C.green, selectedInstall.commands_executed_by_api === false ? 'operator-run plan only' : 'not checked'],
-            ['Wrapper Pin', selectedWrapper.pinning_status || 'not loaded', selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.requires_pin_before_runner ? 'runner requires sha256 pin' : selectedWrapper.version_probe?.status || 'import-only'],
-            ['Agents', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || 'tool output is data'],
+            ['선택 도구', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.default_policy || '도구 목록을 불러오세요'],
+            ['LLM 분석 에이전트', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, '결과 정규화와 Evidence 후보 생성'],
+            ['실행 준비', selectedTool.runtime_status || '미확인', selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command || '결과 가져오기 중심'],
+            ['설치 상태', selectedInstall.status || '미확인', (selectedInstall.blocking_controls || []).length ? C.amber : C.green, selectedInstall.commands_executed_by_api === false ? '사람이 실행한 증거 필요' : '미확인'],
+            ['래퍼 신뢰', selectedWrapper.pinning_status || '미확인', selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.requires_pin_before_runner ? '실행 전 SHA-256 고정 필요' : selectedWrapper.version_probe?.status || '결과 가져오기 중심'],
+            ['에이전트 수', agentRegistry.agent_count ?? '-', C.sec, agentRegistry.tool_output_trust_policy || '도구 출력은 명령이 아니라 데이터로만 취급'],
           ].map(card)),
-          this.renderTable(['Tool','Risk','Runtime','LLM Agent'], toolRows.length ? toolRows : [['not loaded','-','-','상태 새로고침 필요']])),
-          this.renderTable(['Install Readiness','Status','Controls','Operator Plan'], installRows.length ? installRows : [['not loaded','-','-','상태 새로고침 필요']]),
-          this.renderTable(['Selected Install','Status','Evidence'], selectedInstallRows)),
-      smallPanel('Agentic RAG SCA / Citation Verifier',
+          this.renderTable(['도구','위험도','실행 준비','LLM 에이전트'], toolRows.length ? toolRows : [['미로드','-','-','상태 새로고침 필요']])),
+          this.renderTable(['설치 확인','상태','차단 조건','운영자 실행 계획'], installRows.length ? installRows : [['미로드','-','-','상태 새로고침 필요']]),
+          this.renderTable(['선택 도구 설치','상태','근거'], selectedInstallRows)),
+      smallPanel('Agentic RAG 충분성 검증 / 인용 검증기',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'10px' } },
-            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'SCA query',
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '검증 질문',
               h('textarea', {
                 value:draft.agenticRagQuery || '',
                 onChange:e=>this.updateRedTeam2AnalysisDraft({ agenticRagQuery:e.target.value }),
                 rows:3,
                 style:{ ...inputStyle, marginTop:'5px', resize:'vertical' },
               })),
-            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Material claim draft',
+            h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '보고서에 넣을 핵심 주장 초안',
               h('textarea', {
                 value:draft.agenticRagClaimText || '',
                 onChange:e=>this.updateRedTeam2AnalysisDraft({ agenticRagClaimText:e.target.value }),
@@ -4504,16 +4525,16 @@ export default {
               onClick:()=>this.runRedTeam2AgenticRagSca(),
               disabled:agenticRagState.status === 'running',
               style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:agenticRagState.status === 'running' ? C.raised : C.bg, color:agenticRagState.status === 'running' ? C.muted : C.blue, cursor:agenticRagState.status === 'running' ? 'not-allowed' : 'pointer', fontWeight:900 },
-            }, agenticRagState.status === 'running' ? 'SCA Running' : 'Run Agentic RAG SCA'),
+            }, agenticRagState.status === 'running' ? '검증 중' : 'Agentic RAG 검증 실행'),
             h('span', { style:{ fontSize:'10px', color:agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : agenticRagState.error ? C.coral : C.sec, fontWeight:900 } }, agenticRagState.error || agenticSca.decision || agenticRagState.status || 'idle')),
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-            ['SCA', agenticSca.decision || '-', agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : C.sec, `score ${agenticSca.sufficient_context_score ?? '-'}`],
-            ['Citation Verifier', agenticVerifier.all_material_claims_supported ? 'supported' : 'pending', agenticVerifier.unsupported_claim_count === 0 ? C.green : C.amber, `${agenticVerifier.unsupported_claim_count ?? '-'} unsupported`],
-            ['Evidence', agenticRagState.evidence?.evidence_id || '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url || 'approved EvidenceCard auto-prepared'],
-            ['Matrix Candidate', agenticMatrixCandidate.status || '-', agenticMatrixCandidate.status === 'ready_for_report_claim' ? C.green : agenticMatrixCandidate.status === 'hold_unsupported_claim' ? C.coral : C.sec, agenticMatrixCandidate.claim_id || 'not prepared'],
-            ['Corpora', (agenticRagResult.selected_corpora || []).length || '-', C.blue, (agenticRagResult.selected_corpora || []).slice(0, 3).join(', ') || 'run SCA'],
+            ['충분성 판단', agenticSca.decision || '-', agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : C.sec, `점수 ${agenticSca.sufficient_context_score ?? '-'}`],
+            ['인용 검증', agenticVerifier.all_material_claims_supported ? '근거 충분' : '대기 또는 보류', agenticVerifier.unsupported_claim_count === 0 ? C.green : C.amber, `근거 부족 주장 ${agenticVerifier.unsupported_claim_count ?? '-'}건`],
+            ['Evidence', agenticRagState.evidence?.evidence_id || '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url || '승인된 Evidence Card 자동 준비'],
+            ['Matrix 후보', agenticMatrixCandidate.status || '-', agenticMatrixCandidate.status === 'ready_for_report_claim' ? C.green : agenticMatrixCandidate.status === 'hold_unsupported_claim' ? C.coral : C.sec, agenticMatrixCandidate.claim_id || '아직 없음'],
+            ['검색 말뭉치', (agenticRagResult.selected_corpora || []).length || '-', C.blue, (agenticRagResult.selected_corpora || []).slice(0, 3).join(', ') || '검증을 실행하세요'],
           ].map(card)),
-          this.renderTable(['Agentic RAG','Status','Evidence'], agenticRagRows),
+          this.renderTable(['Agentic RAG','상태','근거'], agenticRagRows),
           agenticRagResult.answer_draft_ko ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'130px', overflow:'auto' } }, agenticRagResult.answer_draft_ko) : null)),
       smallPanel('Tool Wrapper Manifest / Version Pinning',
         h('div', { style:{ display:'grid', gap:'10px' } },
@@ -4693,7 +4714,7 @@ export default {
           ['Primary Goal', activeBrief.primaryGoal || '-', C.text, 'Report v2 walkthrough + document control'],
           ['Safety', 'No direct high-risk execution', C.coral, 'AI assists planning, evidence, analysis, draft report, retest plan'],
         ].map(card))),
-      smallPanel('Report v2 Final Gate / Export',
+      smallPanel('Report v2 최종 게이트 / 내보내기',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))', gap:'10px' } },
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Case ID',
@@ -4716,10 +4737,10 @@ export default {
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Report Title',
             h('input', { value:reportDraft.title, onChange:e=>this.updateRedTeam2ReportExportDraft({ title:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap' } },
-            h('button', { onClick:()=>this.generateRedTeam2ReportDraft(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'Generate Report v2'),
-            h('button', { onClick:()=>this.approveRedTeam2ReportExport(), disabled:!reportResult.report_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportResult.report_id ? C.amber : C.border}`, background:C.bg, color:reportResult.report_id ? C.amber : C.muted, cursor:reportResult.report_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, 'Approve Export'),
-            h('button', { onClick:()=>this.exportRedTeam2Report(), disabled:!reportApproval.approval_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportApproval.approval_id ? C.green : C.border}`, background:reportApproval.approval_id ? C.green : C.bg, color:reportApproval.approval_id ? '#fff' : C.muted, cursor:reportApproval.approval_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, 'Export Report')),
-          this.renderTable(['Check','Status','Evidence'], reportGateRows),
+            h('button', { onClick:()=>this.generateRedTeam2ReportDraft(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'Report v2 초안 생성'),
+            h('button', { onClick:()=>this.approveRedTeam2ReportExport(), disabled:!reportResult.report_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportResult.report_id ? C.amber : C.border}`, background:C.bg, color:reportResult.report_id ? C.amber : C.muted, cursor:reportResult.report_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, '내보내기 승인'),
+            h('button', { onClick:()=>this.exportRedTeam2Report(), disabled:!reportApproval.approval_id, style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${reportApproval.approval_id ? C.green : C.border}`, background:reportApproval.approval_id ? C.green : C.bg, color:reportApproval.approval_id ? '#fff' : C.muted, cursor:reportApproval.approval_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, '보고서 내보내기')),
+          this.renderTable(['확인 항목','상태','근거'], reportGateRows),
           reportResult.report?.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `report: ${reportResult.report.artifact_path}`) : null,
           reportExported.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.green, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `export: ${reportExported.artifact_path}`) : null)),
       queueCards.length ? smallPanel(`ToolActionCard Queue${st.queue?.count ? ` · ${st.queue.count}` : ''}`, h('div', { style:{ display:'grid' } }, queueCards)) : null,

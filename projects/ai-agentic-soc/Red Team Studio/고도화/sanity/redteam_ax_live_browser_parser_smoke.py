@@ -146,6 +146,19 @@ try {
       citationCount: parsed && Array.isArray(parsed.citations) ? parsed.citations.length : null,
       unsupportedClaimCount: parsed && parsed.citation_verification ? parsed.citation_verification.unsupported_claim_count : null,
       allMaterialClaimsSupported: parsed && parsed.citation_verification ? parsed.citation_verification.all_material_claims_supported : null,
+      gateStatus: parsed && parsed.gate_status ? parsed.gate_status : null,
+      validation: parsed && parsed.validation ? {
+        unsupportedClaimCount: parsed.validation.unsupported_claim_count,
+        unapprovedHighRiskCount: parsed.validation.unapproved_high_risk_count,
+        findingWithoutEvidenceCount: parsed.validation.finding_without_evidence_count,
+        unapprovedEvidenceCount: parsed.validation.unapproved_evidence_count,
+        unverifiedEvidenceCount: parsed.validation.unverified_evidence_count,
+        agenticRagReportUsable: parsed.validation.agentic_rag_report_usable,
+        agenticRagUnsupportedClaimCount: parsed.validation.agentic_rag_unsupported_claim_count,
+        agenticRagHeldClaimCount: parsed.validation.agentic_rag_held_claim_count,
+        blockingItems: parsed.validation.blocking_items,
+      } : null,
+      reportSections: parsed && parsed.report && Array.isArray(parsed.report.sections) ? parsed.report.sections : null,
       commandsExecutedByApi: parsed && typeof parsed.commands_executed_by_api === 'boolean' ? parsed.commands_executed_by_api : null,
       trustedAsInstruction: parsed && typeof parsed.trusted_as_instruction === 'boolean' ? parsed.trusted_as_instruction : null,
       requiresHumanValidation: parsed && typeof parsed.requires_human_validation === 'boolean' ? parsed.requires_human_validation : null,
@@ -316,8 +329,10 @@ try {
     }
   }
   if (allowAgenticRag) {
-    await page.getByRole('button', { name: /Run Agentic RAG SCA/ }).first().click({ timeout: 10000 });
+    await page.getByRole('button', { name: /Agentic RAG 검증 실행|Run Agentic RAG SCA/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(4000);
+    await page.getByRole('button', { name: /Report v2 초안 생성|Generate Report v2/ }).first().click({ timeout: 10000 });
+    await page.waitForTimeout(5000);
   }
   result.title = await page.title();
   result.finalUrl = page.url();
@@ -334,9 +349,9 @@ try {
   result.checks.toolActionCard = bodyText.includes('ToolActionCard');
   result.checks.hitlGate = bodyText.includes('HITL');
   result.checks.evidenceGate = bodyText.includes('Evidence Card') || bodyText.includes('Claim-Evidence Matrix');
-  result.checks.agenticRagPanel = bodyText.includes('Agentic RAG SCA / Citation Verifier')
-    && bodyText.includes('Run Agentic RAG SCA')
-    && bodyText.includes('Citation Verifier');
+  result.checks.agenticRagPanel = (bodyText.includes('Agentic RAG 충분성 검증') || bodyText.includes('Agentic RAG SCA / Citation Verifier'))
+    && (bodyText.includes('Agentic RAG 검증 실행') || bodyText.includes('Run Agentic RAG SCA'))
+    && (bodyText.includes('인용 검증') || bodyText.includes('Citation Verifier'));
   if (allowAction) {
     const planResponse = result.apiResponses.find((item) => item.url.endsWith('/api/redteam/v2/tool-actions/plan'));
     result.toolActionPlan = {
@@ -463,6 +478,8 @@ try {
   }
   if (allowAgenticRag) {
     const ragResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/agentic-rag/query'));
+    const ragReportResponse = result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/reports/generate') && item.validation && item.validation.agenticRagReportUsable !== null)
+      || result.apiResponses.find((item) => item.endpoint && item.endpoint.includes('/reports/generate') && item.gateStatus);
     result.agenticRag = {
       responseFound: Boolean(ragResponse),
       responseStatus: ragResponse ? ragResponse.status : null,
@@ -477,6 +494,11 @@ try {
       requiresHumanValidation: ragResponse ? ragResponse.requiresHumanValidation : null,
       matrixCandidateVisible: bodyText.includes('Claim-Evidence Matrix Candidate') && bodyText.includes('ready_for_report_claim'),
       unsupportedHoldClearVisible: bodyText.includes('Unsupported Claim Hold') && bodyText.includes('clear'),
+      reportGenerated: Boolean(ragReportResponse && ragReportResponse.status === 200 && ragReportResponse.gateStatus === 'pass'),
+      reportAgenticRagSection: Boolean(ragReportResponse && Array.isArray(ragReportResponse.reportSections) && ragReportResponse.reportSections.includes('Agentic RAG Citation Verifier')),
+      reportAgenticRagUsable: ragReportResponse && ragReportResponse.validation ? ragReportResponse.validation.agenticRagReportUsable : null,
+      reportAgenticRagHeldClaimCount: ragReportResponse && ragReportResponse.validation ? ragReportResponse.validation.agenticRagHeldClaimCount : null,
+      reportAgenticRagUnsupportedClaimCount: ragReportResponse && ragReportResponse.validation ? ragReportResponse.validation.agenticRagUnsupportedClaimCount : null,
       governedRunnerNotClicked: true,
       governedRunnerNotExecuted: true,
     };
@@ -493,6 +515,11 @@ try {
       && result.agenticRag.requiresHumanValidation === true
       && result.agenticRag.matrixCandidateVisible === true
       && result.agenticRag.unsupportedHoldClearVisible === true
+      && result.agenticRag.reportGenerated === true
+      && result.agenticRag.reportAgenticRagSection === true
+      && result.agenticRag.reportAgenticRagUsable === true
+      && result.agenticRag.reportAgenticRagHeldClaimCount === 0
+      && result.agenticRag.reportAgenticRagUnsupportedClaimCount === 0
       && result.agenticRag.governedRunnerNotClicked
       && result.agenticRag.governedRunnerNotExecuted;
   }

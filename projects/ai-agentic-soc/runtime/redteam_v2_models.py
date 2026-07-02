@@ -4351,11 +4351,69 @@ def finding_approval_issues(case_id: str, findings: list[dict[str, Any]]) -> lis
     return issues
 
 
+def _normalize_agentic_rag_report_context(payload: dict[str, Any]) -> dict[str, Any]:
+    raw = payload.get("agentic_rag_context") or payload.get("agentic_rag") or {}
+    if not isinstance(raw, dict):
+        raw = {}
+    sca_report = raw.get("sca_report") if isinstance(raw.get("sca_report"), dict) else {}
+    citation_verification = raw.get("citation_verification") if isinstance(raw.get("citation_verification"), dict) else {}
+    matrix_candidate = raw.get("matrix_candidate") if isinstance(raw.get("matrix_candidate"), dict) else {}
+    citations = raw.get("citations") if isinstance(raw.get("citations"), list) else []
+    held_claims = raw.get("held_claims") if isinstance(raw.get("held_claims"), list) else []
+    selected_corpora = raw.get("selected_corpora") if isinstance(raw.get("selected_corpora"), list) else []
+    unsupported_count = int(citation_verification.get("unsupported_claim_count") or 0)
+    candidate_status = str(matrix_candidate.get("status") or "").strip()
+    report_usable = bool(
+        raw
+        and sca_report.get("decision") == "sufficient"
+        and sca_report.get("answerable") is True
+        and unsupported_count == 0
+        and citation_verification.get("all_material_claims_supported") is True
+        and candidate_status in {"", "ready_for_report_claim"}
+    )
+    return {
+        "present": bool(raw),
+        "result_id": raw.get("result_id") or raw.get("artifact_id") or raw.get("id"),
+        "query": raw.get("query"),
+        "selected_corpora": selected_corpora,
+        "sca_report": sca_report,
+        "citation_verification": citation_verification,
+        "citations": citations,
+        "matrix_candidate": matrix_candidate,
+        "held_claims": held_claims,
+        "unsupported_claim_count": unsupported_count,
+        "held_claim_count": len(held_claims) + (1 if candidate_status == "hold_unsupported_claim" else 0),
+        "report_usable": report_usable,
+        "source": raw.get("source") or "agentic_rag_sca_citation_verifier",
+    }
+
+
+def _agentic_rag_blocking_items(context: dict[str, Any]) -> list[dict[str, Any]]:
+    if not context.get("present"):
+        return []
+    items: list[dict[str, Any]] = []
+    result_id = context.get("result_id") or "agentic-rag-result"
+    if context.get("unsupported_claim_count", 0) > 0:
+        items.append({"type": "agentic_rag_citation_verifier_failed", "id": result_id})
+    matrix_candidate = context.get("matrix_candidate") or {}
+    if matrix_candidate.get("status") == "hold_unsupported_claim":
+        items.append({
+            "type": "agentic_rag_unsupported_claim_hold",
+            "id": matrix_candidate.get("claim_id") or result_id,
+            "hold_reason": matrix_candidate.get("hold_reason") or "citation verifier did not approve all material claims",
+        })
+    sca_report = context.get("sca_report") or {}
+    if sca_report and sca_report.get("decision") != "sufficient":
+        items.append({"type": "agentic_rag_sca_not_sufficient", "id": result_id, "decision": sca_report.get("decision")})
+    return items
+
+
 def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     claims = payload.get("claims") or []
     findings = payload.get("findings") or []
     tool_actions = payload.get("tool_actions") or []
+    agentic_rag_context = _normalize_agentic_rag_report_context(payload)
     referenced_evidence_ids = [
         evidence_id
         for item in [*claims, *findings]
@@ -4383,6 +4441,7 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
     blocking_items.extend({"type": "unapproved_high_risk_action", "id": item.get("action_id") or item.get("id")} for item in unapproved_high_risk)
     blocking_items.extend(evidence_issues)
     blocking_items.extend(finding_issues)
+    blocking_items.extend(_agentic_rag_blocking_items(agentic_rag_context))
     gate_status = "pass" if not blocking_items else "blocked"
     result = {
         "kind": "redteam_ax_v2_report_validation",
@@ -4397,6 +4456,10 @@ def validate_report(payload: dict[str, Any]) -> dict[str, Any]:
         "missing_finding_count": len([item for item in finding_issues if item["type"] == "missing_finding"]),
         "unapproved_finding_count": len([item for item in finding_issues if item["type"] == "unapproved_finding"]),
         "unapproved_final_severity_count": len([item for item in finding_issues if item["type"] in {"unapproved_final_severity", "final_severity_mismatch"}]),
+        "agentic_rag_context": agentic_rag_context,
+        "agentic_rag_report_usable": agentic_rag_context["report_usable"],
+        "agentic_rag_unsupported_claim_count": agentic_rag_context["unsupported_claim_count"],
+        "agentic_rag_held_claim_count": agentic_rag_context["held_claim_count"],
         "blocking_items": blocking_items,
         "validated_at": now_utc(),
     }
@@ -4436,11 +4499,40 @@ def render_korean_report_markdown(payload: dict[str, Any], validation: dict[str,
         "",
         "## Claim-Evidence Matrix",
         "",
-        "| Claim | Support | Evidence |",
-        "|---|---|---|",
+        "| Claim | Support | Evidence | Source |",
+        "|---|---|---|---|",
     ])
     for claim in claims:
-        lines.append(f"| `{claim.get('claim_id') or claim.get('id')}` | {claim.get('support_level') or 'supported'} | {', '.join(claim.get('evidence_ids') or [])} |")
+        lines.append(f"| `{claim.get('claim_id') or claim.get('id')}` | {claim.get('support_level') or 'supported'} | {', '.join(claim.get('evidence_ids') or [])} | {claim.get('source') or 'manual_report_studio'} |")
+    agentic_rag_context = validation.get("agentic_rag_context") or {}
+    if agentic_rag_context.get("present"):
+        sca_report = agentic_rag_context.get("sca_report") or {}
+        citation_verification = agentic_rag_context.get("citation_verification") or {}
+        matrix_candidate = agentic_rag_context.get("matrix_candidate") or {}
+        citations = agentic_rag_context.get("citations") or []
+        citation_ids = [str(item.get("citation_id") or item.get("evidence_id") or "") for item in citations if isinstance(item, dict)]
+        citation_ids = [item for item in citation_ids if item]
+        lines.extend([
+            "",
+            "## Agentic RAG Citation Verifier",
+            "",
+            f"- Result ID: `{agentic_rag_context.get('result_id') or 'not-recorded'}`",
+            f"- Query: {agentic_rag_context.get('query') or 'not-recorded'}",
+            f"- SCA decision: `{sca_report.get('decision') or 'unknown'}`",
+            f"- SCA answerable: `{sca_report.get('answerable')}`",
+            f"- Sufficient context score: `{sca_report.get('sufficient_context_score')}`",
+            f"- Unsupported material claims: `{citation_verification.get('unsupported_claim_count', 0)}`",
+            f"- All material claims supported: `{citation_verification.get('all_material_claims_supported')}`",
+            f"- Report usable: `{agentic_rag_context.get('report_usable')}`",
+            f"- Selected corpora: {', '.join(agentic_rag_context.get('selected_corpora') or []) or 'not-recorded'}",
+            f"- Citations: {', '.join(citation_ids) or 'not-recorded'}",
+            f"- Matrix candidate: `{matrix_candidate.get('status') or 'not-recorded'}` / claim `{matrix_candidate.get('claim_id') or 'not-recorded'}`",
+        ])
+        if agentic_rag_context.get("held_claims"):
+            lines.append("- Held claims:")
+            for held in agentic_rag_context.get("held_claims") or []:
+                if isinstance(held, dict):
+                    lines.append(f"  - `{held.get('claim_id') or held.get('id') or 'unknown'}` {held.get('reason') or held.get('hold_reason') or 'unsupported'}")
     lines.extend([
         "",
         "## Findings",
@@ -4470,6 +4562,9 @@ def render_korean_report_markdown(payload: dict[str, Any], validation: dict[str,
         f"- Missing findings: `{validation.get('missing_finding_count', 0)}`",
         f"- Unapproved findings: `{validation.get('unapproved_finding_count', 0)}`",
         f"- Unapproved final severities: `{validation.get('unapproved_final_severity_count', 0)}`",
+        f"- Agentic RAG report usable: `{validation.get('agentic_rag_report_usable')}`",
+        f"- Agentic RAG unsupported claims: `{validation.get('agentic_rag_unsupported_claim_count', 0)}`",
+        f"- Agentic RAG held claims: `{validation.get('agentic_rag_held_claim_count', 0)}`",
         "",
         "## 재시험 계획",
         "",
@@ -4494,27 +4589,47 @@ def generate_report(payload: dict[str, Any]) -> dict[str, Any]:
     report_id = stable_id("RTRPT", [case_id, payload.get("title"), validation["validated_at"]])
     report = None
     artifact_path = None
+    hold_audit_path = None
+    if validation.get("agentic_rag_held_claim_count", 0) or validation.get("agentic_rag_unsupported_claim_count", 0):
+        hold_audit_path = write_case_event(case_id, {
+            "event": "agentic_rag_claim_hold",
+            "record_id": report_id,
+            "agentic_rag_result_id": (validation.get("agentic_rag_context") or {}).get("result_id"),
+            "agentic_rag_held_claim_count": validation.get("agentic_rag_held_claim_count", 0),
+            "agentic_rag_unsupported_claim_count": validation.get("agentic_rag_unsupported_claim_count", 0),
+            "blocking_items": [
+                item for item in validation.get("blocking_items", [])
+                if str(item.get("type") or "").startswith("agentic_rag_")
+            ],
+        })
     if validation["gate_status"] == "pass":
         markdown = render_korean_report_markdown({**payload, "case_id": case_id}, validation)
         artifact_path = write_report_artifact(case_id, report_id, markdown)
+        sections = [
+            "문서 통제",
+            "캠페인 Walkthrough",
+            "Evidence Card Index",
+            "Claim-Evidence Matrix",
+            "Findings",
+            "재시험 계획",
+        ]
+        if (validation.get("agentic_rag_context") or {}).get("present"):
+            sections.insert(4, "Agentic RAG Citation Verifier")
         report = {
             "report_id": report_id,
             "title": payload.get("title") or "Red Team Report v2",
             "language": "ko",
             "artifact_path": artifact_path,
-            "sections": [
-                "문서 통제",
-                "캠페인 Walkthrough",
-                "Evidence Card Index",
-                "Claim-Evidence Matrix",
-                "Findings",
-                "재시험 계획",
-            ],
+            "sections": sections,
+            "agentic_rag_context": validation.get("agentic_rag_context"),
         }
         write_case_event(case_id, {
             "event": "korean_report_v2_generated",
             "record_id": report_id,
             "artifact_path": artifact_path,
+            "agentic_rag_result_id": (validation.get("agentic_rag_context") or {}).get("result_id"),
+            "agentic_rag_report_usable": validation.get("agentic_rag_report_usable"),
+            "agentic_rag_held_claim_count": validation.get("agentic_rag_held_claim_count", 0),
         })
     result = {
         "kind": "redteam_ax_v2_korean_report_draft",
@@ -4523,6 +4638,8 @@ def generate_report(payload: dict[str, Any]) -> dict[str, Any]:
         "gate_status": validation["gate_status"],
         "validation": validation,
         "report": report,
+        "agentic_rag_context": validation.get("agentic_rag_context"),
+        "agentic_rag_hold_audit_log_path": hold_audit_path,
     }
     return append_artifact_metadata(result, "reports", report_id)
 

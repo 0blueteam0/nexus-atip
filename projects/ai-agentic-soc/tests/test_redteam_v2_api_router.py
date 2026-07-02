@@ -1907,6 +1907,118 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIsNotNone(body["report"])
         self.assertIn("Claim-Evidence Matrix", body["report"]["sections"])
 
+    def test_v2_report_persists_agentic_rag_citation_verifier_metadata(self) -> None:
+        case_id = "CASE-V2-REPORT-RAG-METADATA-001"
+        evidence = self.create_approved_evidence(case_id, "EV-RAG-REPORT-1")
+        finding = self.create_approved_finding(case_id, "F-RAG-REPORT-1", evidence["evidence_id"])
+        rag_response = self.client.post(f"/api/redteam/v2/cases/{case_id}/agentic-rag/query", json={
+            "query": "보고서 Claim-Evidence Matrix에 승인된 EvidenceCard citation을 연결하라",
+            "required_facts": [evidence["summary"]],
+            "claims": [
+                {
+                    "claim_id": "C-RAG-REPORT-1",
+                    "text": "승인된 EvidenceCard가 보고서 claim의 근거로 연결되었다.",
+                    "evidence_ids": [evidence["evidence_id"]],
+                }
+            ],
+        })
+        self.assertEqual(rag_response.status_code, 200)
+        rag = rag_response.json()
+
+        response = self.client.post("/api/redteam/v2/reports/generate", json={
+            "title": "Korean Red Team Report v2",
+            "case_id": case_id,
+            "claims": [{
+                "claim_id": "C-RAG-REPORT-1",
+                "support_level": "supported",
+                "evidence_ids": [evidence["evidence_id"]],
+                "source": "agentic_rag_sca_citation_verifier",
+            }],
+            "findings": [{"finding_id": finding["finding_id"], "severity_final": finding["severity_final"], "evidence_ids": [evidence["evidence_id"]]}],
+            "tool_actions": [{"action_id": "TAC-RAG-REPORT-1", "risk_class": "T3", "approval_required": True, "status": "EvidenceCreated"}],
+            "agentic_rag_context": {
+                "result_id": rag["artifact_path"],
+                "query": rag["query"],
+                "selected_corpora": rag["selected_corpora"],
+                "sca_report": rag["sca_report"],
+                "citation_verification": rag["citation_verification"],
+                "citations": rag["citations"],
+                "matrix_candidate": {
+                    "status": "ready_for_report_claim",
+                    "claim_id": "C-RAG-REPORT-1",
+                    "evidence_ids": [evidence["evidence_id"]],
+                    "support_level": "supported",
+                },
+            },
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["gate_status"], "pass")
+        self.assertTrue(body["validation"]["agentic_rag_report_usable"])
+        self.assertEqual(body["validation"]["agentic_rag_unsupported_claim_count"], 0)
+        self.assertEqual(body["validation"]["agentic_rag_held_claim_count"], 0)
+        self.assertIn("Agentic RAG Citation Verifier", body["report"]["sections"])
+        report_path = Path(body["report"]["artifact_path"])
+        self.assertTrue(report_path.exists())
+        report_text = report_path.read_text(encoding="utf-8")
+        self.assertIn("## Agentic RAG Citation Verifier", report_text)
+        self.assertIn("agentic_rag_spec", report_text)
+        self.assertIn(f"EVIDENCE:{evidence['evidence_id']}", report_text)
+
+    def test_v2_report_blocks_and_audits_agentic_rag_unsupported_claim_hold(self) -> None:
+        case_id = "CASE-V2-REPORT-RAG-HOLD-001"
+        evidence = self.create_approved_evidence(case_id, "EV-RAG-HOLD-1")
+        finding = self.create_approved_finding(case_id, "F-RAG-HOLD-1", evidence["evidence_id"])
+        response = self.client.post("/api/redteam/v2/reports/generate", json={
+            "title": "Korean Red Team Report v2",
+            "case_id": case_id,
+            "claims": [{"claim_id": "C-RAG-HOLD-1", "support_level": "supported", "evidence_ids": [evidence["evidence_id"]]}],
+            "findings": [{"finding_id": finding["finding_id"], "severity_final": finding["severity_final"], "evidence_ids": [evidence["evidence_id"]]}],
+            "tool_actions": [],
+            "agentic_rag_context": {
+                "result_id": "AGR-HOLD-1",
+                "query": "근거 부족 주장을 보고서에 넣어도 되는지 검증하라",
+                "selected_corpora": ["redteam_ax_v2_evidence_store", "agentic_rag_spec"],
+                "sca_report": {
+                    "decision": "retrieve_again",
+                    "answerable": False,
+                    "sufficient_context_score": 0.5,
+                    "missing_facts": ["approved_evidence_for_all_material_claims"],
+                },
+                "citation_verification": {
+                    "unsupported_claim_count": 1,
+                    "all_material_claims_supported": False,
+                },
+                "citations": [],
+                "matrix_candidate": {
+                    "status": "hold_unsupported_claim",
+                    "claim_id": "C-RAG-HOLD-1",
+                    "evidence_ids": [],
+                    "support_level": "unsupported",
+                    "hold_reason": "approved evidence missing for all material claims",
+                },
+                "held_claims": [{"claim_id": "C-RAG-HOLD-1", "reason": "approved evidence missing for all material claims"}],
+            },
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["gate_status"], "blocked")
+        self.assertIsNone(body["report"])
+        self.assertFalse(body["validation"]["agentic_rag_report_usable"])
+        self.assertEqual(body["validation"]["agentic_rag_unsupported_claim_count"], 1)
+        self.assertEqual(body["validation"]["agentic_rag_held_claim_count"], 2)
+        blocking_types = {item["type"] for item in body["validation"]["blocking_items"]}
+        self.assertIn("agentic_rag_citation_verifier_failed", blocking_types)
+        self.assertIn("agentic_rag_unsupported_claim_hold", blocking_types)
+        self.assertIn("agentic_rag_sca_not_sufficient", blocking_types)
+        audit_path = Path(body["agentic_rag_hold_audit_log_path"])
+        self.assertTrue(audit_path.exists())
+        audit_text = audit_path.read_text(encoding="utf-8")
+        self.assertIn("agentic_rag_claim_hold", audit_text)
+        self.assertIn("AGR-HOLD-1", audit_text)
+
     def test_v2_report_gate_blocks_missing_unapproved_and_unverified_evidence(self) -> None:
         case_id = "CASE-V2-REPORT-EVIDENCE-GATE-001"
         unapproved = self.client.post("/api/redteam/v2/evidence", json={
