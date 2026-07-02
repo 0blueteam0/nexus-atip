@@ -1,10 +1,11 @@
 {
   "kind": "redteam_ax_v2_live_browser_parser_smoke",
-  "created_at": "2026-07-02T02:41:54.805595Z",
+  "created_at": "2026-07-02T02:47:46.621660Z",
   "frontend_url": "http://127.0.0.1:5177",
   "backend_url": "http://127.0.0.1:8765",
   "allow_browser_automation": true,
   "allow_browser_action_smoke": true,
+  "allow_browser_approval_request_smoke": true,
   "safe_by_default": true,
   "commands_executed_by_api": false,
   "browser_automation_executed": true,
@@ -53,11 +54,12 @@
         "node.exe",
         "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\archive\\runs\\redteam-ax-v2-browser-smoke\\live_browser_parser_probe.mjs",
         "http://127.0.0.1:5177/",
-        "allow-action"
+        "allow-action",
+        "allow-approval-request"
       ],
       "cwd": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react",
       "exit_code": 0,
-      "stdout": "{\"url\":\"http://127.0.0.1:5177/\",\"checks\":{\"reportStudio\":true,\"redteamAnalysis\":true,\"redteamAnalysis2\":true,\"toolActionCard\":true,\"hitlGate\":true,\"evidenceGate\":true,\"toolActionPlanCreated\":true},\"apiResponses\":[{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/health\",\"endpoint\":\"/api/redteam/v2/health\",\"status\":200,\"kind\":\"redteam_ax_v2_health\",\"actionId\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_health\\\",\\\"service\\\":\\\"redteam-ax-v2\\\",\\\"status\\\":\\\"ready\\\",\\\"safe_by_default\\\":true,\\\"execution_policy\\\":\\\"tool_action_card_required\\\",\\\"high_risk_mode\\\":\\\"human_approved_manual_run\\\",\\\"report_gate\\\":{\\\"unsupported_claim_count\\\":0,\\\"unapproved_high_risk_count\\\":0,\\\"finding_without_evidence_count\\\":0,\\\"unapproved_finding_count\\\":0,\\\"unapproved_final_severity_count\\\":0},\\\"actor_context_provider\\\":\\\"local_dev_session_or_request_headers\\\"}\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-actions?case_id=RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"endpoint\":\"/api/redteam/v2/tool-actions\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_action_list\",\"actionId\":null,\"itemCount\":1,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_list\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"status\\\":null,\\\"count\\\":1,\\\"items\\\":[{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_card\\\",\\\"action_id\\\":\\\"TAC-53AD5C28ED88\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"campaign_id\\\":\\\"RTA-2026-0301-CAMP-V2\\\",\\\"title\\\":\\\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\\\",\\\"objective\\\":\\\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\\\",\\\"action_type\\\":\\\"analysis_support\\\",\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"tool_profile\\\":{\\\"tool_id\\\":\\\"TOOL-NUCLEI-00\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/cases/RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001/rbac\",\"endpoint\":\"/api/redteam/v2/cases/RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001/rbac\",\"status\":200,\"kind\":\"redteam_ax_v2_case_rbac_policy\",\"actionId\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_case_rbac_policy\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"assignment_count\\\":3,\\\"assignments\\\":[{\\\"actor_id\\\":\\\"business-owner@example.com\\\",\\\"roles\\\":[\\\"business_owner\\\"],\\\"permissions\\\":[\\\"finding:approve_severity\\\",\\\"risk:accept\\\"]},{\\\"actor_id\\\":\\\"executive-sponsor@example.com\\\",\\\"roles\\\":[\\\"executive_sponsor\\\"],\\\"permissions\\\":[\\\"report:approve_export\\\",\\\"risk:accept\\\"]},{\\\"actor_id\\\":\\\"lead@example.com\\\",\\\"roles\\\":[\\\"red_team_lead\\\"],\\\"permissions\\\":[\\\"evidence:approve\\\",\\\"finding:approve_sev\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/analysis-agents\",\"endpoint\":\"/api/redteam/v2/analysis-agents\",\"status\":200,\"kind\":\"redteam_ax_v2_analysis_agent_registry\",\"actionId\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_analysis_agent_registry\\\",\\\"agent_count\\\":6,\\\"agents\\\":[{\\\"agent_id\\\":\\\"AGENT-NPM-AUDIT-ANALYST-001\\\",\\\"name\\\":\\\"npm_audit_result_normalizer_agent\\\",\\\"tool_ids\\\":[\\\"TOOL-NPM-AUDIT-001\\\"],\\\"role\\\":\\\"Normalize npm audit advisories into dependency evidence candidates and retest steps.\\\",\\\"output_contract\\\":\\\"redteam_ax_v2_tool_result_normalized\\\"},{\\\"agent_id\\\":\\\"AGENT-NUCLEI-ANALYST-001\\\",\\\"name\\\":\\\"nuclei_result_normalizer_agent\\\",\\\"tool_ids\\\":[\\\"TOOL-NUCLEI-001\\\"],\\\"role\\\":\\\"Normalize nuclei JSONL into evidence \"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/analysis-tools\",\"endpoint\":\"/api/redteam/v2/analysis-tools\",\"status\":200,\"kind\":\"redteam_ax_v2_analysis_tool_registry\",\"actionId\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_analysis_tool_registry\\\",\\\"tool_count\\\":6,\\\"tools\\\":[{\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"name\\\":\\\"nuclei\\\",\\\"display_name\\\":\\\"Nuclei\\\",\\\"category\\\":\\\"web_validation\\\",\\\"risk_class\\\":\\\"T3\\\",\\\"adapter_type\\\":\\\"cli_wrapper\\\",\\\"command_name\\\":\\\"nuclei\\\",\\\"default_execution_mode\\\":\\\"manual_operator_run\\\",\\\"allowed_execution_modes\\\":[\\\"plan_only\\\",\\\"dry_run\\\",\\\"offline_parse\\\",\\\"manual_operator_run\\\",\\\"lab_execute\\\"],\\\"denied_execution_modes\\\":[\\\"controlled_production_execute\\\",\\\"prohibited\\\"],\\\"default_policy\\\":\\\"approved_templates_and\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests\",\"endpoint\":\"/api/redteam/v2/tool-wrapper-manifests\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_wrapper_manifest_registry\",\"actionId\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_wrapper_manifest_registry\\\",\\\"manifest_count\\\":6,\\\"manifests\\\":[{\\\"kind\\\":\\\"redteam_ax_v2_tool_wrapper_manifest\\\",\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"tool_name\\\":\\\"nuclei\\\",\\\"adapter_type\\\":\\\"cli_wrapper\\\",\\\"command_name\\\":\\\"nuclei\\\",\\\"availability\\\":{\\\"status\\\":\\\"missing\\\",\\\"command\\\":\\\"nuclei\\\",\\\"path\\\":null,\\\"checked_at\\\":\\\"2026-07-02T02:42:02Z\\\"},\\\"resolved_path\\\":null,\\\"expected_sha256\\\":null,\\\"expected_sha256_source\\\":\\\"not_configured\\\",\\\"approved_pin\\\":null,\\\"actual_sha256\\\":null,\\\"hash_error\\\":null,\\\"pinning_status\\\":\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-actions/plan\",\"endpoint\":\"/api/redteam/v2/tool-actions/plan\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_action_card\",\"actionId\":\"TAC-53AD5C28ED88\",\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_card\\\",\\\"action_id\\\":\\\"TAC-53AD5C28ED88\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"campaign_id\\\":\\\"RTA-2026-0301-CAMP-V2\\\",\\\"title\\\":\\\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\\\",\\\"objective\\\":\\\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\\\",\\\"action_type\\\":\\\"analysis_support\\\",\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"tool_profile\\\":{\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"name\\\":\\\"nuclei\\\",\\\"category\\\":\\\"web_validation\\\",\\\"normalizer_id\\\":\\\"NORMALIZER-NUCLEI-001\\\",\\\"agent_id\\\":\\\"AGENT-NUCLEI-ANALYST-001\\\",\\\"defau\"}],\"title\":\"AI Agentic SOC 쨌 Report Studio v4 (Idiomatic React)\",\"finalUrl\":\"http://127.0.0.1:5177/reports\",\"bodyPrefix\":\"Agentic SOC\\nOPERATING SYSTEM\\nOPERATE\\n�쁽�솴\\n�븣由� �걧\\n�궗嫄�\\n����쓳\\n�뿄�듃\\nUNDERSTAND\\n�쐞�뿕 留λ씫\\n利앹쟻\\n�씤�뀛由ъ쟾�뒪\\n�깘吏�\\n硫붾え由�\\nBUILD\\n�뿉�씠�쟾�듃\\n�젅李�\\n�뒪�궗\\n�뿰�룞\\n�떎�뻾 �윴����엫\\nREPORTS\\n�뼚\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\\nGOVERN\\n�젙梨�\\n�룊媛�\\n媛먯궗\\nOUTCOMES\\nSOC �꽦怨�\\n寃쎌쁺 由ъ뒪�겕\\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\\n諛��룄 쨌 蹂댄넻\\n�옄�쑉�꽦 紐⑤뱶\\nShadow\\nAssisted\\nAI-led\\nBounded\\n紐낅졊\\n�뙓K\\n�젙\\n�젙愿��젣\\nTier-3 Analyst\\n�뜲�씠�꽣 �떊�꽑�룄\\nIdentity 2m\\nEndpoint 12m\\nNetwork 4m\\nCloud 3m\\n�슑 EDR FIN-WS-204 12m stale\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\\n蹂닿퀬�꽌 �깮�꽦\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\\nReports\\nReport catalog\\n�븙�꽦肄붾뱶 遺꾩꽍\\nWorkflow, evidence, HITL, report fields\\n�젅�뱶��� 遺꾩꽍\\nObjectives, campaigns, evidence\\n�젅�뱶��� 遺꾩꽍2\\nAX v2 ToolActionCard, HITL, evidence gates\\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\\n�긽�깭 �깉濡쒓퀬移�\\nToolActionCard 怨꾪쉷\\nv2 API\\nready\\ntool_action_card_required\\nv1 Backend\\nai-agentic-soc-redteam-backend\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\\nRAG/Wiki\\npending\\nsignal is aborted without reason\\nReadiness\\n-\\nsignal is aborted without reason\\nToolHub\\n6\\nToolActionCard + ROE + HITL before active execution\\nCase / ROE �엯�젰\\n蹂닿퀬�꽌\\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\\n����긽 �쑀�삎\\nIP\\nURL\\nDomain\\nCIDR\\n����긽\\nRisk Class\\nT0\\nT1\\nT2\\nT3\\nT4\\nT5\\nT6\\nT7\\nScope Ref\\nAnalysis Tool\\nNuclei\\nOpenVAS / Greenbone Community Edition\\nTrivy\\nSCA Dependency Analyzer\\nnpm audit\\nOWASP ZAP\\nExecution Mode\\nplan_only\\noffline_parse\\nsandbox_execute\\nmanual_operator_run\\nlab_exec\",\"toolActionPlan\":{\"responseFound\":true,\"responseStatus\":200,\"actionId\":\"TAC-53AD5C28ED88\",\"actionIdPresent\":true,\"requestApprovalVisible\":true,\"roeVisible\":true,\"hitlVisible\":true,\"governedRunnerNotClicked\":true},\"status\":\"passed\"}\n",
+      "stdout": "{\"url\":\"http://127.0.0.1:5177/\",\"checks\":{\"reportStudio\":true,\"redteamAnalysis\":true,\"redteamAnalysis2\":true,\"toolActionCard\":true,\"hitlGate\":true,\"evidenceGate\":true,\"toolActionPlanCreated\":true,\"approvalQueueRequested\":true},\"apiResponses\":[{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/health\",\"endpoint\":\"/api/redteam/v2/health\",\"status\":200,\"kind\":\"redteam_ax_v2_health\",\"actionId\":null,\"statusField\":\"ready\",\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_health\\\",\\\"service\\\":\\\"redteam-ax-v2\\\",\\\"status\\\":\\\"ready\\\",\\\"safe_by_default\\\":true,\\\"execution_policy\\\":\\\"tool_action_card_required\\\",\\\"high_risk_mode\\\":\\\"human_approved_manual_run\\\",\\\"report_gate\\\":{\\\"unsupported_claim_count\\\":0,\\\"unapproved_high_risk_count\\\":0,\\\"finding_without_evidence_count\\\":0,\\\"u\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-actions?case_id=RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"endpoint\":\"/api/redteam/v2/tool-actions\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_action_list\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":1,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_list\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"status\\\":null,\\\"count\\\":1,\\\"items\\\":[{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_card\\\",\\\"action_id\\\":\\\"TAC-53AD5C28ED88\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"campaign_id\\\":\\\"RTA-2026-0301-CAMP-V2\\\",\\\"t\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/cases/RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001/rbac\",\"endpoint\":\"/api/redteam/v2/cases/RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001/rbac\",\"status\":200,\"kind\":\"redteam_ax_v2_case_rbac_policy\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_case_rbac_policy\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"assignment_count\\\":3,\\\"assignments\\\":[{\\\"actor_id\\\":\\\"business-owner@example.com\\\",\\\"roles\\\":[\\\"business_owner\\\"],\\\"permissions\\\":[\\\"finding:approve_severity\\\",\\\"risk:accept\\\"]},{\\\"actor_id\\\":\\\"executive-sponsor@example.c\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/analysis-agents\",\"endpoint\":\"/api/redteam/v2/analysis-agents\",\"status\":200,\"kind\":\"redteam_ax_v2_analysis_agent_registry\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_analysis_agent_registry\\\",\\\"agent_count\\\":6,\\\"agents\\\":[{\\\"agent_id\\\":\\\"AGENT-NPM-AUDIT-ANALYST-001\\\",\\\"name\\\":\\\"npm_audit_result_normalizer_agent\\\",\\\"tool_ids\\\":[\\\"TOOL-NPM-AUDIT-001\\\"],\\\"role\\\":\\\"Normalize npm audit advisories into dependency evidence candidates and retest steps.\\\",\\\"output_contr\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests\",\"endpoint\":\"/api/redteam/v2/tool-wrapper-manifests\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_wrapper_manifest_registry\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_wrapper_manifest_registry\\\",\\\"manifest_count\\\":6,\\\"manifests\\\":[{\\\"kind\\\":\\\"redteam_ax_v2_tool_wrapper_manifest\\\",\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"tool_name\\\":\\\"nuclei\\\",\\\"adapter_type\\\":\\\"cli_wrapper\\\",\\\"command_name\\\":\\\"nuclei\\\",\\\"availability\\\":{\\\"status\\\":\\\"missing\\\",\\\"command\\\":\\\"nuclei\\\",\\\"path\\\":null\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-install-readiness\",\"endpoint\":\"/api/redteam/v2/tool-install-readiness\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_install_readiness_registry\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_install_readiness_registry\\\",\\\"tool_count\\\":6,\\\"ready_count\\\":2,\\\"blocked_count\\\":4,\\\"safe_by_default\\\":true,\\\"commands_executed_by_api\\\":false,\\\"policy\\\":\\\"Install and verification commands are operator-run plans; API never installs tools automatically.\\\",\\\"items\\\":[{\\\"kind\\\":\\\"redteam_ax_v\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/analysis-tools\",\"endpoint\":\"/api/redteam/v2/analysis-tools\",\"status\":200,\"kind\":\"redteam_ax_v2_analysis_tool_registry\",\"actionId\":null,\"statusField\":null,\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_analysis_tool_registry\\\",\\\"tool_count\\\":6,\\\"tools\\\":[{\\\"tool_id\\\":\\\"TOOL-NUCLEI-001\\\",\\\"name\\\":\\\"nuclei\\\",\\\"display_name\\\":\\\"Nuclei\\\",\\\"category\\\":\\\"web_validation\\\",\\\"risk_class\\\":\\\"T3\\\",\\\"adapter_type\\\":\\\"cli_wrapper\\\",\\\"command_name\\\":\\\"nuclei\\\",\\\"default_execution_mode\\\":\\\"manual_operator_run\\\",\\\"allowed_execu\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-actions/plan\",\"endpoint\":\"/api/redteam/v2/tool-actions/plan\",\"status\":200,\"kind\":\"redteam_ax_v2_tool_action_card\",\"actionId\":\"TAC-53AD5C28ED88\",\"statusField\":\"ScopeValidated\",\"actionStatus\":null,\"requiredApprovers\":null,\"allowedButtons\":[\"Plan\",\"Select Tool\",\"Validate Scope\",\"Record Manual Run\",\"Request Approval\",\"Import Output\",\"Create Evidence\",\"Generate Finding Draft\"],\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_tool_action_card\\\",\\\"action_id\\\":\\\"TAC-53AD5C28ED88\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"campaign_id\\\":\\\"RTA-2026-0301-CAMP-V2\\\",\\\"title\\\":\\\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\\\",\\\"objective\\\":\\\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\\\",\\\"action_type\\\":\\\"analysis_support\\\",\"},{\"url\":\"http://127.0.0.1:8765/api/redteam/v2/tool-actions/TAC-53AD5C28ED88/request-approval\",\"endpoint\":\"/api/redteam/v2/tool-actions/TAC-53AD5C28ED88/request-approval\",\"status\":200,\"kind\":\"redteam_ax_v2_approval_request\",\"actionId\":\"TAC-53AD5C28ED88\",\"statusField\":\"ApprovalRequested\",\"actionStatus\":\"ApprovalRequested\",\"requiredApprovers\":[\"red_team_lead\"],\"allowedButtons\":null,\"itemCount\":null,\"bodyPrefix\":\"{\\\"kind\\\":\\\"redteam_ax_v2_approval_request\\\",\\\"request_id\\\":\\\"APR-E2F64AC329A7\\\",\\\"case_id\\\":\\\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\\\",\\\"action_id\\\":\\\"TAC-53AD5C28ED88\\\",\\\"status\\\":\\\"ApprovalRequested\\\",\\\"errors\\\":[],\\\"requested_by\\\":\\\"current-analyst\\\",\\\"requested_at\\\":\\\"2026-07-02T02:47:55Z\\\",\\\"justification\\\":\\\"RTA-2026-0\"}],\"title\":\"AI Agentic SOC 쨌 Report Studio v4 (Idiomatic React)\",\"finalUrl\":\"http://127.0.0.1:5177/reports\",\"bodyPrefix\":\"Agentic SOC\\nOPERATING SYSTEM\\nOPERATE\\n�쁽�솴\\n�븣由� �걧\\n�궗嫄�\\n����쓳\\n�뿄�듃\\nUNDERSTAND\\n�쐞�뿕 留λ씫\\n利앹쟻\\n�씤�뀛由ъ쟾�뒪\\n�깘吏�\\n硫붾え由�\\nBUILD\\n�뿉�씠�쟾�듃\\n�젅李�\\n�뒪�궗\\n�뿰�룞\\n�떎�뻾 �윴����엫\\nREPORTS\\n�뼚\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\\nGOVERN\\n�젙梨�\\n�룊媛�\\n媛먯궗\\nOUTCOMES\\nSOC �꽦怨�\\n寃쎌쁺 由ъ뒪�겕\\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\\n諛��룄 쨌 蹂댄넻\\n�옄�쑉�꽦 紐⑤뱶\\nShadow\\nAssisted\\nAI-led\\nBounded\\n紐낅졊\\n�뙓K\\n�젙\\n�젙愿��젣\\nTier-3 Analyst\\n�뜲�씠�꽣 �떊�꽑�룄\\nIdentity 2m\\nEndpoint 12m\\nNetwork 4m\\nCloud 3m\\n�슑 EDR FIN-WS-204 12m stale\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\\n蹂닿퀬�꽌 �깮�꽦\\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\\nReports\\nReport catalog\\n�븙�꽦肄붾뱶 遺꾩꽍\\nWorkflow, evidence, HITL, report fields\\n�젅�뱶��� 遺꾩꽍\\nObjectives, campaigns, evidence\\n�젅�뱶��� 遺꾩꽍2\\nAX v2 ToolActionCard, HITL, evidence gates\\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\\n�긽�깭 �깉濡쒓퀬移�\\nToolActionCard 怨꾪쉷\\nv2 API\\nready\\ntool_action_card_required\\nv1 Backend\\nai-agentic-soc-redteam-backend\\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\\nRAG/Wiki\\nready\\nJ:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-agentic-rag-kb-20260629/redteam_agentic_rag.sqlite\\nReadiness\\n-\\npipeline coverage\\nToolHub\\n6\\nToolActionCard + ROE + HITL before active execution\\nCase / ROE �엯�젰\\n蹂닿퀬�꽌\\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\\n����긽 �쑀�삎\\nIP\\nURL\\nDomain\\nCIDR\\n����긽\\nRisk Class\\nT0\\nT1\\nT2\\nT3\\nT4\\nT5\\nT6\\nT7\\nScope Ref\\nAnalysis Tool\\nNuclei\\nOpenVAS / Greenbone Community Edition\\nTrivy\\nSCA Dependency Analyzer\\nnpm audit\\nOWASP ZAP\\nExecution Mode\\n\",\"toolActionPlan\":{\"responseFound\":true,\"responseStatus\":200,\"actionId\":\"TAC-53AD5C28ED88\",\"actionIdPresent\":true,\"requestApprovalAvailable\":true,\"requestApprovalVisible\":false,\"roeVisible\":true,\"hitlVisible\":true,\"governedRunnerNotClicked\":true},\"approvalQueue\":{\"responseFound\":true,\"responseStatus\":200,\"statusField\":\"ApprovalRequested\",\"actionStatus\":\"ApprovalRequested\",\"requiredApprovers\":[\"red_team_lead\"],\"queueStatusVisible\":true,\"requestButtonVisibleAfterSubmit\":false,\"requestButtonHiddenAfterSubmit\":true,\"executeButtonVisible\":true,\"executeButtonDisabled\":true,\"governedRunnerNotClicked\":true,\"governedRunnerBlockedBeforeApproval\":true},\"status\":\"passed\"}\n",
       "stderr": ""
     },
     "result": {
@@ -69,7 +71,8 @@
         "toolActionCard": true,
         "hitlGate": true,
         "evidenceGate": true,
-        "toolActionPlanCreated": true
+        "toolActionPlanCreated": true,
+        "approvalQueueRequested": true
       },
       "apiResponses": [
         {
@@ -78,8 +81,12 @@
           "status": 200,
           "kind": "redteam_ax_v2_health",
           "actionId": null,
+          "statusField": "ready",
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
           "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_health\",\"service\":\"redteam-ax-v2\",\"status\":\"ready\",\"safe_by_default\":true,\"execution_policy\":\"tool_action_card_required\",\"high_risk_mode\":\"human_approved_manual_run\",\"report_gate\":{\"unsupported_claim_count\":0,\"unapproved_high_risk_count\":0,\"finding_without_evidence_count\":0,\"unapproved_finding_count\":0,\"unapproved_final_severity_count\":0},\"actor_context_provider\":\"local_dev_session_or_request_headers\"}"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_health\",\"service\":\"redteam-ax-v2\",\"status\":\"ready\",\"safe_by_default\":true,\"execution_policy\":\"tool_action_card_required\",\"high_risk_mode\":\"human_approved_manual_run\",\"report_gate\":{\"unsupported_claim_count\":0,\"unapproved_high_risk_count\":0,\"finding_without_evidence_count\":0,\"u"
         },
         {
           "url": "http://127.0.0.1:8765/api/redteam/v2/tool-actions?case_id=RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001",
@@ -87,8 +94,12 @@
           "status": 200,
           "kind": "redteam_ax_v2_tool_action_list",
           "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
           "itemCount": 1,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_action_list\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"status\":null,\"count\":1,\"items\":[{\"kind\":\"redteam_ax_v2_tool_action_card\",\"action_id\":\"TAC-53AD5C28ED88\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"campaign_id\":\"RTA-2026-0301-CAMP-V2\",\"title\":\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\",\"objective\":\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\",\"action_type\":\"analysis_support\",\"tool_id\":\"TOOL-NUCLEI-001\",\"tool_profile\":{\"tool_id\":\"TOOL-NUCLEI-00"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_action_list\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"status\":null,\"count\":1,\"items\":[{\"kind\":\"redteam_ax_v2_tool_action_card\",\"action_id\":\"TAC-53AD5C28ED88\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"campaign_id\":\"RTA-2026-0301-CAMP-V2\",\"t"
         },
         {
           "url": "http://127.0.0.1:8765/api/redteam/v2/cases/RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001/rbac",
@@ -96,8 +107,12 @@
           "status": 200,
           "kind": "redteam_ax_v2_case_rbac_policy",
           "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
           "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_case_rbac_policy\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"assignment_count\":3,\"assignments\":[{\"actor_id\":\"business-owner@example.com\",\"roles\":[\"business_owner\"],\"permissions\":[\"finding:approve_severity\",\"risk:accept\"]},{\"actor_id\":\"executive-sponsor@example.com\",\"roles\":[\"executive_sponsor\"],\"permissions\":[\"report:approve_export\",\"risk:accept\"]},{\"actor_id\":\"lead@example.com\",\"roles\":[\"red_team_lead\"],\"permissions\":[\"evidence:approve\",\"finding:approve_sev"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_case_rbac_policy\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"assignment_count\":3,\"assignments\":[{\"actor_id\":\"business-owner@example.com\",\"roles\":[\"business_owner\"],\"permissions\":[\"finding:approve_severity\",\"risk:accept\"]},{\"actor_id\":\"executive-sponsor@example.c"
         },
         {
           "url": "http://127.0.0.1:8765/api/redteam/v2/analysis-agents",
@@ -105,17 +120,12 @@
           "status": 200,
           "kind": "redteam_ax_v2_analysis_agent_registry",
           "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
           "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_analysis_agent_registry\",\"agent_count\":6,\"agents\":[{\"agent_id\":\"AGENT-NPM-AUDIT-ANALYST-001\",\"name\":\"npm_audit_result_normalizer_agent\",\"tool_ids\":[\"TOOL-NPM-AUDIT-001\"],\"role\":\"Normalize npm audit advisories into dependency evidence candidates and retest steps.\",\"output_contract\":\"redteam_ax_v2_tool_result_normalized\"},{\"agent_id\":\"AGENT-NUCLEI-ANALYST-001\",\"name\":\"nuclei_result_normalizer_agent\",\"tool_ids\":[\"TOOL-NUCLEI-001\"],\"role\":\"Normalize nuclei JSONL into evidence "
-        },
-        {
-          "url": "http://127.0.0.1:8765/api/redteam/v2/analysis-tools",
-          "endpoint": "/api/redteam/v2/analysis-tools",
-          "status": 200,
-          "kind": "redteam_ax_v2_analysis_tool_registry",
-          "actionId": null,
-          "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_analysis_tool_registry\",\"tool_count\":6,\"tools\":[{\"tool_id\":\"TOOL-NUCLEI-001\",\"name\":\"nuclei\",\"display_name\":\"Nuclei\",\"category\":\"web_validation\",\"risk_class\":\"T3\",\"adapter_type\":\"cli_wrapper\",\"command_name\":\"nuclei\",\"default_execution_mode\":\"manual_operator_run\",\"allowed_execution_modes\":[\"plan_only\",\"dry_run\",\"offline_parse\",\"manual_operator_run\",\"lab_execute\"],\"denied_execution_modes\":[\"controlled_production_execute\",\"prohibited\"],\"default_policy\":\"approved_templates_and"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_analysis_agent_registry\",\"agent_count\":6,\"agents\":[{\"agent_id\":\"AGENT-NPM-AUDIT-ANALYST-001\",\"name\":\"npm_audit_result_normalizer_agent\",\"tool_ids\":[\"TOOL-NPM-AUDIT-001\"],\"role\":\"Normalize npm audit advisories into dependency evidence candidates and retest steps.\",\"output_contr"
         },
         {
           "url": "http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests",
@@ -123,8 +133,38 @@
           "status": 200,
           "kind": "redteam_ax_v2_tool_wrapper_manifest_registry",
           "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
           "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_wrapper_manifest_registry\",\"manifest_count\":6,\"manifests\":[{\"kind\":\"redteam_ax_v2_tool_wrapper_manifest\",\"tool_id\":\"TOOL-NUCLEI-001\",\"tool_name\":\"nuclei\",\"adapter_type\":\"cli_wrapper\",\"command_name\":\"nuclei\",\"availability\":{\"status\":\"missing\",\"command\":\"nuclei\",\"path\":null,\"checked_at\":\"2026-07-02T02:42:02Z\"},\"resolved_path\":null,\"expected_sha256\":null,\"expected_sha256_source\":\"not_configured\",\"approved_pin\":null,\"actual_sha256\":null,\"hash_error\":null,\"pinning_status\":"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_wrapper_manifest_registry\",\"manifest_count\":6,\"manifests\":[{\"kind\":\"redteam_ax_v2_tool_wrapper_manifest\",\"tool_id\":\"TOOL-NUCLEI-001\",\"tool_name\":\"nuclei\",\"adapter_type\":\"cli_wrapper\",\"command_name\":\"nuclei\",\"availability\":{\"status\":\"missing\",\"command\":\"nuclei\",\"path\":null"
+        },
+        {
+          "url": "http://127.0.0.1:8765/api/redteam/v2/tool-install-readiness",
+          "endpoint": "/api/redteam/v2/tool-install-readiness",
+          "status": 200,
+          "kind": "redteam_ax_v2_tool_install_readiness_registry",
+          "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
+          "itemCount": null,
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_install_readiness_registry\",\"tool_count\":6,\"ready_count\":2,\"blocked_count\":4,\"safe_by_default\":true,\"commands_executed_by_api\":false,\"policy\":\"Install and verification commands are operator-run plans; API never installs tools automatically.\",\"items\":[{\"kind\":\"redteam_ax_v"
+        },
+        {
+          "url": "http://127.0.0.1:8765/api/redteam/v2/analysis-tools",
+          "endpoint": "/api/redteam/v2/analysis-tools",
+          "status": 200,
+          "kind": "redteam_ax_v2_analysis_tool_registry",
+          "actionId": null,
+          "statusField": null,
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": null,
+          "itemCount": null,
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_analysis_tool_registry\",\"tool_count\":6,\"tools\":[{\"tool_id\":\"TOOL-NUCLEI-001\",\"name\":\"nuclei\",\"display_name\":\"Nuclei\",\"category\":\"web_validation\",\"risk_class\":\"T3\",\"adapter_type\":\"cli_wrapper\",\"command_name\":\"nuclei\",\"default_execution_mode\":\"manual_operator_run\",\"allowed_execu"
         },
         {
           "url": "http://127.0.0.1:8765/api/redteam/v2/tool-actions/plan",
@@ -132,22 +172,67 @@
           "status": 200,
           "kind": "redteam_ax_v2_tool_action_card",
           "actionId": "TAC-53AD5C28ED88",
+          "statusField": "ScopeValidated",
+          "actionStatus": null,
+          "requiredApprovers": null,
+          "allowedButtons": [
+            "Plan",
+            "Select Tool",
+            "Validate Scope",
+            "Record Manual Run",
+            "Request Approval",
+            "Import Output",
+            "Create Evidence",
+            "Generate Finding Draft"
+          ],
           "itemCount": null,
-          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_action_card\",\"action_id\":\"TAC-53AD5C28ED88\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"campaign_id\":\"RTA-2026-0301-CAMP-V2\",\"title\":\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\",\"objective\":\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\",\"action_type\":\"analysis_support\",\"tool_id\":\"TOOL-NUCLEI-001\",\"tool_profile\":{\"tool_id\":\"TOOL-NUCLEI-001\",\"name\":\"nuclei\",\"category\":\"web_validation\",\"normalizer_id\":\"NORMALIZER-NUCLEI-001\",\"agent_id\":\"AGENT-NUCLEI-ANALYST-001\",\"defau"
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_tool_action_card\",\"action_id\":\"TAC-53AD5C28ED88\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"campaign_id\":\"RTA-2026-0301-CAMP-V2\",\"title\":\"RTA-2026-0301 쨌 RedTeam AX v2 ToolActionCard\",\"objective\":\"ID/MFA �삁�쇅��� SaaS 怨쇰룄 沅뚰븳 寃고빀 �쐞�뿕 寃�利�\",\"action_type\":\"analysis_support\","
+        },
+        {
+          "url": "http://127.0.0.1:8765/api/redteam/v2/tool-actions/TAC-53AD5C28ED88/request-approval",
+          "endpoint": "/api/redteam/v2/tool-actions/TAC-53AD5C28ED88/request-approval",
+          "status": 200,
+          "kind": "redteam_ax_v2_approval_request",
+          "actionId": "TAC-53AD5C28ED88",
+          "statusField": "ApprovalRequested",
+          "actionStatus": "ApprovalRequested",
+          "requiredApprovers": [
+            "red_team_lead"
+          ],
+          "allowedButtons": null,
+          "itemCount": null,
+          "bodyPrefix": "{\"kind\":\"redteam_ax_v2_approval_request\",\"request_id\":\"APR-E2F64AC329A7\",\"case_id\":\"RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001\",\"action_id\":\"TAC-53AD5C28ED88\",\"status\":\"ApprovalRequested\",\"errors\":[],\"requested_by\":\"current-analyst\",\"requested_at\":\"2026-07-02T02:47:55Z\",\"justification\":\"RTA-2026-0"
         }
       ],
       "title": "AI Agentic SOC 쨌 Report Studio v4 (Idiomatic React)",
       "finalUrl": "http://127.0.0.1:5177/reports",
-      "bodyPrefix": "Agentic SOC\nOPERATING SYSTEM\nOPERATE\n�쁽�솴\n�븣由� �걧\n�궗嫄�\n����쓳\n�뿄�듃\nUNDERSTAND\n�쐞�뿕 留λ씫\n利앹쟻\n�씤�뀛由ъ쟾�뒪\n�깘吏�\n硫붾え由�\nBUILD\n�뿉�씠�쟾�듃\n�젅李�\n�뒪�궗\n�뿰�룞\n�떎�뻾 �윴����엫\nREPORTS\n�뼚\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\nGOVERN\n�젙梨�\n�룊媛�\n媛먯궗\nOUTCOMES\nSOC �꽦怨�\n寃쎌쁺 由ъ뒪�겕\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\n諛��룄 쨌 蹂댄넻\n�옄�쑉�꽦 紐⑤뱶\nShadow\nAssisted\nAI-led\nBounded\n紐낅졊\n�뙓K\n�젙\n�젙愿��젣\nTier-3 Analyst\n�뜲�씠�꽣 �떊�꽑�룄\nIdentity 2m\nEndpoint 12m\nNetwork 4m\nCloud 3m\n�슑 EDR FIN-WS-204 12m stale\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\n蹂닿퀬�꽌 �깮�꽦\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\nReports\nReport catalog\n�븙�꽦肄붾뱶 遺꾩꽍\nWorkflow, evidence, HITL, report fields\n�젅�뱶��� 遺꾩꽍\nObjectives, campaigns, evidence\n�젅�뱶��� 遺꾩꽍2\nAX v2 ToolActionCard, HITL, evidence gates\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\n�긽�깭 �깉濡쒓퀬移�\nToolActionCard 怨꾪쉷\nv2 API\nready\ntool_action_card_required\nv1 Backend\nai-agentic-soc-redteam-backend\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\nRAG/Wiki\npending\nsignal is aborted without reason\nReadiness\n-\nsignal is aborted without reason\nToolHub\n6\nToolActionCard + ROE + HITL before active execution\nCase / ROE �엯�젰\n蹂닿퀬�꽌\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\n����긽 �쑀�삎\nIP\nURL\nDomain\nCIDR\n����긽\nRisk Class\nT0\nT1\nT2\nT3\nT4\nT5\nT6\nT7\nScope Ref\nAnalysis Tool\nNuclei\nOpenVAS / Greenbone Community Edition\nTrivy\nSCA Dependency Analyzer\nnpm audit\nOWASP ZAP\nExecution Mode\nplan_only\noffline_parse\nsandbox_execute\nmanual_operator_run\nlab_exec",
+      "bodyPrefix": "Agentic SOC\nOPERATING SYSTEM\nOPERATE\n�쁽�솴\n�븣由� �걧\n�궗嫄�\n����쓳\n�뿄�듃\nUNDERSTAND\n�쐞�뿕 留λ씫\n利앹쟻\n�씤�뀛由ъ쟾�뒪\n�깘吏�\n硫붾え由�\nBUILD\n�뿉�씠�쟾�듃\n�젅李�\n�뒪�궗\n�뿰�룞\n�떎�뻾 �윴����엫\nREPORTS\n�뼚\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤\nGOVERN\n�젙梨�\n�룊媛�\n媛먯궗\nOUTCOMES\nSOC �꽦怨�\n寃쎌쁺 由ъ뒪�겕\n��쏰ne context graph, many specialized agents, one evidence ledger, one governed action gate.���\n諛��룄 쨌 蹂댄넻\n�옄�쑉�꽦 紐⑤뱶\nShadow\nAssisted\nAI-led\nBounded\n紐낅졊\n�뙓K\n�젙\n�젙愿��젣\nTier-3 Analyst\n�뜲�씠�꽣 �떊�꽑�룄\nIdentity 2m\nEndpoint 12m\nNetwork 4m\nCloud 3m\n�슑 EDR FIN-WS-204 12m stale\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤 쨌 Report Studio\n�뿉�씠�쟾�듃 �옉�꽦 �넂 �씤媛� 寃��넗 �넂 �듅�씤\n蹂닿퀬�꽌 �깮�꽦\n蹂닿퀬�꽌 �뒪�뒠�뵒�삤�뒗 諛깆뿏�뱶 遺꾩꽍 �윴怨� 利앷굅 洹몃옒�봽瑜� 湲곗���쑝濡� 珥덉븞�쓣 留뚮벊�땲�떎. �젅�뱶��� 蹂닿퀬�꽌�뒗 怨듦컻 蹂닿퀬�꽌 �궗濡��쓽 �젅李� 援ъ“瑜� 李멸퀬�븯�릺 �떎�젣 洹쇨굅�뒗 Red Team Studio, safe ASM, �룄援� �떎�뻾/李⑤떒 寃곗젙, Evidence Matrix, Release Gate�뿉�꽌留� 媛��졇�삤硫� �솕硫댁뿉�뒗 遺꾩꽍媛�媛� 寃��넗�븷 �슂�빟, 利앷굅, �젣�븳�궗�빆, ����쓳 沅뚭퀬, �듅�씤 �긽�깭瑜� �끂異쒗빀�땲�떎.\nReports\nReport catalog\n�븙�꽦肄붾뱶 遺꾩꽍\nWorkflow, evidence, HITL, report fields\n�젅�뱶��� 遺꾩꽍\nObjectives, campaigns, evidence\n�젅�뱶��� 遺꾩꽍2\nAX v2 ToolActionCard, HITL, evidence gates\n�젅�뱶��� 遺꾩꽍2 쨌 RedTeam AX v2\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쓲由꾩쓣 湲곗���쑝濡� ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 寃뚯씠�듃瑜� 遺꾨━�븳 �썙�겕踰ㅼ튂\n�긽�깭 �깉濡쒓퀬移�\nToolActionCard 怨꾪쉷\nv2 API\nready\ntool_action_card_required\nv1 Backend\nai-agentic-soc-redteam-backend\n湲곗〈 �젅�뱶��� 遺꾩꽍 �쉶洹� 湲곗��\nRAG/Wiki\nready\nJ:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-agentic-rag-kb-20260629/redteam_agentic_rag.sqlite\nReadiness\n-\npipeline coverage\nToolHub\n6\nToolActionCard + ROE + HITL before active execution\nCase / ROE �엯�젰\n蹂닿퀬�꽌\nRTA-2026-0301 쨌 ID쨌SaaS 沅뚰븳 寃쎄퀎 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0302 쨌 �쇅遺� 怨듦꺽�몴硫� 諛� 珥덇린 �젒洹� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0303 쨌 �깘吏�쨌����쓳 ����엫�씪�씤 �젅�뱶��� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0304 쨌 利앷굅 罹≪쿂쨌濡쒓렇 蹂댁〈쨌Claim-Evidence Matrix �룊媛� 蹂닿퀬�꽌\nRTA-2026-0305 쨌 �꽕�듃�썙�겕 �꽭洹몃㉫�듃 諛� �궡遺� �떊猶� 寃쎄퀎 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0306 쨌 IR Triage 諛� �뿉�뒪而щ젅�씠�뀡 湲곗�� �룊媛� 蹂닿퀬�꽌\nRTA-2026-0307 쨌 MITRE ATT&CK 湲곕컲 �젅�뱶��� 怨듦꺽寃쎈줈 留ㅽ븨 蹂닿퀬�꽌\nRTA-2026-0308 쨌 媛쒖꽑 濡쒕뱶留� 諛� �깘吏� �뿏吏��땲�뼱留� 諛깅줈洹� 蹂닿퀬�꽌\nRTA-2026-0309 쨌 �띁�뵆��� �옱寃�利� 諛� AX �옄�룞�솕 �뿰怨� 蹂닿퀬�꽌\nRTA-2026-0310 쨌 �떆媛� 利앷굅 �꽕紐� 洹쒖튃 諛� 誘쇨컧�젙蹂� 留덉뒪�궧 �룊媛� 蹂닿퀬�꽌\nRTA-2026-0311 쨌 寃쎌쁺吏꾩슜 醫낇빀 �젅�뱶��� �룊媛� 諛� 寃곕줎 蹂닿퀬�꽌\n����긽 �쑀�삎\nIP\nURL\nDomain\nCIDR\n����긽\nRisk Class\nT0\nT1\nT2\nT3\nT4\nT5\nT6\nT7\nScope Ref\nAnalysis Tool\nNuclei\nOpenVAS / Greenbone Community Edition\nTrivy\nSCA Dependency Analyzer\nnpm audit\nOWASP ZAP\nExecution Mode\n",
       "toolActionPlan": {
         "responseFound": true,
         "responseStatus": 200,
         "actionId": "TAC-53AD5C28ED88",
         "actionIdPresent": true,
-        "requestApprovalVisible": true,
+        "requestApprovalAvailable": true,
+        "requestApprovalVisible": false,
         "roeVisible": true,
         "hitlVisible": true,
         "governedRunnerNotClicked": true
+      },
+      "approvalQueue": {
+        "responseFound": true,
+        "responseStatus": 200,
+        "statusField": "ApprovalRequested",
+        "actionStatus": "ApprovalRequested",
+        "requiredApprovers": [
+          "red_team_lead"
+        ],
+        "queueStatusVisible": true,
+        "requestButtonVisibleAfterSubmit": false,
+        "requestButtonHiddenAfterSubmit": true,
+        "executeButtonVisible": true,
+        "executeButtonDisabled": true,
+        "governedRunnerNotClicked": true,
+        "governedRunnerBlockedBeforeApproval": true
       },
       "status": "passed"
     },

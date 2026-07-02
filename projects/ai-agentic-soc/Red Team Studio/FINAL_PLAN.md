@@ -946,7 +946,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py --allow-browser --require-live` exit 0 통과
 - [x] smoke artifact: `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json`
 - [x] ToolActionCard 계획 생성 버튼 클릭 후 API 생성 결과와 queue/HITL/ROE DOM 반영 검증 - slice 39 완료
-- [ ] 다음 live browser smoke: Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증
+- [x] Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증 - slice 41 완료
 
 ## 47. Slice 39 Live ToolActionCard Planning Browser Smoke 체크리스트
 
@@ -970,4 +970,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam v2 API 라우터 회귀 42개 통과
 - [x] 실제 live backend에서 `/api/malax/latest`, `/api/malax/runs` polling 500 로그가 사라지는지 확인
 - [x] polling이 있는 live Report Studio에서 browser smoke가 `networkidle`에 묶이지 않도록 `domcontentloaded` 기준으로 안정화
-- [ ] 다음 live browser smoke: Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증
+- [x] Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증 - slice 41 완료
+- [ ] 다음 live browser smoke: 승인 grant 후 `Run in Lab` 노출과 manual-run-only evidence upload requirement 검증
+
+## 49. Slice 41 Live Approval Queue Browser Smoke 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py`에 `--allow-approval-request` opt-in 추가
+- [x] `--allow-approval-request`는 `--allow-action` 없이는 차단되어 ToolActionCard 계획 없이 승인 요청하지 않음
+- [x] Playwright가 `ToolActionCard 계획` 후 `Request Approval` 버튼만 클릭하고 approval grant는 수행하지 않음
+- [x] `/api/redteam/v2/tool-actions/{action_id}/request-approval` 200 응답과 `ApprovalRequested` 상태를 evidence에 저장
+- [x] approval queue DOM에서 `ApprovalRequested` 상태와 required approver role 표시 확인
+- [x] 승인 전 `Execute Governed Runner` 버튼이 visible이지만 disabled임을 검증
+- [x] `governedRunnerNotClicked=true`, `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
+- [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`

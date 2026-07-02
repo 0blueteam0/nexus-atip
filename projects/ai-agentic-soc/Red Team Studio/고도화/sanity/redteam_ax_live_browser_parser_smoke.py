@@ -88,7 +88,7 @@ def node_executable() -> str:
     return "node"
 
 
-def playwright_browser_smoke(frontend_url: str, timeout: int, allow_action: bool) -> dict[str, Any]:
+def playwright_browser_smoke(frontend_url: str, timeout: int, allow_action: bool, allow_approval_request: bool) -> dict[str, Any]:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     script_path = ARTIFACT_DIR / "live_browser_parser_probe.mjs"
     script_path.write_text(
@@ -97,6 +97,7 @@ import { chromium } from 'playwright';
 
 const url = process.argv[2];
 const allowAction = process.argv[3] === 'allow-action';
+const allowApprovalRequest = process.argv[4] === 'allow-approval-request';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const result = { url, checks: {}, apiResponses: [] };
@@ -116,8 +117,12 @@ try {
       status: response.status(),
       kind: parsed && parsed.kind ? parsed.kind : null,
       actionId: parsed && parsed.action_id ? parsed.action_id : null,
+      statusField: parsed && parsed.status ? parsed.status : null,
+      actionStatus: parsed && parsed.action && parsed.action.status ? parsed.action.status : null,
+      requiredApprovers: parsed && Array.isArray(parsed.required_approvers) ? parsed.required_approvers : null,
+      allowedButtons: parsed && Array.isArray(parsed.allowed_buttons) ? parsed.allowed_buttons : null,
       itemCount: parsed && parsed.count != null ? parsed.count : null,
-      bodyPrefix: body.slice(0, 500),
+      bodyPrefix: body.slice(0, 300),
     });
   });
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -129,10 +134,18 @@ try {
     await page.getByRole('button', { name: /ToolActionCard 계획/ }).click({ timeout: 10000 });
     await page.waitForTimeout(3000);
   }
+  if (allowApprovalRequest) {
+    await page.getByRole('button', { name: /Request Approval/ }).first().click({ timeout: 10000 });
+    await page.waitForTimeout(3000);
+  }
   result.title = await page.title();
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
   result.bodyPrefix = bodyText.slice(0, 2000);
+  const requestApprovalButtonVisible = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+  const executeButton = page.getByRole('button', { name: /Execute Governed Runner/ }).first();
+  const executeButtonVisible = await executeButton.isVisible({ timeout: 2000 }).catch(() => false);
+  const executeButtonDisabled = executeButtonVisible ? await executeButton.isDisabled().catch(() => false) : null;
   result.checks.reportStudio = bodyText.includes('보고서 스튜디오') || bodyText.includes('Report Studio');
   result.checks.redteamAnalysis = bodyText.includes('레드팀 분석');
   result.checks.redteamAnalysis2 = bodyText.includes('레드팀 분석2') || bodyText.includes('RedTeam AX v2');
@@ -146,6 +159,7 @@ try {
       responseStatus: planResponse ? planResponse.status : null,
       actionId: planResponse ? planResponse.actionId : null,
       actionIdPresent: Boolean(planResponse && /^TAC-[A-Z0-9-]+$/.test(planResponse.actionId || '')) || /TAC-[A-Z0-9-]+/.test(bodyText),
+      requestApprovalAvailable: (planResponse && Array.isArray(planResponse.allowedButtons) && planResponse.allowedButtons.includes('Request Approval')) || bodyText.includes('Request Approval'),
       requestApprovalVisible: bodyText.includes('Request Approval'),
       roeVisible: bodyText.includes('ROE'),
       hitlVisible: bodyText.includes('HITL'),
@@ -154,10 +168,37 @@ try {
     result.checks.toolActionPlanCreated = result.toolActionPlan.responseFound
       && result.toolActionPlan.responseStatus === 200
       && result.toolActionPlan.actionIdPresent
-      && result.toolActionPlan.requestApprovalVisible
+      && result.toolActionPlan.requestApprovalAvailable
       && result.toolActionPlan.roeVisible
       && result.toolActionPlan.hitlVisible
       && result.toolActionPlan.governedRunnerNotClicked;
+  }
+  if (allowApprovalRequest) {
+    const approvalResponse = result.apiResponses.find((item) => item.url.includes('/request-approval'));
+    result.approvalQueue = {
+      responseFound: Boolean(approvalResponse),
+      responseStatus: approvalResponse ? approvalResponse.status : null,
+      statusField: approvalResponse ? approvalResponse.statusField : null,
+      actionStatus: approvalResponse ? approvalResponse.actionStatus : null,
+      requiredApprovers: approvalResponse ? approvalResponse.requiredApprovers : null,
+      queueStatusVisible: bodyText.includes('ApprovalRequested'),
+      requestButtonVisibleAfterSubmit: requestApprovalButtonVisible,
+      requestButtonHiddenAfterSubmit: requestApprovalButtonVisible === false,
+      executeButtonVisible,
+      executeButtonDisabled,
+      governedRunnerNotClicked: true,
+      governedRunnerBlockedBeforeApproval: executeButtonVisible === true && executeButtonDisabled === true,
+    };
+    result.checks.approvalQueueRequested = result.approvalQueue.responseFound
+      && result.approvalQueue.responseStatus === 200
+      && result.approvalQueue.statusField === 'ApprovalRequested'
+      && result.approvalQueue.actionStatus === 'ApprovalRequested'
+      && Array.isArray(result.approvalQueue.requiredApprovers)
+      && result.approvalQueue.requiredApprovers.length > 0
+      && result.approvalQueue.queueStatusVisible
+      && result.approvalQueue.requestButtonHiddenAfterSubmit
+      && result.approvalQueue.governedRunnerBlockedBeforeApproval
+      && result.approvalQueue.governedRunnerNotClicked;
   }
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
@@ -172,7 +213,8 @@ console.log(JSON.stringify(result));
         newline="\n",
     )
     action_arg = "allow-action" if allow_action else "dom-only"
-    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg], cwd=FRONTEND_ROOT, timeout=timeout)
+    approval_arg = "allow-approval-request" if allow_approval_request else "approval-request-disabled"
+    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg], cwd=FRONTEND_ROOT, timeout=timeout)
     parsed: dict[str, Any] | None = None
     if probe.get("stdout"):
         try:
@@ -202,6 +244,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "backend_url": backend_url,
         "allow_browser_automation": allow_browser,
         "allow_browser_action_smoke": args.allow_action,
+        "allow_browser_approval_request_smoke": args.allow_approval_request,
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "browser_automation_executed": False,
@@ -238,12 +281,16 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         result["status"] = "blocked_action_smoke_requires_browser"
         result["blockers"] = ["action_smoke_requires_allow_browser"]
         return result, 2 if args.require_live else 0
+    if args.allow_approval_request and not args.allow_action:
+        result["status"] = "blocked_approval_request_smoke_requires_action"
+        result["blockers"] = ["approval_request_smoke_requires_allow_action"]
+        return result, 2 if args.require_live else 0
     if not (FRONTEND_ROOT / "node_modules" / "playwright").exists():
         result["status"] = "blocked_playwright_dependency_not_installed"
         result["blockers"] = ["frontend_node_modules_playwright_not_found"]
         return result, 2 if args.require_live else 0
     result["browser_automation_executed"] = True
-    browser = playwright_browser_smoke(frontend_url + "/", args.timeout, args.allow_action)
+    browser = playwright_browser_smoke(frontend_url + "/", args.timeout, args.allow_action, args.allow_approval_request)
     result["browser_smoke"] = browser
     result["status"] = "passed" if browser.get("status") == "passed" else "failed_browser_dom_parser_smoke"
     result["blockers"] = [] if result["status"] == "passed" else [browser.get("status") or "browser_smoke_failed"]
@@ -254,6 +301,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="RedTeam AX live Report Studio browser/parser readiness smoke.")
     parser.add_argument("--allow-browser", action="store_true", help="Opt in to Playwright browser automation.")
     parser.add_argument("--allow-action", action="store_true", help="Opt in to a safe UI ToolActionCard planning click. No runner execution is triggered.")
+    parser.add_argument("--allow-approval-request", action="store_true", help="Opt in to requesting HITL approval after ToolActionCard planning. No approval grant or runner execution is triggered.")
     parser.add_argument("--require-live", action="store_true", help="Return non-zero if live services/browser smoke are not ready.")
     parser.add_argument("--frontend-url", default="http://127.0.0.1:5177")
     parser.add_argument("--backend-url", default="http://127.0.0.1:8765")

@@ -4,7 +4,7 @@
   "task": "Implement RedTeam AX v2 live approval queue browser smoke slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-114508-Red-Team-Studio-Implement-RedTeam-AX-v2-live-approval-queue-browser-smoke-slice",
   "created_at": "2026-07-02T11:45:08+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-02T11:49:20+09:00"
+  ]
 }
