@@ -1434,3 +1434,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 패널에 `Finding 초안 생성 API`와 promote-finding 조건을 한국어로 표시
 - [x] API regression test, frontend runtime readiness contract, Korean copy inventory에 promotion 경로 추가
 - [ ] 실제 운영 Evidence Card 승인 후 모든 도구 후보를 Finding으로 승격하고 2인 severity 승인 및 Report claim validation 통과
+
+## 86. Slice 78 Tool Result Claim-Evidence Matrix Draft API 체크리스트
+
+- [x] `/api/redteam/v2/tool-result-finding-claim-review/matrix-draft` API 추가
+- [x] API는 Finding/Claim review 후보를 읽어 Claim-Evidence Matrix 초안 row를 생성
+- [x] Evidence Card가 승인되지 않았거나 Finding이 없거나 Finding severity 2인 승인이 끝나지 않은 row는 `hold_until_evidence_and_finding_approved`로 보류
+- [x] 승인된 Evidence와 2인 severity 승인된 Finding만 `report_validation_payload_preview`의 claims/findings에 포함
+- [x] ready row가 없으면 report validation을 실행하지 않고 `not_run_no_ready_rows` preview를 반환
+- [x] ready row가 있으면 기존 report validation gate를 호출해 unsupported claim, evidence-less Finding, unapproved Finding/severity blocker가 0건인지 미리 확인
+- [x] API는 `report_claim_inserted=false`, `finding_created=false`, `commands_executed_by_api=false`, `active_scan_executed=false`를 유지
+- [x] API regression test가 승인 전 보류와 Evidence 승인 + Finding 2인 승인 후 ready payload preview를 모두 검증
+- [x] RedTeam2 runtime readiness panel에 `Claim-Evidence Matrix 초안 API`와 승인 조건을 한국어로 표시
+- [x] frontend runtime readiness contract, Korean copy inventory, LLM Wiki, completion audit에 Matrix draft API 반영
+- [ ] 실제 운영 후보 전체에 대해 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix draft ready, 최종 Report claim validation까지 통과

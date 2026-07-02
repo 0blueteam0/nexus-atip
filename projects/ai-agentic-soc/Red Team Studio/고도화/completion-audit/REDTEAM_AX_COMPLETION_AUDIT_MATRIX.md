@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 18 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 19 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -56,6 +56,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - npm audit, Nuclei, Trivy, OpenVAS, OWASP ZAP 최신 governed 결과를 Evidence pack, SCA-style sufficiency report, Claim-Evidence Matrix 후보, LLM analyst agent 제한으로 묶은 tool result analysis brief
 - tool result analysis brief의 Evidence pack을 Finding 초안 payload와 Claim 후보로 변환하고 Evidence 승인 전 report claim 삽입을 보류하는 finding/claim review package
 - finding/claim review 후보를 조회하고, Evidence 승인 전 promotion을 차단하며, 승인된 Evidence가 있을 때만 `pending_review` Finding 초안을 생성하는 `/api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding` API
+- finding/claim review 후보를 Claim-Evidence Matrix 초안 row로 변환하고, 승인된 Evidence와 2인 severity 승인된 Finding만 report validation payload preview에 포함하는 `/api/redteam/v2/tool-result-finding-claim-review/matrix-draft` API
 - OpenVAS/ZAP 외부 vault reference 기반 read-only credential authorization API와 한국어 UI
 - RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 한국어 패널과 frontend service import contract sanity
 - `/api/redteam/v2/runtime-readiness` read-only API와 RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 한국어 패널, 운영자 조치 runbook 단계 표, 운영자 증거 수집/제출 검증/Evidence Card 후보 import 계획 표
@@ -77,6 +78,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 승인된 운영자 제출 증거에서 생성된 Evidence Card 후보를 실제 Evidence Card API로 등록하고 사람 검토를 통과한 증거
 - tool result analysis brief의 Claim-Evidence 후보를 실제 Finding/Report claim으로 승인 연결한 증거
 - 모든 real finding/claim review 후보를 실제 운영 Evidence 승인 후 Finding으로 승격하고, 2인 severity 승인과 Report claim validation까지 통과시킨 증거
+- 모든 real finding/claim review 후보의 Matrix draft가 ready가 되고 최종 Korean Red Team Report v2에 반영된 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness/import blocker artifact만 존재한다.
 - RedTeam2 runtime readiness panel은 blocker를 보여주는 visibility 증거이며, blocker가 모두 ready로 바뀐 운영 실측 증거는 아직 아니다.
 

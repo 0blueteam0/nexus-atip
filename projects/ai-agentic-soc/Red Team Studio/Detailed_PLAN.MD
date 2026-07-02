@@ -795,3 +795,14 @@ Create Case
 - 생성된 Finding은 여전히 severity 2인 승인이 필요하며, Claim-Evidence Matrix와 보고서 Claim 삽입은 별도 검증 전까지 금지된다.
 - RedTeam2 runtime readiness panel은 `Finding 초안 생성 API`와 promote-finding 조건을 표시해 초급 운영자가 다음 버튼이 왜 막혔는지 알 수 있게 한다.
 - 이 slice는 후보와 Finding API 사이의 안전한 연결이며, 실제 운영 후보 전체 승격과 최종 보고서 통과는 후속 HITL 작업으로 남긴다.
+
+## 33. Slice 78 반영 사항
+
+- `/api/redteam/v2/tool-result-finding-claim-review/matrix-draft`는 Finding/Claim review 후보를 Claim-Evidence Matrix 초안 row로 변환한다.
+- row는 Evidence Card 승인, backend Finding 존재, Finding severity 2인 승인, supported claim 조건을 모두 만족할 때만 `ready_for_report_validation`이 된다.
+- 보류 row는 `hold_until_evidence_and_finding_approved`로 남기고 `held_claims`에 blocker를 기록한다.
+- `report_validation_payload_preview`에는 ready row의 claims/findings만 들어가므로 승인되지 않은 후보가 report gate 입력으로 섞이지 않는다.
+- ready row가 존재하면 기존 `validate_report`를 호출해 report gate preview를 만들고, ready row가 없으면 `not_run_no_ready_rows`로 검증을 실행하지 않는다.
+- API는 초안 artifact를 남기지만 Finding 생성, Claim 자동 삽입, 도구 실행, 능동 스캔을 하지 않는다.
+- RedTeam2 runtime readiness panel은 `Claim-Evidence Matrix 초안 API`와 “승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함” 조건을 한국어로 표시한다.
+- 이 slice는 최종 보고서 직전의 안전한 staging lane이며, 실제 운영 후보 전체의 승인·검증·보고서 반영은 후속 HITL 작업으로 남긴다.

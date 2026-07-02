@@ -5346,6 +5346,152 @@ def promote_tool_result_candidate_to_finding(candidate_id: str, payload: dict[st
     return append_artifact_metadata(result, "finding-candidate-promotions", promotion_id)
 
 
+def build_tool_result_claim_evidence_matrix_draft(payload: dict[str, Any]) -> dict[str, Any]:
+    review = latest_tool_result_finding_claim_review()
+    requested_case_id = str(payload.get("case_id") or "").strip()
+    requested_ids = {
+        str(item).strip()
+        for item in (payload.get("candidate_ids") or [])
+        if str(item).strip()
+    }
+    candidates = [
+        candidate
+        for candidate in (review.get("candidates") or [])
+        if not requested_ids or str(candidate.get("candidate_id") or "").strip() in requested_ids
+    ]
+    errors: list[str] = []
+    if requested_ids and len(candidates) != len(requested_ids):
+        found_ids = {str(candidate.get("candidate_id") or "").strip() for candidate in candidates}
+        errors.extend(f"candidate_not_found:{candidate_id}" for candidate_id in sorted(requested_ids - found_ids))
+
+    rows: list[dict[str, Any]] = []
+    ready_claims: list[dict[str, Any]] = []
+    ready_findings: list[dict[str, Any]] = []
+    held_claims: list[dict[str, Any]] = []
+    for candidate in candidates:
+        candidate_id = str(candidate.get("candidate_id") or "").strip()
+        finding_payload = dict(candidate.get("finding_payload") or {})
+        claim_candidate = dict(candidate.get("claim_candidate") or {})
+        case_id = requested_case_id or str(finding_payload.get("case_id") or "CASE-UNSPECIFIED").strip()
+        evidence_ids = [
+            str(item).strip()
+            for item in (claim_candidate.get("evidence_ids") or finding_payload.get("evidence_ids") or [])
+            if str(item).strip()
+        ]
+        finding_id = str(finding_payload.get("finding_id") or "").strip()
+        stored_finding = load_json_record(finding_id, "findings", case_id) if finding_id else None
+        severity_final = str((stored_finding or {}).get("severity_final") or finding_payload.get("severity_final") or "").strip().lower()
+        finding_for_validation = {
+            "finding_id": finding_id,
+            "title": finding_payload.get("title"),
+            "severity_final": severity_final,
+            "evidence_ids": evidence_ids,
+        }
+        evidence_issues = evidence_approval_issues(case_id, evidence_ids)
+        finding_issues = finding_approval_issues(case_id, [finding_for_validation])
+        support_level = str(claim_candidate.get("support_level") or "supported").strip().lower()
+        claim_issues: list[dict[str, Any]] = []
+        if not evidence_ids:
+            claim_issues.append({"type": "claim_without_evidence", "id": claim_candidate.get("claim_id") or candidate_id})
+        if support_level in {"unsupported", "none"}:
+            claim_issues.append({"type": "unsupported_claim", "id": claim_candidate.get("claim_id") or candidate_id})
+        row_issues = [*evidence_issues, *finding_issues, *claim_issues]
+        ready = not row_issues
+        claim_row = {
+            "claim_id": claim_candidate.get("claim_id") or stable_id("C", [candidate_id, evidence_ids]),
+            "statement_ko": claim_candidate.get("statement_ko") or finding_payload.get("observation") or "",
+            "support_level": "supported",
+            "evidence_ids": evidence_ids,
+            "source": "tool_result_finding_claim_review",
+            "candidate_id": candidate_id,
+            "finding_id": finding_id,
+        }
+        finding_row = {
+            "finding_id": finding_id,
+            "title": finding_payload.get("title") or "Tool result finding",
+            "severity_final": severity_final,
+            "evidence_ids": evidence_ids,
+        }
+        row = {
+            "candidate_id": candidate_id,
+            "case_id": case_id,
+            "status": "ready_for_report_validation" if ready else "hold_until_evidence_and_finding_approved",
+            "claim": claim_row,
+            "finding": finding_row,
+            "stored_finding_status": (stored_finding or {}).get("status") or "missing",
+            "stored_finding_approval_status": (stored_finding or {}).get("approval_status") or "missing",
+            "evidence_issues": evidence_issues,
+            "finding_issues": finding_issues,
+            "claim_issues": claim_issues,
+            "blocking_items": row_issues,
+            "report_claim_inserted": False,
+            "finding_required": True,
+            "requires_human_validation": True,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+        }
+        rows.append(row)
+        if ready:
+            ready_claims.append(claim_row)
+            ready_findings.append(finding_row)
+        else:
+            held_claims.append({
+                "candidate_id": candidate_id,
+                "claim_id": claim_row["claim_id"],
+                "hold_reason": "Evidence Card approval and two-person Finding severity approval are required before report validation.",
+                "blocking_items": row_issues,
+            })
+
+    resolved_case_id = requested_case_id or str((candidates[0].get("finding_payload") or {}).get("case_id") if candidates else "CASE-UNSPECIFIED")
+    report_payload_preview = {
+        "case_id": resolved_case_id,
+        "title": payload.get("title") or "Red Team Report v2 tool result matrix draft",
+        "claims": ready_claims,
+        "findings": ready_findings,
+        "tool_actions": [],
+        "held_claims": held_claims,
+    }
+    validation_preview = (
+        validate_report(report_payload_preview)
+        if ready_claims
+        else {
+            "kind": "redteam_ax_v2_report_validation_preview",
+            "case_id": resolved_case_id,
+            "gate_status": "not_run_no_ready_rows",
+            "blocking_items": [],
+        }
+    )
+    draft_id = stable_id("TCEM", [resolved_case_id, [row["candidate_id"] for row in rows], len(ready_claims), len(held_claims), now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_tool_result_claim_evidence_matrix_draft",
+        "draft_id": draft_id,
+        "case_id": resolved_case_id,
+        "status": "matrix_draft_ready" if ready_claims else "matrix_draft_held",
+        "source_review_artifact_path": review.get("artifact_path"),
+        "candidate_count": len(rows),
+        "ready_claim_count": len(ready_claims),
+        "held_claim_count": len(held_claims),
+        "rows": rows,
+        "report_validation_payload_preview": report_payload_preview,
+        "validation_preview": validation_preview,
+        "report_claim_inserted": False,
+        "finding_created": False,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "held row는 Evidence Card 승인과 Finding severity 2인 승인 후 다시 초안을 생성합니다.",
+            "ready row만 보고서 검증 payload preview에 포함합니다.",
+            "초안 API는 보고서 Claim을 자동 삽입하지 않습니다.",
+        ],
+    }
+    return append_artifact_metadata(result, "claim-evidence-matrix-drafts", draft_id)
+
+
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip() or "CASE-UNSPECIFIED"
     evidence_ids = [str(item).strip() for item in (payload.get("evidence_ids") or []) if str(item).strip()]

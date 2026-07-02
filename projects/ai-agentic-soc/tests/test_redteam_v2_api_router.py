@@ -211,6 +211,99 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["finding"]["evidence_ids"], [evidence_id])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_tool_result_matrix_draft_holds_until_evidence_and_finding_approved(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        response = self.client.post(
+            "/api/redteam/v2/tool-result-finding-claim-review/matrix-draft",
+            json={
+                "case_id": "CASE-V2-MATRIX-DRAFT-HELD-001",
+                "candidate_ids": [candidate["candidate_id"]],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_tool_result_claim_evidence_matrix_draft")
+        self.assertEqual(body["status"], "matrix_draft_held")
+        self.assertEqual(body["ready_claim_count"], 0)
+        self.assertEqual(body["held_claim_count"], 1)
+        self.assertFalse(body["report_claim_inserted"])
+        self.assertFalse(body["finding_created"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertEqual(body["rows"][0]["status"], "hold_until_evidence_and_finding_approved")
+        self.assertEqual(body["report_validation_payload_preview"]["claims"], [])
+        self.assertEqual(body["validation_preview"]["gate_status"], "not_run_no_ready_rows")
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
+    def test_tool_result_matrix_draft_ready_after_promotion_and_severity_approval(self) -> None:
+        review = self.client.get("/api/redteam/v2/tool-result-finding-claim-review").json()
+        self.assertGreaterEqual(len(review["candidates"]), 1)
+        candidate = review["candidates"][0]
+        evidence_id = candidate["finding_payload"]["evidence_ids"][0]
+        case_id = "CASE-V2-MATRIX-DRAFT-READY-001"
+        self.create_approved_evidence(case_id, evidence_id)
+
+        promotion = self.client.post(
+            f"/api/redteam/v2/tool-result-finding-claim-review/{candidate['candidate_id']}/promote-finding",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+            },
+        )
+        self.assertEqual(promotion.status_code, 200)
+        promoted = promotion.json()
+        self.assertTrue(promoted["finding_created"])
+        finding = promoted["finding"]
+        severity = finding["severity_draft"]
+        lead = self.client.post(
+            f"/api/redteam/v2/findings/{finding['finding_id']}/approve-severity",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "approved_by": "lead@example.com",
+                "approver_role": "red_team_lead",
+                "severity_final": severity,
+            },
+        )
+        self.assertEqual(lead.status_code, 200)
+        self.assertEqual(lead.json()["status"], "pending")
+        owner = self.client.post(
+            f"/api/redteam/v2/findings/{finding['finding_id']}/approve-severity",
+            headers=self.actor_headers("owner@example.com", "business_owner"),
+            json={
+                "case_id": case_id,
+                "approved_by": "owner@example.com",
+                "approver_role": "business_owner",
+                "severity_final": severity,
+            },
+        )
+        self.assertEqual(owner.status_code, 200)
+        approved_finding = owner.json()["finding"]
+        self.assertEqual(approved_finding["approval_status"], "approved")
+
+        response = self.client.post(
+            "/api/redteam/v2/tool-result-finding-claim-review/matrix-draft",
+            json={
+                "case_id": case_id,
+                "candidate_ids": [candidate["candidate_id"]],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "matrix_draft_ready")
+        self.assertEqual(body["ready_claim_count"], 1)
+        self.assertEqual(body["held_claim_count"], 0)
+        self.assertEqual(body["rows"][0]["status"], "ready_for_report_validation")
+        self.assertEqual(body["rows"][0]["finding"]["severity_final"], approved_finding["severity_final"])
+        self.assertFalse(body["report_claim_inserted"])
+        preview = body["report_validation_payload_preview"]
+        self.assertEqual(preview["claims"][0]["support_level"], "supported")
+        self.assertEqual(preview["claims"][0]["evidence_ids"], [evidence_id])
+        self.assertEqual(preview["findings"][0]["finding_id"], finding["finding_id"])
+        self.assertEqual(body["validation_preview"]["gate_status"], "pass")
+
     def create_offline_tool_run(self, case_id: str, action_id: str, tool_id: str) -> dict:
         plan = self.client.post("/api/redteam/v2/tool-actions/plan", json={
             "case_id": case_id,

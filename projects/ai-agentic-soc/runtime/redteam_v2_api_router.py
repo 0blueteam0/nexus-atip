@@ -374,6 +374,11 @@ def promote_tool_result_candidate_to_finding(candidate_id: str, payload: dict[st
     return redteam_v2_models.promote_tool_result_candidate_to_finding(candidate_id, payload)
 
 
+@router.post("/tool-result-finding-claim-review/matrix-draft")
+def build_tool_result_claim_evidence_matrix_draft(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_tool_result_claim_evidence_matrix_draft(payload)
+
+
 @router.post("/findings")
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.create_finding(payload)
