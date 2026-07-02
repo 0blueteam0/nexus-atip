@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 23,
+    "proved": 24,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -398,18 +398,34 @@
       "proof_summary": "The /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings API blocks unapproved collection Evidence, creates only pending_review Finding drafts for approved Evidence, records a toolchain-finding-promotions artifact, and returns commands_executed_by_api=false, active_scan_executed=false, trusted_as_instruction=false, report_claim_inserted=false, and requires_severity_approval=true. Regression coverage verifies npm audit + Trivy collection promotion is blocked before Evidence approval and creates two pending Findings after batch approval. RedTeam2 UI exposes a Korean Finding draft button and result table.",
       "residual_gap": "This proves the collection Evidence to Finding draft lane, not that real operating collection Findings have completed two-person severity approval, Matrix ready status, Report v2 draft generation, and final export approval.",
       "next_action": "Run promote-findings against real approved collection Evidence, complete red_team_lead and business_owner severity approvals, then rerun Matrix draft and Report v2 draft gates."
+    },
+    {
+      "id": "RTA-COMP-025",
+      "requirement": "Finding drafts promoted from governed toolchain collections must have a HITL two-person severity approval lane before Matrix or report use.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity API limits approval to Findings promoted from the collection, requires distinct red_team_lead and business_owner approvers, reuses the existing Finding severity approval policy, and records a batch artifact without tool execution, active scan, Finding creation, or report Claim insertion. Regression coverage approves two npm audit + Trivy collection Findings after Evidence approval and Finding draft creation. RedTeam2 UI exposes Korean two-person severity approval controls and result rows.",
+      "residual_gap": "This proves the collection Finding severity approval lane, not that all real operating collection Findings have Matrix ready rows, Report v2 draft generation, final export approval, or live runtime blockers cleared.",
+      "next_action": "Run Matrix draft and Report v2 draft gates against real approved collection Findings, then complete final export approval and runtime evidence."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
     "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be collected through the toolchain result collection API, approved as Evidence, promoted to Findings, and linked through Claim-Evidence Matrix before final completion.",
-    "Actual operating toolchain collection Evidence candidates must be batch-approved through /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence, promoted through /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings, then completed through severity, Matrix, report, and export gates."
+    "Actual operating toolchain collection Evidence candidates must be batch-approved through /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence, promoted through /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings, approved through /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity, then completed through Matrix, report, and export gates."
   ],
   "next_slice_candidates": [
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
     "Run /api/redteam/v2/toolchains/{toolchain_id}/collect-results against real governed scanner outputs and drive the resulting Evidence candidates through approval, Finding promotion, Matrix draft, and Report v2 export gates.",
-    "Promote real approved toolchain collection Evidence candidates to Findings, then automate the next HITL-assisted two-person severity approval readiness dashboard."
+    "Run Matrix and Report v2 draft gates against real approved toolchain collection Findings, then complete final export approval."
   ]
 }

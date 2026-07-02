@@ -3817,6 +3817,43 @@ export default {
     }
   }
 ,
+  async approveRedTeam2ToolchainFindingSeverity() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const collection = this.state.redteam2ToolchainCollectionState?.result || {};
+    const promotion = this.state.redteam2ToolchainFindingPromotionState?.result || {};
+    const findingIds = (promotion.promotions || [])
+      .map(item => item.finding_id)
+      .filter(Boolean);
+    if (!collection.collection_id || !findingIds.length || !['finding_drafts_created','finding_drafts_partially_created'].includes(promotion.status)) {
+      this.toast('먼저 Finding 초안 생성을 완료하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ToolchainFindingSeverityState:{ ...(s.redteam2ToolchainFindingSeverityState || {}), status:'approving', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchain-result-collections/${encodeURIComponent(collection.collection_id)}/approve-finding-severity`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          finding_ids:findingIds,
+          lead_approver:'lead@example.com',
+          business_owner_approver:'business-owner@example.com',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ToolchainFindingSeverityState:{ ...(s.redteam2ToolchainFindingSeverityState || {}), status:data.status || 'findings_severity_approved', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast(`Finding 심각도 승인: ${data.approved_count || 0}개`, data.approved_count ? 'success' : 'warn');
+      this.logAudit('레드팀 리드/업무 소유자', `레드팀 분석2 Finding severity 2인 승인: ${data.collection_id} · ${data.approved_count || 0}개`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainFindingSeverityState:{ ...(s.redteam2ToolchainFindingSeverityState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('Finding 심각도 승인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4505,6 +4542,7 @@ export default {
     const toolchainCollectionState = this.state.redteam2ToolchainCollectionState || {};
     const toolchainEvidenceApprovalState = this.state.redteam2ToolchainEvidenceApprovalState || {};
     const toolchainFindingPromotionState = this.state.redteam2ToolchainFindingPromotionState || {};
+    const toolchainFindingSeverityState = this.state.redteam2ToolchainFindingSeverityState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -4519,6 +4557,7 @@ export default {
     const toolchainCollection = toolchainCollectionState.result || {};
     const toolchainEvidenceApproval = toolchainEvidenceApprovalState.result || {};
     const toolchainFindingPromotion = toolchainFindingPromotionState.result || {};
+    const toolchainFindingSeverity = toolchainFindingSeverityState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -4667,6 +4706,8 @@ export default {
       finding_drafts_created:'Finding 초안 생성됨',
       finding_drafts_partially_created:'Finding 초안 일부 생성됨',
       finding_draft_created:'Finding 초안 생성됨',
+      findings_severity_approved:'Finding 심각도 승인 완료',
+      findings_severity_partially_approved:'Finding 심각도 일부 승인',
       approving:'승인 중',
       awaiting_tool_result_analysis_brief:'도구 결과 분석 브리프 대기',
       promotion_inputs_ready:'승격 입력 준비됨',
@@ -4874,6 +4915,7 @@ export default {
       ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
       ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
       ['복합 Finding 초안 생성 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings', '승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다'],
+      ['복합 Finding 심각도 2인 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity', 'collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다'],
       ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
       ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
@@ -5111,6 +5153,7 @@ export default {
       ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
       ['Evidence 후보 승인', koValue(toolchainEvidenceApproval.status || toolchainEvidenceApprovalState.status || '대기'), toolchainEvidenceApprovalState.error || `${toolchainEvidenceApproval.approved_count ?? 0}개 승인 · ${toolchainEvidenceApproval.invalid_count ?? 0}개 오류`],
       ['Finding 초안 생성', koValue(toolchainFindingPromotion.status || toolchainFindingPromotionState.status || '대기'), toolchainFindingPromotionState.error || `${toolchainFindingPromotion.created_count ?? 0}개 생성 · ${toolchainFindingPromotion.blocked_count ?? 0}개 차단`],
+      ['Finding 심각도 2인 승인', koValue(toolchainFindingSeverity.status || toolchainFindingSeverityState.status || '대기'), toolchainFindingSeverityState.error || `${toolchainFindingSeverity.approved_count ?? 0}개 승인 · ${toolchainFindingSeverity.pending_count ?? 0}개 대기`],
       ['저장 산출물', toolchainRun.artifact_path ? '저장됨' : '미저장', toolchainRun.artifact_path || '복합 실행 후 생성'],
     ];
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
@@ -5136,6 +5179,12 @@ export default {
       koValue(item.status),
       item.finding_id || '-',
       item.finding_approval_status ? `${koValue(item.finding_approval_status)} · ${koSeverity(item.severity_draft)}` : ((item.errors || []).join(', ') || 'severity 2인 승인 필요'),
+    ]);
+    const toolchainFindingSeverityRows = (toolchainFindingSeverity.approvals || []).map(item => [
+      item.finding_id || '-',
+      koValue(item.status),
+      `${koValue(item.lead_approval_status)} / ${koValue(item.business_owner_approval_status)}`,
+      item.pending_conditions?.length ? item.pending_conditions.join(', ') : (item.errors || []).join(', ') || `${koSeverity(item.severity_final)} 승인`,
     ]);
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
@@ -5450,6 +5499,8 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Claim-Evidence Matrix 초안 API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft 입니다. 승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함하고, held row는 Evidence/Finding 승인 전 보류합니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               'Matrix 기반 Report v2 draft API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft 입니다. held row 0건과 report gate pass일 때만 한국어 Report v2 draft를 생성하며, export 전 최종 사람 승인은 별도로 필요합니다.'),
@@ -5499,6 +5550,7 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence 입니다. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들고, severity 2인 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. red_team_lead와 business_owner가 같은 severity를 승인해야 Finding이 approved가 되며, 보고서 생성은 Matrix gate 이후에만 진행합니다.'),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '분석도구 ID 목록',
                 h('textarea', {
@@ -5537,12 +5589,18 @@ export default {
                 disabled:toolchainFindingPromotionState.status === 'promoting' || toolchainEvidenceApproval.status !== 'evidence_approved',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:toolchainFindingPromotionState.status === 'promoting' ? C.raised : C.bg, color:(toolchainFindingPromotionState.status === 'promoting' || toolchainEvidenceApproval.status !== 'evidence_approved') ? C.muted : C.blue, cursor:(toolchainFindingPromotionState.status === 'promoting' || toolchainEvidenceApproval.status !== 'evidence_approved') ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainFindingPromotionState.status === 'promoting' ? 'Finding 생성 중' : 'Finding 초안 생성'),
+              h('button', {
+                onClick:()=>this.approveRedTeam2ToolchainFindingSeverity(),
+                disabled:toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status),
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainFindingSeverityState.status === 'approving' ? C.raised : C.bg, color:(toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status)) ? C.muted : C.green, cursor:(toolchainFindingSeverityState.status === 'approving' || !['finding_drafts_created','finding_drafts_partially_created'].includes(toolchainFindingPromotion.status)) ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainFindingSeverityState.status === 'approving' ? '심각도 승인 중' : 'Finding 심각도 2인 승인'),
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
-            this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']])),
+            this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),
+            this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']])),
           executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
           runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),
       smallPanel('도구 출력 Sanitizer 미리보기',

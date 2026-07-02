@@ -847,3 +847,14 @@ Create Case
 - RedTeam2 UI는 `Finding 초안 생성` 버튼과 Evidence별 Finding 생성 상태 표를 제공하고, severity 2인 승인 전 Matrix와 보고서 Claim에 넣지 않는다는 설명을 표시한다.
 - regression test는 collection Evidence 승인 전 promotion이 차단되고, batch 승인 후에만 Finding 초안 2개가 생성되는 경로를 검증한다.
 - 이 slice는 collection Evidence approval에서 Finding draft까지 잇는 운영 lane이며, 실제 운영 collection 전체의 2인 severity 승인, Matrix ready, Report v2 gate pass/export는 후속 HITL 단계로 남긴다.
+
+## 38. Slice 83 반영 사항
+
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity`는 collection에서 생성된 Finding 초안만 대상으로 red_team_lead와 business_owner의 severity 2인 승인을 수행한다.
+- API는 `promoted_finding_ids`를 기준으로 collection 외 Finding ID를 차단하고, lead approver와 business owner approver가 동일하면 `distinct_finding_severity_approvers_required`로 차단한다.
+- 내부적으로 기존 `approve_finding_severity`를 두 번 호출하므로 actor binding, Evidence approval, severity 일치, pending condition 정책을 재사용한다.
+- batch 결과는 `toolchain-finding-severity-approvals` artifact에 저장되고 collection artifact에는 `finding_severity_approval_status`와 `approved_finding_ids`를 기록한다.
+- API는 도구 실행, 능동 스캔, Finding 생성, 보고서 Claim 삽입을 수행하지 않고 `requires_matrix_validation=true`를 반환한다.
+- RedTeam2 UI는 `Finding 심각도 2인 승인` 버튼과 Finding별 lead/business owner 승인 상태 표를 제공한다.
+- regression test는 복합 npm audit + Trivy collection에서 Evidence 승인, Finding 초안 생성, Finding severity 2인 승인까지 이어지는 경로를 검증한다.
+- 이 slice는 collection Finding을 Matrix ready 직전 상태로 이동시키지만, 실제 운영 collection 전체의 Matrix draft ready, Report v2 draft, final export approval은 후속 단계로 남긴다.

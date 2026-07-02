@@ -1447,6 +1447,38 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(item["finding_approval_status"], "pending")
             self.assertFalse(item["errors"])
 
+        finding_ids = [item["finding_id"] for item in promotion_body["promotions"]]
+        severity_approved = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/approve-finding-severity",
+            json={
+                "case_id": case_id,
+                "finding_ids": finding_ids,
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+            },
+        )
+        self.assertEqual(severity_approved.status_code, 200)
+        severity_body = severity_approved.json()
+        self.assertEqual(severity_body["kind"], "redteam_ax_v2_toolchain_collection_finding_severity_approval")
+        self.assertEqual(severity_body["status"], "findings_severity_approved")
+        self.assertEqual(severity_body["approved_count"], 2)
+        self.assertEqual(severity_body["pending_count"], 0)
+        self.assertEqual(severity_body["invalid_count"], 0)
+        self.assertFalse(severity_body["commands_executed_by_api"])
+        self.assertFalse(severity_body["active_scan_executed"])
+        self.assertFalse(severity_body["finding_created"])
+        self.assertFalse(severity_body["report_claim_inserted"])
+        self.assertTrue(severity_body["requires_matrix_validation"])
+        self.assertTrue(Path(severity_body["artifact_path"]).exists())
+        for item in severity_body["approvals"]:
+            self.assertEqual(item["status"], "approved")
+            self.assertEqual(item["finding_status"], "approved")
+            self.assertEqual(item["finding_approval_status"], "approved")
+            self.assertEqual(item["lead_approval_status"], "pending")
+            self.assertEqual(item["business_owner_approval_status"], "approved")
+            self.assertFalse(item["errors"])
+            self.assertFalse(item["pending_conditions"])
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

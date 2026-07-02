@@ -3800,6 +3800,141 @@ def promote_toolchain_collection_evidence_to_findings(collection_id: str, payloa
     return result
 
 
+def approve_toolchain_collection_finding_severity(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    requested_ids = {
+        str(item).strip()
+        for item in (payload.get("finding_ids") or [])
+        if str(item).strip()
+    }
+    lead_approver = str(payload.get("lead_approver") or payload.get("red_team_lead") or "").strip()
+    owner_approver = str(payload.get("business_owner_approver") or payload.get("business_owner") or "").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+    if not lead_approver:
+        errors.append("lead_approver_required")
+    if not owner_approver:
+        errors.append("business_owner_approver_required")
+    if lead_approver and owner_approver and lead_approver.lower() == owner_approver.lower():
+        errors.append("distinct_finding_severity_approvers_required")
+
+    collection_finding_ids = {
+        str(item).strip()
+        for item in (collection or {}).get("promoted_finding_ids") or []
+        if str(item).strip()
+    }
+    finding_ids = sorted(requested_ids or collection_finding_ids)
+    missing_requested = sorted(requested_ids - collection_finding_ids)
+    if missing_requested:
+        errors.extend(f"finding_not_promoted_from_collection:{finding_id}" for finding_id in missing_requested)
+    if collection is not None and not finding_ids:
+        errors.append("promoted_findings_required")
+
+    batch_id = stable_id("TCFAPR", [collection_id, case_id, lead_approver, owner_approver, finding_ids, now_utc()])
+    approvals: list[dict[str, Any]] = []
+    if not errors:
+        for finding_id in finding_ids:
+            finding = load_json_record(finding_id, "findings", case_id)
+            item_errors: list[str] = []
+            if finding is None:
+                item_errors.append("finding_not_found")
+                approvals.append({
+                    "finding_id": finding_id,
+                    "status": "invalid",
+                    "severity_final": None,
+                    "lead_approval_status": "invalid",
+                    "business_owner_approval_status": "invalid",
+                    "errors": item_errors,
+                })
+                continue
+            severity_final = normalize_severity(payload.get("severity_final") or finding.get("severity_draft") or "medium")
+            lead_payload = {
+                "case_id": case_id,
+                "approved_by": lead_approver,
+                "approver_role": "red_team_lead",
+                "severity_final": severity_final,
+                "_actor_context": {
+                    **resolve_actor_context({"case_id": case_id, "approver_role": "red_team_lead"}, actor_id=lead_approver, actor_role="red_team_lead"),
+                    "resolved": True,
+                },
+            }
+            lead_approval = approve_finding_severity(finding_id, lead_payload)
+            owner_payload = {
+                "case_id": case_id,
+                "approved_by": owner_approver,
+                "approver_role": "business_owner",
+                "severity_final": severity_final,
+                "_actor_context": {
+                    **resolve_actor_context({"case_id": case_id, "approver_role": "business_owner"}, actor_id=owner_approver, actor_role="business_owner"),
+                    "resolved": True,
+                },
+            }
+            owner_approval = approve_finding_severity(finding_id, owner_payload)
+            final_finding = owner_approval.get("finding") or lead_approval.get("finding") or finding
+            item_errors.extend(str(error) for error in (lead_approval.get("errors") or []))
+            item_errors.extend(str(error) for error in (owner_approval.get("errors") or []))
+            pending_conditions = list(owner_approval.get("pending_conditions") or [])
+            approvals.append({
+                "finding_id": finding_id,
+                "status": "approved" if final_finding.get("approval_status") == "approved" and not item_errors and not pending_conditions else "pending" if not item_errors else "invalid",
+                "severity_final": final_finding.get("severity_final") or severity_final,
+                "lead_approval_id": lead_approval.get("approval_id"),
+                "lead_approval_status": lead_approval.get("status"),
+                "business_owner_approval_id": owner_approval.get("approval_id"),
+                "business_owner_approval_status": owner_approval.get("status"),
+                "finding_status": final_finding.get("status"),
+                "finding_approval_status": final_finding.get("approval_status"),
+                "pending_conditions": pending_conditions,
+                "errors": item_errors,
+            })
+
+    approved_count = sum(1 for item in approvals if item.get("status") == "approved")
+    invalid_count = sum(1 for item in approvals if item.get("status") == "invalid")
+    pending_count = sum(1 for item in approvals if item.get("status") == "pending")
+    status = "invalid" if errors else ("findings_severity_approved" if approved_count == len(approvals) and approvals else "findings_severity_partially_approved" if approved_count else "blocked")
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_finding_severity_approval",
+        "approval_batch_id": batch_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": status,
+        "lead_approver": lead_approver,
+        "business_owner_approver": owner_approver,
+        "finding_count": len(finding_ids),
+        "approved_count": approved_count,
+        "pending_count": pending_count,
+        "invalid_count": invalid_count,
+        "approvals": approvals,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "finding_created": False,
+        "report_claim_inserted": False,
+        "requires_human_validation": True,
+        "requires_matrix_validation": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "Claim-Evidence Matrix 초안을 다시 생성해 모든 row가 ready인지 확인합니다.",
+            "report gate blocker가 0건인지 확인한 뒤 Report v2 draft를 생성합니다.",
+            "최종 export 전 별도 사람 승인을 유지합니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-finding-severity-approvals", batch_id)
+    if collection is not None and not errors:
+        collection["finding_severity_approval_batch_id"] = batch_id
+        collection["finding_severity_approval_status"] = status
+        collection["approved_finding_ids"] = [item["finding_id"] for item in approvals if item.get("status") == "approved"]
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
 def _coerce_json(value: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value

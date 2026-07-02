@@ -1498,3 +1498,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `Finding 초안 생성` 버튼, `/promote-findings` 안내, Evidence별 Finding 생성 결과 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 collection Finding promotion anchor 추가
 - [ ] 실제 운영 collection 전체를 Finding 초안으로 승격하고 2인 severity 승인, Matrix draft ready, Report v2 gate pass까지 연결
+
+## 91. Slice 83 복합 Toolchain Finding 심각도 2인 승인 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API 추가
+- [x] API는 collection artifact의 `promoted_finding_ids` 또는 요청된 Finding ID 중 collection에서 생성된 Finding만 승인 대상으로 제한
+- [x] red_team_lead와 business_owner approver를 모두 요구하고 동일 actor를 차단
+- [x] 내부적으로 기존 `approve_finding_severity` 정책을 재사용해 Evidence approval, actor binding, severity 일치, distinct approver 조건을 검증
+- [x] API는 severity 승인만 수행하고 도구 실행, 능동 스캔, Finding 생성, 보고서 Claim 삽입은 수행하지 않음
+- [x] regression test가 collection Finding 초안 2개를 2인 승인해 `approved` 상태가 되는 경로를 검증
+- [x] RedTeam2 UI에 `Finding 심각도 2인 승인` 버튼과 승인 결과 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 collection severity approval anchor 추가
+- [ ] 실제 운영 collection 전체의 Matrix draft ready, Report v2 draft, final export approval까지 완료
