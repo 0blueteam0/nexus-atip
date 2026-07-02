@@ -620,3 +620,14 @@ Create Case
 - 최신 smoke artifact는 `archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json`이며 Nuclei/Trivy passed, OpenVAS/ZAP/Docker blocked 사유를 함께 기록한다.
 - Docker container smoke는 `--require-real` 실행 시 Docker Desktop daemon unavailable blocker artifact를 남겼다.
 - 이 slice는 Nuclei/Trivy 실제 CLI runtime readiness를 입증하지만 OpenVAS/ZAP service/CLI와 Docker/container runtime readiness는 아직 완료 조건으로 남긴다.
+
+## 17. Slice 62 반영 사항
+
+- `고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py`는 OpenVAS/ZAP CLI wrapper를 main venv와 분리된 `tools/redteam-ax/venvs/openvas-zap-cli` 격리 venv에 설치한다.
+- OpenVAS 경로는 `gvm-tools==26.0.6`의 `gvm-cli`, ZAP 경로는 `zapcli==0.10.0`과 `python-owasp-zap-v2.4==0.0.14`의 `zap-cli`를 사용한다.
+- `tools/redteam-ax/bin/gvm-cli.cmd`와 `zap-cli.cmd` shim을 만들어 v2 wrapper manifest가 hash-pinned wrapper로 인식하게 한다.
+- Windows `.cmd` shim은 `availability.path`와 대소문자 차이 때문에 기존 child-process allowlist에서 차단될 수 있어, backend runner allowlist가 `resolved_path`뿐 아니라 `path`도 보고 대소문자 무시 비교를 하도록 보강했다.
+- OpenVAS는 `gvm-cli --version`, ZAP는 `zap-cli --help`를 low-risk metadata command로 실행한다.
+- 두 CLI 모두 ToolActionCard, `dry_run` ExecutionPlan, issued token, wrapper pin, child-process allowlist, `shell=false` governed runner, sanitizer preview, agent normalization, Evidence Card 생성까지 통과했다.
+- 최신 smoke artifact는 `archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json`이다.
+- 이 slice는 OpenVAS/ZAP CLI wrapper runtime readiness를 입증하지만, 실제 OpenVAS service report import와 ZAP daemon passive-alert import endpoint는 별도 완료 조건으로 남긴다.

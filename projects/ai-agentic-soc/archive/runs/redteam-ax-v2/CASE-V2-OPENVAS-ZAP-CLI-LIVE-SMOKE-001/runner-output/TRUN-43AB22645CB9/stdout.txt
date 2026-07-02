@@ -1,0 +1,38 @@
+Usage: zap-cli [OPTIONS] COMMAND [ARGS]...
+
+  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.
+
+Options:
+  --boring            Remove color from console output.
+  -v, --verbose       Add more verbose debugging output.
+  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of
+                      the environment variable ZAP_PATH.
+  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of
+                      the environment variable ZAP_PORT.
+  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1
+                      or the value of the environment variable ZAP_URL.
+  --api-key TEXT      The API key for using the ZAP API if required. Defaults
+                      to the value of the environment variable ZAP_API_KEY.
+  --log-path TEXT     Path to the directory in which to save the ZAP output
+                      log file. Defaults to the value of the environment
+                      variable ZAP_LOG_PATH and uses the value of --zap-path
+                      if it is not set.
+  --help              Show this message and exit.
+
+Commands:
+  active-scan  Run an Active Scan.
+  ajax-spider  Run the AJAX Spider against a URL.
+  alerts       Show alerts at the given alert level.
+  context      Manage contexts for the current session.
+  exclude      Exclude a pattern from all scanners.
+  open-url     Open a URL using the ZAP proxy.
+  policies     Enable or list a set of policies.
+  quick-scan   Run a quick scan.
+  report       Generate XML, MD or HTML report.
+  scanners     Enable, disable, or list a set of scanners.
+  scripts      Manage scripts.
+  session      Manage sessions.
+  shutdown     Shutdown the ZAP daemon.
+  spider       Run the spider against a URL.
+  start        Start the ZAP daemon.
+  status       Check if ZAP is running.

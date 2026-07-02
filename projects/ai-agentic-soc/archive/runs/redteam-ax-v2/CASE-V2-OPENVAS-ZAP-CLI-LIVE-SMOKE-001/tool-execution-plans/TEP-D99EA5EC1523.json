@@ -1,0 +1,202 @@
+{
+  "kind": "redteam_ax_v2_tool_execution_plan",
+  "execution_plan_id": "TEP-D99EA5EC1523",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "execution_mode": "dry_run",
+  "runner": "sandbox",
+  "wrapper_manifest": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-ZAP-001",
+    "tool_name": "owasp-zap",
+    "adapter_type": "api_or_cli_wrapper",
+    "command_name": "zap-cli",
+    "availability": {
+      "status": "available",
+      "command": "zap-cli",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+      "checked_at": "2026-07-02T06:40:13Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+    "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-ZAP-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+      "tool_id": "TOOL-ZAP-001",
+      "tool_name": "owasp-zap",
+      "status": "approved",
+      "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+      "pin_request_id": "TWPINREQ-0A47A3C7E1FD",
+      "approval_id": "TWPINAP-9CD114853615",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...",
+        "version_command": "zap-cli.CMD --help",
+        "version_output_excerpt": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and u",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T06:40:13Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-ZAP-001.json"
+    },
+    "actual_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Run ZAP in daemon/container mode and import JSON reports; active scan requires approval.",
+    "checked_at": "2026-07-02T06:40:13Z"
+  },
+  "wrapper_preflight": {
+    "runner_can_use_wrapper": true,
+    "blocking_controls": [],
+    "human_review_required": false
+  },
+  "status": "PlanReady",
+  "errors": [],
+  "warnings": [],
+  "requires_approval": false,
+  "approvals_required": [],
+  "policy_decision": {
+    "decision": "allow_plan",
+    "risk_class": "T0",
+    "safe_by_default": true,
+    "high_risk_direct_execution": false,
+    "runner_preflight_blocked": false,
+    "runner_isolation_blocked": false
+  },
+  "environment_constraints": {
+    "network_policy": {
+      "mode": "deny",
+      "default": "deny",
+      "allowlist": [],
+      "egress_allowed": false
+    },
+    "filesystem_policy": {
+      "mode": "workspace_only",
+      "workspace_root": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "allowed_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001"
+      ],
+      "write_paths": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001"
+      ]
+    },
+    "isolation_readiness": {
+      "kind": "redteam_ax_v2_runner_isolation_readiness",
+      "requested_backend": "local_subprocess_shim",
+      "status": "shim_ready",
+      "commands_executed_by_api": false,
+      "runner_token_blocked": false,
+      "blocking_controls": [],
+      "required_controls": [
+        "container_runtime_attested",
+        "image_digest_pinned",
+        "network_deny_or_allowlist_enforced",
+        "workspace_read_only_mount",
+        "case_write_mount_only",
+        "no_host_secret_mounts",
+        "process_timeout_enforced",
+        "stdout_stderr_artifact_capture",
+        "ephemeral_cleanup_attested"
+      ],
+      "container_policy": {
+        "ephemeral": true,
+        "runtime": "docker",
+        "image_digest": null,
+        "network_default": "deny",
+        "network_allowlist_required_for_egress": true,
+        "workspace_mount": "read_only",
+        "case_artifact_mount": "write_only",
+        "host_secret_mounts_allowed": false,
+        "shell_expansion_allowed": false,
+        "privileged_container_allowed": false,
+        "resource_limits": {
+          "cpus": "1",
+          "memory": "512m",
+          "pids_limit": 128
+        }
+      },
+      "local_shim_policy": {
+        "allowed_for": [
+          "dry_run",
+          "sandbox_execute"
+        ],
+        "safe_by_default": true,
+        "note": "Local subprocess shim is a transitional dry-run backend; ephemeral container remains required before live scanner execution is considered complete."
+      },
+      "operator_actions": [
+        "enable_dedicated_container_runner",
+        "pin_runner_image_digest",
+        "attest_network_deny_or_allowlist",
+        "attest_read_only_workspace_and_case_write_mounts",
+        "attest_ephemeral_cleanup",
+        "rerun_execution_plan_with_runner_backend_ephemeral_container"
+      ],
+      "evidence_pipeline": {
+        "raw_stdout_stderr": "Evidence Card raw_artifact only",
+        "trusted_as_instruction": false,
+        "normalization_required": true,
+        "claim_evidence_matrix_required": true
+      }
+    },
+    "max_runtime_seconds": 30,
+    "max_output_bytes": 8192,
+    "process_policy": {
+      "child_process_allowlist": [
+        "zap-cli"
+      ],
+      "shell_expansion_allowed": false
+    },
+    "secret_policy": {
+      "mask_environment": true,
+      "mask_logs": true
+    }
+  },
+  "execution_token": {
+    "token_id": "EXT-6186AB96BE5B",
+    "status": "issued",
+    "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+    "allowed_tool_id": "TOOL-ZAP-001",
+    "allowed_environment": "approved_scope",
+    "allowed_scope_refs": [
+      "SCOPE-APPROVED-LOCAL-LAB"
+    ],
+    "expires_at": "",
+    "max_runtime_seconds": 30,
+    "max_targets": 1,
+    "network_policy": "deny",
+    "revoked": false
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "zap-cli",
+    "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+    "checked_at": "2026-07-02T06:40:13Z"
+  },
+  "audit": {
+    "requested_by": "analyst@example.com",
+    "created_at": "2026-07-02T06:40:13Z",
+    "command_abstraction_only": true,
+    "runner_will_execute": false
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-execution-plans/TEP-D99EA5EC1523.json"
+}

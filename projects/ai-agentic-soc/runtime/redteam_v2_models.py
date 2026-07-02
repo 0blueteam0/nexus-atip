@@ -2303,10 +2303,13 @@ def runner_command_allowed(profile: dict[str, Any] | None, argv: list[str], plan
     command_basename = command_path.name if command_path.name else command
     allowed_names = {command_name, Path(command_name).name}
     manifest = (plan or {}).get("wrapper_manifest") or (tool_wrapper_manifest_for_profile(profile) if profile else {})
-    resolved_path = str((manifest or {}).get("availability", {}).get("resolved_path") or "").strip()
+    availability = (manifest or {}).get("availability", {}) or {}
+    resolved_path = str(availability.get("resolved_path") or availability.get("path") or "").strip()
     if resolved_path:
         allowed_names.add(Path(resolved_path).name)
-    if command not in {command_name, resolved_path} and command_basename not in allowed_names:
+    allowed_names_lower = {name.lower() for name in allowed_names if name}
+    allowed_commands_lower = {name.lower() for name in {command_name, resolved_path} if name}
+    if command.lower() not in allowed_commands_lower and command_basename.lower() not in allowed_names_lower:
         return False, "runner_command_not_in_child_process_allowlist"
     prohibited_options = set((profile or {}).get("prohibited_options") or [])
     requested_options = {item for item in argv[1:] if item in prohibited_options}

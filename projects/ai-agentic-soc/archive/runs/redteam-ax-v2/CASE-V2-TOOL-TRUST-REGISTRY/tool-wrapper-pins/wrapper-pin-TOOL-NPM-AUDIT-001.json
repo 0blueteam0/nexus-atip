@@ -1,0 +1,24 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin",
+  "pin_id": "wrapper-pin-TOOL-NPM-AUDIT-001",
+  "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+  "source_case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "status": "approved",
+  "expected_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+  "pin_request_id": "TWPINREQ-03165A971224",
+  "approval_id": "TWPINAP-4CFABB8B4F03",
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "version_evidence": {
+    "operator_attested_version": "npm installed-tool live smoke",
+    "version_command": "npm.cmd --version",
+    "version_output_excerpt": "captured by governed runner in this smoke",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "approved_at": "2026-07-02T07:13:14Z",
+  "safe_by_default": true,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NPM-AUDIT-001.json"
+}

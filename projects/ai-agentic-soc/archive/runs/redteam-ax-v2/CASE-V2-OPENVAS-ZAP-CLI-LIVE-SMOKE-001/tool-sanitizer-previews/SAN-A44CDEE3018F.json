@@ -1,0 +1,42 @@
+{
+  "kind": "redteam_ax_v2_tool_output_sanitizer_preview",
+  "preview_id": "SAN-A44CDEE3018F",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "run_id": "TRUN-10230E967508",
+  "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-ZAP-001",
+  "input_source": "stored_artifacts",
+  "artifact_report": {
+    "artifact_input_count": 1,
+    "artifact_checked_count": 1,
+    "artifact_skipped_count": 0,
+    "artifact_errors": []
+  },
+  "status": "allow",
+  "errors": [],
+  "trusted_as_instruction": false,
+  "trusted_as_data": true,
+  "requires_human_review": false,
+  "sanitizer": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "decision": "allow",
+    "prompt_injection_score": 0.0,
+    "secret_detection_score": 0.0,
+    "redactions": [],
+    "indicators": [],
+    "sanitized_outputs": [
+      "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and uses the value of --zap-path\n                      if it is not set.\n  --help              Show this message and exit.\n\nCommands:\n  active-scan  Run an Active Scan.\n  ajax-spider  Run the AJAX Spider against a URL.\n  alerts       Show alerts at the given alert level.\n  context      Manage contexts for the current session.\n  exclude      Exclude a pattern from all scanners.\n  open-url     Open a URL using the ZAP proxy.\n  policies     Enable or list a set of policies.\n  quick-scan   Run a quick scan.\n  report       Generate XML, MD or HTML report.\n  scanners     Enable, disable, or list a set of scanners.\n  scripts      Manage scripts.\n  session      Manage sessions.\n  shutdown     Shutdown the ZAP daemon.\n  spider       Run the spider against a URL.\n  start        Start the ZAP daemon.\n  status       Check if ZAP is running.\n"
+    ],
+    "sanitized_summary": "No prompt injection or secret indicators detected.",
+    "warnings": []
+  },
+  "sanitized_output_preview": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and uses the value of --zap-path\n                      if it is not set.\n  --help              Show this message and exit.\n\nCommands:\n  active-scan  Run an Active Scan.\n  ajax-spider  Run the AJAX Spider against a URL.\n  alerts       Show alerts at the given alert level.\n  context      Manage contexts for the current session.\n  exclude      Exclude a pattern from all scanners.\n  open-url     Open a URL using the ZAP proxy.\n  policies     Enable or list a set of policies.\n  quick-scan   Run a quick scan.\n  report       Generate XML, MD or HTML report.\n  scanners     Enable, disable, or list a set of scanners.\n  scripts      Manage scripts.\n  session      Manage sessions.\n  shutdown     Shutdown the ZAP daemon.\n  spider       Run the spider against a URL.\n  start        Start the ZAP daemon.\n  status       Check if ZAP is running.\n",
+  "policy": {
+    "prompt_injection_threshold_quarantine": 0.85,
+    "secret_redaction_required": true,
+    "raw_output_trust": "data_only_never_instruction"
+  },
+  "created_at": "2026-07-02T06:47:23Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-sanitizer-previews/SAN-A44CDEE3018F.json"
+}

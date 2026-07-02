@@ -1,0 +1,65 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+  "pin_request_id": "TWPINREQ-139FF42985A3",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "status": "submitted",
+  "errors": [],
+  "warnings": [],
+  "expected_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+  "existing_approved_pin": null,
+  "manifest_snapshot": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-OPENVAS-001",
+    "tool_name": "openvas",
+    "adapter_type": "api_or_import_only",
+    "command_name": "gvm-cli",
+    "availability": {
+      "status": "available",
+      "command": "gvm-cli",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\gvm-cli.CMD",
+      "checked_at": "2026-07-02T06:39:22Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\gvm-cli.CMD",
+    "expected_sha256": null,
+    "expected_sha256_source": "not_configured",
+    "approved_pin": null,
+    "actual_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+    "hash_error": null,
+    "pinning_status": "hash_unpinned",
+    "trusted_for_runner": false,
+    "requires_pin_before_runner": true,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": false,
+      "blocking_controls": [
+        "wrapper_sha256_pin_required"
+      ],
+      "human_review_required": true
+    },
+    "installation_hint": "Run Greenbone/OpenVAS as a managed service; import reports or use approved API credentials.",
+    "checked_at": "2026-07-02T06:39:22Z"
+  },
+  "version_evidence": {
+    "operator_attested_version": "gvm-cli 26.0.6 (API version 27.4.0)",
+    "version_command": "gvm-cli.cmd --version",
+    "version_output_excerpt": "gvm-cli 26.0.6 (API version 27.4.0)\n",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-02T06:39:22Z",
+  "approval_policy": {
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "approval_mode": "single_approval",
+    "safe_by_default": true
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-wrapper-pin-requests/TWPINREQ-139FF42985A3.json"
+}

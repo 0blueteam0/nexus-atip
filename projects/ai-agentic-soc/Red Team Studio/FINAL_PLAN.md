@@ -1223,4 +1223,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json`에 Nuclei/Trivy passed, OpenVAS/ZAP/Docker blocked 사유 저장
 - [x] Docker `--require-real` smoke는 Docker Desktop daemon unavailable blocker artifact를 기록
 - [x] completion audit matrix의 RTA-COMP-015 residual gap을 OpenVAS/ZAP 및 Docker/container runtime으로 축소
-- [ ] 다음 slice: OpenVAS/ZAP service/CLI live smoke 또는 Docker daemon 복구 후 container runtime live smoke 구현
+- [x] 다음 slice: OpenVAS/ZAP service/CLI live smoke 또는 Docker daemon 복구 후 container runtime live smoke 구현 - OpenVAS/ZAP CLI wrapper live smoke slice 62 완료
+
+## 70. Slice 62 OpenVAS/ZAP CLI Wrapper Live Smoke 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py` 추가
+- [x] main project venv와 충돌하지 않도록 `tools/redteam-ax/venvs/openvas-zap-cli` 격리 venv 사용
+- [x] 격리 venv에 `gvm-tools==26.0.6`, `zapcli==0.10.0`, `python-owasp-zap-v2.4==0.0.14` 설치
+- [x] `tools/redteam-ax/bin/gvm-cli.cmd`, `tools/redteam-ax/bin/zap-cli.cmd` shim을 생성하고 wrapper manifest hash pin 대상으로 사용
+- [x] Windows `.cmd` shim이 allowlist에서 차단되지 않도록 backend runner command allowlist가 wrapper manifest `availability.path`와 대소문자 차이를 처리하게 보강
+- [x] OpenVAS `gvm-cli --version` host probe 통과
+- [x] OWASP ZAP `zap-cli --help` host probe 통과
+- [x] 각 도구 wrapper pin request 및 red_team_lead approval 수행
+- [x] 각 도구 ToolActionCard, `dry_run` ExecutionPlan, execution token, child-process allowlist, `shell=false` governed runner 통과
+- [x] 각 도구 runner output을 sanitizer preview, agent normalization, Evidence Card 생성까지 연결
+- [x] `archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json`에 OpenVAS/ZAP passed 및 service endpoint residual blocker 저장
+- [x] accepted gate manifest에 OpenVAS/ZAP CLI live smoke를 포함
+- [ ] 다음 slice: Docker daemon 복구 후 container runtime live smoke 또는 OpenVAS/ZAP service endpoint import smoke 구현

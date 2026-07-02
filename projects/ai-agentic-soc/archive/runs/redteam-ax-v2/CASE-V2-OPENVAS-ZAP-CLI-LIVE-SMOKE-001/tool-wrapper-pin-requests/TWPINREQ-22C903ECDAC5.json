@@ -1,0 +1,111 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+  "pin_request_id": "TWPINREQ-22C903ECDAC5",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "status": "submitted",
+  "errors": [],
+  "warnings": [
+    "existing_approved_pin_will_be_rotated_on_approval"
+  ],
+  "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+  "existing_approved_pin": {
+    "kind": "redteam_ax_v2_tool_wrapper_pin",
+    "pin_id": "wrapper-pin-TOOL-ZAP-001",
+    "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+    "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "tool_id": "TOOL-ZAP-001",
+    "tool_name": "owasp-zap",
+    "status": "approved",
+    "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+    "pin_request_id": "TWPINREQ-829535733DBD",
+    "approval_id": "TWPINAP-125359ED1E5F",
+    "approved_by": "lead@example.com",
+    "approver_role": "red_team_lead",
+    "version_evidence": {
+      "operator_attested_version": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...",
+      "version_command": "zap-cli.CMD --help",
+      "version_output_excerpt": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and u",
+      "version_command_executed_by_operator": true,
+      "registry_executed_version_command": false
+    },
+    "approved_at": "2026-07-02T06:47:22Z",
+    "safe_by_default": true,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-ZAP-001.json"
+  },
+  "manifest_snapshot": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-ZAP-001",
+    "tool_name": "owasp-zap",
+    "adapter_type": "api_or_cli_wrapper",
+    "command_name": "zap-cli",
+    "availability": {
+      "status": "available",
+      "command": "zap-cli",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+      "checked_at": "2026-07-02T06:49:55Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+    "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-ZAP-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+      "tool_id": "TOOL-ZAP-001",
+      "tool_name": "owasp-zap",
+      "status": "approved",
+      "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+      "pin_request_id": "TWPINREQ-829535733DBD",
+      "approval_id": "TWPINAP-125359ED1E5F",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...",
+        "version_command": "zap-cli.CMD --help",
+        "version_output_excerpt": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and u",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T06:47:22Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-ZAP-001.json"
+    },
+    "actual_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Run ZAP in daemon/container mode and import JSON reports; active scan requires approval.",
+    "checked_at": "2026-07-02T06:49:55Z"
+  },
+  "version_evidence": {
+    "operator_attested_version": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...",
+    "version_command": "zap-cli.CMD --help",
+    "version_output_excerpt": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and u",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-02T06:49:55Z",
+  "approval_policy": {
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "approval_mode": "single_approval",
+    "safe_by_default": true
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-wrapper-pin-requests/TWPINREQ-22C903ECDAC5.json"
+}

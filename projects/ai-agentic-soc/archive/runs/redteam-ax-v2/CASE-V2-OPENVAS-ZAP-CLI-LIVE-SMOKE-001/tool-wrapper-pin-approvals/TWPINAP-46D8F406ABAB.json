@@ -1,0 +1,101 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_approval",
+  "approval_id": "TWPINAP-46D8F406ABAB",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "pin_request_id": "TWPINREQ-75AE02663D61",
+  "status": "approved",
+  "decision": "approve",
+  "errors": [],
+  "approver": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "actor_context": {
+    "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "actor_id": "lead@example.com",
+    "actor_role": "red_team_lead",
+    "requested_role": "red_team_lead",
+    "roles": [
+      "red_team_lead"
+    ],
+    "case_roles": [
+      "red_team_lead"
+    ],
+    "effective_roles": [
+      "red_team_lead"
+    ],
+    "permissions": [
+      "evidence:approve",
+      "finding:approve_severity",
+      "tool_action:approve_t3"
+    ],
+    "authenticated": true,
+    "auth_provider": "request_headers",
+    "auth_strength": "header_bound",
+    "source": "request_headers",
+    "display_name": "Sample Red Team Lead",
+    "case_policy_source": "local_case_assignment_registry",
+    "errors": [],
+    "resolved": true
+  },
+  "identity_binding": "bound",
+  "expected_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+  "manifest_before": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-OPENVAS-001",
+    "tool_name": "openvas",
+    "adapter_type": "api_or_import_only",
+    "command_name": "gvm-cli",
+    "availability": {
+      "status": "available",
+      "command": "gvm-cli",
+      "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\gvm-cli.CMD",
+      "checked_at": "2026-07-02T06:49:52Z"
+    },
+    "resolved_path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\gvm-cli.CMD",
+    "expected_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-OPENVAS-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_name": "openvas",
+      "status": "approved",
+      "expected_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+      "pin_request_id": "TWPINREQ-D39FDC270B04",
+      "approval_id": "TWPINAP-C4894F3C4376",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "gvm-cli 26.0.6 (API version 27.4.0)",
+        "version_command": "gvm-cli.CMD --version",
+        "version_output_excerpt": "gvm-cli 26.0.6 (API version 27.4.0)\n",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T06:47:18Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-OPENVAS-001.json"
+    },
+    "actual_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Run Greenbone/OpenVAS as a managed service; import reports or use approved API credentials.",
+    "checked_at": "2026-07-02T06:49:52Z"
+  },
+  "decided_at": "2026-07-02T06:49:52Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-wrapper-pin-approvals/TWPINAP-46D8F406ABAB.json"
+}

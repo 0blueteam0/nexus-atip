@@ -1,0 +1,109 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-43AB22645CB9",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "execution_mode": "dry_run",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "EvidenceCreated",
+  "errors": [],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-0E039288EBBB",
+      "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-output/TRUN-43AB22645CB9/stdout.txt",
+      "hash": "f5efd6c7de912f25f92c665fef8d40f90bdad31f26acb3587075263def18e20a",
+      "content_type": "text/plain",
+      "summary": "Governed runner stdout captured as untrusted tool output.",
+      "imported_at": "2026-07-02T06:49:57Z"
+    }
+  ],
+  "runner_attempt": {
+    "kind": "redteam_ax_v2_governed_runner_attempt",
+    "run_id": "TRUN-43AB22645CB9",
+    "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+    "execution_plan_id": "TEP-1F79513D63CC",
+    "execution_token_id": "EXT-318459160ADA",
+    "tool_id": "TOOL-ZAP-001",
+    "execution_mode": "dry_run",
+    "runner_argv": [
+      "zap-cli.CMD",
+      "--help"
+    ],
+    "shell": false,
+    "status": "executed",
+    "errors": [],
+    "started_at": "2026-07-02T06:49:55Z",
+    "completed_at": "2026-07-02T06:49:57Z",
+    "exit_code": 0,
+    "timeout_seconds": 30,
+    "max_output_bytes": 8192,
+    "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "stdout_bytes": 1836,
+    "stderr_bytes": 0,
+    "output_truncated": false,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-99145C48251C.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "normalized_results": [
+    "NR-8ABA99EB5745"
+  ],
+  "evidence_candidates": [
+    "EV-5CA619C267BD"
+  ],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": true,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "dry_run",
+      "offline_parse",
+      "manual_operator_run",
+      "lab_execute"
+    ],
+    "denied_execution_modes": [
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_runner_execution"
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "zap-cli",
+    "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\zap-cli.CMD",
+    "checked_at": "2026-07-02T06:49:57Z"
+  },
+  "analysis_agent_id": "AGENT-ZAP-ANALYST-001",
+  "normalizer_id": "NORMALIZER-ZAP-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-ZAP-001",
+    "run_id": "TRUN-43AB22645CB9",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-0E039288EBBB",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-output/TRUN-43AB22645CB9/stdout.txt",
+        "hash": "f5efd6c7de912f25f92c665fef8d40f90bdad31f26acb3587075263def18e20a",
+        "content_type": "text/plain",
+        "summary": "Governed runner stdout captured as untrusted tool output.",
+        "imported_at": "2026-07-02T06:49:57Z"
+      }
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-43AB22645CB9.json",
+  "sanitizer_previews": [
+    "SAN-405E4FB17F83"
+  ]
+}

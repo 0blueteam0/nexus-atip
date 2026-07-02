@@ -1,0 +1,24 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin",
+  "pin_id": "wrapper-pin-TOOL-OPENVAS-001",
+  "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+  "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "status": "approved",
+  "expected_sha256": "1f558025cb1f3f8966a639e18711e2a72feca01160cf261e3003c97347fb4734",
+  "pin_request_id": "TWPINREQ-12CE8DF6B5FC",
+  "approval_id": "TWPINAP-066D1D2E8D2E",
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "version_evidence": {
+    "operator_attested_version": "gvm-cli 26.0.6 (API version 27.4.0)",
+    "version_command": "gvm-cli.CMD --version",
+    "version_output_excerpt": "gvm-cli 26.0.6 (API version 27.4.0)\n",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "approved_at": "2026-07-02T07:13:42Z",
+  "safe_by_default": true,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-OPENVAS-001.json"
+}

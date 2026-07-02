@@ -1,0 +1,85 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-E1FF3A5115ED",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-OPENVAS-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-OPENVAS-001",
+  "tool_name": "openvas",
+  "execution_mode": "dry_run",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "invalid",
+  "errors": [
+    "runner_command_not_in_child_process_allowlist"
+  ],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [],
+  "runner_attempt": {
+    "kind": "redteam_ax_v2_governed_runner_attempt",
+    "run_id": "TRUN-E1FF3A5115ED",
+    "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "action_id": "TAC-OPENVAS-CLI-LIVE-SMOKE-001",
+    "execution_plan_id": "TEP-7748B58BC59B",
+    "execution_token_id": "EXT-91CA11FF8BDF",
+    "tool_id": "TOOL-OPENVAS-001",
+    "execution_mode": "dry_run",
+    "runner_argv": [
+      "gvm-cli.CMD",
+      "--version"
+    ],
+    "shell": false,
+    "status": "blocked",
+    "errors": [
+      "runner_command_not_in_child_process_allowlist"
+    ],
+    "started_at": "2026-07-02T06:40:13Z",
+    "completed_at": null,
+    "exit_code": null,
+    "timeout_seconds": 30,
+    "max_output_bytes": 8192,
+    "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-27A7CA2D1B1D.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "normalized_results": [],
+  "evidence_candidates": [],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": true,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "dry_run",
+      "offline_parse",
+      "manual_operator_run",
+      "lab_execute"
+    ],
+    "denied_execution_modes": [
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "deny"
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "gvm-cli",
+    "path": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\bin\\gvm-cli.CMD",
+    "checked_at": "2026-07-02T06:40:13Z"
+  },
+  "analysis_agent_id": "AGENT-OPENVAS-ANALYST-001",
+  "normalizer_id": "NORMALIZER-OPENVAS-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-OPENVAS-001",
+    "run_id": "TRUN-E1FF3A5115ED",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": []
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-E1FF3A5115ED.json"
+}

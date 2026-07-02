@@ -1,0 +1,24 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin",
+  "pin_id": "wrapper-pin-TOOL-ZAP-001",
+  "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+  "source_case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "status": "approved",
+  "expected_sha256": "e62f9c9ca3344fbdad3c4335885f0699690f761ad9e6a904511f24a303f510cf",
+  "pin_request_id": "TWPINREQ-4787025B14EA",
+  "approval_id": "TWPINAP-21842B75EBD8",
+  "approved_by": "lead@example.com",
+  "approver_role": "red_team_lead",
+  "version_evidence": {
+    "operator_attested_version": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...",
+    "version_command": "zap-cli.CMD --help",
+    "version_output_excerpt": "Usage: zap-cli [OPTIONS] COMMAND [ARGS]...\n\n  ZAP CLI v0.10.0 - A simple commandline tool for OWASP ZAP.\n\nOptions:\n  --boring            Remove color from console output.\n  -v, --verbose       Add more verbose debugging output.\n  --zap-path TEXT     Path to the ZAP daemon. Defaults to /zap or the value of\n                      the environment variable ZAP_PATH.\n  -p, --port INTEGER  Port of the ZAP proxy. Defaults to 8090 or the value of\n                      the environment variable ZAP_PORT.\n  --zap-url TEXT      The URL of the ZAP proxy. Defaults to http://127.0.0.1\n                      or the value of the environment variable ZAP_URL.\n  --api-key TEXT      The API key for using the ZAP API if required. Defaults\n                      to the value of the environment variable ZAP_API_KEY.\n  --log-path TEXT     Path to the directory in which to save the ZAP output\n                      log file. Defaults to the value of the environment\n                      variable ZAP_LOG_PATH and u",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "approved_at": "2026-07-02T07:13:43Z",
+  "safe_by_default": true,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-ZAP-001.json"
+}

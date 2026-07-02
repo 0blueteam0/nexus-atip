@@ -51,6 +51,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2의 여러 분석도구 순차 실행 UI와 governed multi-toolchain execution API
 - 설치된 `npm.cmd --version`의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 공식 release checksum으로 검증한 portable Nuclei v3.10.0 및 Trivy v0.72.0 CLI의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
+- 격리 venv 기반 OpenVAS `gvm-cli` 및 OWASP ZAP `zap-cli` wrapper의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - OpenVAS/ZAP 외부 vault reference 기반 read-only credential authorization API와 한국어 UI
 - 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, Python compile, frontend JS check, frontend build 9/9 통과
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
@@ -59,7 +60,8 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 ## 아직 완료로 주장하면 안 되는 항목
 
-- OpenVAS/OWASP ZAP 및 Docker/container runtime live smoke 성공 증거
+- Docker/container runtime live smoke 성공 증거
+- OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 
 ## 운영 규칙
 

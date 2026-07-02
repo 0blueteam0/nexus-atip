@@ -1,0 +1,27 @@
+{
+  "kind": "redteam_ax_v2_governed_runner_attempt",
+  "run_id": "TRUN-F0D3A704A133",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+  "execution_plan_id": "TEP-621B67C84182",
+  "execution_token_id": "EXT-1C4126A9C334",
+  "tool_id": "TOOL-ZAP-001",
+  "execution_mode": "dry_run",
+  "runner_argv": [
+    "zap-cli.CMD",
+    "--help"
+  ],
+  "shell": false,
+  "status": "executed",
+  "errors": [],
+  "started_at": "2026-07-02T07:13:43Z",
+  "completed_at": "2026-07-02T07:13:44Z",
+  "exit_code": 0,
+  "timeout_seconds": 30,
+  "max_output_bytes": 8192,
+  "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "stdout_bytes": 1836,
+  "stderr_bytes": 0,
+  "output_truncated": false,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-attempts/RUNA-7EC438D7E243.json"
+}

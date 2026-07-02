@@ -1,0 +1,256 @@
+{
+  "kind": "redteam_ax_accepted_gate_manifest",
+  "schema_version": "0.1",
+  "created_at": "2026-07-02T06:50:02Z",
+  "status": "passed",
+  "project_root": "J:/PortableApps/genai/projects/ai-agentic-soc",
+  "redteam_root": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+  "accepted_gate_count": 11,
+  "passed_gate_count": 11,
+  "failed_gate_count": 0,
+  "zero_count_gate": {
+    "source": "tests/test_redteam_v2_sample_e2e.py",
+    "asserts_unsupported_claim_count_zero": true,
+    "asserts_unapproved_high_risk_count_zero": true,
+    "asserts_finding_without_evidence_count_zero": true,
+    "covered_by_gate_id": "GATE-SAMPLE-E2E"
+  },
+  "completion_audit_snapshot": {
+    "goal_status": "active_incomplete",
+    "status_counts": {
+      "proved": 14,
+      "partial": 1,
+      "gap": 0,
+      "blocked": 0
+    },
+    "remaining_gaps": [
+      "Docker/container runtime live smoke after environment readiness.",
+      "OpenVAS service report import and OWASP ZAP daemon passive-alert import after service endpoint readiness."
+    ]
+  },
+  "installed_tool_smoke_snapshot": {
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
+    "status": "passed",
+    "tool_name": "npm audit",
+    "run_id": "TRUN-A2F7E41411FE",
+    "evidence_id": "EV-CBA947DDA052"
+  },
+  "gates": [
+    {
+      "gate_id": "GATE-API-REGRESSION",
+      "name": "RedTeam AX v2 API regression",
+      "category": "api_regression",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "tests/test_redteam_v2_api_router.py",
+        "-q"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "timeout_seconds": 180,
+      "started_at": "2026-07-02T06:48:53Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:03Z",
+      "duration_seconds": 9.977,
+      "exit_code": 0,
+      "stdout_excerpt": "..................................................                       [100%]\n============================== warnings summary ===============================\n.venv\\Lib\\site-packages\\fastapi\\testclient.py:1\n  J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n50 passed, 1 warning in 5.89s\n",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-SAMPLE-E2E",
+      "name": "RedTeam AX v2 sample case E2E and report gate",
+      "category": "sample_e2e_report_verification",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "tests/test_redteam_v2_sample_e2e.py",
+        "-q"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "timeout_seconds": 180,
+      "started_at": "2026-07-02T06:49:03Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:07Z",
+      "duration_seconds": 3.682,
+      "exit_code": 0,
+      "stdout_excerpt": ".                                                                        [100%]\n============================== warnings summary ===============================\n.venv\\Lib\\site-packages\\fastapi\\testclient.py:1\n  J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n1 passed, 1 warning in 1.34s\n",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-COMPLETION-AUDIT",
+      "name": "Completion audit matrix sanity",
+      "category": "completion_audit",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/test_completion_audit_matrix.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 60,
+      "started_at": "2026-07-02T06:49:07Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:07Z",
+      "duration_seconds": 0.139,
+      "exit_code": 0,
+      "stdout_excerpt": "[+] completion audit matrix sanity passed\n",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-PLAN-CONTRACT",
+      "name": "FINAL_PLAN and Detailed_PLAN contract sanity",
+      "category": "plan_contract",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/test_plan_contract.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 60,
+      "started_at": "2026-07-02T06:49:07Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:07Z",
+      "duration_seconds": 0.121,
+      "exit_code": 0,
+      "stdout_excerpt": "[+] plan contract sanity passed\n",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-KOREAN-COPY",
+      "name": "RedTeam2 Korean beginner-facing copy inventory",
+      "category": "frontend_korean_copy",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 60,
+      "started_at": "2026-07-02T06:49:07Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:08Z",
+      "duration_seconds": 0.22,
+      "exit_code": 0,
+      "stdout_excerpt": "[+] redteam2 Korean copy inventory passed (809/967 Korean-context literals, English-only ratio=0.1593)\n",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-INSTALLED-TOOL-LIVE-SMOKE",
+      "name": "Governed installed npm audit runner live smoke",
+      "category": "installed_tool_runtime_smoke",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/redteam_ax_installed_tool_live_smoke.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 120,
+      "started_at": "2026-07-02T06:49:08Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:12Z",
+      "duration_seconds": 4.668,
+      "exit_code": 0,
+      "stdout_excerpt": "{\"status\": \"passed\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json\", \"run_id\": \"TRUN-A2F7E41411FE\", \"evidence_id\": \"EV-CBA947DDA052\"}\n",
+      "stderr_excerpt": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "gate_id": "GATE-SCANNER-CLI-LIVE-SMOKE",
+      "name": "Governed Nuclei and Trivy portable CLI live smoke",
+      "category": "scanner_cli_runtime_smoke",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/redteam_ax_scanner_cli_live_smoke.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 180,
+      "started_at": "2026-07-02T06:49:12Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:42Z",
+      "duration_seconds": 29.824,
+      "exit_code": 0,
+      "stdout_excerpt": "{\"status\": \"passed\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json\", \"passed_tools\": [\"TOOL-NUCLEI-001\", \"TOOL-TRIVY-001\"], \"failed_tools\": [], \"blocked_tools\": [\"TOOL-OPENVAS-001\", \"TOOL-ZAP-001\", \"DOCKER-CONTAINER-RUNTIME\"]}\n",
+      "stderr_excerpt": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "gate_id": "GATE-OPENVAS-ZAP-CLI-LIVE-SMOKE",
+      "name": "Governed OpenVAS gvm-cli and ZAP CLI wrapper live smoke",
+      "category": "scanner_cli_runtime_smoke",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio",
+      "timeout_seconds": 240,
+      "started_at": "2026-07-02T06:49:42Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:57Z",
+      "duration_seconds": 15.303,
+      "exit_code": 0,
+      "stdout_excerpt": "{\"status\": \"passed\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json\", \"passed_tools\": [\"TOOL-OPENVAS-001\", \"TOOL-ZAP-001\"], \"failed_tools\": [], \"residual_blockers\": [\"service_endpoint_not_configured\", \"zap_daemon_not_started\"]}\n",
+      "stderr_excerpt": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "gate_id": "GATE-PY-COMPILE",
+      "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
+      "category": "static_compile",
+      "command": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "-m",
+        "py_compile",
+        "runtime/redteam_v2_models.py",
+        "runtime/redteam_v2_api_router.py",
+        "Red Team Studio/고도화/sanity/redteam_ax_accepted_gate_manifest.py",
+        "Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
+        "Red Team Studio/고도화/sanity/redteam_ax_scanner_cli_live_smoke.py",
+        "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
+        "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "timeout_seconds": 60,
+      "started_at": "2026-07-02T06:49:57Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:58Z",
+      "duration_seconds": 0.497,
+      "exit_code": 0,
+      "stdout_excerpt": "",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-FRONTEND-JS-CHECK",
+      "name": "Report Studio frontend JavaScript syntax check",
+      "category": "frontend_static_check",
+      "command": [
+        "node",
+        "--check",
+        "soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc",
+      "timeout_seconds": 60,
+      "started_at": "2026-07-02T06:49:58Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:49:58Z",
+      "duration_seconds": 0.455,
+      "exit_code": 0,
+      "stdout_excerpt": "",
+      "stderr_excerpt": ""
+    },
+    {
+      "gate_id": "GATE-FRONTEND-BUILD",
+      "name": "Report Studio frontend production build",
+      "category": "frontend_build",
+      "command": [
+        "npm.cmd",
+        "run",
+        "build"
+      ],
+      "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react",
+      "timeout_seconds": 240,
+      "started_at": "2026-07-02T06:49:58Z",
+      "status": "passed",
+      "completed_at": "2026-07-02T06:50:02Z",
+      "duration_seconds": 4.2,
+      "exit_code": 0,
+      "stdout_excerpt": "\n> ai-agentic-soc-idiomatic-react@4.0.0 build\n> vite build\n\nvite v8.1.0 building client environment for production...\n\u001b[2K\ntransforming...✓ 47 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.43 kB │ gzip:   0.30 kB\ndist/assets/index-DJPCSwkP.css   19.53 kB │ gzip:   2.61 kB\ndist/assets/index-4TtzHift.js   812.16 kB │ gzip: 225.46 kB\n\n✓ built in 1.12s\n",
+      "stderr_excerpt": "[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json",
+  "timestamped_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/accepted_gate_manifest_20260702T065002Z.json"
+}

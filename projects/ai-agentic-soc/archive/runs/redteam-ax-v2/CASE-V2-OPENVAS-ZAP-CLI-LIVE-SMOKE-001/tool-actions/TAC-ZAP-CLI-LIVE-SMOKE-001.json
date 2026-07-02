@@ -1,0 +1,105 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-ZAP-CLI-LIVE-SMOKE-001",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "OWASP ZAP CLI wrapper live smoke",
+  "objective": "Run OWASP ZAP CLI low-risk CLI metadata command through governed RedTeam AX runner.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_profile": {
+    "tool_id": "TOOL-ZAP-001",
+    "name": "owasp-zap",
+    "category": "web_validation",
+    "normalizer_id": "NORMALIZER-ZAP-001",
+    "agent_id": "AGENT-ZAP-ANALYST-001",
+    "default_policy": "approved_scope_passive_or_lab_active_scan"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "scanner_finding_candidate",
+    "web_validation_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+    "decision": "allow",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-02T07:13:43Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/roe/ROE-7A70034A9993.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T07:13:43Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T07:13:43Z",
+      "execution_plan_id": "TEP-621B67C84182",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T07:13:44Z",
+      "run_id": "TRUN-F0D3A704A133",
+      "tool_id": "TOOL-ZAP-001",
+      "execution_mode": "dry_run"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T07:13:44Z",
+      "run_id": "TRUN-F0D3A704A133",
+      "result_id": "NR-90365E663F76",
+      "agent_id": "AGENT-ZAP-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T07:13:44Z",
+      "run_id": "TRUN-F0D3A704A133",
+      "evidence_id": "EV-7B19A6792E20"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-actions/TAC-ZAP-CLI-LIVE-SMOKE-001.json",
+  "execution_plans": [
+    "TEP-621B67C84182"
+  ]
+}

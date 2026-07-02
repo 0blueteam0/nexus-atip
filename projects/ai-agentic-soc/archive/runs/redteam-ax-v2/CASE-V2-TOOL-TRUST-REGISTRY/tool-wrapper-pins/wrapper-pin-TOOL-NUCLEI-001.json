@@ -7,8 +7,8 @@
   "tool_name": "nuclei",
   "status": "approved",
   "expected_sha256": "2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110",
-  "pin_request_id": "TWPINREQ-A45792A90CD2",
-  "approval_id": "TWPINAP-29985AD0046E",
+  "pin_request_id": "TWPINREQ-825761DE007A",
+  "approval_id": "TWPINAP-91457246064D",
   "approved_by": "lead@example.com",
   "approver_role": "red_team_lead",
   "version_evidence": {
@@ -18,7 +18,7 @@
     "version_command_executed_by_operator": true,
     "registry_executed_version_command": false
   },
-  "approved_at": "2026-07-02T06:27:55Z",
+  "approved_at": "2026-07-02T07:13:25Z",
   "safe_by_default": true,
   "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NUCLEI-001.json"
 }

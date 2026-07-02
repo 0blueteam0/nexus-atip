@@ -7,8 +7,8 @@
   "tool_name": "trivy",
   "status": "approved",
   "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
-  "pin_request_id": "TWPINREQ-2F8C57263ABB",
-  "approval_id": "TWPINAP-37235D823937",
+  "pin_request_id": "TWPINREQ-2F2BBF493647",
+  "approval_id": "TWPINAP-6A2B2FE9F8CA",
   "approved_by": "lead@example.com",
   "approver_role": "red_team_lead",
   "version_evidence": {
@@ -18,7 +18,7 @@
     "version_command_executed_by_operator": true,
     "registry_executed_version_command": false
   },
-  "approved_at": "2026-07-02T06:28:04Z",
+  "approved_at": "2026-07-02T07:13:34Z",
   "safe_by_default": true,
   "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-TRIVY-001.json"
 }

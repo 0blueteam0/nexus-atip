@@ -1,0 +1,38 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-811AE2735E4D",
+  "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-7A9A06A7FEDB.json",
+  "collected_at": "2026-07-02T06:47:20Z",
+  "hash": "SHA256-4A1A8C013EF9",
+  "summary": "OpenVAS gvm-tools CLI governed wrapper live smoke output evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TRUN-4711E6FFB1E0",
+    "result_id": "NR-7A9A06A7FEDB",
+    "result_type": "scanner_cli_runtime_evidence",
+    "structured_items": [
+      {
+        "item_type": "scanner_cli_runtime_evidence",
+        "tool_id": "TOOL-OPENVAS-001",
+        "artifact_id": "ART-50EAB52DFC69",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/runner-output/TRUN-4711E6FFB1E0/stdout.txt",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.7
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-811AE2735E4D.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/audit.jsonl"
+}

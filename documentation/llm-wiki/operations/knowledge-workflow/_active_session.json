@@ -1,9 +1,9 @@
 {
-  "task_id": "KW-20260702-152026-Red-Team-Studio-RedTeam-AX-scanner-and-container-runtime-live-smoke-slice",
+  "task_id": "KW-20260702-153316-Red-Team-Studio-RedTeam-AX-OpenVAS-and-ZAP-CLI-wrapper-live-smoke-slice",
   "project": "Red-Team-Studio",
-  "task": "RedTeam AX scanner and container runtime live smoke slice",
-  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-152026-Red-Team-Studio-RedTeam-AX-scanner-and-container-runtime-live-smoke-slice",
-  "created_at": "2026-07-02T15:20:26+09:00",
+  "task": "RedTeam AX OpenVAS and ZAP CLI wrapper live smoke slice",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-153316-Red-Team-Studio-RedTeam-AX-OpenVAS-and-ZAP-CLI-wrapper-live-smoke-slice",
+  "created_at": "2026-07-02T15:33:16+09:00",
   "status": "ok",
   "required_files": [
     "SCOPE.md",
@@ -16,5 +16,5 @@
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
   ],
-  "closed_at": "2026-07-02T15:29:32+09:00"
+  "closed_at": "2026-07-02T15:51:28+09:00"
 }
