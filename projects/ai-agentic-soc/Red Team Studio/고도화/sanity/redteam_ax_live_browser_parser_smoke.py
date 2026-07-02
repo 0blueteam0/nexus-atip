@@ -58,6 +58,7 @@ def run_command(argv: list[str], cwd: Path, timeout: int = 60) -> dict[str, Any]
             cwd=str(cwd),
             capture_output=True,
             text=True,
+            encoding="utf-8",
             errors="replace",
             timeout=timeout,
             shell=False,
@@ -576,11 +577,16 @@ console.log(JSON.stringify(result));
             parsed = json.loads(probe["stdout"])
         except json.JSONDecodeError:
             parsed = None
+    stdout_decoded_as_utf8 = "보고서 스튜디오" in (probe.get("stdout") or "") and "레드팀 분석2" in (probe.get("stdout") or "")
+    status = parsed.get("status") if parsed else "failed_unparseable_browser_result"
+    if status == "passed" and not stdout_decoded_as_utf8:
+        status = "failed_browser_stdout_encoding"
     return {
         "script_path": str(script_path),
         "command": probe,
         "result": parsed,
-        "status": parsed.get("status") if parsed else "failed_unparseable_browser_result",
+        "stdout_decoded_as_utf8": stdout_decoded_as_utf8,
+        "status": status,
     }
 
 

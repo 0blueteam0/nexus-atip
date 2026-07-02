@@ -1108,4 +1108,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Agentic RAG SCA, 인용 검증, Claim-Evidence Matrix 후보, 명령 신뢰/사람 검토 행을 한국어 display mapping으로 변경
 - [x] 실행 계획, 격리, runner, sanitizer, visual evidence, file upload 상태값에 한국어 display mapping 적용
 - [x] browser smoke DOM 체크에 `koreanDisplayMapping` 확인 추가
-- [ ] 다음 slice: smoke artifact/body encoding mojibake 원인 점검과 한국어 DOM 추출 안정화
+- [x] 다음 slice: smoke artifact/body encoding mojibake 원인 점검과 한국어 DOM 추출 안정화 - slice 52 완료
+
+## 60. Slice 52 Browser Smoke Korean Encoding Stabilization 체크리스트
+
+- [x] live browser smoke의 Node probe stdout이 Windows 기본 코드페이지로 디코딩되어 Korean `bodyPrefix`가 깨지는 원인 확인
+- [x] `subprocess.run(..., text=True)` 호출에 `encoding="utf-8"`을 명시해 Node JSON stdout을 UTF-8로 읽도록 변경
+- [x] `stdout_decoded_as_utf8` 회귀 체크 추가: `보고서 스튜디오`, `레드팀 분석2` 문자열이 stdout에 보존되지 않으면 smoke status를 실패로 전환
+- [x] live browser smoke artifact에 readable Korean bodyPrefix와 `stdout_decoded_as_utf8=true`가 남도록 검증
+- [ ] 다음 slice: 전체 RedTeam AX 요구사항별 completion audit matrix 작성 및 남은 기능 gap 선별
