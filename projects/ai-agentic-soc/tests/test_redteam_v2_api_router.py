@@ -1370,6 +1370,27 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(step["evidence_candidate"]["validation_status"], "candidate")
 
         evidence_ids = [step["evidence_candidate"]["evidence_id"] for step in body["steps"]]
+        blocked_promotion = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/promote-findings",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+                "evidence_ids": evidence_ids,
+            },
+        )
+        self.assertEqual(blocked_promotion.status_code, 200)
+        blocked_body = blocked_promotion.json()
+        self.assertEqual(blocked_body["kind"], "redteam_ax_v2_toolchain_collection_finding_promotion")
+        self.assertEqual(blocked_body["status"], "blocked")
+        self.assertEqual(blocked_body["created_count"], 0)
+        self.assertEqual(blocked_body["blocked_count"], 2)
+        self.assertFalse(blocked_body["commands_executed_by_api"])
+        self.assertFalse(blocked_body["active_scan_executed"])
+        self.assertFalse(blocked_body["report_claim_inserted"])
+        for item in blocked_body["promotions"]:
+            self.assertTrue(item["errors"])
+            self.assertIn("unapproved_evidence", ",".join(item["errors"]))
+
         approved = self.client.post(
             f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/approve-evidence",
             headers=self.actor_headers("lead@example.com", "red_team_lead"),
@@ -1396,6 +1417,34 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         for item in approval_body["approvals"]:
             self.assertEqual(item["status"], "approved")
             self.assertEqual(item["identity_binding"], "bound")
+            self.assertFalse(item["errors"])
+
+        promoted = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/promote-findings",
+            json={
+                "case_id": case_id,
+                "requested_by": "analyst@example.com",
+                "evidence_ids": evidence_ids,
+                "owner": "security-owner",
+                "sla": "30 days",
+            },
+        )
+        self.assertEqual(promoted.status_code, 200)
+        promotion_body = promoted.json()
+        self.assertEqual(promotion_body["kind"], "redteam_ax_v2_toolchain_collection_finding_promotion")
+        self.assertEqual(promotion_body["status"], "finding_drafts_created")
+        self.assertEqual(promotion_body["created_count"], 2)
+        self.assertEqual(promotion_body["blocked_count"], 0)
+        self.assertTrue(promotion_body["finding_created"])
+        self.assertFalse(promotion_body["report_claim_inserted"])
+        self.assertFalse(promotion_body["commands_executed_by_api"])
+        self.assertFalse(promotion_body["active_scan_executed"])
+        self.assertTrue(promotion_body["requires_severity_approval"])
+        self.assertTrue(Path(promotion_body["artifact_path"]).exists())
+        for item in promotion_body["promotions"]:
+            self.assertEqual(item["status"], "finding_draft_created")
+            self.assertEqual(item["finding_status"], "pending_review")
+            self.assertEqual(item["finding_approval_status"], "pending")
             self.assertFalse(item["errors"])
 
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:

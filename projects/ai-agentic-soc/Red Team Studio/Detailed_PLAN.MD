@@ -837,3 +837,13 @@ Create Case
 - RedTeam2 UI는 `Evidence 후보 승인` 버튼과 승인 결과 표를 제공해 초급 사용자가 결과 회수 이후 무엇이 승인됐는지 확인할 수 있게 한다.
 - regression test는 복합 npm audit + Trivy collection 후 Evidence 후보 2개를 red_team_lead identity로 승인하고, 명령 실행/능동 스캔/Finding 생성/보고서 삽입이 발생하지 않음을 검증한다.
 - 이 slice는 collection 이후 Evidence approval lane을 닫지만, 실제 운영 후보 전체의 Finding 승격, severity 2인 승인, Matrix/report/export 완료는 후속 작업이다.
+
+## 37. Slice 82 반영 사항
+
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings`는 collection Evidence 후보 중 backend Evidence store에서 승인된 항목만 `pending_review` Finding 초안으로 만든다.
+- 승인되지 않은 Evidence는 `blocked` promotion row로 남고 Finding을 생성하지 않는다.
+- 생성되는 Finding payload는 Evidence summary, normalized structured item, tool ID, severity 후보, owner/SLA/retest 기본값을 포함하지만 최종 severity는 비워 둔다.
+- API는 도구 실행, 능동 스캔, raw output instruction 신뢰, 보고서 Claim 삽입을 수행하지 않으며 `requires_severity_approval=true`를 반환한다.
+- RedTeam2 UI는 `Finding 초안 생성` 버튼과 Evidence별 Finding 생성 상태 표를 제공하고, severity 2인 승인 전 Matrix와 보고서 Claim에 넣지 않는다는 설명을 표시한다.
+- regression test는 collection Evidence 승인 전 promotion이 차단되고, batch 승인 후에만 Finding 초안 2개가 생성되는 경로를 검증한다.
+- 이 slice는 collection Evidence approval에서 Finding draft까지 잇는 운영 lane이며, 실제 운영 collection 전체의 2인 severity 승인, Matrix ready, Report v2 gate pass/export는 후속 HITL 단계로 남긴다.

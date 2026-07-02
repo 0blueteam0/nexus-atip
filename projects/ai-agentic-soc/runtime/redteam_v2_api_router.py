@@ -304,6 +304,11 @@ def approve_toolchain_collection_evidence(
     )
 
 
+@router.post("/toolchain-result-collections/{collection_id}/promote-findings")
+def promote_toolchain_collection_evidence_to_findings(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.promote_toolchain_collection_evidence_to_findings(collection_id, payload)
+
+
 @router.post("/tool-runs/{run_id}/import-output")
 def import_tool_run_output(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_tool_run_output(run_id, payload)

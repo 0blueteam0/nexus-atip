@@ -1486,3 +1486,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `Evidence 후보 승인` 버튼, 승인 상태 행, 승인 결과 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 approval API anchor 추가
 - [ ] 실제 운영 collection의 모든 Evidence 후보를 사람 검토로 승인하고 Finding 승격/Matrix ready까지 연결
+
+## 90. Slice 82 복합 Toolchain 승인 Evidence Finding 초안 생성 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API 추가
+- [x] API는 collection artifact의 Evidence 후보 중 승인된 Evidence만 Finding 초안으로 생성
+- [x] 승인 전 Evidence는 `blocked`로 유지하고 Finding 초안을 만들지 않음
+- [x] 생성된 Finding은 `pending_review`/`pending` 상태로 남기고 red_team_lead + business_owner severity 2인 승인 전에는 Matrix/report Claim에 넣지 않음
+- [x] API는 명령 실행, 능동 스캔, raw output instruction 신뢰, 보고서 Claim 삽입을 수행하지 않음
+- [x] regression test가 승인 전 promotion 차단과 Evidence batch 승인 후 Finding 초안 생성을 검증
+- [x] RedTeam2 UI에 `Finding 초안 생성` 버튼, `/promote-findings` 안내, Evidence별 Finding 생성 결과 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 collection Finding promotion anchor 추가
+- [ ] 실제 운영 collection 전체를 Finding 초안으로 승격하고 2인 severity 승인, Matrix draft ready, Report v2 gate pass까지 연결

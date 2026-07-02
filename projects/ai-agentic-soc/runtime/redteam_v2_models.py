@@ -3639,6 +3639,167 @@ def approve_toolchain_collection_evidence(collection_id: str, payload: dict[str,
     return result
 
 
+def _finding_payload_from_collection_evidence(
+    collection_id: str,
+    collection: dict[str, Any],
+    evidence: dict[str, Any],
+    step: dict[str, Any],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    evidence_id = str(evidence.get("evidence_id") or "").strip()
+    case_id = str(evidence.get("case_id") or collection.get("case_id") or payload.get("case_id") or "CASE-UNSPECIFIED")
+    normalized_fields = evidence.get("normalized_fields") if isinstance(evidence.get("normalized_fields"), dict) else {}
+    structured_items = normalized_fields.get("structured_items") if isinstance(normalized_fields.get("structured_items"), list) else []
+    primary_item = next((item for item in structured_items if isinstance(item, dict)), {})
+    tool_id = str(step.get("tool_id") or normalized_fields.get("tool_id") or collection.get("toolchain_id") or "toolchain").strip()
+    item_name = (
+        primary_item.get("name")
+        or primary_item.get("title")
+        or primary_item.get("vulnerability_id")
+        or primary_item.get("package_name")
+        or evidence.get("summary")
+        or "도구 결과 후보"
+    )
+    target = primary_item.get("target") or primary_item.get("package_name") or primary_item.get("component") or "승인 범위 자산"
+    severity = normalize_severity(primary_item.get("severity") or payload.get("severity_draft") or "medium")
+    finding_id = str(payload.get("finding_id") or "").strip() or stable_id("FCOLL", [collection_id, evidence_id, item_name])
+    title_prefix = str(payload.get("title_prefix") or "복합 도구 결과 후보").strip()
+    return {
+        "case_id": case_id,
+        "finding_id": finding_id,
+        "title": f"{title_prefix}: {item_name}",
+        "severity_draft": severity,
+        "confidence": float(payload.get("confidence") or 0.72),
+        "related_objective": payload.get("related_objective") or collection.get("requested_by") or "복합 분석도구 결과 검토",
+        "affected_assets": payload.get("affected_assets") or [target],
+        "affected_business_process": payload.get("affected_business_process") or ["승인 범위 내 보안 검증 대상"],
+        "crown_jewel_link": payload.get("crown_jewel_link") or ["case_scope"],
+        "observation": (
+            f"{tool_id} 결과에서 Evidence {evidence_id}로 승인된 후보가 관찰됨. "
+            f"원본 요약: {evidence.get('summary') or '정규화된 도구 결과'}"
+        ),
+        "evidence_ids": [evidence_id],
+        "expected_control": payload.get("expected_control") or "취약 컴포넌트/설정 후보는 담당자가 검토하고 조치 여부를 결정해야 함",
+        "observed_control_response": payload.get("observed_control_response") or "도구 결과가 Evidence Card로 승인되었으나 Finding severity는 아직 미승인",
+        "detection_gap": payload.get("detection_gap") or "탐지/운영 영향은 사람 검토 전 확정하지 않음",
+        "response_gap": payload.get("response_gap") or "재시험 계획과 owner/SLA 지정 필요",
+        "root_cause": payload.get("root_cause") or ["정규화된 도구 결과에서 취약점 또는 설정 검토 후보가 확인됨"],
+        "business_impact": payload.get("business_impact") or "승인 범위 내 시스템에 보안 검토 및 조치 판단이 필요한 후보 리스크가 존재할 수 있음",
+        "likelihood": payload.get("likelihood") or "medium",
+        "impact": payload.get("impact") or ("high" if severity in {"high", "critical"} else "medium"),
+        "recommendation": payload.get("recommendation") or ["담당자가 원본 Evidence와 정규화 결과를 대조하고 조치·예외·오탐 여부를 기록한다"],
+        "owner": payload.get("owner") or "security-owner",
+        "sla": payload.get("sla") or ("7 days" if severity in {"high", "critical"} else "30 days"),
+        "verification_method": payload.get("verification_method") or "Evidence Card와 원본 도구 결과를 재검토하고 재시험 결과를 첨부",
+        "retest_criteria": payload.get("retest_criteria") or "동일 도구/동일 범위 재시험에서 후보 항목이 해소되었거나 승인된 예외로 기록됨",
+        "residual_risk": payload.get("residual_risk") or "최종 severity 2인 승인 전까지 보고서 Claim으로 사용하지 않음",
+    }
+
+
+def promote_toolchain_collection_evidence_to_findings(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()
+    requested_ids = {
+        str(item).strip()
+        for item in (payload.get("evidence_ids") or [])
+        if str(item).strip()
+    }
+    errors: list[str] = []
+    warnings: list[str] = []
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+    if not requested_by:
+        errors.append("requested_by_required")
+
+    collection_candidate_ids: set[str] = set()
+    selected_steps: list[tuple[str, dict[str, Any]]] = []
+    for step in (collection or {}).get("steps") or []:
+        evidence_candidate = step.get("evidence_candidate") if isinstance(step, dict) else None
+        evidence_id = str((evidence_candidate or {}).get("evidence_id") or "").strip()
+        if not evidence_id:
+            continue
+        collection_candidate_ids.add(evidence_id)
+        if not requested_ids or evidence_id in requested_ids:
+            selected_steps.append((evidence_id, step))
+    missing_requested_ids = sorted(requested_ids - collection_candidate_ids)
+    if missing_requested_ids:
+        errors.extend(f"evidence_candidate_not_in_collection:{evidence_id}" for evidence_id in missing_requested_ids)
+    if collection is not None and not selected_steps:
+        errors.append("approved_evidence_candidates_required")
+
+    promotion_id = stable_id("TCFPR", [collection_id, case_id, requested_by, sorted(evidence_id for evidence_id, _ in selected_steps), now_utc()])
+    promotions: list[dict[str, Any]] = []
+    if not errors:
+        for evidence_id, step in selected_steps:
+            evidence_issues = evidence_approval_issues(case_id, [evidence_id])
+            evidence = load_json_record(evidence_id, "evidence", case_id)
+            item_errors = [f"evidence:{issue['type']}:{issue['id']}" for issue in evidence_issues]
+            finding: dict[str, Any] | None = None
+            if evidence is None:
+                item_errors.append(f"evidence:missing_evidence:{evidence_id}")
+            if not item_errors and evidence is not None:
+                finding_payload = _finding_payload_from_collection_evidence(collection_id, collection or {}, evidence, step, payload)
+                existing_finding = load_json_record(str(finding_payload.get("finding_id") or ""), "findings", case_id)
+                if existing_finding is not None:
+                    finding = existing_finding
+                    warnings.append(f"finding_already_exists:{finding.get('finding_id')}")
+                else:
+                    finding = create_finding(finding_payload)
+                    if finding.get("errors"):
+                        item_errors.extend(str(error) for error in finding.get("errors") or [])
+            promotions.append({
+                "evidence_id": evidence_id,
+                "status": "finding_draft_created" if finding is not None and not item_errors else "blocked",
+                "finding_id": (finding or {}).get("finding_id"),
+                "finding_status": (finding or {}).get("status"),
+                "finding_approval_status": (finding or {}).get("approval_status"),
+                "severity_draft": (finding or {}).get("severity_draft"),
+                "evidence_issues": evidence_issues,
+                "errors": item_errors,
+            })
+
+    created_count = sum(1 for item in promotions if item.get("status") == "finding_draft_created")
+    blocked_count = sum(1 for item in promotions if item.get("status") == "blocked")
+    status = "invalid" if errors else ("finding_drafts_created" if created_count and not blocked_count else "finding_drafts_partially_created" if created_count else "blocked")
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_finding_promotion",
+        "promotion_batch_id": promotion_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": status,
+        "requested_by": requested_by,
+        "candidate_count": len(selected_steps),
+        "created_count": created_count,
+        "blocked_count": blocked_count,
+        "promotions": promotions,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "finding_created": bool(created_count),
+        "report_claim_inserted": False,
+        "requires_human_validation": True,
+        "requires_severity_approval": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "생성된 Finding 초안의 원본 Evidence와 관찰 내용을 검토합니다.",
+            "red_team_lead와 business_owner가 severity를 각각 승인해야 Matrix ready가 됩니다.",
+            "보고서 Claim 삽입 전 Claim-Evidence Matrix와 report gate를 다시 실행합니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-finding-promotions", promotion_id)
+    if collection is not None and not errors:
+        collection["finding_promotion_batch_id"] = promotion_id
+        collection["finding_promotion_status"] = status
+        collection["promoted_finding_ids"] = [item.get("finding_id") for item in promotions if item.get("finding_id")]
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
 def _coerce_json(value: Any) -> Any:
     if isinstance(value, (dict, list)):
         return value
