@@ -5898,6 +5898,8 @@ export default {
     ];
     const toolchainRows = [
       ['복합 실행 상태', koValue(toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainRun.toolchain_id || '두 개 이상 분석도구와 명령을 입력하세요'],
+      ['진행률', toolchainRun.progress_percent != null ? `${toolchainRun.progress_percent}%` : '대기', toolchainRun.operator_summary_ko || '여러 분석도구 실행 버튼을 누르면 도구별 진행 상태가 표시됩니다'],
+      ['다음 행동', toolchainRun.current_stage_ko || '대기', toolchainRun.next_action_ko || '실행 전에는 도구 ID, 실행 모드, 명령 또는 첨부 결과를 확인하세요'],
       ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
       ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
@@ -5918,9 +5920,15 @@ export default {
     ];
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
       `${step.index + 1}. ${step.tool_name || step.tool_id}`,
-      koValue(step.status),
-      step.run?.run_id || step.plan?.execution_plan_id || (step.errors || []).join(', ') || '-',
+      step.status_ko || koValue(step.status),
+      step.operator_message_ko || step.run?.run_id || step.plan?.execution_plan_id || (step.errors || []).join(', ') || '-',
       (step.run?.raw_artifacts || []).length ? `${step.run.raw_artifacts.length}개 출력` : '출력 없음',
+    ]);
+    const toolchainProgressRows = (toolchainRun.progress_events || []).map(event => [
+      `${event.step_number || '-'}단계 · ${event.tool_name || event.tool_id || '-'}`,
+      event.status_ko || koValue(event.status),
+      event.message_ko || '-',
+      event.progress_percent != null ? `${event.progress_percent}%` : '-',
     ]);
     const toolchainCollectionRows = (toolchainCollection.steps || []).map(step => [
       `${Number(step.index ?? 0) + 1}. ${step.tool_id || '-'}`,
@@ -6649,6 +6657,7 @@ export default {
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
+            this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),

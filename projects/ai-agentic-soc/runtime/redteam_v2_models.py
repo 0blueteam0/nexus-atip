@@ -4343,6 +4343,7 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
     steps: list[dict[str, Any]] = []
+    progress_events: list[dict[str, Any]] = []
     if not requested_by:
         errors.append("requested_by_required")
     if not isinstance(raw_steps, list) or len(raw_steps) < 2:
@@ -4351,27 +4352,45 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("too_many_tool_steps_requested")
 
     if not errors:
+        total_steps = len(raw_steps)
         for index, raw_step in enumerate(raw_steps):
             step = raw_step if isinstance(raw_step, dict) else {}
             tool_id = str(step.get("tool_id") or "").strip()
             profile = analysis_tool_profile(tool_id)
+            display_name = (profile or {}).get("display_name") or (profile or {}).get("name") or tool_id or f"step-{index + 1}"
             action_id = str(step.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id]))
             execution_mode = str(step.get("execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip()
             step_record: dict[str, Any] = {
                 "index": index,
+                "step_number": index + 1,
                 "tool_id": tool_id,
                 "tool_name": (profile or {}).get("name"),
+                "display_name_ko": display_name,
                 "action_id": action_id,
                 "execution_mode": execution_mode,
                 "status": "pending",
+                "status_ko": "대기",
+                "progress_percent": int(index / total_steps * 100),
                 "errors": [],
                 "plan": None,
                 "run": None,
+                "operator_message_ko": f"{display_name} 실행 준비를 시작합니다.",
             }
             if profile is None:
                 step_record["status"] = "invalid"
+                step_record["status_ko"] = "등록되지 않은 도구"
+                step_record["operator_message_ko"] = "이 도구는 RedTeam AX 도구 카탈로그에 등록되어 있지 않습니다."
                 step_record["errors"].append("tool_profile_not_registered")
                 steps.append(step_record)
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "stage": "profile_lookup",
+                    "status": "invalid",
+                    "status_ko": "도구 확인 실패",
+                    "message_ko": step_record["operator_message_ko"],
+                    "progress_percent": int((index + 1) / total_steps * 100),
+                })
                 continue
 
             action = load_tool_action(action_id, case_id)
@@ -4406,10 +4425,34 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                 "execution_token": plan.get("execution_token"),
                 "artifact_path": plan.get("artifact_path"),
             }
+            progress_events.append({
+                "step_number": index + 1,
+                "tool_id": tool_id,
+                "tool_name": display_name,
+                "stage": "execution_plan",
+                "status": plan.get("status") or "unknown",
+                "status_ko": "실행 계획 준비됨" if plan.get("status") == "PlanReady" else "실행 계획 차단",
+                "message_ko": (
+                    f"{display_name} 실행 계획과 실행 토큰을 확인했습니다."
+                    if plan.get("status") == "PlanReady"
+                    else f"{display_name} 실행 계획이 준비되지 않아 실행하지 않습니다."
+                ),
+                "progress_percent": int((index + 0.35) / total_steps * 100),
+            })
             runner_argv = normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
             import_run_id = str(step.get("run_id") or stable_id("TRUN", [case_id, action_id, tool_id, execution_mode, requested_by, "toolchain-import", index]))
             imported_artifacts = imported_toolchain_step_artifacts(case_id, import_run_id, step)
             if runner_argv and plan.get("status") == "PlanReady":
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": display_name,
+                    "stage": "runner_start",
+                    "status": "running",
+                    "status_ko": "실행 중",
+                    "message_ko": f"{display_name}를 승인된 runner로 실행합니다. 쉘 확장은 사용하지 않습니다.",
+                    "progress_percent": int((index + 0.55) / total_steps * 100),
+                })
                 run = governed_tool_execution(action_id, {
                     "case_id": case_id,
                     "tool_id": tool_id,
@@ -4438,8 +4481,27 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                     "normalizer_id": run.get("normalizer_id"),
                 }
                 step_record["status"] = "executed" if run.get("status") in {"RunnerExecuted", "ContainerLaunchPrepared"} else "run_recorded"
+                step_record["status_ko"] = "실행 완료" if step_record["status"] == "executed" else "실행 기록됨"
+                step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                step_record["operator_message_ko"] = (
+                    f"{display_name} 실행 결과가 저장되었습니다. 다음 단계에서 결과 회수·Evidence 후보 생성을 진행하세요."
+                    if step_record["status"] == "executed"
+                    else f"{display_name} 실행 기록이 저장되었지만 결과 상태를 검토해야 합니다."
+                )
                 if run.get("errors"):
                     step_record["errors"].extend(run.get("errors") or [])
+                    step_record["status_ko"] = "실행 오류"
+                    step_record["operator_message_ko"] = f"{display_name} 실행 중 오류가 있어 상세 오류를 확인해야 합니다."
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": display_name,
+                    "stage": "runner_finish",
+                    "status": step_record["status"],
+                    "status_ko": step_record["status_ko"],
+                    "message_ko": step_record["operator_message_ko"],
+                    "progress_percent": step_record["progress_percent"],
+                })
             elif imported_artifacts and plan.get("status") == "PlanReady":
                 run = governed_tool_execution(action_id, {
                     "case_id": case_id,
@@ -4464,23 +4526,66 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                     "normalizer_id": run.get("normalizer_id"),
                 }
                 step_record["status"] = "imported" if run.get("status") in {"OutputImported", "PlanOnly"} else "run_recorded"
+                step_record["status_ko"] = "결과 첨부 완료" if step_record["status"] == "imported" else "결과 첨부 기록됨"
+                step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                step_record["operator_message_ko"] = (
+                    f"{display_name} 결과 파일을 명령이 아닌 자료로 첨부했습니다. 결과 회수·Evidence 후보 생성을 진행하세요."
+                    if step_record["status"] == "imported"
+                    else f"{display_name} 결과 첨부 기록을 검토해야 합니다."
+                )
                 if run.get("errors"):
                     step_record["errors"].extend(run.get("errors") or [])
+                    step_record["status_ko"] = "첨부 오류"
+                    step_record["operator_message_ko"] = f"{display_name} 결과 첨부 중 오류가 있어 상세 오류를 확인해야 합니다."
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": display_name,
+                    "stage": "artifact_import",
+                    "status": step_record["status"],
+                    "status_ko": step_record["status_ko"],
+                    "message_ko": step_record["operator_message_ko"],
+                    "progress_percent": step_record["progress_percent"],
+                })
             elif runner_argv:
                 step_record["status"] = "blocked"
+                step_record["status_ko"] = "실행 차단"
+                step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                step_record["operator_message_ko"] = f"{display_name} 실행 계획이 준비되지 않아 실행하지 않았습니다."
                 step_record["errors"].append("execution_plan_not_ready_for_runner")
                 warnings.append(f"{tool_id}:execution_plan_not_ready_for_runner")
             elif imported_artifacts:
                 step_record["status"] = "blocked"
+                step_record["status_ko"] = "첨부 차단"
+                step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                step_record["operator_message_ko"] = f"{display_name} 가져오기 계획이 준비되지 않아 결과를 첨부하지 않았습니다."
                 step_record["errors"].append("execution_plan_not_ready_for_import")
                 warnings.append(f"{tool_id}:execution_plan_not_ready_for_import")
             else:
                 step_record["status"] = "planned"
+                step_record["status_ko"] = "계획만 생성"
+                step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                step_record["operator_message_ko"] = f"{display_name}는 아직 실행 명령이나 첨부 결과가 없어 계획만 생성했습니다."
             steps.append(step_record)
 
     executed_count = sum(1 for step in steps if step.get("status") == "executed")
     imported_count = sum(1 for step in steps if step.get("status") == "imported")
     blocked_count = sum(1 for step in steps if step.get("status") in {"blocked", "invalid"} or step.get("errors"))
+    completed_step_count = executed_count + imported_count
+    progress_percent = 0
+    if steps:
+        progress_percent = int(sum(int(step.get("progress_percent") or 0) for step in steps) / len(steps))
+        if completed_step_count == len(steps) and not blocked_count:
+            progress_percent = 100
+    elif errors:
+        progress_percent = 0
+    next_action_ko = (
+        "결과 회수 버튼을 눌러 각 도구 출력에서 Evidence 후보를 만드세요."
+        if completed_step_count and not blocked_count
+        else "차단된 도구의 실행 계획, wrapper pin, 승인 조건을 먼저 해결하세요."
+        if blocked_count
+        else "도구 ID와 실행 명령 또는 첨부 결과를 입력한 뒤 다시 실행하세요."
+    )
     record = {
         "kind": "redteam_ax_v2_governed_toolchain_execution",
         "toolchain_id": chain_id,
@@ -4493,6 +4598,15 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         "executed_count": executed_count,
         "imported_count": imported_count,
         "blocked_count": blocked_count,
+        "completed_step_count": completed_step_count,
+        "progress_percent": progress_percent,
+        "current_stage_ko": "완료" if completed_step_count and not blocked_count else ("차단 확인 필요" if blocked_count else "계획 생성"),
+        "operator_summary_ko": (
+            f"{len(steps)}개 도구 중 {completed_step_count}개가 실행 또는 첨부 완료되었습니다. "
+            f"차단 {blocked_count}개, 명령 실행 {executed_count}개, 결과 첨부 {imported_count}개입니다."
+        ),
+        "next_action_ko": next_action_ko,
+        "progress_events": progress_events,
         "commands_executed_by_api": executed_count > 0,
         "shell_expansion_allowed": False,
         "trusted_as_instruction": False,

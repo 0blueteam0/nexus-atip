@@ -1714,3 +1714,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2에 `운영 Evidence Card import` 및 Evidence Card row 표 추가
 - [x] regression test가 pending 생성, 사람 검토 승인, human review 누락 blocker를 검증
 - [ ] 실제 운영 validator 통과 결과에서 생성된 Evidence Card 후보 전체를 import/approve하고 Finding 승격, 2인 severity, Matrix/report/export/completion gate까지 완료
+
+## 108. Slice 100 복합 도구 실행 진행 상태 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/execute-governed` 응답에 `progress_percent`, `completed_step_count`, `current_stage_ko`, `operator_summary_ko`, `next_action_ko` 추가
+- [x] 각 도구 step에 `step_number`, `display_name_ko`, `status_ko`, `operator_message_ko`, `progress_percent` 추가
+- [x] `progress_events`로 execution plan, runner start, runner finish, artifact import 단계를 기록
+- [x] 기존 runner 안전 조건은 유지: `shell_expansion_allowed=false`, raw output은 instruction으로 신뢰하지 않음, 결과는 human validation 필요
+- [x] RedTeam2 UI에 `진행률`, `다음 행동`, `도구 진행`, `사용자 안내` 표시 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 진행 상태 anchor 반영
+- [x] regression test가 두 개 설치 도구 mock 실행의 한국어 진행 상태와 100% 완료 진행률을 검증
+- [ ] 실제 설치된 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 실행 또는 운영자 제출 결과를 이용해 Evidence/Finding/Matrix/report/export/completion gate까지 완료

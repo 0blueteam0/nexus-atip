@@ -11,10 +11,8 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 40,
-    "partial": 1,
-    "gap": 0,
-    "blocked": 0
+    "proved": 41,
+    "partial": 1
   },
   "audit_items": [
     {
@@ -696,6 +694,24 @@
       "proof_summary": "The /api/redteam/v2/toolchains/operator-evidence-card-import API loads an operator Evidence Card import plan or inline plan, creates Evidence Cards from selected candidates, keeps default cards pending_review, and only calls the existing Evidence approval API when review_created_evidence=true, human_review_confirmed=true, and reviewer actor context is bound through headers. Regression coverage verifies pending creation, red_team_lead approval with actor/session headers, and blocker behavior when human review confirmation is missing. RedTeam2 exposes Korean reviewer fields, candidate selection, human-review checkbox, import button, summary table, and Evidence Card row table.",
       "residual_gap": "This proves the governed import/review path, not that real organization operator artifacts have passed validator --require-approved or that all resulting Evidence Cards have been promoted into Findings, severity-approved, reported, exported, and completion-gated.",
       "next_action": "After real operator submission validation passes, run operator-evidence-card-import with human review approval, then promote the approved Evidence Cards to Findings and complete severity, Matrix, Report v2, export, and completion-gate stages."
+    },
+    {
+      "id": "RTA-COMP-042",
+      "requirement": "Governed multi-tool execution API and RedTeam2 UI must expose Korean progress, per-tool status, operator guidance, and next-action state for actual governed runner or operator-import execution paths.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/execute-governed response now returns completed_step_count, progress_percent, current_stage_ko, operator_summary_ko, next_action_ko, progress_events, and per-step status_ko/operator_message_ko/progress_percent. Regression coverage verifies two governed installed-tool runner steps reach progress_percent=100, return Korean next action and summary text, and expose runner_start/runner_finish progress events. RedTeam2 UI adds progress and next-action rows plus a Korean tool progress table using these response fields.",
+      "residual_gap": "This proves progress/status visibility for governed runner and import paths, not that all actual organization-approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP runs have been executed and closed through Evidence, Finding, Matrix, Report, export, and completion gates.",
+      "next_action": "Run the governed toolchain path with real installed tools or approved operator artifacts, collect results, approve Evidence, promote Findings, approve severity with two people, generate Matrix/Report v2, approve/export, and verify completion gate."
     }
   ],
   "remaining_gaps": [
@@ -711,5 +727,6 @@
     "Run /api/redteam/v2/toolchains/operating-closure-submission-package against a real operator scanner-output folder with real approver identities, record /operating-closure-human-review with real signoffs and blocker disposition, run /execute-reviewed-operating-close, run /certify-reviewed-operating-close-evidence, then run /review-operating-completion-audit-candidate for final completion audit review.",
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
-  ]
+  ],
+  "last_updated": "2026-07-03T03:58:00+09:00"
 }

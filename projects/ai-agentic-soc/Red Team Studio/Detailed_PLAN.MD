@@ -1011,3 +1011,13 @@ Create Case
 - RedTeam2는 `운영 Evidence Card 후보 import` 버튼, `Evidence Card 후보 ID 선택`, 검토자/역할, 사람 검토 완료 체크박스, `운영 Evidence Card import` 결과 표를 제공한다.
 - regression test는 후보 2개를 pending Evidence Card로 생성하는 경로와, `lead@example.com` actor context로 사람 검토 승인까지 완료하는 경로, human review confirmation 누락 blocker를 검증한다.
 - 이 slice는 승인된 operator submission evidence를 Evidence Card lane으로 연결하지만, 실제 운영 artifact 전체의 Finding 승격, 2인 severity 승인, Matrix/report/export/completion gate는 후속 단계로 남긴다.
+
+## 55. Slice 100 반영 사항
+
+- `/api/redteam/v2/toolchains/execute-governed` 응답에 복합 도구 실행 진행 상태 계약을 추가했다.
+- 각 step은 `step_number`, `display_name_ko`, `status_ko`, `progress_percent`, `operator_message_ko`를 포함해 초보 사용자가 실행/차단/첨부 상태를 한국어로 읽을 수 있게 한다.
+- 전체 응답은 `completed_step_count`, `progress_percent`, `current_stage_ko`, `operator_summary_ko`, `next_action_ko`, `progress_events`를 포함한다.
+- runner 실행 경로는 기존 `shell=false`, ToolActionCard, ExecutionPlan, execution token, wrapper pin gate를 유지하며, 이번 slice는 실행 권한을 넓히지 않고 상태 설명만 강화한다.
+- RedTeam2 UI는 복합 실행 표에 `진행률`, `다음 행동` row를 추가하고, 별도 `도구 진행` 표로 execution plan, runner start, runner finish 또는 artifact import 이벤트를 표시한다.
+- regression test는 두 개 설치 도구 mock 실행이 `progress_percent=100`, `completed_step_count=2`, 한국어 `next_action_ko`, `operator_summary_ko`, `progress_events`, step `status_ko`를 반환하는지 검증한다.
+- 이 slice는 사용자가 프론트 버튼 실행 후 진행/결과 상태를 더 명확히 볼 수 있게 하지만, 실제 조직 승인 환경에서 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체를 실행하고 Evidence/Finding/Report/export gate를 닫는 작업은 아직 남아 있다.
