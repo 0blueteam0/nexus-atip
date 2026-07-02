@@ -135,6 +135,35 @@ def record_tool_install_version_evidence(tool_id: str, payload: dict[str, Any]) 
     return redteam_v2_models.record_tool_install_version_evidence(tool_id, payload)
 
 
+@router.get("/tool-credential-policies")
+def list_tool_credential_policies() -> dict[str, Any]:
+    return redteam_v2_models.list_tool_credential_policies()
+
+
+@router.get("/tool-credential-policies/{tool_id}")
+def get_tool_credential_policy(tool_id: str) -> dict[str, Any]:
+    return redteam_v2_models.tool_credential_policy(tool_id)
+
+
+@router.get("/tool-credential-authorizations")
+def list_tool_credential_authorizations(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
+    return redteam_v2_models.list_tool_credential_authorizations(case_id=case_id, tool_id=tool_id)
+
+
+@router.post("/tool-credential-authorizations/{tool_id}")
+def authorize_tool_credential_reference(
+    tool_id: str,
+    payload: dict[str, Any],
+    x_redteam_actor: str | None = Header(default=None),
+    x_redteam_actor_role: str | None = Header(default=None),
+    x_redteam_session: str | None = Header(default=None),
+) -> dict[str, Any]:
+    return redteam_v2_models.authorize_tool_credential_reference(
+        tool_id,
+        with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session),
+    )
+
+
 @router.get("/tool-wrapper-manifests")
 def list_tool_wrapper_manifests() -> dict[str, Any]:
     return redteam_v2_models.list_tool_wrapper_manifests()

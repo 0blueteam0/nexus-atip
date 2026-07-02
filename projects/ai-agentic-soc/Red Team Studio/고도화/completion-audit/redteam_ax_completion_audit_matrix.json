@@ -11,9 +11,9 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 12,
+    "proved": 13,
     "partial": 2,
-    "gap": 2,
+    "gap": 1,
     "blocked": 0
   },
   "audit_items": [
@@ -189,14 +189,16 @@
     {
       "id": "RTA-COMP-014",
       "requirement": "OpenVAS and ZAP API credential vault and read-only token policy must exist for scanner integration.",
-      "status": "gap",
+      "status": "proved",
       "evidence_refs": [
-        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/SPEC/31_TOOLING_SECURITY_POLICY_SPEC.md"
       ],
-      "proof_summary": "The requirement is explicitly tracked as incomplete in FINAL_PLAN.",
-      "residual_gap": "No credential vault contract/API/UI smoke has been verified for OpenVAS/ZAP.",
-      "next_action": "Design and implement credential vault contract with safe placeholder/read-only policy tests."
+      "proof_summary": "OpenVAS and ZAP now have credential policy registry and authorization APIs that accept only external vault references, enforce read-only token scopes, deny submitted secret material, require actor-bound red_team_lead/control_team approval, and expose a Korean RedTeam2 UI panel.",
+      "next_action": "Keep credential authorization regression mandatory when wiring live OpenVAS/ZAP API adapters."
     },
     {
       "id": "RTA-COMP-015",
@@ -227,7 +229,6 @@
   ],
   "remaining_gaps": [
     "Nuclei/OpenVAS/Trivy/OWASP ZAP and Docker/container runtime live smoke after environment readiness.",
-    "OpenVAS/ZAP credential vault and read-only token policy.",
     "Full accepted gate manifest and all-suite run artifact."
   ],
   "next_slice_candidates": [

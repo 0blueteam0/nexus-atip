@@ -28,6 +28,7 @@ MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
 TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
 TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
+TOOL_CREDENTIAL_VAULT_APPROVER_ROLES = {"red_team_lead", "control_team"}
 PROMPT_INJECTION_PATTERNS = [
     "ignore all previous instructions",
     "ignore previous instructions",
@@ -309,6 +310,47 @@ TOOL_INSTALL_READINESS_CATALOG = {
         "verification_commands": ["zap-cli --version", "import_zap_json_report"],
         "post_install_controls": ["pin_wrapper_sha256", "passive_scan_default", "active_scan_requires_approval"],
         "safe_smoke": "version_or_report_import",
+    },
+}
+
+TOOL_CREDENTIAL_POLICY_CATALOG = {
+    "TOOL-OPENVAS-001": {
+        "tool_id": "TOOL-OPENVAS-001",
+        "tool_name": "openvas",
+        "display_name": "OpenVAS / Greenbone Community Edition",
+        "credential_mode": "external_vault_reference_only",
+        "read_only_required": True,
+        "allowed_token_scopes": ["read:reports", "read:scan_status", "read:targets"],
+        "prohibited_token_scopes": [
+            "write:scan_config",
+            "start:scan",
+            "stop:scan",
+            "delete:task",
+            "admin",
+            "credentialed_scan_without_owner_approval",
+        ],
+        "endpoint_policy": "approved_lab_or_managed_service_endpoint_only",
+        "secret_material_policy": "Never submit API keys, passwords, cookies, or bearer tokens to this API. Store them in an external vault and submit only a vault reference.",
+        "runner_policy": "ToolActionCard and execution token may reference the credential authorization id, but runner receives only a short-lived external broker reference.",
+    },
+    "TOOL-ZAP-001": {
+        "tool_id": "TOOL-ZAP-001",
+        "tool_name": "owasp-zap",
+        "display_name": "OWASP ZAP",
+        "credential_mode": "external_vault_reference_only",
+        "read_only_required": True,
+        "allowed_token_scopes": ["read:alerts", "read:spider_status", "read:context", "read:reports"],
+        "prohibited_token_scopes": [
+            "active_scan",
+            "attack_mode",
+            "write:context",
+            "delete:alert",
+            "admin",
+            "unbounded_spider",
+        ],
+        "endpoint_policy": "approved_lab_daemon_or_report_import_endpoint_only",
+        "secret_material_policy": "Never submit ZAP API keys or session tokens to this API. Store them in an external vault and submit only a vault reference.",
+        "runner_policy": "Passive/read-only API use may be planned after approval; active scan still requires separate HITL approval.",
     },
 }
 
@@ -1211,6 +1253,204 @@ def list_tool_install_readiness() -> dict[str, Any]:
         "commands_executed_by_api": False,
         "policy": "Install and verification commands are operator-run plans; API never installs tools automatically.",
         "items": items,
+    }
+
+
+def tool_credential_policy(tool_id: str) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()
+    policy = dict(TOOL_CREDENTIAL_POLICY_CATALOG.get(resolved_tool_id) or {})
+    if not profile or not policy:
+        return {
+            "kind": "redteam_ax_v2_tool_credential_policy",
+            "tool_id": resolved_tool_id,
+            "status": "not_supported",
+            "supported": False,
+            "errors": ["credential_policy_not_supported_for_tool"],
+            "commands_executed_by_api": False,
+            "secret_material_stored": False,
+            "trusted_as_instruction": False,
+            "checked_at": now_utc(),
+        }
+    return {
+        "kind": "redteam_ax_v2_tool_credential_policy",
+        **policy,
+        "status": "supported",
+        "supported": True,
+        "risk_class": profile.get("risk_class"),
+        "commands_executed_by_api": False,
+        "secret_material_stored": False,
+        "trusted_as_instruction": False,
+        "requires_human_approval": True,
+        "approval_roles": sorted(TOOL_CREDENTIAL_VAULT_APPROVER_ROLES),
+        "evidence_pipeline": {
+            "tracked_as": "Evidence Card metadata and Claim-Evidence Matrix input",
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+        },
+        "checked_at": now_utc(),
+    }
+
+
+def list_tool_credential_policies() -> dict[str, Any]:
+    policies = [tool_credential_policy(tool_id) for tool_id in TOOL_CREDENTIAL_POLICY_CATALOG]
+    return {
+        "kind": "redteam_ax_v2_tool_credential_policy_registry",
+        "policy_count": len(policies),
+        "tool_ids": sorted(TOOL_CREDENTIAL_POLICY_CATALOG),
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "secret_material_stored": False,
+        "policy": "OpenVAS and ZAP credentials are stored outside RedTeam AX; this registry only authorizes read-only external vault references.",
+        "items": policies,
+    }
+
+
+def _payload_contains_secret_material(payload: dict[str, Any]) -> bool:
+    secret_keys = {
+        "api_key",
+        "apikey",
+        "token",
+        "bearer_token",
+        "password",
+        "secret",
+        "cookie",
+        "client_secret",
+        "private_key",
+        "secret_value",
+    }
+    for key, value in payload.items():
+        normalized = str(key or "").strip().lower().replace("-", "_")
+        if normalized in secret_keys and str(value or "").strip():
+            return True
+    return bool(payload.get("secret_material_present"))
+
+
+def authorize_tool_credential_reference(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    profile = analysis_tool_profile(tool_id)
+    resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()
+    policy = tool_credential_policy(resolved_tool_id)
+    case_id = str(payload.get("case_id") or "CASE-V2-TOOL-CREDENTIAL-VAULT").strip()
+    credential_ref = str(payload.get("credential_ref") or payload.get("vault_ref") or "").strip()
+    endpoint_ref = str(payload.get("endpoint_ref") or payload.get("endpoint_url") or "").strip()
+    requested_scopes = sorted({str(scope or "").strip() for scope in (payload.get("token_scopes") or payload.get("scopes") or []) if str(scope or "").strip()})
+    purpose = str(payload.get("purpose") or "").strip()
+    target_scope_refs = [str(item or "").strip() for item in (payload.get("target_scope_refs") or []) if str(item or "").strip()]
+    read_only = bool(payload.get("read_only"))
+    actor_context = actor_context_from_payload(payload)
+    approver = str(payload.get("approved_by") or actor_context.get("actor_id") or "").strip().lower()
+    approver_role = requested_actor_role(payload, actor_context.get("actor_role"))
+    errors: list[str] = []
+
+    if not profile:
+        errors.append("tool_profile_not_registered")
+    if not policy.get("supported"):
+        errors.append("credential_policy_not_supported_for_tool")
+    if not case_id:
+        errors.append("case_id_required")
+    if not credential_ref:
+        errors.append("credential_ref_required")
+    elif not credential_ref.startswith(("vault://", "secret://", "external-vault://")):
+        errors.append("credential_ref_must_be_external_vault_reference")
+    if _payload_contains_secret_material(payload):
+        errors.append("secret_material_must_not_be_submitted")
+    if not endpoint_ref:
+        errors.append("endpoint_ref_required")
+    if not requested_scopes:
+        errors.append("token_scopes_required")
+    allowed_scopes = set(policy.get("allowed_token_scopes") or [])
+    prohibited_scopes = set(policy.get("prohibited_token_scopes") or [])
+    if requested_scopes and not set(requested_scopes).issubset(allowed_scopes):
+        errors.append("token_scopes_must_be_read_only_allowlist")
+    if prohibited_scopes.intersection(requested_scopes):
+        errors.append("prohibited_token_scope_requested")
+    if not read_only:
+        errors.append("read_only_true_required")
+    if not purpose:
+        errors.append("purpose_required")
+    if not target_scope_refs:
+        errors.append("target_scope_refs_required")
+    if approver_role not in TOOL_CREDENTIAL_VAULT_APPROVER_ROLES:
+        errors.append("approver_role_not_authorized_for_credential_vault")
+    if actor_context.get("errors"):
+        errors.extend(f"actor_context:{error}" for error in actor_context.get("errors") or [])
+    if not actor_context.get("authenticated"):
+        errors.append("authenticated_actor_required")
+    if approver and actor_context.get("actor_id") and approver != actor_context.get("actor_id"):
+        errors.append("approver_must_match_authenticated_actor")
+
+    authorization_id = str(payload.get("authorization_id") or stable_id(
+        "TCRED",
+        [case_id, resolved_tool_id, credential_ref, endpoint_ref, requested_scopes, approver, now_utc()],
+    ))
+    result = {
+        "kind": "redteam_ax_v2_tool_credential_authorization",
+        "authorization_id": authorization_id,
+        "case_id": case_id,
+        "tool_id": resolved_tool_id,
+        "tool_name": (profile or {}).get("name") or policy.get("tool_name") or "",
+        "status": "invalid" if errors else "authorized",
+        "credential_ref": credential_ref if not _payload_contains_secret_material(payload) else "",
+        "endpoint_ref": endpoint_ref,
+        "token_scopes": requested_scopes,
+        "read_only": read_only,
+        "purpose": purpose,
+        "target_scope_refs": target_scope_refs,
+        "approved_by": approver,
+        "approver_role": approver_role,
+        "approved_at": now_utc() if not errors else None,
+        "expires_at": str(payload.get("expires_at") or "").strip() or None,
+        "commands_executed_by_api": False,
+        "secret_material_stored": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "runner_unlocks": [],
+        "policy": {
+            "credential_mode": policy.get("credential_mode"),
+            "read_only_required": policy.get("read_only_required"),
+            "allowed_token_scopes": policy.get("allowed_token_scopes") or [],
+            "secret_material_policy": policy.get("secret_material_policy"),
+            "runner_policy": policy.get("runner_policy"),
+        },
+        "actor_context": {
+            "actor_id": actor_context.get("actor_id"),
+            "actor_role": actor_context.get("actor_role"),
+            "auth_provider": actor_context.get("auth_provider"),
+            "identity_binding": "bound" if actor_context.get("authenticated") and not errors else "invalid",
+        },
+        "errors": errors,
+    }
+    if errors:
+        return result
+    stored = append_artifact_metadata(result, "tool-credential-authorizations", authorization_id)
+    write_case_event(case_id, {
+        "event": "tool_credential_reference_authorized",
+        "authorization_id": authorization_id,
+        "tool_id": resolved_tool_id,
+        "credential_ref": credential_ref,
+        "read_only": True,
+        "secret_material_stored": False,
+        "commands_executed_by_api": False,
+    })
+    return stored
+
+
+def list_tool_credential_authorizations(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
+    records = list_json_artifacts(case_id, "tool-credential-authorizations")
+    normalized_tool_id = str(tool_id or "").strip().upper()
+    if normalized_tool_id:
+        records = [record for record in records if str(record.get("tool_id") or "").upper() == normalized_tool_id]
+    return {
+        "kind": "redteam_ax_v2_tool_credential_authorization_registry",
+        "case_id": case_id,
+        "tool_id": tool_id,
+        "authorization_count": len(records),
+        "tool_ids_with_authorization": sorted({str(record.get("tool_id") or "") for record in records if record.get("tool_id")}),
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "secret_material_stored": False,
+        "trusted_as_instruction": False,
+        "items": records,
     }
 
 

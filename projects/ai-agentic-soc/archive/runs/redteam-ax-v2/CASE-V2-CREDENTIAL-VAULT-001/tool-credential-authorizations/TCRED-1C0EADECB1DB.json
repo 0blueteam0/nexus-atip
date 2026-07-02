@@ -1,0 +1,48 @@
+{
+  "kind": "redteam_ax_v2_tool_credential_authorization",
+  "authorization_id": "TCRED-1C0EADECB1DB",
+  "case_id": "CASE-V2-CREDENTIAL-VAULT-001",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "owasp-zap",
+  "status": "authorized",
+  "credential_ref": "vault://redteam/zap/passive-readonly",
+  "endpoint_ref": "http://zap.lab.example:8080",
+  "token_scopes": [
+    "read:alerts",
+    "read:reports"
+  ],
+  "read_only": true,
+  "purpose": "Read passive ZAP alerts for evidence normalization.",
+  "target_scope_refs": [
+    "ROE-CRED-001"
+  ],
+  "approved_by": "control@example.com",
+  "approver_role": "control_team",
+  "approved_at": "2026-07-02T04:55:14Z",
+  "expires_at": null,
+  "commands_executed_by_api": false,
+  "secret_material_stored": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "runner_unlocks": [],
+  "policy": {
+    "credential_mode": "external_vault_reference_only",
+    "read_only_required": true,
+    "allowed_token_scopes": [
+      "read:alerts",
+      "read:spider_status",
+      "read:context",
+      "read:reports"
+    ],
+    "secret_material_policy": "Never submit ZAP API keys or session tokens to this API. Store them in an external vault and submit only a vault reference.",
+    "runner_policy": "Passive/read-only API use may be planned after approval; active scan still requires separate HITL approval."
+  },
+  "actor_context": {
+    "actor_id": "control@example.com",
+    "actor_role": "control_team",
+    "auth_provider": "request_headers",
+    "identity_binding": "bound"
+  },
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CREDENTIAL-VAULT-001/tool-credential-authorizations/TCRED-1C0EADECB1DB.json"
+}

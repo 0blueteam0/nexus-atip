@@ -295,6 +295,142 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(invalid.json()["status"], "invalid")
         self.assertIn("tool_profile_not_registered", invalid.json()["errors"])
 
+    def test_v2_openvas_zap_credential_vault_authorizes_read_only_external_refs_only(self) -> None:
+        case_id = "CASE-V2-CREDENTIAL-VAULT-001"
+        policies = self.client.get("/api/redteam/v2/tool-credential-policies")
+        self.assertEqual(policies.status_code, 200)
+        policies_body = policies.json()
+        self.assertEqual(policies_body["kind"], "redteam_ax_v2_tool_credential_policy_registry")
+        self.assertFalse(policies_body["commands_executed_by_api"])
+        self.assertFalse(policies_body["secret_material_stored"])
+        self.assertEqual(set(policies_body["tool_ids"]), {"TOOL-OPENVAS-001", "TOOL-ZAP-001"})
+
+        openvas_policy = self.client.get("/api/redteam/v2/tool-credential-policies/TOOL-OPENVAS-001")
+        self.assertEqual(openvas_policy.status_code, 200)
+        openvas_policy_body = openvas_policy.json()
+        self.assertTrue(openvas_policy_body["supported"])
+        self.assertTrue(openvas_policy_body["read_only_required"])
+        self.assertIn("read:reports", openvas_policy_body["allowed_token_scopes"])
+        self.assertIn("admin", openvas_policy_body["prohibited_token_scopes"])
+        self.assertFalse(openvas_policy_body["secret_material_stored"])
+
+        unsupported = self.client.get("/api/redteam/v2/tool-credential-policies/TOOL-NPM-AUDIT-001")
+        self.assertEqual(unsupported.status_code, 200)
+        self.assertEqual(unsupported.json()["status"], "not_supported")
+
+        authorized = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-OPENVAS-001",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/openvas/lab-readonly",
+                "endpoint_ref": "https://openvas.lab.example",
+                "token_scopes": ["read:reports", "read:scan_status"],
+                "read_only": True,
+                "purpose": "Import completed OpenVAS reports for authorized RedTeam AX case.",
+                "target_scope_refs": ["ROE-CRED-001"],
+            },
+        )
+        self.assertEqual(authorized.status_code, 200)
+        authorized_body = authorized.json()
+        self.assertEqual(authorized_body["kind"], "redteam_ax_v2_tool_credential_authorization")
+        self.assertEqual(authorized_body["status"], "authorized")
+        self.assertEqual(authorized_body["actor_context"]["identity_binding"], "bound")
+        self.assertFalse(authorized_body["commands_executed_by_api"])
+        self.assertFalse(authorized_body["secret_material_stored"])
+        self.assertFalse(authorized_body["trusted_as_instruction"])
+        self.assertTrue(authorized_body["requires_human_validation"])
+        self.assertEqual(authorized_body["runner_unlocks"], [])
+        self.assertEqual(authorized_body["credential_ref"], "vault://redteam/openvas/lab-readonly")
+        self.assertNotIn("secret_value", json.dumps(authorized_body))
+        self.assertTrue(Path(authorized_body["artifact_path"]).exists())
+
+        zap_authorized = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-ZAP-001",
+            headers=self.actor_headers("control@example.com", "control_team"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/zap/passive-readonly",
+                "endpoint_ref": "http://zap.lab.example:8080",
+                "token_scopes": ["read:alerts", "read:reports"],
+                "read_only": True,
+                "purpose": "Read passive ZAP alerts for evidence normalization.",
+                "target_scope_refs": ["ROE-CRED-001"],
+            },
+        )
+        self.assertEqual(zap_authorized.status_code, 200)
+        self.assertEqual(zap_authorized.json()["status"], "authorized")
+        self.assertEqual(zap_authorized.json()["approver_role"], "control_team")
+
+        registry = self.client.get(f"/api/redteam/v2/tool-credential-authorizations?case_id={case_id}")
+        self.assertEqual(registry.status_code, 200)
+        registry_body = registry.json()
+        self.assertEqual(registry_body["kind"], "redteam_ax_v2_tool_credential_authorization_registry")
+        self.assertFalse(registry_body["commands_executed_by_api"])
+        self.assertFalse(registry_body["secret_material_stored"])
+        self.assertGreaterEqual(registry_body["authorization_count"], 2)
+        self.assertEqual(set(registry_body["tool_ids_with_authorization"]), {"TOOL-OPENVAS-001", "TOOL-ZAP-001"})
+        registry_ids = {item["authorization_id"] for item in registry_body["items"]}
+        self.assertIn(authorized_body["authorization_id"], registry_ids)
+        self.assertIn(zap_authorized.json()["authorization_id"], registry_ids)
+
+        secret_submission = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-ZAP-001",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/zap/readonly",
+                "endpoint_ref": "http://zap.lab.example:8080",
+                "token_scopes": ["read:alerts"],
+                "read_only": True,
+                "purpose": "Negative test",
+                "target_scope_refs": ["ROE-CRED-001"],
+                "secret_value": "ZAP-API-KEY-SHOULD-NOT-BE-STORED",
+            },
+        )
+        self.assertEqual(secret_submission.status_code, 200)
+        secret_body = secret_submission.json()
+        self.assertEqual(secret_body["status"], "invalid")
+        self.assertIn("secret_material_must_not_be_submitted", secret_body["errors"])
+        self.assertFalse(secret_body["secret_material_stored"])
+        self.assertEqual(secret_body["credential_ref"], "")
+        self.assertNotIn("ZAP-API-KEY-SHOULD-NOT-BE-STORED", json.dumps(secret_body))
+
+        write_scope = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-ZAP-001",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/zap/admin",
+                "endpoint_ref": "http://zap.lab.example:8080",
+                "token_scopes": ["read:alerts", "active_scan"],
+                "read_only": True,
+                "purpose": "Negative test",
+                "target_scope_refs": ["ROE-CRED-001"],
+            },
+        )
+        self.assertEqual(write_scope.status_code, 200)
+        self.assertEqual(write_scope.json()["status"], "invalid")
+        self.assertIn("token_scopes_must_be_read_only_allowlist", write_scope.json()["errors"])
+        self.assertIn("prohibited_token_scope_requested", write_scope.json()["errors"])
+
+        unauthorized_role = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-OPENVAS-001",
+            headers=self.actor_headers("analyst@example.com", "analyst"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/openvas/lab-readonly",
+                "endpoint_ref": "https://openvas.lab.example",
+                "token_scopes": ["read:reports"],
+                "read_only": True,
+                "purpose": "Negative test",
+                "target_scope_refs": ["ROE-CRED-001"],
+            },
+        )
+        self.assertEqual(unauthorized_role.status_code, 200)
+        self.assertEqual(unauthorized_role.json()["status"], "invalid")
+        self.assertIn("approver_role_not_authorized_for_credential_vault", unauthorized_role.json()["errors"])
+
     def test_v2_tool_wrapper_manifest_reports_hash_pinning_status(self) -> None:
         response = self.client.get("/api/redteam/v2/tool-wrapper-manifests")
         self.assertEqual(response.status_code, 200)

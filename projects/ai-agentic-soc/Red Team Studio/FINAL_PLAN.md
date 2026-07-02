@@ -1183,4 +1183,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json`에 run/result/evidence artifact 경로 저장
 - [x] toolchain regression test가 runner artifact를 agent 분석으로 넘기는 경로를 검증
 - [x] completion audit matrix의 RTA-COMP-015를 `partial`로 갱신하고 남은 runtime smoke 범위를 Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container로 좁힘
-- [ ] 다음 slice: OpenVAS/ZAP credential vault contract 또는 추가 설치 scanner live smoke 구현
+- [x] 다음 slice: OpenVAS/ZAP credential vault contract 또는 추가 설치 scanner live smoke 구현 - OpenVAS/ZAP credential vault contract slice 59 완료
+
+## 67. Slice 59 OpenVAS/ZAP Credential Vault Contract 체크리스트
+
+- [x] OpenVAS/ZAP 전용 credential policy registry 추가
+- [x] `/api/redteam/v2/tool-credential-policies` 및 `/api/redteam/v2/tool-credential-policies/{tool_id}` endpoint 추가
+- [x] `/api/redteam/v2/tool-credential-authorizations/{tool_id}` endpoint가 외부 vault reference만 승인하도록 구현
+- [x] 승인 API는 API key, 비밀번호, bearer token, secret 값 제출을 `secret_material_must_not_be_submitted`로 차단
+- [x] token scope는 OpenVAS/ZAP별 read-only allowlist만 허용하고 active scan/admin/write scope를 차단
+- [x] 승인자는 actor-bound `red_team_lead` 또는 `control_team`이어야 하며 analyst 단독 승인은 invalid
+- [x] RedTeam2에 한국어 `OpenVAS/ZAP 읽기 전용 접속권한` 패널 추가
+- [x] 패널은 secret 값 입력란 없이 external vault reference, endpoint reference, read-only scope, 승인 목적만 입력
+- [x] `tests/test_redteam_v2_api_router.py::test_v2_openvas_zap_credential_vault_authorizes_read_only_external_refs_only` 추가
+- [x] completion audit matrix의 RTA-COMP-014를 `proved`로 갱신하고 남은 gap에서 credential vault 제거
+- [ ] 다음 slice: 전체 accepted gate manifest 또는 Nuclei/OpenVAS/Trivy/ZAP 추가 live smoke 구현

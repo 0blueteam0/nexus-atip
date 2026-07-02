@@ -63,6 +63,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Scanner install evidence | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-INSTALL-EVIDENCE-001/tool-install-evidence` | Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP operator-attested version evidence |
 | Governed toolchain runner | `/api/redteam/v2/toolchains/execute-governed` | 여러 설치 분석도구를 ToolActionCard/ExecutionPlan/token/wrapper gate로 순차 실행하고 결과 회수 |
 | Installed tool live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json` | 설치된 `npm.cmd --version`을 governed runner로 실행하고 sanitizer, agent normalization, Evidence Card까지 연결 |
+| Credential authorization | `/api/redteam/v2/tool-credential-authorizations` | OpenVAS/ZAP 외부 vault reference만 승인하고 read-only scope, actor binding, secret material 금지를 검증 |
 
 ## 전체 인벤토리 요약
 
@@ -109,6 +110,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolActionCard
 - ToolInstallVersionEvidence
 - GovernedToolchainExecution
+- ToolCredentialAuthorization
 - ScriptManifest
 - ScriptFactory
 - ManualRunRecorder
@@ -139,5 +141,4 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
 - Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container runtime live smoke 성공 증거
-- OpenVAS/ZAP credential vault와 read-only token 정책
 - 전체 accepted gate manifest와 all-suite run artifact

@@ -591,3 +591,13 @@ Create Case
 - smoke 결과 요약은 `archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json`에 저장한다.
 - `RunnerExecuted` 및 `ContainerLaunchPrepared` 상태는 저장 artifact 기반 sanitizer/normalizer/evidence 생성의 입력 상태로 허용한다.
 - 이번 증거는 설치된 npm CLI의 governed runner readiness를 입증하지만 Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container live smoke는 후속 게이트로 유지한다.
+
+## 14. Slice 59 반영 사항
+
+- OpenVAS/ZAP API credential은 RedTeam AX 내부에 secret 값으로 저장하지 않고 외부 vault reference만 승인한다.
+- `/api/redteam/v2/tool-credential-policies`는 도구별 allowed read-only scope, prohibited scope, secret material policy, approval role을 반환한다.
+- `/api/redteam/v2/tool-credential-authorizations/{tool_id}`는 external vault reference, endpoint reference, read-only scope, 목적, ROE scope ref를 actor-bound 승인으로 기록한다.
+- API key, password, bearer token, cookie, client secret, private key, `secret_value`가 payload에 들어오면 artifact 저장 없이 invalid로 반환한다.
+- OpenVAS/ZAP authorization은 `commands_executed_by_api=false`, `secret_material_stored=false`, `trusted_as_instruction=false`, `runner_unlocks=[]`를 유지한다.
+- RedTeam2 화면에는 한국어 `OpenVAS/ZAP 읽기 전용 접속권한` 패널을 추가하고 secret 값 입력란 없이 vault reference만 입력하게 한다.
+- 이 slice는 credential vault contract를 닫지만 실제 OpenVAS/ZAP live API 호출이나 active scan 실행 증거는 만들지 않는다.
