@@ -23,6 +23,7 @@ related:
   - ../../FINAL_PLAN.md
   - ../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md
   - ../completion-audit/redteam_ax_completion_audit_matrix.json
+  - ../completion-audit/redteam2_korean_copy_inventory.json
   - ./RED_TEAM_STUDIO_FILE_MANIFEST.json
   - ./RED_TEAM_STUDIO_TOP_DIR_SUMMARY.json
   - ./RED_TEAM_STUDIO_EXTENSION_SUMMARY.json
@@ -58,6 +59,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | Existing frontend | `J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react` | `레드팀 분석2` UI 구현 대상 |
 | Existing backend | `J:/PortableApps/genai/projects/ai-agentic-soc/runtime` | `/api/redteam/v2` 구현 대상 |
 | Completion audit | `../completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md` | 전체 목표 완료/미완료 요구사항별 증거 장부 |
+| RedTeam2 Korean copy inventory | `../completion-audit/redteam2_korean_copy_inventory.json` | RedTeam2 visible copy의 한국어/초급자 UX sanity 결과 |
 
 ## 전체 인벤토리 요약
 
@@ -131,7 +133,6 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
-- RedTeam2 전체 visible copy 한국어/초급자 UX inventory checker
 - MCP direct invoke deny smoke
 - 실제 CLI/container 설치 자동화와 version command evidence 수집
 - OpenVAS/ZAP credential vault와 read-only token 정책

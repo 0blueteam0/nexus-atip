@@ -11,8 +11,8 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 10,
-    "partial": 3,
+    "proved": 11,
+    "partial": 2,
     "gap": 2,
     "blocked": 1
   },
@@ -32,14 +32,15 @@
     {
       "id": "RTA-COMP-002",
       "requirement": "Frontend user-facing RedTeam AX content must be Korean and understandable to non-expert operators.",
-      "status": "partial",
+      "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
-        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json"
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam2_korean_copy_inventory.json"
       ],
-      "proof_summary": "Recent slices localize ToolActionCard, scanner guidance, runner, sanitizer, visual evidence, file upload, RBAC, role/severity/status displays and smoke validates koreanDisplayMapping.",
-      "residual_gap": "A full static Korean/no-English UX audit over every RedTeam2 visible label has not been automated yet.",
-      "next_action": "Add UI copy inventory check for RedTeam2 visible strings and permitted technical terms."
+      "proof_summary": "Recent slices localize ToolActionCard, scanner guidance, runner, sanitizer, visual evidence, file upload, RBAC, role/severity/status displays and smoke validates koreanDisplayMapping. The static Korean visible-copy inventory now checks RedTeam2 panel literals, beginner guidance anchors, allowed technical terms, disallowed English-only execution phrases, and English-only ratio.",
+      "next_action": "Run the RedTeam2 Korean copy inventory sanity when UI copy changes."
     },
     {
       "id": "RTA-COMP-003",
@@ -216,7 +217,6 @@
     }
   ],
   "remaining_gaps": [
-    "Automated full UX copy audit for non-expert Korean RedTeam2 labels.",
     "Live MCP direct invocation denial smoke.",
     "Actual CLI/container installation automation and version command evidence collection.",
     "OpenVAS/ZAP credential vault and read-only token policy.",
@@ -224,7 +224,6 @@
     "Successful real container runtime smoke after environment readiness."
   ],
   "next_slice_candidates": [
-    "Add RedTeam2 Korean copy inventory checker.",
     "Add MCP direct invoke deny regression.",
     "Implement scanner install evidence capture workflow.",
     "Design OpenVAS/ZAP credential vault contract.",

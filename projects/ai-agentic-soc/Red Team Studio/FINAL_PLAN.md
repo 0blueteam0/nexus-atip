@@ -1126,4 +1126,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2`, ROE/HITL/ToolActionCard, Evidence Card, Claim-Evidence Matrix, Report v2, Agentic RAG, 도구 registry, LLM wiki 요구사항을 증거 경로에 연결
 - [x] 실제 CLI/container 설치 자동화, OpenVAS/ZAP credential vault, full gate manifest, real container runtime smoke 같은 잔여 gap을 명시
 - [x] `고도화/sanity/test_completion_audit_matrix.py`로 매트릭스 구조, 필수 요구사항 ID, 핵심 용어, evidence ref 존재 여부 검증
-- [ ] 다음 slice: RedTeam2 전체 visible copy의 한국어/초급자 UX inventory checker 또는 MCP direct invoke deny smoke 중 하나 구현
+- [x] 다음 slice: RedTeam2 전체 visible copy의 한국어/초급자 UX inventory checker 또는 MCP direct invoke deny smoke 중 하나 구현 - RedTeam2 Korean copy inventory checker slice 54 완료
+
+## 62. Slice 54 RedTeam2 Korean Visible Copy Inventory 체크리스트
+
+- [x] `고도화/sanity/test_redteam2_korean_copy_inventory.py` 추가
+- [x] `redTeamAnalysis2Panel`과 `reportStudioTabs` 구간에서 visible copy 후보 문자열을 추출
+- [x] 한국어 anchor, 초급자 안내 signal, 허용 기술 용어, 금지 영문-only 실행 문구, 영문-only 비율을 검사
+- [x] `고도화/completion-audit/redteam2_korean_copy_inventory.json` inventory artifact 생성
+- [x] 현재 RedTeam2 copy 기준 한국어 맥락 리터럴 730/873개, 영문-only 비율 0.1592로 통과
+- [x] completion audit matrix의 RTA-COMP-002를 `proved`로 갱신하고 잔여 gap에서 visible-copy audit 제거
+- [ ] 다음 slice: MCP direct invoke deny smoke 또는 scanner install/version evidence capture 구현
