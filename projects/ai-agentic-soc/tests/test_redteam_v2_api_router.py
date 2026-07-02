@@ -349,6 +349,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(sandbox_body["environment_constraints"]["network_policy"]["default"], "deny")
         self.assertFalse(sandbox_body["environment_constraints"]["network_policy"]["egress_allowed"])
         self.assertEqual(sandbox_body["environment_constraints"]["filesystem_policy"]["mode"], "workspace_only")
+        self.assertEqual(sandbox_body["environment_constraints"]["isolation_readiness"]["status"], "shim_ready")
+        self.assertFalse(sandbox_body["environment_constraints"]["isolation_readiness"]["commands_executed_by_api"])
         self.assertFalse(sandbox_body["environment_constraints"]["process_policy"]["shell_expansion_allowed"])
         self.assertIn(sandbox_body["wrapper_manifest"]["pinning_status"], {"missing", "hash_unpinned", "hash_match", "hash_mismatch", "hash_unreadable"})
         if sandbox_body["wrapper_manifest"]["requires_pin_before_runner"]:
@@ -384,6 +386,48 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(high_body["environment_constraints"]["network_policy"]["mode"], "allowlist")
         self.assertEqual(high_body["environment_constraints"]["network_policy"]["allowlist"], ["127.0.0.1"])
         self.assertIn("approval_required_before_runner_token", high_body["warnings"])
+
+    def test_v2_ephemeral_container_isolation_readiness_blocks_runner_until_attested(self) -> None:
+        readiness = self.client.post("/api/redteam/v2/runner-isolation-readiness", json={
+            "execution_mode": "sandbox_execute",
+            "runner_backend": "ephemeral_container",
+        })
+        self.assertEqual(readiness.status_code, 200)
+        readiness_body = readiness.json()
+        self.assertEqual(readiness_body["kind"], "redteam_ax_v2_runner_isolation_readiness")
+        self.assertEqual(readiness_body["status"], "container_not_ready")
+        self.assertFalse(readiness_body["commands_executed_by_api"])
+        self.assertTrue(readiness_body["runner_token_blocked"])
+        self.assertIn("container_image_digest_pin_required", readiness_body["blocking_controls"])
+        self.assertEqual(readiness_body["container_policy"]["network_default"], "deny")
+        self.assertFalse(readiness_body["container_policy"]["privileged_container_allowed"])
+
+        case_id = "CASE-V2-CONTAINER-READINESS-001"
+        action_id = "TAC-TRIVY-CONTAINER-001"
+        planned = self.client.post("/api/redteam/v2/tool-actions/plan", json={
+            "case_id": case_id,
+            "action_id": action_id,
+            "title": "Trivy ephemeral container dry run",
+            "objective": "Verify container runner readiness blocks execution before attestation.",
+            "tool_id": "TOOL-TRIVY-001",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(planned.status_code, 200)
+        plan = self.client.post(f"/api/redteam/v2/tool-actions/{action_id}/execution-plan", json={
+            "case_id": case_id,
+            "tool_id": "TOOL-TRIVY-001",
+            "execution_mode": "sandbox_execute",
+            "runner_backend": "ephemeral_container",
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(plan.status_code, 200)
+        body = plan.json()
+        self.assertEqual(body["runner"], "sandbox")
+        self.assertEqual(body["environment_constraints"]["isolation_readiness"]["requested_backend"], "ephemeral_container")
+        self.assertTrue(body["policy_decision"]["runner_isolation_blocked"])
+        self.assertEqual(body["policy_decision"]["decision"], "deny_runner")
+        self.assertEqual(body["execution_token"]["status"], "blocked")
+        self.assertIn("container_runner_not_enabled", body["warnings"])
 
     def test_v2_governed_runner_requires_issued_token_and_captures_approved_dry_run_output(self) -> None:
         case_id = "CASE-V2-GOVERNED-RUNNER-NPM-001"

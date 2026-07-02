@@ -5,6 +5,7 @@ import base64
 import binascii
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -1657,6 +1658,107 @@ def default_network_policy(execution_mode: str, payload: dict[str, Any]) -> dict
     }
 
 
+EPHEMERAL_CONTAINER_REQUIRED_CONTROLS = [
+    "container_runtime_attested",
+    "image_digest_pinned",
+    "network_deny_or_allowlist_enforced",
+    "workspace_read_only_mount",
+    "case_write_mount_only",
+    "no_host_secret_mounts",
+    "process_timeout_enforced",
+    "stdout_stderr_artifact_capture",
+    "ephemeral_cleanup_attested",
+]
+
+
+def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload = payload or {}
+    execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()
+    requested_backend = str(payload.get("runner_backend") or payload.get("runner_isolation") or "").strip()
+    if not requested_backend:
+        requested_backend = "local_subprocess_shim" if execution_mode in {"dry_run", "sandbox_execute"} else "manual_or_api_controlled"
+    requested_backend = requested_backend.lower()
+    attestation = payload.get("isolation_attestation") or {}
+    env_enabled = os.environ.get("REDTEAM_AX_CONTAINER_RUNNER_ENABLED", "").lower() in {"1", "true", "yes"}
+    image_digest = str(
+        payload.get("image_digest")
+        or attestation.get("image_digest")
+        or os.environ.get("REDTEAM_AX_CONTAINER_IMAGE_DIGEST")
+        or ""
+    ).strip()
+    runtime_attested = bool(attestation.get("container_runtime_attested")) or os.environ.get("REDTEAM_AX_CONTAINER_RUNTIME_ATTESTED", "").lower() in {"1", "true", "yes"}
+    network_attested = bool(attestation.get("network_deny_or_allowlist_enforced")) or os.environ.get("REDTEAM_AX_CONTAINER_NETWORK_ATTESTED", "").lower() in {"1", "true", "yes"}
+    cleanup_attested = bool(attestation.get("ephemeral_cleanup_attested")) or os.environ.get("REDTEAM_AX_CONTAINER_CLEANUP_ATTESTED", "").lower() in {"1", "true", "yes"}
+    mount_attested = bool(attestation.get("workspace_read_only_mount")) and bool(attestation.get("case_write_mount_only"))
+
+    blocking_controls: list[str] = []
+    if requested_backend == "ephemeral_container":
+        if not env_enabled:
+            blocking_controls.append("container_runner_not_enabled")
+        if not runtime_attested:
+            blocking_controls.append("container_runtime_attestation_required")
+        if not image_digest:
+            blocking_controls.append("container_image_digest_pin_required")
+        if not network_attested:
+            blocking_controls.append("container_network_policy_attestation_required")
+        if not mount_attested:
+            blocking_controls.append("container_mount_policy_attestation_required")
+        if not cleanup_attested:
+            blocking_controls.append("ephemeral_cleanup_attestation_required")
+    elif requested_backend == "local_subprocess_shim" and execution_mode in {"dry_run", "sandbox_execute"}:
+        blocking_controls = []
+    elif requested_backend == "manual_or_api_controlled":
+        blocking_controls = []
+    else:
+        blocking_controls.append("runner_backend_not_supported")
+
+    status = "not_required"
+    if requested_backend == "ephemeral_container":
+        status = "container_ready" if not blocking_controls else "container_not_ready"
+    elif requested_backend == "local_subprocess_shim":
+        status = "shim_ready"
+
+    return {
+        "kind": "redteam_ax_v2_runner_isolation_readiness",
+        "requested_backend": requested_backend,
+        "status": status,
+        "commands_executed_by_api": False,
+        "runner_token_blocked": requested_backend == "ephemeral_container" and bool(blocking_controls),
+        "blocking_controls": blocking_controls,
+        "required_controls": EPHEMERAL_CONTAINER_REQUIRED_CONTROLS,
+        "container_policy": {
+            "ephemeral": True,
+            "image_digest": image_digest or None,
+            "network_default": "deny",
+            "network_allowlist_required_for_egress": True,
+            "workspace_mount": "read_only",
+            "case_artifact_mount": "write_only",
+            "host_secret_mounts_allowed": False,
+            "shell_expansion_allowed": False,
+            "privileged_container_allowed": False,
+        },
+        "local_shim_policy": {
+            "allowed_for": ["dry_run", "sandbox_execute"],
+            "safe_by_default": True,
+            "note": "Local subprocess shim is a transitional dry-run backend; ephemeral container remains required before live scanner execution is considered complete.",
+        },
+        "operator_actions": [
+            "enable_dedicated_container_runner",
+            "pin_runner_image_digest",
+            "attest_network_deny_or_allowlist",
+            "attest_read_only_workspace_and_case_write_mounts",
+            "attest_ephemeral_cleanup",
+            "rerun_execution_plan_with_runner_backend_ephemeral_container",
+        ],
+        "evidence_pipeline": {
+            "raw_stdout_stderr": "Evidence Card raw_artifact only",
+            "trusted_as_instruction": False,
+            "normalization_required": True,
+            "claim_evidence_matrix_required": True,
+        },
+    }
+
+
 def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     action = load_tool_action(action_id, case_id)
@@ -1707,9 +1809,13 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
     wrapper_manifest = tool_wrapper_manifest_for_profile(profile) if profile else None
     runner_uses_wrapper = runner in {"sandbox", "local_cli", "api"}
     wrapper_preflight_blocked = bool(wrapper_manifest and wrapper_manifest["requires_pin_before_runner"] and runner_uses_wrapper)
+    isolation_readiness = runner_isolation_readiness({**payload, "execution_mode": execution_mode})
+    isolation_blocked = bool(isolation_readiness.get("runner_token_blocked")) and runner == "sandbox"
     if wrapper_preflight_blocked:
         warnings.append("wrapper_sha256_pin_required_before_runner_execution")
-    token_issued = not errors and not approval_required and not wrapper_preflight_blocked
+    if isolation_blocked:
+        warnings.extend(isolation_readiness.get("blocking_controls") or [])
+    token_issued = not errors and not approval_required and not wrapper_preflight_blocked and not isolation_blocked
     execution_token = {
         "token_id": stable_id("EXT", [plan_id, action_id, tool_id, execution_mode]) if token_issued else None,
         "status": "issued" if token_issued else ("blocked" if errors or (wrapper_preflight_blocked and not approval_required) else "approval_required"),
@@ -1738,21 +1844,23 @@ def build_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[s
             "blocking_controls": ["tool_profile_not_registered"],
             "human_review_required": True,
         },
-        "status": "invalid" if errors else ("approval_required" if approval_required else ("preflight_blocked" if wrapper_preflight_blocked else "PlanReady")),
+        "status": "invalid" if errors else ("approval_required" if approval_required else ("preflight_blocked" if wrapper_preflight_blocked or isolation_blocked else "PlanReady")),
         "errors": errors,
         "warnings": warnings,
         "requires_approval": approval_required,
         "approvals_required": (action or {}).get("required_approver_roles") or (["red_team_lead"] if approval_required else []),
         "policy_decision": {
-            "decision": "deny" if errors else ("needs_approval" if approval_required else ("deny_runner" if wrapper_preflight_blocked else "allow_plan")),
+            "decision": "deny" if errors else ("needs_approval" if approval_required else ("deny_runner" if wrapper_preflight_blocked or isolation_blocked else "allow_plan")),
             "risk_class": risk_class,
             "safe_by_default": True,
             "high_risk_direct_execution": False,
             "runner_preflight_blocked": wrapper_preflight_blocked,
+            "runner_isolation_blocked": isolation_blocked,
         },
         "environment_constraints": {
             "network_policy": network_policy,
             "filesystem_policy": filesystem_policy,
+            "isolation_readiness": isolation_readiness,
             "max_runtime_seconds": max_runtime_seconds,
             "max_output_bytes": max_output_bytes,
             "process_policy": {

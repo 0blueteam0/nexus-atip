@@ -216,6 +216,11 @@ def create_tool_execution_plan(action_id: str, payload: dict[str, Any]) -> dict[
     return redteam_v2_models.build_tool_execution_plan(action_id, payload)
 
 
+@router.post("/runner-isolation-readiness")
+def runner_isolation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.runner_isolation_readiness(payload)
+
+
 @router.post("/tool-actions/{action_id}/execute-governed")
 def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.governed_tool_execution(action_id, payload)

@@ -1,6 +1,6 @@
 # FINAL_PLAN - RedTeam AX 목표 수행 실행 계획
 
-상태: implementation slice 29 tool install readiness and onboarding UX/API complete, full goal active  
+상태: implementation slice 30 container runner isolation readiness gate UX/API complete, full goal active  
 작성일: 2026-07-01  
 정본 상세 설계: `Detailed_PLAN.MD`
 
@@ -35,13 +35,13 @@ Report Studio에 `레드팀 분석2`를 추가하고, Red Team Studio 전체 자
 
 Frontend:
 
-- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 29 RedTeam2 tool install readiness UX 반영
+- `soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js` - slice 30 RedTeam2 runner backend/isolation readiness UX 반영
 - 필요 시 `src/data.js`, `src/views/ReportsView.jsx`
 
 Backend:
 
-- `runtime/redteam_v2_api_router.py` - slice 29 tool install readiness endpoints 반영
-- `runtime/redteam_v2_models.py` - slice 29 tool install readiness catalog 및 onboarding controls 반영
+- `runtime/redteam_v2_api_router.py` - slice 30 runner isolation readiness endpoint 반영
+- `runtime/redteam_v2_models.py` - slice 30 ephemeral container readiness/attestation gate 반영
 - `runtime/redteam_v2_policy.py`
 - `runtime/redteam_v2_tool_actions.py`
 - `runtime/redteam_v2_report_validator.py`
@@ -758,6 +758,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] execution-plan runner token hard-block foundation - slice 27 완료
 - [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
 - [x] tool install readiness/onboarding registry - slice 29 완료
+- [x] container/ephemeral runner isolation readiness gate - slice 30 완료
 - [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper manifest smoke
 
@@ -790,6 +791,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `레드팀 분석2` UI에 `Revoke Pin` 버튼과 revoke status row 추가
 - [x] API unittest가 rotate, revoke, manifest approved_pin 제외, runner hard-block을 검증
 - [x] approved dry-run/sandbox runner subprocess backend foundation - slice 28 완료
+- [x] container/ephemeral runner isolation readiness gate - slice 30 완료
 - [ ] 실제 container/ephemeral runner isolation backend
 - [ ] live 5177/8765 browser wrapper revoke/hard-block smoke
 
@@ -805,7 +807,8 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `shell=false`, timeout, max output bytes, stdout/stderr artifact sha256 저장
 - [x] `레드팀 분석2` Tool Execution Plan 패널에서 governed runner argv 입력과 실행 버튼 제공
 - [x] API unittest가 unissued token 차단과 approved npm sandbox dry-run output capture를 검증
-- [ ] container/ephemeral isolation, network namespace enforcement, cgroup/resource limit enforcement
+- [x] container/ephemeral isolation readiness와 attestation blocker를 execution plan에 노출 - slice 30 완료
+- [ ] 실제 container/ephemeral isolation, network namespace enforcement, cgroup/resource limit enforcement
 - [ ] live 5177/8765 browser governed runner smoke
 
 ## 37. Slice 29 Tool Install Readiness and Onboarding 체크리스트
@@ -822,3 +825,19 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API unittest가 required tools readiness, operator-run install plan, import-only SCA readiness를 검증
 - [ ] 실제 installer/orchestrator는 operator approval 및 별도 package manager policy 이후 구현
 - [ ] live 5177/8765 browser install readiness smoke
+
+## 38. Slice 30 Container Runner Isolation Readiness Gate 체크리스트
+
+- [x] `/runner-isolation-readiness` endpoint 추가
+- [x] `runner_backend=ephemeral_container` 선택 시 container runtime, image digest, network policy, mount policy, cleanup attestation 필요 조건 산출
+- [x] readiness API는 docker/container 명령을 실행하지 않고 `commands_executed_by_api=false`를 보장
+- [x] `ToolExecutionPlan.environment_constraints.isolation_readiness`에 runner backend, required controls, blocking controls, evidence pipeline 포함
+- [x] ephemeral container backend가 attestation 전이면 execution token을 `blocked`로 유지하고 `policy_decision.runner_isolation_blocked=true` 기록
+- [x] 기존 dry-run/sandbox local subprocess shim은 회귀 보존하되 transitional backend로 명시
+- [x] `레드팀 분석2` Case 입력에 Runner Backend 선택 추가
+- [x] `레드팀 분석2` Tool Execution Plan 패널에 Isolation status/card/table 추가
+- [x] API unittest가 isolation readiness endpoint와 container backend preflight block을 검증
+- [ ] 실제 ephemeral container launcher 구현
+- [ ] container network namespace/egress enforcement 실측 검증
+- [ ] cgroup/resource limit, read-only rootfs, secret mount 차단 실측 검증
+- [ ] live 5177/8765 browser runner backend smoke

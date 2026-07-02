@@ -3151,6 +3151,7 @@ export default {
       wrapperOperatorVersion:'',
       wrapperVersionCommand:'',
       wrapperVersionOutput:'',
+      runnerBackend:'local_subprocess_shim',
       ...saved,
       reportId,
       objective,
@@ -3321,6 +3322,7 @@ export default {
           requested_by:'current-analyst',
           target_scope_refs:selectedAction.target_scope_refs || [draft.scopeRef].filter(Boolean),
           network_allowlist:executionMode === 'lab_execute' ? ['127.0.0.1'] : [],
+          runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
         }),
       });
       const plan = await res.json().catch(() => ({}));
@@ -4250,7 +4252,17 @@ export default {
       ['Network', executionPlan.environment_constraints?.network_policy?.mode || '-', `default=${executionPlan.environment_constraints?.network_policy?.default || '-'} allowlist=${(executionPlan.environment_constraints?.network_policy?.allowlist || []).join(',') || 'none'}`],
       ['Filesystem', executionPlan.environment_constraints?.filesystem_policy?.mode || '-', (executionPlan.environment_constraints?.filesystem_policy?.write_paths || []).join(', ') || 'workspace archive'],
       ['Wrapper', executionPlan.wrapper_manifest?.pinning_status || selectedWrapper.pinning_status || '-', (executionPlan.wrapper_preflight?.blocking_controls || selectedWrapper.runner_preflight?.blocking_controls || []).join(', ') || 'runner wrapper trusted'],
+      ['Isolation', executionPlan.environment_constraints?.isolation_readiness?.status || draft.runnerBackend || '-', (executionPlan.environment_constraints?.isolation_readiness?.blocking_controls || []).join(', ') || 'no isolation blocker'],
       ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.token_id || (executionPlan.warnings || []).join(', ') || 'not issued'],
+    ];
+    const isolation = executionPlan.environment_constraints?.isolation_readiness || {};
+    const isolationRows = [
+      ['Backend', isolation.requested_backend || draft.runnerBackend || 'local_subprocess_shim', isolation.status || 'not planned'],
+      ['API Commands', String(isolation.commands_executed_by_api ?? false), 'container/docker commands are not executed by status API'],
+      ['Network', isolation.container_policy?.network_default || 'deny', isolation.container_policy?.network_allowlist_required_for_egress ? 'allowlist required for egress' : 'deny by default'],
+      ['Mounts', isolation.container_policy?.workspace_mount || 'read_only', isolation.container_policy?.case_artifact_mount || 'case write path only'],
+      ['Privileged', String(isolation.container_policy?.privileged_container_allowed ?? false), 'must stay false'],
+      ['Blocking Controls', (isolation.blocking_controls || []).length, (isolation.blocking_controls || []).join(', ') || 'none'],
     ];
     const runnerRows = [
       ['Runner Status', runnerRun.status || runnerState.status || 'idle', runnerState.error || runnerRun.run_id || 'PlanReady + issued token required'],
@@ -4314,6 +4326,12 @@ export default {
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Execution Mode',
             h('select', { value:draft.executionMode, onChange:e=>this.updateRedTeam2AnalysisDraft({ executionMode:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
               ['plan_only','offline_parse','sandbox_execute','manual_operator_run','lab_execute','production_read_only','controlled_production_execute'].map(id => h('option', { key:id, value:id }, id)))),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Runner Backend',
+            h('select', { value:draft.runnerBackend, onChange:e=>this.updateRedTeam2AnalysisDraft({ runnerBackend:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+              [
+                ['local_subprocess_shim','Local dry-run shim'],
+                ['ephemeral_container','Ephemeral container'],
+              ].map(([id,label]) => h('option', { key:id, value:id }, label)))),
           h('label', { style:{ fontSize:'10.5px', color:C.muted, gridColumn:'1 / -1' } }, '목적',
             h('textarea', { value:draft.objective, onChange:e=>this.updateRedTeam2AnalysisDraft({ objective:e.target.value }), rows:3, style:{ ...inputStyle, marginTop:'5px', resize:'vertical' } })))),
       smallPanel('Analysis ToolHub / LLM Agents',
@@ -4366,9 +4384,11 @@ export default {
             ['Plan', executionPlan.execution_plan_id || '-', C.sec, executionPlan.artifact_path || 'artifact'],
             ['Runner', executionPlan.runner || '-', executionPlan.runner === 'sandbox' ? C.green : C.sec, executionPlan.execution_mode || draft.executionMode || 'mode'],
             ['Network', executionPlan.environment_constraints?.network_policy?.default || '-', executionPlan.environment_constraints?.network_policy?.egress_allowed ? C.amber : C.green, executionPlan.environment_constraints?.network_policy?.mode || 'deny by default'],
+            ['Isolation', isolation.status || draft.runnerBackend || '-', isolation.runner_token_blocked ? C.coral : isolation.status === 'container_ready' || isolation.status === 'shim_ready' ? C.green : C.sec, isolation.requested_backend || 'backend'],
             ['Token', executionPlan.execution_token?.status || '-', executionPlan.execution_token?.status === 'issued' ? C.green : C.amber, executionPlan.execution_token?.token_id || 'approval or plan required'],
           ].map(card)),
           this.renderTable(['Control','Status','Evidence'], executionPlanRows),
+          this.renderTable(['Isolation','Status','Evidence'], isolationRows),
           h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(220px, 1fr) auto', gap:'8px', alignItems:'end' } },
             h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'Governed runner argv',
               h('input', {

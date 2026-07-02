@@ -4,7 +4,7 @@
   "task": "Implement RedTeam AX v2 container runner isolation readiness slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260701-174914-Red-Team-Studio-Implement-RedTeam-AX-v2-container-runner-isolation-readiness-slice",
   "created_at": "2026-07-01T17:49:14+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-01T17:53:07+09:00"
+  ]
 }
