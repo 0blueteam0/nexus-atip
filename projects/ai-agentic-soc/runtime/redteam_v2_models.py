@@ -8182,9 +8182,24 @@ def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> 
     toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("source_dir") or payload.get("artifacts") or [], "operating-close-e2e"]))
     raw_artifacts = payload.get("artifacts") or payload.get("items") or []
     raw_source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    required_tool_ids = [
+        str(item).strip()
+        for item in (payload.get("required_tool_ids") or [
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        ])
+        if str(item).strip()
+    ]
+    require_all_named_tools = bool(payload.get("require_all_named_tools", True))
     closure_id = stable_id("OPCLOSE", [case_id, toolchain_id, requested_by, raw_source_dir or raw_artifacts, now_utc()])
     errors: list[str] = []
     warnings: list[str] = []
+    present_tool_ids: list[str] = []
+    missing_required_tool_ids: list[str] = []
     manifest_builder: dict[str, Any] | None = None
     manifest_import: dict[str, Any] | None = None
     collection: dict[str, Any] | None = None
@@ -8205,6 +8220,7 @@ def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> 
             "toolchain_id": toolchain_id,
             "requested_by": requested_by,
             "source_dir": raw_source_dir,
+            "tool_ids": required_tool_ids,
         })
         if manifest_builder.get("errors") or manifest_builder.get("status") != "ready_for_import":
             errors.extend(f"manifest_builder:{error}" for error in (manifest_builder.get("errors") or [manifest_builder.get("status")]))
@@ -8218,6 +8234,16 @@ def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> 
             "requested_by": requested_by,
             "artifacts": raw_artifacts,
         }
+
+    if not errors and import_payload is not None and require_all_named_tools:
+        present_tool_ids = sorted({
+            str(item.get("tool_id") or "").strip()
+            for item in import_payload.get("artifacts") or []
+            if isinstance(item, dict) and str(item.get("tool_id") or "").strip()
+        })
+        missing_required_tool_ids = [tool_id for tool_id in required_tool_ids if tool_id not in present_tool_ids]
+        if missing_required_tool_ids:
+            errors.append("all_required_tool_artifacts_required")
 
     if not errors and import_payload is not None:
         manifest_import = import_toolchain_artifact_manifest({
@@ -8269,6 +8295,11 @@ def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> 
         "manifest_import": manifest_import,
         "collection": collection,
         "closure": closure,
+        "required_tool_ids": required_tool_ids,
+        "present_tool_ids": present_tool_ids or (manifest_builder or {}).get("present_tool_ids") or [],
+        "missing_required_tool_ids": missing_required_tool_ids,
+        "tool_coverage_complete": not missing_required_tool_ids and bool(present_tool_ids or (manifest_builder or {}).get("present_tool_ids")),
+        "tool_coverage": (manifest_builder or {}).get("tool_coverage") or [],
         "artifact_count": (manifest_import or {}).get("imported_count") or (manifest_builder or {}).get("artifact_count") or (len(raw_artifacts) if isinstance(raw_artifacts, list) else 0),
         "candidate_evidence_count": (collection or {}).get("evidence_candidate_count") or 0,
         "report_id": (closure or {}).get("report_id"),
@@ -8285,6 +8316,7 @@ def close_operating_toolchain_artifact_manifest_e2e(payload: dict[str, Any]) -> 
         "errors": errors,
         "next_human_actions_ko": [
             "source_dir 또는 artifacts manifest는 이미 생성된 운영 scanner 산출물만 가리켜야 합니다.",
+            "Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 결과가 모두 있어야 전체 닫기를 진행합니다.",
             "blocked이면 manifest_builder, manifest_import, collection, closure 중 표시된 단계부터 수정합니다.",
             "이 API는 scanner, Docker, WSL, 네트워크 스캔 명령을 실행하지 않습니다.",
         ],

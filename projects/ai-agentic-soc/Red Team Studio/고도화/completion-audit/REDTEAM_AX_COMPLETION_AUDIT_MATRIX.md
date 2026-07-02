@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 44 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 45 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -54,6 +54,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - toolchain result collection이 `analysis_agent_summaries`와 step별 `analysis_agent_summary`로 도구별 LLM 분석 에이전트, normalizer, sanitizer/parser 맥락, Evidence 사용 제한, 승인 전 Claim 금지를 한국어 UI에 표시하는 계약
 - SCA/CycloneDX SBOM import가 컴포넌트 인벤토리 Evidence와 취약점 후보 Evidence를 분리하고 `affected_component_refs`/`affected_components` 및 `requires_component_match_review`로 승인 전 Claim 사용을 제한하는 계약
 - 실제 운영 증거 readiness가 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 6개 산출물 coverage를 기본 필수 조건으로 검사하고 누락 도구를 blocker로 표시하는 계약
+- `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`가 readiness 우회 호출에서도 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 6개 산출물 coverage를 다시 검사하고 누락 시 `all_required_tool_artifacts_required`로 차단하는 계약
 - toolchain result collection의 Evidence 후보를 actor/reviewer identity binding으로 batch 승인하고 Finding/Claim/Report 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence` API와 한국어 UI
 - 승인된 toolchain result collection Evidence만 `pending_review` Finding 초안으로 승격하고 승인 전 Evidence는 차단하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API와 한국어 UI
 - collection에서 생성된 Finding 초안을 red_team_lead와 business_owner 2인 severity 승인으로 `approved` 상태까지 이동시키되 Matrix/report Claim 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API와 한국어 UI

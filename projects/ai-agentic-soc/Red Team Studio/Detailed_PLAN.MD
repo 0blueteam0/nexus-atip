@@ -1051,3 +1051,12 @@ Create Case
 - RedTeam2 UI는 `필수 분석도구 산출물` 표로 6개 도구별 산출물 있음/누락, 파일 경로, SHA-256 또는 후보 수를 보여준다.
 - regression test는 2개 fixture만 있는 source가 6개 필수 도구 누락으로 차단되는지, 6개 운영 산출물 이름이 모두 있는 source가 `tool_coverage_complete=true`로 readiness를 통과하는지 검증한다.
 - 이 slice는 실제 운영 closure 진입 전 “2개 파일만으로 ready”가 되는 오판을 줄이지만, 실제 조직 산출물과 실제 승인자로 downstream gate를 닫는 일은 여전히 남아 있다.
+
+## 59. Slice 104 반영 사항
+
+- `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`도 readiness와 동일한 기본 6개 도구 coverage 조건을 직접 강제한다.
+- 운영 전체 닫기 API는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 산출물 중 하나라도 누락되면 import/collection/close-e2e를 진행하지 않고 `all_required_tool_artifacts_required`로 차단한다.
+- 응답에는 `required_tool_ids`, `present_tool_ids`, `missing_required_tool_ids`, `tool_coverage_complete`, `tool_coverage`를 포함해 사전 점검과 실제 닫기 경로가 같은 coverage 계약을 공유한다.
+- source_dir manifest builder 경로와 raw artifacts manifest 경로 모두 `tool_id` coverage를 검사하며, API는 여전히 scanner/Docker/WSL/network 명령을 실행하지 않는다.
+- regression test는 ZAP 산출물이 빠진 운영 폴더가 전체 닫기에서 차단되고, 6개 산출물이 모두 있는 폴더만 `tool_coverage_complete=true`로 Report v2 export/completion gate까지 닫히는지 검증한다.
+- 이 slice는 readiness를 우회해 전체 닫기 API에 직접 들어오는 경우를 줄이지만, 실제 조직 산출물과 실제 승인자 identity로 reviewed close/certification/completion audit을 통과한 운영 실측 증거는 아직 필요하다.

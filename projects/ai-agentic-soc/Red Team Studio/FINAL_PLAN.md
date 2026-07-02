@@ -1759,3 +1759,13 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 6개 도구 coverage anchor 반영
 - [x] regression test가 2개 fixture 차단과 6개 산출물 coverage complete 통과를 검증
 - [ ] 실제 조직 산출물 폴더에서 6개 도구 coverage complete를 통과한 뒤 operating closure submission, human review, reviewed close, certification, completion audit review까지 완료
+
+## 112. Slice 104 운영 전체 닫기 6개 도구 coverage 강제 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e`가 기본 6개 도구 산출물 coverage를 직접 검사
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 중 누락 도구가 있으면 `all_required_tool_artifacts_required`로 차단
+- [x] close-operating 응답에 `required_tool_ids`, `present_tool_ids`, `missing_required_tool_ids`, `tool_coverage_complete`, `tool_coverage` 추가
+- [x] source_dir manifest builder와 raw artifacts manifest 모두 `tool_id` 기준 coverage 검사
+- [x] scanner/Docker/WSL/network 명령은 실행하지 않고 기존 운영 산출물만 사용
+- [x] regression test가 ZAP 누락 폴더 차단과 6개 산출물 전체 닫기 성공을 검증
+- [ ] 실제 조직 산출물 폴더와 실제 승인자 4명으로 reviewed close, certification, completion audit review까지 완료

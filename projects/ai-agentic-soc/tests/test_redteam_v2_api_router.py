@@ -2163,6 +2163,35 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         for filename, content in fixtures.items():
             (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
 
+        missing_tool_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs-missing-zap"
+        missing_tool_dir.mkdir(parents=True, exist_ok=True)
+        for filename, content in fixtures.items():
+            if filename == "operating-zap-alerts.json":
+                continue
+            (missing_tool_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        missing_tool = self.client.post("/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSE-E2E-MISSING-ZAP",
+            "requested_by": "operator@example.com",
+            "source_dir": missing_tool_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+            "report_title": "Operating Artifact Close E2E Korean Red Team Report v2",
+        })
+        self.assertEqual(missing_tool.status_code, 200)
+        missing_tool_body = missing_tool.json()
+        self.assertEqual(missing_tool_body["kind"], "redteam_ax_v2_operating_toolchain_artifact_manifest_e2e_closure")
+        self.assertEqual(missing_tool_body["status"], "blocked")
+        self.assertFalse(missing_tool_body["complete"])
+        self.assertIn("all_required_tool_artifacts_required", missing_tool_body["errors"])
+        self.assertIn("TOOL-ZAP-001", missing_tool_body["missing_required_tool_ids"])
+        self.assertFalse(missing_tool_body["tool_coverage_complete"])
+        self.assertFalse(missing_tool_body["commands_executed_by_api"])
+        self.assertFalse(missing_tool_body["active_scan_executed"])
+
         missing_approvers = self.client.post("/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e", json={
             "case_id": case_id,
             "toolchain_id": "TCHAIN-OPERATING-CLOSE-E2E-MISSING",
@@ -2199,8 +2228,19 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["complete"])
         self.assertEqual(body["artifact_count"], 6)
         self.assertEqual(body["candidate_evidence_count"], 6)
+        self.assertTrue(body["tool_coverage_complete"])
+        self.assertFalse(body["missing_required_tool_ids"])
+        self.assertEqual(set(body["present_tool_ids"]), {
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        })
         self.assertEqual(body["manifest_builder"]["status"], "ready_for_import")
         self.assertEqual(body["manifest_builder"]["artifact_count"], 6)
+        self.assertTrue(body["manifest_builder"]["tool_coverage_complete"])
         self.assertEqual(body["manifest_import"]["status"], "imported")
         self.assertEqual(body["manifest_import"]["imported_count"], 6)
         self.assertEqual(body["collection"]["status"], "collected")
