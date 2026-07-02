@@ -6275,6 +6275,135 @@ def generate_toolchain_collection_report_draft_from_matrix(collection_id: str, p
     return append_artifact_metadata(result, "toolchain-report-drafts", report_request_id)
 
 
+def verify_toolchain_collection_completion_gate(collection_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    collection = load_json_record(collection_id, "toolchain-result-collections", case_id)
+    report_id = str(payload.get("report_id") or "").strip()
+    export_id = str(payload.get("export_id") or "").strip()
+    approval_id = str(payload.get("approval_id") or "").strip()
+    report = load_json_record(report_id, "reports", case_id=case_id) if report_id else None
+    export = load_json_record(export_id, "exports", case_id=case_id) if export_id else None
+    approval = load_json_record(approval_id, "report-export-approvals", case_id=case_id) if approval_id else None
+    errors: list[str] = []
+    blockers: list[dict[str, Any]] = []
+
+    if collection is None:
+        errors.append("toolchain_result_collection_required")
+    if not report_id:
+        errors.append("report_id_required")
+    if not export_id:
+        errors.append("export_id_required")
+
+    candidate_evidence_ids = [
+        str(((step or {}).get("evidence_candidate") or {}).get("evidence_id") or "").strip()
+        for step in (collection or {}).get("steps") or []
+        if str(((step or {}).get("evidence_candidate") or {}).get("evidence_id") or "").strip()
+    ]
+    approved_evidence_ids = [str(item).strip() for item in (collection or {}).get("approved_evidence_ids") or [] if str(item).strip()]
+    promoted_finding_ids = [str(item).strip() for item in (collection or {}).get("promoted_finding_ids") or [] if str(item).strip()]
+    approved_finding_ids = [str(item).strip() for item in (collection or {}).get("approved_finding_ids") or [] if str(item).strip()]
+    matrix_status = str((collection or {}).get("claim_evidence_matrix_status") or "").strip()
+
+    if collection is not None:
+        if not candidate_evidence_ids:
+            blockers.append({"gate": "collection", "reason": "evidence_candidates_required"})
+        if len(set(approved_evidence_ids)) != len(set(candidate_evidence_ids)):
+            blockers.append({
+                "gate": "evidence",
+                "reason": "all_collection_evidence_candidates_must_be_approved",
+                "candidate_count": len(set(candidate_evidence_ids)),
+                "approved_count": len(set(approved_evidence_ids)),
+            })
+        if len(set(promoted_finding_ids)) != len(set(approved_evidence_ids)):
+            blockers.append({
+                "gate": "finding_promotion",
+                "reason": "all_approved_evidence_must_have_promoted_findings",
+                "approved_evidence_count": len(set(approved_evidence_ids)),
+                "promoted_finding_count": len(set(promoted_finding_ids)),
+            })
+        if len(set(approved_finding_ids)) != len(set(promoted_finding_ids)):
+            blockers.append({
+                "gate": "finding_severity",
+                "reason": "all_promoted_findings_must_have_two_person_severity_approval",
+                "promoted_finding_count": len(set(promoted_finding_ids)),
+                "approved_finding_count": len(set(approved_finding_ids)),
+            })
+        if matrix_status != "matrix_draft_ready":
+            blockers.append({"gate": "matrix", "reason": "claim_evidence_matrix_not_ready", "status": matrix_status or "missing"})
+
+    if report is None:
+        blockers.append({"gate": "report", "reason": "report_not_found", "report_id": report_id or None})
+    else:
+        report_errors = report_export_gate_errors(report)
+        if report_errors:
+            blockers.append({"gate": "report", "reason": "report_export_gate_errors", "errors": report_errors})
+
+    if approval_id:
+        if approval is None:
+            blockers.append({"gate": "export_approval", "reason": "report_export_approval_not_found", "approval_id": approval_id})
+        elif approval.get("status") != "ExportApproved" or approval.get("report_id") != report_id:
+            blockers.append({
+                "gate": "export_approval",
+                "reason": "report_export_approval_invalid",
+                "status": approval.get("status"),
+                "approval_report_id": approval.get("report_id"),
+            })
+
+    if export is None:
+        blockers.append({"gate": "export", "reason": "report_export_artifact_not_found", "export_id": export_id or None})
+    else:
+        if export.get("status") != "Exported":
+            blockers.append({"gate": "export", "reason": "report_not_exported", "status": export.get("status")})
+        if export.get("report_id") != report_id:
+            blockers.append({"gate": "export", "reason": "report_export_report_mismatch", "export_report_id": export.get("report_id")})
+        if approval_id and export.get("approval_id") != approval_id:
+            blockers.append({"gate": "export", "reason": "report_export_approval_mismatch", "export_approval_id": export.get("approval_id")})
+        if export.get("errors"):
+            blockers.append({"gate": "export", "reason": "report_export_errors_present", "errors": export.get("errors")})
+
+    gate_id = stable_id("TCCGATE", [collection_id, case_id, report_id, export_id, len(blockers), now_utc()])
+    status = "collection_e2e_complete" if not errors and not blockers else "blocked"
+    result = {
+        "kind": "redteam_ax_v2_toolchain_collection_completion_gate",
+        "gate_id": gate_id,
+        "collection_id": collection_id,
+        "toolchain_id": (collection or {}).get("toolchain_id"),
+        "case_id": case_id,
+        "status": status,
+        "complete": status == "collection_e2e_complete",
+        "report_id": report_id or None,
+        "approval_id": approval_id or None,
+        "export_id": export_id or None,
+        "candidate_evidence_count": len(set(candidate_evidence_ids)),
+        "approved_evidence_count": len(set(approved_evidence_ids)),
+        "promoted_finding_count": len(set(promoted_finding_ids)),
+        "approved_finding_count": len(set(approved_finding_ids)),
+        "matrix_status": matrix_status or None,
+        "report_gate_snapshot": report_gate_snapshot(report) if report else None,
+        "blocker_count": len(blockers),
+        "blockers": blockers,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "blocker가 있으면 해당 단계의 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report, Export를 먼저 완료합니다.",
+            "complete=true일 때만 이 collection의 테스트된 E2E 산출을 운영 완료 증거로 사용할 수 있습니다.",
+            "이 게이트는 도구 실행이나 승인 처리를 수행하지 않고 기존 artifact만 검증합니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-completion-gates", gate_id)
+    if collection is not None:
+        collection["completion_gate_id"] = gate_id
+        collection["completion_gate_status"] = status
+        collection["completion_gate_blocker_count"] = len(blockers)
+        append_artifact_metadata(collection, "toolchain-result-collections", collection_id)
+    return result
+
+
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip() or "CASE-UNSPECIFIED"
     evidence_ids = [str(item).strip() for item in (payload.get("evidence_ids") or []) if str(item).strip()]

@@ -1557,6 +1557,32 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(exported_body["errors"])
         self.assertTrue(Path(exported_body["artifact_path"]).exists())
 
+        completion_gate = self.client.post(
+            f"/api/redteam/v2/toolchain-result-collections/{body['collection_id']}/completion-gate",
+            json={
+                "case_id": case_id,
+                "report_id": report_body["report"]["report_id"],
+                "approval_id": export_approval_body["approval_id"],
+                "export_id": exported_body["export_id"],
+            },
+        )
+        self.assertEqual(completion_gate.status_code, 200)
+        completion_body = completion_gate.json()
+        self.assertEqual(completion_body["kind"], "redteam_ax_v2_toolchain_collection_completion_gate")
+        self.assertEqual(completion_body["status"], "collection_e2e_complete")
+        self.assertTrue(completion_body["complete"])
+        self.assertEqual(completion_body["blocker_count"], 0)
+        self.assertEqual(completion_body["candidate_evidence_count"], 2)
+        self.assertEqual(completion_body["approved_evidence_count"], 2)
+        self.assertEqual(completion_body["promoted_finding_count"], 2)
+        self.assertEqual(completion_body["approved_finding_count"], 2)
+        self.assertEqual(completion_body["matrix_status"], "matrix_draft_ready")
+        self.assertEqual(completion_body["report_gate_snapshot"]["gate_status"], "pass")
+        self.assertFalse(completion_body["commands_executed_by_api"])
+        self.assertFalse(completion_body["active_scan_executed"])
+        self.assertFalse(completion_body["trusted_as_instruction"])
+        self.assertTrue(Path(completion_body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

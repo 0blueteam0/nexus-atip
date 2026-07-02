@@ -876,3 +876,12 @@ Create Case
 - regression test는 복합 npm audit + Trivy collection을 Evidence 승인, Finding 생성, severity 2인 승인, Matrix ready, Report v2 draft generated, Executive Sponsor export approval, export artifact 생성까지 검증한다.
 - export approval은 기존 report gate snapshot을 재검사하며 `gate_status=pass`, unsupported claim 0건, evidence 없는 Finding 0건, export errors 0건을 요구한다.
 - 이 slice는 테스트된 collection path의 final export approval/export verification lane을 닫지만, 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 출력에 대한 live collection/export 완료는 후속 운영 증거가 필요하다.
+
+## 41. Slice 86 반영 사항
+
+- `/api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate`는 collection, Report v2 draft, export approval, export artifact를 읽어 E2E 완료 상태를 판정한다.
+- 게이트는 Evidence 후보 전체 승인, 승인 Evidence 전체 Finding 승격, promoted Finding 전체 2인 severity 승인, `matrix_draft_ready`, report export gate pass, `Exported` artifact, approval/export/report ID 일치를 확인한다.
+- API는 기존 artifact만 읽고, 도구 실행, 능동 스캔, Evidence 승인, Finding 생성, report 생성, export 수행을 하지 않는다.
+- RedTeam2 UI는 `E2E 완료 게이트 점검` 버튼과 Evidence/Finding/Matrix/Report/Export 결과 표를 제공한다.
+- regression test는 복합 npm audit + Trivy collection의 기존 lane 끝에서 completion gate가 `collection_e2e_complete`, blocker 0건, 명령 실행 없음으로 통과하는지 검증한다.
+- 이 slice는 테스트된 collection의 완료 검증 증거를 만들지만, 실제 운영 scanner 전체 collection이 같은 게이트를 통과했다는 실측 증거는 후속 작업으로 남긴다.

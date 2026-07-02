@@ -1533,4 +1533,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 collection Report v2 draft 이후 `/api/redteam/v2/reports/{report_id}/approve-export`를 Executive Sponsor actor context로 승인
 - [x] regression test가 승인 ID로 `/api/redteam/v2/reports/{report_id}/export`를 호출해 `Exported`와 export artifact 존재를 검증
 - [x] gate snapshot에서 `gate_status=pass`, unsupported claim 0건, evidence 없는 Finding 0건, export errors 0건을 확인
+- [x] 테스트된 collection 전체 완료 상태를 completion gate로 검증 - slice 86 완료
 - [ ] 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 전체 collection 결과를 같은 최종 export lane으로 통과
+
+## 94. Slice 86 복합 Collection E2E 완료 게이트 체크리스트
+
+- [x] `/api/redteam/v2/toolchain-result-collections/{collection_id}/completion-gate` API 추가
+- [x] API는 collection, report, export approval, export artifact를 읽어 completion gate artifact를 생성
+- [x] 모든 Evidence 후보 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate pass, Exported 상태를 확인
+- [x] API는 도구 실행, 능동 스캔, 승인 처리, Finding 생성, report/export 생성을 수행하지 않음
+- [x] regression test가 테스트 collection의 completion gate `complete=true`, blocker 0건, 명령 실행 없음, artifact 존재를 검증
+- [x] RedTeam2 UI에 `E2E 완료 게이트 점검` 버튼과 결과 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 completion gate anchor 추가
+- [ ] 실제 운영 scanner 전체 collection을 이 completion gate로 통과
