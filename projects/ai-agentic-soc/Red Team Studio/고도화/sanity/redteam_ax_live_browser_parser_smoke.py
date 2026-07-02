@@ -62,12 +62,16 @@ def run_command(argv: list[str], cwd: Path, timeout: int = 60) -> dict[str, Any]
             timeout=timeout,
             shell=False,
         )
+        stdout = completed.stdout or ""
+        stderr = completed.stderr or ""
         return {
             "argv": argv,
             "cwd": str(cwd),
             "exit_code": completed.returncode,
-            "stdout": (completed.stdout or "")[:12000],
-            "stderr": (completed.stderr or "")[:12000],
+            "stdout": stdout,
+            "stdout_truncated": False,
+            "stderr": stderr[:12000],
+            "stderr_truncated": len(stderr) > 12000,
         }
     except FileNotFoundError as exc:
         return {"argv": argv, "cwd": str(cwd), "exit_code": 127, "stdout": "", "stderr": str(exc)}
@@ -88,7 +92,13 @@ def node_executable() -> str:
     return "node"
 
 
-def playwright_browser_smoke(frontend_url: str, timeout: int, allow_action: bool, allow_approval_request: bool) -> dict[str, Any]:
+def playwright_browser_smoke(
+    frontend_url: str,
+    timeout: int,
+    allow_action: bool,
+    allow_approval_request: bool,
+    allow_approval_grant: bool,
+) -> dict[str, Any]:
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
     script_path = ARTIFACT_DIR / "live_browser_parser_probe.mjs"
     script_path.write_text(
@@ -98,9 +108,14 @@ import { chromium } from 'playwright';
 const url = process.argv[2];
 const allowAction = process.argv[3] === 'allow-action';
 const allowApprovalRequest = process.argv[4] === 'allow-approval-request';
+const allowApprovalGrant = process.argv[5] === 'allow-approval-grant';
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
 const result = { url, checks: {}, apiResponses: [] };
+let afterRequestBodyText = null;
+let requestApprovalButtonVisibleAfterSubmit = null;
+let executeButtonVisibleAfterSubmit = null;
+let executeButtonDisabledAfterSubmit = null;
 try {
   page.on('response', async (response) => {
     const responseUrl = response.url();
@@ -121,8 +136,10 @@ try {
       actionStatus: parsed && parsed.action && parsed.action.status ? parsed.action.status : null,
       requiredApprovers: parsed && Array.isArray(parsed.required_approvers) ? parsed.required_approvers : null,
       allowedButtons: parsed && Array.isArray(parsed.allowed_buttons) ? parsed.allowed_buttons : null,
+      actionAllowedButtons: parsed && parsed.action && Array.isArray(parsed.action.allowed_buttons) ? parsed.action.allowed_buttons : null,
+      errors: parsed && Array.isArray(parsed.errors) ? parsed.errors : null,
       itemCount: parsed && parsed.count != null ? parsed.count : null,
-      bodyPrefix: body.slice(0, 300),
+      bodyPrefix: body.slice(0, 120),
     });
   });
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -137,12 +154,52 @@ try {
   if (allowApprovalRequest) {
     await page.getByRole('button', { name: /Request Approval/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(3000);
+    afterRequestBodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
+    requestApprovalButtonVisibleAfterSubmit = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+    const executeButtonAfterSubmit = page.getByRole('button', { name: /Execute Governed Runner/ }).first();
+    executeButtonVisibleAfterSubmit = await executeButtonAfterSubmit.isVisible({ timeout: 2000 }).catch(() => false);
+    executeButtonDisabledAfterSubmit = executeButtonVisibleAfterSubmit ? await executeButtonAfterSubmit.isDisabled().catch(() => false) : null;
+  }
+  if (allowApprovalGrant) {
+    await page.getByRole('button', { name: /Approve HITL/ }).first().click({ timeout: 10000 });
+    await page.waitForTimeout(3000);
+    const approvalResponse = result.apiResponses.find((item) => item.url.includes('/approve') && item.endpoint.includes('/tool-actions/'));
+    const approvedActionId = approvalResponse ? approvalResponse.actionId : null;
+    if (approvedActionId) {
+      const manualRunResponse = await page.evaluate(async ({ actionId }) => {
+        const response = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(actionId)}/manual-run-record`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            case_id: 'RTA-2026-0301-SCOPE-RUN-http-127-0-0-1-30001',
+            executed_by: 'operator@example.com',
+            notes: 'Approval grant smoke verifies uploaded artifact gate; no runner execution.',
+            uploaded_artifacts: [],
+          }),
+        });
+        const body = await response.text();
+        let parsed = null;
+        try { parsed = JSON.parse(body); } catch {}
+        return {
+          url: response.url,
+          endpoint: new URL(response.url).pathname,
+          status: response.status,
+          kind: parsed && parsed.kind ? parsed.kind : null,
+          actionId,
+          statusField: parsed && parsed.status ? parsed.status : null,
+          errors: parsed && Array.isArray(parsed.errors) ? parsed.errors : null,
+          bodyPrefix: body.slice(0, 120),
+        };
+      }, { actionId: approvedActionId });
+      result.apiResponses.push(manualRunResponse);
+    }
   }
   result.title = await page.title();
   result.finalUrl = page.url();
   const bodyText = await page.locator('body').innerText({ timeout: 5000 }).catch(() => '');
-  result.bodyPrefix = bodyText.slice(0, 2000);
+  result.bodyPrefix = bodyText.slice(0, 1000);
   const requestApprovalButtonVisible = await page.getByRole('button', { name: /Request Approval/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
+  const approveHitlButtonVisible = await page.getByRole('button', { name: /Approve HITL/ }).first().isVisible({ timeout: 2000 }).catch(() => false);
   const executeButton = page.getByRole('button', { name: /Execute Governed Runner/ }).first();
   const executeButtonVisible = await executeButton.isVisible({ timeout: 2000 }).catch(() => false);
   const executeButtonDisabled = executeButtonVisible ? await executeButton.isDisabled().catch(() => false) : null;
@@ -181,13 +238,14 @@ try {
       statusField: approvalResponse ? approvalResponse.statusField : null,
       actionStatus: approvalResponse ? approvalResponse.actionStatus : null,
       requiredApprovers: approvalResponse ? approvalResponse.requiredApprovers : null,
-      queueStatusVisible: bodyText.includes('ApprovalRequested'),
-      requestButtonVisibleAfterSubmit: requestApprovalButtonVisible,
-      requestButtonHiddenAfterSubmit: requestApprovalButtonVisible === false,
-      executeButtonVisible,
-      executeButtonDisabled,
+      queueStatusVisible: (afterRequestBodyText || bodyText).includes('ApprovalRequested'),
+      requestButtonVisibleAfterSubmit: requestApprovalButtonVisibleAfterSubmit !== null ? requestApprovalButtonVisibleAfterSubmit : requestApprovalButtonVisible,
+      requestButtonHiddenAfterSubmit: (requestApprovalButtonVisibleAfterSubmit !== null ? requestApprovalButtonVisibleAfterSubmit : requestApprovalButtonVisible) === false,
+      executeButtonVisible: executeButtonVisibleAfterSubmit !== null ? executeButtonVisibleAfterSubmit : executeButtonVisible,
+      executeButtonDisabled: executeButtonDisabledAfterSubmit !== null ? executeButtonDisabledAfterSubmit : executeButtonDisabled,
       governedRunnerNotClicked: true,
-      governedRunnerBlockedBeforeApproval: executeButtonVisible === true && executeButtonDisabled === true,
+      governedRunnerBlockedBeforeApproval: (executeButtonVisibleAfterSubmit !== null ? executeButtonVisibleAfterSubmit : executeButtonVisible) === true
+        && (executeButtonDisabledAfterSubmit !== null ? executeButtonDisabledAfterSubmit : executeButtonDisabled) === true,
     };
     result.checks.approvalQueueRequested = result.approvalQueue.responseFound
       && result.approvalQueue.responseStatus === 200
@@ -199,6 +257,36 @@ try {
       && result.approvalQueue.requestButtonHiddenAfterSubmit
       && result.approvalQueue.governedRunnerBlockedBeforeApproval
       && result.approvalQueue.governedRunnerNotClicked;
+  }
+  if (allowApprovalGrant) {
+    const grantResponse = result.apiResponses.find((item) => item.url.includes('/approve') && item.endpoint.includes('/tool-actions/'));
+    const manualRunResponse = result.apiResponses.find((item) => item.url.includes('/manual-run-record'));
+    result.approvalGrant = {
+      responseFound: Boolean(grantResponse),
+      responseStatus: grantResponse ? grantResponse.status : null,
+      statusField: grantResponse ? grantResponse.statusField : null,
+      actionStatus: grantResponse ? grantResponse.actionStatus : null,
+      runInLabAllowed: Boolean(grantResponse && Array.isArray(grantResponse.actionAllowedButtons) && grantResponse.actionAllowedButtons.includes('Run in Lab')),
+      approveHitlButtonHiddenAfterGrant: approveHitlButtonVisible === false,
+      manualRunGateChecked: Boolean(manualRunResponse),
+      manualRunResponseStatus: manualRunResponse ? manualRunResponse.status : null,
+      manualRunStatus: manualRunResponse ? manualRunResponse.statusField : null,
+      manualRunErrors: manualRunResponse ? manualRunResponse.errors : null,
+      uploadedArtifactsRequired: Boolean(manualRunResponse && Array.isArray(manualRunResponse.errors) && manualRunResponse.errors.includes('uploaded_artifacts_required')),
+      governedRunnerNotClicked: true,
+      governedRunnerNotExecuted: true,
+    };
+    result.checks.approvalGrantReady = result.approvalGrant.responseFound
+      && result.approvalGrant.responseStatus === 200
+      && result.approvalGrant.statusField === 'Approved'
+      && result.approvalGrant.actionStatus === 'Approved'
+      && result.approvalGrant.runInLabAllowed
+      && result.approvalGrant.approveHitlButtonHiddenAfterGrant
+      && result.approvalGrant.manualRunGateChecked
+      && result.approvalGrant.manualRunStatus === 'invalid'
+      && result.approvalGrant.uploadedArtifactsRequired
+      && result.approvalGrant.governedRunnerNotClicked
+      && result.approvalGrant.governedRunnerNotExecuted;
   }
   result.status = Object.values(result.checks).every(Boolean) ? 'passed' : 'failed_dom_expectation';
 } catch (error) {
@@ -214,7 +302,8 @@ console.log(JSON.stringify(result));
     )
     action_arg = "allow-action" if allow_action else "dom-only"
     approval_arg = "allow-approval-request" if allow_approval_request else "approval-request-disabled"
-    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg], cwd=FRONTEND_ROOT, timeout=timeout)
+    grant_arg = "allow-approval-grant" if allow_approval_grant else "approval-grant-disabled"
+    probe = run_command([node_executable(), str(script_path), frontend_url, action_arg, approval_arg, grant_arg], cwd=FRONTEND_ROOT, timeout=timeout)
     parsed: dict[str, Any] | None = None
     if probe.get("stdout"):
         try:
@@ -245,6 +334,7 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "allow_browser_automation": allow_browser,
         "allow_browser_action_smoke": args.allow_action,
         "allow_browser_approval_request_smoke": args.allow_approval_request,
+        "allow_browser_approval_grant_smoke": args.allow_approval_grant,
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "browser_automation_executed": False,
@@ -285,12 +375,22 @@ def build_smoke_result(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         result["status"] = "blocked_approval_request_smoke_requires_action"
         result["blockers"] = ["approval_request_smoke_requires_allow_action"]
         return result, 2 if args.require_live else 0
+    if args.allow_approval_grant and not args.allow_approval_request:
+        result["status"] = "blocked_approval_grant_smoke_requires_approval_request"
+        result["blockers"] = ["approval_grant_smoke_requires_allow_approval_request"]
+        return result, 2 if args.require_live else 0
     if not (FRONTEND_ROOT / "node_modules" / "playwright").exists():
         result["status"] = "blocked_playwright_dependency_not_installed"
         result["blockers"] = ["frontend_node_modules_playwright_not_found"]
         return result, 2 if args.require_live else 0
     result["browser_automation_executed"] = True
-    browser = playwright_browser_smoke(frontend_url + "/", args.timeout, args.allow_action, args.allow_approval_request)
+    browser = playwright_browser_smoke(
+        frontend_url + "/",
+        args.timeout,
+        args.allow_action,
+        args.allow_approval_request,
+        args.allow_approval_grant,
+    )
     result["browser_smoke"] = browser
     result["status"] = "passed" if browser.get("status") == "passed" else "failed_browser_dom_parser_smoke"
     result["blockers"] = [] if result["status"] == "passed" else [browser.get("status") or "browser_smoke_failed"]
@@ -302,6 +402,7 @@ def main() -> int:
     parser.add_argument("--allow-browser", action="store_true", help="Opt in to Playwright browser automation.")
     parser.add_argument("--allow-action", action="store_true", help="Opt in to a safe UI ToolActionCard planning click. No runner execution is triggered.")
     parser.add_argument("--allow-approval-request", action="store_true", help="Opt in to requesting HITL approval after ToolActionCard planning. No approval grant or runner execution is triggered.")
+    parser.add_argument("--allow-approval-grant", action="store_true", help="Opt in to granting the HITL approval in the UI smoke. No runner execution is triggered.")
     parser.add_argument("--require-live", action="store_true", help="Return non-zero if live services/browser smoke are not ready.")
     parser.add_argument("--frontend-url", default="http://127.0.0.1:5177")
     parser.add_argument("--backend-url", default="http://127.0.0.1:8765")

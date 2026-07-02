@@ -971,7 +971,7 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실제 live backend에서 `/api/malax/latest`, `/api/malax/runs` polling 500 로그가 사라지는지 확인
 - [x] polling이 있는 live Report Studio에서 browser smoke가 `networkidle`에 묶이지 않도록 `domcontentloaded` 기준으로 안정화
 - [x] Request Approval 클릭 후 approval queue 상태와 승인 전 runner 차단 DOM 검증 - slice 41 완료
-- [ ] 다음 live browser smoke: 승인 grant 후 `Run in Lab` 노출과 manual-run-only evidence upload requirement 검증
+- [x] 승인 grant 후 `Run in Lab` 노출과 manual-run-only evidence upload requirement 검증 - slice 42 완료
 
 ## 49. Slice 41 Live Approval Queue Browser Smoke 체크리스트
 
@@ -983,3 +983,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 승인 전 `Execute Governed Runner` 버튼이 visible이지만 disabled임을 검증
 - [x] `governedRunnerNotClicked=true`, `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
 - [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
+
+## 50. Slice 42 Live Approval Grant Gate Smoke 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_live_browser_parser_smoke.py`에 `--allow-approval-grant` opt-in 추가
+- [x] `--allow-approval-grant`는 `--allow-approval-request` 없이는 차단되어 승인 요청 없이 승인 grant를 수행하지 않음
+- [x] RedTeam2 approval queue 카드에 `Approve HITL` 버튼 추가
+- [x] Playwright가 `Approve HITL` 클릭 후 `/api/redteam/v2/tool-actions/{action_id}/approve` 200 응답과 `Approved` 상태 검증
+- [x] 승인된 action의 `allowed_buttons`에 `Run in Lab` 포함 확인
+- [x] 승인요청 직후 DOM 스냅샷으로 `ApprovalRequested`, required approver, 승인 전 runner disabled 상태를 보존 검증
+- [x] runner 실행 없이 `/manual-run-record`에 빈 `uploaded_artifacts`를 제출해 `uploaded_artifacts_required` evidence gate 확인
+- [x] `governedRunnerNotClicked=true`, `governedRunnerNotExecuted=true`, `commands_executed_by_api=false` 유지
+- [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
+- [ ] 다음 live browser smoke: valid manual run artifact upload/import -> Evidence Card candidate -> Claim-Evidence Matrix link

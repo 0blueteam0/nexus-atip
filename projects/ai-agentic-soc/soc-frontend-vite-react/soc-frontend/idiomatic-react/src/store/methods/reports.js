@@ -3299,6 +3299,48 @@ export default {
     }
   }
 ,
+  async approveRedTeam2ToolAction(action) {
+    if (!action?.action_id) return;
+    const requiredRoles = action.required_approver_roles || action.approval_policy?.required_approver_roles || [];
+    const approverRole = requiredRoles[0] || 'red_team_lead';
+    const approverByRole = {
+      red_team_lead:'lead@example.com',
+      control_team:'control@example.com',
+      second_approver:'second@example.com',
+    };
+    const approver = approverByRole[approverRole] || 'lead@example.com';
+    const payload = {
+      case_id:action.case_id,
+      approver,
+      approver_role:approverRole,
+      decision:'approve',
+      conditions:['manual_run_only', 'upload_artifacts_before_evidence'],
+    };
+    this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'approval-granting', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/tool-actions/${encodeURIComponent(action.action_id)}/approve`, {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'X-RedTeam-Actor':approver,
+          'X-RedTeam-Actor-Role':approverRole,
+        },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid' || data.status === 'not_found') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'ready', lastApprovalGrant:data, checkedAt:new Date().toISOString() },
+        redteam2ToolActionQueue:[data.action, ...((s.redteam2ToolActionQueue || []).filter(x => x.action_id !== action.action_id))].slice(0, 10),
+      }));
+      this.toast(`레드팀 분석2 승인 결정: ${data.status}`, data.status === 'Approved' ? 'success' : 'warn');
+      this.logAudit('현재 승인자', `레드팀 분석2 승인 결정: ${action.action_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('레드팀 분석2 승인 결정 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async createRedTeam2ToolExecutionPlan(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -4162,6 +4204,9 @@ export default {
       h('div', { style:{ display:'flex', gap:'6px', justifyContent:'flex-end', flexWrap:'wrap' } },
         (action.allowed_buttons || []).includes('Request Approval') && action.status !== 'ApprovalRequested' && action.status !== 'Approved'
           ? h('button', { onClick:()=>this.requestRedTeam2ToolActionApproval(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.amber}`, background:C.bg, color:C.amber, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Request Approval')
+          : null,
+        action.status === 'ApprovalRequested'
+          ? h('button', { onClick:()=>this.approveRedTeam2ToolAction(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.green}`, background:C.bg, color:C.green, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Approve HITL')
           : null,
         h('button', { onClick:()=>this.createRedTeam2ToolExecutionPlan(action), style:{ padding:'6px 8px', borderRadius:'7px', border:`1px solid ${C.blue}`, background:C.bg, color:C.blue, cursor:'pointer', fontSize:'10px', fontWeight:900 } }, 'Execution Plan'),
         h('span', { style:{ fontSize:'9.5px', color:C.muted, alignSelf:'center', maxWidth:'190px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, (action.allowed_buttons || []).slice(0, 3).join(', ') || '-')));
