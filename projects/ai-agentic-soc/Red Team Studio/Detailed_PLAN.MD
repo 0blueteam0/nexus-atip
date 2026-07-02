@@ -582,3 +582,12 @@ Create Case
 - RedTeam2 화면에는 초급자용 한국어 `여러 분석도구 순차 실행` 영역을 추가하고, 분석도구 ID 목록과 명령 목록을 입력해 복합 실행 API를 호출한다.
 - 복합 실행 결과는 `toolchain-runs`에 저장되고, 도구 출력은 계속 LLM 명령이 아니라 untrusted data로만 취급한다.
 - 실제 설치 도구 또는 Docker/container가 없는 환경에서는 테스트가 mock runner로 계약을 검증하며, real runtime smoke 성공 증거는 별도 최종 게이트로 유지한다.
+
+## 13. Slice 58 반영 사항
+
+- `고도화/sanity/redteam_ax_installed_tool_live_smoke.py`는 현재 호스트에 설치된 `npm.cmd`를 발견한 뒤 `npm.cmd --version`을 실제 로컬 프로세스로 실행한다.
+- live smoke는 ToolActionCard, ExecutionPlan, execution token, wrapper manifest hash, wrapper pin approval, child process allowlist, `shell=false` 실행을 모두 통과해야 성공한다.
+- 실행 stdout은 `runner-output` artifact로 저장되고 sanitizer preview, agent normalization, Evidence Card 생성까지 같은 케이스에서 이어진다.
+- smoke 결과 요약은 `archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json`에 저장한다.
+- `RunnerExecuted` 및 `ContainerLaunchPrepared` 상태는 저장 artifact 기반 sanitizer/normalizer/evidence 생성의 입력 상태로 허용한다.
+- 이번 증거는 설치된 npm CLI의 governed runner readiness를 입증하지만 Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container live smoke는 후속 게이트로 유지한다.

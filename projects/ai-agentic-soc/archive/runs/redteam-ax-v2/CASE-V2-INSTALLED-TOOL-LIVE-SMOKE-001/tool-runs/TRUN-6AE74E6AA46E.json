@@ -1,0 +1,109 @@
+{
+  "kind": "redteam_ax_v2_tool_run_record",
+  "run_id": "TRUN-6AE74E6AA46E",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "action_id": "TAC-NPM-INSTALLED-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "execution_mode": "sandbox_execute",
+  "environment": "approved_scope",
+  "executed_by": "analyst@example.com",
+  "approved_by": [],
+  "status": "EvidenceCreated",
+  "errors": [],
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "raw_artifacts": [
+    {
+      "artifact_id": "ART-21092523C4B5",
+      "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/runner-output/TRUN-6AE74E6AA46E/stdout.txt",
+      "hash": "7eeb2f42ee0d10d4e00355252af2e7468bbff992af43b511355feb76da5c7cfb",
+      "content_type": "text/plain",
+      "summary": "Governed runner stdout captured as untrusted tool output.",
+      "imported_at": "2026-07-02T04:45:46Z"
+    }
+  ],
+  "runner_attempt": {
+    "kind": "redteam_ax_v2_governed_runner_attempt",
+    "run_id": "TRUN-6AE74E6AA46E",
+    "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+    "action_id": "TAC-NPM-INSTALLED-LIVE-SMOKE-001",
+    "execution_plan_id": "TEP-866EE5C19BF5",
+    "execution_token_id": "EXT-6B2857A888D5",
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "execution_mode": "sandbox_execute",
+    "runner_argv": [
+      "npm.cmd",
+      "--version"
+    ],
+    "shell": false,
+    "status": "executed",
+    "errors": [],
+    "started_at": "2026-07-02T04:45:45Z",
+    "completed_at": "2026-07-02T04:45:46Z",
+    "exit_code": 0,
+    "timeout_seconds": 20,
+    "max_output_bytes": 4096,
+    "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+    "stdout_bytes": 7,
+    "stderr_bytes": 0,
+    "output_truncated": false,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/runner-attempts/RUNA-4542C1320832.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "normalized_results": [
+    "NR-90BB9B30063E"
+  ],
+  "evidence_candidates": [
+    "EV-96A84FE2D774"
+  ],
+  "policy_decision": {
+    "risk_class": "T0",
+    "requires_human_approval": false,
+    "requires_two_person_approval": false,
+    "allowed_execution_modes": [
+      "plan_only",
+      "dry_run",
+      "offline_parse",
+      "sandbox_execute"
+    ],
+    "denied_execution_modes": [
+      "lab_execute",
+      "controlled_production_execute",
+      "prohibited"
+    ],
+    "decision": "allow_runner_execution"
+  },
+  "runtime_probe": {
+    "status": "available",
+    "command": "npm.cmd",
+    "path": "C:\\Users\\alos\\AppData\\Local\\hermes\\node\\npm.cmd",
+    "checked_at": "2026-07-02T04:45:46Z"
+  },
+  "analysis_agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+  "normalizer_id": "NORMALIZER-NPM-AUDIT-001",
+  "untrusted_output_envelope": {
+    "trusted_as_instruction": false,
+    "trusted_as_data": true,
+    "source_tool_id": "TOOL-NPM-AUDIT-001",
+    "run_id": "TRUN-6AE74E6AA46E",
+    "classification": "internal",
+    "content_summary": "Tool output is isolated as untrusted data for normalizer review.",
+    "raw_content_ref": [
+      {
+        "artifact_id": "ART-21092523C4B5",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/runner-output/TRUN-6AE74E6AA46E/stdout.txt",
+        "hash": "7eeb2f42ee0d10d4e00355252af2e7468bbff992af43b511355feb76da5c7cfb",
+        "content_type": "text/plain",
+        "summary": "Governed runner stdout captured as untrusted tool output.",
+        "imported_at": "2026-07-02T04:45:46Z"
+      }
+    ]
+  },
+  "notes": "Governed execution record created by RedTeam AX; raw output must be normalized before evidence use.",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-6AE74E6AA46E.json",
+  "sanitizer_previews": [
+    "SAN-7C17E565B965"
+  ]
+}

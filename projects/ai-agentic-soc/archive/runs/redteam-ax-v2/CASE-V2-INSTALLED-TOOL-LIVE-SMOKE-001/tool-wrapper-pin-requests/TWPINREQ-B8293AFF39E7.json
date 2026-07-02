@@ -1,0 +1,111 @@
+{
+  "kind": "redteam_ax_v2_tool_wrapper_pin_request",
+  "pin_request_id": "TWPINREQ-B8293AFF39E7",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_name": "npm audit",
+  "status": "submitted",
+  "errors": [],
+  "warnings": [
+    "existing_approved_pin_will_be_rotated_on_approval"
+  ],
+  "expected_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+  "existing_approved_pin": {
+    "kind": "redteam_ax_v2_tool_wrapper_pin",
+    "pin_id": "wrapper-pin-TOOL-NPM-AUDIT-001",
+    "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+    "source_case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "tool_name": "npm audit",
+    "status": "approved",
+    "expected_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+    "pin_request_id": "TWPINREQ-743C24D019B9",
+    "approval_id": "TWPINAP-D767F518CDC0",
+    "approved_by": "lead@example.com",
+    "approver_role": "red_team_lead",
+    "version_evidence": {
+      "operator_attested_version": "npm installed-tool live smoke",
+      "version_command": "npm.cmd --version",
+      "version_output_excerpt": "captured by governed runner in this smoke",
+      "version_command_executed_by_operator": true,
+      "registry_executed_version_command": false
+    },
+    "approved_at": "2026-07-02T04:45:45Z",
+    "safe_by_default": true,
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NPM-AUDIT-001.json"
+  },
+  "manifest_snapshot": {
+    "kind": "redteam_ax_v2_tool_wrapper_manifest",
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "tool_name": "npm audit",
+    "adapter_type": "cli_wrapper",
+    "command_name": "npm.cmd",
+    "availability": {
+      "status": "available",
+      "command": "npm.cmd",
+      "path": "C:\\Users\\alos\\AppData\\Local\\hermes\\node\\npm.cmd",
+      "checked_at": "2026-07-02T04:48:04Z"
+    },
+    "resolved_path": "C:\\Users\\alos\\AppData\\Local\\hermes\\node\\npm.cmd",
+    "expected_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+    "expected_sha256_source": "approved_pin",
+    "approved_pin": {
+      "kind": "redteam_ax_v2_tool_wrapper_pin",
+      "pin_id": "wrapper-pin-TOOL-NPM-AUDIT-001",
+      "case_id": "CASE-V2-TOOL-TRUST-REGISTRY",
+      "source_case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "tool_name": "npm audit",
+      "status": "approved",
+      "expected_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+      "pin_request_id": "TWPINREQ-743C24D019B9",
+      "approval_id": "TWPINAP-D767F518CDC0",
+      "approved_by": "lead@example.com",
+      "approver_role": "red_team_lead",
+      "version_evidence": {
+        "operator_attested_version": "npm installed-tool live smoke",
+        "version_command": "npm.cmd --version",
+        "version_output_excerpt": "captured by governed runner in this smoke",
+        "version_command_executed_by_operator": true,
+        "registry_executed_version_command": false
+      },
+      "approved_at": "2026-07-02T04:45:45Z",
+      "safe_by_default": true,
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-TOOL-TRUST-REGISTRY/tool-wrapper-pins/wrapper-pin-TOOL-NPM-AUDIT-001.json"
+    },
+    "actual_sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+    "hash_error": null,
+    "pinning_status": "hash_match",
+    "trusted_for_runner": true,
+    "requires_pin_before_runner": false,
+    "version_probe": {
+      "mode": "not_executed_safe_manifest_only",
+      "status": "not_verified",
+      "reason": "Version commands are intentionally not executed by the registry endpoint."
+    },
+    "runner_preflight": {
+      "runner_can_use_wrapper": true,
+      "blocking_controls": [],
+      "human_review_required": false
+    },
+    "installation_hint": "Use npm audit --json against approved workspace lockfiles; never auto-fix without review.",
+    "checked_at": "2026-07-02T04:48:04Z"
+  },
+  "version_evidence": {
+    "operator_attested_version": "npm installed-tool live smoke",
+    "version_command": "npm.cmd --version",
+    "version_output_excerpt": "captured by governed runner in this smoke",
+    "version_command_executed_by_operator": true,
+    "registry_executed_version_command": false
+  },
+  "requested_by": "analyst@example.com",
+  "requested_at": "2026-07-02T04:48:04Z",
+  "approval_policy": {
+    "required_approver_roles": [
+      "red_team_lead"
+    ],
+    "approval_mode": "single_approval",
+    "safe_by_default": true
+  },
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-wrapper-pin-requests/TWPINREQ-B8293AFF39E7.json"
+}

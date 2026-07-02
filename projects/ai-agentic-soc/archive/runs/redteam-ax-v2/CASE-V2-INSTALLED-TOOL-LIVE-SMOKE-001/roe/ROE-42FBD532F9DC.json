@@ -1,0 +1,10 @@
+{
+  "kind": "redteam_ax_v2_roe_evaluation",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "decision": "allow",
+  "risk_class": "T0",
+  "hitl_required": false,
+  "failures": [],
+  "evaluated_at": "2026-07-02T04:48:04Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/roe/ROE-42FBD532F9DC.json"
+}

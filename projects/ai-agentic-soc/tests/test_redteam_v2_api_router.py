@@ -861,6 +861,19 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertTrue(Path(step["run"]["raw_artifacts"][0]["source_path_or_ref"]).exists())
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+        first_run_id = body["steps"][0]["run"]["run_id"]
+        analyzed = self.client.post(f"/api/redteam/v2/tool-runs/{first_run_id}/agent-analyze", json={
+            "case_id": case_id,
+            "summary": "Mock installed tool output analyzed after RunnerExecuted status.",
+            "result_type": "tool_install_runtime_evidence",
+        })
+        self.assertEqual(analyzed.status_code, 200)
+        analyzed_body = analyzed.json()
+        self.assertEqual(analyzed_body["status"], "Normalized")
+        self.assertEqual(analyzed_body["parser_report"]["input_source"], "stored_artifacts")
+        self.assertGreaterEqual(analyzed_body["parser_report"]["artifact_input_count"], 1)
+        self.assertFalse(analyzed_body.get("trusted_as_instruction", False))
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

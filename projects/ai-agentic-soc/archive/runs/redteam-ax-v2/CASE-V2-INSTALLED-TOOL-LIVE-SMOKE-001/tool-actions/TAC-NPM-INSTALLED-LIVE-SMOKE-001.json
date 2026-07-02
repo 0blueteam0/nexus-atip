@@ -1,0 +1,105 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-NPM-INSTALLED-LIVE-SMOKE-001",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "npm audit installed tool live smoke",
+  "objective": "Run an installed npm.cmd version command through governed RedTeam AX runner and analyze output.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "tool_profile": {
+    "tool_id": "TOOL-NPM-AUDIT-001",
+    "name": "npm audit",
+    "category": "software_composition_analysis",
+    "normalizer_id": "NORMALIZER-NPM-AUDIT-001",
+    "agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+    "default_policy": "workspace_lockfile_required"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [
+    "SCOPE-APPROVED-LOCAL-LAB"
+  ],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "dependency_advisory_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "EvidenceCreated",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+    "decision": "allow",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [],
+    "evaluated_at": "2026-07-02T04:48:04Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/roe/ROE-42FBD532F9DC.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-02T04:48:04Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-02T04:48:04Z",
+      "execution_plan_id": "TEP-75D1EE23E54A",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-02T04:48:05Z",
+      "run_id": "TRUN-09DFF0CA7A4E",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "analysis_agent_normalized_tool_run",
+      "at": "2026-07-02T04:48:05Z",
+      "run_id": "TRUN-09DFF0CA7A4E",
+      "result_id": "NR-7AA416B51884",
+      "agent_id": "AGENT-NPM-AUDIT-ANALYST-001"
+    },
+    {
+      "event": "evidence_candidate_created",
+      "at": "2026-07-02T04:48:05Z",
+      "run_id": "TRUN-09DFF0CA7A4E",
+      "evidence_id": "EV-FFC941EBE7B6"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-actions/TAC-NPM-INSTALLED-LIVE-SMOKE-001.json",
+  "execution_plans": [
+    "TEP-75D1EE23E54A"
+  ]
+}

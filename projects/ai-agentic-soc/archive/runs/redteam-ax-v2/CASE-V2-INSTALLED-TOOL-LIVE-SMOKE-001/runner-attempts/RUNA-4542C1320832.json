@@ -1,0 +1,27 @@
+{
+  "kind": "redteam_ax_v2_governed_runner_attempt",
+  "run_id": "TRUN-6AE74E6AA46E",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "action_id": "TAC-NPM-INSTALLED-LIVE-SMOKE-001",
+  "execution_plan_id": "TEP-866EE5C19BF5",
+  "execution_token_id": "EXT-6B2857A888D5",
+  "tool_id": "TOOL-NPM-AUDIT-001",
+  "execution_mode": "sandbox_execute",
+  "runner_argv": [
+    "npm.cmd",
+    "--version"
+  ],
+  "shell": false,
+  "status": "executed",
+  "errors": [],
+  "started_at": "2026-07-02T04:45:45Z",
+  "completed_at": "2026-07-02T04:45:46Z",
+  "exit_code": 0,
+  "timeout_seconds": 20,
+  "max_output_bytes": 4096,
+  "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "stdout_bytes": 7,
+  "stderr_bytes": 0,
+  "output_truncated": false,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/runner-attempts/RUNA-4542C1320832.json"
+}

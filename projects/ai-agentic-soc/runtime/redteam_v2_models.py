@@ -3448,7 +3448,7 @@ def agent_analyze_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, An
     errors: list[str] = []
     if tool_run is None:
         errors.append("tool_run_record_required")
-    elif tool_run.get("status") not in {"OutputImported", "ContainerLaunchPrepared", "Normalized", "EvidenceCreated"}:
+    elif tool_run.get("status") not in {"OutputImported", "RunnerExecuted", "ContainerLaunchPrepared", "Normalized", "EvidenceCreated"}:
         errors.append("tool_run_output_must_be_imported")
 
     tool_id = str((tool_run or {}).get("tool_id") or payload.get("tool_id") or "")
@@ -3746,7 +3746,7 @@ def import_tool_run_file(run_id: str, payload: dict[str, Any]) -> dict[str, Any]
     errors: list[str] = []
     if tool_run is None:
         errors.append("tool_run_record_required")
-    elif tool_run.get("status") not in {"OutputImported", "Normalized", "EvidenceCreated"}:
+    elif tool_run.get("status") not in {"OutputImported", "RunnerExecuted", "ContainerLaunchPrepared", "Normalized", "EvidenceCreated"}:
         errors.append("tool_run_output_must_be_imported")
 
     source_value = payload.get("source_path") or payload.get("source_path_or_ref") or payload.get("path")
@@ -3997,7 +3997,7 @@ def normalize_tool_run(run_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     errors: list[str] = []
     if tool_run is None:
         errors.append("tool_run_record_required")
-    elif tool_run.get("status") not in {"OutputImported", "Normalized", "EvidenceCreated"}:
+    elif tool_run.get("status") not in {"OutputImported", "RunnerExecuted", "ContainerLaunchPrepared", "Normalized", "EvidenceCreated"}:
         errors.append("tool_run_output_must_be_imported")
 
     raw_artifacts = (tool_run or {}).get("raw_artifacts") or []

@@ -1,0 +1,38 @@
+{
+  "kind": "redteam_ax_v2_evidence_candidate",
+  "evidence_id": "EV-FFC941EBE7B6",
+  "case_id": "CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
+  "source_type": "tool_normalized_result",
+  "source_path_or_url": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-7AA416B51884.json",
+  "collected_at": "2026-07-02T04:48:05Z",
+  "hash": "SHA256-961BF7E4624E",
+  "summary": "Installed npm.cmd governed runner live smoke output evidence candidate.",
+  "normalized_fields": {
+    "run_id": "TRUN-09DFF0CA7A4E",
+    "result_id": "NR-7AA416B51884",
+    "result_type": "tool_install_runtime_evidence",
+    "structured_items": [
+      {
+        "item_type": "tool_install_runtime_evidence",
+        "tool_id": "TOOL-NPM-AUDIT-001",
+        "artifact_id": "ART-DDB1B63311E3",
+        "source_path_or_ref": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/runner-output/TRUN-09DFF0CA7A4E/stdout.txt",
+        "trusted_as_instruction": false,
+        "requires_human_validation": true,
+        "confidence": 0.7
+      }
+    ],
+    "prohibited_report_claims": [
+      "Do not claim compromise from scanner output alone.",
+      "Do not state verified vulnerability until human validation is recorded.",
+      "Do not include raw exploit reproduction steps in the report narrative."
+    ]
+  },
+  "classification": "internal",
+  "approval_status": "pending_review",
+  "review_required": true,
+  "validation_status": "candidate",
+  "errors": [],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-FFC941EBE7B6.json",
+  "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/audit.jsonl"
+}

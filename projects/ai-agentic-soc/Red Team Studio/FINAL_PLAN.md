@@ -1171,4 +1171,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend 입력은 분석도구 ID 목록과 실행 명령 목록을 받아 backend 복합 실행 API를 호출
 - [x] `tests/test_redteam_v2_api_router.py::test_v2_governed_toolchain_executes_multiple_installed_tool_steps` 추가
 - [x] node syntax check와 v2 API regression 통과
-- [ ] 다음 slice: 실제 설치 도구 기반 live smoke 또는 OpenVAS/ZAP credential vault contract 구현
+- [x] 다음 slice: 실제 설치 도구 기반 live smoke 또는 OpenVAS/ZAP credential vault contract 구현 - 설치된 npm live smoke slice 58 완료
+
+## 66. Slice 58 Installed npm Live Smoke 체크리스트
+
+- [x] 현재 호스트에서 설치된 `npm.cmd` 경로를 확인하고 없으면 blocked artifact로 종료하도록 smoke 작성
+- [x] `npm.cmd --version`을 ToolActionCard, ExecutionPlan, execution token, wrapper pin, allowlist, `shell=false` runner 경유로 실제 실행
+- [x] runner stdout artifact를 sanitizer preview 입력으로 사용하고 `trusted_as_instruction=false` 유지
+- [x] stored artifact 기반 agent normalization을 수행하고 Evidence Card를 생성
+- [x] `RunnerExecuted` 및 `ContainerLaunchPrepared` 상태를 normalize/evidence pipeline 입력으로 허용
+- [x] `archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json`에 run/result/evidence artifact 경로 저장
+- [x] toolchain regression test가 runner artifact를 agent 분석으로 넘기는 경로를 검증
+- [x] completion audit matrix의 RTA-COMP-015를 `partial`로 갱신하고 남은 runtime smoke 범위를 Nuclei/OpenVAS/Trivy/OWASP ZAP 및 Docker/container로 좁힘
+- [ ] 다음 slice: OpenVAS/ZAP credential vault contract 또는 추가 설치 scanner live smoke 구현

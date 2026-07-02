@@ -12,9 +12,9 @@
   ],
   "status_counts": {
     "proved": 12,
-    "partial": 1,
+    "partial": 2,
     "gap": 2,
-    "blocked": 1
+    "blocked": 0
   },
   "audit_items": [
     {
@@ -201,14 +201,17 @@
     {
       "id": "RTA-COMP-015",
       "requirement": "Actual CLI/container runtime smoke must prove governed runtime readiness where applicable.",
-      "status": "blocked",
+      "status": "partial",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Container runtime harness exists and records blocker evidence, but the runtime environment has not provided a successful real container execution proof.",
-      "residual_gap": "Docker/container daemon availability and real host scanner availability remain environmental blockers for full runtime proof.",
-      "next_action": "When Docker or approved scanner CLIs are available, rerun real runtime smoke and attach artifact."
+      "proof_summary": "Installed npm audit tooling path was exercised through the governed runner using npm.cmd --version. The run passed ToolActionCard, ExecutionPlan, execution token, wrapper pin, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation.",
+      "residual_gap": "Nuclei, OpenVAS, Trivy, OWASP ZAP, and Docker/container runtime live smokes are not yet recorded in this environment.",
+      "next_action": "When approved scanner CLIs or Docker are available, rerun live runtime smokes for each remaining tool/runtime and attach artifacts."
     },
     {
       "id": "RTA-COMP-016",
@@ -223,13 +226,12 @@
     }
   ],
   "remaining_gaps": [
-    "Successful real CLI/container runtime smoke after environment readiness.",
+    "Nuclei/OpenVAS/Trivy/OWASP ZAP and Docker/container runtime live smoke after environment readiness.",
     "OpenVAS/ZAP credential vault and read-only token policy.",
-    "Full accepted gate manifest and all-suite run artifact.",
-    "Successful real container runtime smoke after environment readiness."
+    "Full accepted gate manifest and all-suite run artifact."
   ],
   "next_slice_candidates": [
-    "Implement scanner install evidence capture workflow.",
+    "Run additional installed scanner live smokes when scanner CLIs are available.",
     "Design OpenVAS/ZAP credential vault contract.",
     "Create final verification harness for all accepted gates."
   ]
