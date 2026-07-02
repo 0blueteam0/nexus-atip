@@ -4545,6 +4545,7 @@ export default {
       analyst:'분석가',
       red_team_lead:'레드팀 리드',
       control_team:'통제팀',
+      platform_operator:'플랫폼 운영자',
       second_approver:'2차 승인자',
       legal_privacy:'법무/개인정보',
       data_owner:'데이터 소유자',
@@ -4709,6 +4710,22 @@ export default {
       ['능동 스캔 실행', koBool(runtimeReadiness.active_scan_executed ?? false), '항상 아니오여야 함'],
       ['명령으로 신뢰 여부', koBool(runtimeReadiness.trusted_as_instruction ?? false), '항상 아니오 유지'],
     ];
+    const liveRemediationDefaultStepRows = [
+      ['Docker Desktop daemon 준비', '미확인', 'Docker Desktop 실행 후 container runtime smoke 산출물 첨부'],
+      ['WSL 배포판 mount/start 복구', '미확인', 'wsl.exe -l -v 확인 후 WSL readiness 산출물 첨부'],
+      ['OpenVAS/ZAP read-only endpoint와 vault reference 설정', '미확인', 'secret 값이 아닌 외부 vault reference만 설정'],
+      ['OpenVAS/ZAP read-only report import 실측', '미확인', '승인된 endpoint에서만 read-only import 산출물 첨부'],
+      ['최종 strict live readiness promotion', '미확인', '모든 단계 통과 뒤 strict promotion artifact 첨부'],
+    ];
+    const liveRemediationStepRows = (liveRemediation.steps || []).map(item => [
+      item.title || item.step_id || '-',
+      koValue(item.status || '미확인'),
+      [
+        item.owner ? `담당: ${koRole(item.owner)}` : null,
+        (item.blockers || []).length ? `차단: ${(item.blockers || []).slice(0, 2).join(', ')}` : '차단 조건 없음',
+        item.verification_command ? `확인: ${item.verification_command}` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
     const toolGuideProfiles = {
       'TOOL-NUCLEI-001': {
         summary:'웹 취약점 템플릿 검사 도구입니다. 실제 대상에 요청을 보내므로 기본적으로 승인 후 실행합니다.',
@@ -5109,6 +5126,13 @@ export default {
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
+          h('div', { style:{ display:'grid', gap:'6px' } },
+            h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영자 조치 runbook 단계'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              '아래 단계는 사람이 순서대로 수행하고, 각 확인 명령의 산출물을 Evidence로 첨부해야 합니다. 상태 조회 API는 이 명령을 대신 실행하지 않습니다.'),
+            h('div', { style:{ fontSize:'10px', color:C.muted, lineHeight:1.5 } },
+              '기본 순서: Docker Desktop daemon 준비 → WSL 배포판 mount/start 복구 → OpenVAS/ZAP read-only endpoint와 vault reference 설정 → read-only report import 실측 → strict live readiness promotion'),
+            this.renderTable(['조치 단계','상태','담당/차단/확인'], liveRemediationStepRows.length ? liveRemediationStepRows : liveRemediationDefaultStepRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
                 (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))

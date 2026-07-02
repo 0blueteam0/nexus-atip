@@ -723,3 +723,13 @@ Create Case
 - `/api/redteam/v2/runtime-readiness`는 `live_readiness_remediation` artifact를 함께 반환하고, RedTeam2 panel은 `조치 runbook`과 `남은 조치 단계`를 표시한다.
 - accepted gate manifest에는 `GATE-LIVE-READINESS-REMEDIATION-RUNBOOK`이 추가된다.
 - 이 slice는 blocker 해소를 자동 수행하지 않는다. 사람이 ROE/HITL 범위에서 수행할 수 있도록 검증 명령과 evidence 요구사항을 명시하는 운영 runbook slice다.
+
+## 26. Slice 71 반영 사항
+
+- RedTeam2 runtime readiness panel은 이제 `운영자 조치 runbook 단계` 표를 표시한다.
+- 표는 `live_readiness_remediation.steps`에서 step title, status, owner, blocker, verification command를 가져와 초급 운영자가 다음 행동과 필요한 증거를 한 화면에서 확인하게 한다.
+- runbook artifact가 아직 로드되지 않은 경우에도 Docker Desktop daemon 준비, WSL 배포판 mount/start 복구, OpenVAS/ZAP read-only endpoint와 vault reference 설정, read-only report import, strict promotion 기본 순서를 fallback으로 보여준다.
+- `platform_operator` role label을 `플랫폼 운영자`로 번역해 runbook owner가 영어 코드값으로만 보이지 않게 한다.
+- `고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py`는 runbook 단계 표, 사람 수행 안내, 상태 조회 API가 명령을 실행하지 않는다는 문구를 검사한다.
+- `고도화/sanity/test_redteam2_korean_copy_inventory.py`는 runbook 단계 visibility anchor를 추가로 검사한다.
+- 이 slice는 UI visibility를 강화하지만 Docker/WSL/OpenVAS/ZAP readiness blocker를 해결했다고 주장하지 않는다.

@@ -1349,3 +1349,13 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API projection test, frontend runtime readiness contract, Korean copy inventory에 remediation runbook 앵커 추가
 - [x] accepted gate manifest에 `GATE-LIVE-READINESS-REMEDIATION-RUNBOOK` 추가
 - [ ] runbook의 모든 단계가 ready가 된 뒤 `--require-clear` 통과
+
+## 79. Slice 71 Live Readiness Runbook Step Visibility 체크리스트
+
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `운영자 조치 runbook 단계` 표 추가
+- [x] runbook artifact의 각 step title, status, owner, blocker, verification command를 한국어 표로 표시
+- [x] artifact가 아직 없을 때도 Docker, WSL, OpenVAS/ZAP endpoint/vault, read-only import, strict promotion 기본 순서를 초급자에게 보여주는 fallback 단계 추가
+- [x] `platform_operator` 역할을 `플랫폼 운영자`로 한국어 표시
+- [x] frontend runtime readiness contract가 runbook 단계명, 사람 수행 안내, 상태 조회 API non-execution 문구를 검사
+- [x] Korean copy inventory에 runbook 단계 visibility anchor 추가
+- [ ] runbook의 모든 단계가 ready가 된 뒤 `--require-clear` 통과
