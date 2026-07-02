@@ -53,6 +53,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("external_scanner_service_import_live", body)
         self.assertIn("wsl_runtime", body)
         self.assertIn("strict_live_readiness_promotion", body)
+        self.assertIn("live_readiness_remediation", body)
         self.assertIsInstance(body["blockers"], list)
         self.assertGreaterEqual(len(body["operator_next_steps"]), 1)
         for artifact in (
@@ -61,6 +62,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             body["external_scanner_service_import_live"],
             body["wsl_runtime"],
             body["strict_live_readiness_promotion"],
+            body["live_readiness_remediation"],
         ):
             self.assertIn("exists", artifact)
             self.assertIn("path", artifact)

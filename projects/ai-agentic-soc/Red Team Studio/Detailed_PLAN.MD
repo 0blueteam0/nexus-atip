@@ -714,3 +714,12 @@ Create Case
 - `/api/redteam/v2/runtime-readiness`는 `strict_live_readiness_promotion` artifact를 함께 반환하고, RedTeam2 panel은 `실측 승격 게이트`와 `승격 gate 결과`를 표시한다.
 - accepted gate manifest에는 `GATE-STRICT-LIVE-READINESS-PROMOTION`이 추가된다.
 - 전체 goal 완료 증거는 이 promotion gate가 통제 환경에서 `--allow-container --allow-network --require-promotion`으로 통과한 artifact가 붙을 때까지 여전히 부족하다.
+
+## 25. Slice 70 반영 사항
+
+- `고도화/sanity/redteam_ax_live_readiness_remediation_runbook.py`는 strict promotion blocker를 운영자 조치 단계로 변환한다.
+- 생성 산출물은 JSON과 Markdown 두 가지이며, 각 단계는 owner, blocker, 사람이 할 일, 검증 명령, 필요한 evidence, safety note를 포함한다.
+- 현재 runbook은 Docker daemon, WSL distro mount/start, OpenVAS/ZAP endpoint, OpenVAS/ZAP vault reference, 최종 promotion gate를 순서대로 다룬다.
+- `/api/redteam/v2/runtime-readiness`는 `live_readiness_remediation` artifact를 함께 반환하고, RedTeam2 panel은 `조치 runbook`과 `남은 조치 단계`를 표시한다.
+- accepted gate manifest에는 `GATE-LIVE-READINESS-REMEDIATION-RUNBOOK`이 추가된다.
+- 이 slice는 blocker 해소를 자동 수행하지 않는다. 사람이 ROE/HITL 범위에서 수행할 수 있도록 검증 명령과 evidence 요구사항을 명시하는 운영 runbook slice다.

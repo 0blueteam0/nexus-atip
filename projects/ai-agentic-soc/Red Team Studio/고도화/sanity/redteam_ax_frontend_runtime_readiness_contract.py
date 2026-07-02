@@ -56,6 +56,8 @@ def main() -> int:
         "WSL 배포판",
         "실측 승격 게이트",
         "승격 gate 결과",
+        "조치 runbook",
+        "남은 조치 단계",
         "조직 OpenVAS/ZAP read-only report endpoint",
         "외부 vault reference",
         "실서비스 가져오기",
@@ -73,6 +75,7 @@ def main() -> int:
         "external_scanner_service_import_live",
         "wsl_runtime",
         "strict_live_readiness_promotion",
+        "live_readiness_remediation",
         "상태 조회 API는 Docker나 scanner를 실행하지 않음",
         "항상 아니오 유지",
     ]

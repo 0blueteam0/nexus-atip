@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1101,
-  "korean_literal_count": 931,
+  "literal_count": 1109,
+  "korean_literal_count": 939,
   "english_only_literal_count": 166,
-  "english_only_literal_ratio": 0.1508,
+  "english_only_literal_ratio": 0.1497,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -77,9 +77,9 @@
     "WSL 실행 환경 준비됨",
     "실측 승격 게이트 차단",
     "실측 승격 준비 완료",
-    "설정됨 · 가져오기 실행 전",
-    "설정됨 · 네트워크 확인 전",
-    "설정 필요"
+    "운영자 조치 runbook 준비됨",
+    "승격 입력 준비됨",
+    "설정됨 · 가져오기 실행 전"
   ],
   "sample_english_only_literals": [
     "8px 9px",

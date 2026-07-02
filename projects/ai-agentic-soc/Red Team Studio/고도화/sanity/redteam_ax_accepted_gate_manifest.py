@@ -222,6 +222,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 180,
         },
         {
+            "gate_id": "GATE-LIVE-READINESS-REMEDIATION-RUNBOOK",
+            "name": "Live readiness remediation runbook artifact",
+            "category": "live_readiness_remediation_runbook",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_live_readiness_remediation_runbook.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -244,6 +252,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_wsl_runtime_readiness.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_live_readiness_remediation_runbook.py",
             ],
             "timeout_seconds": 60,
         },

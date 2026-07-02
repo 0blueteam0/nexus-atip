@@ -1337,3 +1337,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API projection test, frontend runtime readiness contract, Korean copy inventory에 strict promotion 앵커 추가
 - [x] accepted gate manifest에 `GATE-STRICT-LIVE-READINESS-PROMOTION` 추가
 - [ ] Docker, WSL, 조직 OpenVAS/ZAP endpoint/vault가 모두 준비된 통제 환경에서 `redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion` 통과
+
+## 78. Slice 70 Live Readiness Remediation Runbook 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_live_readiness_remediation_runbook.py` 추가
+- [x] strict promotion blocker를 Docker, WSL, OpenVAS/ZAP endpoint, OpenVAS/ZAP import, 최종 promotion 조치 단계로 변환
+- [x] JSON artifact와 Markdown runbook을 `archive/runs/redteam-ax-v2-live-readiness-remediation/`에 생성
+- [x] 각 단계는 owner, blocker, 사람이 할 일, 검증 명령, 필요한 evidence, 안전 메모를 포함
+- [x] `/api/redteam/v2/runtime-readiness`에 `live_readiness_remediation` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `조치 runbook`과 `남은 조치 단계` 표시
+- [x] API projection test, frontend runtime readiness contract, Korean copy inventory에 remediation runbook 앵커 추가
+- [x] accepted gate manifest에 `GATE-LIVE-READINESS-REMEDIATION-RUNBOOK` 추가
+- [ ] runbook의 모든 단계가 ready가 된 뒤 `--require-clear` 통과

@@ -2391,21 +2391,31 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         / "redteam-ax-v2-strict-live-readiness-promotion"
         / "latest_strict_live_readiness_promotion.json"
     )
+    remediation_artifact = read_readiness_artifact(
+        PROJECT_ROOT
+        / "archive"
+        / "runs"
+        / "redteam-ax-v2-live-readiness-remediation"
+        / "latest_live_readiness_remediation_runbook.json"
+    )
     container_data = container_artifact.get("data") or {}
     external_data = external_artifact.get("data") or {}
     service_import_data = service_import_artifact.get("data") or {}
     wsl_data = wsl_artifact.get("data") or {}
     promotion_data = promotion_artifact.get("data") or {}
+    remediation_data = remediation_artifact.get("data") or {}
     container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
     external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
     service_import_status = str(service_import_data.get("status") or service_import_artifact.get("status") or "unknown")
     wsl_status = str(wsl_data.get("status") or wsl_artifact.get("status") or "unknown")
     promotion_status = str(promotion_data.get("status") or promotion_artifact.get("status") or "unknown")
+    remediation_status = str(remediation_data.get("status") or remediation_artifact.get("status") or "unknown")
     container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
     external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
     service_import_ready = service_import_status in {"passed", "ready", "external_scanner_service_import_live_ready"}
     wsl_ready = wsl_status in {"passed", "ready", "wsl_runtime_ready"}
     promotion_ready = promotion_status in {"passed", "ready", "promotion_ready"}
+    remediation_ready = remediation_status in {"passed", "ready", "promotion_inputs_ready"}
     blockers: list[str] = []
     if not container_ready:
         blocker = (
@@ -2442,11 +2452,17 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.extend(f"strict_live_promotion:{item}" for item in promotion_blockers)
         else:
             blockers.append(f"strict_live_promotion:{promotion_status}")
+    if not remediation_ready:
+        blocked_step_count = remediation_data.get("blocked_step_count")
+        if blocked_step_count is not None:
+            blockers.append(f"live_readiness_remediation:{blocked_step_count}_blocked_steps")
+        else:
+            blockers.append(f"live_readiness_remediation:{remediation_status}")
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": (
             "ready"
-            if container_ready and external_ready and service_import_ready and wsl_ready and promotion_ready
+            if container_ready and external_ready and service_import_ready and wsl_ready and promotion_ready and remediation_ready
             else "blocked_runtime_or_external_readiness"
         ),
         "safe_by_default": True,
@@ -2458,12 +2474,14 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "external_scanner_service_import_live": service_import_artifact,
         "wsl_runtime": wsl_artifact,
         "strict_live_readiness_promotion": promotion_artifact,
+        "live_readiness_remediation": remediation_artifact,
         "blockers": blockers,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",
             "Repair or recreate the WSL distribution if the WSL readiness artifact reports a distro start or mount failure.",
             "Configure REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT and REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT for approved read-only imports.",
             "Store scanner credentials outside the app and reference them through an approved external vault reference.",
+            "Follow the live readiness remediation runbook before rerunning the strict promotion gate.",
             "Run the strict live readiness promotion gate with --require-promotion only in controlled validation after Docker, WSL, and organization endpoints are ready.",
             "Rerun container runtime and external scanner readiness sanity gates after the environment is prepared.",
         ],
