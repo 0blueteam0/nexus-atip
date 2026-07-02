@@ -254,6 +254,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 60,
         },
         {
+            "gate_id": "GATE-TOOL-RESULT-ANALYSIS-BRIEF",
+            "name": "Tool result LLM analysis brief artifact",
+            "category": "tool_result_analysis_brief",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_tool_result_analysis_brief.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-PY-COMPILE",
             "name": "Python compile check for changed RedTeam AX runtime and sanity modules",
             "category": "static_compile",
@@ -280,6 +288,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_collection_package.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_submission_validator.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_tool_result_analysis_brief.py",
             ],
             "timeout_seconds": 60,
         },

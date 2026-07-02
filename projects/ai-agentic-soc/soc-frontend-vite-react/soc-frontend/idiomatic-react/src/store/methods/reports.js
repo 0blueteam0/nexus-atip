@@ -4443,6 +4443,8 @@ export default {
     const operatorSubmission = operatorSubmissionArtifact.data || {};
     const operatorImportPlanArtifact = runtimeReadiness.operator_evidence_card_import_plan || {};
     const operatorImportPlan = operatorImportPlanArtifact.data || {};
+    const toolResultAnalysisArtifact = runtimeReadiness.tool_result_analysis_brief || {};
+    const toolResultAnalysis = toolResultAnalysisArtifact.data || {};
     const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
@@ -4524,6 +4526,8 @@ export default {
       awaiting_approved_operator_evidence:'승인된 운영자 증거 대기',
       evidence_card_import_partially_ready:'Evidence Card 일부 후보 준비',
       evidence_card_import_ready:'Evidence Card 후보 준비 완료',
+      tool_result_analysis_ready:'도구 결과 분석 준비 완료',
+      tool_result_analysis_needs_review:'도구 결과 분석 검토 필요',
       promotion_inputs_ready:'승격 입력 준비됨',
       configured_network_import_not_requested:'설정됨 · 가져오기 실행 전',
       configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
@@ -4721,6 +4725,9 @@ export default {
       ['승인된 제출 증거', `${operatorSubmission.approved_item_count ?? 0}/${operatorSubmission.expected_item_count ?? 5}개`, `${operatorSubmission.blocked_item_count ?? '-'}개 제출 항목 차단`],
       ['Evidence Card 후보 계획', koValue(operatorImportPlan.status || operatorImportPlanArtifact.status || '미확인'), operatorImportPlan.markdown_artifact_path || operatorImportPlanArtifact.path || 'latest_operator_evidence_card_import_plan.md'],
       ['Evidence Card 후보 수', `${operatorImportPlan.candidate_count ?? 0}개`, `${operatorImportPlan.blocked_item_count ?? '-'}개 항목이 아직 차단됨`],
+      ['도구 결과 LLM 분석 브리프', koValue(toolResultAnalysis.status || toolResultAnalysisArtifact.status || '미확인'), toolResultAnalysisArtifact.path || 'latest_tool_result_analysis_brief.json'],
+      ['분석 가능한 도구 근거', `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개`, `${toolResultAnalysis.summary?.blocked_tool_count ?? '-'}개 도구/조건은 차단 또는 보류`],
+      ['LLM 원시 출력 신뢰', koBool(toolResultAnalysis.llm_raw_tool_output_trusted ?? false), 'llm_raw_tool_output_trusted는 항상 아니오 유지'],
       ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
       ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
       ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.service_endpoint_fetch_executed ? '조직 endpoint에서 read-only report import 수행됨' : '기본값은 가져오기 미실행, 승인 후 --allow-network 필요'],
@@ -4792,6 +4799,20 @@ export default {
         item.source_item_id ? `원본: ${item.source_item_id}` : null,
         item.source_artifact_status ? `상태: ${item.source_artifact_status}` : null,
         item.source_sha256 ? `sha256: ${String(item.source_sha256).slice(0, 12)}...` : null,
+      ].filter(Boolean).join(' · '),
+    ]);
+    const toolResultEvidenceDefaultRows = [
+      ['분석 브리프 없음', '대기', '최신 도구 실행/정규화/Evidence 산출물이 필요'],
+      ['LLM 역할', '초안 보조', '도구 재실행이나 Finding 확정은 할 수 없음'],
+      ['근거 충분성', '검토 필요', 'Evidence ID가 연결된 결과만 보고서 주장 후보로 사용'],
+    ];
+    const toolResultEvidenceRows = (toolResultAnalysis.evidence_pack || []).map(item => [
+      item.tool_label_ko || item.tool_id || '-',
+      item.evidence_id || '-',
+      [
+        item.result_id ? `정규화: ${item.result_id}` : null,
+        item.run_id ? `실행: ${item.run_id}` : null,
+        item.agent_id ? `에이전트: ${item.agent_id}` : null,
       ].filter(Boolean).join(' · '),
     ]);
     const toolGuideProfiles = {
@@ -5192,6 +5213,9 @@ export default {
             ['승인된 제출 증거', `${operatorSubmission.approved_item_count ?? 0}/${operatorSubmission.expected_item_count ?? 5}개`, operatorSubmission.status === 'operator_evidence_submitted_ready' ? C.green : C.amber, 'sha256/status/사람 승인 검증'],
             ['Evidence Card 후보 계획', koValue(operatorImportPlan.status || operatorImportPlanArtifact.status || '미확인'), operatorImportPlan.status === 'evidence_card_import_ready' ? C.green : C.amber, `${operatorImportPlan.candidate_count ?? 0}개 후보`],
             ['Evidence Card 후보 수', `${operatorImportPlan.candidate_count ?? 0}개`, operatorImportPlan.candidate_count ? C.green : C.amber, `${operatorImportPlan.blocked_item_count ?? '-'}개 항목 차단`],
+            ['도구 결과 분석 브리프', koValue(toolResultAnalysis.status || toolResultAnalysisArtifact.status || '미확인'), toolResultAnalysis.status === 'tool_result_analysis_ready' ? C.green : C.amber, `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개 근거`],
+            ['분석 가능한 도구 근거', `${toolResultAnalysis.summary?.supported_evidence_count ?? 0}개`, (toolResultAnalysis.summary?.supported_evidence_count ?? 0) ? C.green : C.amber, `${toolResultAnalysis.summary?.blocked_tool_count ?? '-'}개 차단/보류`],
+            ['LLM 분석 에이전트', `${(toolResultAnalysis.tool_agents || []).length}개`, (toolResultAnalysis.tool_agents || []).length ? C.green : C.amber, '도구별 결과 해석 보조'],
             ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
@@ -5222,6 +5246,11 @@ export default {
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
               '검증이 끝난 운영자 증거만 Evidence Card 후보 payload로 묶습니다. 이 단계는 Evidence Card를 자동 생성하지 않고 Claim-Evidence Matrix 연결 전 사람 검토를 요구합니다.'),
             this.renderTable(['Evidence 후보','상태','원본/status/hash'], operatorImportRows.length ? operatorImportRows : operatorImportDefaultRows)),
+          h('div', { style:{ display:'grid', gap:'6px' } },
+            h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '도구 결과 LLM 분석 브리프'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },
+              'Nuclei, Trivy, npm audit, OpenVAS, ZAP 결과를 한 묶음으로 정리합니다. LLM 에이전트는 근거 요약과 질문 초안만 만들며, 도구 재실행·능동 스캔·Finding 확정은 사람이 승인해야 합니다.'),
+            this.renderTable(['도구','Evidence ID','정규화/실행/에이전트'], toolResultEvidenceRows.length ? toolResultEvidenceRows : toolResultEvidenceDefaultRows)),
           (runtimeReadiness.operator_next_steps || []).length
             ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
                 (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))

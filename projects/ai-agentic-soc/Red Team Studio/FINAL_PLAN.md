@@ -1396,3 +1396,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend runtime readiness contract와 Korean copy inventory에 Evidence Card import plan anchor 추가
 - [x] accepted gate manifest에 `GATE-OPERATOR-EVIDENCE-CARD-IMPORT-PLAN` 추가
 - [ ] 승인된 운영자 제출 증거가 생긴 뒤 Evidence Card API로 후보를 실제 생성하고 사람 검토 통과
+
+## 83. Slice 75 Tool Result LLM Analysis Brief 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_tool_result_analysis_brief.py` 추가
+- [x] npm audit, Nuclei, Trivy, OpenVAS, OWASP ZAP 최신 governed 결과 artifact를 읽어 복합 분석 브리프 생성
+- [x] Evidence ID, normalized result ID, run ID가 있는 도구 결과만 `evidence_pack`으로 승격
+- [x] 차단된 OpenVAS/ZAP/Docker/endpoint 조건은 `blocked_items`로 분리하고 완료 증거로 오인하지 않음
+- [x] SCA-style sufficiency report와 Claim-Evidence Matrix 후보 claim 생성
+- [x] 도구별 LLM analyst agent는 요약/오탐 가능성/추가 질문/보고서 초안만 허용하고 도구 재실행, 능동 스캔, Finding 확정은 금지
+- [x] `/api/redteam/v2/runtime-readiness`에 `tool_result_analysis_brief` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `도구 결과 LLM 분석 브리프`, `분석 가능한 도구 근거`, `LLM 분석 에이전트` 표시
+- [x] frontend runtime readiness contract와 Korean copy inventory에 새 브리프 anchor 추가
+- [x] accepted gate manifest에 `GATE-TOOL-RESULT-ANALYSIS-BRIEF` 추가
+- [ ] 실제 운영 취약점 결과를 승인된 Evidence Card로 확정하고 Finding/Report claim에 연결

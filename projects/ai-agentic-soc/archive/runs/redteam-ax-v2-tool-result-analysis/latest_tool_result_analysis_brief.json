@@ -1,0 +1,348 @@
+{
+  "kind": "redteam_ax_tool_result_analysis_brief",
+  "created_at": "2026-07-02T13:15:56Z",
+  "status": "tool_result_analysis_ready",
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "llm_raw_tool_output_trusted": false,
+  "requires_human_validation": true,
+  "source_statuses": [
+    {
+      "source": "npm_audit",
+      "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
+      "exists": true,
+      "status": "passed",
+      "created_at": "2026-07-02T13:15:16Z"
+    },
+    {
+      "source": "nuclei_trivy",
+      "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
+      "exists": true,
+      "status": "passed",
+      "created_at": "2026-07-02T13:15:19Z"
+    },
+    {
+      "source": "openvas_zap_cli",
+      "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
+      "exists": true,
+      "status": "passed",
+      "created_at": "2026-07-02T13:15:42Z"
+    },
+    {
+      "source": "openvas_zap_service_import",
+      "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json",
+      "exists": true,
+      "status": "passed",
+      "created_at": "2026-07-02T13:15:50Z"
+    },
+    {
+      "source": "external_scanner_service_import_live",
+      "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-service-import-live/latest_external_scanner_service_import_live_smoke.json",
+      "exists": true,
+      "status": "blocked_external_scanner_import_not_ready",
+      "created_at": "2026-07-02T13:15:55Z"
+    }
+  ],
+  "summary": {
+    "executed_tool_count": 5,
+    "supported_evidence_count": 5,
+    "blocked_tool_count": 9,
+    "missing_evidence_link_count": 0
+  },
+  "sca_report": {
+    "sufficient": true,
+    "score": 0.9,
+    "decision_ko": "근거 패키지 검토 가능",
+    "missing_facts_ko": []
+  },
+  "tool_agents": [
+    {
+      "agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "task_ko": "npm audit 의존성 점검 결과를 Evidence Card 후보와 보고서 주장 후보로 검토",
+      "allowed_actions": [
+        "요약",
+        "오탐 가능성 표시",
+        "추가 확인 질문 생성",
+        "보고서 초안 문장 제안"
+      ],
+      "prohibited_actions": [
+        "도구 재실행",
+        "활성 스캔 실행",
+        "승인 없는 Finding 확정"
+      ]
+    },
+    {
+      "agent_id": "AGENT-NUCLEI-ANALYST-001",
+      "tool_id": "TOOL-NUCLEI-001",
+      "task_ko": "Nuclei 웹 취약점 템플릿 점검 결과를 Evidence Card 후보와 보고서 주장 후보로 검토",
+      "allowed_actions": [
+        "요약",
+        "오탐 가능성 표시",
+        "추가 확인 질문 생성",
+        "보고서 초안 문장 제안"
+      ],
+      "prohibited_actions": [
+        "도구 재실행",
+        "활성 스캔 실행",
+        "승인 없는 Finding 확정"
+      ]
+    },
+    {
+      "agent_id": "AGENT-TRIVY-ANALYST-001",
+      "tool_id": "TOOL-TRIVY-001",
+      "task_ko": "Trivy 컨테이너/의존성 점검 결과를 Evidence Card 후보와 보고서 주장 후보로 검토",
+      "allowed_actions": [
+        "요약",
+        "오탐 가능성 표시",
+        "추가 확인 질문 생성",
+        "보고서 초안 문장 제안"
+      ],
+      "prohibited_actions": [
+        "도구 재실행",
+        "활성 스캔 실행",
+        "승인 없는 Finding 확정"
+      ]
+    },
+    {
+      "agent_id": "AGENT-OPENVAS-ANALYST-001",
+      "tool_id": "TOOL-OPENVAS-001",
+      "task_ko": "OpenVAS 취약점 스캐너 결과를 Evidence Card 후보와 보고서 주장 후보로 검토",
+      "allowed_actions": [
+        "요약",
+        "오탐 가능성 표시",
+        "추가 확인 질문 생성",
+        "보고서 초안 문장 제안"
+      ],
+      "prohibited_actions": [
+        "도구 재실행",
+        "활성 스캔 실행",
+        "승인 없는 Finding 확정"
+      ]
+    },
+    {
+      "agent_id": "AGENT-ZAP-ANALYST-001",
+      "tool_id": "TOOL-ZAP-001",
+      "task_ko": "OWASP ZAP 웹 보안 점검 결과를 Evidence Card 후보와 보고서 주장 후보로 검토",
+      "allowed_actions": [
+        "요약",
+        "오탐 가능성 표시",
+        "추가 확인 질문 생성",
+        "보고서 초안 문장 제안"
+      ],
+      "prohibited_actions": [
+        "도구 재실행",
+        "활성 스캔 실행",
+        "승인 없는 Finding 확정"
+      ]
+    }
+  ],
+  "evidence_pack": [
+    {
+      "tool_id": "TOOL-NPM-AUDIT-001",
+      "tool_label_ko": "npm audit 의존성 점검",
+      "agent_id": "AGENT-NPM-AUDIT-ANALYST-001",
+      "source": "npm_audit",
+      "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
+      "status": "passed",
+      "run_id": "TRUN-77FE6F0A5B82",
+      "result_id": "NR-DC3B6E1FCB39",
+      "evidence_id": "EV-3F909D05B57E",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-77FE6F0A5B82.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-DC3B6E1FCB39.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-3F909D05B57E.json",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
+    },
+    {
+      "tool_id": "TOOL-NUCLEI-001",
+      "tool_label_ko": "Nuclei 웹 취약점 템플릿 점검",
+      "agent_id": "AGENT-NUCLEI-ANALYST-001",
+      "source": "nuclei_trivy",
+      "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
+      "status": "passed",
+      "run_id": "TRUN-F518066A571D",
+      "result_id": "NR-C201CD8C8C7B",
+      "evidence_id": "EV-A30D4FB6719E",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-F518066A571D.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-C201CD8C8C7B.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-A30D4FB6719E.json",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
+    },
+    {
+      "tool_id": "TOOL-TRIVY-001",
+      "tool_label_ko": "Trivy 컨테이너/의존성 점검",
+      "agent_id": "AGENT-TRIVY-ANALYST-001",
+      "source": "nuclei_trivy",
+      "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
+      "status": "passed",
+      "run_id": "TRUN-A31DA5082610",
+      "result_id": "NR-7C63E029DF06",
+      "evidence_id": "EV-870929768413",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-A31DA5082610.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-7C63E029DF06.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-870929768413.json",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
+    },
+    {
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_label_ko": "OpenVAS 취약점 스캐너",
+      "agent_id": "AGENT-OPENVAS-ANALYST-001",
+      "source": "openvas_zap_cli",
+      "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
+      "status": "passed",
+      "run_id": "TRUN-E77FB10BE35F",
+      "result_id": "NR-11BA199117E4",
+      "evidence_id": "EV-D7BD7B9A8973",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-E77FB10BE35F.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-11BA199117E4.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-D7BD7B9A8973.json",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
+    },
+    {
+      "tool_id": "TOOL-ZAP-001",
+      "tool_label_ko": "OWASP ZAP 웹 보안 점검",
+      "agent_id": "AGENT-ZAP-ANALYST-001",
+      "source": "openvas_zap_cli",
+      "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
+      "status": "passed",
+      "run_id": "TRUN-624E0E8A8CB0",
+      "result_id": "NR-1C666FD6FBDD",
+      "evidence_id": "EV-4C1D04FC83C9",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-624E0E8A8CB0.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-1C666FD6FBDD.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-4C1D04FC83C9.json",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true,
+      "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
+    }
+  ],
+  "blocked_items": [
+    {
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_label_ko": "OpenVAS 취약점 스캐너",
+      "agent_id": "AGENT-OPENVAS-ANALYST-001",
+      "source": "nuclei_trivy",
+      "status": "blocked_service_or_cli_not_installed",
+      "reason": "gvm-cli/OpenVAS service is not present in this Windows session; read-only credential contract remains proved separately.",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "TOOL-ZAP-001",
+      "tool_label_ko": "OWASP ZAP 웹 보안 점검",
+      "agent_id": "AGENT-ZAP-ANALYST-001",
+      "source": "nuclei_trivy",
+      "status": "blocked_service_or_cli_not_installed",
+      "reason": "zap-cli/ZAP daemon is not present in this Windows session; read-only credential contract remains proved separately.",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "DOCKER-CONTAINER-RUNTIME",
+      "tool_label_ko": "DOCKER-CONTAINER-RUNTIME",
+      "agent_id": "AGENT-TOOL-RESULT-ANALYST-001",
+      "source": "nuclei_trivy",
+      "status": "blocked_daemon_unavailable",
+      "reason": "Docker CLI is installed but Docker Desktop daemon reports unable to start.",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "TOOL-OPENVAS-001",
+      "tool_label_ko": "OpenVAS 취약점 스캐너",
+      "agent_id": "AGENT-OPENVAS-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "blocked",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "TOOL-ZAP-001",
+      "tool_label_ko": "OWASP ZAP 웹 보안 점검",
+      "agent_id": "AGENT-ZAP-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "blocked",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "OpenVAS",
+      "tool_label_ko": "OpenVAS",
+      "agent_id": "AGENT-TOOL-RESULT-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "OpenVAS",
+      "tool_label_ko": "OpenVAS",
+      "agent_id": "AGENT-TOOL-RESULT-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "REDTEAM_AX_OPENVAS_VAULT_REF_missing",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "OWASP ZAP",
+      "tool_label_ko": "OWASP ZAP",
+      "agent_id": "AGENT-TOOL-RESULT-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    },
+    {
+      "tool_id": "OWASP ZAP",
+      "tool_label_ko": "OWASP ZAP",
+      "agent_id": "AGENT-TOOL-RESULT-ANALYST-001",
+      "source": "external_scanner_service_import_live",
+      "status": "blocked",
+      "reason": "REDTEAM_AX_ZAP_VAULT_REF_missing",
+      "trusted_as_instruction": false,
+      "requires_human_validation": true
+    }
+  ],
+  "claim_evidence_matrix_candidates": [
+    {
+      "claim_id": "CLAIM-TOOL-RUN-GOVERNED",
+      "statement_ko": "승인된 도구 실행 흐름에서 일부 도구 결과가 정규화되었습니다.",
+      "supporting_evidence_ids": [
+        "EV-3F909D05B57E",
+        "EV-A30D4FB6719E",
+        "EV-870929768413",
+        "EV-D7BD7B9A8973",
+        "EV-4C1D04FC83C9"
+      ],
+      "support_level": "supported",
+      "requires_human_approval": true
+    },
+    {
+      "claim_id": "CLAIM-HIGH-RISK-SCANNERS-BLOCKED",
+      "statement_ko": "OpenVAS/ZAP 등 고위험 또는 외부 서비스 의존 도구는 준비 조건이 없으면 차단 상태로 남습니다.",
+      "supporting_sources": [
+        "nuclei_trivy",
+        "nuclei_trivy",
+        "external_scanner_service_import_live",
+        "external_scanner_service_import_live"
+      ],
+      "support_level": "supported",
+      "requires_human_approval": true
+    }
+  ]
+}

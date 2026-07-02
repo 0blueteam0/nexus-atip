@@ -765,3 +765,13 @@ Create Case
 - RedTeam2 runtime readiness panel은 `Evidence Card 후보 계획`, `Evidence Card 후보 수`, `Evidence Card 후보 import 계획` 표를 표시한다.
 - accepted gate manifest에는 `GATE-OPERATOR-EVIDENCE-CARD-IMPORT-PLAN`이 추가된다.
 - 이 slice는 운영자 증거를 Evidence Card/Claim-Evidence Matrix 흐름으로 잇는 planning lane이며, 실제 Evidence Card 생성/승인은 후속 운영 단계로 남긴다.
+
+## 30. Slice 75 반영 사항
+
+- `고도화/sanity/redteam_ax_tool_result_analysis_brief.py`는 npm audit, Nuclei, Trivy, OpenVAS, OWASP ZAP 관련 최신 governed artifact를 읽어 복합 분석 브리프를 만든다.
+- 브리프는 실행된 도구 결과 중 run/result/evidence ID가 있는 항목만 `evidence_pack`으로 묶고, 준비되지 않은 Docker/OpenVAS/ZAP 조건은 `blocked_items`로 따로 보관한다.
+- `sca_report`는 Agentic RAG의 충분성 판단 패턴을 따라 현재 근거로 보고서 주장 후보를 만들 수 있는지 보수적으로 표시한다.
+- `tool_agents`는 도구별 LLM analyst에게 허용된 보조 행동과 금지 행동을 명시한다. LLM은 도구 재실행, 능동 스캔, Finding 확정을 수행할 수 없다.
+- `/api/redteam/v2/runtime-readiness`는 `tool_result_analysis_brief` artifact를 함께 반환하고, RedTeam2 panel은 도구 결과 브리프와 분석 가능한 Evidence 수를 표시한다.
+- accepted gate manifest에는 `GATE-TOOL-RESULT-ANALYSIS-BRIEF`가 추가된다.
+- 이 slice는 여러 도구 결과를 Evidence/Claim 후보로 해석하는 분석 lane이며, 실제 취약점 Finding 확정과 보고서 claim 승인은 후속 HITL 단계로 남긴다.

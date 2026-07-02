@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 15 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 16 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -53,12 +53,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 공식 release checksum으로 검증한 portable Nuclei v3.10.0 및 Trivy v0.72.0 CLI의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - 격리 venv 기반 OpenVAS `gvm-cli` 및 OWASP ZAP `zap-cli` wrapper의 governed runner live smoke, sanitizer, agent normalization, Evidence Card 생성
 - OpenVAS XML 및 OWASP ZAP JSON read-only service report import adapter smoke, tool-specific parser, sanitizer, Evidence Card 생성, secret material negative control
+- npm audit, Nuclei, Trivy, OpenVAS, OWASP ZAP 최신 governed 결과를 Evidence pack, SCA-style sufficiency report, Claim-Evidence Matrix 후보, LLM analyst agent 제한으로 묶은 tool result analysis brief
 - OpenVAS/ZAP 외부 vault reference 기반 read-only credential authorization API와 한국어 UI
 - RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 한국어 패널과 frontend service import contract sanity
 - `/api/redteam/v2/runtime-readiness` read-only API와 RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 한국어 패널, 운영자 조치 runbook 단계 표, 운영자 증거 수집/제출 검증/Evidence Card 후보 import 계획 표
 - 조직 OpenVAS/ZAP endpoint/vault env가 준비되면 backend credential authorization과 scanner-service-import API를 통해 실제 read-only import를 수행하는 live harness
 - 외부 OpenVAS/ZAP read-only endpoint/vault reference readiness artifact, Docker daemon blocker artifact, WSL 배포판 시작 blocker artifact, strict live readiness promotion blocker artifact, live readiness remediation runbook artifact, operator evidence collection package artifact, operator evidence submission validation artifact, operator Evidence Card import plan artifact
-- 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, frontend runtime readiness contract, external scanner readiness, external scanner service import live harness, WSL runtime readiness, strict live readiness promotion, live readiness remediation runbook, operator evidence collection package, operator evidence submission validation, operator Evidence Card import plan, Python compile, frontend JS check, frontend build 통과
+- 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, frontend runtime readiness contract, external scanner readiness, external scanner service import live harness, WSL runtime readiness, strict live readiness promotion, live readiness remediation runbook, operator evidence collection package, operator evidence submission validation, operator Evidence Card import plan, tool result analysis brief, Python compile, frontend JS check, frontend build 통과
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
 - LLM wiki의 Red Team Studio manifest, ChatShare, previous work index 연결
@@ -72,6 +73,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `redteam_ax_operator_evidence_collection_package.py --require-inputs-ready` 통과 증거
 - `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved` 통과 증거
 - 승인된 운영자 제출 증거에서 생성된 Evidence Card 후보를 실제 Evidence Card API로 등록하고 사람 검토를 통과한 증거
+- tool result analysis brief의 Claim-Evidence 후보를 실제 Finding/Report claim으로 승인 연결한 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness/import blocker artifact만 존재한다.
 - RedTeam2 runtime readiness panel은 blocker를 보여주는 visibility 증거이며, blocker가 모두 ready로 바뀐 운영 실측 증거는 아직 아니다.
 

@@ -4,7 +4,7 @@
   "task": "RedTeam AX next tool execution evidence analysis slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260702-220538-Red-Team-Studio-RedTeam-AX-next-tool-execution-evidence-analysis-slice",
   "created_at": "2026-07-02T22:05:38+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-02T22:17:49+09:00"
+  ]
 }
