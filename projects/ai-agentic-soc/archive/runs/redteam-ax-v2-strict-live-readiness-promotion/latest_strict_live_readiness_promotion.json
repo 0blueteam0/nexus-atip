@@ -1,0 +1,103 @@
+{
+  "kind": "redteam_ax_strict_live_readiness_promotion",
+  "created_at": "2026-07-02T08:26:53Z",
+  "status": "blocked_strict_live_readiness_promotion",
+  "safe_by_default": true,
+  "allow_container": false,
+  "allow_network": false,
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "promotion_gate_count": 4,
+  "passed_gate_count": 0,
+  "failed_gate_count": 4,
+  "gate_results": [
+    {
+      "gate_id": "PROMOTE-CONTAINER-RUNTIME-REAL",
+      "script": "redteam_ax_container_runtime_smoke.py",
+      "argv": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\Red Team Studio\\고도화\\sanity\\redteam_ax_container_runtime_smoke.py",
+        "--require-real"
+      ],
+      "exit_code": 2,
+      "status": "blocked_container_runtime_not_ready",
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json",
+      "blockers": [
+        "docker_daemon_unavailable_or_not_started"
+      ],
+      "stdout_excerpt": "{\"status\": \"blocked_container_runtime_not_ready\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json\", \"blockers\": [\"docker_daemon_unavailable_or_not_started\"]}\n",
+      "stderr_excerpt": "",
+      "timeout": false
+    },
+    {
+      "gate_id": "PROMOTE-WSL-RUNTIME-READY",
+      "script": "redteam_ax_wsl_runtime_readiness.py",
+      "argv": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\Red Team Studio\\고도화\\sanity\\redteam_ax_wsl_runtime_readiness.py",
+        "--allow-start",
+        "--require-ready"
+      ],
+      "exit_code": 2,
+      "status": "blocked_wsl_distribution_start_failed",
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-wsl-runtime-readiness/latest_wsl_runtime_readiness.json",
+      "blockers": [
+        "wsl_distribution_start_failed"
+      ],
+      "stdout_excerpt": "{\"status\": \"blocked_wsl_distribution_start_failed\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-wsl-runtime-readiness/latest_wsl_runtime_readiness.json\", \"selected_distro\": \"Ubuntu-22.04\", \"blockers\": [\"wsl_distribution_start_failed\"]}\n",
+      "stderr_excerpt": "",
+      "timeout": false
+    },
+    {
+      "gate_id": "PROMOTE-EXTERNAL-SCANNER-READINESS",
+      "script": "redteam_ax_external_scanner_service_readiness.py",
+      "argv": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\Red Team Studio\\고도화\\sanity\\redteam_ax_external_scanner_service_readiness.py",
+        "--require-ready"
+      ],
+      "exit_code": 2,
+      "status": "blocked_external_scanner_services_not_ready",
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-readiness/latest_external_scanner_service_readiness.json",
+      "blockers": [
+        "OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing",
+        "OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing"
+      ],
+      "stdout_excerpt": "{\"status\": \"blocked_external_scanner_services_not_ready\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-readiness/latest_external_scanner_service_readiness.json\", \"configured_count\": 0, \"ready_count\": 0, \"blockers\": {\"OpenVAS\": [\"REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing\"], \"OWASP ZAP\": [\"REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing\"]}}\n",
+      "stderr_excerpt": "",
+      "timeout": false
+    },
+    {
+      "gate_id": "PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE",
+      "script": "redteam_ax_external_scanner_service_import_live_smoke.py",
+      "argv": [
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Scripts\\python.exe",
+        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\Red Team Studio\\고도화\\sanity\\redteam_ax_external_scanner_service_import_live_smoke.py",
+        "--require-ready"
+      ],
+      "exit_code": 2,
+      "status": "blocked_external_scanner_import_not_ready",
+      "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-service-import-live/latest_external_scanner_service_import_live_smoke.json",
+      "blockers": [
+        "OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing",
+        "OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing"
+      ],
+      "stdout_excerpt": "{\"status\": \"blocked_external_scanner_import_not_ready\", \"artifact_path\": \"J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-service-import-live/latest_external_scanner_service_import_live_smoke.json\", \"service_endpoint_fetch_executed\": false, \"blockers\": {\"OpenVAS\": [\"REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing\", \"REDTEAM_AX_OPENVAS_VAULT_REF_missing\"], \"OWASP ZAP\": [\"REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing\", \"REDTEAM_AX_ZAP_VAULT_REF_missing\"]}, \"failed_tools\": []}\n",
+      "stderr_excerpt": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\.venv\\Lib\\site-packages\\fastapi\\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n",
+      "timeout": false
+    }
+  ],
+  "blockers": [
+    "PROMOTE-CONTAINER-RUNTIME-REAL:docker_daemon_unavailable_or_not_started",
+    "PROMOTE-WSL-RUNTIME-READY:wsl_distribution_start_failed",
+    "PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing",
+    "PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing"
+  ],
+  "operator_next_steps": [
+    "Run with --allow-container only after Docker daemon, pinned local image digest, and container runtime attestations are ready.",
+    "Run with --allow-network only after ROE approves read-only organization OpenVAS/ZAP endpoint checks.",
+    "Use --require-promotion in controlled release validation so any strict live readiness blocker returns non-zero."
+  ]
+}

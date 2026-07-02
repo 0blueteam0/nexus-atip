@@ -1324,3 +1324,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 `GATE-WSL-RUNTIME-READINESS` 추가
 - [ ] WSL 배포판 mount/start 오류 복구 후 `redteam_ax_wsl_runtime_readiness.py --allow-start --require-ready` 통과
 - [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과
+
+## 77. Slice 69 Strict Live Readiness Promotion 체크리스트
+
+- [x] `고도화/sanity/redteam_ax_strict_live_readiness_promotion.py` 추가
+- [x] Docker real container smoke, WSL runtime ready, external scanner readiness, external scanner service import live를 하나의 promotion artifact로 rollup
+- [x] 기본 실행은 `--allow-container`, `--allow-network`, `--require-promotion` 없이 현재 blocker를 기록하고 회귀 suite를 실패시키지 않음
+- [x] 운영/릴리스 검증에서는 `--allow-container --allow-network --require-promotion`을 사용해 하나라도 실패하면 non-zero 종료
+- [x] 현재 blocker artifact를 `archive/runs/redteam-ax-v2-strict-live-readiness-promotion/latest_strict_live_readiness_promotion.json`에 기록
+- [x] `/api/redteam/v2/runtime-readiness`에 `strict_live_readiness_promotion` artifact 연결
+- [x] RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 패널에 `실측 승격 게이트`와 `승격 gate 결과` 표시
+- [x] API projection test, frontend runtime readiness contract, Korean copy inventory에 strict promotion 앵커 추가
+- [x] accepted gate manifest에 `GATE-STRICT-LIVE-READINESS-PROMOTION` 추가
+- [ ] Docker, WSL, 조직 OpenVAS/ZAP endpoint/vault가 모두 준비된 통제 환경에서 `redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion` 통과

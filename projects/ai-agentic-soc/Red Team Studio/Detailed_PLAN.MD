@@ -705,3 +705,12 @@ Create Case
 - `/api/redteam/v2/runtime-readiness`는 `wsl_runtime` artifact를 함께 반환하고, RedTeam2 runtime readiness panel은 `WSL 실행 환경`과 `WSL 배포판` 상태를 표시한다.
 - accepted gate manifest에는 `GATE-WSL-RUNTIME-READINESS`가 추가된다.
 - 이 slice는 WSL 실측 성공을 완료로 주장하지 않고, Docker daemon/WSL 배포판/조직 OpenVAS/ZAP endpoint blocker를 더 명확히 드러내는 visibility 및 evidence 개선이다.
+
+## 24. Slice 69 반영 사항
+
+- `고도화/sanity/redteam_ax_strict_live_readiness_promotion.py`는 최종 실측 승격 직전에 필요한 Docker real container smoke, WSL runtime ready, external scanner readiness, external scanner service import live gate를 하나로 묶는다.
+- 기본 실행은 safe-by-default다. 실제 컨테이너 실행은 `--allow-container`, 외부 endpoint 호출은 `--allow-network`, non-zero 승격 강제는 `--require-promotion`이 있을 때만 수행한다.
+- 현재 환경에서는 Docker daemon, WSL distro start, OpenVAS/ZAP endpoint/vault 설정이 모두 준비되지 않았으므로 `blocked_strict_live_readiness_promotion` artifact가 생성된다.
+- `/api/redteam/v2/runtime-readiness`는 `strict_live_readiness_promotion` artifact를 함께 반환하고, RedTeam2 panel은 `실측 승격 게이트`와 `승격 gate 결과`를 표시한다.
+- accepted gate manifest에는 `GATE-STRICT-LIVE-READINESS-PROMOTION`이 추가된다.
+- 전체 goal 완료 증거는 이 promotion gate가 통제 환경에서 `--allow-container --allow-network --require-promotion`으로 통과한 artifact가 붙을 때까지 여전히 부족하다.

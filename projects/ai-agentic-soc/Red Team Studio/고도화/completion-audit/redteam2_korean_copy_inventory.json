@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1090,
-  "korean_literal_count": 920,
+  "literal_count": 1101,
+  "korean_literal_count": 931,
   "english_only_literal_count": 166,
-  "english_only_literal_ratio": 0.1523,
+  "english_only_literal_ratio": 0.1508,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -18,7 +18,7 @@
     "Agentic RAG": 9,
     "SCA": 5,
     "Nuclei": 2,
-    "OpenVAS": 14,
+    "OpenVAS": 15,
     "Trivy": 2,
     "npm audit": 4,
     "OWASP ZAP": 4,
@@ -35,8 +35,8 @@
     "수동": 5,
     "업로드": 17,
     "증거": 19,
-    "차단": 35,
-    "필요": 54,
+    "차단": 36,
+    "필요": 57,
     "주의": 1
   },
   "sample_korean_literals": [
@@ -75,11 +75,11 @@
     "WSL 목록 확인됨 · 시작 확인 전",
     "WSL 준비됨 · 도구 경로 확인 필요",
     "WSL 실행 환경 준비됨",
+    "실측 승격 게이트 차단",
+    "실측 승격 준비 완료",
     "설정됨 · 가져오기 실행 전",
     "설정됨 · 네트워크 확인 전",
-    "설정 필요",
-    "컨테이너 실행 환경 준비됨",
-    "외부 스캐너 서비스 준비됨"
+    "설정 필요"
   ],
   "sample_english_only_literals": [
     "8px 9px",
