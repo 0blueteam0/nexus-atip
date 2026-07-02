@@ -160,6 +160,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - OperatingClosureSubmissionPackage
 - OperatingClosureHumanReview
 - ReviewedOperatingCloseExecution
+- ReviewedOperatingCloseEvidenceCertification
 - OperatingToolchainArtifactManifestE2EClosure
 - ToolResultAnalysisBrief
 - ToolResultFindingClaimReview
@@ -197,7 +198,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 19. 운영자가 scanner 산출물 폴더만 준비한 경우 먼저 `/api/redteam/v2/toolchains/operating-closure-submission-package`로 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 검증한다. 이 API는 기존 파일과 readiness artifact만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
 20. submission package가 준비되면 `/api/redteam/v2/toolchains/operating-closure-human-review`로 checklist, 승인자 서명, runtime blocker 처리 방침, `final_close_authorized`를 기록한다. 이 API는 승인된 close payload를 보존하지만 close 실행 자체는 하지 않는다.
 21. human review가 `ready_for_human_close_execution`이 된 뒤 `/api/redteam/v2/toolchains/execute-reviewed-operating-close`를 사용한다. 이 API는 human review의 `approved_close_api_payload`만 사용하고 override payload를 무시해 close-operating 우회를 막는다.
-22. reviewed close execution은 내부적으로 close-operating-artifact-manifest-e2e lane을 호출한다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 closure artifact가 필요하다.
+22. reviewed close execution은 내부적으로 close-operating-artifact-manifest-e2e lane을 호출한다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
+23. `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence`는 reviewed close 결과를 completion audit 후보로 인증한다. close/report/completion gate와 safe flags를 확인하고 실제 운영 산출물, 실제 승인자, non-fixture data, evidence retention, ROE/HITL attestation을 모두 요구한다. 이 API도 전체 goal을 완료 처리하지 않으며 final completion audit만 완료 판단을 할 수 있다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 certification artifact가 필요하다.
 
 ## 남은 작업
 
@@ -209,4 +211,4 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물이 imported-output, artifact manifest import, 또는 live service import 경로로 제출되고 collection 전체가 Matrix/report/export/completion gate를 통과한 증거
 - 실제 운영 scanner 산출물 collection을 close-e2e API로 닫고, Report v2 export와 completion gate complete=true를 확보한 증거
 - 실제 운영 scanner 산출물 폴더를 operating-closure-submission-package API로 검증하고 operating-closure-human-review API로 real approver signoff와 blocker/payload 검토를 기록한 증거
-- 실제 운영 scanner 산출물 폴더를 execute-reviewed-operating-close API로 닫고, 실제 승인자 identity, Report v2 export, completion gate complete=true를 확보한 증거
+- 실제 운영 scanner 산출물 폴더를 execute-reviewed-operating-close API로 닫고 certify-reviewed-operating-close-evidence API로 실제 승인자 identity, Report v2 export, completion gate complete=true, 실측 attestation을 확보한 증거

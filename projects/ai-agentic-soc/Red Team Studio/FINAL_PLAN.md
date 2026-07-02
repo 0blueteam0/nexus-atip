@@ -1646,3 +1646,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `검토 완료 운영 closure 실행` 버튼과 상태 row 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 reviewed close anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 submission package, human review, execute-reviewed-operating-close를 순서대로 실행해 운영 실측 증거 확보
+
+## 103. Slice 95 운영 closure 증거 인증 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence` API 추가
+- [x] reviewed close execution artifact가 complete가 아니면 인증 차단
+- [x] completion gate complete, report gate pass, blocker 0건을 검사
+- [x] 명령 실행/active scan/raw instruction trust 없음 safe flags를 검사
+- [x] real operator source_dir, real approver identities, non-fixture data, evidence retention, ROE/HITL review attestation 필수화
+- [x] attestation 누락 시 `certification_required`, 충족 시 `ready_for_completion_audit_review` 반환
+- [x] `does_not_mark_goal_complete=true`, `requires_final_completion_audit=true`로 전체 goal 완료 판단과 분리
+- [x] controlled/test-like source warning 기록
+- [x] regression test가 attestation 누락 차단과 completion audit 후보 생성을 검증
+- [x] RedTeam2 UI에 `운영 closure 증거 인증` 버튼과 증거/attestation 표 추가
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 certification을 생성하고 독립 completion audit에서 goal 완료 여부 검증

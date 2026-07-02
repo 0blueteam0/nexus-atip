@@ -315,6 +315,11 @@ def execute_reviewed_operating_toolchain_close(payload: dict[str, Any]) -> dict[
     return redteam_v2_models.execute_reviewed_operating_toolchain_close(payload)
 
 
+@router.post("/toolchains/certify-reviewed-operating-close-evidence")
+def certify_reviewed_operating_close_evidence(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.certify_reviewed_operating_close_evidence(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

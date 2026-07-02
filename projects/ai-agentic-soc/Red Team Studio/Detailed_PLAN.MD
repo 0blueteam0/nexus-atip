@@ -958,3 +958,14 @@ Create Case
 - RedTeam2 UI는 `검토 완료 운영 closure 실행` 버튼과 E2E 상태 row를 추가했다.
 - regression test는 review 누락/incomplete review 차단, complete review 기반 `reviewed_operating_close_complete`, override payload 무시, 안전 플래그 유지를 검증한다.
 - 이 slice는 reviewed close 실행 경로를 통제하지만, 실제 조직 산출물 폴더와 실제 승인자로 실행한 운영 실측 증거는 아직 필요하다.
+
+## 50. Slice 95 반영 사항
+
+- `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence`는 reviewed close 실행 결과를 completion audit 후보로 인증하는 API다.
+- API는 reviewed close complete, completion gate complete, report gate pass 및 blocker 0건, 명령 실행/active scan 없음 safe flags를 검사한다.
+- 또한 `real_operator_source_dir`, `real_approver_identities`, `no_controlled_fixture_data`, `evidence_retention_confirmed`, `roe_hitl_review_confirmed` attestation을 모두 요구한다.
+- attestation이 없으면 `certification_required`, 모두 있으면 `ready_for_completion_audit_review`를 반환하지만 `does_not_mark_goal_complete=true`, `requires_final_completion_audit=true`로 전체 goal 완료 판단과 분리한다.
+- controlled/test-like source가 감지되면 warning을 남겨 실제 조직 산출물 증거와 구분한다.
+- RedTeam2 UI는 `운영 closure 증거 인증` 버튼과 `운영 closure 증거 검사`, `운영 closure 실측 attestation` 표를 추가했다.
+- regression test는 attestation 누락 차단, 전체 attestation 충족 시 completion audit 후보 생성, controlled source warning, 안전 플래그 유지를 검증한다.
+- 이 slice는 최종 완료 감사 후보 패키지를 만들지만, 실제 조직 산출물과 실제 승인자의 사실성 검토는 여전히 별도 completion audit에서 필요하다.

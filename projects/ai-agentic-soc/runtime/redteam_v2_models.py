@@ -2936,6 +2936,123 @@ def execute_reviewed_operating_toolchain_close(payload: dict[str, Any]) -> dict[
     return result
 
 
+def certify_reviewed_operating_close_evidence(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    execution = payload.get("reviewed_close_execution") if isinstance(payload.get("reviewed_close_execution"), dict) else None
+    execution_id = str(payload.get("execution_id") or (execution or {}).get("execution_id") or "").strip()
+    if execution is None and execution_id:
+        execution = load_json_record(execution_id, "toolchain-reviewed-operating-close-executions", case_id=case_id)
+    execution = execution or {}
+    attestation = payload.get("operator_attestation") if isinstance(payload.get("operator_attestation"), dict) else {}
+    certifier = str(payload.get("certified_by") or payload.get("reviewed_by") or "").strip()
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if not execution:
+        errors.append("reviewed_close_execution_required")
+    if execution and execution.get("kind") != "redteam_ax_v2_reviewed_operating_close_execution":
+        errors.append("invalid_reviewed_close_execution_kind")
+    if execution and not execution.get("complete"):
+        errors.append("reviewed_close_execution_not_complete")
+    if not certifier:
+        errors.append("certified_by_required")
+
+    close_result = execution.get("close_result") if isinstance(execution.get("close_result"), dict) else {}
+    close_completion_gate = ((close_result.get("closure") or {}).get("completion_gate") or {}) if isinstance(close_result.get("closure"), dict) else {}
+    report_gate = (((close_result.get("closure") or {}).get("report_draft") or {}).get("report") or {}) if isinstance(close_result.get("closure"), dict) else {}
+    evidence_checks = [
+        {
+            "field": "reviewed_close_complete",
+            "title_ko": "검토 완료 closure 실행 완료",
+            "status": "passed" if execution.get("complete") else "blocked",
+            "evidence": execution.get("execution_id") or execution_id or "missing_execution",
+        },
+        {
+            "field": "completion_gate_complete",
+            "title_ko": "completion gate 완료",
+            "status": "passed" if close_completion_gate.get("complete") else "blocked",
+            "evidence": close_completion_gate.get("gate_id") or "completion_gate_missing",
+        },
+        {
+            "field": "report_gate_zero_blockers",
+            "title_ko": "보고서 gate blocker 0건",
+            "status": "passed" if (report_gate.get("gate_status") == "pass" and not report_gate.get("blocking_items")) else "blocked",
+            "evidence": f"gate={report_gate.get('gate_status') or 'missing'} blockers={len(report_gate.get('blocking_items') or [])}",
+        },
+        {
+            "field": "safe_flags",
+            "title_ko": "명령 실행/active scan 없음",
+            "status": "passed" if not execution.get("commands_executed_by_api") and not execution.get("active_scan_executed") and not execution.get("trusted_as_instruction") else "blocked",
+            "evidence": "commands=false active_scan=false trusted_as_instruction=false",
+        },
+    ]
+    for item in evidence_checks:
+        if item["status"] != "passed":
+            errors.append(f"{item['field']}_required")
+
+    required_attestations = [
+        ("real_operator_source_dir", "실제 운영 scanner 산출물 폴더 사용"),
+        ("real_approver_identities", "실제 승인자 identity 사용"),
+        ("no_controlled_fixture_data", "controlled fixture/test data가 아님"),
+        ("evidence_retention_confirmed", "Evidence/Report/export 산출물 보존 확인"),
+        ("roe_hitl_review_confirmed", "ROE/HITL 검토 완료"),
+    ]
+    attestation_rows: list[dict[str, Any]] = []
+    for field, title_ko in required_attestations:
+        checked = bool(attestation.get(field) is True or payload.get(field) is True)
+        attestation_rows.append({
+            "field": field,
+            "title_ko": title_ko,
+            "status": "attested" if checked else "missing",
+            "required": True,
+        })
+        if not checked:
+            errors.append(f"{field}_attestation_required")
+
+    source_dir = ((execution.get("approved_close_api_payload_used") or {}).get("source_dir") or (close_result or {}).get("source_dir") or "")
+    source_dir_lower = str(source_dir).lower()
+    case_id_lower = str(case_id).lower()
+    if "case-v2-" in case_id_lower or "fixture" in source_dir_lower or "operator-scanner-outputs" in source_dir_lower:
+        warnings.append("controlled_or_test_like_source_detected")
+
+    ready_for_completion_audit = not errors
+    certification_id = stable_id("OCCERT", [case_id, execution_id or execution.get("execution_id"), certifier, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_reviewed_operating_close_evidence_certification",
+        "certification_id": certification_id,
+        "execution_id": execution_id or execution.get("execution_id"),
+        "review_id": execution.get("review_id"),
+        "package_id": execution.get("package_id"),
+        "case_id": case_id,
+        "toolchain_id": execution.get("toolchain_id"),
+        "status": "ready_for_completion_audit_review" if ready_for_completion_audit else "certification_required",
+        "ready_for_completion_audit_review": ready_for_completion_audit,
+        "certified_by": certifier or None,
+        "source_dir": source_dir or None,
+        "evidence_checks": evidence_checks,
+        "operator_attestation": attestation_rows,
+        "report_gate_snapshot": report_gate,
+        "completion_gate_snapshot": close_completion_gate,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "requires_final_completion_audit": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "certification_required이면 누락된 실측 attestation과 completion/report gate 증거를 보완합니다.",
+            "ready_for_completion_audit_review 상태여도 전체 goal 완료는 별도 completion audit에서만 판단합니다.",
+            "controlled_or_test_like_source_detected 경고가 있으면 실제 조직 산출물 증거로 사용할 수 없습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-reviewed-operating-close-evidence-certifications", certification_id)
+    return result
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()

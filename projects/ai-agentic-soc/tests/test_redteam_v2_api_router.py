@@ -2349,6 +2349,101 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["refuses_payload_override"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_certify_reviewed_operating_close_evidence_requires_real_attestation(self) -> None:
+        case_id = f"CASE-V2-REVIEWED-CLOSE-CERT-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "cert-nuclei.jsonl": '{"template-id":"cert-panel","info":{"name":"Cert panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "cert-openvas.xml": "<report><results><result><id>cert-openvas</id><name>Cert OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.43</host><port>443/tcp</port></result></results></report>",
+            "cert-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-CERT-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "cert-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-CERT-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "cert-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-CERT-NPM"}]}}}',
+            "cert-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Cert ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        package = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-REVIEWED-CLOSE-CERT-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        }).json()
+        review = self.client.post("/api/redteam/v2/toolchains/operating-closure-human-review", json={
+            "case_id": case_id,
+            "package_id": package["package_id"],
+            "reviewed_by": "lead@example.com",
+            "runtime_blocker_disposition": "accepted",
+            "final_close_authorized": True,
+            "checklist": {
+                "source_dir_verified": True,
+                "manifest_reviewed": True,
+                "approvers_verified": True,
+                "runtime_blockers_reviewed": True,
+                "close_payload_reviewed": True,
+                "no_scanner_execution_confirmed": True,
+            },
+            "approver_signoffs": {
+                "reviewed_by": "lead@example.com",
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+                "export_approver": "executive-sponsor@example.com",
+            },
+        }).json()
+        execution = self.client.post("/api/redteam/v2/toolchains/execute-reviewed-operating-close", json={
+            "case_id": case_id,
+            "review_id": review["review_id"],
+            "requested_by": "operator@example.com",
+        }).json()
+        self.assertTrue(execution["complete"])
+
+        missing = self.client.post("/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence", json={
+            "case_id": case_id,
+            "execution_id": execution["execution_id"],
+            "certified_by": "lead@example.com",
+        })
+        self.assertEqual(missing.status_code, 200)
+        missing_body = missing.json()
+        self.assertEqual(missing_body["kind"], "redteam_ax_v2_reviewed_operating_close_evidence_certification")
+        self.assertEqual(missing_body["status"], "certification_required")
+        self.assertFalse(missing_body["ready_for_completion_audit_review"])
+        self.assertIn("real_operator_source_dir_attestation_required", missing_body["errors"])
+        self.assertIn("no_controlled_fixture_data_attestation_required", missing_body["errors"])
+        self.assertFalse(missing_body["commands_executed_by_api"])
+        self.assertFalse(missing_body["active_scan_executed"])
+
+        ready = self.client.post("/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence", json={
+            "case_id": case_id,
+            "execution_id": execution["execution_id"],
+            "certified_by": "lead@example.com",
+            "operator_attestation": {
+                "real_operator_source_dir": True,
+                "real_approver_identities": True,
+                "no_controlled_fixture_data": True,
+                "evidence_retention_confirmed": True,
+                "roe_hitl_review_confirmed": True,
+            },
+        })
+        self.assertEqual(ready.status_code, 200)
+        body = ready.json()
+        self.assertEqual(body["status"], "ready_for_completion_audit_review")
+        self.assertTrue(body["ready_for_completion_audit_review"])
+        self.assertTrue(all(item["status"] == "passed" for item in body["evidence_checks"]))
+        self.assertTrue(all(item["status"] == "attested" for item in body["operator_attestation"]))
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        self.assertTrue(body["requires_final_completion_audit"])
+        self.assertIn("controlled_or_test_like_source_detected", body["warnings"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)
