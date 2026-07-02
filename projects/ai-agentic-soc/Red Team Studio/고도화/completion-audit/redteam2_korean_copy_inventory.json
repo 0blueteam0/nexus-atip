@@ -3,10 +3,10 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 1759,
-  "korean_literal_count": 1545,
+  "literal_count": 1776,
+  "korean_literal_count": 1562,
   "english_only_literal_count": 210,
-  "english_only_literal_ratio": 0.1194,
+  "english_only_literal_ratio": 0.1182,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
@@ -24,7 +24,7 @@
     "OWASP ZAP": 4,
     "Sanitizer": 8,
     "RBAC": 5,
-    "API": 70,
+    "API": 72,
     "ROE": 7
   },
   "beginner_signal_terms": {
@@ -35,8 +35,8 @@
     "수동": 5,
     "업로드": 17,
     "증거": 85,
-    "차단": 51,
-    "필요": 79,
+    "차단": 53,
+    "필요": 80,
     "주의": 1
   },
   "sample_korean_literals": [

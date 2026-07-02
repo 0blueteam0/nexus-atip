@@ -62,6 +62,19 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("tool_result_finding_claim_review", body)
         self.assertIsInstance(body["blockers"], list)
         self.assertGreaterEqual(len(body["operator_next_steps"]), 1)
+        self.assertIn("next_action_plan", body)
+        self.assertIsInstance(body["next_action_plan"], list)
+        self.assertGreaterEqual(len(body["next_action_plan"]), 5)
+        self.assertIn("blocked_action_count", body)
+        self.assertIn("tool_execution_blocked_by", body)
+        self.assertIn("tool_execution_ready", body)
+        for action in body["next_action_plan"]:
+            self.assertIn("step_id", action)
+            self.assertIn("title_ko", action)
+            self.assertIn(action["status"], {"ready", "blocked"})
+            self.assertIn("operator_action_ko", action)
+            self.assertIn("primary_api_or_command", action)
+            self.assertIn("blocks_tool_execution", action)
         for artifact in (
             body["container_runtime"],
             body["external_scanner_services"],

@@ -5601,8 +5601,17 @@ export default {
     ];
     const openvasReadiness = externalScannerTools.openvas || externalScannerTools['TOOL-OPENVAS-001'] || {};
     const zapReadiness = externalScannerTools.zap || externalScannerTools['TOOL-ZAP-001'] || {};
+    const runtimeNextActionRows = (runtimeReadiness.next_action_plan || []).map(item => [
+      item.title_ko || item.step_id || '-',
+      koValue(item.status || '미확인'),
+      item.operator_action_ko || '-',
+      item.blocks_tool_execution ? '도구 실행 전 해결 필요' : '진행 상황 확인',
+      item.primary_api_or_command || '-',
+    ]);
     const runtimeReadinessRows = [
       ['전체 상태', koValue(runtimeReadiness.status || '미확인'), (runtimeReadiness.blockers || []).join(', ') || '실측 조건 차단 없음'],
+      ['도구 실행 가능 여부', runtimeReadiness.tool_execution_ready ? '가능' : '차단됨', (runtimeReadiness.tool_execution_blocked_by || []).join(', ') || '실행 차단 단계 없음'],
+      ['남은 실행 준비 단계', `${runtimeReadiness.blocked_action_count ?? runtimeNextActionRows.filter(item => item[1] !== '준비 완료').length}개`, '아래 다음 실행 준비 단계 표를 순서대로 처리'],
       ['Docker Desktop daemon', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.blocker || containerRuntime.stderr || containerRuntime.status || 'Docker Desktop 상태 확인 필요'],
       ['컨테이너 smoke', koValue(containerRuntime.status || containerRuntimeArtifact.status || '미확인'), containerRuntime.artifact_path || containerRuntimeArtifact.path || 'latest_container_runtime_smoke.json'],
       ['WSL 실행 환경', koValue(wslRuntime.status || wslRuntimeArtifact.status || '미확인'), (wslRuntime.blockers || []).join(', ') || wslRuntime.selected_distro || 'Docker 대체/보조 실행 환경 readiness 증거'],
@@ -6334,6 +6343,7 @@ export default {
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
+          this.renderTable(['다음 실행 준비 단계','상태','사용자 조치','도구 실행 영향','확인 API/명령'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','runtime-readiness API가 다음 실행 준비 단계를 계산합니다','-','/api/redteam/v2/runtime-readiness']]),
           h('div', { style:{ display:'grid', gap:'6px' } },
             h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영자 조치 runbook 단계'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.55 } },

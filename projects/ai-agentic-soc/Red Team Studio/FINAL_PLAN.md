@@ -1769,3 +1769,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] scanner/Docker/WSL/network 명령은 실행하지 않고 기존 운영 산출물만 사용
 - [x] regression test가 ZAP 누락 폴더 차단과 6개 산출물 전체 닫기 성공을 검증
 - [ ] 실제 조직 산출물 폴더와 실제 승인자 4명으로 reviewed close, certification, completion audit review까지 완료
+
+## 113. Slice 105 런타임 다음 실행 준비 단계 체크리스트
+
+- [x] `/api/redteam/v2/runtime-readiness`에 `next_action_plan` 추가
+- [x] `blocked_action_count`, `tool_execution_blocked_by`, `tool_execution_ready`로 실제 도구 실행 가능 여부를 구조화
+- [x] 실행 환경, OpenVAS/ZAP 읽기 전용 연결, 운영 증거 제출, 도구 결과 분석, strict promotion 단계를 한국어 action plan으로 표시
+- [x] 각 단계에 `operator_action_ko`, `primary_api_or_command`, `blocks_tool_execution` 포함
+- [x] RedTeam2 UI에 `다음 실행 준비 단계` 표와 `도구 실행 가능 여부` row 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 새 anchor 반영
+- [x] regression test가 runtime-readiness action plan과 safe no-execution flags를 검증
+- [ ] 실제 Docker/WSL/OpenVAS/ZAP readiness와 실제 6개 도구 운영 실행을 통과해 action plan이 모두 ready가 되는 운영 실측 증거 확보

@@ -2553,6 +2553,79 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
             blockers.append(f"finding_claim_review:{held_candidate_count}_held_candidates")
         else:
             blockers.append(f"finding_claim_review:{finding_claim_review_status}")
+    next_action_plan = [
+        {
+            "step_id": "runtime_container_or_wsl",
+            "title_ko": "실행 환경 준비",
+            "status": "ready" if container_ready and wsl_ready else "blocked",
+            "operator_action_ko": (
+                "Docker/WSL 실행 환경이 준비되었습니다."
+                if container_ready and wsl_ready
+                else "Docker Desktop daemon과 WSL 배포판 상태를 먼저 준비하고 runtime readiness 산출물을 갱신합니다."
+            ),
+            "primary_api_or_command": "Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py",
+            "required_before_tool_execution": True,
+            "blocks_tool_execution": not (container_ready and wsl_ready),
+        },
+        {
+            "step_id": "external_scanner_readonly",
+            "title_ko": "OpenVAS/ZAP 읽기 전용 연결",
+            "status": "ready" if external_ready and service_import_ready else "blocked",
+            "operator_action_ko": (
+                "OpenVAS/ZAP 읽기 전용 endpoint와 가져오기 검증이 준비되었습니다."
+                if external_ready and service_import_ready
+                else "OpenVAS/ZAP endpoint와 외부 vault reference를 설정한 뒤 read-only import smoke를 다시 실행합니다."
+            ),
+            "primary_api_or_command": "Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready",
+            "required_before_tool_execution": True,
+            "blocks_tool_execution": not (external_ready and service_import_ready),
+        },
+        {
+            "step_id": "operator_evidence_submission",
+            "title_ko": "운영 증거 제출",
+            "status": "ready" if operator_evidence_ready and operator_submission_ready and operator_import_plan_ready else "blocked",
+            "operator_action_ko": (
+                "운영자 증거 제출과 Evidence Card 후보 계획이 준비되었습니다."
+                if operator_evidence_ready and operator_submission_ready and operator_import_plan_ready
+                else "운영자가 Docker/WSL/OpenVAS/ZAP/promotion 증거를 제출하고 승인된 submission manifest와 Evidence Card 후보 계획을 만듭니다."
+            ),
+            "primary_api_or_command": "/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft",
+            "required_before_tool_execution": False,
+            "blocks_tool_execution": False,
+        },
+        {
+            "step_id": "tool_result_analysis",
+            "title_ko": "도구 결과 분석",
+            "status": "ready" if tool_result_analysis_ready and finding_claim_review_ready else "blocked",
+            "operator_action_ko": (
+                "도구 결과 분석 브리프와 Finding/Claim 검토 패키지가 준비되었습니다."
+                if tool_result_analysis_ready and finding_claim_review_ready
+                else "저장된 도구 결과를 collect-results, Evidence 승인, Finding/Claim 검토 패키지까지 연결합니다."
+            ),
+            "primary_api_or_command": "/api/redteam/v2/toolchains/{toolchain_id}/collect-results",
+            "required_before_tool_execution": False,
+            "blocks_tool_execution": False,
+        },
+        {
+            "step_id": "strict_promotion",
+            "title_ko": "최종 실측 승격",
+            "status": "ready" if promotion_ready and remediation_ready else "blocked",
+            "operator_action_ko": (
+                "strict live readiness promotion이 준비되었습니다."
+                if promotion_ready and remediation_ready
+                else "조치 runbook의 차단 단계를 해결한 뒤 strict live readiness promotion을 통과시킵니다."
+            ),
+            "primary_api_or_command": "Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion",
+            "required_before_tool_execution": True,
+            "blocks_tool_execution": not (promotion_ready and remediation_ready),
+        },
+    ]
+    blocked_action_count = sum(1 for item in next_action_plan if item.get("status") != "ready")
+    tool_execution_blocked_by = [
+        item["step_id"]
+        for item in next_action_plan
+        if item.get("blocks_tool_execution")
+    ]
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": (
@@ -2588,6 +2661,10 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "tool_result_analysis_brief": tool_result_analysis_artifact,
         "tool_result_finding_claim_review": finding_claim_review_artifact,
         "blockers": blockers,
+        "next_action_plan": next_action_plan,
+        "blocked_action_count": blocked_action_count,
+        "tool_execution_blocked_by": tool_execution_blocked_by,
+        "tool_execution_ready": not tool_execution_blocked_by,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",
             "Repair or recreate the WSL distribution if the WSL readiness artifact reports a distro start or mount failure.",

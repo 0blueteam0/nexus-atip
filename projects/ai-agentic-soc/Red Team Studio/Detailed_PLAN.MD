@@ -1060,3 +1060,13 @@ Create Case
 - source_dir manifest builder 경로와 raw artifacts manifest 경로 모두 `tool_id` coverage를 검사하며, API는 여전히 scanner/Docker/WSL/network 명령을 실행하지 않는다.
 - regression test는 ZAP 산출물이 빠진 운영 폴더가 전체 닫기에서 차단되고, 6개 산출물이 모두 있는 폴더만 `tool_coverage_complete=true`로 Report v2 export/completion gate까지 닫히는지 검증한다.
 - 이 slice는 readiness를 우회해 전체 닫기 API에 직접 들어오는 경우를 줄이지만, 실제 조직 산출물과 실제 승인자 identity로 reviewed close/certification/completion audit을 통과한 운영 실측 증거는 아직 필요하다.
+
+## 60. Slice 105 반영 사항
+
+- `/api/redteam/v2/runtime-readiness` 응답에 `next_action_plan`, `blocked_action_count`, `tool_execution_blocked_by`, `tool_execution_ready`를 추가했다.
+- `next_action_plan`은 실행 환경 준비, OpenVAS/ZAP 읽기 전용 연결, 운영 증거 제출, 도구 결과 분석, 최종 실측 승격을 순서화한다.
+- 각 단계는 `title_ko`, `operator_action_ko`, `primary_api_or_command`, `blocks_tool_execution`을 포함해 초급 사용자가 어떤 조건 때문에 실제 도구 실행이 막히는지 바로 확인할 수 있게 한다.
+- RedTeam2 UI는 `도구 실행 가능 여부`, `남은 실행 준비 단계`, `다음 실행 준비 단계` 표를 추가하고, 도구 실행 전 해결 필요 여부와 확인 API/명령을 한국어로 표시한다.
+- regression test는 runtime-readiness 응답의 구조화된 action plan과 safe no-execution flags를 검증한다.
+- frontend runtime readiness contract와 Korean copy inventory에 새 anchor를 추가했다.
+- 이 slice는 실행 전 안내와 차단 사유를 명확히 하지만, Docker/WSL/OpenVAS/ZAP 실측 준비나 실제 6개 도구 실행 완료를 대신 증명하지 않는다.

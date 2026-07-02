@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 45,
+    "proved": 46,
     "partial": 1
   },
   "audit_items": [
@@ -780,6 +780,22 @@
       ],
       "proof_summary": "close_operating_toolchain_artifact_manifest_e2e now checks the same required six tool IDs as readiness, returns present/missing tool IDs and tool_coverage_complete, blocks with all_required_tool_artifacts_required before import/collection/close when a tool artifact is missing, and the regression test verifies a missing ZAP artifact is blocked while a full six-tool folder closes through report export and completion gate without executing scanner commands.",
       "next_action": "Run the same lane against real organization scanner artifacts and real approver identities, then certify and independently audit the reviewed operating close."
+    },
+    {
+      "id": "RTA-COMP-047",
+      "requirement": "Runtime readiness must expose a Korean next-action plan showing whether real tool execution is blocked and which operator action or API/command should be used next.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The runtime-readiness API returns next_action_plan, blocked_action_count, tool_execution_blocked_by, and tool_execution_ready while preserving no command execution and no active scan flags. RedTeam2 renders ?? ?? ?? ?? and ?? ?? ?? ?? with Korean operator actions, execution impact, and the confirming API/command. Regression and frontend contract tests assert the new fields and anchors.",
+      "residual_gap": "This improves execution readiness guidance and blocker visibility; it does not prove Docker/WSL/OpenVAS/ZAP are ready or that all real Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP runs completed.",
+      "next_action": "Use the action plan to resolve real runtime blockers, then run governed installed-tool or approved operator artifact flows and close Evidence/Finding/Matrix/Report/export gates."
     }
   ],
   "remaining_gaps": [
@@ -796,5 +812,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T04:40:22Z"
+  "last_updated": "2026-07-03T04:48:15Z"
 }

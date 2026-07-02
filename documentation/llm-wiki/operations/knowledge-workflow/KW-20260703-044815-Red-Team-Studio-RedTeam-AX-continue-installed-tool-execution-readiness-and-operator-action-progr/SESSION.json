@@ -4,7 +4,7 @@
   "task": "RedTeam AX continue installed tool execution readiness and operator action progress",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-044815-Red-Team-Studio-RedTeam-AX-continue-installed-tool-execution-readiness-and-operator-action-progr",
   "created_at": "2026-07-03T04:48:15+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T04:55:20+09:00"
+  ]
 }
