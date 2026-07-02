@@ -938,3 +938,13 @@ Create Case
 - RedTeam2 UI는 `운영 closure 제출 패키지 확인` 버튼과 `운영 closure 제출 항목`, `운영 closure 승인자` 표를 추가했다.
 - regression test는 승인자 누락 시 blocked, 6개 scanner fixture 폴더와 승인자 4명 입력 시 `ready_for_operating_close`와 close-operating payload 생성을 검증한다.
 - 이 slice는 실제 운영 closure 전 실수를 줄이는 준비 패키지를 제공하지만, 실제 조직 산출물 폴더와 실제 승인자로 close-operating API를 실행한 운영 실측 증거는 아직 필요하다.
+
+## 48. Slice 93 반영 사항
+
+- `/api/redteam/v2/toolchains/operating-closure-human-review`는 운영 closure 제출 패키지와 final close 실행 사이의 HITL 검토 record를 남긴다.
+- API는 제출 패키지를 `package_id`로 로드하거나 payload로 받아 checklist 6개, 승인자 서명 4개, runtime blocker 처리 방침, `final_close_authorized=true`를 모두 요구한다.
+- 준비가 끝나면 `ready_for_human_close_execution`과 `approved_close_api_payload`를 반환하지만, close API 실행은 별도 단계로 남긴다.
+- API는 scanner, Docker, WSL, network scan, shell expansion을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`, `requires_separate_close_execution=true`를 유지한다.
+- RedTeam2 UI는 `운영 closure 사람 검토 기록` 버튼과 `운영 closure 사람 검토`, `운영 closure 서명` 표를 추가했다.
+- regression test는 checklist/signoff/final authorization 누락 시 `review_required`, 모든 검토 항목 충족 시 `ready_for_human_close_execution`과 승인된 close payload 보존을 검증한다.
+- 이 slice는 실제 close 전 사람 검토 증적을 강화하지만, 실제 조직 scanner 산출물 폴더와 실제 승인자로 final close를 수행한 운영 실측 증거는 아직 필요하다.

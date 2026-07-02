@@ -1618,3 +1618,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영 closure 제출 패키지 확인` 버튼과 제출 항목/승인자 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 submission package anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 제출 패키지를 만들고, blocker 검토 후 close-operating API를 실행해 운영 실측 증거 확보
+
+## 101. Slice 93 운영 closure 사람 검토 기록 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/operating-closure-human-review` API 추가
+- [x] 제출 패키지 `package_id` 로드 또는 inline package 검토 지원
+- [x] source_dir, manifest, 승인자, runtime blocker, close payload, no-scanner-execution 체크리스트 6개 필수화
+- [x] Evidence 검토자, red_team_lead, business_owner, executive_sponsor 서명 4개가 제출 패키지 값과 일치해야 함
+- [x] runtime blocker가 있으면 `accepted`, `mitigated`, `deferred_with_owner` 처리 방침을 요구
+- [x] `final_close_authorized=true` 전에는 승인된 close payload를 반환하지 않음
+- [x] API는 scanner 명령, active scan, Docker/WSL/network 실행, shell expansion, raw output instruction 신뢰를 수행하지 않음
+- [x] regression test가 누락 검토 blocked와 완료 검토 `ready_for_human_close_execution`을 검증
+- [x] RedTeam2 UI에 `운영 closure 사람 검토 기록` 버튼과 검토/서명 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 human review anchor 반영
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 제출 패키지와 사람 검토 기록을 만든 뒤 close-operating API를 별도 HITL로 실행해 운영 실측 증거 확보

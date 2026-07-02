@@ -2728,6 +2728,141 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
     return result
 
 
+def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    package = payload.get("submission_package") if isinstance(payload.get("submission_package"), dict) else None
+    package_id = str(payload.get("package_id") or (package or {}).get("package_id") or "").strip()
+    if package is None and package_id:
+        package = load_json_record(package_id, "toolchain-operating-closure-submission-packages", case_id=case_id)
+    package = package or {}
+
+    reviewer = str(payload.get("reviewed_by") or payload.get("human_reviewer") or package.get("requested_by") or "").strip()
+    runtime_disposition = str(payload.get("runtime_blocker_disposition") or "").strip().lower()
+    if not runtime_disposition and not package.get("runtime_blockers"):
+        runtime_disposition = "none"
+    final_close_authorized = bool(payload.get("final_close_authorized") is True)
+    checklist_inputs = payload.get("checklist") if isinstance(payload.get("checklist"), dict) else {}
+    signoffs = payload.get("approver_signoffs") if isinstance(payload.get("approver_signoffs"), dict) else {}
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if not package:
+        errors.append("submission_package_required")
+    if package and package.get("kind") != "redteam_ax_v2_operating_closure_submission_package":
+        errors.append("invalid_submission_package_kind")
+    if package and not package.get("ready_for_operating_close"):
+        errors.append("submission_package_not_ready")
+    if not reviewer:
+        errors.append("human_reviewer_required")
+
+    runtime_blockers = package.get("runtime_blockers") or []
+    if runtime_blockers and runtime_disposition not in {"accepted", "mitigated", "deferred_with_owner"}:
+        errors.append("runtime_blocker_disposition_required")
+    if runtime_disposition == "deferred_with_owner" and not str(payload.get("runtime_blocker_owner") or "").strip():
+        errors.append("runtime_blocker_owner_required")
+
+    required_checklist = [
+        ("source_dir_verified", "운영 scanner 산출물 폴더가 승인 범위와 일치함"),
+        ("manifest_reviewed", "manifest builder의 도구별 산출물 수와 unmatched file을 확인함"),
+        ("approvers_verified", "승인자 4명 identity와 역할을 확인함"),
+        ("runtime_blockers_reviewed", "runtime blocker와 처리 방침을 검토함"),
+        ("close_payload_reviewed", "close-operating API payload를 검토함"),
+        ("no_scanner_execution_confirmed", "이 단계에서 scanner 명령이 실행되지 않음을 확인함"),
+    ]
+    checklist_rows: list[dict[str, Any]] = []
+    for field, title_ko in required_checklist:
+        checked = checklist_inputs.get(field)
+        if checked is None:
+            checked = payload.get(field)
+        checked = bool(checked is True)
+        checklist_rows.append({
+            "field": field,
+            "title_ko": title_ko,
+            "status": "checked" if checked else "missing",
+            "required": True,
+        })
+        if not checked:
+            errors.append(f"{field}_required")
+
+    package_approvers = {
+        item.get("field"): item.get("value")
+        for item in package.get("approver_checks", [])
+        if item.get("field")
+    }
+    approver_review_rows: list[dict[str, Any]] = []
+    for field, title_ko in [
+        ("reviewed_by", "Evidence 검토자"),
+        ("lead_approver", "레드팀 리드"),
+        ("business_owner_approver", "업무 소유자"),
+        ("export_approver", "최종 후원자"),
+    ]:
+        expected = str(package_approvers.get(field) or (package.get("close_api_payload") or {}).get(field) or "").strip()
+        signed = str(signoffs.get(field) or payload.get(field) or "").strip()
+        status = "signed" if expected and signed and expected.lower() == signed.lower() else "missing"
+        if expected and signed and expected.lower() != signed.lower():
+            status = "mismatch"
+            errors.append(f"{field}_signoff_mismatch")
+        elif not signed:
+            errors.append(f"{field}_signoff_required")
+        approver_review_rows.append({
+            "field": field,
+            "role_ko": title_ko,
+            "expected": expected or None,
+            "signed_by": signed or None,
+            "status": status,
+            "required": True,
+        })
+
+    if not final_close_authorized:
+        errors.append("final_close_authorized_required")
+
+    ready_for_execution = not errors
+    review_id = stable_id("OCREV", [
+        case_id,
+        package_id or package.get("package_id"),
+        reviewer,
+        runtime_disposition,
+        final_close_authorized,
+        now_utc(),
+    ])
+    result = {
+        "kind": "redteam_ax_v2_operating_closure_human_review",
+        "review_id": review_id,
+        "package_id": package_id or package.get("package_id"),
+        "case_id": case_id,
+        "toolchain_id": package.get("toolchain_id") or payload.get("toolchain_id"),
+        "status": "ready_for_human_close_execution" if ready_for_execution else "review_required",
+        "ready_for_human_close_execution": ready_for_execution,
+        "reviewed_by": reviewer or None,
+        "runtime_blocker_disposition": runtime_disposition or None,
+        "runtime_blocker_owner": str(payload.get("runtime_blocker_owner") or "").strip() or None,
+        "final_close_authorized": final_close_authorized,
+        "checklist": checklist_rows,
+        "approver_review": approver_review_rows,
+        "runtime_blockers": runtime_blockers,
+        "close_api": package.get("close_api") or "/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e",
+        "approved_close_api_payload": package.get("close_api_payload") if ready_for_execution else None,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_existing_operator_artifacts": True,
+        "requires_explicit_human_review": True,
+        "requires_separate_close_execution": True,
+        "warnings": warnings,
+        "errors": errors,
+        "next_human_actions_ko": [
+            "review_required이면 missing 또는 mismatch 항목을 먼저 보완합니다.",
+            "ready_for_human_close_execution 상태가 된 뒤에도 close API 실행은 별도 HITL 단계로 수행합니다.",
+            "approved_close_api_payload는 scanner 명령이 아니라 기존 운영 산출물 close 요청 payload입니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operating-closure-human-reviews", review_id)
+    return result
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()

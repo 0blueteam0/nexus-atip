@@ -2164,6 +2164,88 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_operating_closure_human_review_records_hitl_checklist_without_execution(self) -> None:
+        case_id = f"CASE-V2-OPERATING-CLOSURE-REVIEW-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "review-nuclei.jsonl": '{"template-id":"review-panel","info":{"name":"Review panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "review-openvas.xml": "<report><results><result><id>review-openvas</id><name>Review OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.41</host><port>443/tcp</port></result></results></report>",
+            "review-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-REVIEW-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "review-sbom-cyclonedx.json": '{"vulnerabilities":[{"id":"CVE-REVIEW-SCA","package":{"name":"example-lib"},"severity":"medium"}]}',
+            "review-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-REVIEW-NPM"}]}}}',
+            "review-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Review ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        package = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-REVIEW-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(package.status_code, 200)
+        package_body = package.json()
+        self.assertTrue(package_body["ready_for_operating_close"])
+
+        blocked = self.client.post("/api/redteam/v2/toolchains/operating-closure-human-review", json={
+            "case_id": case_id,
+            "package_id": package_body["package_id"],
+            "reviewed_by": "lead@example.com",
+            "source_dir_verified": True,
+        })
+        self.assertEqual(blocked.status_code, 200)
+        blocked_body = blocked.json()
+        self.assertEqual(blocked_body["kind"], "redteam_ax_v2_operating_closure_human_review")
+        self.assertEqual(blocked_body["status"], "review_required")
+        self.assertFalse(blocked_body["ready_for_human_close_execution"])
+        self.assertIn("manifest_reviewed_required", blocked_body["errors"])
+        self.assertIn("lead_approver_signoff_required", blocked_body["errors"])
+        self.assertIn("final_close_authorized_required", blocked_body["errors"])
+        self.assertFalse(blocked_body["commands_executed_by_api"])
+        self.assertFalse(blocked_body["active_scan_executed"])
+
+        ready = self.client.post("/api/redteam/v2/toolchains/operating-closure-human-review", json={
+            "case_id": case_id,
+            "package_id": package_body["package_id"],
+            "reviewed_by": "lead@example.com",
+            "runtime_blocker_disposition": "accepted",
+            "final_close_authorized": True,
+            "checklist": {
+                "source_dir_verified": True,
+                "manifest_reviewed": True,
+                "approvers_verified": True,
+                "runtime_blockers_reviewed": True,
+                "close_payload_reviewed": True,
+                "no_scanner_execution_confirmed": True,
+            },
+            "approver_signoffs": {
+                "reviewed_by": "lead@example.com",
+                "lead_approver": "lead@example.com",
+                "business_owner_approver": "business-owner@example.com",
+                "export_approver": "executive-sponsor@example.com",
+            },
+        })
+        self.assertEqual(ready.status_code, 200)
+        review = ready.json()
+        self.assertEqual(review["status"], "ready_for_human_close_execution")
+        self.assertTrue(review["ready_for_human_close_execution"])
+        self.assertEqual(review["approved_close_api_payload"]["source_dir"], source_dir.as_posix())
+        self.assertEqual(review["approved_close_api_payload"]["lead_approver"], "lead@example.com")
+        self.assertTrue(all(item["status"] == "checked" for item in review["checklist"]))
+        self.assertTrue(all(item["status"] == "signed" for item in review["approver_review"]))
+        self.assertFalse(review["commands_executed_by_api"])
+        self.assertFalse(review["active_scan_executed"])
+        self.assertFalse(review["shell_expansion_allowed"])
+        self.assertFalse(review["trusted_as_instruction"])
+        self.assertTrue(review["requires_separate_close_execution"])
+        self.assertTrue(Path(review["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)
