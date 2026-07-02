@@ -1280,3 +1280,18 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] accepted gate manifest에 `GATE-EXTERNAL-SCANNER-READINESS` 추가
 - [ ] `REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT`, `REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT`, `REDTEAM_AX_OPENVAS_VAULT_REF`, `REDTEAM_AX_ZAP_VAULT_REF`가 준비된 조직 환경에서 `--allow-network --require-ready` 실측 통과
 - [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과
+
+## 74. Slice 66 Runtime Readiness Frontend Visibility 체크리스트
+
+- [x] `/api/redteam/v2/runtime-readiness` read-only API 추가
+- [x] API는 최신 container runtime smoke와 external scanner readiness artifact를 읽어 현재 blocker를 반환
+- [x] API는 Docker, OpenVAS, ZAP, scanner command를 직접 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 유지
+- [x] RedTeam2 화면에 `실행 환경 준비도 / 남은 실측 조건` 패널 추가
+- [x] 패널은 Docker Desktop daemon, container smoke, OpenVAS endpoint, ZAP endpoint, network probe, external vault reference 상태를 표시
+- [x] 초급자용 문구로 실제 실행 버튼이 막히는 이유와 조직 OpenVAS/ZAP read-only report endpoint 준비 조건을 설명
+- [x] `tests/test_redteam_v2_api_router.py::test_runtime_readiness_status_is_read_only_artifact_projection` 추가
+- [x] `고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py` 추가
+- [x] Korean copy inventory에 런타임 준비도 앵커 추가
+- [x] accepted gate manifest에 `GATE-FRONTEND-RUNTIME-READINESS-CONTRACT` 추가
+- [ ] `REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT`, `REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT`, `REDTEAM_AX_OPENVAS_VAULT_REF`, `REDTEAM_AX_ZAP_VAULT_REF`가 준비된 조직 환경에서 `--allow-network --require-ready` 실측 통과
+- [ ] Docker daemon ready 후 `redteam_ax_container_runtime_smoke.py --allow-real --require-real` 실측 통과

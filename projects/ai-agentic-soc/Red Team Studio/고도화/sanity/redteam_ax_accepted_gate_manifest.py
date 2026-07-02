@@ -182,6 +182,14 @@ def accepted_gates() -> list[dict]:
             "timeout_seconds": 60,
         },
         {
+            "gate_id": "GATE-FRONTEND-RUNTIME-READINESS-CONTRACT",
+            "name": "Report Studio RedTeam2 runtime readiness frontend contract",
+            "category": "frontend_runtime_readiness_contract",
+            "cwd": REDTEAM_ROOT,
+            "command": [py, "고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py"],
+            "timeout_seconds": 60,
+        },
+        {
             "gate_id": "GATE-EXTERNAL-SCANNER-READINESS",
             "name": "External OpenVAS and ZAP read-only service readiness artifact",
             "category": "external_scanner_service_readiness",
@@ -206,6 +214,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
+                "Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_readiness.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_container_runtime_smoke.py",
             ],

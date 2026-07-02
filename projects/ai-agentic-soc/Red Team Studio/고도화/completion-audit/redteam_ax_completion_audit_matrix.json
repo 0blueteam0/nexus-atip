@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 14,
+    "proved": 15,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -25,9 +25,10 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py",
-        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py"
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py"
       ],
-      "proof_summary": "Tab registry exposes 레드팀 분석 and 레드팀 분석2; browser smoke checks reportStudio, redteamAnalysis, redteamAnalysis2, Korean body text, and RedTeam AX v2 markers. RedTeam2 now includes a read-only OpenVAS/ZAP service import panel wired to the v2 scanner-service-imports API.",
+      "proof_summary": "Tab registry exposes 레드팀 분석 and 레드팀 분석2; browser smoke checks reportStudio, redteamAnalysis, redteamAnalysis2, Korean body text, and RedTeam AX v2 markers. RedTeam2 includes read-only OpenVAS/ZAP service import and runtime readiness panels wired to v2 APIs.",
       "next_action": "Continue UI coverage only when new panels are added."
     },
     {
@@ -39,9 +40,10 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam2_korean_copy_inventory.json"
       ],
-      "proof_summary": "Recent slices localize ToolActionCard, scanner guidance, runner, sanitizer, visual evidence, file upload, RBAC, service import, role/severity/status displays and smoke validates koreanDisplayMapping. The static Korean visible-copy inventory now checks RedTeam2 panel literals, beginner guidance anchors including read-only service import copy, allowed technical terms, disallowed English-only execution phrases, and English-only ratio.",
+      "proof_summary": "Recent slices localize ToolActionCard, scanner guidance, runner, sanitizer, visual evidence, file upload, RBAC, service import, runtime readiness, role/severity/status displays and smoke validates koreanDisplayMapping. The static Korean visible-copy inventory now checks RedTeam2 panel literals, beginner guidance anchors including read-only service import and Docker/OpenVAS/ZAP runtime blocker copy, allowed technical terms, disallowed English-only execution phrases, and English-only ratio.",
       "next_action": "Run the RedTeam2 Korean copy inventory sanity when UI copy changes."
     },
     {
@@ -172,11 +174,12 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_plan_contract.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_readiness.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_accepted_gate_manifest.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json"
       ],
-      "proof_summary": "Accepted gate manifest now enumerates and executes the current full accepted gate set: v2 API regression, sample E2E/report gate with zero-count assertions, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, external scanner readiness, Python compile, frontend JS check, and frontend build. The latest manifest records 14 accepted gates, 14 passed, 0 failed.",
+      "proof_summary": "Accepted gate manifest now enumerates and executes the current full accepted gate set: v2 API regression, sample E2E/report gate with zero-count assertions, completion audit sanity, plan contract sanity, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, frontend runtime readiness contract, external scanner readiness, Python compile, frontend JS check, and frontend build. The latest manifest should record 15 accepted gates, 15 passed, 0 failed after this slice is run.",
       "next_action": "Keep this accepted gate manifest mandatory after future RedTeam AX code, UI, report, or audit changes."
     },
     {
@@ -216,6 +219,7 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_cli_live_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_openvas_zap_service_import_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_service_import_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_readiness.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_installed_tool_live_smoke.py",
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json",
@@ -227,7 +231,7 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
       ],
-      "proof_summary": "Installed npm audit, Nuclei, Trivy, OpenVAS gvm-cli, and OWASP ZAP CLI wrapper paths were exercised through the governed runner using low-risk metadata commands. Nuclei v3.10.0 and Trivy v0.72.0 were installed as checksum-verified portable official release binaries; OpenVAS/ZAP wrappers run from an isolated tools/redteam-ax venv via hash-pinned .cmd shims. Each passed ToolActionCard, ExecutionPlan, wrapper pin, execution token, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation. OpenVAS XML and ZAP JSON service report import now has a read-only endpoint adapter smoke using authorized external vault references, local HTTP report endpoints, sanitizer, tool-specific parser, agent normalization, Evidence Card creation, negative secret-material rejection, and a RedTeam2 frontend panel contract. Current Docker and external scanner readiness artifacts preserve the remaining blockers in machine-readable form.",
+      "proof_summary": "Installed npm audit, Nuclei, Trivy, OpenVAS gvm-cli, and OWASP ZAP CLI wrapper paths were exercised through the governed runner using low-risk metadata commands. Nuclei v3.10.0 and Trivy v0.72.0 were installed as checksum-verified portable official release binaries; OpenVAS/ZAP wrappers run from an isolated tools/redteam-ax venv via hash-pinned .cmd shims. Each passed ToolActionCard, ExecutionPlan, wrapper pin, execution token, child-process allowlist, shell=false execution, sanitizer, agent normalization, and Evidence Card creation. OpenVAS XML and ZAP JSON service report import has a read-only endpoint adapter smoke using authorized external vault references, local HTTP report endpoints, sanitizer, tool-specific parser, agent normalization, Evidence Card creation, negative secret-material rejection, and RedTeam2 frontend panels for import plus runtime readiness visibility. Current Docker and external scanner readiness artifacts preserve the remaining blockers in machine-readable form, and /api/redteam/v2/runtime-readiness exposes them without executing Docker or scanner commands.",
       "residual_gap": "Docker/container runtime live smoke is not successful in this environment because Docker CLI is installed but the daemon reports unable to start. OpenVAS/ZAP service import contract is proved against controlled local read-only endpoints; actual organization OpenVAS/ZAP read-only report endpoints and external vault refs are not configured in this environment.",
       "next_action": "When Docker daemon and organization OpenVAS/ZAP endpoints are available, run redteam_ax_container_runtime_smoke.py --allow-real --require-real and redteam_ax_external_scanner_service_readiness.py --allow-network --require-ready, then attach artifacts."
     },

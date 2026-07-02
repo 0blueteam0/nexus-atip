@@ -38,6 +38,26 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             "X-RedTeam-Session": f"dev:{actor}",
         }
 
+    def test_runtime_readiness_status_is_read_only_artifact_projection(self) -> None:
+        response = self.client.get("/api/redteam/v2/runtime-readiness")
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_runtime_readiness_status")
+        self.assertIn(body["status"], {"ready", "blocked_runtime_or_external_readiness"})
+        self.assertTrue(body["safe_by_default"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertIn("container_runtime", body)
+        self.assertIn("external_scanner_services", body)
+        self.assertIsInstance(body["blockers"], list)
+        self.assertGreaterEqual(len(body["operator_next_steps"]), 1)
+        for artifact in (body["container_runtime"], body["external_scanner_services"]):
+            self.assertIn("exists", artifact)
+            self.assertIn("path", artifact)
+            self.assertIn("status", artifact)
+            self.assertIn("data", artifact)
+
     def create_approved_evidence(self, case_id: str, evidence_id: str = "EV-APPROVED-1") -> dict:
         evidence = self.client.post("/api/redteam/v2/evidence", json={
             "case_id": case_id,

@@ -2345,6 +2345,78 @@ def truthy_env(name: str) -> bool:
     return os.environ.get(name, "").lower() in {"1", "true", "yes"}
 
 
+def read_readiness_artifact(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {
+            "exists": False,
+            "path": path.as_posix(),
+            "status": "missing",
+            "data": {},
+        }
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return {
+            "exists": True,
+            "path": path.as_posix(),
+            "status": "invalid_json",
+            "error": str(exc),
+            "data": {},
+        }
+    return {
+        "exists": True,
+        "path": path.as_posix(),
+        "status": data.get("status") or "unknown",
+        "data": data,
+    }
+
+
+def latest_runtime_readiness_status() -> dict[str, Any]:
+    container_artifact = read_readiness_artifact(
+        PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-runtime-smoke" / "latest_container_runtime_smoke.json"
+    )
+    external_artifact = read_readiness_artifact(
+        PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-external-scanner-readiness" / "latest_external_scanner_service_readiness.json"
+    )
+    container_data = container_artifact.get("data") or {}
+    external_data = external_artifact.get("data") or {}
+    container_status = str(container_data.get("status") or container_artifact.get("status") or "unknown")
+    external_status = str(external_data.get("status") or external_artifact.get("status") or "unknown")
+    container_ready = container_status in {"passed", "ready", "container_runtime_ready"}
+    external_ready = external_status in {"passed", "ready", "external_scanner_services_ready"}
+    blockers: list[str] = []
+    if not container_ready:
+        blocker = (
+            container_data.get("runtime_preflight", {}).get("blocker")
+            or container_data.get("blocker")
+            or container_status
+        )
+        blockers.append(f"container_runtime:{blocker}")
+    if not external_ready:
+        external_blockers = external_data.get("blockers") or []
+        if isinstance(external_blockers, list) and external_blockers:
+            blockers.extend(f"external_scanner:{item}" for item in external_blockers)
+        else:
+            blockers.append(f"external_scanner:{external_status}")
+    return {
+        "kind": "redteam_ax_v2_runtime_readiness_status",
+        "status": "ready" if container_ready and external_ready else "blocked_runtime_or_external_readiness",
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "container_runtime": container_artifact,
+        "external_scanner_services": external_artifact,
+        "blockers": blockers,
+        "operator_next_steps": [
+            "Start Docker Desktop and verify the Docker daemon before container smoke execution.",
+            "Configure REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT and REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT for approved read-only imports.",
+            "Store scanner credentials outside the app and reference them through an approved external vault reference.",
+            "Rerun container runtime and external scanner readiness sanity gates after the environment is prepared.",
+        ],
+    }
+
+
 def runner_isolation_readiness(payload: dict[str, Any] | None = None) -> dict[str, Any]:
     payload = payload or {}
     execution_mode = str(payload.get("execution_mode") or "sandbox_execute").strip()

@@ -270,6 +270,11 @@ def runner_isolation_readiness(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.runner_isolation_readiness(payload)
 
 
+@router.get("/runtime-readiness")
+def latest_runtime_readiness() -> dict[str, Any]:
+    return redteam_v2_models.latest_runtime_readiness_status()
+
+
 @router.post("/tool-actions/{action_id}/execute-governed")
 def governed_tool_execution(action_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.governed_tool_execution(action_id, payload)

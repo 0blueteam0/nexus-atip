@@ -3204,7 +3204,7 @@ export default {
       const credentialAuthUrl = caseId
         ? `http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations?case_id=${encodeURIComponent(caseId)}`
         : 'http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations';
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, credentialPoliciesRes, credentialAuthRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3217,6 +3217,7 @@ export default {
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-install-readiness'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-credential-policies'),
         this.redTeamFetchJson(credentialAuthUrl),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/runtime-readiness'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3234,6 +3235,7 @@ export default {
           installReadiness:installReadinessRes.ok ? installReadinessRes.data : { items:[], error:installReadinessRes.error },
           credentialPolicies:credentialPoliciesRes.ok ? credentialPoliciesRes.data : { items:[], error:credentialPoliciesRes.error },
           credentialAuthorizations:credentialAuthRes.ok ? credentialAuthRes.data : { items:[], error:credentialAuthRes.error },
+          runtimeReadiness:runtimeReadinessRes.ok ? runtimeReadinessRes.data : { status:'unavailable', error:runtimeReadinessRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -4422,6 +4424,12 @@ export default {
     const installReadiness = st.installReadiness || {};
     const credentialPolicies = st.credentialPolicies || {};
     const credentialAuthorizations = st.credentialAuthorizations || {};
+    const runtimeReadiness = st.runtimeReadiness || {};
+    const containerRuntimeArtifact = runtimeReadiness.container_runtime || {};
+    const containerRuntime = containerRuntimeArtifact.data || {};
+    const externalScannerArtifact = runtimeReadiness.external_scanner_services || {};
+    const externalScanner = externalScannerArtifact.data || {};
+    const externalScannerTools = externalScanner.tools || {};
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
     const installItems = installReadiness.items || [];
@@ -4480,6 +4488,13 @@ export default {
       revoked:'해제됨',
       pending:'대기',
       blocked:'차단됨',
+      blocked_runtime_or_external_readiness:'실측 조건 차단',
+      blocked_container_runtime_not_ready:'Docker 실행 환경 차단',
+      blocked_external_scanner_services_not_ready:'외부 스캐너 서비스 차단',
+      configured_network_probe_not_requested:'설정됨 · 네트워크 확인 전',
+      not_configured:'설정 필요',
+      container_runtime_ready:'컨테이너 실행 환경 준비됨',
+      external_scanner_services_ready:'외부 스캐너 서비스 준비됨',
       invalid:'무효',
       valid:'유효',
       stored:'저장됨',
@@ -4651,6 +4666,20 @@ export default {
       ['명령으로 신뢰 여부', koBool(serviceImportResult.trusted_as_instruction ?? false), '항상 아니오 유지'],
       ['Evidence', serviceImportEvidence.evidence_id || '-', serviceImportEvidence.approval_status || 'Evidence 후보'],
       ['파서', serviceImportNormalized.parser_report?.parser || '-', serviceImportNormalized.parser_report?.parsed_item_count != null ? `구조화 항목 ${serviceImportNormalized.parser_report.parsed_item_count}건` : '가져오기 후 정규화'],
+    ];
+    const openvasReadiness = externalScannerTools.openvas || externalScannerTools['TOOL-OPENVAS-001'] || {};
+    const zapReadiness = externalScannerTools.zap || externalScannerTools['TOOL-ZAP-001'] || {};
+    const runtimeReadinessRows = [
+      ['전체 상태', koValue(runtimeReadiness.status || '미확인'), (runtimeReadiness.blockers || []).join(', ') || '실측 조건 차단 없음'],
+      ['Docker Desktop daemon', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.blocker || containerRuntime.stderr || containerRuntime.status || 'Docker Desktop 상태 확인 필요'],
+      ['컨테이너 smoke', koValue(containerRuntime.status || containerRuntimeArtifact.status || '미확인'), containerRuntime.artifact_path || containerRuntimeArtifact.path || 'latest_container_runtime_smoke.json'],
+      ['OpenVAS endpoint', koValue(openvasReadiness.status || externalScanner.status || '미확인'), (openvasReadiness.blockers || []).join(', ') || openvasReadiness.endpoint_env || 'REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT 필요'],
+      ['ZAP endpoint', koValue(zapReadiness.status || externalScanner.status || '미확인'), (zapReadiness.blockers || []).join(', ') || zapReadiness.endpoint_env || 'REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT 필요'],
+      ['네트워크 probe', externalScanner.network_probe_allowed ? '허용됨' : '기본 차단', externalScanner.network_probe_allowed ? '관리자가 명시 허용한 경우만 확인' : '기본값은 외부 서비스 호출 없음'],
+      ['외부 vault reference', externalScanner.vault_reference_ready ? '준비됨' : '설정 필요', 'secret 값은 저장하지 않고 승인된 외부 vault reference만 사용'],
+      ['API 명령 실행', koBool(runtimeReadiness.commands_executed_by_api ?? false), '상태 조회 API는 Docker나 scanner를 실행하지 않음'],
+      ['능동 스캔 실행', koBool(runtimeReadiness.active_scan_executed ?? false), '항상 아니오여야 함'],
+      ['명령으로 신뢰 여부', koBool(runtimeReadiness.trusted_as_instruction ?? false), '항상 아니오 유지'],
     ];
     const toolGuideProfiles = {
       'TOOL-NUCLEI-001': {
@@ -5032,6 +5061,24 @@ export default {
           ].map(card)),
           this.renderTable(['서비스 결과','상태','근거'], serviceImportRows),
           serviceImportArtifact.storage_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `stored: ${serviceImportArtifact.storage_path}`) : null)),
+      smallPanel('실행 환경 준비도 / 남은 실측 조건',
+        h('div', { style:{ display:'grid', gap:'10px' } },
+          h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } },
+            '이 영역은 실제 실행 버튼이 막히는 이유를 보여줍니다. Docker Desktop daemon이 준비되어야 container smoke를 통과합니다. 조직 OpenVAS/ZAP read-only report endpoint와 외부 vault reference가 설정되어야 실서비스 가져오기를 검증합니다.'),
+          h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
+            ['런타임 준비', koValue(runtimeReadiness.status || '미확인'), runtimeReadiness.status === 'ready' ? C.green : C.amber, (runtimeReadiness.blockers || []).length ? `${(runtimeReadiness.blockers || []).length}개 차단 조건` : '차단 조건 없음'],
+            ['Docker Desktop', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.ready ? C.green : C.amber, containerRuntime.runtime_preflight?.blocker || containerRuntime.status || '상태 미확인'],
+            ['OpenVAS/ZAP', koValue(externalScanner.status || externalScannerArtifact.status || '미확인'), externalScanner.status === 'ready' ? C.green : C.amber, `${externalScanner.ready_count ?? 0}/${externalScanner.required_ready_count ?? 2} 준비`],
+            ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
+          ].map(card)),
+          h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+            h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
+            h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
+          this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
+          (runtimeReadiness.operator_next_steps || []).length
+            ? h('ul', { style:{ margin:'0 0 0 16px', padding:0, color:C.sec, fontSize:'10.5px', lineHeight:1.55 } },
+                (runtimeReadiness.operator_next_steps || []).map((step, idx) => h('li', { key:`runtime-next-${idx}` }, step)))
+            : null)),
       smallPanel('도구 실행 계획 / 샌드박스 정책',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } }, '실행 계획은 실제 실행 전에 위험도, 승인, 네트워크, 파일 쓰기 위치, 래퍼 신뢰, 실행 토큰을 한 번에 확인하는 단계입니다. PlanReady와 실행 토큰이 없으면 실행 버튼은 비활성화됩니다.'),

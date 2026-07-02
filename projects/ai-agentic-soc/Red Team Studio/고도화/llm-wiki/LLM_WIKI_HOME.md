@@ -67,6 +67,8 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 | OpenVAS/ZAP CLI live smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json` | 격리 venv 기반 `gvm-cli`/`zap-cli` shim을 governed runner로 실행하고 Evidence Card까지 연결 |
 | OpenVAS/ZAP service import smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json` | 승인된 read-only vault reference와 로컬 서비스 endpoint에서 OpenVAS XML/ZAP JSON report를 가져와 sanitizer, parser, Evidence Card까지 연결 |
 | RedTeam2 service import frontend contract | `../sanity/redteam_ax_frontend_service_import_contract.py` | `OpenVAS/ZAP 서비스 결과 가져오기` 패널이 read-only service import API를 호출하고 secret material 입력/전송 없이 Evidence 후보를 표시하는지 검증 |
+| Runtime readiness API | `/api/redteam/v2/runtime-readiness` | 최신 container runtime smoke와 external scanner readiness artifact를 read-only로 합쳐 Docker/OpenVAS/ZAP blocker와 operator next steps 반환 |
+| RedTeam2 runtime readiness frontend contract | `../sanity/redteam_ax_frontend_runtime_readiness_contract.py` | `실행 환경 준비도 / 남은 실측 조건` 패널이 runtime readiness API를 호출하고 read-only safety flag를 표시하는지 검증 |
 | External scanner readiness | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-readiness/latest_external_scanner_service_readiness.json` | 조직 OpenVAS/ZAP read-only endpoint/vault reference 준비도와 현재 blocker를 기계 판독 증거로 기록 |
 | Container runtime smoke | `J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-runtime-smoke/latest_container_runtime_smoke.json` | Docker/Podman real container smoke readiness와 Docker daemon blocker 증거 |
 | Credential authorization | `/api/redteam/v2/tool-credential-authorizations` | OpenVAS/ZAP 외부 vault reference만 승인하고 read-only scope, actor binding, secret material 금지를 검증 |
@@ -149,3 +151,4 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - Graph node/edge 후보 자동 생성
 - Docker/container runtime live smoke 성공 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
+- RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거

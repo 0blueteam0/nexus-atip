@@ -670,3 +670,15 @@ Create Case
 - accepted gate manifest에는 `GATE-EXTERNAL-SCANNER-READINESS`를 추가한다. 이 gate는 현재 환경의 not_configured/blocker 상태를 보존하지만 full goal 완료 증거로 쓰지 않는다.
 - Docker daemon은 재확인 결과 `Server:null` 및 `Docker Desktop is unable to start` 상태였고, `redteam_ax_container_runtime_smoke.py --allow-real --require-real`은 `blocked_container_runtime_not_ready` artifact를 갱신했다.
 - 이 slice는 남은 완료 조건을 더 명확하게 검증 가능한 readiness lane으로 만든 것이며, 실제 조직 endpoint와 Docker daemon 준비 후 실측 smoke가 여전히 필요하다.
+
+## 21. Slice 66 반영 사항
+
+- `/api/redteam/v2/runtime-readiness`는 최신 container runtime smoke artifact와 external scanner readiness artifact를 read-only로 합쳐 반환한다.
+- API는 readiness JSON을 읽기만 하며 Docker, OpenVAS, ZAP, scanner command를 실행하지 않는다.
+- 응답 contract는 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`, `safe_by_default=true`다.
+- 응답에는 container runtime 상태, external scanner service 상태, blocker 목록, operator next steps가 포함된다.
+- RedTeam2 화면은 `상태 새로고침` 시 runtime readiness API를 같이 호출하고 `실행 환경 준비도 / 남은 실측 조건` 패널에 표시한다.
+- 패널은 Docker Desktop daemon, container smoke, OpenVAS endpoint, ZAP endpoint, network probe, 외부 vault reference의 현재 상태와 남은 조건을 보여준다.
+- `고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py`는 runtime readiness API 호출, Korean visible copy, read-only safety flags를 검사한다.
+- accepted gate manifest에는 `GATE-FRONTEND-RUNTIME-READINESS-CONTRACT`가 추가된다.
+- 이 slice는 실행 버튼이 막히는 이유를 사용자에게 노출하는 visibility 개선이며, Docker daemon ready 상태와 조직 OpenVAS/ZAP endpoint 실측 성공을 완료로 주장하지 않는다.
