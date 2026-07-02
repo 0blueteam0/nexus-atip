@@ -1264,6 +1264,76 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertNotEqual(body["visual_descriptor"]["original_sha256"], body["visual_descriptor"]["redacted_sha256"])
         self.assertGreaterEqual(len(body["visual_descriptor"]["redaction_regions"]), 1)
 
+    def test_v2_agentic_rag_sca_uses_approved_evidence_store_and_verifies_citations(self) -> None:
+        case_id = "CASE-V2-RAG-SUFFICIENT-001"
+        evidence = self.create_approved_evidence(case_id, "EV-RAG-APPROVED-1")
+        response = self.client.post(f"/api/redteam/v2/cases/{case_id}/agentic-rag/query", json={
+            "query": "보고서 Claim-Evidence Matrix에 승인된 EvidenceCard citation을 연결하라",
+            "required_facts": [evidence["summary"]],
+            "claims": [
+                {
+                    "claim_id": "C-RAG-1",
+                    "text": "승인된 EvidenceCard가 보고서 claim의 근거로 연결되었다.",
+                    "evidence_ids": [evidence["evidence_id"]],
+                }
+            ],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_agentic_rag_result")
+        self.assertIn("redteam_ax_v2_evidence_store", body["selected_corpora"])
+        self.assertIn("agentic_rag_spec", body["selected_corpora"])
+        self.assertIn("redteam_ax_spec", body["selected_corpora"])
+        self.assertEqual(body["sca_report"]["decision"], "sufficient")
+        self.assertTrue(body["sca_report"]["answerable"])
+        self.assertGreaterEqual(body["sca_report"]["sufficient_context_score"], 0.9)
+        self.assertEqual(body["sca_report"]["unsupported_claims"], [])
+        self.assertEqual(body["citation_verification"]["unsupported_claim_count"], 0)
+        self.assertTrue(body["citation_verification"]["all_material_claims_supported"])
+        self.assertIn(f"EVIDENCE:{evidence['evidence_id']}", {item["citation_id"] for item in body["citations"]})
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_human_validation"])
+
+    def test_v2_agentic_rag_sca_retrieves_again_when_claim_lacks_approved_evidence(self) -> None:
+        case_id = "CASE-V2-RAG-INSUFFICIENT-001"
+        pending = self.client.post("/api/redteam/v2/evidence", json={
+            "case_id": case_id,
+            "evidence_id": "EV-RAG-PENDING-1",
+            "source_path_or_url": "artifact://pending/tool-output.json",
+            "summary": "Pending evidence must not support Agentic RAG material claims.",
+        })
+        self.assertEqual(pending.status_code, 200)
+
+        response = self.client.post(f"/api/redteam/v2/cases/{case_id}/agentic-rag/query", json={
+            "query": "SCA vulnerability finding을 report claim으로 쓸 수 있는지 검증하라",
+            "required_facts": ["approved sca vulnerability evidence"],
+            "claims": [
+                {
+                    "claim_id": "C-RAG-MISSING-1",
+                    "text": "SCA 취약점은 승인된 증거로 입증되었다.",
+                    "evidence_ids": ["EV-RAG-PENDING-1"],
+                }
+            ],
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_agentic_rag_result")
+        self.assertIn("toolchain_sca_policy", body["selected_corpora"])
+        self.assertEqual(body["sca_report"]["decision"], "retrieve_again")
+        self.assertFalse(body["sca_report"]["answerable"])
+        self.assertIn("approved_evidence_for_case", body["sca_report"]["missing_facts"])
+        self.assertIn("approved_evidence_for_all_material_claims", body["sca_report"]["missing_facts"])
+        self.assertEqual(body["citation_verification"]["unsupported_claim_count"], 1)
+        self.assertFalse(body["citation_verification"]["all_material_claims_supported"])
+        self.assertEqual(body["citations"], [])
+        self.assertEqual(body["sca_report"]["next_corpora"], ["redteam_ax_v2_evidence_store"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["requires_human_validation"])
+
     def test_v2_actor_context_provider_resolves_registered_actor_and_blocks_wrong_role(self) -> None:
         resolved = self.client.post(
             "/api/redteam/v2/auth/actor-context",

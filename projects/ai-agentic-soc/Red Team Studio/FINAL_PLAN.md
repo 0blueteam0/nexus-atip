@@ -1012,4 +1012,19 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 보고서 섹션에 `Claim-Evidence Matrix` 포함 확인
 - [x] `governedRunnerNotClicked=true`, `governedRunnerNotExecuted=true`, `commands_executed_by_api=false` 유지
 - [x] `archive/runs/redteam-ax-v2-browser-smoke/latest_live_browser_parser_smoke.json` status `passed`, blockers `[]`
-- [ ] 다음 slice: Agentic RAG SPEC 기반 corpus routing / SCA sufficient context / citation verifier API smoke를 RedTeam AX evidence store와 연결
+- [x] Agentic RAG SPEC 기반 corpus routing / SCA sufficient context / citation verifier API smoke를 RedTeam AX evidence store와 연결 - slice 44 완료
+
+## 52. Slice 44 Agentic RAG SCA Citation Verifier API 체크리스트
+
+- [x] Agentic RAG 정본 경로를 `Agentic RAG SPEC`으로 확인하고 F-014 SCAReport/F-016 citation verifier 요구 반영
+- [x] `/api/redteam/v2/cases/{case_id}/agentic-rag/query` API 추가
+- [x] 승인된 EvidenceCard만 `redteam_ax_v2_evidence_store` citation 후보로 사용
+- [x] corpus routing 결과에 `redteam_ax_v2_evidence_store`, `agentic_rag_spec`, `redteam_ax_spec` 포함
+- [x] SCA/도구 관련 질의는 `toolchain_sca_policy` corpus로 확장
+- [x] 모든 material claim이 approved/verified evidence ID에 연결되면 `decision=sufficient`
+- [x] 승인 증거가 없거나 claim evidence가 미승인/미검증이면 `decision=retrieve_again`
+- [x] citation verifier가 unsupported claim count와 missing facts를 반환
+- [x] 결과는 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true` 유지
+- [x] API 결과를 case artifact `agentic-rag-results`에 저장
+- [x] v2 API 회귀 테스트에 sufficient/retrieve_again 양쪽 smoke 추가
+- [ ] 다음 slice: Report Studio `레드팀 분석2`에 Agentic RAG/SCA 패널 연결 및 live browser smoke 추가

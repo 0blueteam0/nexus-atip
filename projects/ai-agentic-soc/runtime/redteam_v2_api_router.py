@@ -300,6 +300,11 @@ def approve_evidence(
     return redteam_v2_models.approve_evidence_card(evidence_id, with_actor_context(payload, x_redteam_actor, x_redteam_actor_role, x_redteam_session))
 
 
+@router.post("/cases/{case_id}/agentic-rag/query")
+def query_case_agentic_rag(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.agentic_rag_sca_query(case_id, payload)
+
+
 @router.post("/findings")
 def create_finding(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.create_finding(payload)

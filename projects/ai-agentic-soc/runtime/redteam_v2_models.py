@@ -3947,6 +3947,212 @@ def evidence_approval_issues(case_id: str, evidence_ids: list[str]) -> list[dict
     return issues
 
 
+def _approved_case_evidence(case_id: str) -> list[dict[str, Any]]:
+    approved: list[dict[str, Any]] = []
+    for evidence in list_json_artifacts(case_id, "evidence"):
+        approval_status = str(evidence.get("approval_status") or "").lower()
+        validation_status = str(evidence.get("validation_status") or "").lower()
+        if approval_status == "approved" and validation_status in {"approved", "verified"}:
+            approved.append(evidence)
+    return approved
+
+
+def _evidence_search_text(evidence: dict[str, Any]) -> str:
+    values = [
+        evidence.get("summary"),
+        evidence.get("source_path_or_url"),
+        evidence.get("source_type"),
+        json.dumps(evidence.get("normalized_fields") or {}, ensure_ascii=False, sort_keys=True),
+    ]
+    return " ".join(str(value or "") for value in values).lower()
+
+
+def _tokenize_query_text(value: Any) -> set[str]:
+    return {
+        token
+        for token in re.findall(r"[a-z0-9가-힣_.:/-]{3,}", str(value or "").lower())
+        if token not in {"the", "and", "with", "for", "from", "that", "this"}
+    }
+
+
+def _select_agentic_rag_corpora(query: str, payload: dict[str, Any]) -> list[str]:
+    selected = ["redteam_ax_v2_evidence_store", "agentic_rag_spec", "redteam_ax_spec"]
+    query_l = query.lower()
+    requested = [str(item).strip() for item in (payload.get("target_corpora") or []) if str(item).strip()]
+    for corpus in requested:
+        if corpus not in selected:
+            selected.append(corpus)
+    if any(term in query_l for term in ["sca", "sbom", "trivy", "npm", "dependency", "의존성"]):
+        selected.append("toolchain_sca_policy")
+    if any(term in query_l for term in ["report", "보고서", "claim", "evidence", "citation", "matrix"]):
+        selected.append("claim_evidence_matrix_policy")
+    return list(dict.fromkeys(selected))
+
+
+def _agentic_rag_citations(case_id: str, query: str, payload: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    approved_evidence = _approved_case_evidence(case_id)
+    requested_ids = {
+        str(evidence_id).strip()
+        for claim in (payload.get("claims") or [])
+        for evidence_id in (claim.get("evidence_ids") or [])
+        if str(evidence_id).strip()
+    }
+    query_tokens = _tokenize_query_text(query)
+    required_tokens = _tokenize_query_text(" ".join(str(item) for item in (payload.get("required_facts") or [])))
+    search_tokens = query_tokens | required_tokens
+
+    hits: list[dict[str, Any]] = []
+    for evidence in approved_evidence:
+        evidence_id = str(evidence.get("evidence_id") or "").strip()
+        text = _evidence_search_text(evidence)
+        if requested_ids and evidence_id in requested_ids:
+            hits.append(evidence)
+            continue
+        if not requested_ids and (not search_tokens or any(token in text for token in search_tokens)):
+            hits.append(evidence)
+    if not hits and not requested_ids and approved_evidence:
+        hits = approved_evidence[:3]
+
+    citations = [
+        {
+            "citation_id": f"EVIDENCE:{evidence.get('evidence_id')}",
+            "evidence_id": evidence.get("evidence_id"),
+            "case_id": case_id,
+            "source_path_or_url": evidence.get("source_path_or_url"),
+            "summary": evidence.get("summary"),
+            "classification": evidence.get("classification"),
+            "approval_status": evidence.get("approval_status"),
+            "validation_status": evidence.get("validation_status"),
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+        }
+        for evidence in hits
+    ]
+    return citations, approved_evidence
+
+
+def _verify_agentic_rag_claims(case_id: str, payload: dict[str, Any], citations: list[dict[str, Any]]) -> dict[str, Any]:
+    citation_ids = {str(item.get("evidence_id")) for item in citations if item.get("evidence_id")}
+    claims = payload.get("claims") or []
+    if not claims and citations:
+        claims = [
+            {
+                "claim_id": "C-RAG-DRAFT-1",
+                "text": "승인된 EvidenceCard를 근거로 보고서 초안에 사용할 수 있는 제한적 분석 후보가 있습니다.",
+                "evidence_ids": [citations[0]["evidence_id"]],
+            }
+        ]
+
+    claim_results: list[dict[str, Any]] = []
+    unsupported_claims: list[dict[str, Any]] = []
+    for index, claim in enumerate(claims, start=1):
+        evidence_ids = [str(item).strip() for item in (claim.get("evidence_ids") or []) if str(item).strip()]
+        issues = evidence_approval_issues(case_id, evidence_ids)
+        missing_from_retrieval = [evidence_id for evidence_id in evidence_ids if evidence_id not in citation_ids]
+        if missing_from_retrieval:
+            issues.extend({"type": "not_in_retrieved_context", "id": evidence_id} for evidence_id in missing_from_retrieval)
+        if not evidence_ids:
+            issues.append({"type": "evidence_ids_required", "id": claim.get("claim_id") or f"C-RAG-{index}"})
+
+        claim_id = str(claim.get("claim_id") or claim.get("id") or f"C-RAG-{index}")
+        text = str(claim.get("text") or claim.get("claim") or claim.get("summary") or "").strip()
+        result = {
+            "claim_id": claim_id,
+            "text": text,
+            "evidence_ids": evidence_ids,
+            "support_level": "supported" if not issues else "unsupported",
+            "issues": issues,
+        }
+        claim_results.append(result)
+        if issues:
+            unsupported_claims.append(result)
+
+    return {
+        "claim_results": claim_results,
+        "unsupported_claims": unsupported_claims,
+        "unsupported_claim_count": len(unsupported_claims),
+        "all_material_claims_supported": bool(claim_results) and not unsupported_claims,
+    }
+
+
+def agentic_rag_sca_query(case_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    query = str(payload.get("query") or payload.get("question") or "").strip()
+    selected_corpora = _select_agentic_rag_corpora(query, payload)
+    citations, approved_evidence = _agentic_rag_citations(case_id, query, payload)
+    verification = _verify_agentic_rag_claims(case_id, payload, citations)
+
+    combined_context = " ".join(_evidence_search_text(evidence) for evidence in approved_evidence)
+    required_facts = [str(item).strip() for item in (payload.get("required_facts") or []) if str(item).strip()]
+    missing_facts = [
+        fact for fact in required_facts
+        if fact.lower() not in combined_context
+    ]
+    if not approved_evidence:
+        missing_facts.append("approved_evidence_for_case")
+    if payload.get("claims") and verification["unsupported_claim_count"]:
+        missing_facts.append("approved_evidence_for_all_material_claims")
+    missing_facts = list(dict.fromkeys(missing_facts))
+
+    answerable = bool(citations) and not missing_facts and verification["all_material_claims_supported"]
+    score = 0.0
+    if citations:
+        score += 0.45
+    if verification["all_material_claims_supported"]:
+        score += 0.35
+    if not missing_facts:
+        score += 0.2
+    score = round(min(score, 1.0), 2)
+    decision = "sufficient" if answerable else "retrieve_again"
+    next_queries = [f"case:{case_id} evidence for {fact}" for fact in missing_facts]
+    if verification["unsupported_claim_count"]:
+        next_queries.append(f"case:{case_id} retrieve approved EvidenceCard IDs for unsupported claims")
+
+    sca_report = {
+        "answerable": answerable,
+        "sufficient_context_score": score,
+        "missing_facts": missing_facts,
+        "unsupported_claims": verification["unsupported_claims"],
+        "contradictions": [],
+        "freshness_status": "case_evidence_current" if approved_evidence else "no_approved_case_evidence",
+        "next_queries": list(dict.fromkeys(next_queries)),
+        "next_corpora": ["redteam_ax_v2_evidence_store"] if not answerable else [],
+        "no_new_evidence": not bool(approved_evidence),
+        "needs_human_review": True,
+        "decision": decision,
+    }
+
+    result_id = stable_id("RAGR", [case_id, query, verification["unsupported_claim_count"], missing_facts, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_agentic_rag_result",
+        "result_id": result_id,
+        "case_id": case_id,
+        "query": query,
+        "selected_corpora": selected_corpora,
+        "retrieval_strategy": "agentic_rag_spec_sca_plus_approved_evidence_store",
+        "citations": citations,
+        "claims": verification["claim_results"],
+        "citation_verification": {
+            "kind": "agentic_rag_citation_verifier",
+            **verification,
+        },
+        "sca_report": sca_report,
+        "answer_draft_ko": (
+            "승인된 EvidenceCard citation을 기반으로 한 제한적 분석 초안입니다."
+            if answerable else
+            "충분한 승인 증거가 없어 material claim 생성을 보류하고 추가 검색/증거 수집이 필요합니다."
+        ),
+        "trusted_as_instruction": False,
+        "commands_executed_by_api": False,
+        "requires_human_validation": True,
+        "trust_boundary": (
+            "Agentic RAG output is draft analysis only; report claims require approved EvidenceCard IDs "
+            "and release-gate validation."
+        ),
+        "errors": [] if query else ["query_required"],
+    }
+    return append_artifact_metadata(result, "agentic-rag-results", result_id)
+
+
 def normalize_severity(value: Any) -> str:
     severity = str(value or "medium").strip().lower()
     return severity if severity in FINDING_SEVERITIES else "medium"
