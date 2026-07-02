@@ -979,3 +979,13 @@ Create Case
 - RedTeam2 UI는 `운영 completion audit 검토` 버튼과 `운영 completion audit checklist`, `운영 completion audit blocker` 표를 추가했다.
 - regression test는 otherwise-ready controlled fixture certification이 독립 감사에서 차단되고, blocker/warning/safe flags/artifact 보존이 유지되는지 검증한다.
 - 이 slice는 최종 완료 오판 방지 게이트를 강화하지만, 실제 조직 scanner 산출물 폴더와 실제 승인자로 certification 및 completion audit review를 통과한 운영 실측 증거는 아직 필요하다.
+
+## 52. Slice 97 반영 사항
+
+- `/api/redteam/v2/toolchains/real-operating-evidence-readiness`는 운영 closure 제출 패키지 전에 실제 운영 증거 여부를 사전 점검하는 API다.
+- API는 기존 파일만 읽어 manifest builder를 실행하고, scanner artifact 2개 이상, 승인자 4명, 승인자 identity 중복 없음, 테스트성 경로 아님을 확인한다.
+- `CASE-V2`, `fixture`, `operator-scanner-outputs`, test-like 폴더명은 `real_operating_source_required`와 `no_controlled_or_test_source_required` blocker로 차단한다.
+- API는 scanner 명령, active scan, Docker/WSL/network 실행, shell expansion, raw output instruction 신뢰를 수행하지 않는다.
+- RedTeam2 UI는 `실제 운영 증거 사전 점검` 버튼과 `실제 운영 증거 사전 점검`, `실제 운영 증거 blocker` 표를 추가했다.
+- regression test는 fixture성 source_dir이 artifact 2개를 포함해도 실제 운영 증거 사전 점검에서 차단되는지와 safe flags를 검증한다.
+- 이 slice는 운영 실측 증거 제출 전 오입력을 줄이지만, 실제 조직 scanner 산출물 폴더와 실제 승인자 4명으로 readiness부터 completion audit review까지 통과한 증거는 아직 필요하다.

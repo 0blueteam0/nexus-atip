@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 37,
+    "proved": 38,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -642,18 +642,38 @@
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
       ],
-      "proof_summary": "The /api/redteam/v2/toolchains/review-operating-completion-audit-candidate API loads a reviewed close evidence certification, requires an independent auditor identity, checks certification readiness, certification error count, report gate pass, completion gate complete, and safe no-execution flags, then blocks controlled/test-like sources as no_controlled_or_test_source_required. Regression proves an otherwise ready controlled fixture certification remains completion_audit_blocked, records blockers and warnings, persists an audit artifact, and keeps does_not_mark_goal_complete=true with no commands, active scans, shell expansion, or raw instruction trust. RedTeam2 exposes Korean '?? completion audit ??' controls, checklist, and blocker tables.",
+      "proof_summary": "The /api/redteam/v2/toolchains/review-operating-completion-audit-candidate API loads a reviewed close evidence certification, requires an independent auditor identity, checks certification readiness, certification error count, report gate pass, completion gate complete, and safe no-execution flags, then blocks controlled/test-like sources as no_controlled_or_test_source_required. Regression proves an otherwise ready controlled fixture certification remains completion_audit_blocked, records blockers and warnings, persists an audit artifact, and keeps does_not_mark_goal_complete=true with no commands, active scans, shell expansion, or raw instruction trust. RedTeam2 exposes Korean '운영 completion audit 검토' controls, checklist, and blocker tables.",
       "residual_gap": "This proves the independent audit review gate and its controlled-source blocker, not that actual organization scanner outputs and real approver identities have passed the gate. A real operator scanner folder must still be certified and reviewed before the whole goal can be completed.",
       "next_action": "Run submission package, human review, reviewed close execution, evidence certification, and operating completion audit review against a real operator scanner-output folder with real approver identities and no controlled/test-like source warnings."
+    },
+    {
+      "id": "RTA-COMP-039",
+      "requirement": "Before operating closure submission, real operating scanner evidence must be preflight-checked so controlled/test-like folders and non-distinct or missing approvers are blocked before the HITL close path starts.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/real-operating-evidence-readiness API checks a proposed source_dir before operating closure submission. It builds a manifest from existing files, requires at least two scanner artifacts, requires four distinct approver identities, blocks CASE-V2, fixture, operator-scanner-outputs, and test-like source folders as real_operating_source_required/no_controlled_or_test_source_required, and persists a no-execution readiness artifact. Regression proves fixture source is blocked while preserving artifact_count, checklist, warnings, next_api, and safe flags. RedTeam2 exposes Korean '실제 운영 증거 사전 점검' controls and blocker tables.",
+      "residual_gap": "This proves preflight blocking before closure submission, not that actual organization scanner outputs and real approver identities have been provided. A real operator scanner folder must still pass this preflight and then complete submission package, human review, reviewed close, certification, and completion audit review.",
+      "next_action": "Run /api/redteam/v2/toolchains/real-operating-evidence-readiness against a real operator scanner-output folder with four distinct real approver identities, then continue through submission package, human review, reviewed close, certification, and completion audit review."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
-    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must pass real-operating-evidence-readiness or be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
     "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
   ],
   "next_slice_candidates": [
+    "Run /api/redteam/v2/toolchains/real-operating-evidence-readiness against a real operator scanner-output folder and four distinct real approvers; only continue to operating closure submission when status is real_operating_evidence_ready.",
     "Run OpenVAS and OWASP ZAP external service endpoint live import smokes when endpoints are available.",
     "Run Docker/container runtime live smoke when Docker is available and approved.",
     "Run /api/redteam/v2/toolchains/operating-closure-submission-package against a real operator scanner-output folder with real approver identities, record /operating-closure-human-review with real signoffs and blocker disposition, run /execute-reviewed-operating-close, run /certify-reviewed-operating-close-evidence, then run /review-operating-completion-audit-candidate for final completion audit review.",

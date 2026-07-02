@@ -157,6 +157,7 @@ tags: [redteam-ax, llm-wiki, evidence, report-studio, chatshare, guardrails]
 - ToolchainImportedOutput
 - ToolchainArtifactManifestBuilder
 - ToolchainArtifactManifestImport
+- RealOperatingEvidenceReadiness
 - OperatingClosureSubmissionPackage
 - OperatingClosureHumanReview
 - ReviewedOperatingCloseExecution
@@ -196,12 +197,13 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 16. 운영자가 scanner 결과 파일을 이미 보유한 경우 먼저 `/api/redteam/v2/toolchains/build-artifact-manifest`로 workspace 폴더를 읽어 도구별 후보 파일과 SHA-256 manifest를 만들 수 있다. 이 builder는 파일명 패턴과 hash 계산만 수행하며 도구 명령·능동 스캔·network 호출을 실행하지 않는다.
 17. 검토된 manifest는 `/api/redteam/v2/toolchains/import-artifact-manifest`에 `tool_id`, `source_path`, `sha256`, `content_type` 형태로 제출한다. 이 API는 workspace path와 SHA-256을 검증한 뒤 파일을 raw artifact로 가져오며, 도구 명령·능동 스캔·shell expansion을 실행하지 않는다. 이후 `/collect-results`, Evidence 승인, Finding 승격, severity 승인, Matrix/Report/export/completion gate는 동일하게 적용한다.
 18. collection이 준비된 뒤 초급 운영자 workflow에서는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/close-e2e`를 사용할 수 있다. 이 API는 명시된 Evidence 검토자, red_team_lead, business_owner, executive_sponsor 승인자 정보를 요구하고, 기존 collection 산출물만 사용해 Evidence 승인부터 export와 completion gate까지 순서대로 닫는다. scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
-19. 운영자가 scanner 산출물 폴더만 준비한 경우 먼저 `/api/redteam/v2/toolchains/operating-closure-submission-package`로 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 검증한다. 이 API는 기존 파일과 readiness artifact만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
-20. submission package가 준비되면 `/api/redteam/v2/toolchains/operating-closure-human-review`로 checklist, 승인자 서명, runtime blocker 처리 방침, `final_close_authorized`를 기록한다. 이 API는 승인된 close payload를 보존하지만 close 실행 자체는 하지 않는다.
-21. human review가 `ready_for_human_close_execution`이 된 뒤 `/api/redteam/v2/toolchains/execute-reviewed-operating-close`를 사용한다. 이 API는 human review의 `approved_close_api_payload`만 사용하고 override payload를 무시해 close-operating 우회를 막는다.
-22. reviewed close execution은 내부적으로 close-operating-artifact-manifest-e2e lane을 호출한다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
-23. `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence`는 reviewed close 결과를 completion audit 후보로 인증한다. close/report/completion gate와 safe flags를 확인하고 실제 운영 산출물, 실제 승인자, non-fixture data, evidence retention, ROE/HITL attestation을 모두 요구한다. 이 API도 전체 goal을 완료 처리하지 않으며 final completion audit만 완료 판단을 할 수 있다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 certification artifact가 필요하다.
-24. `/api/redteam/v2/toolchains/review-operating-completion-audit-candidate`는 certification artifact를 독립 감사 checklist로 다시 검토한다. `audited_by`, certification ready, certification error 0건, report gate pass, completion gate complete, safe no-execution flags를 확인하고, controlled/test-like source는 `no_controlled_or_test_source_required` blocker로 차단한다. `goal_complete_candidate=true`가 되어도 이 API는 스레드 goal을 직접 완료하지 않는다.
+19. 운영자가 scanner 산출물 폴더만 준비한 경우 먼저 `/api/redteam/v2/toolchains/real-operating-evidence-readiness`로 실제 운영 증거 사전 점검을 수행한다. 이 API는 `CASE-V2`, fixture, `operator-scanner-outputs`, test-like 경로와 승인자 누락/중복을 차단하며, scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
+20. 사전 점검이 `real_operating_evidence_ready`가 된 뒤 `/api/redteam/v2/toolchains/operating-closure-submission-package`로 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 검증한다. 이 API는 기존 파일과 readiness artifact만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
+21. submission package가 준비되면 `/api/redteam/v2/toolchains/operating-closure-human-review`로 checklist, 승인자 서명, runtime blocker 처리 방침, `final_close_authorized`를 기록한다. 이 API는 승인된 close payload를 보존하지만 close 실행 자체는 하지 않는다.
+22. human review가 `ready_for_human_close_execution`이 된 뒤 `/api/redteam/v2/toolchains/execute-reviewed-operating-close`를 사용한다. 이 API는 human review의 `approved_close_api_payload`만 사용하고 override payload를 무시해 close-operating 우회를 막는다.
+23. reviewed close execution은 내부적으로 close-operating-artifact-manifest-e2e lane을 호출한다. 이 API는 source_dir을 manifest로 만들고, SHA-256 import, result collection, close-e2e, Report v2 export, completion gate를 순서대로 수행하지만 기존 파일만 읽고 scanner 명령·능동 스캔·Docker/WSL/network 실행은 수행하지 않는다.
+24. `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence`는 reviewed close 결과를 completion audit 후보로 인증한다. close/report/completion gate와 safe flags를 확인하고 실제 운영 산출물, 실제 승인자, non-fixture data, evidence retention, ROE/HITL attestation을 모두 요구한다. 이 API도 전체 goal을 완료 처리하지 않으며 final completion audit만 완료 판단을 할 수 있다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 certification artifact가 필요하다.
+25. `/api/redteam/v2/toolchains/review-operating-completion-audit-candidate`는 certification artifact를 독립 감사 checklist로 다시 검토한다. `audited_by`, certification ready, certification error 0건, report gate pass, completion gate complete, safe no-execution flags를 확인하고, controlled/test-like source는 `no_controlled_or_test_source_required` blocker로 차단한다. `goal_complete_candidate=true`가 되어도 이 API는 스레드 goal을 직접 완료하지 않는다.
 
 ## 남은 작업
 
@@ -212,5 +214,5 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물이 imported-output, artifact manifest import, 또는 live service import 경로로 제출되고 collection 전체가 Matrix/report/export/completion gate를 통과한 증거
 - 실제 운영 scanner 산출물 collection을 close-e2e API로 닫고, Report v2 export와 completion gate complete=true를 확보한 증거
-- 실제 운영 scanner 산출물 폴더를 operating-closure-submission-package API로 검증하고 operating-closure-human-review API로 real approver signoff와 blocker/payload 검토를 기록한 증거
+- 실제 운영 scanner 산출물 폴더를 real-operating-evidence-readiness API로 사전 점검하고 operating-closure-submission-package API로 검증한 뒤 operating-closure-human-review API로 real approver signoff와 blocker/payload 검토를 기록한 증거
 - 실제 운영 scanner 산출물 폴더를 execute-reviewed-operating-close API로 닫고 certify-reviewed-operating-close-evidence API와 review-operating-completion-audit-candidate API로 실제 승인자 identity, Report v2 export, completion gate complete=true, 실측 attestation, 독립 감사 checklist 통과를 확보한 증거

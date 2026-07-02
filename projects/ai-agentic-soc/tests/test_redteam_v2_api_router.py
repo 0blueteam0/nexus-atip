@@ -2164,6 +2164,48 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_real_operating_evidence_readiness_blocks_fixture_source(self) -> None:
+        case_id = f"CASE-V2-REAL-OPERATING-READINESS-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        (source_dir / "readiness-nuclei.jsonl").write_text(
+            '{"template-id":"readiness-panel","info":{"name":"Readiness panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            encoding="utf-8",
+            newline="\n",
+        )
+        (source_dir / "readiness-trivy.json").write_text(
+            '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-READINESS-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            encoding="utf-8",
+            newline="\n",
+        )
+
+        response = self.client.post("/api/redteam/v2/toolchains/real-operating-evidence-readiness", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-REAL-OPERATING-READINESS-001",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "evidence-reviewer@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_real_operating_evidence_readiness")
+        self.assertEqual(body["status"], "real_operating_evidence_blocked")
+        self.assertFalse(body["ready_for_operating_closure_submission"])
+        self.assertIn("real_operating_source_required", body["blockers"])
+        self.assertIn("no_controlled_or_test_source_required", body["blockers"])
+        self.assertIn("controlled_or_test_like_source_detected", body["warnings"])
+        self.assertEqual(body["artifact_count"], 2)
+        self.assertTrue(any(item["field"] == "safe_no_execution" and item["status"] == "passed" for item in body["checklist"]))
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertEqual(body["next_api"], "/api/redteam/v2/toolchains/operating-closure-submission-package")
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_operating_closure_human_review_records_hitl_checklist_without_execution(self) -> None:
         case_id = f"CASE-V2-OPERATING-CLOSURE-REVIEW-001-{uuid.uuid4().hex[:8]}"
         source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"

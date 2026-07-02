@@ -1673,3 +1673,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `운영 completion audit 검토` 버튼과 checklist/blocker 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 completion audit anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 identity로 submission package, human review, reviewed close, certification, completion audit review를 순서대로 통과
+
+## 105. Slice 97 실제 운영 증거 사전 점검 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/real-operating-evidence-readiness` API 추가
+- [x] source_dir이 비어 있거나 manifest builder가 실패하면 blocked 처리
+- [x] scanner artifact 2개 미만이면 blocked 처리
+- [x] Evidence 검토자, red_team_lead, business_owner, executive_sponsor 4명 필수화
+- [x] 승인자 identity 중복 시 conflict/blocker 처리
+- [x] `CASE-V2`, fixture, operator-scanner-outputs, test-like 경로는 실제 운영 증거로 차단
+- [x] API는 scanner 명령, active scan, Docker/WSL/network 실행, shell expansion, raw output instruction 신뢰를 수행하지 않음
+- [x] regression test가 fixture성 source_dir 차단과 safe flags를 검증
+- [x] RedTeam2 UI에 `실제 운영 증거 사전 점검` 버튼과 checklist/blocker 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 real operating readiness anchor 반영
+- [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 4명으로 readiness를 통과한 뒤 closure submission부터 completion audit review까지 완료
