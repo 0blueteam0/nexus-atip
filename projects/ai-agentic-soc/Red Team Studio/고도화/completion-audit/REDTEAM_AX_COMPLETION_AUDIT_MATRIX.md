@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 38 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 39 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -63,6 +63,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 기존 운영 scanner 산출물 폴더를 manifest 생성, import, 결과 회수, 명시 승인자 close-e2e, Report v2 export, completion gate까지 한 번에 연결하되 scanner/Docker/WSL/네트워크 명령은 실행하지 않는 `/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e` API와 한국어 UI
 - 운영 scanner 산출물 closure 실행 전 `source_dir`, 승인자 4명, runtime blocker, close-operating payload를 검증하는 `/api/redteam/v2/toolchains/operating-closure-submission-package` API와 한국어 UI
 - 운영 closure 제출 전 `CASE-V2`, fixture, `operator-scanner-outputs` 같은 테스트성 경로와 승인자 누락/중복을 차단하는 `/api/redteam/v2/toolchains/real-operating-evidence-readiness` API와 한국어 UI
+- 운영자 증거 수집 package 항목의 artifact path를 받아 sha256/status를 확인하고 validator-compatible `submission_manifest` 초안을 저장하는 `/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft` API와 한국어 UI
 - 운영 closure 제출 패키지와 final close 사이에서 체크리스트, 승인자 서명, runtime blocker 처리 방침, `final_close_authorized`를 기록하는 `/api/redteam/v2/toolchains/operating-closure-human-review` API와 한국어 UI
 - ready human review record의 `approved_close_api_payload`만 사용하고 override payload를 무시하는 `/api/redteam/v2/toolchains/execute-reviewed-operating-close` API와 한국어 UI
 - reviewed close 실행 증거가 completion audit 후보가 되려면 close/report/completion gate와 실제 운영 산출물/승인자 attestation을 요구하는 `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence` API와 한국어 UI
@@ -94,6 +95,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `redteam_ax_live_readiness_remediation_runbook.py --require-clear` 통과 증거
 - `redteam_ax_operator_evidence_collection_package.py --require-inputs-ready` 통과 증거
 - `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved` 통과 증거
+- `/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft`로 만든 제출 manifest를 실제 운영자가 검토해 `review_status=approved`로 변경하고 validator를 통과한 증거
 - 승인된 운영자 제출 증거에서 생성된 Evidence Card 후보를 실제 Evidence Card API로 등록하고 사람 검토를 통과한 증거
 - tool result analysis brief의 Claim-Evidence 후보를 실제 Finding/Report claim으로 승인 연결한 증거
 - 모든 real finding/claim review 후보를 실제 운영 Evidence 승인 후 Finding으로 승격하고, 2인 severity 승인과 Report claim validation까지 통과시킨 증거

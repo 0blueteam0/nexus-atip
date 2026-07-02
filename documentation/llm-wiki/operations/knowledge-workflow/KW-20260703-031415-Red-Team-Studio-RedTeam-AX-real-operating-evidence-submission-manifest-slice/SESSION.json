@@ -4,7 +4,7 @@
   "task": "RedTeam AX real operating evidence submission manifest slice",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-031415-Red-Team-Studio-RedTeam-AX-real-operating-evidence-submission-manifest-slice",
   "created_at": "2026-07-03T03:14:15+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T03:30:08+09:00"
+  ]
 }

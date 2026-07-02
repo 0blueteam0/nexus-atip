@@ -310,6 +310,11 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
     return redteam_v2_models.assess_real_operating_evidence_readiness(payload)
 
 
+@router.post("/toolchains/operator-evidence-submission-manifest-draft")
+def build_operator_evidence_submission_manifest_draft(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_operator_evidence_submission_manifest_draft(payload)
+
+
 @router.post("/toolchains/operating-closure-human-review")
 def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.record_operating_toolchain_closure_human_review(payload)

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 38,
+    "proved": 39,
     "partial": 1,
     "gap": 0,
     "blocked": 0
@@ -664,6 +664,22 @@
       "proof_summary": "The /api/redteam/v2/toolchains/real-operating-evidence-readiness API checks a proposed source_dir before operating closure submission. It builds a manifest from existing files, requires at least two scanner artifacts, requires four distinct approver identities, blocks CASE-V2, fixture, operator-scanner-outputs, and test-like source folders as real_operating_source_required/no_controlled_or_test_source_required, and persists a no-execution readiness artifact. Regression proves fixture source is blocked while preserving artifact_count, checklist, warnings, next_api, and safe flags. RedTeam2 exposes Korean '실제 운영 증거 사전 점검' controls and blocker tables.",
       "residual_gap": "This proves preflight blocking before closure submission, not that actual organization scanner outputs and real approver identities have been provided. A real operator scanner folder must still pass this preflight and then complete submission package, human review, reviewed close, certification, and completion audit review.",
       "next_action": "Run /api/redteam/v2/toolchains/real-operating-evidence-readiness against a real operator scanner-output folder with four distinct real approver identities, then continue through submission package, human review, reviewed close, certification, and completion audit review."
+    },
+    {
+      "id": "RTA-COMP-040",
+      "requirement": "Operator evidence collection package items must have a governed API path that builds a validator-compatible submission manifest draft from existing local artifacts without executing scanners or marking the goal complete.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py"
+      ],
+      "proof_summary": "The operator-evidence-submission-manifest-draft API loads an operator evidence collection package, accepts item_id/artifact_path/review_status attachments, resolves only local workspace files, computes SHA-256, verifies JSON status against expected_attachment, persists a validator-compatible submission_manifest artifact, and returns safe flags with commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, trusted_as_instruction=false, and does_not_mark_goal_complete=true. Regression coverage proves the ready draft and missing-field blocker paths. RedTeam2 exposes Korean input, button, API copy, item table, and blocker table.",
+      "residual_gap": "This proves manifest draft construction, not that a real operator has reviewed every artifact, changed review_status to approved, run the submission validator with --require-approved, or produced approved Evidence Cards.",
+      "next_action": "Fill the UI attachment JSON with real Docker/WSL/OpenVAS/ZAP/promotion artifact paths, review and approve the generated submission manifest, then run redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved."
     }
   ],
   "remaining_gaps": [

@@ -1687,3 +1687,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 UI에 `실제 운영 증거 사전 점검` 버튼과 checklist/blocker 표 추가
 - [x] frontend runtime readiness contract와 Korean copy inventory에 real operating readiness anchor 반영
 - [ ] 실제 조직 scanner 산출물 폴더와 실제 승인자 4명으로 readiness를 통과한 뒤 closure submission부터 completion audit review까지 완료
+
+## 106. Slice 98 운영 증거 제출 manifest 초안 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft` API 추가
+- [x] operator evidence collection package의 expected item과 operator attachment JSON 대조
+- [x] local workspace artifact path만 허용하고 SHA-256 계산 및 JSON status 확인
+- [x] validator-compatible `submission_manifest`와 `submission_manifest_artifact_path` 저장
+- [x] `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true` 유지
+- [x] RedTeam2에 운영 증거 제출자, ROE 승인 참조, 첨부 JSON 입력과 `운영 증거 제출 manifest 초안` 버튼 추가
+- [x] RedTeam2에 `운영 증거 제출 manifest 항목` 및 `운영 증거 제출 manifest 누락` 표 추가
+- [x] frontend runtime readiness contract와 Korean copy inventory에 manifest draft anchor 추가
+- [x] regression test가 ready draft와 누락 blocker를 검증
+- [ ] 실제 운영자가 생성된 manifest를 검토해 `review_status=approved`로 바꾸고 `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved` 통과

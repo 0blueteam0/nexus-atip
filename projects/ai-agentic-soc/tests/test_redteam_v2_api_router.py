@@ -2164,6 +2164,78 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_operator_evidence_submission_manifest_draft_hashes_existing_artifacts_without_execution(self) -> None:
+        case_id = f"CASE-V2-OPERATOR-EVIDENCE-SUBMISSION-MANIFEST-001-{uuid.uuid4().hex[:8]}"
+        artifact_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-evidence-submission"
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        docker_artifact = artifact_dir / "container-runtime.json"
+        wsl_artifact = artifact_dir / "wsl-runtime.json"
+        docker_artifact.write_text(json.dumps({"status": "passed", "detail": "docker daemon ready"}), encoding="utf-8", newline="\n")
+        wsl_artifact.write_text(json.dumps({"status": "ready", "selected_distro": "Ubuntu"}), encoding="utf-8", newline="\n")
+        collection_package = {
+            "collection_items": [
+                {
+                    "item_id": "OEC-TEST-DOCKER-001",
+                    "title": "Docker runtime evidence",
+                    "expected_attachment": {"status_field": "status", "required_status": "passed"},
+                },
+                {
+                    "item_id": "OEC-TEST-WSL-001",
+                    "title": "WSL runtime evidence",
+                    "expected_attachment": {"status_field": "status", "required_status": "ready"},
+                },
+            ],
+        }
+
+        response = self.client.post("/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft", json={
+            "case_id": case_id,
+            "operator_identity": "operator@example.com",
+            "roe_reference": "ROE-APPROVED-001",
+            "collection_package": collection_package,
+            "attachments": [
+                {
+                    "item_id": "OEC-TEST-DOCKER-001",
+                    "artifact_path": docker_artifact.as_posix(),
+                    "review_status": "pending_human_review",
+                },
+                {
+                    "item_id": "OEC-TEST-WSL-001",
+                    "artifact_path": wsl_artifact.as_posix(),
+                    "review_status": "pending_human_review",
+                },
+            ],
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_operator_evidence_submission_manifest_draft")
+        self.assertEqual(body["status"], "submission_manifest_ready_for_human_review")
+        self.assertTrue(body["ready_for_submission_validation"])
+        self.assertEqual(body["ready_item_count"], 2)
+        self.assertEqual(body["blocked_item_count"], 0)
+        self.assertEqual(body["submission_manifest"]["operator_identity"], "operator@example.com")
+        self.assertEqual(len(body["submission_manifest"]["attached_artifacts"]), 2)
+        self.assertEqual(body["attachment_rows"][0]["sha256"], hashlib.sha256(docker_artifact.read_bytes()).hexdigest())
+        self.assertTrue(Path(body["submission_manifest_artifact_path"]).exists())
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+
+        blocked = self.client.post("/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft", json={
+            "case_id": case_id,
+            "collection_package": collection_package,
+            "attachments": [{"item_id": "OEC-TEST-DOCKER-001"}],
+        })
+        self.assertEqual(blocked.status_code, 200)
+        blocked_body = blocked.json()
+        self.assertEqual(blocked_body["status"], "submission_manifest_draft_blocked")
+        self.assertFalse(blocked_body["ready_for_submission_validation"])
+        self.assertIn("operator_identity_required", blocked_body["errors"])
+        self.assertIn("roe_reference_required", blocked_body["errors"])
+        self.assertIn("OEC-TEST-DOCKER-001:artifact_path_missing", blocked_body["errors"])
+        self.assertIn("OEC-TEST-WSL-001", blocked_body["missing_items"])
+
     def test_v2_real_operating_evidence_readiness_blocks_fixture_source(self) -> None:
         case_id = f"CASE-V2-REAL-OPERATING-READINESS-001-{uuid.uuid4().hex[:8]}"
         source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"

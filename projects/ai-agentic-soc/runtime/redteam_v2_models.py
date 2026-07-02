@@ -2864,6 +2864,164 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
     return result
 
 
+def build_operator_evidence_submission_manifest_draft(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-V2-LIVE-READINESS-PROMOTION").strip()
+    operator_identity = str(payload.get("operator_identity") or payload.get("operator") or "").strip()
+    roe_reference = str(payload.get("roe_reference") or payload.get("roe_id") or "").strip()
+    package = payload.get("collection_package") if isinstance(payload.get("collection_package"), dict) else None
+    package_path_value = payload.get("package_path")
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    if package is None:
+        package_path = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2-operator-evidence-collection" / "latest_operator_evidence_collection_package.json"
+        if package_path_value:
+            resolved_package_path, package_path_errors = resolve_workspace_source_path(package_path_value)
+            errors.extend(f"package_path:{error}" for error in package_path_errors)
+            if resolved_package_path:
+                package_path = resolved_package_path
+        if not errors:
+            package = read_json_artifact(package_path)
+            if package is None:
+                errors.append("collection_package_not_readable")
+
+    if not operator_identity:
+        errors.append("operator_identity_required")
+    if not roe_reference:
+        errors.append("roe_reference_required")
+
+    collection_items = package.get("collection_items") if isinstance(package, dict) else []
+    if not isinstance(collection_items, list) or not collection_items:
+        errors.append("collection_items_required")
+        collection_items = []
+
+    attachment_inputs = payload.get("attachments")
+    if isinstance(attachment_inputs, dict):
+        attachment_inputs = [
+            {"item_id": item_id, **(value if isinstance(value, dict) else {"artifact_path": value})}
+            for item_id, value in attachment_inputs.items()
+        ]
+    if not isinstance(attachment_inputs, list):
+        attachment_inputs = []
+
+    attachments_by_item: dict[str, dict[str, Any]] = {}
+    unknown_items: list[str] = []
+    expected_item_ids = {str(item.get("item_id") or "").strip() for item in collection_items if isinstance(item, dict)}
+    for attachment in attachment_inputs:
+        if not isinstance(attachment, dict):
+            warnings.append("attachment_entry_ignored")
+            continue
+        item_id = str(attachment.get("item_id") or "").strip()
+        if not item_id:
+            warnings.append("attachment_item_id_missing")
+            continue
+        if item_id not in expected_item_ids:
+            unknown_items.append(item_id)
+        attachments_by_item[item_id] = attachment
+
+    rows: list[dict[str, Any]] = []
+    manifest_artifacts: list[dict[str, Any]] = []
+    missing_items: list[str] = []
+    for item in collection_items:
+        if not isinstance(item, dict):
+            continue
+        item_id = str(item.get("item_id") or "").strip()
+        expected_attachment = item.get("expected_attachment") if isinstance(item.get("expected_attachment"), dict) else {}
+        status_field = str(expected_attachment.get("status_field") or "status")
+        expected_status = str(expected_attachment.get("required_status") or "").strip()
+        attachment = attachments_by_item.get(item_id) or {}
+        artifact_path_value = str(attachment.get("artifact_path") or "").strip()
+        review_status = str(attachment.get("review_status") or "pending_human_review").strip() or "pending_human_review"
+        item_errors: list[str] = []
+        artifact_hash = ""
+        artifact_status: Any = None
+
+        if not artifact_path_value:
+            item_errors.append("artifact_path_missing")
+            missing_items.append(item_id)
+        else:
+            resolved_path, path_errors = resolve_workspace_source_path(artifact_path_value)
+            item_errors.extend(path_errors)
+            if resolved_path and not path_errors:
+                artifact_hash = sha256_file(resolved_path)
+                artifact_json = read_json_artifact(resolved_path)
+                if artifact_json is None:
+                    item_errors.append("artifact_json_not_readable")
+                else:
+                    artifact_status = artifact_json.get(status_field)
+                    if expected_status and str(artifact_status) != expected_status:
+                        item_errors.append("artifact_status_mismatch")
+
+        row_status = "ready" if not item_errors else "blocked"
+        rows.append({
+            "item_id": item_id,
+            "title": item.get("title") or item_id,
+            "status": row_status,
+            "artifact_path": artifact_path_value or None,
+            "sha256": artifact_hash or None,
+            "review_status": review_status,
+            "expected_status": expected_status or None,
+            "artifact_status": artifact_status,
+            "errors": item_errors,
+        })
+        manifest_artifacts.append({
+            "item_id": item_id,
+            "artifact_path": artifact_path_value,
+            "sha256": artifact_hash,
+            "review_status": review_status,
+        })
+
+    for item_id in sorted(set(unknown_items)):
+        errors.append(f"unknown_item:{item_id}")
+    errors.extend(f"{row['item_id']}:{error}" for row in rows for error in row.get("errors") or [])
+    blockers = sorted(set(errors))
+    manifest_id = str(payload.get("manifest_id") or stable_id("OESM", [case_id, operator_identity, roe_reference, manifest_artifacts, now_utc()]))
+    submission_manifest = {
+        "case_id": case_id,
+        "operator_identity": operator_identity,
+        "roe_reference": roe_reference,
+        "attached_artifacts": manifest_artifacts,
+    }
+    manifest_artifact_path = write_json_artifact(case_id, "toolchain-operator-evidence-submission-manifests", manifest_id, submission_manifest)
+    ready = not blockers
+    result = {
+        "kind": "redteam_ax_v2_operator_evidence_submission_manifest_draft",
+        "manifest_id": manifest_id,
+        "case_id": case_id,
+        "operator_identity": operator_identity or None,
+        "roe_reference": roe_reference or None,
+        "status": "submission_manifest_ready_for_human_review" if ready else "submission_manifest_draft_blocked",
+        "ready_for_submission_validation": ready,
+        "expected_item_count": len(collection_items),
+        "attached_item_count": len([row for row in rows if row.get("artifact_path")]),
+        "ready_item_count": len([row for row in rows if row.get("status") == "ready"]),
+        "blocked_item_count": len([row for row in rows if row.get("status") != "ready"]),
+        "missing_items": sorted(set(missing_items)),
+        "unknown_items": sorted(set(unknown_items)),
+        "attachment_rows": rows,
+        "submission_manifest": submission_manifest,
+        "submission_manifest_artifact_path": manifest_artifact_path,
+        "validator_command_hint": f'python "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_submission_validator.py" --submission-manifest "{manifest_artifact_path}" --require-approved',
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "requires_human_review_before_goal_completion": True,
+        "does_not_mark_goal_complete": True,
+        "warnings": sorted(set(warnings)),
+        "errors": blockers,
+        "next_human_actions_ko": [
+            "각 artifact_path가 실제 운영 Docker/WSL/OpenVAS/ZAP/promotion 산출물인지 사람이 확인합니다.",
+            "검토 후 review_status를 approved로 바꾼 제출 manifest를 validator에 --require-approved로 통과시킵니다.",
+            "이 API는 제출 초안과 sha256만 만들며 scanner, Docker, WSL, 네트워크 명령은 실행하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operator-evidence-submission-manifest-drafts", manifest_id)
+    return result
+
+
 def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     package = payload.get("submission_package") if isinstance(payload.get("submission_package"), dict) else None

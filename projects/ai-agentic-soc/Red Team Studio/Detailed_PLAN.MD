@@ -989,3 +989,14 @@ Create Case
 - RedTeam2 UI는 `실제 운영 증거 사전 점검` 버튼과 `실제 운영 증거 사전 점검`, `실제 운영 증거 blocker` 표를 추가했다.
 - regression test는 fixture성 source_dir이 artifact 2개를 포함해도 실제 운영 증거 사전 점검에서 차단되는지와 safe flags를 검증한다.
 - 이 slice는 운영 실측 증거 제출 전 오입력을 줄이지만, 실제 조직 scanner 산출물 폴더와 실제 승인자 4명으로 readiness부터 completion audit review까지 통과한 증거는 아직 필요하다.
+
+## 53. Slice 98 반영 사항
+
+- `/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft`는 operator evidence collection package의 `collection_items`와 운영자가 붙여넣은 `attachments` JSON을 결합해 validator-compatible `submission_manifest` 초안을 만든다.
+- 입력은 `operator_identity`, `roe_reference`, `attachments[].item_id`, `attachments[].artifact_path`, `attachments[].review_status`이며, `collection_package`가 없으면 최신 operator evidence collection package artifact를 읽는다.
+- API는 workspace 내부 local artifact만 허용하고 SHA-256을 계산하며, JSON artifact의 `status`가 각 item의 `expected_attachment.required_status`와 일치하는지 확인한다.
+- 출력은 `submission_manifest`, `submission_manifest_artifact_path`, `attachment_rows`, `missing_items`, `unknown_items`, `validator_command_hint`를 포함한다.
+- 안전 속성은 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true`로 고정한다.
+- RedTeam2는 운영 증거 제출자, ROE 승인 참조, 운영 증거 제출 첨부 JSON 입력과 `운영 증거 제출 manifest 초안` 버튼, `운영 증거 제출 manifest 항목`, `운영 증거 제출 manifest 누락` 표를 제공한다.
+- regression test는 두 개의 기존 JSON artifact가 sha256/status ready 초안으로 들어가고, 제출자/ROE/artifact_path 누락은 blocker로 남는지 검증한다.
+- 이 slice는 제출 manifest 초안을 만들 뿐이며, 사람이 artifact를 검토해 `review_status=approved`로 바꾸고 `redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved`를 통과하기 전에는 완료 증거로 사용하지 않는다.
