@@ -1179,3 +1179,12 @@ Create Case
 - 안전 원칙: launch-readiness API는 side-effect-free 사전 판정이다. scanner 명령, Docker/WSL, network, active scan을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 반환한다.
 - 테스트 전략: API regression은 Trivy ready, OpenVAS approval-required, SCA import-only, Nuclei command-missing row를 검증한다. frontend sanity는 launch-readiness endpoint, state loader, 표 header, fallback copy를 검사한다.
 - 예외 케이스: 이 계약은 버튼 상태와 다음 API 연결을 보여줄 뿐이다. 실제 완료는 ROE/HITL, runtime preflight, tool execution 또는 approved operator import, Evidence approval, Finding severity, Matrix/report/export/completion gate가 모두 통과해야 한다.
+
+## 73. 갱신 목표 반영 - 운영 closure 준비 요약
+
+- 목적: 초급 운영자가 실제 운영 산출물 폴더, 필수 6개 도구 coverage, 승인자 4명, 제출 패키지 상태를 각각 다른 버튼으로 해석하지 않아도 되도록 사람 검토 직전 상태를 한 번에 요약한다.
+- API 설계: `/api/redteam/v2/toolchains/operating-closure-readiness-summary`는 기존 `real-operating-evidence-readiness`와 `operating-closure-submission-package` 결과를 묶어 `ready_for_operating_closure_human_review`, `workflow_steps`, `blockers`, `missing_required_tool_ids`, `missing_tool_remediation`, `next_api`를 반환한다.
+- 화면/기능 명세: RedTeam2는 `운영 closure 준비 요약` 버튼과 `운영 closure 준비 요약`, `운영 closure 다음 단계`, `운영 closure 준비 blocker` 표를 제공한다. 준비 완료 시 다음 API는 `/api/redteam/v2/toolchains/operating-closure-human-review`로 표시한다.
+- 안전 원칙: summary API는 기존 파일과 승인자 입력만 점검한다. scanner 명령, Docker, WSL, network, active scan을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `shell_expansion_allowed=false`, `does_not_mark_goal_complete=true`를 반환한다.
+- 테스트 전략: API regression은 6개 도구 산출물이 있는 실제 후보 source가 `ready_for_operating_closure_human_review`가 되고, `CASE-V2`/`operator-scanner-outputs` source가 차단되는지 검증한다. frontend runtime sanity는 새 API, 버튼, 표 header, safety copy를 검증한다.
+- 예외 케이스: summary가 ready여도 실제 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 export, completion audit review가 모두 완료되기 전까지 전체 goal은 완료가 아니다.

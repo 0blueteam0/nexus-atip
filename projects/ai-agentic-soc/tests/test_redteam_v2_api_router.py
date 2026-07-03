@@ -2804,6 +2804,87 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["active_scan_executed"])
 
+    def test_v2_operating_closure_readiness_summary_routes_ready_source_to_human_review(self) -> None:
+        case_id = f"REAL-OPERATING-SUMMARY-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / f"real-client-summary-{uuid.uuid4().hex[:8]}"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "summary-nuclei.jsonl": '{"template-id":"summary-panel","info":{"name":"Summary panel","severity":"medium"},"matched-at":"https://app.example.com/admin"}',
+            "summary-openvas.xml": "<report><results><result><id>summary-openvas</id><name>Summary OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.41</host><port>443/tcp</port></result></results></report>",
+            "summary-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-SUMMARY-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "summary-sbom-cyclonedx.json": '{"bomFormat":"CycloneDX","components":[{"bom-ref":"pkg:pypi/example@1.0.0","name":"example","version":"1.0.0"}],"vulnerabilities":[{"id":"CVE-SUMMARY-SCA","affects":[{"ref":"pkg:pypi/example@1.0.0"}],"ratings":[{"severity":"medium"}]}]}',
+            "summary-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-SUMMARY-NPM"}]}}}',
+            "summary-zap-alerts.json": '{"site":[{"@name":"https://app.example.com","alerts":[{"pluginid":"10021","name":"Summary ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.com/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        response = self.client.post("/api/redteam/v2/toolchains/operating-closure-readiness-summary", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-SUMMARY-READY",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "evidence-reviewer@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_operating_closure_readiness_summary")
+        self.assertEqual(body["status"], "ready_for_operating_closure_human_review")
+        self.assertTrue(body["ready_for_operating_closure_human_review"])
+        self.assertEqual(body["next_api"], "/api/redteam/v2/toolchains/operating-closure-human-review")
+        self.assertFalse(body["missing_required_tool_ids"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        by_step = {item["step_id"]: item for item in body["workflow_steps"]}
+        self.assertEqual(by_step["real_operating_evidence_readiness"]["status"], "passed")
+        self.assertEqual(by_step["operating_closure_submission_package"]["status"], "passed")
+        self.assertEqual(by_step["operating_closure_human_review"]["status"], "ready")
+
+    def test_v2_operating_closure_readiness_summary_blocks_fixture_source(self) -> None:
+        case_id = f"CASE-V2-OPERATING-SUMMARY-BLOCKED-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        (source_dir / "summary-nuclei.jsonl").write_text(
+            '{"template-id":"summary-blocked","info":{"name":"Summary blocked","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            encoding="utf-8",
+            newline="\n",
+        )
+        (source_dir / "summary-trivy.json").write_text(
+            '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-SUMMARY-BLOCKED","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            encoding="utf-8",
+            newline="\n",
+        )
+
+        response = self.client.post("/api/redteam/v2/toolchains/operating-closure-readiness-summary", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-SUMMARY-BLOCKED",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "evidence-reviewer@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["status"], "operating_closure_readiness_blocked")
+        self.assertFalse(body["ready_for_operating_closure_human_review"])
+        self.assertEqual(body["next_api"], "/api/redteam/v2/toolchains/real-operating-evidence-readiness")
+        self.assertIn("real_operating_evidence_readiness_required", body["blockers"])
+        self.assertIn("all_required_tool_artifacts_required", body["blockers"])
+        self.assertIn("TOOL-OPENVAS-001", body["missing_required_tool_ids"])
+        self.assertTrue(body["missing_tool_remediation"])
+        by_step = {item["step_id"]: item for item in body["workflow_steps"]}
+        self.assertEqual(by_step["real_operating_evidence_readiness"]["status"], "blocked")
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+
     def test_v2_operating_closure_human_review_records_hitl_checklist_without_execution(self) -> None:
         case_id = f"CASE-V2-OPERATING-CLOSURE-REVIEW-001-{uuid.uuid4().hex[:8]}"
         source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"

@@ -1882,3 +1882,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 backend load가 launch-readiness를 읽고 `분석도구`, `버튼`, `실행 상태`, `차단 사유`, `사용자 안내`, `연결 API` 표로 표시한다.
 - [x] API regression과 frontend launch readiness sanity를 추가한다.
 - [ ] 이 API는 버튼 readiness만 판단하며 실제 산출물, 승인, 보고서 gate 완료를 대신하지 않는다.
+
+## 126. 갱신 목표 - 운영 closure 준비 요약
+
+- [x] `/api/redteam/v2/toolchains/operating-closure-readiness-summary`를 추가한다.
+- [x] 실제 운영 증거 사전 점검과 운영 closure 제출 패키지 상태를 함께 요약해 `workflow_steps`, `blockers`, `next_api`를 반환한다.
+- [x] RedTeam2에 `운영 closure 준비 요약`, `운영 closure 다음 단계`, `운영 closure 준비 blocker` 표를 추가한다.
+- [x] API regression과 frontend runtime sanity가 ready source와 fixture/test-like source 차단을 검증한다.
+- [ ] 이 요약은 사람 검토 단계로 넘어갈 수 있는지 판단할 뿐이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.

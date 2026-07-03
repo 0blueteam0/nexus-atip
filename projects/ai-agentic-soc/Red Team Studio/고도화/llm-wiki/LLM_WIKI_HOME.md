@@ -222,6 +222,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 39. RedTeam2 화면은 `필수 6개 도구 coverage`, `누락 필수 도구`, `필수 6개 분석도구` 표를 collection 정본 화면으로 사용한다. 초급 운영자는 이 표에서 각 도구의 `분석·Evidence 후보 완료`, `결과 있음, 후속 검토 필요`, `결과 누락` 상태와 다음 행동을 확인해야 하며, 이 UI도 실제 운영 산출물과 승인 gate 완료 증거를 대체하지 않는다.
 40. 실제 운영 증거 사전 점검의 `missing_tool_remediation`은 누락된 필수 도구별 예상 파일명 패턴과 한국어 다음 행동의 정본이다. RedTeam2의 `누락 도구` 표는 이 값을 사용하며, `does_not_execute_tool=true`인 remediation은 파일 준비 안내일 뿐 scanner 실행이나 active scan을 수행하지 않는다.
 41. `/api/redteam/v2/toolchains/launch-readiness`는 RedTeam2 분석도구 버튼 활성화 판단의 정본이다. 이 API는 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP별 `button_label_ko`, `can_execute_now`, `blocked_reasons`, `primary_api`를 반환하지만 side-effect-free 사전 판정만 수행한다. scanner 명령, Docker/WSL, network, active scan은 실행하지 않으며, 실제 실행 또는 운영 산출물 첨부는 ROE/HITL/runtime preflight와 후속 Evidence/Finding/Matrix/Report/export gate를 통과해야 한다.
+42. `/api/redteam/v2/toolchains/operating-closure-readiness-summary`는 실제 운영 증거 사전 점검과 운영 closure 제출 패키지를 사람 검토 직전 상태로 묶는 정본이다. `workflow_steps`, `blockers`, `next_api`, `ready_for_operating_closure_human_review`를 확인해 다음 조치를 결정한다. 이 API도 scanner 명령, Docker, WSL, network를 실행하지 않고 전체 goal을 완료 처리하지 않는다.
 
 ## 남은 작업
 

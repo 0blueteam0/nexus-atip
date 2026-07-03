@@ -3262,6 +3262,108 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
     return result
 
 
+def summarize_operating_closure_readiness(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("source_dir"), "operating-closure-readiness-summary"]))
+    summary_id = stable_id("OCRSUM", [case_id, toolchain_id, payload.get("source_dir"), requested_by, now_utc()])
+    review_payload = {
+        **payload,
+        "case_id": case_id,
+        "requested_by": requested_by,
+        "toolchain_id": toolchain_id,
+        "require_real_completion_evidence": payload.get("require_real_completion_evidence", True),
+    }
+    evidence_readiness = assess_real_operating_evidence_readiness(review_payload)
+    closure_package = prepare_operating_toolchain_closure_submission_package(review_payload)
+    readiness_ready = bool(evidence_readiness.get("ready_for_operating_closure_submission"))
+    package_ready = bool(closure_package.get("ready_for_operating_close"))
+    workflow_steps = [
+        {
+            "step_id": "real_operating_evidence_readiness",
+            "title_ko": "실제 운영 증거 사전 점검",
+            "status": "passed" if readiness_ready else "blocked",
+            "primary_api": "/api/redteam/v2/toolchains/real-operating-evidence-readiness",
+            "operator_action_ko": "필수 6개 도구 산출물, 실제 운영 경로, 승인자 4명을 먼저 통과시킵니다.",
+            "evidence": evidence_readiness.get("readiness_id"),
+        },
+        {
+            "step_id": "operating_closure_submission_package",
+            "title_ko": "운영 closure 제출 패키지",
+            "status": "passed" if package_ready else "blocked",
+            "primary_api": "/api/redteam/v2/toolchains/operating-closure-submission-package",
+            "operator_action_ko": "source_dir, 승인자, close payload, 개발 부산물 제외 상태를 검토합니다.",
+            "evidence": closure_package.get("package_id"),
+        },
+        {
+            "step_id": "operating_closure_human_review",
+            "title_ko": "운영 closure 사람 검토",
+            "status": "ready" if readiness_ready and package_ready else "waiting",
+            "primary_api": "/api/redteam/v2/toolchains/operating-closure-human-review",
+            "operator_action_ko": "제출 패키지가 준비되면 사람이 체크리스트와 승인자 서명을 기록합니다.",
+            "evidence": "requires_human_signoff",
+        },
+        {
+            "step_id": "reviewed_operating_close",
+            "title_ko": "검토 완료 운영 closure 실행",
+            "status": "waiting",
+            "primary_api": "/api/redteam/v2/toolchains/execute-reviewed-operating-close",
+            "operator_action_ko": "사람 검토 record에 저장된 approved close payload만 사용합니다.",
+            "evidence": "requires_human_review_id",
+        },
+        {
+            "step_id": "certify_and_audit",
+            "title_ko": "증거 인증과 completion audit",
+            "status": "waiting",
+            "primary_api": "/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence",
+            "operator_action_ko": "Report export와 completion gate가 끝난 뒤 completion audit 후보로 인증합니다.",
+            "evidence": "requires_reviewed_close_execution",
+        },
+    ]
+    blocker_set = set(str(item) for item in evidence_readiness.get("blockers") or [])
+    blocker_set.update(str(item) for item in closure_package.get("errors") or [])
+    if not readiness_ready:
+        blocker_set.add("real_operating_evidence_readiness_required")
+    if not package_ready:
+        blocker_set.add("operating_closure_submission_package_required")
+    ready_for_human_review = readiness_ready and package_ready
+    result = {
+        "kind": "redteam_ax_v2_operating_closure_readiness_summary",
+        "summary_id": summary_id,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "requested_by": requested_by,
+        "status": "ready_for_operating_closure_human_review" if ready_for_human_review else "operating_closure_readiness_blocked",
+        "ready_for_operating_closure_human_review": ready_for_human_review,
+        "source_dir": review_payload.get("source_dir") or review_payload.get("directory"),
+        "evidence_readiness": evidence_readiness,
+        "closure_submission_package": closure_package,
+        "workflow_steps": workflow_steps,
+        "blockers": sorted(blocker_set),
+        "missing_required_tool_ids": evidence_readiness.get("missing_required_tool_ids") or [],
+        "missing_tool_remediation": evidence_readiness.get("missing_tool_remediation") or [],
+        "next_api": (
+            "/api/redteam/v2/toolchains/operating-closure-human-review"
+            if ready_for_human_review
+            else "/api/redteam/v2/toolchains/real-operating-evidence-readiness"
+        ),
+        "next_human_actions_ko": [
+            "이 요약은 사전 점검과 제출 패키지 상태를 한 번에 보여주지만 scanner 명령은 실행하지 않습니다.",
+            "blocked 단계가 있으면 workflow_steps의 primary_api와 operator_action_ko 순서대로 보강합니다.",
+            "ready_for_operating_closure_human_review가 true가 된 뒤 운영 closure 사람 검토 기록으로 이동합니다.",
+        ],
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-operating-closure-readiness-summaries", summary_id)
+    return result
+
+
 def build_operator_evidence_submission_manifest_draft(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-V2-LIVE-READINESS-PROMOTION").strip()
     operator_identity = str(payload.get("operator_identity") or payload.get("operator") or "").strip()

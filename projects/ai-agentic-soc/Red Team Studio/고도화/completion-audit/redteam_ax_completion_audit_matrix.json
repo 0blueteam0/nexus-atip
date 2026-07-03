@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 58,
+    "proved": 59,
     "partial": 1
   },
   "audit_items": [
@@ -993,6 +993,24 @@
       "proof_summary": "The /api/redteam/v2/toolchains/launch-readiness API returns six required-tool button rows with Korean labels such as 승인된 실행 시작, 승인 요청, 결과 첨부, and 설치 확인. Each row exposes can_execute_now, blocked_reasons, launch_mode, and primary_api while preserving commands_executed_by_api=false and active_scan_executed=false. RedTeam2 loads the API and renders a Korean table for 분석도구, 버튼, 실행 상태, 차단 사유, 사용자 안내, and 연결 API.",
       "residual_gap": "This is readiness and button routing only. It does not execute scanners, produce real outputs, approve Evidence, approve Finding severity, export Report v2, or close completion gates.",
       "next_action": "Configure actual tools, wrapper pins, runtime preflight, and required human approvals, then use execute-governed or approved operator import to produce real six-tool operating evidence."
+    },
+    {
+      "id": "RTA-COMP-060",
+      "requirement": "RedTeam2 must provide a single operating closure readiness summary that connects real operating evidence readiness to the human review step without executing tools.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/operating-closure-readiness-summary API composes real-operating-evidence-readiness and operating-closure-submission-package results into a single workflow summary. It returns workflow_steps, blockers, next_api, missing_required_tool_ids, ready_for_operating_closure_human_review, and does_not_mark_goal_complete=true while preserving commands_executed_by_api=false, active_scan_executed=false, shell_expansion_allowed=false, and trusted_as_instruction=false. Regression verifies a six-tool real-source candidate routes to /operating-closure-human-review while a CASE-V2/operator-scanner-outputs source remains blocked. RedTeam2 renders Korean summary, next-step, and blocker tables.",
+      "residual_gap": "This proves the pre-human-review readiness summary only. It does not execute scanners, create real organization OpenVAS/ZAP endpoint imports, approve Evidence, approve Finding severity, export Report v2, or close completion gates.",
+      "next_action": "Run the summary against a real non-byproduct scanner output folder with real approver identities, then proceed through operating-closure-human-review, execute-reviewed-operating-close, certification, and completion audit review."
     }
   ],
   "remaining_gaps": [
@@ -1007,5 +1025,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T13:48:00+09:00"
+  "last_updated": "2026-07-03T14:04:00+09:00"
 }

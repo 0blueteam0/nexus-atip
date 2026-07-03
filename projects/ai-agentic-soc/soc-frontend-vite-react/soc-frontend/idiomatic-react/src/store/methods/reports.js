@@ -4200,6 +4200,43 @@ export default {
     }
   }
 ,
+  async summarizeRedTeam2OperatingClosureReadiness() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-operating-closure-readiness');
+    const sourceDir = String(draft.compositeOperatingCloseSourceDir || draft.compositeArtifactManifestSourceDir || '').trim();
+    const payload = {
+      case_id:caseId,
+      toolchain_id:`${reportId}-OPERATING-CLOSURE-READINESS-SUMMARY`,
+      requested_by:'current-analyst',
+      source_dir:sourceDir,
+      reviewed_by:String(draft.compositeClosureReviewer || 'lead@example.com').trim(),
+      lead_approver:String(draft.compositeClosureLead || 'lead@example.com').trim(),
+      business_owner_approver:String(draft.compositeClosureBusinessOwner || 'business-owner@example.com').trim(),
+      export_approver:String(draft.compositeClosureExportApprover || 'executive-sponsor@example.com').trim(),
+      require_real_completion_evidence:true,
+    };
+    this.setState(s => ({ redteam2OperatingClosureReadinessSummaryState:{ ...(s.redteam2OperatingClosureReadinessSummaryState || {}), status:'summarizing', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/operating-closure-readiness-summary', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2OperatingClosureReadinessSummaryState:{ ...(s.redteam2OperatingClosureReadinessSummaryState || {}), status:data.status || 'operating_closure_readiness_blocked', result:data, checkedAt:new Date().toISOString(), error:null },
+      }));
+      this.toast(data.ready_for_operating_closure_human_review ? '운영 closure 사람 검토로 이동 가능' : '운영 closure 준비 요약 차단', data.ready_for_operating_closure_human_review ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 운영 closure 준비 요약: ${data.toolchain_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2OperatingClosureReadinessSummaryState:{ ...(s.redteam2OperatingClosureReadinessSummaryState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('운영 closure 준비 요약 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async buildRedTeam2OperatorEvidenceSubmissionManifestDraft() {
     const draft = this.redTeam2AnalysisDraft();
     const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
@@ -5247,6 +5284,7 @@ export default {
     const toolchainCompletionGateState = this.state.redteam2ToolchainCompletionGateState || {};
     const toolchainClosureState = this.state.redteam2ToolchainClosureState || {};
     const realOperatingEvidenceReadinessState = this.state.redteam2RealOperatingEvidenceReadinessState || {};
+    const operatingClosureReadinessSummaryState = this.state.redteam2OperatingClosureReadinessSummaryState || {};
     const operatorEvidenceSubmissionManifestState = this.state.redteam2OperatorEvidenceSubmissionManifestState || {};
     const operatorEvidenceCardImportState = this.state.redteam2OperatorEvidenceCardImportState || {};
     const operatingClosurePackageState = this.state.redteam2OperatingClosurePackageState || {};
@@ -5275,6 +5313,7 @@ export default {
     const toolchainCompletionGate = toolchainCompletionGateState.result || {};
     const toolchainClosure = toolchainClosureState.result || {};
     const realOperatingEvidenceReadiness = realOperatingEvidenceReadinessState.result || {};
+    const operatingClosureReadinessSummary = operatingClosureReadinessSummaryState.result || {};
     const operatorEvidenceSubmissionManifest = operatorEvidenceSubmissionManifestState.result || {};
     const operatorEvidenceCardImport = operatorEvidenceCardImportState.result || {};
     const operatingClosurePackage = operatingClosurePackageState.result || {};
@@ -5431,6 +5470,8 @@ export default {
       operating_collection_e2e_complete:'운영 산출물 E2E 완료',
       real_operating_evidence_ready:'실제 운영 증거 준비 완료',
       real_operating_evidence_blocked:'실제 운영 증거 차단',
+      ready_for_operating_closure_human_review:'운영 closure 사람 검토 가능',
+      operating_closure_readiness_blocked:'운영 closure 준비 차단',
       ready_for_operating_close:'운영 closure 준비 완료',
       ready_for_human_close_execution:'사람 검토 완료',
       review_required:'사람 검토 보완 필요',
@@ -6039,6 +6080,7 @@ export default {
     ];
     const toolchainCompletionRows = [
       ['실제 운영 증거 사전 점검', realOperatingEvidenceReadiness.ready_for_operating_closure_submission ? '통과' : koValue(realOperatingEvidenceReadiness.status || realOperatingEvidenceReadinessState.status || '대기'), realOperatingEvidenceReadiness.ready_for_operating_closure_submission ? '운영 closure 제출 가능' : (realOperatingEvidenceReadinessState.error || `${(realOperatingEvidenceReadiness.blockers || []).length}개 blocker`)],
+      ['운영 closure 준비 요약', operatingClosureReadinessSummary.ready_for_operating_closure_human_review ? '사람 검토 가능' : koValue(operatingClosureReadinessSummary.status || operatingClosureReadinessSummaryState.status || '대기'), operatingClosureReadinessSummary.ready_for_operating_closure_human_review ? '운영 closure 사람 검토 기록으로 이동 가능' : (operatingClosureReadinessSummaryState.error || `${(operatingClosureReadinessSummary.blockers || []).length}개 blocker`)],
       ['운영 closure 제출 패키지', operatingClosurePackage.ready_for_operating_close ? '준비 완료' : koValue(operatingClosurePackage.status || operatingClosurePackageState.status || '대기'), operatingClosurePackage.ready_for_operating_close ? 'close-operating payload 검토 가능' : (operatingClosurePackageState.error || 'source_dir과 승인자 4명 확인')],
       ['개발 부산물 제외', operatingClosurePackage.completion_evidence_allowed ? '통과' : koValue(operatingClosurePackage.source_completion_review?.allowed_use || '대기'), operatingClosurePackage.completion_evidence_allowed ? '실제 운영 완료 증거 후보' : 'fixture, smoke, sample, test, CASE-V2, operator-scanner-outputs 경로는 완료/보고서 Claim 증거로 사용하지 않습니다'],
       ['운영 closure 사람 검토', operatingClosureReview.ready_for_human_close_execution ? '검토 기록 완료' : koValue(operatingClosureReview.status || operatingClosureReviewState.status || '대기'), operatingClosureReview.ready_for_human_close_execution ? '승인된 close payload 보관됨' : (operatingClosureReviewState.error || '제출 패키지 확인 뒤 사람 검토 기록')],
@@ -6057,6 +6099,22 @@ export default {
       item.title_ko || item.item_id || '-',
       koValue(item.status || '대기'),
       item.evidence || '-',
+    ]);
+    const operatingClosureReadinessSummaryRows = [
+      ['상태', koValue(operatingClosureReadinessSummary.status || operatingClosureReadinessSummaryState.status || '대기'), operatingClosureReadinessSummary.ready_for_operating_closure_human_review ? '운영 closure 사람 검토 기록 가능' : (operatingClosureReadinessSummaryState.error || '운영 closure 준비 요약 버튼을 누르세요')],
+      ['다음 API', operatingClosureReadinessSummary.next_api || '/api/redteam/v2/toolchains/operating-closure-readiness-summary', operatingClosureReadinessSummary.does_not_mark_goal_complete ? '전체 목표 완료 처리 없음' : '대기'],
+      ['명령 실행', koBool(operatingClosureReadinessSummary.commands_executed_by_api ?? false), 'scanner, Docker, WSL, network 실행 없음'],
+    ];
+    const operatingClosureReadinessStepRows = (operatingClosureReadinessSummary.workflow_steps || []).map(item => [
+      item.title_ko || item.step_id || '-',
+      koValue(item.status || '대기'),
+      item.operator_action_ko || '-',
+      item.primary_api || '-',
+    ]);
+    const operatingClosureReadinessBlockerRows = (operatingClosureReadinessSummary.blockers || []).map(item => [
+      item,
+      item === 'real_operating_evidence_readiness_required' ? '실제 운영 증거 사전 점검의 blocker를 해소하세요' : (item === 'operating_closure_submission_package_required' ? '운영 closure 제출 패키지를 준비 상태로 만드세요' : '입력값 또는 source_dir을 보완하세요'),
+      operatingClosureReadinessSummary.next_api || '-',
     ]);
     const realOperatingEvidenceReadinessRows = (realOperatingEvidenceReadiness.checklist || []).map(item => [
       item.title_ko || item.field || '-',
@@ -6659,6 +6717,11 @@ export default {
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:realOperatingEvidenceReadinessState.status === 'checking' ? C.raised : C.bg, color:realOperatingEvidenceReadinessState.status === 'checking' ? C.muted : C.amber, cursor:realOperatingEvidenceReadinessState.status === 'checking' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, realOperatingEvidenceReadinessState.status === 'checking' ? '실제 증거 점검 중' : '실제 운영 증거 사전 점검'),
               h('button', {
+                onClick:()=>this.summarizeRedTeam2OperatingClosureReadiness(),
+                disabled:operatingClosureReadinessSummaryState.status === 'summarizing',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.coral}`, background:operatingClosureReadinessSummaryState.status === 'summarizing' ? C.raised : C.bg, color:operatingClosureReadinessSummaryState.status === 'summarizing' ? C.muted : C.coral, cursor:operatingClosureReadinessSummaryState.status === 'summarizing' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, operatingClosureReadinessSummaryState.status === 'summarizing' ? '준비 요약 중' : '운영 closure 준비 요약'),
+              h('button', {
                 onClick:()=>this.buildRedTeam2OperatorEvidenceSubmissionManifestDraft(),
                 disabled:operatorEvidenceSubmissionManifestState.status === 'drafting',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:operatorEvidenceSubmissionManifestState.status === 'drafting' ? C.raised : C.bg, color:operatorEvidenceSubmissionManifestState.status === 'drafting' ? C.muted : C.blue, cursor:operatorEvidenceSubmissionManifestState.status === 'drafting' ? 'not-allowed' : 'pointer', fontWeight:900 },
@@ -6771,6 +6834,9 @@ export default {
             this.renderTable(['Finding ID','Matrix 상태','Claim ID','차단/결과'], toolchainMatrixRows.length ? toolchainMatrixRows : [['대기','-','심각도 승인 뒤 Matrix 초안 생성 버튼을 누르세요','-']]),
             this.renderTable(['Report v2','상태','근거'], toolchainReportRows),
             this.renderTable(['실제 운영 증거 사전 점검','상태','근거'], realOperatingEvidenceReadinessRows.length ? realOperatingEvidenceReadinessRows : [['대기','-','실제 운영 증거 사전 점검 버튼을 누르세요']]),
+            this.renderTable(['운영 closure 준비 요약','상태','근거'], operatingClosureReadinessSummaryRows),
+            this.renderTable(['운영 closure 다음 단계','상태','사용자 조치','연결 API'], operatingClosureReadinessStepRows.length ? operatingClosureReadinessStepRows : [['대기','-','운영 closure 준비 요약 버튼을 누르세요','/api/redteam/v2/toolchains/operating-closure-readiness-summary']]),
+            this.renderTable(['운영 closure 준비 blocker','조치','다음 API'], operatingClosureReadinessBlockerRows.length ? operatingClosureReadinessBlockerRows : [['없음','현재 표시된 준비 blocker 없음','-']]),
             this.renderTable(['필수 분석도구 산출물','상태','파일','SHA-256/후보'], realOperatingToolCoverageRows.length ? realOperatingToolCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 파일을 점검합니다','-']]),
             this.renderTable(['누락 도구','예상 파일명 패턴','다음 행동','안전'], realOperatingMissingToolRows.length ? realOperatingMissingToolRows : [['없음','-','현재 표시된 누락 도구 없음','-']]),
             this.renderTable(['실제 운영 증거 blocker','조치','경고'], realOperatingEvidenceBlockerRows.length ? realOperatingEvidenceBlockerRows : [['없음','현재 표시된 blocker 없음','-']]),
