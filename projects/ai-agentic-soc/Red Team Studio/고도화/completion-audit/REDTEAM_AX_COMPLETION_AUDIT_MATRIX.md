@@ -145,6 +145,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 응답에는 한국어 `operator_setup_guidance_ko`가 포함되어 secret 값 금지, external vault reference 사용, 승인된 read-only report/passive alert URL 사용을 초급 운영자에게 설명한다.
 - 이 변경은 조직 OpenVAS/ZAP endpoint/vault 준비를 더 안전하게 만드는 사전 검증이며, 실제 조직 endpoint import 성공 또는 6개 도구 운영 closure를 완료 증거로 대체하지 않는다.
 
+## 2026-07-03 갱신 - 필수 6개 분석도구 collection coverage gate
+
+- `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`는 `required_analysis_tool_coverage`를 반환한다.
+- coverage는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 각각의 present/missing, 분석 에이전트 정규화, Evidence 후보 생성 여부를 분리한다.
+- 2개 도구만 수집된 경우 collection 자체는 `collected`일 수 있지만 `completion_gate_ready=false`와 `missing_required_tool_ids`가 남아 전체 운영 완료로 볼 수 없다.
+- 6개 도구 imported-output collection은 coverage complete와 `completion_gate_ready=true`를 반환하지만, 이후 Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate가 별도로 필요하다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

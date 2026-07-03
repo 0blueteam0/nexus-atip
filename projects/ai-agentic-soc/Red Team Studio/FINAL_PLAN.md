@@ -1851,3 +1851,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 응답에 한국어 `operator_setup_guidance_ko`를 포함해 secret 값 금지, external vault reference 사용, 승인된 read-only URL 조건을 설명한다.
 - [x] regression test가 정상 OpenVAS endpoint는 `safe_read_only_endpoint_ref`, 위험 ZAP ascan URL은 `invalid_endpoint_ref`로 검증한다.
 - [ ] 조직 OpenVAS/ZAP endpoint/vault를 실제로 구성하고 `--allow-network --require-ready` live import를 통과하기 전까지 external scanner gate는 미완료로 유지한다.
+
+## 122. 갱신 목표 - 6개 필수 분석도구 collection coverage gate
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 응답에 `required_analysis_tool_coverage`를 추가한다.
+- [x] Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 도구의 present/missing, analysis agent, Evidence 후보 coverage를 분리해 표시한다.
+- [x] 2개 도구 smoke collection은 `status=collected`를 유지하되 `completion_gate_ready=false`, `missing_required_tool_ids`로 전체 완료가 아님을 드러낸다.
+- [x] 6개 도구 imported-output collection은 `required_tool_coverage_complete=true`, `analysis_agent_coverage_complete=true`, `evidence_candidate_coverage_complete=true`, `completion_gate_ready=true`를 반환한다.
+- [ ] 이 coverage gate는 collection boundary 검증일 뿐이며, 실제 운영 산출물, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate를 모두 닫기 전까지 전체 goal은 미완료다.

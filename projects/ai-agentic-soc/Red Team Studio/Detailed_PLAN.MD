@@ -1143,3 +1143,12 @@ Create Case
 - 사용자 안내: 한국어 guidance는 secret 값 직접 제출 금지, external vault reference 사용, read-only report/passive alert endpoint 조건을 설명한다.
 - 테스트 전략: 기존 OpenVAS/ZAP credential vault regression에 정상 OpenVAS endpoint diagnostics와 위험 ZAP ascan endpoint 차단을 추가한다.
 - 예외 케이스: 이 diagnostics는 조직 endpoint가 실제 reachable하다는 증거가 아니다. 실제 service import는 `redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready`와 strict promotion에서 별도로 증명해야 한다.
+
+## 69. 갱신 목표 반영 - 필수 6개 분석도구 collection coverage
+
+- 목적: 일부 도구 결과만 회수된 collection이 전체 RedTeam AX 도구 운영 완료로 오인되는 것을 막는다.
+- 구현: `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`가 `required_analysis_tool_coverage`를 반환한다. 이 객체는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 각각의 run/result/evidence/agent coverage와 `completion_gate_ready`를 포함한다.
+- 데이터 계약: 상위 응답에는 `required_tool_count`, `present_required_tool_count`, `missing_required_tool_ids`, `required_tool_coverage_complete`, `analysis_agent_coverage_complete`, `evidence_candidate_coverage_complete`, `completion_gate_ready`, `operator_summary_ko`, `next_action_ko`가 포함된다.
+- 화면/기능 명세: RedTeam2는 collection 결과를 보여줄 때 `status=collected`만 보지 말고 `completion_gate_ready`와 `missing_required_tool_ids`를 함께 표시해야 한다. 초급 사용자는 “몇 개 도구 중 몇 개 결과가 수집되었는지”와 “누락 도구가 무엇인지”를 한국어로 확인해야 한다.
+- 테스트 전략: 2개 도구 runner collection은 정상 수집으로 남지만 completion gate 미준비와 누락 4개 도구를 검증한다. 6개 도구 imported-output collection은 coverage complete와 completion gate ready를 검증한다.
+- 예외 케이스: 이 gate는 collection boundary의 구조 검증이다. 실제 운영 증거 여부, 개발 부산물 제외, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 후속 단계에서 별도 검증해야 한다.

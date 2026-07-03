@@ -314,6 +314,9 @@ ANALYSIS_TOOL_PROFILES = [
     },
 ]
 
+REQUIRED_ANALYSIS_TOOL_IDS = [profile["tool_id"] for profile in ANALYSIS_TOOL_PROFILES]
+ANALYSIS_TOOL_PROFILE_BY_ID = {profile["tool_id"]: profile for profile in ANALYSIS_TOOL_PROFILES}
+
 TOOL_INSTALL_READINESS_CATALOG = {
     "TOOL-NUCLEI-001": {
         "official_url": "https://github.com/projectdiscovery/nuclei",
@@ -5429,6 +5432,115 @@ def build_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]
     return record
 
 
+def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, Any]], payload: dict[str, Any]) -> dict[str, Any]:
+    requested_tool_ids = [
+        str(tool_id).strip()
+        for tool_id in (payload.get("required_tool_ids") or REQUIRED_ANALYSIS_TOOL_IDS)
+        if str(tool_id).strip()
+    ]
+    present_by_tool: dict[str, dict[str, Any]] = {}
+    for step in collected_steps:
+        tool_id = str(step.get("tool_id") or "").strip()
+        if not tool_id or tool_id in present_by_tool:
+            continue
+        normalized = step.get("normalized_result") if isinstance(step.get("normalized_result"), dict) else {}
+        evidence = step.get("evidence_candidate") if isinstance(step.get("evidence_candidate"), dict) else {}
+        agent = step.get("analysis_agent_summary") if isinstance(step.get("analysis_agent_summary"), dict) else {}
+        present_by_tool[tool_id] = {
+            "tool_id": tool_id,
+            "run_id": step.get("run_id"),
+            "status": step.get("status"),
+            "result_id": normalized.get("result_id"),
+            "normalized_status": normalized.get("status"),
+            "structured_item_count": normalized.get("structured_item_count", 0),
+            "evidence_id": evidence.get("evidence_id"),
+            "evidence_status": evidence.get("status"),
+            "agent_id": agent.get("agent_id"),
+            "agent_name": agent.get("agent_name"),
+        }
+
+    coverage_rows: list[dict[str, Any]] = []
+    missing_tool_ids: list[str] = []
+    present_tool_ids: list[str] = []
+    analyzed_tool_ids: list[str] = []
+    evidence_tool_ids: list[str] = []
+    for tool_id in requested_tool_ids:
+        profile = ANALYSIS_TOOL_PROFILE_BY_ID.get(tool_id, {})
+        row = {
+            "tool_id": tool_id,
+            "tool_name": profile.get("name") or tool_id,
+            "display_name": profile.get("display_name") or profile.get("name") or tool_id,
+            "required": True,
+            "status": "missing",
+            "run_id": None,
+            "result_id": None,
+            "evidence_id": None,
+            "agent_id": profile.get("agent_id"),
+            "normalizer_id": profile.get("normalizer_id"),
+            "structured_item_count": 0,
+            "ready_for_completion_gate": False,
+            "next_action_ko": "이 도구의 실행 결과를 가져오고 분석 에이전트 정규화 및 Evidence 후보 생성을 완료하세요.",
+        }
+        present = present_by_tool.get(tool_id)
+        if present:
+            row.update({
+                "status": "present",
+                "run_id": present.get("run_id"),
+                "result_id": present.get("result_id"),
+                "evidence_id": present.get("evidence_id"),
+                "agent_id": present.get("agent_id") or row["agent_id"],
+                "structured_item_count": present.get("structured_item_count", 0),
+                "ready_for_completion_gate": bool(
+                    present.get("result_id")
+                    and present.get("evidence_id")
+                    and present.get("normalized_status") == "Normalized"
+                    and present.get("evidence_status") == "created"
+                ),
+                "next_action_ko": "Evidence 후보 승인과 Finding severity 2인 승인 후 보고서 게이트로 이동하세요.",
+            })
+            present_tool_ids.append(tool_id)
+            if present.get("result_id"):
+                analyzed_tool_ids.append(tool_id)
+            if present.get("evidence_id"):
+                evidence_tool_ids.append(tool_id)
+        else:
+            missing_tool_ids.append(tool_id)
+        coverage_rows.append(row)
+
+    required_count = len(requested_tool_ids)
+    present_count = len(present_tool_ids)
+    coverage_complete = required_count > 0 and present_count == required_count
+    analysis_complete = required_count > 0 and len(set(analyzed_tool_ids)) == required_count
+    evidence_complete = required_count > 0 and len(set(evidence_tool_ids)) == required_count
+    return {
+        "kind": "redteam_ax_v2_required_analysis_tool_coverage",
+        "required_tool_ids": requested_tool_ids,
+        "required_tool_count": required_count,
+        "present_required_tool_ids": present_tool_ids,
+        "missing_required_tool_ids": missing_tool_ids,
+        "analyzed_required_tool_ids": analyzed_tool_ids,
+        "evidence_candidate_required_tool_ids": evidence_tool_ids,
+        "present_required_tool_count": present_count,
+        "missing_required_tool_count": len(missing_tool_ids),
+        "analysis_required_tool_count": len(set(analyzed_tool_ids)),
+        "evidence_candidate_required_tool_count": len(set(evidence_tool_ids)),
+        "tool_coverage_complete": coverage_complete,
+        "analysis_agent_coverage_complete": analysis_complete,
+        "evidence_candidate_coverage_complete": evidence_complete,
+        "completion_gate_ready": coverage_complete and analysis_complete and evidence_complete,
+        "rows": coverage_rows,
+        "operator_summary_ko": (
+            f"필수 분석도구 {required_count}개 중 {present_count}개 결과가 수집되었습니다. "
+            f"누락 도구: {', '.join(missing_tool_ids) if missing_tool_ids else '없음'}."
+        ),
+        "next_action_ko": (
+            "6개 필수 도구 결과가 모두 분석·증거화되었습니다. Evidence 승인과 Finding severity 2인 승인으로 진행하세요."
+            if coverage_complete and evidence_complete
+            else "누락된 필수 도구 결과를 먼저 가져온 뒤 다시 컬렉션을 생성하세요."
+        ),
+    }
+
+
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
@@ -5554,6 +5666,14 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
     collected_count = sum(1 for step in collected_steps if step.get("status") == "collected")
     evidence_count = sum(1 for step in collected_steps if (step.get("evidence_candidate") or {}).get("evidence_id"))
     blocked_count = sum(1 for step in collected_steps if step.get("status") in {"blocked", "quarantined", "collected_with_errors"})
+    required_tool_coverage = _toolchain_required_analysis_tool_coverage(collected_steps, payload)
+    completion_gate_ready = (
+        not errors
+        and blocked_count == 0
+        and bool(required_tool_coverage["completion_gate_ready"])
+    )
+    if required_tool_coverage["missing_required_tool_ids"]:
+        warnings.append("required_analysis_tool_coverage_incomplete")
     if toolchain is not None and not collected_steps:
         warnings.append("toolchain_has_no_collectable_runs")
     result = {
@@ -5572,11 +5692,23 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         "evidence_candidate_count": evidence_count,
         "analysis_agent_summary_count": len(analysis_agent_summaries),
         "analysis_agent_summaries": analysis_agent_summaries,
+        "required_tool_count": required_tool_coverage["required_tool_count"],
+        "present_required_tool_count": required_tool_coverage["present_required_tool_count"],
+        "missing_required_tool_count": required_tool_coverage["missing_required_tool_count"],
+        "present_required_tool_ids": required_tool_coverage["present_required_tool_ids"],
+        "missing_required_tool_ids": required_tool_coverage["missing_required_tool_ids"],
+        "required_tool_coverage_complete": required_tool_coverage["tool_coverage_complete"],
+        "analysis_agent_coverage_complete": required_tool_coverage["analysis_agent_coverage_complete"],
+        "evidence_candidate_coverage_complete": required_tool_coverage["evidence_candidate_coverage_complete"],
+        "completion_gate_ready": completion_gate_ready,
+        "required_analysis_tool_coverage": required_tool_coverage,
         "commands_executed_by_api": False,
         "raw_output_trusted_as_instruction": False,
         "requires_human_validation": True,
         "requires_evidence_approval_before_finding": True,
         "steps": collected_steps,
+        "operator_summary_ko": required_tool_coverage["operator_summary_ko"],
+        "next_action_ko": required_tool_coverage["next_action_ko"],
         "policy": "Toolchain collection only reads stored runner artifacts, sanitizes untrusted output, invokes normalizer agents, and creates candidate Evidence Cards for analyst approval.",
         "created_at": now_utc(),
     }
