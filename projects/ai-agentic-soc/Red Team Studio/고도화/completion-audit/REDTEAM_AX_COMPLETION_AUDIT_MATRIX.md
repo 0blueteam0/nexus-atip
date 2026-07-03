@@ -159,6 +159,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - frontend runtime readiness contract와 Korean copy inventory가 새 coverage 문구와 API field anchor를 검사한다.
 - 이 변경은 운영자 가시성을 높이는 UI 증거이며 실제 운영 산출물과 승인 gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - 실제 운영 증거 누락 도구 remediation 안내
+
+- `/api/redteam/v2/toolchains/real-operating-evidence-readiness`는 누락된 필수 도구별 `missing_tool_remediation`을 반환한다.
+- 각 remediation row는 `expected_filename_patterns`, `operator_action_ko`, `accepted_formats_ko`, `does_not_execute_tool=true`를 포함한다.
+- RedTeam2는 `누락 도구`, `예상 파일명 패턴`, `다음 행동`, `안전` 표로 이 값을 표시한다.
+- 이 변경은 운영자가 누락 파일을 준비하도록 돕는 안내이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

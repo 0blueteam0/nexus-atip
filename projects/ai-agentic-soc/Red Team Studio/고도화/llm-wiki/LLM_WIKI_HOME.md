@@ -220,6 +220,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 37. OpenVAS/ZAP credential authorization은 live service import 전에 `endpoint_ref_diagnostics`를 확인한다. `endpoint_ref`에 credential-in-URL, secret query key, mutating path term, missing host, non-http scheme이 있으면 `invalid`로 차단하며, `operator_setup_guidance_ko`는 secret 값 금지와 external vault reference 사용을 설명한다. 이 진단은 endpoint/vault 설정 품질을 높이는 사전 통제이며, 조직 endpoint import 성공이나 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
 38. `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`의 `required_analysis_tool_coverage`가 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 필수 분석도구의 수집/분석/Evidence 후보 coverage 정본이다. `status=collected`여도 `completion_gate_ready=false` 또는 `missing_required_tool_ids`가 있으면 전체 도구 운영 완료가 아니다. RedTeam2와 completion workflow는 `required_tool_coverage_complete`, `analysis_agent_coverage_complete`, `evidence_candidate_coverage_complete`를 함께 확인해야 한다.
 39. RedTeam2 화면은 `필수 6개 도구 coverage`, `누락 필수 도구`, `필수 6개 분석도구` 표를 collection 정본 화면으로 사용한다. 초급 운영자는 이 표에서 각 도구의 `분석·Evidence 후보 완료`, `결과 있음, 후속 검토 필요`, `결과 누락` 상태와 다음 행동을 확인해야 하며, 이 UI도 실제 운영 산출물과 승인 gate 완료 증거를 대체하지 않는다.
+40. 실제 운영 증거 사전 점검의 `missing_tool_remediation`은 누락된 필수 도구별 예상 파일명 패턴과 한국어 다음 행동의 정본이다. RedTeam2의 `누락 도구` 표는 이 값을 사용하며, `does_not_execute_tool=true`인 remediation은 파일 준비 안내일 뿐 scanner 실행이나 active scan을 수행하지 않는다.
 
 ## 남은 작업
 

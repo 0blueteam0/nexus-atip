@@ -3025,6 +3025,7 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
     ]
     require_all_named_tools = bool(payload.get("require_all_named_tools", True))
     missing_required_tool_ids: list[str] = []
+    missing_tool_remediation: list[dict[str, Any]] = []
     if source_dir:
         manifest_builder = build_toolchain_artifact_manifest({
             "case_id": case_id,
@@ -3043,6 +3044,28 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
             missing_required_tool_ids = [tool_id for tool_id in required_tool_ids if tool_id not in present_tool_ids]
             if missing_required_tool_ids:
                 errors.append("all_required_tool_artifacts_required")
+            coverage_by_tool = {
+                str(item.get("tool_id") or ""): item
+                for item in (manifest_builder.get("tool_coverage") or [])
+                if isinstance(item, dict)
+            }
+            for tool_id in missing_required_tool_ids:
+                profile = analysis_tool_profile(tool_id) or {}
+                coverage = coverage_by_tool.get(tool_id, {})
+                patterns = coverage.get("patterns") or []
+                missing_tool_remediation.append({
+                    "tool_id": tool_id,
+                    "tool_name": profile.get("name") or coverage.get("tool_name") or tool_id,
+                    "display_name": profile.get("display_name") or coverage.get("display_name") or tool_id,
+                    "expected_filename_patterns": patterns,
+                    "status": "missing",
+                    "operator_action_ko": (
+                        f"{profile.get('display_name') or coverage.get('display_name') or tool_id} 결과 파일을 "
+                        f"`{source_dir}` 폴더에 추가한 뒤 실제 운영 증거 사전 점검을 다시 실행하세요."
+                    ),
+                    "accepted_formats_ko": ", ".join(patterns) if patterns else "JSON/XML/TXT/SARIF 등 등록된 도구 산출물",
+                    "does_not_execute_tool": True,
+                })
         if manifest_builder.get("unmatched_file_count"):
             warnings.append("source_dir_contains_unmatched_files")
 
@@ -3104,6 +3127,8 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         "required_tool_ids": required_tool_ids,
         "present_tool_ids": (manifest_builder or {}).get("present_tool_ids") or [],
         "missing_required_tool_ids": missing_required_tool_ids,
+        "missing_tool_remediation": missing_tool_remediation,
+        "missing_tool_remediation_count": len(missing_tool_remediation),
         "tool_coverage_complete": bool(manifest_builder) and not missing_required_tool_ids,
         "tool_coverage": (manifest_builder or {}).get("tool_coverage") or [],
         "unmatched_file_count": (manifest_builder or {}).get("unmatched_file_count") or 0,
@@ -3120,6 +3145,7 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         "next_human_actions_ko": [
             "blocked이면 source_dir이 실제 조직 scanner 산출물 폴더인지 먼저 확인합니다.",
             "Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 6개 결과 파일이 모두 있어야 운영 closure 제출로 이동합니다.",
+            "missing_tool_remediation의 expected_filename_patterns를 보고 누락 도구 결과 파일명을 맞춰 같은 폴더에 추가합니다.",
             "CASE-V2, fixture, operator-scanner-outputs 같은 테스트 경로는 최종 완료 증거로 사용할 수 없습니다.",
             "ready 상태가 된 뒤 같은 source_dir과 승인자 4명으로 운영 closure 제출 패키지를 생성합니다.",
         ],

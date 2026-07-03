@@ -6062,6 +6062,12 @@ export default {
       item === 'all_required_tool_artifacts_required' ? '필수 6개 분석도구 산출물 전체를 같은 폴더에 준비' : (item === 'real_operating_source_required' || item === 'no_controlled_or_test_source_required' ? '테스트 경로가 아닌 실제 조직 scanner 산출물 폴더 필요' : '입력값 보완 뒤 다시 점검'),
       (realOperatingEvidenceReadiness.warnings || []).join(', ') || '-',
     ]);
+    const realOperatingMissingToolRows = (realOperatingEvidenceReadiness.missing_tool_remediation || []).map(item => [
+      item.display_name || item.tool_id || '-',
+      item.accepted_formats_ko || (item.expected_filename_patterns || []).join(', ') || '등록된 도구 산출물',
+      item.operator_action_ko || '누락 도구 결과 파일을 source_dir에 추가한 뒤 다시 점검하세요.',
+      item.does_not_execute_tool ? '명령 실행 없음' : '확인 필요',
+    ]);
     const operatingClosureApproverRows = (operatingClosurePackage.approver_checks || []).map(item => [
       item.role_ko || item.field || '-',
       koValue(item.status || '대기'),
@@ -6753,6 +6759,7 @@ export default {
             this.renderTable(['Report v2','상태','근거'], toolchainReportRows),
             this.renderTable(['실제 운영 증거 사전 점검','상태','근거'], realOperatingEvidenceReadinessRows.length ? realOperatingEvidenceReadinessRows : [['대기','-','실제 운영 증거 사전 점검 버튼을 누르세요']]),
             this.renderTable(['필수 분석도구 산출물','상태','파일','SHA-256/후보'], realOperatingToolCoverageRows.length ? realOperatingToolCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 파일을 점검합니다','-']]),
+            this.renderTable(['누락 도구','예상 파일명 패턴','다음 행동','안전'], realOperatingMissingToolRows.length ? realOperatingMissingToolRows : [['없음','-','현재 표시된 누락 도구 없음','-']]),
             this.renderTable(['실제 운영 증거 blocker','조치','경고'], realOperatingEvidenceBlockerRows.length ? realOperatingEvidenceBlockerRows : [['없음','현재 표시된 blocker 없음','-']]),
             this.renderTable(['운영 증거 제출 manifest 항목','상태','파일/hash/검토'], operatorEvidenceSubmissionManifestRows.length ? operatorEvidenceSubmissionManifestRows : [['대기','-','운영 증거 제출 manifest 초안 버튼을 누르세요']]),
             this.renderTable(['운영 증거 제출 manifest 누락','항목','조치'], operatorEvidenceSubmissionManifestBlockerRows.length ? operatorEvidenceSubmissionManifestBlockerRows : [['없음','현재 표시된 누락 없음','-']]),

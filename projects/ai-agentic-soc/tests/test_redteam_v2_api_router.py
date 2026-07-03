@@ -2695,6 +2695,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("all_required_tool_artifacts_required", body["blockers"])
         self.assertIn("TOOL-OPENVAS-001", body["missing_required_tool_ids"])
         self.assertFalse(body["tool_coverage_complete"])
+        self.assertEqual(body["missing_tool_remediation_count"], 4)
+        remediation_by_tool = {item["tool_id"]: item for item in body["missing_tool_remediation"]}
+        self.assertIn("*openvas*.xml", remediation_by_tool["TOOL-OPENVAS-001"]["expected_filename_patterns"])
+        self.assertIn("*zap*.json", remediation_by_tool["TOOL-ZAP-001"]["expected_filename_patterns"])
+        self.assertIn("결과 파일", remediation_by_tool["TOOL-OPENVAS-001"]["operator_action_ko"])
+        self.assertTrue(remediation_by_tool["TOOL-OPENVAS-001"]["does_not_execute_tool"])
         self.assertIn("controlled_or_test_like_source_detected", body["warnings"])
         self.assertEqual(body["artifact_count"], 2)
         self.assertEqual(len(body["tool_coverage"]), 6)
@@ -2739,6 +2745,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["artifact_count"], 6)
         self.assertTrue(body["tool_coverage_complete"])
         self.assertFalse(body["missing_required_tool_ids"])
+        self.assertEqual(body["missing_tool_remediation"], [])
+        self.assertEqual(body["missing_tool_remediation_count"], 0)
         self.assertEqual(set(body["present_tool_ids"]), {
             "TOOL-NUCLEI-001",
             "TOOL-OPENVAS-001",

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 56,
+    "proved": 57,
     "partial": 1
   },
   "audit_items": [
@@ -958,6 +958,23 @@
       "proof_summary": "RedTeam2 now displays 필수 6개 도구 coverage and 누락 필수 도구 in the composite execution summary, and renders a 필수 6개 분석도구 table from required_analysis_tool_coverage.rows. Each row shows coverage status, the LLM analysis agent, and the Evidence id or next action. Frontend runtime readiness and Korean copy sanity checks include the new coverage labels and API field anchors.",
       "residual_gap": "This proves frontend visibility only. It does not provide real scanner output, OpenVAS/ZAP endpoint import, Evidence approval, Finding severity approval, Report v2 export, or completion gate closure.",
       "next_action": "Use this UI to guide the operator to supply the missing real required tool outputs, then close the actual Evidence/Finding/Matrix/Report/export workflow."
+    },
+    {
+      "id": "RTA-COMP-058",
+      "requirement": "Real operating evidence readiness must provide operator-readable remediation for each missing required scanner output without executing tools.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "The real-operating-evidence-readiness API now returns missing_tool_remediation with expected_filename_patterns, operator_action_ko, accepted_formats_ko, and does_not_execute_tool=true for each missing required tool. RedTeam2 renders a 누락 도구 table showing expected filename patterns and next action. Regression verifies missing OpenVAS and ZAP patterns such as *openvas*.xml and *zap*.json, and frontend sanity checks cover the new Korean labels and field anchors.",
+      "residual_gap": "This is remediation guidance only. It does not create the missing real scanner outputs, execute scanners, import evidence, approve Evidence, approve Finding severity, or close Report/export/completion gates.",
+      "next_action": "Use the remediation table to prepare real non-byproduct scanner output files, then rerun real-operating-evidence-readiness and continue to operating closure submission."
     }
   ],
   "remaining_gaps": [
@@ -972,5 +989,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T13:13:00+09:00"
+  "last_updated": "2026-07-03T13:20:00+09:00"
 }

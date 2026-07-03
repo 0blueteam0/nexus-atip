@@ -1866,3 +1866,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 collection 영역에 `필수 6개 분석도구` 표를 추가해 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP별 coverage 상태, LLM 분석 에이전트, Evidence/다음 행동을 보여준다.
 - [x] frontend runtime readiness contract와 Korean copy inventory가 새 coverage 문구와 API 필드를 검사한다.
 - [ ] 화면 가시성은 운영자가 누락 도구를 인지하게 하는 UI 계약이며, 실제 운영 산출물과 승인 gate 완료를 대신하지 않는다.
+
+## 124. 갱신 목표 - 실제 운영 증거 누락 도구 remediation 안내
+
+- [x] `/api/redteam/v2/toolchains/real-operating-evidence-readiness` 응답에 `missing_tool_remediation`과 `missing_tool_remediation_count`를 추가한다.
+- [x] 누락된 필수 도구마다 `expected_filename_patterns`, `operator_action_ko`, `accepted_formats_ko`, `does_not_execute_tool=true`를 반환한다.
+- [x] RedTeam2 실제 운영 증거 사전 점검 영역에 `누락 도구`, `예상 파일명 패턴`, `다음 행동`, `안전` 표를 추가한다.
+- [x] API 회귀와 frontend sanity가 OpenVAS/ZAP 누락 패턴과 한국어 조치 문구를 검증한다.
+- [ ] 이 안내는 운영자가 실제 파일을 준비하도록 돕는 remediation이며, 실제 산출물 제출·승인·보고서 gate 완료를 대신하지 않는다.

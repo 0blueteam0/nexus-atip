@@ -1161,3 +1161,12 @@ Create Case
 - API 설계 연결: 화면은 `required_analysis_tool_coverage.rows`, `completion_gate_ready`, `missing_required_tool_ids`, `present_required_tool_count`, `required_tool_count`를 읽는다.
 - 테스트 전략: `redteam_ax_frontend_runtime_readiness_contract.py`와 `test_redteam2_korean_copy_inventory.py`가 coverage 문구와 필드 anchor를 검사한다. 백엔드 targeted pytest는 coverage 데이터 자체를 계속 검증한다.
 - 예외 케이스: 이 UI는 운영자 가시성이다. 실제 operating closure, Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate 완료 증거는 별도로 필요하다.
+
+## 71. 갱신 목표 반영 - 실제 운영 증거 누락 도구 remediation 안내
+
+- 목적: 실제 운영 증거 사전 점검이 `TOOL-OPENVAS-001` 같은 내부 ID만 보여주면 초급 운영자가 어떤 파일을 준비해야 하는지 알기 어렵다.
+- API 설계: `/api/redteam/v2/toolchains/real-operating-evidence-readiness`는 `missing_tool_remediation[]`를 반환한다. 각 row는 `tool_id`, `display_name`, `expected_filename_patterns`, `operator_action_ko`, `accepted_formats_ko`, `does_not_execute_tool`를 포함한다.
+- 화면/기능 명세: RedTeam2 실제 운영 증거 사전 점검 영역은 `누락 도구`, `예상 파일명 패턴`, `다음 행동`, `안전` 표를 렌더링한다.
+- 안전 원칙: remediation은 파일 준비 안내일 뿐이며 scanner 명령, Docker/WSL, 네트워크 스캔을 실행하지 않는다. `does_not_execute_tool=true`를 화면에 `명령 실행 없음`으로 표시한다.
+- 테스트 전략: API 회귀는 fixture source에서 OpenVAS/ZAP 누락 시 `*openvas*.xml`, `*zap*.json` 패턴과 한국어 `결과 파일` 안내를 검증한다. frontend sanity는 새 한국어 label과 field anchor를 검증한다.
+- 예외 케이스: 파일명 패턴은 manifest builder 후보 탐지 규칙이다. 실제 운영 완료 증거는 해당 파일을 제출한 뒤 import, collection, Evidence approval, Finding severity, Matrix/Report/export/completion gate를 통과해야 한다.
