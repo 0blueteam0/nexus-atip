@@ -5820,6 +5820,102 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return record
 
 
+def toolchain_analyst_progress_summary(
+    *,
+    toolchain_id: str,
+    toolchain_status: str | None = None,
+    tool_count: int = 0,
+    collectable_count: int = 0,
+    collected_count: int = 0,
+    evidence_candidate_count: int = 0,
+    approved_evidence_count: int = 0,
+    blocked_count: int = 0,
+    missing_required_tool_ids: list[str] | None = None,
+    collection_id: str | None = None,
+) -> dict[str, Any]:
+    missing_required_tool_ids = missing_required_tool_ids or []
+    has_collection = bool(collection_id)
+    execution_done = collectable_count > 0 or collected_count > 0 or evidence_candidate_count > 0
+    collection_done = has_collection and collected_count > 0 and blocked_count == 0
+    evidence_ready = evidence_candidate_count > 0
+    evidence_approved = approved_evidence_count > 0 and approved_evidence_count >= evidence_candidate_count
+    if not execution_done:
+        primary_next_button = "여러 분석도구 실행"
+        next_action = "먼저 여러 분석도구 실행 또는 여러 도구 결과 첨부를 진행하세요."
+    elif not collection_done:
+        primary_next_button = "결과 회수·Evidence 후보"
+        next_action = "저장된 실행 결과를 회수해 Sanitizer, LLM normalizer, Evidence 후보 생성을 진행하세요."
+    elif evidence_ready and not evidence_approved:
+        primary_next_button = "Evidence 후보 승인"
+        next_action = "생성된 Evidence 후보를 사람이 검토·승인해야 Finding과 보고서 단계로 이동할 수 있습니다."
+    else:
+        primary_next_button = "Finding 초안 생성"
+        next_action = "승인된 Evidence를 Finding 초안, 2인 severity 승인, Matrix, Report v2 draft로 연결하세요."
+
+    stage_rows = [
+        {
+            "stage_id": "tool_execution_or_import",
+            "title_ko": "도구 실행 또는 결과 첨부",
+            "status": "done" if execution_done else "waiting",
+            "button_ko": "여러 분석도구 실행" if not execution_done else "저장 실행 상태 다시 불러오기",
+            "summary_ko": (
+                f"{tool_count}개 도구 중 {collectable_count}개 결과를 회수할 수 있습니다."
+                if execution_done else "아직 회수 가능한 실행/첨부 결과가 없습니다."
+            ),
+        },
+        {
+            "stage_id": "result_collection",
+            "title_ko": "결과 회수와 Evidence 후보 생성",
+            "status": "done" if collection_done else ("ready" if execution_done else "waiting"),
+            "button_ko": "결과 회수·Evidence 후보",
+            "summary_ko": (
+                f"{collected_count}개 결과를 회수했고 Evidence 후보 {evidence_candidate_count}개를 만들었습니다."
+                if has_collection else "저장된 stdout/stderr 또는 첨부 결과를 읽어 Evidence 후보로 바꿉니다."
+            ),
+        },
+        {
+            "stage_id": "evidence_review",
+            "title_ko": "Evidence 후보 사람 승인",
+            "status": "done" if evidence_approved else ("ready" if evidence_ready else "waiting"),
+            "button_ko": "Evidence 후보 승인",
+            "summary_ko": (
+                f"Evidence 후보 {evidence_candidate_count}개 중 {approved_evidence_count}개 승인 상태입니다."
+                if evidence_ready else "Evidence 후보가 만들어진 뒤 사람이 승인합니다."
+            ),
+        },
+        {
+            "stage_id": "finding_report_gate",
+            "title_ko": "Finding·Matrix·Report 단계",
+            "status": "ready" if evidence_approved else "waiting",
+            "button_ko": "Finding 초안 생성",
+            "summary_ko": "Evidence 승인 뒤 2인 severity 승인, Claim-Evidence Matrix, Report v2 gate로 진행합니다.",
+        },
+    ]
+    return {
+        "audience": "analyst",
+        "status": "blocked_check_required" if blocked_count else ("ready_for_next_step" if execution_done else "waiting_for_tool_results"),
+        "toolchain_id": toolchain_id,
+        "toolchain_status": toolchain_status,
+        "primary_next_button_ko": primary_next_button,
+        "next_action_ko": next_action,
+        "stage_rows": stage_rows,
+        "collectable_count": collectable_count,
+        "collected_count": collected_count,
+        "evidence_candidate_count": evidence_candidate_count,
+        "approved_evidence_count": approved_evidence_count,
+        "blocked_count": blocked_count,
+        "missing_required_tool_ids": missing_required_tool_ids,
+        "plain_language_status_ko": (
+            "차단되거나 오류가 있는 도구 결과가 있습니다. 각 단계의 사용자 안내를 먼저 확인하세요."
+            if blocked_count else (
+                f"필수 도구 결과 중 누락된 항목이 있습니다: {', '.join(missing_required_tool_ids)}."
+                if missing_required_tool_ids else "현재 단계에서 다음 버튼을 눌러 진행할 수 있습니다."
+            )
+        ),
+        "does_not_mark_goal_complete": True,
+    }
+
+
 def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     status_labels = {
         "imported": "결과 첨부 완료",
@@ -5835,6 +5931,7 @@ def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -
     requested_by = str(payload.get("requested_by") or payload.get("analyst") or "current-analyst").strip()
     toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
     if toolchain is None:
+        analyst_progress_summary = toolchain_analyst_progress_summary(toolchain_id=toolchain_id)
         return {
             "kind": "redteam_ax_v2_toolchain_run_status",
             "toolchain_id": toolchain_id,
@@ -5843,6 +5940,7 @@ def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -
             "status": "toolchain_run_not_found",
             "errors": ["toolchain_run_required"],
             "can_collect_results": False,
+            "analyst_progress_summary": analyst_progress_summary,
             "primary_next_api": "/api/redteam/v2/toolchains/execute-governed",
             "commands_executed_by_api": False,
             "active_scan_executed": False,
@@ -5884,6 +5982,13 @@ def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -
         })
     collectable_count = sum(1 for row in step_rows if row.get("can_collect_result"))
     blocked_count = sum(1 for row in step_rows if row.get("errors") or row.get("status") in {"blocked", "invalid"})
+    analyst_progress_summary = toolchain_analyst_progress_summary(
+        toolchain_id=toolchain_id,
+        toolchain_status=toolchain.get("status"),
+        tool_count=toolchain.get("tool_count") or len(step_rows),
+        collectable_count=collectable_count,
+        blocked_count=blocked_count,
+    )
     return {
         "kind": "redteam_ax_v2_toolchain_run_status",
         "toolchain_id": toolchain_id,
@@ -5905,6 +6010,7 @@ def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -
         "step_rows": step_rows,
         "progress_events": toolchain.get("progress_events") or [],
         "can_collect_results": collectable_count > 0,
+        "analyst_progress_summary": analyst_progress_summary,
         "primary_next_api": f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results" if collectable_count > 0 else "/api/redteam/v2/toolchains/execute-governed",
         "toolchain_run": toolchain,
         "safe_by_default": True,
@@ -6495,9 +6601,22 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         warnings.append("required_analysis_tool_coverage_incomplete")
     if toolchain is not None and not collected_steps:
         warnings.append("toolchain_has_no_collectable_runs")
+    collection_id = str(payload.get("collection_id") or stable_id("TCC", [toolchain_id, case_id, requested_by, collected_steps, now_utc()]))
+    analyst_progress_summary = toolchain_analyst_progress_summary(
+        toolchain_id=toolchain_id,
+        toolchain_status=(toolchain or {}).get("status"),
+        tool_count=(toolchain or {}).get("tool_count") or len(collected_steps),
+        collectable_count=len(collected_steps),
+        collected_count=collected_count,
+        evidence_candidate_count=evidence_count,
+        approved_evidence_count=0,
+        blocked_count=blocked_count,
+        missing_required_tool_ids=required_tool_coverage["missing_required_tool_ids"],
+        collection_id=collection_id,
+    )
     result = {
         "kind": "redteam_ax_v2_toolchain_result_collection",
-        "collection_id": str(payload.get("collection_id") or stable_id("TCC", [toolchain_id, case_id, requested_by, collected_steps, now_utc()])),
+        "collection_id": collection_id,
         "toolchain_id": toolchain_id,
         "case_id": case_id,
         "requested_by": requested_by,
@@ -6521,6 +6640,7 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         "evidence_candidate_coverage_complete": required_tool_coverage["evidence_candidate_coverage_complete"],
         "completion_gate_ready": completion_gate_ready,
         "required_analysis_tool_coverage": required_tool_coverage,
+        "analyst_progress_summary": analyst_progress_summary,
         "commands_executed_by_api": False,
         "raw_output_trusted_as_instruction": False,
         "requires_human_validation": True,

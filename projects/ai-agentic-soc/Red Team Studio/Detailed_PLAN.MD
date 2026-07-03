@@ -1273,3 +1273,12 @@ Create Case
 - 안전 원칙: 분석가용 요약은 `can_run_active_scan=false`를 명시한다. 결과 첨부와 Evidence 후보 검토는 허용하지만 고위험 실행은 사람이 승인·수행·검토한 뒤 결과만 회수한다.
 - 테스트 전략: API regression은 세 요약 필드와 audience/status/safe flag를 검증한다. frontend launch readiness sanity는 `analystReadinessSummary`, `operatorEnvironmentSummary`, `관리자 환경 단계`, `분석가 기본 화면에서 숨김` 계약을 검사한다.
 - 예외 케이스: 역할별 요약은 UX 계약이다. 기존 `next_action_plan`, raw blockers, runtime artifact는 감사와 환경 담당자 검토를 위해 유지한다.
+
+## 83. 갱신 목표 반영 - 도구 실행 결과 진행 요약
+
+- 목적: 도구 버튼을 눌렀거나 결과를 첨부한 뒤 사용자가 “지금 결과가 어디까지 갔고 다음에 무엇을 눌러야 하는지”를 한눈에 보게 한다.
+- API 설계: `/api/redteam/v2/toolchains/{toolchain_id}/run-status`와 `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`는 공통 `analyst_progress_summary`를 반환한다. 이 요약은 `primary_next_button_ko`, `next_action_ko`, `stage_rows`, `collectable_count`, `collected_count`, `evidence_candidate_count`, `missing_required_tool_ids`, `does_not_mark_goal_complete`를 포함한다.
+- 화면/기능 명세: RedTeam2 복합 실행 영역은 `분석가 진행 요약` 표와 `진행 단계` 표를 `복합 실행 항목` 바로 아래 표시한다. 단계는 도구 실행/결과 첨부, 결과 회수/Evidence 후보 생성, Evidence 후보 사람 승인, Finding·Matrix·Report 단계다.
+- 안전 원칙: 진행 요약은 projection이다. run-status는 저장 기록만 읽고 명령을 실행하지 않는다. collect-results는 저장 artifact를 sanitizer/normalizer/Evidence 후보로 바꾸지만 승인 전 Finding/Report Claim으로 확정하지 않는다.
+- 테스트 전략: API regression은 run-status의 다음 버튼이 `결과 회수·Evidence 후보`, collect-results의 다음 버튼이 `Evidence 후보 승인`인지 검증한다. frontend launch readiness sanity는 관련 state와 한국어 표명을 검사한다.
+- 예외 케이스: 요약은 실제 approval gate를 대신 통과시키지 않는다. Evidence 승인, Finding severity 2인 승인, Matrix/report/export/completion gate는 여전히 별도 API와 사람 승인으로 남는다.

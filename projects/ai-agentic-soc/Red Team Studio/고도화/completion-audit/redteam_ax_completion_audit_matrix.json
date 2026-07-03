@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 69,
+    "proved": 70,
     "partial": 1
   },
   "audit_items": [
@@ -1164,6 +1164,23 @@
       "proof_summary": "The /api/redteam/v2/runtime-readiness response now includes analyst_readiness_summary, operator_environment_summary, and role_separated_next_steps. The analyst summary provides a Korean next-button message, can_attach_operator_results=true, can_run_active_scan=false, plain-language blockers, and details hidden from analyst by default. The operator environment summary preserves Docker, WSL, OpenVAS/ZAP endpoint/vault, and strict promotion steps for the administrator panel. RedTeam2 renders 분석가 안내 and 관리자 환경 단계 tables from those role-separated summaries.",
       "residual_gap": "This proves role-separated readiness UX and API projection only. It does not prove real installed tool execution, real service imports, six-tool operating evidence, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
       "next_action": "Use the role-separated readiness screen in a real approved case so analysts attach and review outputs while environment operators clear Docker/WSL/OpenVAS/ZAP blockers separately."
+    },
+    {
+      "id": "RTA-COMP-070",
+      "requirement": "Toolchain run status and result collection must expose a beginner analyst progress summary that shows the next button and evidence workflow stage.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The run-status and collect-results APIs now return analyst_progress_summary with primary_next_button_ko, next_action_ko, stage_rows, collectable_count, collected_count, evidence_candidate_count, missing_required_tool_ids, and does_not_mark_goal_complete. Run-status guides the analyst to 결과 회수·Evidence 후보 when stored runs are collectable. Collect-results guides the analyst to Evidence 후보 승인 after Evidence candidates are created. RedTeam2 renders 분석가 진행 요약 and 진행 단계 tables in the composite toolchain area.",
+      "residual_gap": "This proves progress projection and Korean next-step UX only. It does not approve Evidence, create approved Findings, complete severity approval, generate/export the final report, or close completion gates on real operating scanner outputs.",
+      "next_action": "Use the progress summary on a real approved toolchain run, then proceed through Evidence approval, Finding promotion, severity approval, Matrix, Report v2 export, and completion gate."
     }
   ],
   "remaining_gaps": [
@@ -1178,5 +1195,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:33:00+09:00"
+  "last_updated": "2026-07-03T15:39:00+09:00"
 }

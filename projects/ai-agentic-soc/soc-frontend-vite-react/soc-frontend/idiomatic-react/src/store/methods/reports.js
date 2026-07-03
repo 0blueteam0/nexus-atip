@@ -5524,6 +5524,7 @@ export default {
     const toolchainCompletionGate = toolchainCompletionGateState.result || {};
     const toolchainClosure = toolchainClosureState.result || {};
     const toolchainRunStatus = toolchainRunStatusState.result || {};
+    const toolchainAnalystProgress = toolchainCollection.analyst_progress_summary || toolchainRunStatus.analyst_progress_summary || {};
     const realOperatingEvidenceReadiness = realOperatingEvidenceReadinessState.result || {};
     const operatingClosureReadinessSummary = operatingClosureReadinessSummaryState.result || {};
     const operatorEvidenceSubmissionManifest = operatorEvidenceSubmissionManifestState.result || {};
@@ -6306,6 +6307,18 @@ export default {
       ['회수 가능 단계', `${toolchainRunStatus.collectable_step_count ?? 0}개`, toolchainRunStatus.primary_next_api || '/api/redteam/v2/toolchains/{toolchain_id}/run-status'],
       ['명령 실행', koBool(toolchainRunStatus.commands_executed_by_api ?? false), '상태 조회 API는 저장된 실행 기록만 읽고 명령을 실행하지 않음'],
     ];
+    const toolchainAnalystProgressRows = [
+      ['현재 단계', koValue(toolchainAnalystProgress.status || '대기'), toolchainAnalystProgress.plain_language_status_ko || '저장 실행 상태 다시 불러오기 또는 결과 회수 버튼을 누르세요'],
+      ['다음 버튼', toolchainAnalystProgress.primary_next_button_ko || '저장 실행 상태 다시 불러오기', toolchainAnalystProgress.next_action_ko || '실행/첨부 결과를 먼저 확인하세요'],
+      ['회수 가능', `${toolchainAnalystProgress.collectable_count ?? toolchainRunStatus.collectable_step_count ?? 0}개`, '저장된 실행/첨부 결과 중 Evidence 후보로 회수 가능한 단계'],
+      ['Evidence 후보', `${toolchainAnalystProgress.evidence_candidate_count ?? toolchainCollection.evidence_candidate_count ?? 0}개`, '승인 전에는 Finding이나 Report Claim으로 확정하지 않음'],
+    ];
+    const toolchainAnalystStageRows = (toolchainAnalystProgress.stage_rows || []).map(item => [
+      item.title_ko || item.stage_id || '-',
+      koValue(item.status || '미확인'),
+      item.button_ko || '-',
+      item.summary_ko || '-',
+    ]);
     const toolchainRunStatusStepRows = (toolchainRunStatus.step_rows || []).map(row => [
       `${Number(row.index ?? 0) + 1}. ${row.tool_name || row.tool_id || '-'}`,
       row.status_ko || koValue(row.status),
@@ -7142,6 +7155,8 @@ export default {
               }, toolchainCompletionGateState.status === 'checking' ? 'E2E 점검 중' : 'E2E 완료 게이트 점검'),
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
+            this.renderTable(['분석가 진행 요약','상태','설명'], toolchainAnalystProgressRows),
+            this.renderTable(['진행 단계','상태','다음 버튼','설명'], toolchainAnalystStageRows.length ? toolchainAnalystStageRows : [['도구 실행 또는 결과 첨부','대기','여러 분석도구 실행','저장 실행 상태를 먼저 불러오세요']]),
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
             this.renderTable(['저장 실행 상태','상태','근거'], toolchainRunStatusRows),

@@ -1968,3 +1968,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 `분석가용 다음 실행 안내`는 새 분석가용 요약을 먼저 표시하고, 세부 환경 단계는 `분석 환경 설정(관리자용)`으로 유지한다.
 - [x] API regression과 frontend launch readiness sanity가 역할별 요약 계약을 검증한다.
 - [ ] 이 분리는 사용성 개선이며 실제 조직 도구 산출물, Evidence 승인, Finding/Matrix/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 136. 갱신 목표 - 도구 실행 결과 진행 요약
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/run-status`는 `analyst_progress_summary`를 반환한다.
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`도 같은 `analyst_progress_summary`를 반환해 실행/회수/Evidence 승인/Finding 단계의 다음 버튼을 한국어로 알려준다.
+- [x] RedTeam2 복합 도구 실행 영역은 `분석가 진행 요약`과 `진행 단계` 표를 표시한다.
+- [x] API regression은 run-status가 `결과 회수·Evidence 후보`, collect-results가 `Evidence 후보 승인`을 다음 버튼으로 안내하는지 검증한다.
+- [x] frontend launch readiness sanity는 `toolchainAnalystProgress`, `분석가 진행 요약`, `진행 단계` 계약을 검증한다.
+- [ ] 이 요약은 사용자가 결과 진행 상태를 이해하도록 돕는 projection이며 실제 Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.
