@@ -231,6 +231,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 48. RedTeam2는 분석가가 먼저 보는 `분석가용 다음 실행 안내`와 관리자가 보는 `분석 환경 설정(관리자용)`을 분리한다. 분석가용 패널은 다음에 누를 버튼과 목적만 보여주고, Docker/WSL/OpenVAS/ZAP endpoint/vault/promotion gate 같은 내부 readiness 세부 항목은 관리자용 설정 패널에 둔다. 새 UI 변경은 사용성 개선이며 승인·runtime·Evidence gate 자체를 생략하지 않는다.
 49. `/api/redteam/v2/toolchains/six-tool-submission-template`는 six-tool work order를 `operator-evidence-submission-manifest-draft`용 `collection_package`와 `attachment_template_json`으로 바꾸는 제출 양식 정본이다. RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 이 JSON을 운영 증거 제출 첨부 입력란에 채운다. 이 API는 파일 경로 입력을 돕지만 실제 파일 hash/status 검증과 사람 승인은 후속 submission manifest, Evidence Card import, Claim-Evidence Matrix gate에서 수행한다.
 50. RedTeam2 `안전 설치 확인 smoke` 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 version-only 설치 확인만 자동 구성한다. Nuclei/OpenVAS/ZAP는 `dry_run`, Trivy/npm audit은 `sandbox_execute`를 사용하며 `allow_safe_local_smoke_when_runtime_partial=true`여도 active scan, 임의 scan command, network 실행은 금지된다. SCA는 import-only 도구이므로 SBOM, lockfile, 조직 SCA export를 결과 첨부로 제출한다. 이 smoke는 실제 설치 확인 경로일 뿐 운영 산출물 coverage나 completion gate를 대체하지 않는다.
+51. `/api/redteam/v2/runtime-readiness`의 역할별 요약은 RedTeam2 실행 안내의 정본이다. `analyst_readiness_summary`는 초급 분석가가 다음에 누를 버튼, 결과 첨부 가능 여부, 쉬운 blocker 설명, `can_run_active_scan=false`를 제공한다. `operator_environment_summary`는 Docker/WSL/OpenVAS/ZAP endpoint/vault/strict promotion 같은 분석 환경 설정 세부 단계를 환경 담당자용으로 보존한다. 기존 `next_action_plan`과 raw blockers는 감사·운영자 검토용으로 유지하지만 분석가 기본 화면의 첫 판단 근거로 쓰지 않는다.
 
 ## 남은 작업
 
@@ -239,6 +240,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 `6개 도구 작업 순서` 표를 실제 운영 케이스에서 사용해 각 도구 row의 다음 API를 순서대로 처리한 실측 증거
 - RedTeam2 `6개 도구 제출 양식`으로 실제 artifact_path를 채운 뒤 submission manifest draft와 Evidence Card import를 통과한 실측 증거
 - RedTeam2 `안전 설치 확인 smoke` 버튼으로 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP version-only 설치 확인을 실제 운영 워크스테이션에서 수행하고, 그 결과를 collect-results 이후 Evidence 후보로만 보관한 증거
+- RedTeam2 `runtime-readiness` 역할별 요약을 실제 운영 화면에서 확인해 분석가가 결과 첨부/Evidence 검토를 진행하고 환경 담당자가 별도 관리자 패널에서 Docker/WSL/OpenVAS/ZAP endpoint blocker를 처리한 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

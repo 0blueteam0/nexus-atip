@@ -1264,3 +1264,12 @@ Create Case
 - 안전 원칙: `allow_safe_local_smoke_when_runtime_partial=true`가 있어도 임의 scan command, active scan, Docker/WSL/network 실행은 허용하지 않는다. stdout/stderr는 untrusted runner artifact이며 Evidence 승인 전 Claim 근거가 아니다.
 - 테스트 전략: API regression은 runtime partial 상태에서 Nuclei/OpenVAS/ZAP `dry_run` version-only가 실행되고 `active_scan_executed=false`를 유지하는지 검증한다. frontend launch readiness sanity는 새 catalog와 한국어 안내 문구를 검사한다.
 - 예외 케이스: SCA는 실행형 도구가 아니라 SBOM/lockfile/SCA export를 제출하는 import-only 경로로 남긴다. smoke 성공은 실제 운영 scanner 산출물 coverage, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 82. 갱신 목표 반영 - runtime readiness 역할별 요약 계약
+
+- 목적: readiness API가 Docker/WSL/endpoint/promotion blocker를 모두 한 응답에 나열하면 초급 분석가가 다음 행동을 찾기 어렵다. 같은 원천 데이터를 분석가용 요약과 환경 담당자용 세부 요약으로 나눈다.
+- API 설계: `/api/redteam/v2/runtime-readiness`는 기존 `next_action_plan`을 유지하면서 `analyst_readiness_summary`, `operator_environment_summary`, `role_separated_next_steps`를 추가한다.
+- 화면/기능 명세: RedTeam2 `분석가용 다음 실행 안내`는 `analyst_readiness_summary.status`, `message_ko`, `primary_next_button_ko`, `secondary_next_button_ko`, `plain_language_blockers_ko`를 먼저 표시한다. Docker/WSL/OpenVAS/ZAP endpoint/vault/strict promotion은 `operatorEnvironmentRows`로 관리자용 패널에 표시한다.
+- 안전 원칙: 분석가용 요약은 `can_run_active_scan=false`를 명시한다. 결과 첨부와 Evidence 후보 검토는 허용하지만 고위험 실행은 사람이 승인·수행·검토한 뒤 결과만 회수한다.
+- 테스트 전략: API regression은 세 요약 필드와 audience/status/safe flag를 검증한다. frontend launch readiness sanity는 `analystReadinessSummary`, `operatorEnvironmentSummary`, `관리자 환경 단계`, `분석가 기본 화면에서 숨김` 계약을 검사한다.
+- 예외 케이스: 역할별 요약은 UX 계약이다. 기존 `next_action_plan`, raw blockers, runtime artifact는 감사와 환경 담당자 검토를 위해 유지한다.

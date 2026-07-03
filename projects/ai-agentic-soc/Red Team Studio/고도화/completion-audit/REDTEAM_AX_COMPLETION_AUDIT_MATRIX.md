@@ -236,6 +236,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - API regression은 runtime partial 상태에서도 high-risk scanner version-only dry-run만 허용되고 `active_scan_executed=false`가 유지됨을 검증한다.
 - 이 변경은 설치 확인 smoke를 넓힌 것이며 실제 운영 scanner 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - runtime readiness 역할별 요약 계약
+
+- `/api/redteam/v2/runtime-readiness`는 `analyst_readiness_summary`, `operator_environment_summary`, `role_separated_next_steps`를 반환한다.
+- 분석가용 요약은 다음 버튼, 결과 첨부 가능 여부, 능동 스캔 금지, 쉬운 blocker 설명을 한국어로 제공한다.
+- 관리자용 요약은 Docker/WSL/OpenVAS/ZAP endpoint/vault/strict promotion 같은 분석 환경 설정 세부 단계를 보존한다.
+- RedTeam2는 `분석가 안내`와 `관리자 환경 단계` 표를 역할별 요약에서 렌더링한다.
+- 이 변경은 readiness 나열 혼재를 줄이는 UX/API 계약이며 실제 운영 scanner 산출물과 completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 68,
+    "proved": 69,
     "partial": 1
   },
   "audit_items": [
@@ -1147,6 +1147,23 @@
       "proof_summary": "RedTeam2 safe smoke now uses a safeSmokeToolCatalog. It builds version-only commands for Nuclei, OpenVAS/Greenbone gvm-cli, Trivy, npm audit, and OWASP ZAP. Nuclei/OpenVAS/ZAP use dry_run; Trivy/npm audit use sandbox_execute; SCA is marked import_only and the UI tells the operator to submit SBOM, lockfile, or organization SCA export instead. API regression verifies high-risk Nuclei/OpenVAS/ZAP version-only dry_run steps execute under partial runtime preflight while active_scan_executed=false.",
       "residual_gap": "This proves broader installed-tool version smoke only. It does not prove actual vulnerability scan outputs, organization OpenVAS/ZAP endpoint import, six-tool operating evidence readiness, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
       "next_action": "Run this smoke on the real analyst workstation to confirm installed tooling, then collect actual approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs through the governed evidence workflow."
+    },
+    {
+      "id": "RTA-COMP-069",
+      "requirement": "Runtime readiness must expose role-separated Korean summaries so beginner analysts are not forced to parse administrator environment blockers before acting.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/runtime-readiness response now includes analyst_readiness_summary, operator_environment_summary, and role_separated_next_steps. The analyst summary provides a Korean next-button message, can_attach_operator_results=true, can_run_active_scan=false, plain-language blockers, and details hidden from analyst by default. The operator environment summary preserves Docker, WSL, OpenVAS/ZAP endpoint/vault, and strict promotion steps for the administrator panel. RedTeam2 renders 분석가 안내 and 관리자 환경 단계 tables from those role-separated summaries.",
+      "residual_gap": "This proves role-separated readiness UX and API projection only. It does not prove real installed tool execution, real service imports, six-tool operating evidence, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
+      "next_action": "Use the role-separated readiness screen in a real approved case so analysts attach and review outputs while environment operators clear Docker/WSL/OpenVAS/ZAP blockers separately."
     }
   ],
   "remaining_gaps": [
@@ -1161,5 +1178,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:10:00+09:00"
+  "last_updated": "2026-07-03T15:33:00+09:00"
 }

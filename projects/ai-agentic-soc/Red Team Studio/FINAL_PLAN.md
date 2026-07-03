@@ -1959,3 +1959,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] SCA는 import-only 도구로 분리해 SBOM, lockfile, 조직 SCA export 제출을 안내한다.
 - [x] API regression은 runtime readiness가 partial이어도 high-risk scanner version-only dry-run만 허용되고 active scan은 실행되지 않음을 검증한다.
 - [ ] 이 smoke는 설치 확인만 증명하며 실제 취약점 스캔 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 135. 갱신 목표 - runtime readiness 역할별 요약 계약
+
+- [x] `/api/redteam/v2/runtime-readiness`는 `analyst_readiness_summary`, `operator_environment_summary`, `role_separated_next_steps`를 반환한다.
+- [x] 분석가용 요약은 다음 버튼, 결과 첨부 가능 여부, 능동 스캔 금지, 쉬운 blocker 설명을 한국어로 제공한다.
+- [x] 관리자용 요약은 Docker/WSL/OpenVAS/ZAP endpoint/vault/strict promotion 같은 환경 세부 단계만 묶는다.
+- [x] RedTeam2 `분석가용 다음 실행 안내`는 새 분석가용 요약을 먼저 표시하고, 세부 환경 단계는 `분석 환경 설정(관리자용)`으로 유지한다.
+- [x] API regression과 frontend launch readiness sanity가 역할별 요약 계약을 검증한다.
+- [ ] 이 분리는 사용성 개선이며 실제 조직 도구 산출물, Evidence 승인, Finding/Matrix/Report/export/completion gate 완료를 대신하지 않는다.

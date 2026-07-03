@@ -4,7 +4,7 @@
   "task": "RedTeam AX split analyst readiness from operator/runtime details and continue governed tool execution UX",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-152347-Red-Team-Studio-RedTeam-AX-split-analyst-readiness-from-operator-runtime-details-and-continue-go",
   "created_at": "2026-07-03T15:23:47+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T15:30:12+09:00"
+  ]
 }

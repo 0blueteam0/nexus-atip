@@ -5562,6 +5562,8 @@ export default {
     const credentialPolicies = st.credentialPolicies || {};
     const credentialAuthorizations = st.credentialAuthorizations || {};
     const runtimeReadiness = st.runtimeReadiness || {};
+    const analystReadinessSummary = runtimeReadiness.analyst_readiness_summary || {};
+    const operatorEnvironmentSummary = runtimeReadiness.operator_environment_summary || {};
     const launchReadiness = st.launchReadiness || {};
     const containerRuntimeArtifact = runtimeReadiness.container_runtime || {};
     const containerRuntime = containerRuntimeArtifact.data || {};
@@ -5925,6 +5927,28 @@ export default {
       ['4', '결과 회수·Evidence 후보', '도구 결과를 Evidence 후보와 LLM 분석 브리프로 정리합니다', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
       ['5', '운영 closure 준비 요약', '보고서와 completion gate로 넘어가기 전 사람 검토 가능 여부를 확인합니다', '/api/redteam/v2/toolchains/operating-closure-readiness-summary'],
     ];
+    const analystReadinessRows = [
+      ['현재 안내', koValue(analystReadinessSummary.status || '대기'), analystReadinessSummary.message_ko || '분석가용 안내를 불러오려면 상태 새로고침을 누르세요'],
+      ['다음 버튼', analystReadinessSummary.primary_next_button_ko || '여러 도구 결과 첨부', analystReadinessSummary.secondary_next_button_ko || '결과 회수·Evidence 후보'],
+      ['결과 첨부', analystReadinessSummary.can_attach_operator_results === false ? '불가' : '가능', '운영자가 실행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 Evidence 후보로 연결'],
+      ['능동 스캔', analystReadinessSummary.can_run_active_scan ? '허용됨' : '허용 안 됨', '고위험 실행은 사람이 승인·수행·검토한 뒤 결과만 회수'],
+    ];
+    const analystRoleNextStepRows = (analystReadinessSummary.next_steps || []).map(item => [
+      item.button_ko || item.title_ko || '-',
+      koValue(item.status || '미확인'),
+      item.message_ko || '-',
+      item.api || '-',
+    ]);
+    const analystPlainBlockerRows = (analystReadinessSummary.plain_language_blockers_ko || []).map((item, index) => [
+      `${index + 1}`,
+      item,
+      '환경 담당자 조치 또는 결과 첨부로 진행',
+    ]);
+    const analystHiddenDetailRows = (analystReadinessSummary.hidden_from_analyst_by_default || []).map(item => [
+      item,
+      '관리자용 영역',
+      '분석가 기본 작업 흐름에서는 숨김',
+    ]);
     const runtimeNextActionRows = (runtimeReadiness.next_action_plan || []).map(item => [
       item.title_ko || item.step_id || '-',
       koValue(item.status || '미확인'),
@@ -5933,8 +5957,15 @@ export default {
       item.blocks_tool_execution ? '도구 실행 전 해결 필요' : '진행 상황 확인',
       item.primary_api_or_command || '-',
     ]);
+    const operatorEnvironmentRows = (operatorEnvironmentSummary.environment_steps || []).map(item => [
+      item.title_ko || item.step_id || '-',
+      koValue(item.status || '미확인'),
+      item.blocks_tool_execution ? '실제 실행 전 필요' : '운영 보강',
+      item.action_ko || '-',
+      item.api_or_command || '-',
+    ]);
     const runtimeReadinessRows = [
-      ['전체 상태', koValue(runtimeReadiness.status || '미확인'), (runtimeReadiness.blockers || []).join(', ') || '실측 조건 차단 없음'],
+      ['전체 상태', koValue(operatorEnvironmentSummary.status || runtimeReadiness.status || '미확인'), operatorEnvironmentSummary.message_ko || (runtimeReadiness.blockers || []).join(', ') || '실측 조건 차단 없음'],
       ['도구 실행 가능 여부', runtimeReadiness.tool_execution_ready ? '가능' : '차단됨', (runtimeReadiness.tool_execution_blocked_by || []).join(', ') || '실행 차단 단계 없음'],
       ['남은 실행 준비 단계', `${runtimeReadiness.blocked_action_count ?? runtimeNextActionRows.filter(item => item[1] !== '준비 완료').length}개`, '아래 다음 실행 준비 단계 표를 순서대로 처리'],
       ['Docker Desktop daemon', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.blocker || containerRuntime.stderr || containerRuntime.status || 'Docker Desktop 상태 확인 필요'],
@@ -6682,6 +6713,10 @@ export default {
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } },
             '분석가는 아래 순서대로 버튼을 누르면 됩니다. Docker, WSL, endpoint 같은 분석 환경 설정은 아래 관리자용 영역에서 따로 확인합니다. 고위험 실행은 사람이 승인한 뒤 진행합니다.'),
+          this.renderTable(['분석가 안내','상태','설명'], analystReadinessRows),
+          this.renderTable(['다음 버튼','상태','사용자 안내','연결 API'], analystRoleNextStepRows.length ? analystRoleNextStepRows : [['여러 도구 결과 첨부','대기','운영자가 실행한 결과 파일을 첨부하세요','/api/redteam/v2/toolchains/execute-governed']]),
+          analystPlainBlockerRows.length ? this.renderTable(['번호','쉬운 설명','진행 방법'], analystPlainBlockerRows) : null,
+          analystHiddenDetailRows.length ? this.renderTable(['분석가 기본 화면에서 숨김','위치','이유'], analystHiddenDetailRows) : null,
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
             h('button', { onClick:()=>this.buildRedTeam2SixToolWorkOrder(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.s2, color:C.text, cursor:'pointer', fontWeight:900 } }, '6개 도구 작업 순서 만들기'),
             h('button', { onClick:()=>this.buildRedTeam2SixToolSubmissionTemplate(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:C.s2, color:C.text, cursor:'pointer', fontWeight:900 } }, '6개 도구 제출 양식 만들기'),
@@ -6695,7 +6730,7 @@ export default {
           h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } },
             '이 영역은 분석 환경 담당자가 보는 세부 설정입니다. 분석가가 바로 이해할 필요가 없는 Docker, WSL, 조직 OpenVAS/ZAP read-only report endpoint, 외부 vault reference, promotion gate 상태를 분리해 보여줍니다. 분석가는 위의 분석가용 다음 실행 안내를 먼저 사용하세요.'),
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-            ['런타임 준비', koValue(runtimeReadiness.status || '미확인'), runtimeReadiness.status === 'ready' ? C.green : C.amber, (runtimeReadiness.blockers || []).length ? `${(runtimeReadiness.blockers || []).length}개 차단 조건` : '차단 조건 없음'],
+            ['런타임 준비', koValue(operatorEnvironmentSummary.status || runtimeReadiness.status || '미확인'), operatorEnvironmentSummary.status === 'ready' || runtimeReadiness.status === 'ready' ? C.green : C.amber, operatorEnvironmentSummary.message_ko || ((runtimeReadiness.blockers || []).length ? `${(runtimeReadiness.blockers || []).length}개 차단 조건` : '차단 조건 없음')],
             ['Docker Desktop', containerRuntime.runtime_preflight?.ready ? '준비됨' : '차단됨', containerRuntime.runtime_preflight?.ready ? C.green : C.amber, containerRuntime.runtime_preflight?.blocker || containerRuntime.status || '상태 미확인'],
             ['WSL 실행 환경', koValue(wslRuntime.status || wslRuntimeArtifact.status || '미확인'), ['ready','wsl_runtime_ready'].includes(wslRuntime.status) ? C.green : C.amber, wslRuntime.selected_distro || 'WSL 배포판 readiness 확인'],
             ['실측 승격 게이트', koValue(strictPromotion.status || strictPromotionArtifact.status || '미확인'), strictPromotion.status === 'promotion_ready' ? C.green : C.amber, `${strictPromotion.passed_gate_count ?? 0}/${strictPromotion.promotion_gate_count ?? 4} 통과`],
@@ -6737,6 +6772,7 @@ export default {
             ['실서비스 가져오기', koValue(externalServiceImport.status || externalServiceImportArtifact.status || '미확인'), externalServiceImport.status === 'passed' ? C.green : C.amber, externalServiceImport.service_endpoint_fetch_executed ? 'read-only report import 수행됨' : '아직 조직 endpoint import 미실행'],
             ['상태 API 실행', runtimeReadiness.commands_executed_by_api ? '명령 실행됨' : '조회만 수행', runtimeReadiness.commands_executed_by_api ? C.coral : C.green, 'Docker와 scanner는 이 API가 직접 실행하지 않음'],
           ].map(card)),
+          this.renderTable(['관리자 환경 단계','상태','실행 영향','사용자 조치','확인 API/명령'], operatorEnvironmentRows.length ? operatorEnvironmentRows : [['대기','미확인','실제 실행 전 필요','런타임 상태 새로고침을 먼저 누르세요','/api/redteam/v2/runtime-readiness']]),
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
             h('button', { onClick:()=>this.buildRedTeam2SixToolWorkOrder(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.s2, color:C.text, cursor:'pointer', fontWeight:900 } }, '6개 도구 작업 순서 만들기'),

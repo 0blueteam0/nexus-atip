@@ -3144,6 +3144,98 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         for item in next_action_plan
         if item.get("blocks_tool_execution")
     ]
+    tool_execution_ready = not tool_execution_blocked_by
+    analyst_priority_steps = [
+        item for item in next_action_plan
+        if item.get("frontend_action_key") in {
+            "operator_evidence_submission_manifest_draft",
+            "collect_results_and_review_findings",
+        }
+    ]
+    if not analyst_priority_steps:
+        analyst_priority_steps = [
+            item for item in next_action_plan
+            if not item.get("required_before_tool_execution")
+        ]
+    if not analyst_priority_steps:
+        analyst_priority_steps = next_action_plan[:2]
+    analyst_ready_message = (
+        "분석가는 여러 분석도구 실행 또는 결과 첨부를 진행할 수 있습니다. 고위험 실행은 승인자 검토 뒤 진행하세요."
+        if tool_execution_ready
+        else "분석가는 결과 첨부, Evidence 후보 검토, 보고서 초안 작업을 먼저 진행하세요. Docker, WSL, OpenVAS/ZAP endpoint 같은 환경 준비는 관리자용 항목에서 처리합니다."
+    )
+    analyst_readiness_summary = {
+        "audience": "analyst",
+        "title_ko": "분석가용 실행 안내",
+        "status": "tool_execution_ready" if tool_execution_ready else "tool_execution_waiting_on_environment",
+        "message_ko": analyst_ready_message,
+        "can_click_safe_smoke": True,
+        "can_attach_operator_results": True,
+        "can_run_active_scan": False,
+        "primary_next_button_ko": (
+            "안전 설치 확인 smoke"
+            if tool_execution_ready
+            else "여러 도구 결과 첨부"
+        ),
+        "secondary_next_button_ko": "결과 회수·Evidence 후보",
+        "hidden_from_analyst_by_default": [
+            "Docker/WSL 세부 진단",
+            "OpenVAS/ZAP endpoint/vault 설정",
+            "strict promotion gate 원시 blocker",
+        ],
+        "next_steps": [
+            {
+                "step_id": item.get("step_id"),
+                "title_ko": item.get("title_ko"),
+                "button_ko": item.get("redteam2_button_ko"),
+                "status": item.get("status"),
+                "message_ko": item.get("operator_action_ko"),
+                "api": item.get("primary_api_or_command"),
+            }
+            for item in analyst_priority_steps[:3]
+        ],
+        "plain_language_blockers_ko": (
+            []
+            if tool_execution_ready
+            else [
+                "실제 도구 실행 환경은 아직 완전히 준비되지 않았습니다.",
+                "환경 담당자가 Docker/WSL 또는 OpenVAS/ZAP 읽기 전용 연결을 확인해야 합니다.",
+                "분석가는 기존 결과 파일 첨부와 Evidence 검토를 먼저 진행할 수 있습니다.",
+            ]
+        ),
+        "does_not_mark_goal_complete": True,
+    }
+    operator_environment_summary = {
+        "audience": "environment_operator",
+        "title_ko": "분석 환경 설정 요약",
+        "status": "ready" if blocked_action_count == 0 else "needs_operator_action",
+        "blocked_action_count": blocked_action_count,
+        "tool_execution_blocked_by": tool_execution_blocked_by,
+        "message_ko": (
+            "분석 환경 준비 항목이 모두 통과했습니다."
+            if blocked_action_count == 0
+            else "관리자 또는 운영자가 아래 환경 항목을 처리해야 실제 도구 실행 범위가 넓어집니다."
+        ),
+        "environment_steps": [
+            {
+                "step_id": item.get("step_id"),
+                "title_ko": item.get("title_ko"),
+                "status": item.get("status"),
+                "blocks_tool_execution": bool(item.get("blocks_tool_execution")),
+                "button_ko": item.get("redteam2_button_ko"),
+                "action_ko": item.get("operator_action_ko"),
+                "api_or_command": item.get("primary_api_or_command"),
+            }
+            for item in next_action_plan
+            if item.get("required_before_tool_execution") or item.get("blocks_tool_execution")
+        ],
+        "raw_blockers": blockers,
+    }
+    role_separated_next_steps = {
+        "analyst": analyst_readiness_summary["next_steps"],
+        "environment_operator": operator_environment_summary["environment_steps"],
+        "raw_next_action_plan": next_action_plan,
+    }
     return {
         "kind": "redteam_ax_v2_runtime_readiness_status",
         "status": (
@@ -3182,7 +3274,10 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
         "next_action_plan": next_action_plan,
         "blocked_action_count": blocked_action_count,
         "tool_execution_blocked_by": tool_execution_blocked_by,
-        "tool_execution_ready": not tool_execution_blocked_by,
+        "tool_execution_ready": tool_execution_ready,
+        "analyst_readiness_summary": analyst_readiness_summary,
+        "operator_environment_summary": operator_environment_summary,
+        "role_separated_next_steps": role_separated_next_steps,
         "operator_next_steps": [
             "Start Docker Desktop and verify the Docker daemon before container smoke execution.",
             "Repair or recreate the WSL distribution if the WSL readiness artifact reports a distro start or mount failure.",

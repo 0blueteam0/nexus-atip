@@ -68,6 +68,22 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("blocked_action_count", body)
         self.assertIn("tool_execution_blocked_by", body)
         self.assertIn("tool_execution_ready", body)
+        self.assertIn("analyst_readiness_summary", body)
+        self.assertIn("operator_environment_summary", body)
+        self.assertIn("role_separated_next_steps", body)
+        analyst_summary = body["analyst_readiness_summary"]
+        operator_summary = body["operator_environment_summary"]
+        self.assertEqual(analyst_summary["audience"], "analyst")
+        self.assertEqual(operator_summary["audience"], "environment_operator")
+        self.assertIn(analyst_summary["status"], {"tool_execution_ready", "tool_execution_waiting_on_environment"})
+        self.assertTrue(analyst_summary["can_attach_operator_results"])
+        self.assertFalse(analyst_summary["can_run_active_scan"])
+        self.assertIn("primary_next_button_ko", analyst_summary)
+        self.assertIsInstance(analyst_summary["next_steps"], list)
+        self.assertIn("environment_steps", operator_summary)
+        self.assertIsInstance(operator_summary["environment_steps"], list)
+        self.assertIn("analyst", body["role_separated_next_steps"])
+        self.assertIn("environment_operator", body["role_separated_next_steps"])
         for action in body["next_action_plan"]:
             self.assertIn("step_id", action)
             self.assertIn("title_ko", action)
