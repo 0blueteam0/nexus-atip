@@ -1933,3 +1933,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2에 `6개 도구 작업 순서 만들기` 버튼과 `작업 순서`, `다음 버튼`, `상태`, `필요 입력`, `차단 사유`, `연결 API` 표를 추가한다.
 - [x] API regression과 frontend launch readiness sanity가 명령 미실행, active scan 미실행, `does_not_mark_goal_complete=true` 계약을 검증한다.
 - [ ] 이 작업 순서는 초급 운영자 안내와 API 라우팅 표이며 실제 조직 endpoint/vault 실측, 6개 도구 운영 산출물, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 132. 갱신 목표 - 분석가용 실행 안내와 환경 설정 분리
+
+- [x] RedTeam2의 복잡한 `실행 환경 준비도 / 남은 실측 조건` 묶음을 분석가용 첫 화면에서 분리한다.
+- [x] 새 `분석가용 다음 실행 안내` 패널은 사용자가 누를 버튼을 5단계로 표시한다: 작업 순서 만들기, 제출 양식 만들기, 운영 증거 제출 manifest 초안, 결과 회수·Evidence 후보, 운영 closure 준비 요약.
+- [x] Docker, WSL, OpenVAS/ZAP endpoint, vault reference, promotion gate 같은 세부 조건은 `분석 환경 설정(관리자용)` 패널로 이동한다.
+- [x] frontend runtime sanity와 Korean copy inventory가 분석가용/관리자용 분리 문구를 검사한다.
+- [ ] 이 UI 정리는 혼재를 줄이는 개선이며, 실제 설치 도구 실행과 운영 closure 완료 증거를 대신하지 않는다.
+
+## 133. 갱신 목표 - 필수 6개 도구 운영 제출 양식 생성
+
+- [x] `/api/redteam/v2/toolchains/six-tool-submission-template`를 추가한다.
+- [x] `six-tool-work-order`를 기반으로 `operator-evidence-submission-manifest-draft`에 바로 넣을 수 있는 `collection_package`와 `attachment_template_json`을 생성한다.
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 예상 파일명 패턴과 `artifact_path` 입력 위치를 제공한다.
+- [x] RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 생성된 attachment JSON을 운영 증거 제출 첨부 JSON 입력란에 채운다.
+- [x] API regression은 6개 제출 항목과 경로 누락 차단을 검증한다.
+- [ ] 이 양식은 사용자의 파일 제출을 돕는 템플릿이며, 실제 파일 hash 검증과 사람 승인은 `operator-evidence-submission-manifest-draft` 이후 단계에서 별도로 필요하다.

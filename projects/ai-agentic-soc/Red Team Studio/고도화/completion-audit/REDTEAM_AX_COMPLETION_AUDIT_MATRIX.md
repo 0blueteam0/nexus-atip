@@ -215,6 +215,20 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `6개 도구 작업 순서 만들기` 버튼과 `작업 순서` 표로 이 work order를 표시한다.
 - 이 변경은 초급 운영자 workflow 안내이며 scanner 명령, Docker/WSL, network, active scan을 실행하지 않고 전체 목표를 완료 처리하지 않는다.
 
+## 2026-07-03 갱신 - 분석가용 실행 안내와 환경 설정 분리
+
+- RedTeam2는 복잡한 runtime readiness 나열을 분석가용 첫 화면에서 분리했다.
+- `분석가용 다음 실행 안내` 패널은 사용자가 누를 버튼 5개와 목적만 먼저 보여준다.
+- Docker, WSL, OpenVAS/ZAP endpoint, 외부 vault reference, promotion gate, runbook 세부 항목은 `분석 환경 설정(관리자용)` 패널로 이동했다.
+- 이 변경은 사용자 이해도를 높이는 UI 분리이며 승인·runtime·Evidence·completion gate를 생략하지 않는다.
+
+## 2026-07-03 갱신 - 필수 6개 도구 운영 제출 양식 생성
+
+- `/api/redteam/v2/toolchains/six-tool-submission-template`는 six-tool work order를 운영 증거 제출용 `collection_package`와 `attachment_template_json`으로 변환한다.
+- RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 attachment template JSON을 운영 증거 제출 첨부 JSON 입력란에 자동으로 채운다.
+- 템플릿은 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 예상 파일명 패턴과 artifact_path 입력 위치를 제공한다.
+- 이 변경은 제출 UX를 돕는 템플릿이며 실제 파일 hash/status 검증과 사람 승인은 후속 submission manifest와 Evidence Card import gate에서 필요하다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

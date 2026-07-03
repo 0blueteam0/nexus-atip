@@ -130,6 +130,11 @@ def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, An
     return redteam_v2_models.build_six_tool_operating_work_order(payload)
 
 
+@router.post("/toolchains/six-tool-submission-template")
+def build_six_tool_operator_submission_template(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_six_tool_operator_submission_template(payload)
+
+
 @router.get("/tool-install-readiness/{tool_id}")
 def get_tool_install_readiness(tool_id: str) -> dict[str, Any]:
     return redteam_v2_models.tool_install_readiness(tool_id)

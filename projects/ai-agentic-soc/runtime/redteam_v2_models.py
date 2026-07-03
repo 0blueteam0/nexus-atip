@@ -1546,6 +1546,122 @@ def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, An
     return result
 
 
+def build_six_tool_operator_submission_template(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip()
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, "six-tool-submission-template"])).strip()
+    report_id = str(payload.get("report_id") or "").strip()
+    source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    operator_identity = str(payload.get("operator_identity") or requested_by).strip()
+    roe_reference = str(payload.get("roe_reference") or payload.get("roe_id") or "").strip()
+    work_order = build_six_tool_operating_work_order({
+        **payload,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "requested_by": requested_by,
+        "report_id": report_id,
+        "source_dir": source_dir,
+    })
+    patterns_by_tool = {
+        "TOOL-NUCLEI-001": ["*nuclei*.jsonl", "*nuclei*.ndjson", "*nuclei*.json", "*nuclei*.txt"],
+        "TOOL-OPENVAS-001": ["*openvas*.xml", "*gvm*.xml", "*greenbone*.xml"],
+        "TOOL-TRIVY-001": ["*trivy*.json", "*trivy*.sarif"],
+        "TOOL-SCA-001": ["*sca*.json", "*sbom*.json", "*cyclonedx*.json", "*.cyclonedx"],
+        "TOOL-NPM-AUDIT-001": ["*npm-audit*.json", "*npm_audit*.json", "*audit*.json"],
+        "TOOL-ZAP-001": ["*zap*.json", "*owasp-zap*.json", "*zaproxy*.json"],
+    }
+    collection_items: list[dict[str, Any]] = []
+    attachment_template: list[dict[str, Any]] = []
+    for row in work_order.get("work_order_rows") or []:
+        tool_id = str(row.get("tool_id") or "")
+        profile = analysis_tool_profile(tool_id) or {}
+        display_name = str(row.get("display_name") or profile.get("display_name") or tool_id)
+        item_id = stable_id("STSUB", [case_id, toolchain_id, tool_id])
+        patterns = patterns_by_tool.get(tool_id, [])
+        expected_attachment = {
+            "status_field": "status",
+            "required_status": "passed",
+            "allowed_content_types": ["application/json", "application/xml", "application/x-ndjson", "application/sarif+json", "text/plain"],
+            "expected_filename_patterns": patterns,
+            "tool_id": tool_id,
+        }
+        collection_items.append({
+            "item_id": item_id,
+            "tool_id": tool_id,
+            "title": f"{display_name} 운영 산출물",
+            "title_ko": f"{display_name} 운영 산출물",
+            "action_status": row.get("action_status"),
+            "recommended_button_ko": row.get("recommended_button_ko"),
+            "required_input_ko": row.get("required_input_ko"),
+            "operator_action_ko": row.get("operator_action_ko"),
+            "primary_api": row.get("primary_api"),
+            "expected_attachment": expected_attachment,
+            "review_required": True,
+            "does_not_execute_tool": True,
+        })
+        attachment_template.append({
+            "item_id": item_id,
+            "tool_id": tool_id,
+            "tool_name": row.get("tool_name") or profile.get("name") or tool_id,
+            "display_name": display_name,
+            "artifact_path": (
+                f"{source_dir.rstrip('/')}/{patterns[0].replace('*', display_name.lower().replace(' ', '-'))}"
+                if source_dir and patterns
+                else ""
+            ),
+            "review_status": "pending_human_review",
+            "expected_filename_patterns": patterns,
+            "operator_note_ko": f"{display_name} 결과 파일의 실제 경로로 artifact_path를 바꾼 뒤 제출 manifest 초안을 만드세요.",
+        })
+    collection_package = {
+        "kind": "redteam_ax_v2_six_tool_operator_submission_collection_package",
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "report_id": report_id,
+        "operator_identity": operator_identity,
+        "roe_reference": roe_reference,
+        "collection_items": collection_items,
+        "item_count": len(collection_items),
+        "required_tool_ids": work_order.get("required_tool_ids") or [],
+        "work_order_id": work_order.get("work_order_id"),
+        "created_at": now_utc(),
+    }
+    template_id = stable_id("STTEMPLATE", [case_id, toolchain_id, requested_by, report_id, source_dir, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_six_tool_operator_submission_template",
+        "template_id": template_id,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "report_id": report_id,
+        "source_dir": source_dir,
+        "requested_by": requested_by,
+        "operator_identity": operator_identity,
+        "roe_reference": roe_reference,
+        "status": "submission_template_ready",
+        "collection_package": collection_package,
+        "attachment_template": attachment_template,
+        "attachment_template_json": json.dumps(attachment_template, ensure_ascii=False, indent=2),
+        "next_api": "/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft",
+        "next_payload_hint": {
+            "case_id": case_id,
+            "operator_identity": operator_identity,
+            "roe_reference": roe_reference or "approved-roe-id",
+            "collection_package": collection_package,
+            "attachments": attachment_template,
+        },
+        "operator_summary_ko": "필수 6개 도구 운영 산출물 제출 양식을 만들었습니다. artifact_path를 실제 파일 경로로 바꾼 뒤 운영 증거 제출 manifest 초안을 생성하세요.",
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-six-tool-submission-templates", template_id)
+    return result
+
+
 def tool_credential_policy(tool_id: str) -> dict[str, Any]:
     profile = analysis_tool_profile(tool_id)
     resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()

@@ -1236,3 +1236,22 @@ Create Case
 - 안전 원칙: work order API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. 응답은 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true`를 유지한다.
 - 테스트 전략: API regression은 OpenVAS/ZAP가 service import, SCA가 결과 첨부, Trivy/npm audit이 governed runner로 안내되는지와 safe flag를 검증한다. frontend launch readiness sanity는 endpoint, 버튼, state, 표 header를 검사한다.
 - 예외 케이스: 이 API는 초급 운영자용 순서표이며 완료 증거가 아니다. 실제 goal 완료에는 실제 운영 산출물, 승인된 Evidence, Finding severity 2인 승인, Matrix/Report/export/completion gate가 필요하다.
+
+## 79. 갱신 목표 반영 - 분석가용 실행 안내와 분석 환경 설정 분리
+
+- 목적: `실행 환경 준비도 / 남은 실측 조건`처럼 많은 내부 readiness 항목을 분석가에게 그대로 나열하면 사용자가 무엇을 눌러야 하는지 이해하기 어렵다. 실행 안내와 환경 설정을 분리한다.
+- 화면/기능 명세: RedTeam2에는 `분석가용 다음 실행 안내` 패널을 먼저 배치한다. 이 패널은 `6개 도구 작업 순서 만들기`, `6개 도구 제출 양식 만들기`, `운영 증거 제출 manifest 초안`, `결과 회수·Evidence 후보`, `운영 closure 준비 요약` 5단계만 보여준다.
+- 환경 설정 분리: Docker, WSL, OpenVAS/ZAP endpoint, 외부 vault reference, strict promotion, runbook, runtime blocker는 `분석 환경 설정(관리자용)` 패널에 둔다. 분석가가 당장 몰라도 되는 조건과 관리자가 조치할 조건을 분리한다.
+- 한국어 UX 원칙: 전문 용어 앞에는 사용자가 누를 버튼과 목적을 먼저 보여준다. API 이름과 gate 이름은 표의 보조 근거로만 유지한다.
+- 테스트 전략: frontend runtime readiness contract와 Korean copy inventory는 `분석가용 다음 실행 안내`, `분석 환경 설정(관리자용)`, `분석가는 아래 순서대로 버튼을 누르면 됩니다` anchor를 검사한다.
+- 예외 케이스: 환경 설정 정보를 숨기지는 않는다. 승인·runtime·endpoint 조건은 여전히 필요하지만 분석가용 workflow와 관리자용 readiness detail을 분리해 혼재를 줄인다.
+
+## 80. 갱신 목표 반영 - 필수 6개 도구 운영 제출 양식 생성
+
+- 목적: 작업 순서표만으로는 운영자가 `operatorEvidenceSubmissionAttachmentsJson`에 어떤 JSON을 넣어야 하는지 어렵다. 6개 도구 산출물 제출 양식을 자동 생성한다.
+- API 설계: `/api/redteam/v2/toolchains/six-tool-submission-template`는 `case_id`, `report_id`, `toolchain_id`, `requested_by`, `operator_identity`, `roe_reference`, 선택 `source_dir`를 받아 `collection_package`, `attachment_template`, `attachment_template_json`, `next_payload_hint`를 반환한다.
+- 데이터 계약: `collection_package.collection_items[]`는 기존 `/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft`가 읽는 `item_id`, `expected_attachment`, `tool_id`, `title_ko`, `review_required` 구조를 사용한다. `attachment_template[]`는 사용자가 실제 `artifact_path`만 바꿔 넣을 수 있는 JSON 초안이다.
+- 화면/기능 명세: RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 API를 호출하고 반환된 `attachment_template_json`을 운영 증거 제출 첨부 JSON 입력란에 자동으로 채운다. 분석가용 안내 패널과 운영 증거 제출 영역 양쪽에 버튼을 둔다.
+- 안전 원칙: 이 API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. 실제 파일 hash와 status 검증은 후속 submission manifest draft API에서 수행한다.
+- 테스트 전략: API regression은 제출 템플릿이 6개 item을 만들고, 같은 `collection_package`로 submission manifest draft를 호출하면 artifact_path 누락이 안전하게 차단되는지 검증한다.
+- 예외 케이스: 제출 양식 생성은 운영자의 파일 경로 입력을 돕는 UX 계층이다. 실제 운영 증거는 파일 존재, SHA-256, expected status, 사람 승인, Evidence Card import, Claim-Evidence Matrix gate를 통과해야 한다.

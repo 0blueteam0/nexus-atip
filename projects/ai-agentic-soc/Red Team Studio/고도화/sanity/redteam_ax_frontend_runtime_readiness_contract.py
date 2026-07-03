@@ -36,7 +36,7 @@ def _segment(source: str, start: str, end: str) -> str:
 def main() -> int:
     source = _read_source()
     loader = _segment(source, "  async loadRedTeam2AnalysisStatus() {", "  async submitRedTeam2ToolActionPlan")
-    panel = _segment(source, "      smallPanel('실행 환경 준비도 / 남은 실측 조건'", "      smallPanel('도구 실행 계획 / 샌드박스 정책'")
+    panel = _segment(source, "      smallPanel('분석가용 다음 실행 안내'", "      smallPanel('도구 실행 계획 / 샌드박스 정책'")
     redteam2_panel = _segment(source, "  redTeamAnalysis2Panel() {", "  redTeamAnalysisPanel() {")
 
     required_loader_terms = [
@@ -61,8 +61,16 @@ def main() -> int:
             raise AssertionError(f"missing operating closure strict evidence payload term: {payload_term}")
 
     required_panel_terms = [
-        "실행 환경 준비도 / 남은 실측 조건",
-        "실제 실행 버튼이 막히는 이유",
+        "분석가용 다음 실행 안내",
+        "분석가는 아래 순서대로 버튼을 누르면 됩니다",
+        "분석 환경 설정(관리자용)",
+        "분석가가 바로 이해할 필요가 없는 Docker, WSL, 조직 OpenVAS/ZAP read-only report endpoint",
+        "6개 도구 제출 양식 만들기",
+        "6개 도구 제출 양식 API",
+        "/api/redteam/v2/toolchains/six-tool-submission-template",
+        "작업 순서를 운영 증거 제출 manifest용 collection_items와 attachment_template JSON으로 변환하며 명령은 실행하지 않습니다",
+        "제출 항목",
+        "예상 파일명",
         "Docker Desktop daemon",
         "WSL 실행 환경",
         "WSL 배포판",

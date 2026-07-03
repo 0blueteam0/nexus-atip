@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 64,
+    "proved": 66,
     "partial": 1
   },
   "audit_items": [
@@ -1097,6 +1097,40 @@
       "proof_summary": "The /api/redteam/v2/toolchains/six-tool-work-order API builds a six-row operator work order from launch readiness. It routes OpenVAS and ZAP to read-only scanner service import, SCA to artifact manifest import, governed-runner-ready tools to execute-governed, missing installs to tool-install-readiness, and missing wrapper trust to wrapper pin approval. The response preserves commands_executed_by_api=false, active_scan_executed=false, trusted_as_instruction=false, and does_not_mark_goal_complete=true. RedTeam2 adds a 6개 도구 작업 순서 만들기 button and renders a Korean 작업 순서 table with next button, status, required input, blocker, and API columns.",
       "residual_gap": "This is an operator guidance and routing contract only. It does not prove live organization endpoints, real six-tool operating outputs, Evidence approval, Finding severity approval, Matrix/Report/export, or completion gates.",
       "next_action": "Use the work order on a real approved case to perform or import each required tool output, then run collect-results and the full approval/report/completion closure workflow."
+    },
+    {
+      "id": "RTA-COMP-066",
+      "requirement": "RedTeam2 must separate beginner analyst execution guidance from administrator-oriented analysis environment setup details.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 now introduces a 분석가용 다음 실행 안내 panel before technical readiness details. It shows a five-step button-first flow: six-tool work order, six-tool submission template, operator evidence submission manifest draft, collect-results Evidence candidates, and operating closure readiness summary. Docker, WSL, OpenVAS/ZAP endpoint, vault reference, promotion gate, and runbook details are moved under 분석 환경 설정(관리자용). Frontend runtime sanity and Korean copy inventory check the new separation anchors.",
+      "residual_gap": "This proves UI separation and Korean beginner guidance only. It does not prove real installed tool execution, real endpoint readiness, real six-tool outputs, Evidence approval, Finding severity approval, Report export, or completion gates.",
+      "next_action": "Validate the revised panel with real operators and continue wiring real installed tool execution/results into the simplified analyst flow."
+    },
+    {
+      "id": "RTA-COMP-067",
+      "requirement": "RedTeam2 must generate a six required-tool operator evidence submission template that feeds the existing submission manifest draft workflow.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/six-tool-submission-template API converts the six-tool work order into a collection_package, attachment_template, attachment_template_json, and next_payload_hint for /operator-evidence-submission-manifest-draft. The template includes six collection items with expected filename patterns for Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP, and preserves safe no-execution flags plus does_not_mark_goal_complete=true. RedTeam2 adds a 6개 도구 제출 양식 만들기 button that fills the operator evidence attachment JSON field.",
+      "residual_gap": "This proves template generation only. It does not prove the referenced files exist, hash/status validation passes, human review approves Evidence Cards, Findings are severity-approved, Report v2 is exported, or completion gates close.",
+      "next_action": "Fill the generated attachment_template with real artifact_path values, run operator-evidence-submission-manifest-draft, then continue to Evidence Card import and the approval/report/completion workflow."
     }
   ],
   "remaining_gaps": [
@@ -1111,5 +1145,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:18:00+09:00"
+  "last_updated": "2026-07-03T15:34:00+09:00"
 }

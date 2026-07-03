@@ -228,12 +228,15 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 45. RedTeam2의 `안전 설치 확인 smoke` 버튼은 사용자가 명령을 직접 작성하지 않아도 Nuclei, Trivy, npm audit의 version-only smoke payload를 구성해 `/api/redteam/v2/toolchains/execute-governed`로 보낸다. 이 버튼은 `safe_local_smoke_button` UI 계약이며 `require_runtime_preflight=true`, `allow_safe_local_smoke_when_runtime_partial=true`, `runner_backend=local_subprocess_shim`을 사용한다. 버튼 실행 결과는 저장 실행 상태와 결과 회수 흐름으로 이어질 수 있지만, active scan, Docker/WSL/network 실행, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
 46. `/api/redteam/v2/scanner-service-imports/{tool_id}`는 `toolchain_id`가 포함된 경우 OpenVAS/ZAP read-only service import 결과를 `redteam_ax_v2_toolchain_service_import_projection`으로 저장한다. RedTeam2의 `읽기 전용 서비스 결과 가져오기` 버튼은 `{reportId}-TOOLCHAIN-SERVICE-IMPORT`를 사용해 가져온 report/passive alert를 저장 실행 상태와 `/collect-results` 흐름으로 연결한다. 이 projection은 scanner 명령, active scan, secret 저장, shell expansion을 수행하지 않으며 실제 6개 도구 coverage와 승인 gate 완료를 대신하지 않는다.
 47. `/api/redteam/v2/toolchains/six-tool-work-order`는 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 필수 6개 도구의 다음 버튼과 필요 입력을 한 번에 반환하는 초급 운영자 work order 정본이다. OpenVAS/ZAP는 read-only service import, SCA는 artifact manifest import, runner 준비 도구는 execute-governed, 설치/신뢰 미충족 도구는 tool-install-readiness 또는 wrapper pin 승인으로 안내한다. 이 API와 RedTeam2 `6개 도구 작업 순서 만들기` 버튼은 scanner 명령, Docker/WSL, network, active scan을 실행하지 않으며 전체 goal을 완료 처리하지 않는다.
+48. RedTeam2는 분석가가 먼저 보는 `분석가용 다음 실행 안내`와 관리자가 보는 `분석 환경 설정(관리자용)`을 분리한다. 분석가용 패널은 다음에 누를 버튼과 목적만 보여주고, Docker/WSL/OpenVAS/ZAP endpoint/vault/promotion gate 같은 내부 readiness 세부 항목은 관리자용 설정 패널에 둔다. 새 UI 변경은 사용성 개선이며 승인·runtime·Evidence gate 자체를 생략하지 않는다.
+49. `/api/redteam/v2/toolchains/six-tool-submission-template`는 six-tool work order를 `operator-evidence-submission-manifest-draft`용 `collection_package`와 `attachment_template_json`으로 바꾸는 제출 양식 정본이다. RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 이 JSON을 운영 증거 제출 첨부 입력란에 채운다. 이 API는 파일 경로 입력을 돕지만 실제 파일 hash/status 검증과 사람 승인은 후속 submission manifest, Evidence Card import, Claim-Evidence Matrix gate에서 수행한다.
 
 ## 남은 작업
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
 - RedTeam2 `6개 도구 작업 순서` 표를 실제 운영 케이스에서 사용해 각 도구 row의 다음 API를 순서대로 처리한 실측 증거
+- RedTeam2 `6개 도구 제출 양식`으로 실제 artifact_path를 채운 뒤 submission manifest draft와 Evidence Card import를 통과한 실측 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

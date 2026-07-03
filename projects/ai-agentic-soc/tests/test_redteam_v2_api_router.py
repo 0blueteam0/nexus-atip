@@ -634,6 +634,55 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertFalse(row["active_scan_executed"])
             self.assertFalse(row["trusted_as_instruction"])
 
+    def test_v2_six_tool_submission_template_prefills_operator_manifest_inputs_without_execution(self) -> None:
+        response = self.client.post("/api/redteam/v2/toolchains/six-tool-submission-template", json={
+            "case_id": "CASE-V2-SIX-TOOL-SUBMISSION-TEMPLATE-001",
+            "report_id": "RTA-2026-SIX-TOOL-SUBMISSION",
+            "toolchain_id": "TCHAIN-SIX-TOOL-SUBMISSION-TEMPLATE-001",
+            "requested_by": "operator@example.com",
+            "operator_identity": "operator@example.com",
+            "roe_reference": "ROE-APPROVED-REAL-001",
+            "source_dir": "J:/PortableApps/genai/projects/ai-agentic-soc/real-redteam-outputs",
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_six_tool_operator_submission_template")
+        self.assertEqual(body["status"], "submission_template_ready")
+        self.assertEqual(body["next_api"], "/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft")
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        collection_package = body["collection_package"]
+        self.assertEqual(collection_package["item_count"], 6)
+        self.assertEqual(len(collection_package["collection_items"]), 6)
+        self.assertEqual(len(body["attachment_template"]), 6)
+        by_tool = {item["tool_id"]: item for item in collection_package["collection_items"]}
+        self.assertEqual(by_tool["TOOL-OPENVAS-001"]["recommended_button_ko"], "읽기 전용 서비스 결과 가져오기")
+        self.assertIn("*openvas*.xml", by_tool["TOOL-OPENVAS-001"]["expected_attachment"]["expected_filename_patterns"])
+        self.assertEqual(by_tool["TOOL-SCA-001"]["recommended_button_ko"], "결과 첨부")
+        self.assertIn("*sbom*.json", by_tool["TOOL-SCA-001"]["expected_attachment"]["expected_filename_patterns"])
+        self.assertIn("artifact_path", body["attachment_template_json"])
+        self.assertEqual(body["next_payload_hint"]["collection_package"]["item_count"], 6)
+
+        blocked = self.client.post("/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft", json={
+            "case_id": "CASE-V2-SIX-TOOL-SUBMISSION-TEMPLATE-001",
+            "operator_identity": "operator@example.com",
+            "roe_reference": "ROE-APPROVED-REAL-001",
+            "collection_package": collection_package,
+            "attachments": [{
+                "item_id": body["attachment_template"][0]["item_id"],
+                "artifact_path": Path(__file__).as_posix(),
+            }],
+        })
+        self.assertEqual(blocked.status_code, 200)
+        blocked_body = blocked.json()
+        self.assertEqual(blocked_body["status"], "submission_manifest_draft_blocked")
+        self.assertFalse(blocked_body["ready_for_submission_validation"])
+        self.assertEqual(len(blocked_body["missing_items"]), 5)
+
     def test_v2_tool_install_version_evidence_records_operator_attested_versions(self) -> None:
         case_id = "CASE-V2-TOOL-INSTALL-EVIDENCE-001"
         tool_samples = [
