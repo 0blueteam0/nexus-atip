@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 72,
+    "proved": 73,
     "partial": 1
   },
   "audit_items": [
@@ -1215,6 +1215,22 @@
       "proof_summary": "Operating closure APIs now return operating_closure_progress_summary with primary_next_button_ko, next_action_ko, next_api, stage_rows, ready_stage_count, blocked_stage_count, missing_required_tool_ids, blockers, no-execution safe flags, and does_not_mark_goal_complete=true. The summary routes blocked sources to 실제 운영 증거 사전 점검, ready readiness/package to 운영 closure 사람 검토, ready human review to 검토 완료 운영 closure 실행, reviewed close to 운영 closure 증거 인증, and certification to 운영 completion audit 검토. RedTeam2 renders 운영 closure 진행 요약 and 운영 closure 단계 tables from the latest available closure result.",
       "residual_gap": "This proves shared progress projection and beginner next-button UX only. It does not prove actual organization scanner outputs, Evidence approval, Finding severity approval, final Report v2 export, completion gate complete=true, or final goal completion.",
       "next_action": "Use the operating_closure_progress_summary on a real operating scanner-output folder, then follow each next button through human review, reviewed close, certification, completion audit, and final goal completion review using real approvers and real outputs."
+    },
+    {
+      "id": "RTA-COMP-073",
+      "requirement": "RedTeam2 analyst-facing UI must minimize raw local path, internal API endpoint, and English runtime-token exposure while preserving backend evidence traceability.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 now renders artifact, storage, execution plan, report, export, source, and service import locations as Korean status summaries such as 분석 저장소에 보관됨 and 세부 위치는 관리자/감사 기록에서 확인. Analyst tables use 연결, 다음 연결, 확인 방법, 읽기 전용 접속, 운영 산출물 폴더, and 보관 위치 instead of raw API/path labels. Default manifest JSON and source folder placeholders no longer expose local absolute paths. Frontend launch readiness sanity also rejects representative raw exposure strings, and Korean copy inventory was updated to the new beginner-facing contract.",
+      "residual_gap": "This proves frontend display minimization only. Backend payload keys, audit records, Evidence artifact paths, and administrator workflows still preserve source locations for traceability and are not removed.",
+      "next_action": "Run browser visual regression on RedTeam2 after the next UI slice to confirm no raw path or endpoint strings appear in the analyst-first viewport."
     }
   ],
   "remaining_gaps": [
@@ -1229,5 +1245,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T16:20:00+09:00"
+  "last_updated": "2026-07-03T16:38:00+09:00"
 }

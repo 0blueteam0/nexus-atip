@@ -1995,3 +1995,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2는 `운영 closure 진행 요약`과 `운영 closure 단계` 표를 최신 closure 결과 기준으로 표시한다.
 - [x] API regression과 frontend launch readiness sanity가 새 진행 요약 계약을 검증한다.
 - [ ] 이 요약은 다음 안전 버튼을 알려주는 projection이며 실제 조직 scanner 산출물, Evidence 승인, Finding severity 승인, Report v2 export, completion gate 완료를 대신하지 않는다.
+
+## 139. 갱신 목표 - RedTeam2 분석 화면 원시 경로/API 노출 최소화
+
+- [x] RedTeam2 분석 화면의 저장 경로, 실행 계획 경로, 보고서/내보내기 경로 표시는 `분석 저장소에 보관됨`, `세부 위치는 관리자/감사 기록에서 확인` 같은 한국어 상태로 치환한다.
+- [x] 분석가용 표의 `연결 API`, `다음 API`, `확인 API/명령`, `endpoint`, `source_dir`, `artifact_path` 노출을 `연결`, `다음 연결`, `확인 방법`, `읽기 전용 접속`, `운영 산출물 폴더`, `보관 위치` 표현으로 낮춘다.
+- [x] manifest/source JSON placeholder와 기본 draft 값에서 로컬 절대 경로 예시를 제거한다.
+- [x] frontend launch readiness sanity는 raw path/status 노출 금지 문자열과 새 한국어 상태 문구를 함께 검증한다.
+- [x] Korean copy inventory는 새 초보자 친화 문구를 기준으로 갱신했다.
+- [ ] 이 변경은 화면 노출 계층 정리이며 backend API payload 키와 감사용 원본 저장 위치를 제거하지 않는다.

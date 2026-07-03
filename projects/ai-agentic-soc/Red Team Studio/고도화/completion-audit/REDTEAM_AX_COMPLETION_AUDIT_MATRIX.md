@@ -265,6 +265,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 최신 closure 결과에서 `운영 closure 진행 요약`과 `운영 closure 단계` 표를 표시한다.
 - 이 변경은 초급 분석가용 projection이며 실제 조직 scanner 산출물, Evidence 승인, Finding severity 승인, Report export, completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - RedTeam2 분석 화면 원시 경로/API 노출 최소화
+
+- RedTeam2 분석가 화면의 저장 경로, 실행 계획 경로, 보고서/내보내기 경로 표시는 `분석 저장소에 보관됨` 또는 `세부 위치는 관리자/감사 기록에서 확인`으로 요약한다.
+- 분석가용 표는 `연결 API`, `다음 API`, `확인 API/명령`, `endpoint`, `source_dir`, `artifact_path` 대신 `연결`, `다음 연결`, `확인 방법`, `읽기 전용 접속`, `운영 산출물 폴더`, `보관 위치`를 사용한다.
+- manifest/source JSON placeholder와 기본 draft 값에서 로컬 절대 경로 예시를 제거했다.
+- 이 변경은 화면 표시 계층 정리이며 backend API payload와 Evidence artifact 원본 위치 추적은 유지한다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

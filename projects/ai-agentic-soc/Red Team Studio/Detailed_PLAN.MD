@@ -1301,3 +1301,11 @@ Create Case
 - 안전 원칙: 요약 API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. `goal_complete_candidate`가 표시되어도 전체 `/goal` 완료 처리는 별도 completion review와 사람 판단 이후다.
 - 테스트 전략: API regression은 ready/blocked/human review/reviewed close/certification/audit 단계의 다음 버튼과 safe flag를 검증한다. frontend launch readiness sanity는 state 변수와 한국어 표명을 검사한다.
 - 예외 케이스: 이 요약은 UX와 상태 projection이다. 실제 조직 산출물, 실제 승인자, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 별도 산출물로 증명해야 한다.
+
+## 86. 갱신 목표 반영 - RedTeam2 분석 화면 원시 경로/API 노출 최소화
+
+- 목적: RedTeam2가 Evidence 추적성을 유지하면서도 분석자 화면에 로컬 절대 경로, 내부 API 엔드포인트, 영어 실행환경 토큰을 과도하게 노출하지 않도록 표시 계층을 정리한다.
+- 화면/기능 명세: 분석가용 카드와 표는 `분석 저장소에 보관됨`, `파일 확인됨`, `연결 준비됨`, `관리자가 승인한 운영 산출물 폴더`처럼 상태 중심 한국어로 표시한다. 원시 경로는 관리자/감사 기록에서 확인한다는 안내로 대체한다.
+- 데이터 계약: backend payload의 `source_dir`, `source_path`, `artifact_path`, `storage_path`, API endpoint 키는 유지한다. 변경 대상은 RedTeam2의 표시 문구와 placeholder이며 저장·검증·감사 경로는 API와 Evidence artifact에 남긴다.
+- 예외 케이스: 사용자가 운영 산출물 폴더를 직접 입력해야 하는 관리자 입력란은 남기되, 기본값과 placeholder에서 실제 로컬 경로 예시를 제거한다. 첨부 JSON은 버튼으로 자동 생성하거나 관리자가 검증한 JSON을 붙여넣도록 안내한다.
+- 테스트 전략: `node --check reports.js`, `redteam_ax_frontend_launch_readiness_contract.py`, `test_redteam2_korean_copy_inventory.py`가 문법, 금지 노출 문자열, 한국어 copy anchor를 검증한다.
