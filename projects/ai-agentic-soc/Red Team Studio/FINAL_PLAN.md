@@ -1825,3 +1825,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API는 `does_not_mark_goal_complete=true`, `requires_external_goal_update=true`, `commands_executed_by_api=false`를 반환해 검토와 실제 thread goal 완료 처리를 분리한다.
 - [x] RedTeam2에 `전체 목표 완료 검토` 버튼, `전체 목표 완료 checklist`, `전체 목표 완료 blocker` 표를 추가한다.
 - [x] 현재 상태에서는 RTA-COMP-015와 remaining gaps 때문에 완료가 차단되어야 하며, API 회귀와 frontend sanity가 이를 검증한다.
+
+## 119. 갱신 목표 - 실제 Docker container runtime smoke 통과
+
+- [x] ephemeral container launcher가 Docker image ENTRYPOINT를 신뢰하지 않고 `--entrypoint=`로 비운 뒤 allowlist가 승인한 `runner_argv`만 실행한다.
+- [x] launcher metadata에 `entrypoint_policy=cleared_to_execute_only_approved_runner_argv`를 기록한다.
+- [x] regression test가 dry-run container launch plan의 `--entrypoint=`, network none, read-only rootfs, dropped capabilities, pinned image digest, approved runner argv를 검증한다.
+- [x] 실제 Docker Desktop engine과 local pinned `aquasec/trivy` digest로 `redteam_ax_container_runtime_smoke.py --allow-real --require-real`이 `status=passed`를 기록했다.
+- [x] strict live readiness promotion은 Docker gate 1개 통과, WSL 및 조직 OpenVAS/ZAP endpoint/vault gate 3개 미통과를 기록한다.
+- [ ] WSL 배포판 start/tool path 준비, 조직 OpenVAS/ZAP read-only endpoint/vault, 실제 6개 도구 운영 closure를 완료하기 전까지 RTA-COMP-015와 전체 goal은 계속 미완료로 둔다.

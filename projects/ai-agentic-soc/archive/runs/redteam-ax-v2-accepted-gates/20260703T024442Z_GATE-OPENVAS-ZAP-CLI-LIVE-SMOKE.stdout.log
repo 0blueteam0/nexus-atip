@@ -1,0 +1,1 @@
+{"status": "passed", "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json", "passed_tools": ["TOOL-OPENVAS-001", "TOOL-ZAP-001"], "failed_tools": [], "residual_blockers": ["service_endpoint_not_configured", "zap_daemon_not_started"]}

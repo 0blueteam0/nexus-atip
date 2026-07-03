@@ -2,7 +2,7 @@
 title: RedTeam AX Development Byproduct Exclusion Review
 type: completion_audit_control
 status: passed
-created: 2026-07-03T02:26:08Z
+created: 2026-07-03T02:46:10Z
 source_path:
   - J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_completion_audit_matrix.json
 tags: [redteam-ax, completion-audit, development-byproduct, evidence-governance]
@@ -13,8 +13,8 @@ tags: [redteam-ax, completion-audit, development-byproduct, evidence-governance]
 ## 판정
 
 - 상태: `passed`
-- 전체 evidence ref: 367
-- 개발 부산물 ref: 184
+- 전체 evidence ref: 372
+- 개발 부산물 ref: 188
 - 완료 증거로 허용된 개발 부산물 ref: 0
 - 보고서 Claim 증거로 허용된 개발 부산물 ref: 0
 

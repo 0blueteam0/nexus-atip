@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_tool_result_finding_claim_review",
-  "created_at": "2026-07-02T13:26:25Z",
+  "created_at": "2026-07-03T02:45:22Z",
   "status": "finding_claim_review_needs_evidence_approval",
   "safe_by_default": true,
   "commands_executed_by_api": false,
@@ -29,7 +29,7 @@
         "confidence": 0.5,
         "observation": "npm audit 의존성 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
         "evidence_ids": [
-          "EV-F52B2D2FC911"
+          "EV-0777C7DDA9BC"
         ],
         "root_cause": [
           "의존성 점검 결과는 환경과 lockfile 범위를 확인한 뒤 판단해야 합니다."
@@ -47,23 +47,23 @@
         "claim_id": "C-TOOL-REVIEW-001",
         "support_level": "supported",
         "evidence_ids": [
-          "EV-F52B2D2FC911"
+          "EV-0777C7DDA9BC"
         ],
         "status": "hold_unsupported_claim",
         "statement_ko": "npm audit 의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
         "hold_reason": "Evidence Card approval is required before report claim use."
       },
       "source_refs": {
-        "run_id": "TRUN-FB02001A3EA0",
-        "result_id": "NR-E26428D2F92B",
-        "evidence_id": "EV-F52B2D2FC911",
-        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-FB02001A3EA0.json",
-        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-E26428D2F92B.json",
-        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-F52B2D2FC911.json"
+        "run_id": "TRUN-8EE46009AD06",
+        "result_id": "NR-0A8C41E95938",
+        "evidence_id": "EV-0777C7DDA9BC",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-8EE46009AD06.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-0A8C41E95938.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-0777C7DDA9BC.json"
       },
       "evidence_review": {
         "exists": true,
-        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-F52B2D2FC911.json",
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-0777C7DDA9BC.json",
         "approval_status": "pending_review",
         "approved": false,
         "errors": []
@@ -96,7 +96,7 @@
         "confidence": 0.5,
         "observation": "Nuclei 웹 취약점 템플릿 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
         "evidence_ids": [
-          "EV-36E5A36DC2C1"
+          "EV-75981E76CEA9"
         ],
         "root_cause": [
           "템플릿 기반 결과는 대상 범위, 템플릿 신뢰도, 재현 조건 확인이 필요합니다."
@@ -114,23 +114,23 @@
         "claim_id": "C-TOOL-REVIEW-002",
         "support_level": "supported",
         "evidence_ids": [
-          "EV-36E5A36DC2C1"
+          "EV-75981E76CEA9"
         ],
         "status": "hold_unsupported_claim",
         "statement_ko": "Nuclei 웹 취약점 템플릿 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
         "hold_reason": "Evidence Card approval is required before report claim use."
       },
       "source_refs": {
-        "run_id": "TRUN-ECF11DCFC6EF",
-        "result_id": "NR-6B1C309E4EAF",
-        "evidence_id": "EV-36E5A36DC2C1",
-        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-ECF11DCFC6EF.json",
-        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-6B1C309E4EAF.json",
-        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-36E5A36DC2C1.json"
+        "run_id": "TRUN-D2270C36AE7E",
+        "result_id": "NR-BFE18D55614B",
+        "evidence_id": "EV-75981E76CEA9",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D2270C36AE7E.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-BFE18D55614B.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-75981E76CEA9.json"
       },
       "evidence_review": {
         "exists": true,
-        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-36E5A36DC2C1.json",
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-75981E76CEA9.json",
         "approval_status": "pending_review",
         "approved": false,
         "errors": []
@@ -163,7 +163,7 @@
         "confidence": 0.5,
         "observation": "Trivy 컨테이너/의존성 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
         "evidence_ids": [
-          "EV-07CC00461F81"
+          "EV-8AEAED117380"
         ],
         "root_cause": [
           "컨테이너/의존성 취약점 후보는 실제 사용 여부와 보정 정보를 확인해야 합니다."
@@ -181,23 +181,23 @@
         "claim_id": "C-TOOL-REVIEW-003",
         "support_level": "supported",
         "evidence_ids": [
-          "EV-07CC00461F81"
+          "EV-8AEAED117380"
         ],
         "status": "hold_unsupported_claim",
         "statement_ko": "Trivy 컨테이너/의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
         "hold_reason": "Evidence Card approval is required before report claim use."
       },
       "source_refs": {
-        "run_id": "TRUN-464CFDA3781E",
-        "result_id": "NR-419DC030F743",
-        "evidence_id": "EV-07CC00461F81",
-        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-464CFDA3781E.json",
-        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-419DC030F743.json",
-        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-07CC00461F81.json"
+        "run_id": "TRUN-308783F6942F",
+        "result_id": "NR-AF3F508A9B70",
+        "evidence_id": "EV-8AEAED117380",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-308783F6942F.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-AF3F508A9B70.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-8AEAED117380.json"
       },
       "evidence_review": {
         "exists": true,
-        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-07CC00461F81.json",
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-8AEAED117380.json",
         "approval_status": "pending_review",
         "approved": false,
         "errors": []
@@ -230,7 +230,7 @@
         "confidence": 0.5,
         "observation": "OpenVAS 취약점 스캐너 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
         "evidence_ids": [
-          "EV-C405298203B0"
+          "EV-5BAE77EA5553"
         ],
         "root_cause": [
           "OpenVAS 결과는 스캔 범위, 인증 여부, 플러그인 신뢰도를 확인해야 합니다."
@@ -248,23 +248,23 @@
         "claim_id": "C-TOOL-REVIEW-004",
         "support_level": "supported",
         "evidence_ids": [
-          "EV-C405298203B0"
+          "EV-5BAE77EA5553"
         ],
         "status": "hold_unsupported_claim",
         "statement_ko": "OpenVAS 취약점 스캐너 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
         "hold_reason": "Evidence Card approval is required before report claim use."
       },
       "source_refs": {
-        "run_id": "TRUN-B2E8CB947AAC",
-        "result_id": "NR-EBAE6A960341",
-        "evidence_id": "EV-C405298203B0",
-        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-B2E8CB947AAC.json",
-        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-EBAE6A960341.json",
-        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-C405298203B0.json"
+        "run_id": "TRUN-D81CF08040FE",
+        "result_id": "NR-1DC593B75815",
+        "evidence_id": "EV-5BAE77EA5553",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D81CF08040FE.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-1DC593B75815.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5BAE77EA5553.json"
       },
       "evidence_review": {
         "exists": true,
-        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-C405298203B0.json",
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5BAE77EA5553.json",
         "approval_status": "pending_review",
         "approved": false,
         "errors": []
@@ -297,7 +297,7 @@
         "confidence": 0.5,
         "observation": "OWASP ZAP 웹 보안 점검 결과가 정규화되어 Evidence 후보와 연결되었습니다.",
         "evidence_ids": [
-          "EV-5B145E402AA0"
+          "EV-81A52C933401"
         ],
         "root_cause": [
           "ZAP 결과는 passive/active scan 여부와 애플리케이션 맥락을 확인해야 합니다."
@@ -315,23 +315,23 @@
         "claim_id": "C-TOOL-REVIEW-005",
         "support_level": "supported",
         "evidence_ids": [
-          "EV-5B145E402AA0"
+          "EV-81A52C933401"
         ],
         "status": "hold_unsupported_claim",
         "statement_ko": "OWASP ZAP 웹 보안 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
         "hold_reason": "Evidence Card approval is required before report claim use."
       },
       "source_refs": {
-        "run_id": "TRUN-9D254488D761",
-        "result_id": "NR-108C3D9D4D5E",
-        "evidence_id": "EV-5B145E402AA0",
-        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-9D254488D761.json",
-        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-108C3D9D4D5E.json",
-        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5B145E402AA0.json"
+        "run_id": "TRUN-2B0AB2A30F35",
+        "result_id": "NR-C96DE8A900E7",
+        "evidence_id": "EV-81A52C933401",
+        "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B0AB2A30F35.json",
+        "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-C96DE8A900E7.json",
+        "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-81A52C933401.json"
       },
       "evidence_review": {
         "exists": true,
-        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5B145E402AA0.json",
+        "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-81A52C933401.json",
         "approval_status": "pending_review",
         "approved": false,
         "errors": []
@@ -356,7 +356,7 @@
       "claim_id": "C-TOOL-REVIEW-001",
       "support_level": "supported",
       "evidence_ids": [
-        "EV-F52B2D2FC911"
+        "EV-0777C7DDA9BC"
       ],
       "status": "hold_unsupported_claim",
       "statement_ko": "npm audit 의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
@@ -366,7 +366,7 @@
       "claim_id": "C-TOOL-REVIEW-002",
       "support_level": "supported",
       "evidence_ids": [
-        "EV-36E5A36DC2C1"
+        "EV-75981E76CEA9"
       ],
       "status": "hold_unsupported_claim",
       "statement_ko": "Nuclei 웹 취약점 템플릿 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
@@ -376,7 +376,7 @@
       "claim_id": "C-TOOL-REVIEW-003",
       "support_level": "supported",
       "evidence_ids": [
-        "EV-07CC00461F81"
+        "EV-8AEAED117380"
       ],
       "status": "hold_unsupported_claim",
       "statement_ko": "Trivy 컨테이너/의존성 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
@@ -386,7 +386,7 @@
       "claim_id": "C-TOOL-REVIEW-004",
       "support_level": "supported",
       "evidence_ids": [
-        "EV-C405298203B0"
+        "EV-5BAE77EA5553"
       ],
       "status": "hold_unsupported_claim",
       "statement_ko": "OpenVAS 취약점 스캐너 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",
@@ -396,7 +396,7 @@
       "claim_id": "C-TOOL-REVIEW-005",
       "support_level": "supported",
       "evidence_ids": [
-        "EV-5B145E402AA0"
+        "EV-81A52C933401"
       ],
       "status": "hold_unsupported_claim",
       "statement_ko": "OWASP ZAP 웹 보안 점검 결과가 검토 가능한 보안 관찰 근거로 수집되었습니다.",

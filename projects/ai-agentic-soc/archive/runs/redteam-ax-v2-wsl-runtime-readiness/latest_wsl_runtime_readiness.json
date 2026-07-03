@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_wsl_runtime_readiness",
-  "created_at": "2026-07-02T08:13:52Z",
+  "created_at": "2026-07-03T02:53:36Z",
   "safe_by_default": true,
   "wsl_command_executed": true,
   "tool_commands_executed": false,
@@ -16,7 +16,7 @@
       "-v"
     ],
     "exit_code": 0,
-    "stdout": "  NAME                          STATE           VERSION\n\n* Ubuntu-22.04                  Stopped         2\n\n  Ubuntu-22.04-AISOC-Rebuild    Stopped         2\n\n  Ubuntu-22.04-CAPE-Repair      Stopped         2\n\n",
+    "stdout": "  NAME                          STATE           VERSION\n\n* Ubuntu-22.04                  Stopped         2\n\n  Ubuntu-22.04-AISOC-Rebuild    Stopped         2\n\n  Ubuntu-22.04-CAPE-Repair      Stopped         2\n\n  docker-desktop                Running         2\n\n",
     "stderr": ""
   },
   "distros": [
@@ -35,6 +35,12 @@
     {
       "name": "Ubuntu-22.04-CAPE-Repair",
       "state": "Stopped",
+      "version": "2",
+      "default": "false"
+    },
+    {
+      "name": "docker-desktop",
+      "state": "Running",
       "version": "2",
       "default": "false"
     }

@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_openvas_zap_cli_live_smoke",
-  "created_at": "2026-07-02T07:13:40Z",
+  "created_at": "2026-07-03T02:44:51Z",
   "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
   "status": "passed",
   "safe_by_default": true,
@@ -57,12 +57,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-12CE8DF6B5FC",
+        "pin_request_id": "TWPINREQ-45F1A7E811A0",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-066D1D2E8D2E",
+        "approval_id": "TWPINAP-CF653CED73C1",
         "errors": []
       },
       "governed": {
@@ -72,7 +72,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-68DA3E5B6C08",
+          "execution_plan_id": "TEP-288623DCDFC0",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -80,10 +80,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-3EDFA5285053",
+          "run_id": "TRUN-D81CF08040FE",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-3EDFA5285053.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D81CF08040FE.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -93,13 +93,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-F5141F9B5902",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-F5141F9B5902.json"
+          "result_id": "NR-1DC593B75815",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-1DC593B75815.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-39AE06B4B566",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-39AE06B4B566.json"
+          "evidence_id": "EV-5BAE77EA5553",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5BAE77EA5553.json"
         }
       }
     },
@@ -124,12 +124,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-4787025B14EA",
+        "pin_request_id": "TWPINREQ-D41179F9E504",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-21842B75EBD8",
+        "approval_id": "TWPINAP-0CF5ECED05B1",
         "errors": []
       },
       "governed": {
@@ -139,7 +139,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-621B67C84182",
+          "execution_plan_id": "TEP-424CD153E7C0",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -147,10 +147,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-F0D3A704A133",
+          "run_id": "TRUN-2B0AB2A30F35",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-F0D3A704A133.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B0AB2A30F35.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -160,13 +160,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-90365E663F76",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-90365E663F76.json"
+          "result_id": "NR-C96DE8A900E7",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-C96DE8A900E7.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-7B19A6792E20",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-7B19A6792E20.json"
+          "evidence_id": "EV-81A52C933401",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-81A52C933401.json"
         }
       }
     }

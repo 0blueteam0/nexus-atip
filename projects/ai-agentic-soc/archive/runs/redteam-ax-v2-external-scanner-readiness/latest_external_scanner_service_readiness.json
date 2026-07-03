@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_external_scanner_service_readiness",
-  "created_at": "2026-07-02T08:01:19Z",
+  "created_at": "2026-07-03T02:45:11Z",
   "status": "blocked_external_scanner_services_not_ready",
   "safe_by_default": true,
   "network_probe_allowed": false,

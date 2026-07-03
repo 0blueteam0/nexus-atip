@@ -1,0 +1,92 @@
+{
+  "kind": "redteam_ax_v2_tool_action_card",
+  "action_id": "TAC-CONTAINER-RUNTIME-SMOKE-001",
+  "case_id": "CASE-V2-CONTAINER-RUNTIME-SMOKE-001",
+  "campaign_id": "CAMP-V2-DEFAULT",
+  "title": "Trivy real ephemeral container runtime smoke",
+  "objective": "Execute an approved low-risk container runner smoke and capture stdout/stderr as untrusted evidence.",
+  "action_type": "analysis_support",
+  "tool_id": "TOOL-TRIVY-001",
+  "tool_profile": {
+    "tool_id": "TOOL-TRIVY-001",
+    "name": "trivy",
+    "category": "container_iac_dependency_scan",
+    "normalizer_id": "NORMALIZER-TRIVY-001",
+    "agent_id": "AGENT-TRIVY-ANALYST-001",
+    "default_policy": "offline_artifact_or_workspace_scan_only"
+  },
+  "risk_class": "T0",
+  "environment": "approved_scope",
+  "target_scope_refs": [],
+  "inputs": {},
+  "expected_outputs": [
+    "sca_vulnerability_candidate",
+    "container_scan_evidence"
+  ],
+  "policy_requirements": [
+    "scope_validation",
+    "artifact_hashing",
+    "audit_logging",
+    "claim_evidence_linking"
+  ],
+  "approval_policy": {
+    "approval_mode": "none",
+    "required_approver_roles": [],
+    "requires_distinct_approvers": false
+  },
+  "required_approver_roles": [],
+  "approval_required": false,
+  "hitl_required": false,
+  "allowed_buttons": [
+    "Plan",
+    "Select Tool",
+    "Validate Scope",
+    "Record Manual Run",
+    "Dry Run",
+    "Import Output",
+    "Create Evidence",
+    "Generate Finding Draft"
+  ],
+  "prohibited_actions": [
+    "credential_collection",
+    "destructive_actions"
+  ],
+  "status": "OutputImported",
+  "roe_evaluation": {
+    "kind": "redteam_ax_v2_roe_evaluation",
+    "case_id": "CASE-V2-CONTAINER-RUNTIME-SMOKE-001",
+    "decision": "deny",
+    "risk_class": "T0",
+    "hitl_required": false,
+    "failures": [
+      "target_scope_refs_required"
+    ],
+    "evaluated_at": "2026-07-03T02:53:34Z",
+    "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001/roe/ROE-CD0AAA5B2DAA.json",
+    "audit_log_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001/audit.jsonl"
+  },
+  "audit_events": [
+    {
+      "event": "planned",
+      "at": "2026-07-03T02:53:34Z",
+      "actor": "analyst@example.com"
+    },
+    {
+      "event": "tool_execution_plan_created",
+      "at": "2026-07-03T02:53:34Z",
+      "execution_plan_id": "TEP-78329F6E5CAC",
+      "execution_mode": "sandbox_execute"
+    },
+    {
+      "event": "governed_tool_execution_recorded",
+      "at": "2026-07-03T02:53:35Z",
+      "run_id": "TRUN-A99B34253F74",
+      "tool_id": "TOOL-TRIVY-001",
+      "execution_mode": "sandbox_execute"
+    }
+  ],
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001/tool-actions/TAC-CONTAINER-RUNTIME-SMOKE-001.json",
+  "execution_plans": [
+    "TEP-78329F6E5CAC"
+  ]
+}

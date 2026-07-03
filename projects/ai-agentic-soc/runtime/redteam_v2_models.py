@@ -4336,6 +4336,7 @@ def build_ephemeral_container_command(
         str(resources.get("memory") or "512m"),
         "--pids-limit",
         str(resources.get("pids_limit") or 128),
+        "--entrypoint=",
         "--mount",
         f"type=bind,src={PROJECT_ROOT.as_posix()},dst=/workspace,readonly",
         "--mount",
@@ -4351,6 +4352,7 @@ def build_ephemeral_container_command(
         "image_digest": image_digest or None,
         "container_argv": docker_args,
         "network_args": network_args,
+        "entrypoint_policy": "cleared_to_execute_only_approved_runner_argv",
         "mounts": [
             {"source": PROJECT_ROOT.as_posix(), "target": "/workspace", "mode": "readonly"},
             {"source": case_path.as_posix(), "target": "/case", "mode": "write"},

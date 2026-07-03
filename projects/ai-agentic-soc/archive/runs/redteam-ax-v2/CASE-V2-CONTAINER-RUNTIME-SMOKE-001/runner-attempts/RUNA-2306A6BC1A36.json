@@ -1,0 +1,87 @@
+{
+  "kind": "redteam_ax_v2_governed_runner_attempt",
+  "run_id": "TRUN-A99B34253F74",
+  "case_id": "CASE-V2-CONTAINER-RUNTIME-SMOKE-001",
+  "action_id": "TAC-CONTAINER-RUNTIME-SMOKE-001",
+  "execution_plan_id": "TEP-78329F6E5CAC",
+  "execution_token_id": "EXT-72D1AD081392",
+  "tool_id": "TOOL-TRIVY-001",
+  "execution_mode": "sandbox_execute",
+  "runner_argv": [
+    "trivy",
+    "--version"
+  ],
+  "shell": false,
+  "status": "executed",
+  "errors": [],
+  "started_at": "2026-07-03T02:53:34Z",
+  "completed_at": "2026-07-03T02:53:35Z",
+  "exit_code": 0,
+  "timeout_seconds": 30,
+  "max_output_bytes": 262144,
+  "cwd": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001",
+  "runner_backend": "ephemeral_container",
+  "container_launch": {
+    "runtime_name": "docker",
+    "runtime_path": "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+    "image_digest": "aquasec/trivy@sha256:f5d0e600ecda7449e2a9b272805aef698631d3bb3f3a739a750de2c6819acdc9",
+    "container_argv": [
+      "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.EXE",
+      "run",
+      "--rm",
+      "--name",
+      "rtax-TRUN-A99B34253F74",
+      "--network",
+      "none",
+      "--read-only",
+      "--cap-drop",
+      "ALL",
+      "--security-opt",
+      "no-new-privileges",
+      "--cpus",
+      "1",
+      "--memory",
+      "512m",
+      "--pids-limit",
+      "128",
+      "--entrypoint=",
+      "--mount",
+      "type=bind,src=J:/PortableApps/genai/projects/ai-agentic-soc,dst=/workspace,readonly",
+      "--mount",
+      "type=bind,src=J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001,dst=/case",
+      "--workdir",
+      "/case",
+      "aquasec/trivy@sha256:f5d0e600ecda7449e2a9b272805aef698631d3bb3f3a739a750de2c6819acdc9",
+      "trivy",
+      "--version"
+    ],
+    "network_args": [
+      "--network",
+      "none"
+    ],
+    "entrypoint_policy": "cleared_to_execute_only_approved_runner_argv",
+    "mounts": [
+      {
+        "source": "J:/PortableApps/genai/projects/ai-agentic-soc",
+        "target": "/workspace",
+        "mode": "readonly"
+      },
+      {
+        "source": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001",
+        "target": "/case",
+        "mode": "write"
+      }
+    ],
+    "resource_limits": {
+      "cpus": "1",
+      "memory": "512m",
+      "pids_limit": 128
+    },
+    "trusted_as_instruction": false
+  },
+  "container_dry_run": false,
+  "stdout_bytes": 16,
+  "stderr_bytes": 0,
+  "output_truncated": false,
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-CONTAINER-RUNTIME-SMOKE-001/runner-attempts/RUNA-2306A6BC1A36.json"
+}

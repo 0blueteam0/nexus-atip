@@ -7,11 +7,11 @@
 - SCA decision: `근거 패키지 검토 가능`
 
 ## Evidence Pack
-- `TOOL-NPM-AUDIT-001` npm audit 의존성 점검: evidence `EV-3F909D05B57E` result `NR-DC3B6E1FCB39` run `TRUN-77FE6F0A5B82`
-- `TOOL-NUCLEI-001` Nuclei 웹 취약점 템플릿 점검: evidence `EV-A30D4FB6719E` result `NR-C201CD8C8C7B` run `TRUN-F518066A571D`
-- `TOOL-TRIVY-001` Trivy 컨테이너/의존성 점검: evidence `EV-870929768413` result `NR-7C63E029DF06` run `TRUN-A31DA5082610`
-- `TOOL-OPENVAS-001` OpenVAS 취약점 스캐너: evidence `EV-D7BD7B9A8973` result `NR-11BA199117E4` run `TRUN-E77FB10BE35F`
-- `TOOL-ZAP-001` OWASP ZAP 웹 보안 점검: evidence `EV-4C1D04FC83C9` result `NR-1C666FD6FBDD` run `TRUN-624E0E8A8CB0`
+- `TOOL-NPM-AUDIT-001` npm audit 의존성 점검: evidence `EV-0777C7DDA9BC` result `NR-0A8C41E95938` run `TRUN-8EE46009AD06`
+- `TOOL-NUCLEI-001` Nuclei 웹 취약점 템플릿 점검: evidence `EV-75981E76CEA9` result `NR-BFE18D55614B` run `TRUN-D2270C36AE7E`
+- `TOOL-TRIVY-001` Trivy 컨테이너/의존성 점검: evidence `EV-8AEAED117380` result `NR-AF3F508A9B70` run `TRUN-308783F6942F`
+- `TOOL-OPENVAS-001` OpenVAS 취약점 스캐너: evidence `EV-5BAE77EA5553` result `NR-1DC593B75815` run `TRUN-D81CF08040FE`
+- `TOOL-ZAP-001` OWASP ZAP 웹 보안 점검: evidence `EV-81A52C933401` result `NR-C96DE8A900E7` run `TRUN-2B0AB2A30F35`
 
 ## Blocked Items
 - `TOOL-OPENVAS-001` OpenVAS 취약점 스캐너: `blocked_service_or_cli_not_installed` - gvm-cli/OpenVAS service is not present in this Windows session; read-only credential contract remains proved separately.

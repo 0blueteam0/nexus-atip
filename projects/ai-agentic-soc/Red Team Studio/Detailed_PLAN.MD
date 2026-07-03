@@ -1116,3 +1116,12 @@ Create Case
 - 데이터 계약: 응답은 `goal_completion_ready`, `status`, `checklist`, `blockers`, `unresolved_items`, `remaining_gaps`, accepted gate count, zero-count gate, byproduct review status, safe flags, `does_not_mark_goal_complete=true`를 포함한다.
 - 화면 명세: RedTeam2는 `전체 목표 완료 검토` 버튼을 제공하고, `전체 목표 완료 checklist`와 `전체 목표 완료 blocker` 표에서 남은 partial/gap과 종료 조건 미충족 이유를 한국어로 보여준다.
 - 테스트 전략: 현재 active_incomplete matrix에서 API가 `goal_completion_blocked`를 반환하고, RTA-COMP-015/remaining gaps를 해소하기 전에는 thread goal 완료로 볼 수 없음을 회귀로 검증한다.
+
+## 66. 갱신 목표 반영 - Docker container runtime 실측 smoke
+
+- 목적: Docker daemon blocker가 해소된 환경에서 ephemeral container runner가 실제 컨테이너를 실행하되, 컨테이너 이미지의 ENTRYPOINT를 신뢰하지 않고 RedTeam AX가 승인한 argv만 실행하도록 한다.
+- 구현: `build_ephemeral_container_command`는 Docker argv에 `--entrypoint=`를 추가하고 launch metadata에 `entrypoint_policy=cleared_to_execute_only_approved_runner_argv`를 기록한다.
+- 이유: `aquasec/trivy` 이미지는 ENTRYPOINT가 `trivy`라서 기존 방식은 승인된 `["trivy", "--version"]`이 컨테이너 내부에서 `trivy trivy --version`으로 해석될 수 있었다. ENTRYPOINT를 비우면 child-process allowlist가 승인한 명령만 실제 실행된다.
+- 실측 증거: `.venv` Python으로 `redteam_ax_container_runtime_smoke.py --allow-real --require-real --timeout 90`을 실행했고 `latest_container_runtime_smoke.json`에 Docker Desktop engine, local pinned `aquasec/trivy` digest, ToolActionCard, ExecutionPlan, execution token, network none, read-only rootfs, dropped capabilities, no-new-privileges, runner exit 0, `status=passed`가 남았다.
+- 테스트 전략: API regression은 dry-run launch plan에 `--entrypoint=`, pinned image digest, approved runner argv, isolation controls가 존재하는지 검증한다. 실제 smoke artifact는 accepted gate 및 completion audit의 runtime evidence로 보존한다.
+- 예외 케이스: 이 증거는 Docker/container runtime 부분만 해소한다. WSL 배포판 start/tool path, 조직 OpenVAS/ZAP read-only endpoint/vault, 실제 6개 도구 운영 Evidence/Finding/Matrix/Report/export closure가 남아 있으면 RTA-COMP-015와 전체 goal은 완료가 아니다.

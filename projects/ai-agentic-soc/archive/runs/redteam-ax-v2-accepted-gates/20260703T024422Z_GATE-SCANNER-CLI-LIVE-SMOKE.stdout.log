@@ -1,0 +1,1 @@
+{"status": "passed", "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json", "passed_tools": ["TOOL-NUCLEI-001", "TOOL-TRIVY-001"], "failed_tools": [], "blocked_tools": ["TOOL-OPENVAS-001", "TOOL-ZAP-001", "DOCKER-CONTAINER-RUNTIME"]}

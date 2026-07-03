@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_scanner_cli_live_smoke",
-  "created_at": "2026-07-02T06:27:49Z",
+  "created_at": "2026-07-03T02:44:26Z",
   "case_id": "CASE-V2-SCANNER-CLI-LIVE-SMOKE-001",
   "status": "passed",
   "safe_by_default": true,
@@ -36,12 +36,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-A45792A90CD2",
+        "pin_request_id": "TWPINREQ-79E2AF748D05",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-29985AD0046E",
+        "approval_id": "TWPINAP-ED389E53B330",
         "errors": []
       },
       "governed": {
@@ -51,7 +51,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-60BAA19B2437",
+          "execution_plan_id": "TEP-6EA5FE2763A6",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -59,10 +59,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-CD802931AE50",
+          "run_id": "TRUN-D2270C36AE7E",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-CD802931AE50.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D2270C36AE7E.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -72,13 +72,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-CD55910C687F",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-CD55910C687F.json"
+          "result_id": "NR-BFE18D55614B",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-BFE18D55614B.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-F5759F3E5321",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-F5759F3E5321.json"
+          "evidence_id": "EV-75981E76CEA9",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-75981E76CEA9.json"
         }
       }
     },
@@ -108,12 +108,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-2F8C57263ABB",
+        "pin_request_id": "TWPINREQ-5715D0783DC0",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-37235D823937",
+        "approval_id": "TWPINAP-5145EF816867",
         "errors": []
       },
       "governed": {
@@ -123,7 +123,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-3BF248F8E697",
+          "execution_plan_id": "TEP-CB5838EBB3F2",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -131,10 +131,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-2B9036AED6E8",
+          "run_id": "TRUN-308783F6942F",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B9036AED6E8.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-308783F6942F.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -144,13 +144,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-DAF5E36B62B1",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-DAF5E36B62B1.json"
+          "result_id": "NR-AF3F508A9B70",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-AF3F508A9B70.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-E8339678D59D",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-E8339678D59D.json"
+          "evidence_id": "EV-8AEAED117380",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-8AEAED117380.json"
         }
       }
     }
