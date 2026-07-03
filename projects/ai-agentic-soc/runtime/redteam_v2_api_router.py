@@ -290,6 +290,11 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.governed_toolchain_execution(payload)
 
 
+@router.post("/toolchains/{toolchain_id}/run-status")
+def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.summarize_toolchain_run_status(toolchain_id, payload)
+
+
 @router.post("/toolchains/import-artifact-manifest")
 def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.import_toolchain_artifact_manifest(payload)

@@ -3743,6 +3743,37 @@ export default {
     }
   }
 ,
+  async reloadRedTeam2ToolchainRunStatus() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-composite');
+    const currentRun = this.state.redteam2ToolchainState?.result || {};
+    const toolchainId = String(currentRun.toolchain_id || draft.compositeToolchainId || `${reportId}-TOOLCHAIN-LOCAL-RUNNER`).trim();
+    this.setState(s => ({ redteam2ToolchainRunStatusState:{ ...(s.redteam2ToolchainRunStatusState || {}), status:'loading', error:null } }));
+    try {
+      const res = await fetch(`http://127.0.0.1:8765/api/redteam/v2/toolchains/${encodeURIComponent(toolchainId)}/run-status`, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          requested_by:'current-analyst',
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'toolchain_run_not_found') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ToolchainRunStatusState:{ ...(s.redteam2ToolchainRunStatusState || {}), status:data.status || 'loaded', result:data, checkedAt:new Date().toISOString(), error:null },
+        redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), result:data.toolchain_run || currentRun, checkedAt:new Date().toISOString(), error:null },
+      }));
+      this.toast(data.can_collect_results ? '저장된 실행 상태를 불러왔습니다' : '저장된 실행 상태에 회수 가능한 결과가 없습니다', data.can_collect_results ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 toolchain 실행 상태 조회: ${data.toolchain_id} · ${data.run_status || data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainRunStatusState:{ ...(s.redteam2ToolchainRunStatusState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('저장된 실행 상태 조회 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async buildRedTeam2ToolchainArtifactManifest() {
     const draft = this.redTeam2AnalysisDraft();
     const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
@@ -5283,6 +5314,7 @@ export default {
     const toolchainReportDraftState = this.state.redteam2ToolchainReportDraftState || {};
     const toolchainCompletionGateState = this.state.redteam2ToolchainCompletionGateState || {};
     const toolchainClosureState = this.state.redteam2ToolchainClosureState || {};
+    const toolchainRunStatusState = this.state.redteam2ToolchainRunStatusState || {};
     const realOperatingEvidenceReadinessState = this.state.redteam2RealOperatingEvidenceReadinessState || {};
     const operatingClosureReadinessSummaryState = this.state.redteam2OperatingClosureReadinessSummaryState || {};
     const operatorEvidenceSubmissionManifestState = this.state.redteam2OperatorEvidenceSubmissionManifestState || {};
@@ -5312,6 +5344,7 @@ export default {
     const toolchainReportDraft = toolchainReportDraftState.result || {};
     const toolchainCompletionGate = toolchainCompletionGateState.result || {};
     const toolchainClosure = toolchainClosureState.result || {};
+    const toolchainRunStatus = toolchainRunStatusState.result || {};
     const realOperatingEvidenceReadiness = realOperatingEvidenceReadinessState.result || {};
     const operatingClosureReadinessSummary = operatingClosureReadinessSummaryState.result || {};
     const operatorEvidenceSubmissionManifest = operatorEvidenceSubmissionManifestState.result || {};
@@ -5484,6 +5517,8 @@ export default {
       auditing:'완료 감사 검토 중',
       completion_audit_blocked:'완료 감사 차단',
       goal_complete_candidate:'완료 후보',
+      toolchain_run_status_loaded:'실행 상태 불러옴',
+      toolchain_run_not_found:'실행 기록 없음',
       collected:'결과 회수 완료',
       collecting:'결과 회수 중',
       collected_with_blocks:'일부 결과 회수 차단',
@@ -6002,6 +6037,7 @@ export default {
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
       ['복합 결과 회수', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
+      ['저장 실행 상태 조회', koValue(toolchainRunStatus.status || toolchainRunStatusState.status || '대기'), toolchainRunStatusState.error || (toolchainRunStatus.can_collect_results ? '결과 회수 가능' : '/api/redteam/v2/toolchains/{toolchain_id}/run-status')],
       ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
       ['필수 6개 도구 coverage', toolchainCollection.completion_gate_ready ? '완료 게이트 준비' : '완료 게이트 미준비', `${toolchainCollection.present_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 수집 · 누락 ${toolchainCollection.missing_required_tool_count ?? 6}개`],
       ['누락 필수 도구', (toolchainCollection.missing_required_tool_ids || []).length ? toolchainCollection.missing_required_tool_ids.join(', ') : '없음', toolchainCollection.next_action_ko || 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 coverage를 확인하세요'],
@@ -6029,6 +6065,17 @@ export default {
       event.status_ko || koValue(event.status),
       event.message_ko || '-',
       event.progress_percent != null ? `${event.progress_percent}%` : '-',
+    ]);
+    const toolchainRunStatusRows = [
+      ['상태', koValue(toolchainRunStatus.status || toolchainRunStatusState.status || '대기'), toolchainRunStatusState.error || toolchainRunStatus.run_status || '저장 실행 상태 다시 불러오기 버튼을 누르세요'],
+      ['회수 가능 단계', `${toolchainRunStatus.collectable_step_count ?? 0}개`, toolchainRunStatus.primary_next_api || '/api/redteam/v2/toolchains/{toolchain_id}/run-status'],
+      ['명령 실행', koBool(toolchainRunStatus.commands_executed_by_api ?? false), '상태 조회 API는 저장된 실행 기록만 읽고 명령을 실행하지 않음'],
+    ];
+    const toolchainRunStatusStepRows = (toolchainRunStatus.step_rows || []).map(row => [
+      `${Number(row.index ?? 0) + 1}. ${row.tool_name || row.tool_id || '-'}`,
+      row.status_ko || koValue(row.status),
+      row.run_id || row.run_status || (row.errors || []).join(', ') || '-',
+      row.can_collect_result ? '결과 회수 가능' : '회수 불가',
     ]);
     const toolchainCollectionRows = (toolchainCollection.steps || []).map(step => [
       `${Number(step.index ?? 0) + 1}. ${step.tool_id || '-'}`,
@@ -6737,6 +6784,11 @@ export default {
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainState.status === 'executing' ? '복합 처리 중' : (draft.compositeInputMode === 'operator_import' ? '여러 도구 결과 첨부' : '여러 분석도구 실행')),
               h('button', {
+                onClick:()=>this.reloadRedTeam2ToolchainRunStatus(),
+                disabled:toolchainRunStatusState.status === 'loading',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:toolchainRunStatusState.status === 'loading' ? C.raised : C.bg, color:toolchainRunStatusState.status === 'loading' ? C.muted : C.blue, cursor:toolchainRunStatusState.status === 'loading' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainRunStatusState.status === 'loading' ? '실행 상태 불러오는 중' : '저장 실행 상태 다시 불러오기'),
+              h('button', {
                 onClick:()=>this.buildRedTeam2ToolchainArtifactManifest(),
                 disabled:toolchainState.status === 'manifest-building',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.teal}`, background:toolchainState.status === 'manifest-building' ? C.raised : C.bg, color:toolchainState.status === 'manifest-building' ? C.muted : C.teal, cursor:toolchainState.status === 'manifest-building' ? 'not-allowed' : 'pointer', fontWeight:900 },
@@ -6825,6 +6877,8 @@ export default {
             this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
+            this.renderTable(['저장 실행 상태','상태','근거'], toolchainRunStatusRows),
+            this.renderTable(['저장 실행 단계','상태','Run ID/근거','결과 회수'], toolchainRunStatusStepRows.length ? toolchainRunStatusStepRows : [['대기','-','저장 실행 상태 다시 불러오기 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['필수 6개 분석도구','coverage 상태','LLM 분석 에이전트','Evidence/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage를 결과 회수 뒤 표시합니다','-']]),
             this.renderTable(['LLM 분석 에이전트 요약','요약','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),

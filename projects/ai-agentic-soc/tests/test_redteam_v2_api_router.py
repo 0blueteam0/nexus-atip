@@ -2089,6 +2089,63 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(completion_body["active_scan_executed"])
         self.assertFalse(completion_body["trusted_as_instruction"])
 
+    def test_v2_toolchain_run_status_reload_reads_saved_run_without_execution(self) -> None:
+        case_id = f"CASE-V2-TOOLCHAIN-RUN-STATUS-001-{uuid.uuid4().hex[:8]}"
+        toolchain_id = "TCHAIN-RUN-STATUS-RELOAD-001"
+        executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "requested_by": "analyst@example.com",
+            "objective": "저장된 복합 실행 상태를 다시 불러와 결과 회수 가능 여부를 확인한다.",
+            "tools": [
+                {
+                    "tool_id": "TOOL-NUCLEI-001",
+                    "execution_mode": "offline_parse",
+                    "imported_output": '{"template-id":"reload-nuclei","info":{"name":"Reload Nuclei","severity":"low"},"matched-at":"https://app.example.test"}',
+                },
+                {
+                    "tool_id": "TOOL-TRIVY-001",
+                    "execution_mode": "offline_parse",
+                    "imported_output": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-RELOAD","PkgName":"openssl","Severity":"HIGH"}]}]}',
+                },
+            ],
+        })
+        self.assertEqual(executed.status_code, 200)
+        executed_body = executed.json()
+        self.assertEqual(executed_body["status"], "imported")
+
+        response = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/run-status", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_run_status")
+        self.assertEqual(body["status"], "toolchain_run_status_loaded")
+        self.assertEqual(body["run_status"], "imported")
+        self.assertTrue(body["can_collect_results"])
+        self.assertEqual(body["collectable_step_count"], 2)
+        self.assertEqual(len(body["run_ids"]), 2)
+        self.assertEqual(len(body["step_rows"]), 2)
+        self.assertTrue(all(row["can_collect_result"] for row in body["step_rows"]))
+        self.assertEqual(body["primary_next_api"], f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results")
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        self.assertEqual(body["toolchain_run"]["toolchain_id"], toolchain_id)
+
+        missing = self.client.post("/api/redteam/v2/toolchains/TCHAIN-DOES-NOT-EXIST/run-status", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(missing.status_code, 200)
+        missing_body = missing.json()
+        self.assertEqual(missing_body["status"], "toolchain_run_not_found")
+        self.assertFalse(missing_body["can_collect_results"])
+        self.assertIn("toolchain_run_required", missing_body["errors"])
+
     def test_v2_toolchain_artifact_manifest_imports_six_operating_outputs_for_collection(self) -> None:
         case_id = "CASE-V2-TOOLCHAIN-ARTIFACT-MANIFEST-001"
         source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-artifact-manifest-source"

@@ -5333,6 +5333,103 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     return record
 
 
+def summarize_toolchain_run_status(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    status_labels = {
+        "imported": "결과 첨부 완료",
+        "executed": "실행 완료",
+        "blocked": "차단됨",
+        "invalid": "오류",
+        "planned": "계획됨",
+        "pending": "대기",
+        "toolchain_run_status_loaded": "실행 상태 불러옴",
+        "toolchain_run_not_found": "실행 기록 없음",
+    }
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
+    requested_by = str(payload.get("requested_by") or payload.get("analyst") or "current-analyst").strip()
+    toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
+    if toolchain is None:
+        return {
+            "kind": "redteam_ax_v2_toolchain_run_status",
+            "toolchain_id": toolchain_id,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "status": "toolchain_run_not_found",
+            "errors": ["toolchain_run_required"],
+            "can_collect_results": False,
+            "primary_next_api": "/api/redteam/v2/toolchains/execute-governed",
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "shell_expansion_allowed": False,
+            "trusted_as_instruction": False,
+            "does_not_mark_goal_complete": True,
+            "created_at": now_utc(),
+        }
+
+    steps = toolchain.get("steps") or []
+    step_rows: list[dict[str, Any]] = []
+    run_ids: list[str] = []
+    raw_artifact_refs: list[str] = []
+    for step in steps:
+        if not isinstance(step, dict):
+            continue
+        run = step.get("run") if isinstance(step.get("run"), dict) else {}
+        run_id = str(run.get("run_id") or "").strip()
+        raw_artifacts = run.get("raw_artifacts") if isinstance(run.get("raw_artifacts"), list) else []
+        if run_id:
+            run_ids.append(run_id)
+        for artifact in raw_artifacts:
+            if isinstance(artifact, dict) and artifact.get("source_path_or_ref"):
+                raw_artifact_refs.append(str(artifact.get("source_path_or_ref")))
+        step_rows.append({
+            "index": step.get("index"),
+            "tool_id": step.get("tool_id"),
+            "tool_name": step.get("tool_name"),
+            "status": step.get("status"),
+            "status_ko": step.get("status_ko") or status_labels.get(str(step.get("status") or "unknown"), str(step.get("status") or "unknown")),
+            "progress_percent": step.get("progress_percent"),
+            "run_id": run_id or None,
+            "run_status": run.get("status"),
+            "runner_attempt_status": (run.get("runner_attempt") or {}).get("status") if isinstance(run.get("runner_attempt"), dict) else None,
+            "raw_artifact_count": len(raw_artifacts),
+            "can_collect_result": bool(run_id),
+            "operator_message_ko": step.get("operator_message_ko") or "저장된 실행 상태를 확인하세요.",
+            "errors": step.get("errors") or [],
+        })
+    collectable_count = sum(1 for row in step_rows if row.get("can_collect_result"))
+    blocked_count = sum(1 for row in step_rows if row.get("errors") or row.get("status") in {"blocked", "invalid"})
+    return {
+        "kind": "redteam_ax_v2_toolchain_run_status",
+        "toolchain_id": toolchain_id,
+        "case_id": case_id,
+        "requested_by": requested_by,
+        "status": "toolchain_run_status_loaded",
+        "run_status": toolchain.get("status"),
+        "progress_percent": toolchain.get("progress_percent"),
+        "current_stage_ko": toolchain.get("current_stage_ko"),
+        "operator_summary_ko": toolchain.get("operator_summary_ko"),
+        "next_action_ko": toolchain.get("next_action_ko"),
+        "tool_count": toolchain.get("tool_count") or len(step_rows),
+        "executed_count": toolchain.get("executed_count") or 0,
+        "imported_count": toolchain.get("imported_count") or 0,
+        "blocked_count": blocked_count,
+        "collectable_step_count": collectable_count,
+        "run_ids": run_ids,
+        "raw_artifact_refs": raw_artifact_refs,
+        "step_rows": step_rows,
+        "progress_events": toolchain.get("progress_events") or [],
+        "can_collect_results": collectable_count > 0,
+        "primary_next_api": f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results" if collectable_count > 0 else "/api/redteam/v2/toolchains/execute-governed",
+        "toolchain_run": toolchain,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "created_at": now_utc(),
+    }
+
+
 def import_toolchain_artifact_manifest(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     requested_by = str(payload.get("requested_by") or payload.get("operator") or "").strip()

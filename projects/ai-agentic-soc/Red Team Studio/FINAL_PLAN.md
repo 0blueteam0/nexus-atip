@@ -1890,3 +1890,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2에 `운영 closure 준비 요약`, `운영 closure 다음 단계`, `운영 closure 준비 blocker` 표를 추가한다.
 - [x] API regression과 frontend runtime sanity가 ready source와 fixture/test-like source 차단을 검증한다.
 - [ ] 이 요약은 사람 검토 단계로 넘어갈 수 있는지 판단할 뿐이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 127. 갱신 목표 - 저장된 toolchain 실행 상태 조회
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/run-status`를 추가한다.
+- [x] 저장된 `toolchain-runs` artifact를 읽어 `step_rows`, `run_ids`, `can_collect_results`, `primary_next_api`를 반환한다.
+- [x] RedTeam2에 `저장 실행 상태 다시 불러오기`, `저장 실행 상태`, `저장 실행 단계` 표를 추가한다.
+- [x] API regression과 frontend runtime sanity가 read-only 상태 조회와 결과 회수 가능 안내를 검증한다.
+- [ ] 이 조회는 저장된 실행 기록만 읽으며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.

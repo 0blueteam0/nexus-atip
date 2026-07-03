@@ -180,6 +180,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `운영 closure 준비 요약`, `운영 closure 다음 단계`, `운영 closure 준비 blocker` 표로 사람 검토 직전 상태를 표시한다.
 - 이 변경은 사람 검토로 넘어갈 준비 판단이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - 저장된 toolchain 실행 상태 조회
+
+- `/api/redteam/v2/toolchains/{toolchain_id}/run-status`는 저장된 `toolchain-runs` artifact를 다시 읽어 실행 상태를 반환한다.
+- 응답은 `run_status`, `step_rows`, `run_ids`, `raw_artifact_refs`, `can_collect_results`, `collectable_step_count`, `primary_next_api`, `does_not_mark_goal_complete=true`를 포함한다.
+- RedTeam2는 `저장 실행 상태 다시 불러오기`, `저장 실행 상태`, `저장 실행 단계` 표로 도구별 결과 회수 가능 여부를 표시한다.
+- 이 변경은 저장 상태 조회만 수행하며 scanner 재실행, 결과 회수, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.
