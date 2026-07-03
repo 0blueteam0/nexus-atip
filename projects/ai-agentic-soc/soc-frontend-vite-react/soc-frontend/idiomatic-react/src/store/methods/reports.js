@@ -5950,6 +5950,8 @@ export default {
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
       ['복합 결과 회수', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
       ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
+      ['필수 6개 도구 coverage', toolchainCollection.completion_gate_ready ? '완료 게이트 준비' : '완료 게이트 미준비', `${toolchainCollection.present_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 수집 · 누락 ${toolchainCollection.missing_required_tool_count ?? 6}개`],
+      ['누락 필수 도구', (toolchainCollection.missing_required_tool_ids || []).length ? toolchainCollection.missing_required_tool_ids.join(', ') : '없음', toolchainCollection.next_action_ko || 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 coverage를 확인하세요'],
       ['LLM 분석 에이전트 요약', `${toolchainCollection.analysis_agent_summary_count ?? 0}개`, '도구별 normalizer와 Evidence 사용 제한을 표시'],
       ['Evidence 후보 승인', koValue(toolchainEvidenceApproval.status || toolchainEvidenceApprovalState.status || '대기'), toolchainEvidenceApprovalState.error || `${toolchainEvidenceApproval.approved_count ?? 0}개 승인 · ${toolchainEvidenceApproval.invalid_count ?? 0}개 오류`],
       ['Finding 초안 생성', koValue(toolchainFindingPromotion.status || toolchainFindingPromotionState.status || '대기'), toolchainFindingPromotionState.error || `${toolchainFindingPromotion.created_count ?? 0}개 생성 · ${toolchainFindingPromotion.blocked_count ?? 0}개 차단`],
@@ -5986,6 +5988,13 @@ export default {
       item.summary_ko || '-',
       item.next_action_ko || '결과 회수 뒤 표시됩니다',
       item.evidence_use_limit_ko || '승인된 Evidence Card와 심각도 승인 전에는 보고서 주장에 사용할 수 없습니다.',
+    ]);
+    const requiredCoverage = toolchainCollection.required_analysis_tool_coverage || {};
+    const requiredCoverageRows = (requiredCoverage.rows || []).map(row => [
+      row.display_name || row.tool_name || row.tool_id || '-',
+      row.ready_for_completion_gate ? '분석·Evidence 후보 완료' : (row.status === 'present' ? '결과 있음, 후속 검토 필요' : '결과 누락'),
+      row.agent_id || row.normalizer_id || '도구별 LLM 분석 에이전트 대기',
+      row.evidence_id || row.result_id || row.next_action_ko || '이 도구의 결과를 가져오세요',
     ]);
     const toolchainEvidenceApprovalRows = (toolchainEvidenceApproval.approvals || []).map(item => [
       item.evidence_id || '-',
@@ -6735,6 +6744,7 @@ export default {
             this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
             this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
+            this.renderTable(['필수 6개 분석도구','coverage 상태','LLM 분석 에이전트','Evidence/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage를 결과 회수 뒤 표시합니다','-']]),
             this.renderTable(['LLM 분석 에이전트 요약','요약','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),

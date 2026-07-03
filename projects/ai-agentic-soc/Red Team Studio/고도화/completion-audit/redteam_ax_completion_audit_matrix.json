@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 55,
+    "proved": 56,
     "partial": 1
   },
   "audit_items": [
@@ -943,6 +943,21 @@
       "proof_summary": "The /api/redteam/v2/toolchains/{toolchain_id}/collect-results response now includes required_analysis_tool_coverage for the six required analysis tools. It reports present/missing required tool ids, agent coverage, Evidence candidate coverage, required_tool_coverage_complete, analysis_agent_coverage_complete, evidence_candidate_coverage_complete, and completion_gate_ready. Regression verifies a two-tool collection remains collected but has completion_gate_ready=false and missing required tools, while a six-tool imported-output collection has complete required coverage and completion_gate_ready=true.",
       "residual_gap": "This proves that partial collection cannot be mistaken for full six-tool completion at the collection boundary. It does not provide real organization OpenVAS/ZAP endpoint imports, real operating scanner outputs, human Evidence approval, Finding severity approval, Report v2 export, or final completion gate closure.",
       "next_action": "Use the coverage matrix in RedTeam2 before completion-gate or report-export workflows; keep the active goal incomplete until real six-tool operating evidence and real approvers close the full path."
+    },
+    {
+      "id": "RTA-COMP-057",
+      "requirement": "RedTeam2 must expose the required six-tool collection coverage in Korean so users can distinguish partial collection from completion readiness.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "RedTeam2 now displays 필수 6개 도구 coverage and 누락 필수 도구 in the composite execution summary, and renders a 필수 6개 분석도구 table from required_analysis_tool_coverage.rows. Each row shows coverage status, the LLM analysis agent, and the Evidence id or next action. Frontend runtime readiness and Korean copy sanity checks include the new coverage labels and API field anchors.",
+      "residual_gap": "This proves frontend visibility only. It does not provide real scanner output, OpenVAS/ZAP endpoint import, Evidence approval, Finding severity approval, Report v2 export, or completion gate closure.",
+      "next_action": "Use this UI to guide the operator to supply the missing real required tool outputs, then close the actual Evidence/Finding/Matrix/Report/export workflow."
     }
   ],
   "remaining_gaps": [
@@ -957,5 +972,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T13:09:00+09:00"
+  "last_updated": "2026-07-03T13:13:00+09:00"
 }

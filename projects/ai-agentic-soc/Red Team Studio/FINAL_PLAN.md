@@ -1859,3 +1859,10 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 2개 도구 smoke collection은 `status=collected`를 유지하되 `completion_gate_ready=false`, `missing_required_tool_ids`로 전체 완료가 아님을 드러낸다.
 - [x] 6개 도구 imported-output collection은 `required_tool_coverage_complete=true`, `analysis_agent_coverage_complete=true`, `evidence_candidate_coverage_complete=true`, `completion_gate_ready=true`를 반환한다.
 - [ ] 이 coverage gate는 collection boundary 검증일 뿐이며, 실제 운영 산출물, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate를 모두 닫기 전까지 전체 goal은 미완료다.
+
+## 123. 갱신 목표 - RedTeam2 필수 6개 도구 coverage 화면 가시성
+
+- [x] RedTeam2 복합 실행 항목에 `필수 6개 도구 coverage`, `누락 필수 도구`, `completion_gate_ready` 상태를 한국어로 표시한다.
+- [x] RedTeam2 collection 영역에 `필수 6개 분석도구` 표를 추가해 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP별 coverage 상태, LLM 분석 에이전트, Evidence/다음 행동을 보여준다.
+- [x] frontend runtime readiness contract와 Korean copy inventory가 새 coverage 문구와 API 필드를 검사한다.
+- [ ] 화면 가시성은 운영자가 누락 도구를 인지하게 하는 UI 계약이며, 실제 운영 산출물과 승인 gate 완료를 대신하지 않는다.

@@ -152,6 +152,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 2개 도구만 수집된 경우 collection 자체는 `collected`일 수 있지만 `completion_gate_ready=false`와 `missing_required_tool_ids`가 남아 전체 운영 완료로 볼 수 없다.
 - 6개 도구 imported-output collection은 coverage complete와 `completion_gate_ready=true`를 반환하지만, 이후 Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate가 별도로 필요하다.
 
+## 2026-07-03 갱신 - RedTeam2 필수 6개 도구 coverage 화면 가시성
+
+- RedTeam2 복합 실행 요약에 `필수 6개 도구 coverage`와 `누락 필수 도구` row를 추가했다.
+- collection 영역에는 `필수 6개 분석도구` 표가 표시되며, 각 도구별 coverage 상태, LLM 분석 에이전트, Evidence ID 또는 다음 행동을 한국어로 보여준다.
+- frontend runtime readiness contract와 Korean copy inventory가 새 coverage 문구와 API field anchor를 검사한다.
+- 이 변경은 운영자 가시성을 높이는 UI 증거이며 실제 운영 산출물과 승인 gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

@@ -1152,3 +1152,12 @@ Create Case
 - 화면/기능 명세: RedTeam2는 collection 결과를 보여줄 때 `status=collected`만 보지 말고 `completion_gate_ready`와 `missing_required_tool_ids`를 함께 표시해야 한다. 초급 사용자는 “몇 개 도구 중 몇 개 결과가 수집되었는지”와 “누락 도구가 무엇인지”를 한국어로 확인해야 한다.
 - 테스트 전략: 2개 도구 runner collection은 정상 수집으로 남지만 completion gate 미준비와 누락 4개 도구를 검증한다. 6개 도구 imported-output collection은 coverage complete와 completion gate ready를 검증한다.
 - 예외 케이스: 이 gate는 collection boundary의 구조 검증이다. 실제 운영 증거 여부, 개발 부산물 제외, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 후속 단계에서 별도 검증해야 한다.
+
+## 70. 갱신 목표 반영 - RedTeam2 필수 6개 도구 coverage 화면 가시성
+
+- 목적: backend coverage gate가 사용자에게 보이지 않아 `status=collected`만 보고 전체 완료로 오인하는 것을 막는다.
+- 화면/기능 명세: RedTeam2 복합 실행 항목 표에는 `필수 6개 도구 coverage`, `누락 필수 도구` row를 추가한다. collection table 아래에는 `필수 6개 분석도구` 표를 추가하고 각 row에 coverage 상태, LLM 분석 에이전트, Evidence ID 또는 다음 행동을 표시한다.
+- 한국어 사용자 기준: 상태 문구는 `완료 게이트 준비`, `완료 게이트 미준비`, `분석·Evidence 후보 완료`, `결과 누락`처럼 비전문가도 해석 가능한 표현을 사용한다.
+- API 설계 연결: 화면은 `required_analysis_tool_coverage.rows`, `completion_gate_ready`, `missing_required_tool_ids`, `present_required_tool_count`, `required_tool_count`를 읽는다.
+- 테스트 전략: `redteam_ax_frontend_runtime_readiness_contract.py`와 `test_redteam2_korean_copy_inventory.py`가 coverage 문구와 필드 anchor를 검사한다. 백엔드 targeted pytest는 coverage 데이터 자체를 계속 검증한다.
+- 예외 케이스: 이 UI는 운영자 가시성이다. 실제 operating closure, Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate 완료 증거는 별도로 필요하다.
