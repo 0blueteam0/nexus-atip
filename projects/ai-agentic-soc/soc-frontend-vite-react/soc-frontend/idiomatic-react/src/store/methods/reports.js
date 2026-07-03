@@ -5542,6 +5542,15 @@ export default {
     const serviceImportArtifact = serviceImportResult.artifact || {};
     const serviceImportNormalized = serviceImportResult.normalized_result || {};
     const serviceImportAnalystProgress = serviceImportResult.analyst_progress_summary || serviceImportResult.toolchain_projection?.analyst_progress_summary || {};
+    const operatingClosureProgress =
+      operatingCompletionAudit.operating_closure_progress_summary ||
+      reviewedCloseCertification.operating_closure_progress_summary ||
+      reviewedOperatingClose.operating_closure_progress_summary ||
+      operatingClosureReview.operating_closure_progress_summary ||
+      operatingClosureReadinessSummary.operating_closure_progress_summary ||
+      operatingClosurePackage.operating_closure_progress_summary ||
+      realOperatingEvidenceReadiness.operating_closure_progress_summary ||
+      {};
     const agenticRagResult = agenticRagState.result || {};
     const agenticSca = agenticRagResult.sca_report || {};
     const agenticVerifier = agenticRagResult.citation_verification || {};
@@ -6403,6 +6412,18 @@ export default {
       ['Matrix/Report', `${koValue(toolchainCompletionGate.matrix_status || '대기')} / ${koValue(toolchainCompletionGate.report_gate_snapshot?.gate_status || '대기')}`, 'Matrix ready와 report gate pass 필요'],
       ['Export', toolchainCompletionGate.export_id || '-', `${toolchainCompletionGate.blocker_count ?? 0}개 blocker`],
     ];
+    const operatingClosureProgressRows = [
+      ['현재 단계', koValue(operatingClosureProgress.status || '대기'), operatingClosureProgress.plain_language_status_ko || '운영 closure 준비 요약 또는 실제 운영 증거 사전 점검을 먼저 실행하세요'],
+      ['다음 버튼', operatingClosureProgress.primary_next_button_ko || '운영 closure 준비 요약', operatingClosureProgress.next_action_ko || '실제 운영 scanner 산출물 closure 단계가 아직 확인되지 않았습니다'],
+      ['단계 준비', `${operatingClosureProgress.ready_stage_count ?? 0}개 준비`, `blocked=${operatingClosureProgress.blocked_stage_count ?? 0} / missing tools=${(operatingClosureProgress.missing_required_tool_ids || []).join(', ') || '없음'}`],
+      ['명령 실행', koBool(operatingClosureProgress.commands_executed_by_api ?? false), '요약/검토/감사 API는 scanner, Docker, WSL, network 명령을 실행하지 않음'],
+    ];
+    const operatingClosureProgressStageRows = (operatingClosureProgress.stage_rows || []).map(item => [
+      item.title_ko || item.stage_id || '-',
+      koValue(item.status || '대기'),
+      item.button_ko || '-',
+      item.summary_ko || item.primary_api || '-',
+    ]);
     const operatingClosurePackageRows = (operatingClosurePackage.submission_items || []).map(item => [
       item.title_ko || item.item_id || '-',
       koValue(item.status || '대기'),
@@ -7184,6 +7205,8 @@ export default {
             this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']]),
             this.renderTable(['Finding ID','Matrix 상태','Claim ID','차단/결과'], toolchainMatrixRows.length ? toolchainMatrixRows : [['대기','-','심각도 승인 뒤 Matrix 초안 생성 버튼을 누르세요','-']]),
             this.renderTable(['Report v2','상태','근거'], toolchainReportRows),
+            this.renderTable(['운영 closure 진행 요약','상태','설명'], operatingClosureProgressRows),
+            this.renderTable(['운영 closure 단계','상태','다음 버튼','설명'], operatingClosureProgressStageRows.length ? operatingClosureProgressStageRows : [['대기','-','운영 closure 준비 요약','실제 운영 증거 사전 점검 또는 운영 closure 준비 요약 버튼을 누르세요']]),
             this.renderTable(['실제 운영 증거 사전 점검','상태','근거'], realOperatingEvidenceReadinessRows.length ? realOperatingEvidenceReadinessRows : [['대기','-','실제 운영 증거 사전 점검 버튼을 누르세요']]),
             this.renderTable(['운영 closure 준비 요약','상태','근거'], operatingClosureReadinessSummaryRows),
             this.renderTable(['운영 closure 다음 단계','상태','사용자 조치','연결 API'], operatingClosureReadinessStepRows.length ? operatingClosureReadinessStepRows : [['대기','-','운영 closure 준비 요약 버튼을 누르세요','/api/redteam/v2/toolchains/operating-closure-readiness-summary']]),

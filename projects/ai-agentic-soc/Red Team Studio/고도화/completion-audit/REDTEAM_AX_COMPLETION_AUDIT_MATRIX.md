@@ -258,6 +258,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `서비스 가져오기 진행`과 `서비스 다음 단계` 표로 OpenVAS/ZAP read-only import 이후의 다음 행동을 보여준다.
 - 이 변경은 read-only service import projection UX이며 Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate를 대신하지 않는다.
 
+## 2026-07-03 갱신 - 운영 closure 진행 요약
+
+- 운영 closure 계열 API는 공통 `operating_closure_progress_summary`를 반환한다.
+- 요약은 다음 버튼, 다음 API, 단계별 상태, 누락 필수 도구, blocker, 명령 미실행 safe flag, `does_not_mark_goal_complete=true`를 포함한다.
+- RedTeam2는 최신 closure 결과에서 `운영 closure 진행 요약`과 `운영 closure 단계` 표를 표시한다.
+- 이 변경은 초급 분석가용 projection이며 실제 조직 scanner 산출물, Evidence 승인, Finding severity 승인, Report export, completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

@@ -3332,6 +3332,193 @@ def classify_operating_source_for_completion(source_dir: str, case_id: str) -> d
     }
 
 
+def build_operating_closure_progress_summary(
+    *,
+    case_id: str,
+    toolchain_id: str | None = None,
+    evidence_readiness: dict[str, Any] | None = None,
+    closure_package: dict[str, Any] | None = None,
+    human_review: dict[str, Any] | None = None,
+    reviewed_close: dict[str, Any] | None = None,
+    certification: dict[str, Any] | None = None,
+    completion_audit: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    evidence_readiness = evidence_readiness or {}
+    closure_package = closure_package or {}
+    human_review = human_review or {}
+    reviewed_close = reviewed_close or {}
+    certification = certification or {}
+    completion_audit = completion_audit or {}
+    toolchain_id = (
+        toolchain_id
+        or evidence_readiness.get("toolchain_id")
+        or closure_package.get("toolchain_id")
+        or human_review.get("toolchain_id")
+        or reviewed_close.get("toolchain_id")
+        or certification.get("toolchain_id")
+        or completion_audit.get("toolchain_id")
+    )
+
+    readiness_ready = bool(evidence_readiness.get("ready_for_operating_closure_submission"))
+    package_ready = bool(closure_package.get("ready_for_operating_close"))
+    review_ready = bool(human_review.get("ready_for_human_close_execution"))
+    close_complete = bool(reviewed_close.get("complete"))
+    certification_ready = bool(certification.get("ready_for_completion_audit_review"))
+    audit_candidate = bool(completion_audit.get("goal_complete_candidate"))
+
+    if package_ready or review_ready or close_complete or certification_ready or audit_candidate:
+        readiness_ready = True
+    if review_ready or close_complete or certification_ready or audit_candidate:
+        package_ready = True
+    if close_complete or certification_ready or audit_candidate:
+        review_ready = True
+    if certification_ready or audit_candidate:
+        close_complete = True
+    if audit_candidate:
+        certification_ready = True
+
+    blockers = sorted(set(
+        str(item)
+        for source in [
+            evidence_readiness.get("blockers") or [],
+            closure_package.get("errors") or [],
+            human_review.get("errors") or [],
+            reviewed_close.get("errors") or [],
+            certification.get("errors") or [],
+            completion_audit.get("blockers") or [],
+        ]
+        for item in source
+        if str(item)
+    ))
+    missing_required_tool_ids = list(evidence_readiness.get("missing_required_tool_ids") or [])
+
+    stage_rows = [
+        {
+            "stage_id": "real_operating_evidence_readiness",
+            "title_ko": "실제 운영 증거 사전 점검",
+            "status": "passed" if readiness_ready else "blocked",
+            "button_ko": "실제 운영 증거 사전 점검",
+            "primary_api": "/api/redteam/v2/toolchains/real-operating-evidence-readiness",
+            "summary_ko": (
+                "필수 6개 도구 산출물과 실제 운영 경로가 확인되었습니다."
+                if readiness_ready
+                else "Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물, 실제 운영 경로, 승인자 4명을 먼저 통과시켜야 합니다."
+            ),
+        },
+        {
+            "stage_id": "operating_closure_submission_package",
+            "title_ko": "운영 closure 제출 패키지",
+            "status": "passed" if package_ready else ("ready" if readiness_ready else "waiting"),
+            "button_ko": "운영 closure 제출 패키지 확인",
+            "primary_api": "/api/redteam/v2/toolchains/operating-closure-submission-package",
+            "summary_ko": (
+                "운영 산출물 manifest와 close payload가 사람 검토로 넘길 수 있는 상태입니다."
+                if package_ready
+                else "실제 운영 증거 사전 점검 통과 후 source_dir, 승인자, 개발 부산물 제외 상태를 제출 패키지로 확인합니다."
+            ),
+        },
+        {
+            "stage_id": "operating_closure_human_review",
+            "title_ko": "운영 closure 사람 검토",
+            "status": "passed" if review_ready else ("ready" if readiness_ready and package_ready else "waiting"),
+            "button_ko": "운영 closure 사람 검토 기록",
+            "primary_api": "/api/redteam/v2/toolchains/operating-closure-human-review",
+            "summary_ko": (
+                "사람 검토와 승인자 서명이 완료되어 검토 완료 closure 실행으로 이동할 수 있습니다."
+                if review_ready
+                else "제출 패키지 준비 후 사람이 checklist, 승인자 signoff, 최종 close authorization을 기록합니다."
+            ),
+        },
+        {
+            "stage_id": "reviewed_operating_close",
+            "title_ko": "검토 완료 운영 closure 실행",
+            "status": "passed" if close_complete else ("ready" if review_ready else "waiting"),
+            "button_ko": "검토 완료 운영 closure 실행",
+            "primary_api": "/api/redteam/v2/toolchains/execute-reviewed-operating-close",
+            "summary_ko": (
+                "사람이 승인한 close payload로 Evidence, Finding, Matrix, Report, Export closure가 실행되었습니다."
+                if close_complete
+                else "사람 검토 record에 저장된 approved close payload만 사용해 closure를 실행합니다."
+            ),
+        },
+        {
+            "stage_id": "certify_and_audit",
+            "title_ko": "증거 인증과 completion audit",
+            "status": "passed" if audit_candidate else ("ready" if close_complete or certification_ready else "waiting"),
+            "button_ko": "운영 closure 증거 인증" if not certification_ready else "운영 completion audit 검토",
+            "primary_api": (
+                "/api/redteam/v2/toolchains/review-operating-completion-audit-candidate"
+                if certification_ready
+                else "/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence"
+            ),
+            "summary_ko": (
+                "증거 인증과 completion audit이 goal 완료 후보까지 통과했습니다."
+                if audit_candidate
+                else "검토 완료 closure 뒤 실측 attestation과 completion/report gate를 인증하고 독립 audit로 넘깁니다."
+            ),
+        },
+    ]
+
+    ready_stage_count = len([item for item in stage_rows if item["status"] in {"ready", "passed"}])
+    blocked_stage_count = len([item for item in stage_rows if item["status"] == "blocked"])
+    if audit_candidate:
+        status = "goal_complete_candidate"
+        primary_next_button_ko = "전체 목표 완료 검토"
+        next_api = "/api/redteam/v2/toolchains/review-goal-completion"
+        next_action_ko = "최종 목표 완료 검토에서 remaining gap과 completion audit 결과를 다시 확인합니다."
+    elif certification_ready:
+        status = "ready_for_completion_audit_review"
+        primary_next_button_ko = "운영 completion audit 검토"
+        next_api = "/api/redteam/v2/toolchains/review-operating-completion-audit-candidate"
+        next_action_ko = "운영 completion audit checklist로 controlled/test source와 report/completion gate를 검토합니다."
+    elif close_complete:
+        status = "reviewed_operating_close_complete"
+        primary_next_button_ko = "운영 closure 증거 인증"
+        next_api = "/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence"
+        next_action_ko = "실제 운영 산출물, 실제 승인자, Evidence retention, ROE/HITL attestation을 기록합니다."
+    elif review_ready:
+        status = "ready_for_human_close_execution"
+        primary_next_button_ko = "검토 완료 운영 closure 실행"
+        next_api = "/api/redteam/v2/toolchains/execute-reviewed-operating-close"
+        next_action_ko = "사람 검토에 저장된 approved close payload로만 운영 closure를 실행합니다."
+    elif readiness_ready and package_ready:
+        status = "ready_for_operating_closure_human_review"
+        primary_next_button_ko = "운영 closure 사람 검토"
+        next_api = "/api/redteam/v2/toolchains/operating-closure-human-review"
+        next_action_ko = "제출 패키지를 사람이 검토하고 checklist와 승인자 signoff를 기록합니다."
+    elif not readiness_ready:
+        status = "real_operating_evidence_blocked"
+        primary_next_button_ko = "실제 운영 증거 사전 점검"
+        next_api = "/api/redteam/v2/toolchains/real-operating-evidence-readiness"
+        next_action_ko = "실제 조직 scanner 산출물 폴더와 필수 6개 도구 결과를 보강한 뒤 다시 점검합니다."
+    else:
+        status = "operating_closure_package_required"
+        primary_next_button_ko = "운영 closure 제출 패키지 확인"
+        next_api = "/api/redteam/v2/toolchains/operating-closure-submission-package"
+        next_action_ko = "source_dir과 승인자 4명을 포함한 운영 closure 제출 패키지를 만듭니다."
+
+    return {
+        "audience": "analyst_operator",
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "status": status,
+        "plain_language_status_ko": next_action_ko,
+        "primary_next_button_ko": primary_next_button_ko,
+        "next_action_ko": next_action_ko,
+        "next_api": next_api,
+        "stage_rows": stage_rows,
+        "ready_stage_count": ready_stage_count,
+        "blocked_stage_count": blocked_stage_count,
+        "missing_required_tool_ids": missing_required_tool_ids,
+        "blockers": blockers,
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+    }
+
+
 def prepare_operating_toolchain_closure_submission_package(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
@@ -3479,6 +3666,11 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=toolchain_id,
+        closure_package=result,
+    )
     append_artifact_metadata(result, "toolchain-operating-closure-submission-packages", package_id)
     return result
 
@@ -3679,6 +3871,11 @@ def assess_real_operating_evidence_readiness(payload: dict[str, Any]) -> dict[st
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=toolchain_id,
+        evidence_readiness=result,
+    )
     append_artifact_metadata(result, "toolchain-real-operating-evidence-readiness", readiness_id)
     return result
 
@@ -3781,6 +3978,12 @@ def summarize_operating_closure_readiness(payload: dict[str, Any]) -> dict[str, 
         "does_not_mark_goal_complete": True,
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=toolchain_id,
+        evidence_readiness=evidence_readiness,
+        closure_package=closure_package,
+    )
     append_artifact_metadata(result, "toolchain-operating-closure-readiness-summaries", summary_id)
     return result
 
@@ -4231,6 +4434,12 @@ def record_operating_toolchain_closure_human_review(payload: dict[str, Any]) -> 
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=result.get("toolchain_id"),
+        closure_package=package,
+        human_review=result,
+    )
     append_artifact_metadata(result, "toolchain-operating-closure-human-reviews", review_id)
     return result
 
@@ -4304,6 +4513,12 @@ def execute_reviewed_operating_toolchain_close(payload: dict[str, Any]) -> dict[
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=result.get("toolchain_id"),
+        human_review=review,
+        reviewed_close=result,
+    )
     append_artifact_metadata(result, "toolchain-reviewed-operating-close-executions", execution_id)
     return result
 
@@ -4421,6 +4636,12 @@ def certify_reviewed_operating_close_evidence(payload: dict[str, Any]) -> dict[s
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=result.get("toolchain_id"),
+        reviewed_close=execution,
+        certification=result,
+    )
     append_artifact_metadata(result, "toolchain-reviewed-operating-close-evidence-certifications", certification_id)
     return result
 
@@ -4537,6 +4758,12 @@ def review_operating_completion_audit_candidate(payload: dict[str, Any]) -> dict
         ],
         "created_at": now_utc(),
     }
+    result["operating_closure_progress_summary"] = build_operating_closure_progress_summary(
+        case_id=case_id,
+        toolchain_id=result.get("toolchain_id"),
+        certification=certification,
+        completion_audit=result,
+    )
     append_artifact_metadata(result, "toolchain-operating-completion-audit-reviews", audit_id)
     return result
 

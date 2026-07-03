@@ -3309,6 +3309,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(by_step["real_operating_evidence_readiness"]["status"], "passed")
         self.assertEqual(by_step["operating_closure_submission_package"]["status"], "passed")
         self.assertEqual(by_step["operating_closure_human_review"]["status"], "ready")
+        progress = body["operating_closure_progress_summary"]
+        self.assertEqual(progress["primary_next_button_ko"], "운영 closure 사람 검토")
+        self.assertEqual(progress["next_api"], "/api/redteam/v2/toolchains/operating-closure-human-review")
+        self.assertEqual(progress["status"], "ready_for_operating_closure_human_review")
+        self.assertTrue(progress["does_not_mark_goal_complete"])
+        progress_by_stage = {item["stage_id"]: item for item in progress["stage_rows"]}
+        self.assertEqual(progress_by_stage["operating_closure_human_review"]["status"], "ready")
 
     def test_v2_operating_closure_readiness_summary_blocks_fixture_source(self) -> None:
         case_id = f"CASE-V2-OPERATING-SUMMARY-BLOCKED-{uuid.uuid4().hex[:8]}"
@@ -3348,6 +3355,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(by_step["real_operating_evidence_readiness"]["status"], "blocked")
         self.assertFalse(body["commands_executed_by_api"])
         self.assertTrue(body["does_not_mark_goal_complete"])
+        progress = body["operating_closure_progress_summary"]
+        self.assertEqual(progress["primary_next_button_ko"], "실제 운영 증거 사전 점검")
+        self.assertEqual(progress["next_api"], "/api/redteam/v2/toolchains/real-operating-evidence-readiness")
+        self.assertIn("TOOL-OPENVAS-001", progress["missing_required_tool_ids"])
+        self.assertGreater(progress["blocked_stage_count"], 0)
 
     def test_v2_operating_closure_human_review_records_hitl_checklist_without_execution(self) -> None:
         case_id = f"CASE-V2-OPERATING-CLOSURE-REVIEW-001-{uuid.uuid4().hex[:8]}"
@@ -3429,6 +3441,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(review["shell_expansion_allowed"])
         self.assertFalse(review["trusted_as_instruction"])
         self.assertTrue(review["requires_separate_close_execution"])
+        progress = review["operating_closure_progress_summary"]
+        self.assertEqual(progress["primary_next_button_ko"], "검토 완료 운영 closure 실행")
+        self.assertEqual(progress["next_api"], "/api/redteam/v2/toolchains/execute-reviewed-operating-close")
+        self.assertEqual(progress["status"], "ready_for_human_close_execution")
+        progress_by_stage = {item["stage_id"]: item for item in progress["stage_rows"]}
+        self.assertEqual(progress_by_stage["reviewed_operating_close"]["status"], "ready")
         self.assertTrue(Path(review["artifact_path"]).exists())
 
     def test_v2_execute_reviewed_operating_close_requires_ready_human_review(self) -> None:
@@ -3532,6 +3550,10 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertTrue(body["requires_ready_human_review"])
         self.assertTrue(body["refuses_payload_override"])
+        progress = body["operating_closure_progress_summary"]
+        self.assertEqual(progress["primary_next_button_ko"], "운영 closure 증거 인증")
+        self.assertEqual(progress["next_api"], "/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence")
+        self.assertEqual(progress["status"], "reviewed_operating_close_complete")
         self.assertTrue(Path(body["artifact_path"]).exists())
 
     def test_v2_certify_reviewed_operating_close_evidence_requires_real_attestation(self) -> None:
@@ -3627,6 +3649,10 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["shell_expansion_allowed"])
         self.assertFalse(body["trusted_as_instruction"])
+        progress = body["operating_closure_progress_summary"]
+        self.assertEqual(progress["primary_next_button_ko"], "운영 completion audit 검토")
+        self.assertEqual(progress["next_api"], "/api/redteam/v2/toolchains/review-operating-completion-audit-candidate")
+        self.assertEqual(progress["status"], "ready_for_completion_audit_review")
         self.assertTrue(Path(body["artifact_path"]).exists())
 
         audit_missing = self.client.post("/api/redteam/v2/toolchains/review-operating-completion-audit-candidate", json={
@@ -3661,6 +3687,10 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(audit_body["active_scan_executed"])
         self.assertFalse(audit_body["shell_expansion_allowed"])
         self.assertFalse(audit_body["trusted_as_instruction"])
+        audit_progress = audit_body["operating_closure_progress_summary"]
+        self.assertEqual(audit_progress["primary_next_button_ko"], "운영 completion audit 검토")
+        self.assertEqual(audit_progress["status"], "ready_for_completion_audit_review")
+        self.assertIn("no_controlled_or_test_source_required", audit_progress["blockers"])
         self.assertTrue(Path(audit_body["artifact_path"]).exists())
 
     def test_v2_goal_completion_review_blocks_while_completion_audit_has_partial_gap(self) -> None:

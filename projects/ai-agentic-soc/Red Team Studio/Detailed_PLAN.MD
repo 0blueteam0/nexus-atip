@@ -1291,3 +1291,13 @@ Create Case
 - 안전 원칙: 이 경로는 이미 승인된 read-only report/passive alert 결과만 가져오며 active scan, spider, delete/write/admin scope, secret 값 저장, shell expansion, scanner command execution을 계속 금지한다.
 - 테스트 전략: API regression은 service import projection의 진행 요약을 검증하고 frontend launch readiness sanity는 새 state/table 문자열을 검사한다.
 - 예외 케이스: service import는 Evidence 후보 또는 진행 projection일 뿐이다. Evidence 후보 사람 승인, Finding promotion, severity 2인 승인, Matrix, Report v2 export, completion gate는 여전히 후속 단계다.
+
+## 85. 갱신 목표 반영 - 운영 closure 진행 요약
+
+- 목적: 실제 운영 증거 사전 점검부터 completion audit까지 버튼이 많아지면서 초급 분석가가 “지금 어느 단계이고 다음에 무엇을 눌러야 하는지” 판단하기 어렵다. 운영 closure 전용 진행 요약을 모든 closure API 응답에 공통으로 둔다.
+- API 설계: `operating_closure_progress_summary`는 `primary_next_button_ko`, `next_action_ko`, `next_api`, `stage_rows[]`, `ready_stage_count`, `blocked_stage_count`, `missing_required_tool_ids`, `blockers`, `does_not_mark_goal_complete`를 포함한다. 대상 API는 real-operating-evidence-readiness, operating-closure-submission-package, operating-closure-readiness-summary, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate다.
+- 단계 라우팅: evidence readiness가 막히면 `실제 운영 증거 사전 점검`, package가 준비되면 `운영 closure 사람 검토`, human review가 준비되면 `검토 완료 운영 closure 실행`, reviewed close가 끝나면 `운영 closure 증거 인증`, certification이 준비되면 `운영 completion audit 검토`를 다음 버튼으로 반환한다.
+- 화면/기능 명세: RedTeam2 복합 도구 영역은 최신 closure 결과의 진행 요약을 선택해 `운영 closure 진행 요약`과 `운영 closure 단계` 표를 표시한다.
+- 안전 원칙: 요약 API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. `goal_complete_candidate`가 표시되어도 전체 `/goal` 완료 처리는 별도 completion review와 사람 판단 이후다.
+- 테스트 전략: API regression은 ready/blocked/human review/reviewed close/certification/audit 단계의 다음 버튼과 safe flag를 검증한다. frontend launch readiness sanity는 state 변수와 한국어 표명을 검사한다.
+- 예외 케이스: 이 요약은 UX와 상태 projection이다. 실제 조직 산출물, 실제 승인자, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 별도 산출물로 증명해야 한다.

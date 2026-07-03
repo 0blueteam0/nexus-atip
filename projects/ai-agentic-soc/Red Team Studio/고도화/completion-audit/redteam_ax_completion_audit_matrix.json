@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 71,
+    "proved": 72,
     "partial": 1
   },
   "audit_items": [
@@ -1198,6 +1198,23 @@
       "proof_summary": "The scanner service import API now returns analyst_progress_summary when a toolchain projection is created for approved read-only OpenVAS/ZAP reports. The projection and import response point the analyst to 결과 회수·Evidence 후보, expose collectable_count, stage_rows, and does_not_mark_goal_complete. RedTeam2 renders 서비스 가져오기 진행 and 서비스 다음 단계 tables in the OpenVAS/ZAP service import panel.",
       "residual_gap": "This proves read-only service import progress projection only. It does not prove real endpoint availability, real organization report import, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
       "next_action": "Use the service import progress summary against real approved OpenVAS/ZAP endpoints, then collect results, approve Evidence, promote Findings, approve severity, update Matrix, export Report v2, and re-run completion audit."
+    },
+    {
+      "id": "RTA-COMP-072",
+      "requirement": "Operating closure readiness, human review, reviewed close execution, certification, and completion audit APIs must expose a shared beginner-facing progress summary with the next safe button and stage status.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "Operating closure APIs now return operating_closure_progress_summary with primary_next_button_ko, next_action_ko, next_api, stage_rows, ready_stage_count, blocked_stage_count, missing_required_tool_ids, blockers, no-execution safe flags, and does_not_mark_goal_complete=true. The summary routes blocked sources to 실제 운영 증거 사전 점검, ready readiness/package to 운영 closure 사람 검토, ready human review to 검토 완료 운영 closure 실행, reviewed close to 운영 closure 증거 인증, and certification to 운영 completion audit 검토. RedTeam2 renders 운영 closure 진행 요약 and 운영 closure 단계 tables from the latest available closure result.",
+      "residual_gap": "This proves shared progress projection and beginner next-button UX only. It does not prove actual organization scanner outputs, Evidence approval, Finding severity approval, final Report v2 export, completion gate complete=true, or final goal completion.",
+      "next_action": "Use the operating_closure_progress_summary on a real operating scanner-output folder, then follow each next button through human review, reviewed close, certification, completion audit, and final goal completion review using real approvers and real outputs."
     }
   ],
   "remaining_gaps": [
@@ -1212,5 +1229,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:56:00+09:00"
+  "last_updated": "2026-07-03T16:20:00+09:00"
 }

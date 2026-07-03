@@ -234,6 +234,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 51. `/api/redteam/v2/runtime-readiness`의 역할별 요약은 RedTeam2 실행 안내의 정본이다. `analyst_readiness_summary`는 초급 분석가가 다음에 누를 버튼, 결과 첨부 가능 여부, 쉬운 blocker 설명, `can_run_active_scan=false`를 제공한다. `operator_environment_summary`는 Docker/WSL/OpenVAS/ZAP endpoint/vault/strict promotion 같은 분석 환경 설정 세부 단계를 환경 담당자용으로 보존한다. 기존 `next_action_plan`과 raw blockers는 감사·운영자 검토용으로 유지하지만 분석가 기본 화면의 첫 판단 근거로 쓰지 않는다.
 52. `/api/redteam/v2/toolchains/{toolchain_id}/run-status`와 `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`의 `analyst_progress_summary`는 실행 결과 진행 상태의 초급 분석가용 정본이다. `primary_next_button_ko`, `next_action_ko`, `stage_rows`, `collectable_count`, `collected_count`, `evidence_candidate_count`, `missing_required_tool_ids`를 확인해 다음 버튼을 결정한다. run-status 단계의 다음 버튼은 보통 `결과 회수·Evidence 후보`이고, collect-results가 Evidence 후보를 만든 뒤에는 `Evidence 후보 승인`으로 이동한다. 이 요약은 projection이며 Evidence 승인, Finding severity 승인, Matrix/report/export/completion gate를 대신하지 않는다.
 53. `/api/redteam/v2/scanner-service-imports/{tool_id}`의 `analyst_progress_summary`는 OpenVAS/ZAP read-only service import 직후의 초급 분석가용 정본이다. `toolchain_id`가 포함되어 projection이 생성되면 import 응답과 `toolchain_projection` 모두 `primary_next_button_ko=결과 회수·Evidence 후보`, `collectable_count`, `stage_rows`를 반환한다. RedTeam2 `서비스 가져오기 진행`과 `서비스 다음 단계` 표는 이 값을 표시한다. 이 요약은 read-only report/passive alert를 collection workflow에 연결하는 projection이며 Evidence 승인, Finding severity 승인, Matrix/report/export/completion gate를 대신하지 않는다.
+54. 운영 closure 계열 API의 `operating_closure_progress_summary`는 실제 운영 증거 사전 점검부터 completion audit까지의 초급 분석가용 정본이다. `primary_next_button_ko`, `next_action_ko`, `next_api`, `stage_rows`, `ready_stage_count`, `blocked_stage_count`, `missing_required_tool_ids`, `blockers`를 확인해 다음 버튼을 결정한다. RedTeam2 `운영 closure 진행 요약`과 `운영 closure 단계` 표는 최신 closure 결과의 이 값을 표시한다. 이 요약도 projection이며 실제 조직 산출물, 실제 승인자, Evidence 승인, Finding severity 승인, Matrix/report/export/completion gate를 대신하지 않는다.
 
 ## 남은 작업
 
@@ -245,6 +246,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 `runtime-readiness` 역할별 요약을 실제 운영 화면에서 확인해 분석가가 결과 첨부/Evidence 검토를 진행하고 환경 담당자가 별도 관리자 패널에서 Docker/WSL/OpenVAS/ZAP endpoint blocker를 처리한 증거
 - RedTeam2 `analyst_progress_summary`를 실제 운영 toolchain에서 사용해 실행/첨부 결과가 결과 회수, Evidence 후보, Evidence 승인, Finding/Matrix/Report 단계로 이어진 운영 화면 증거
 - RedTeam2 `서비스 가져오기 진행` 표를 실제 OpenVAS/ZAP read-only endpoint import 뒤 확인하고, 같은 toolchain에서 결과 회수·Evidence 후보로 이어진 운영 화면 증거
+- RedTeam2 `운영 closure 진행 요약` 표를 실제 운영 scanner 산출물 closure에서 사용해 각 다음 버튼이 사람 검토, reviewed close, evidence certification, completion audit로 이어진 운영 화면 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

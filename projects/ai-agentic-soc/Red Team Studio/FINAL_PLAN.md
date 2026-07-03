@@ -1986,3 +1986,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API regression은 service import projection의 `collectable_count`, `primary_next_button_ko`, stage row를 검증한다.
 - [x] frontend launch readiness sanity는 `serviceImportAnalystProgress`, `서비스 가져오기 진행`, `서비스 다음 단계` 계약을 검증한다.
 - [ ] 이 변경은 읽기 전용 OpenVAS/ZAP 결과를 workflow에 연결하는 안내 계약이며 실제 Evidence 승인, Finding 확정, Report v2 export, completion gate 완료를 대신하지 않는다.
+
+## 138. 갱신 목표 - 운영 closure 진행 요약
+
+- [x] 운영 closure 계열 API는 `operating_closure_progress_summary`를 반환한다.
+- [x] 요약은 `primary_next_button_ko`, `next_action_ko`, `next_api`, `stage_rows`, 준비/차단 단계 수, 누락 필수 도구, blocker, safe flag, `does_not_mark_goal_complete=true`를 포함한다.
+- [x] blocked source는 `실제 운영 증거 사전 점검`, readiness/package 준비는 `운영 closure 사람 검토`, human review 준비는 `검토 완료 운영 closure 실행`, reviewed close 완료는 `운영 closure 증거 인증`, certification 준비는 `운영 completion audit 검토`로 안내한다.
+- [x] RedTeam2는 `운영 closure 진행 요약`과 `운영 closure 단계` 표를 최신 closure 결과 기준으로 표시한다.
+- [x] API regression과 frontend launch readiness sanity가 새 진행 요약 계약을 검증한다.
+- [ ] 이 요약은 다음 안전 버튼을 알려주는 projection이며 실제 조직 scanner 산출물, Evidence 승인, Finding severity 승인, Report v2 export, completion gate 완료를 대신하지 않는다.
