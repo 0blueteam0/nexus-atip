@@ -211,6 +211,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 28. `/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence`는 reviewed close 결과를 completion audit 후보로 인증한다. close/report/completion gate와 safe flags를 확인하고 실제 운영 산출물, 실제 승인자, non-fixture data, evidence retention, ROE/HITL attestation을 모두 요구한다. 이 API도 전체 goal을 완료 처리하지 않으며 final completion audit만 완료 판단을 할 수 있다. 실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 산출물 폴더와 실제 승인자 identity로 실행한 certification artifact가 필요하다.
 29. `/api/redteam/v2/toolchains/review-operating-completion-audit-candidate`는 certification artifact를 독립 감사 checklist로 다시 검토한다. `audited_by`, certification ready, certification error 0건, report gate pass, completion gate complete, safe no-execution flags를 확인하고, controlled/test-like source는 `no_controlled_or_test_source_required` blocker로 차단한다. `goal_complete_candidate=true`가 되어도 이 API는 스레드 goal을 직접 완료하지 않는다.
 30. 실제 도구 실행 전에 `/api/redteam/v2/runtime-readiness`의 `next_action_plan`, `blocked_action_count`, `tool_execution_blocked_by`, `tool_execution_ready`를 확인한다. `blocks_tool_execution=true` 단계가 남아 있으면 RedTeam2는 `다음 실행 준비 단계` 표에서 한국어 `operator_action_ko`, `primary_api_or_command`, `frontend_action_key`, `redteam2_button_ko`를 보여주고, AI가 Docker/WSL/scanner/network 명령을 대신 실행하지 않는다.
+31. RedTeam2에서 실제 runner 실행 버튼을 누를 때 `/api/redteam/v2/toolchains/execute-governed` payload는 `require_runtime_preflight=true`를 포함한다. runtime readiness의 `tool_execution_ready=false`이면 API는 `status=blocked_by_runtime_preflight`, `runtime_preflight_status=blocked`, `commands_executed_by_api=false`로 응답하고 각 step/progress event를 `실행 전 준비 차단`으로 남긴다. operator-import 경로는 명령 실행이 아니므로 기존 untrusted artifact import 흐름을 유지한다.
+32. 개발 과정에서 만들어진 fixture, smoke artifact, test-like path, archive run 부산물은 실제 업무 절차와 맞지 않으면 완료 증거에서 제외한다. completion claim은 승인된 운영 케이스, ROE/HITL, 실제 운영 도구 결과 또는 승인된 operator import, Evidence Card 승인, Finding severity 승인, Claim-Evidence Matrix, Report v2 export gate로만 뒷받침한다.
 
 ## 남은 작업
 
@@ -219,6 +221,8 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - Docker/container runtime live smoke 성공 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
+- RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거
+- archive/runs, fixture, smoke-only artifact 중 실제 업무 절차와 맞지 않는 개발 부산물을 completion evidence path에서 분리한 검토 증거
 - 실제 운영 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 산출물이 imported-output, artifact manifest import, 또는 live service import 경로로 제출되고 collection 전체가 Matrix/report/export/completion gate를 통과한 증거
 - 실제 운영 scanner 산출물 collection을 close-e2e API로 닫고, Report v2 export와 completion gate complete=true를 확보한 증거
 - 실제 운영 scanner 산출물 폴더를 real-operating-evidence-readiness API로 사전 점검하고 operating-closure-submission-package API로 검증한 뒤 operating-closure-human-review API로 real approver signoff와 blocker/payload 검토를 기록한 증거

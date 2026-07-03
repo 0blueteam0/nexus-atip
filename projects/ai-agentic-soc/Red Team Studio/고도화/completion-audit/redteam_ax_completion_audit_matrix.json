@@ -11,8 +11,8 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 47,
-    "partial": 1
+    "proved": 48,
+    "partial": 2
   },
   "audit_items": [
     {
@@ -812,10 +812,43 @@
       "proof_summary": "runtime-readiness next_action_plan now includes frontend_action_key and redteam2_button_ko. RedTeam2 renders a ?? ?? column in the ?? ?? ?? ?? table, and regression/frontend sanity checks assert the new contract.",
       "residual_gap": "This maps guidance to UI controls; it does not prove real operators clicked through the full workflow with real scanner artifacts and approvers.",
       "next_action": "Use the mapped UI controls to drive real runtime blocker remediation, result collection, Evidence approval, Finding/Matrix/Report/export, and completion audit."
+    },
+    {
+      "id": "RTA-COMP-049",
+      "requirement": "Governed multi-tool runner execution must honor runtime readiness preflight and refuse to launch commands when unresolved runtime blockers remain.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "execute-governed now accepts require_runtime_preflight. When a runner command is requested and latest runtime readiness reports tool_execution_ready=false, the API returns blocked_by_runtime_preflight, preserves tool_execution_blocked_by and runtime_next_action_plan, marks every step and progress event as 실행 전 준비 차단, keeps commands_executed_by_api=false, and does not call subprocess.run. RedTeam2 sends require_runtime_preflight for runner mode and renders 실행 전 readiness in the composite execution status table. Regression and frontend sanity tests assert the contract.",
+      "residual_gap": "This proves the pre-execution block when blockers remain; it does not prove the local Docker/WSL/OpenVAS/ZAP readiness blockers are fixed or that all real six-tool operating results have completed Evidence/Finding/Matrix/Report/export gates.",
+      "next_action": "Resolve runtime readiness blockers through the mapped RedTeam2 buttons and approved operator actions, rerun governed execution or approved artifact import, then complete Evidence approval, Finding promotion, Matrix, Report v2 export, and completion audit on real operating evidence."
+    },
+    {
+      "id": "RTA-COMP-050",
+      "requirement": "Development byproducts that do not match real red-team operating procedure must be excluded from completion evidence and report claims.",
+      "status": "partial",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md"
+      ],
+      "proof_summary": "The updated objective constraint is recorded in FINAL_PLAN, Detailed_PLAN, LLM Wiki, and this completion audit matrix: fixture, smoke artifact, test-like path, and archive run byproducts must not be treated as completion evidence unless they match the real operating workflow and pass Evidence Card, Finding, Matrix, Report v2, and export gates.",
+      "residual_gap": "The policy is recorded, but archive/runs, fixture outputs, smoke-only artifacts, and existing completion evidence refs still need a dedicated review or quarantine pass to prove all non-operational byproducts are excluded from completion claims.",
+      "next_action": "Inventory completion evidence refs and archive/run artifacts, classify each as real operating evidence or development byproduct, quarantine excluded byproducts from completion claims, and rerun completion audit sanity."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
+    "Development byproduct exclusion review for archive/runs, fixture, smoke-only, and test-like artifacts before any final completion claim.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
     "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must pass real-operating-evidence-readiness or be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
     "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
@@ -828,5 +861,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T04:57:05Z"
+  "last_updated": "2026-07-03T05:45:00Z"
 }

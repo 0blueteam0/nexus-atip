@@ -1790,3 +1790,20 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 핵심 `frontend_action_key`와 버튼명 필드를 검증
 - [x] frontend runtime readiness contract와 Korean copy inventory에 버튼 매핑 anchor 반영
 - [ ] 실제 운영자가 화면 버튼 순서대로 runtime blocker를 해소하고 6개 도구 결과를 Evidence/Finding/Matrix/Report/export gate까지 완료
+
+## 115. Slice 107 복합 실행 runtime preflight 차단 체크리스트
+
+- [x] `/api/redteam/v2/toolchains/execute-governed`가 `require_runtime_preflight=true`와 runner 명령이 있을 때 최신 `/runtime-readiness` 스냅샷을 사전 점검으로 사용
+- [x] `tool_execution_ready=false`이면 `blocked_by_runtime_preflight`로 응답하고 `subprocess.run` 호출 전 모든 step을 `실행 전 준비 차단`으로 멈춤
+- [x] 복합 실행 응답에 `runtime_preflight_required`, `runtime_preflight_status`, `tool_execution_ready`, `tool_execution_blocked_by`, `runtime_next_action_plan` 추가
+- [x] RedTeam2 실제 runner 실행 payload가 `require_runtime_preflight`를 전송하고, 복합 실행 표에 `실행 전 readiness` row를 표시
+- [x] regression test가 runtime blocker가 있을 때 명령 실행 0건, 진행 이벤트 `runtime_preflight`, 화면 버튼 안내 보존을 검증
+- [x] frontend runtime readiness contract와 Korean copy inventory에 preflight anchor 반영
+- [ ] 실제 운영자가 `실행 전 readiness` 차단 사유를 해소한 뒤 6개 도구 실행/첨부, Evidence 승인, Finding/Matrix/Report/export/completion gate까지 완료
+
+## 116. 갱신 목표 - 개발 부산물 제외 기준
+
+- [x] completion audit와 LLM Wiki에 “개발 과정 부산물은 실제 운영 절차와 Evidence/Claim gate를 통과하지 않으면 완료 증거가 아님”을 명시
+- [x] runtime preflight 차단 artifact는 안전 통제 증거로만 취급하고 실제 운영 도구 실행 완료 증거로 승격하지 않음
+- [ ] archive/runs, fixture, CASE-V2, operator-scanner-outputs, smoke-only artifact 중 실제 업무절차와 맞지 않는 항목을 완료 증거 경로에서 분리하거나 quarantine 목록으로 정리
+- [ ] 실제 업무절차 기반 증거만 사용해 6개 도구 운영 collection, Evidence Card 승인, Finding/Matrix/Report/export/completion gate를 다시 닫음

@@ -3726,6 +3726,7 @@ export default {
           objective:String(draft.objective || '').trim() || '여러 설치 분석도구를 승인된 로컬 runner로 순차 실행하고 결과를 회수한다.',
           target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
           runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
+          require_runtime_preflight:inputMode !== 'operator_import',
           tools,
         }),
       });
@@ -5910,6 +5911,7 @@ export default {
       ['복합 실행 상태', koValue(toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainRun.toolchain_id || '두 개 이상 분석도구와 명령을 입력하세요'],
       ['진행률', toolchainRun.progress_percent != null ? `${toolchainRun.progress_percent}%` : '대기', toolchainRun.operator_summary_ko || '여러 분석도구 실행 버튼을 누르면 도구별 진행 상태가 표시됩니다'],
       ['다음 행동', toolchainRun.current_stage_ko || '대기', toolchainRun.next_action_ko || '실행 전에는 도구 ID, 실행 모드, 명령 또는 첨부 결과를 확인하세요'],
+      ['실행 전 readiness', toolchainRun.runtime_preflight_required ? koValue(toolchainRun.runtime_preflight_status || '대기') : '첨부/계획 모드', (toolchainRun.tool_execution_blocked_by || []).join(', ') || (toolchainRun.tool_execution_ready ? '분석도구 실행 준비 통과' : '실행 전 준비 차단: 설치 확인, wrapper pin, 격리 준비 상태를 먼저 확인하세요')],
       ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
       ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],

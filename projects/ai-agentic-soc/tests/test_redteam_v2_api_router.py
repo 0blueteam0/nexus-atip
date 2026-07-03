@@ -1315,6 +1315,68 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertGreaterEqual(analyzed_body["parser_report"]["artifact_input_count"], 1)
         self.assertFalse(analyzed_body.get("trusted_as_instruction", False))
 
+    def test_v2_toolchain_runtime_preflight_blocks_runner_before_commands(self) -> None:
+        case_id = f"CASE-V2-TOOLCHAIN-RUNTIME-PREFLIGHT-001-{uuid.uuid4().hex[:8]}"
+        runtime_snapshot = {
+            "kind": "redteam_ax_v2_runtime_readiness_status",
+            "status": "blocked_runtime_or_external_readiness",
+            "tool_execution_ready": False,
+            "tool_execution_blocked_by": ["wrapper_pin_pending", "docker_runtime_missing"],
+            "next_action_plan": [
+                {
+                    "action_key": "runtime.validate_nuclei",
+                    "frontend_action_key": "redteam2.runtime.validate_nuclei",
+                    "redteam2_button_ko": "Nuclei 설치 확인",
+                    "status": "blocked",
+                    "next_step_ko": "wrapper pin 승인 후 다시 실행합니다.",
+                },
+            ],
+        }
+
+        with patch("runtime.redteam_v2_models.latest_runtime_readiness_status", return_value=runtime_snapshot), \
+             patch("runtime.redteam_v2_models.subprocess.run") as runner:
+            response = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-RUNTIME-PREFLIGHT-BLOCKED-001",
+                "requested_by": "analyst@example.com",
+                "objective": "실제 runner 실행 전 runtime readiness 차단을 검증한다.",
+                "require_runtime_preflight": True,
+                "tools": [
+                    {
+                        "tool_id": "TOOL-NPM-AUDIT-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["npm.cmd", "--version"],
+                    },
+                    {
+                        "tool_id": "TOOL-TRIVY-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_argv": ["trivy", "--version"],
+                    },
+                ],
+            })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_governed_toolchain_execution")
+        self.assertEqual(body["status"], "blocked_by_runtime_preflight")
+        self.assertTrue(body["runtime_preflight_required"])
+        self.assertEqual(body["runtime_preflight_status"], "blocked")
+        self.assertFalse(body["tool_execution_ready"])
+        self.assertEqual(body["tool_execution_blocked_by"], ["wrapper_pin_pending", "docker_runtime_missing"])
+        self.assertEqual(body["runtime_next_action_plan"][0]["redteam2_button_ko"], "Nuclei 설치 확인")
+        self.assertEqual(body["executed_count"], 0)
+        self.assertEqual(body["imported_count"], 0)
+        self.assertEqual(body["blocked_count"], 2)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertEqual(body["current_stage_ko"], "실행 전 준비 차단")
+        self.assertIn("runtime readiness", body["operator_summary_ko"])
+        self.assertIn("화면 버튼 안내", body["next_action_ko"])
+        self.assertTrue(all(step["status"] == "blocked" for step in body["steps"]))
+        self.assertTrue(all(step["status_ko"] == "실행 전 준비 차단" for step in body["steps"]))
+        self.assertTrue(all("runtime_preflight_not_ready" in step["errors"] for step in body["steps"]))
+        self.assertTrue(all(event["stage"] == "runtime_preflight" for event in body["progress_events"]))
+        runner.assert_not_called()
+
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-COLLECT-RESULTS-{uuid.uuid4().hex[:8]}"

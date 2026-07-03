@@ -4,7 +4,7 @@
   "task": "RedTeam AX continue governed execution preflight runtime blocker enforcement",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-050747-Red-Team-Studio-RedTeam-AX-continue-governed-execution-preflight-runtime-blocker-enforcement",
   "created_at": "2026-07-03T05:07:47+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T10:18:39+09:00"
+  ]
 }

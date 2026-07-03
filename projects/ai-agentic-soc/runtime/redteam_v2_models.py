@@ -4465,6 +4465,13 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     requested_by = str(payload.get("requested_by") or payload.get("executed_by") or "").strip()
     chain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, payload.get("tools") or payload.get("steps") or [], now_utc()]))
     raw_steps = payload.get("tools") or payload.get("steps") or []
+    runtime_readiness = latest_runtime_readiness_status()
+    runtime_preflight_required = bool(payload.get("require_runtime_preflight"))
+    runtime_step_requested = isinstance(raw_steps, list) and any(
+        isinstance(step, dict) and normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
+        for step in raw_steps
+    )
+    runtime_preflight_blocked = False
     errors: list[str] = []
     warnings: list[str] = []
     steps: list[dict[str, Any]] = []
@@ -4476,9 +4483,51 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     if isinstance(raw_steps, list) and len(raw_steps) > 6:
         errors.append("too_many_tool_steps_requested")
 
-    if not errors:
+    if not errors and runtime_preflight_required and runtime_step_requested and not runtime_readiness.get("tool_execution_ready"):
+        runtime_preflight_blocked = True
+        warnings.append("runtime_preflight_not_ready")
+        blockers = runtime_readiness.get("tool_execution_blocked_by") or []
         total_steps = len(raw_steps)
         for index, raw_step in enumerate(raw_steps):
+            step = raw_step if isinstance(raw_step, dict) else {}
+            tool_id = str(step.get("tool_id") or "").strip()
+            profile = analysis_tool_profile(tool_id)
+            display_name = (profile or {}).get("display_name") or (profile or {}).get("name") or tool_id or f"step-{index + 1}"
+            step_record: dict[str, Any] = {
+                "index": index,
+                "step_number": index + 1,
+                "tool_id": tool_id,
+                "tool_name": (profile or {}).get("name"),
+                "display_name_ko": display_name,
+                "action_id": str(step.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id])),
+                "execution_mode": str(step.get("execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip(),
+                "status": "blocked",
+                "status_ko": "실행 전 준비 차단",
+                "progress_percent": int((index + 1) / total_steps * 100),
+                "errors": ["runtime_preflight_not_ready"],
+                "plan": None,
+                "run": None,
+                "operator_message_ko": (
+                    f"{display_name} 실행 전 runtime readiness가 통과되지 않아 명령을 실행하지 않았습니다. "
+                    "화면의 다음 버튼 안내를 먼저 완료하세요."
+                ),
+            }
+            steps.append(step_record)
+            progress_events.append({
+                "step_number": index + 1,
+                "tool_id": tool_id,
+                "tool_name": display_name,
+                "stage": "runtime_preflight",
+                "status": "blocked",
+                "status_ko": "실행 전 준비 차단",
+                "message_ko": step_record["operator_message_ko"],
+                "progress_percent": step_record["progress_percent"],
+                "blocked_by": blockers,
+            })
+
+    if not errors:
+        total_steps = len(raw_steps)
+        for index, raw_step in ([] if runtime_preflight_blocked else enumerate(raw_steps)):
             step = raw_step if isinstance(raw_step, dict) else {}
             tool_id = str(step.get("tool_id") or "").strip()
             profile = analysis_tool_profile(tool_id)
@@ -4705,6 +4754,9 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     elif errors:
         progress_percent = 0
     next_action_ko = (
+        "화면 버튼 안내에 따라 설치 확인, wrapper pin, 격리 준비를 먼저 완료한 뒤 다시 실행하세요."
+        if runtime_preflight_blocked
+        else
         "결과 회수 버튼을 눌러 각 도구 출력에서 Evidence 후보를 만드세요."
         if completed_step_count and not blocked_count
         else "차단된 도구의 실행 계획, wrapper pin, 승인 조건을 먼저 해결하세요."
@@ -4716,7 +4768,7 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         "toolchain_id": chain_id,
         "case_id": case_id,
         "requested_by": requested_by,
-        "status": "invalid" if errors else ("completed_with_blocks" if blocked_count else ("executed" if executed_count else ("imported" if imported_count else "planned"))),
+        "status": "invalid" if errors else ("blocked_by_runtime_preflight" if runtime_preflight_blocked else ("completed_with_blocks" if blocked_count else ("executed" if executed_count else ("imported" if imported_count else "planned")))),
         "errors": errors,
         "warnings": warnings,
         "tool_count": len(raw_steps) if isinstance(raw_steps, list) else 0,
@@ -4725,14 +4777,24 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         "blocked_count": blocked_count,
         "completed_step_count": completed_step_count,
         "progress_percent": progress_percent,
-        "current_stage_ko": "완료" if completed_step_count and not blocked_count else ("차단 확인 필요" if blocked_count else "계획 생성"),
+        "current_stage_ko": "실행 전 준비 차단" if runtime_preflight_blocked else ("완료" if completed_step_count and not blocked_count else ("차단 확인 필요" if blocked_count else "계획 생성")),
         "operator_summary_ko": (
-            f"{len(steps)}개 도구 중 {completed_step_count}개가 실행 또는 첨부 완료되었습니다. "
+            "runtime readiness가 통과되지 않아 API가 명령을 실행하지 않았습니다. "
             f"차단 {blocked_count}개, 명령 실행 {executed_count}개, 결과 첨부 {imported_count}개입니다."
+            if runtime_preflight_blocked
+            else (
+                f"{len(steps)}개 도구 중 {completed_step_count}개가 실행 또는 첨부 완료되었습니다. "
+                f"차단 {blocked_count}개, 명령 실행 {executed_count}개, 결과 첨부 {imported_count}개입니다."
+            )
         ),
         "next_action_ko": next_action_ko,
         "progress_events": progress_events,
         "commands_executed_by_api": executed_count > 0,
+        "runtime_preflight_required": runtime_preflight_required,
+        "runtime_preflight_status": "blocked" if runtime_preflight_blocked else ("ready" if runtime_readiness.get("tool_execution_ready") else "not_ready"),
+        "tool_execution_ready": bool(runtime_readiness.get("tool_execution_ready")),
+        "tool_execution_blocked_by": runtime_readiness.get("tool_execution_blocked_by") or [],
+        "runtime_next_action_plan": runtime_readiness.get("next_action_plan") or [],
         "shell_expansion_allowed": False,
         "trusted_as_instruction": False,
         "requires_human_validation": True,

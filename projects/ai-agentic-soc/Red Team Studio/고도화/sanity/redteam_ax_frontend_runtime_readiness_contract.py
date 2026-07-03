@@ -47,6 +47,8 @@ def main() -> int:
     missing_loader_terms = [term for term in required_loader_terms if term not in loader]
     if missing_loader_terms:
         raise AssertionError(f"missing runtime readiness loader terms: {missing_loader_terms}")
+    if "require_runtime_preflight" not in source:
+        raise AssertionError("missing governed execution runtime preflight payload term")
 
     required_panel_terms = [
         "실행 환경 준비도 / 남은 실측 조건",
@@ -234,6 +236,9 @@ def main() -> int:
         "화면 버튼",
         "도구 실행 가능 여부",
         "도구 실행 전 해결 필요",
+        "실행 전 readiness",
+        "runtime_preflight_status",
+        "실행 전 준비 차단",
         "tool_execution_blocked_by",
         "frontend_action_key",
         "redteam2_button_ko",

@@ -1079,3 +1079,20 @@ Create Case
 - regression test는 runtime-readiness action plan의 `frontend_action_key`와 `redteam2_button_ko` 존재 및 핵심 action key를 검증한다.
 - frontend runtime readiness contract와 Korean copy inventory는 `화면 버튼`, `frontend_action_key`, `redteam2_button_ko` anchor를 검사한다.
 - 이 slice는 실제 실행 workflow 안내를 강화하지만, 실제 도구 실행/운영 산출물 승인을 대신하지 않는다.
+
+## 62. Slice 107 반영 사항
+
+- `/api/redteam/v2/toolchains/execute-governed`에 `require_runtime_preflight` 입력을 추가했다.
+- runner 명령이 포함된 복합 실행에서 `require_runtime_preflight=true`이고 `/api/redteam/v2/runtime-readiness`의 `tool_execution_ready=false`이면 도구별 ExecutionPlan/runner 실행 전에 멈춘다.
+- 차단 응답은 `status=blocked_by_runtime_preflight`, `runtime_preflight_status=blocked`, `tool_execution_blocked_by`, `runtime_next_action_plan`, `commands_executed_by_api=false`를 포함한다.
+- 각 step과 progress event는 `실행 전 준비 차단`으로 표시되어 초급 운영자가 실제 scanner 명령이 실행되지 않았음을 확인할 수 있다.
+- RedTeam2 실제 runner 실행 payload는 `require_runtime_preflight`를 보내며, 복합 실행 상태 표에 `실행 전 readiness` row를 추가해 readiness 차단 사유와 다음 화면 버튼 안내를 보여준다.
+- regression test는 mocked runtime blocker 상황에서 `subprocess.run`이 호출되지 않고 모든 step이 preflight 차단으로 남는지 검증한다.
+- 이 slice는 승인 없는 고위험 실행을 더 이른 단계에서 막지만, Docker/WSL/OpenVAS/ZAP readiness가 실제 ready가 되었거나 6개 도구 운영 결과가 완료되었다는 증거는 아니다.
+
+## 63. 갱신 목표 반영 - 개발 부산물 제외
+
+- 사용자가 추가한 목표 조건에 따라, 개발 과정에서 만들어진 fixture, smoke artifact, test-like path, archive run 부산물은 실제 업무 절차와 맞지 않으면 완료 증거에서 제외한다.
+- runtime preflight blocker artifact는 안전 통제와 차단 가시성의 증거일 뿐, 실제 운영 scanner 실행·분석·보고서 완료 증거가 아니다.
+- 완료 증거로 인정되는 산출물은 승인된 케이스, ROE/HITL, 실제 운영 도구 결과 또는 승인된 operator import, Evidence Card 승인, Finding severity 승인, Claim-Evidence Matrix, Report v2 export gate를 모두 통과해야 한다.
+- 후속 slice에서는 completion audit의 evidence_refs와 archive/runs 산출물을 검토해 실제 절차와 맞지 않는 개발 부산물을 completion claim에서 분리한다.
