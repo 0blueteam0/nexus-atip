@@ -25,6 +25,7 @@ REQUIRED_IDS = {
     "RTA-COMP-014",
     "RTA-COMP-015",
     "RTA-COMP-016",
+    "RTA-COMP-050",
 }
 
 REQUIRED_TERMS = [
@@ -42,6 +43,9 @@ REQUIRED_TERMS = [
     "unsupported claim",
     "unapproved high-risk",
     "evidence-less Finding",
+    "Development byproducts",
+    "completion_evidence_allowed=false",
+    "report_claim_evidence_allowed=false",
 ]
 
 
@@ -92,6 +96,22 @@ def main() -> int:
         if not item.get("evidence_refs"):
             raise AssertionError(f"{item.get('id')} missing evidence_refs")
         _assert_existing_evidence_refs(item)
+
+    comp50 = next((item for item in items if item.get("id") == "RTA-COMP-050"), None)
+    if not comp50:
+        raise AssertionError("matrix missing RTA-COMP-050")
+    if comp50.get("status") != "proved":
+        raise AssertionError("RTA-COMP-050 must be proved once the byproduct exclusion review exists")
+    comp50_text = json.dumps(comp50, ensure_ascii=False)
+    required_comp50_terms = [
+        "development byproduct exclusion review",
+        "completion_evidence_allowed=false",
+        "report_claim_evidence_allowed=false",
+        "contract_regression_or_safety_control_evidence_only",
+    ]
+    missing_comp50_terms = [term for term in required_comp50_terms if term not in comp50_text]
+    if missing_comp50_terms:
+        raise AssertionError(f"RTA-COMP-050 missing required terms: {missing_comp50_terms}")
 
     print("[+] completion audit matrix sanity passed")
     return 0

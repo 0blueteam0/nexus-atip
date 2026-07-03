@@ -1095,4 +1095,6 @@ Create Case
 - 사용자가 추가한 목표 조건에 따라, 개발 과정에서 만들어진 fixture, smoke artifact, test-like path, archive run 부산물은 실제 업무 절차와 맞지 않으면 완료 증거에서 제외한다.
 - runtime preflight blocker artifact는 안전 통제와 차단 가시성의 증거일 뿐, 실제 운영 scanner 실행·분석·보고서 완료 증거가 아니다.
 - 완료 증거로 인정되는 산출물은 승인된 케이스, ROE/HITL, 실제 운영 도구 결과 또는 승인된 operator import, Evidence Card 승인, Finding severity 승인, Claim-Evidence Matrix, Report v2 export gate를 모두 통과해야 한다.
-- 후속 slice에서는 completion audit의 evidence_refs와 archive/runs 산출물을 검토해 실제 절차와 맞지 않는 개발 부산물을 completion claim에서 분리한다.
+- `redteam_ax_development_byproduct_exclusion_review.py`는 completion audit evidence_refs를 전수 분류해 archive/runs, fixture, smoke, sanity, sample, test-like, CASE-V2 산출물을 `contract_regression_or_safety_control_evidence_only`로 제한한다.
+- review 산출물은 모든 개발 부산물 row에 `completion_evidence_allowed=false`, `report_claim_evidence_allowed=false`를 남기며, `test_development_byproduct_exclusion_review.py`가 0건 조건을 검증한다.
+- 이 slice는 완료 증거 오염 방지 계약을 증명하지만, 실제 6개 도구 운영 closure와 Report v2 export 완료 증거를 대신하지 않는다.

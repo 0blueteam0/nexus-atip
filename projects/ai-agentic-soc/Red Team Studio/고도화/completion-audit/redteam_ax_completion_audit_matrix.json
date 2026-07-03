@@ -11,8 +11,8 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 48,
-    "partial": 2
+    "proved": 49,
+    "partial": 1
   },
   "audit_items": [
     {
@@ -834,21 +834,24 @@
     {
       "id": "RTA-COMP-050",
       "requirement": "Development byproducts that do not match real red-team operating procedure must be excluded from completion evidence and report claims.",
-      "status": "partial",
+      "status": "proved",
       "evidence_refs": [
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
         "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md",
-        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md"
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_development_byproduct_exclusion_review.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_DEVELOPMENT_BYPRODUCT_EXCLUSION_REVIEW.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_development_byproduct_exclusion_review.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_development_byproduct_exclusion_review.py"
       ],
-      "proof_summary": "The updated objective constraint is recorded in FINAL_PLAN, Detailed_PLAN, LLM Wiki, and this completion audit matrix: fixture, smoke artifact, test-like path, and archive run byproducts must not be treated as completion evidence unless they match the real operating workflow and pass Evidence Card, Finding, Matrix, Report v2, and export gates.",
-      "residual_gap": "The policy is recorded, but archive/runs, fixture outputs, smoke-only artifacts, and existing completion evidence refs still need a dedicated review or quarantine pass to prove all non-operational byproducts are excluded from completion claims.",
-      "next_action": "Inventory completion evidence refs and archive/run artifacts, classify each as real operating evidence or development byproduct, quarantine excluded byproducts from completion claims, and rerun completion audit sanity."
+      "proof_summary": "The updated objective constraint is recorded in FINAL_PLAN, Detailed_PLAN, LLM Wiki, and this completion audit matrix. The development byproduct exclusion review inventories completion audit evidence_refs, classifies archive/runs, fixture, smoke, sanity, sample, test-like, and CASE-V2 artifacts as development byproducts, and sets allowed_use=contract_regression_or_safety_control_evidence_only, completion_evidence_allowed=false, and report_claim_evidence_allowed=false for every such byproduct row. Sanity verifies there are zero completion-eligible and zero report-claim-eligible byproduct refs.",
+      "residual_gap": "This proves byproducts are excluded from completion claims in the completion audit evidence path; it does not provide the still-missing real six-tool operating closure evidence.",
+      "next_action": "Continue with real operating evidence collection using approved case scope, ROE/HITL, actual tool outputs or approved operator imports, Evidence approval, Finding approval, Matrix, Report v2 export, and completion gate."
     }
   ],
   "remaining_gaps": [
     "Docker/container runtime live smoke after environment readiness.",
-    "Development byproduct exclusion review for archive/runs, fixture, smoke-only, and test-like artifacts before any final completion claim.",
     "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
     "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must pass real-operating-evidence-readiness or be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
     "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
@@ -861,5 +864,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T05:45:00Z"
+  "last_updated": "2026-07-03T10:32:00+09:00"
 }

@@ -1805,5 +1805,6 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 
 - [x] completion audit와 LLM Wiki에 “개발 과정 부산물은 실제 운영 절차와 Evidence/Claim gate를 통과하지 않으면 완료 증거가 아님”을 명시
 - [x] runtime preflight 차단 artifact는 안전 통제 증거로만 취급하고 실제 운영 도구 실행 완료 증거로 승격하지 않음
-- [ ] archive/runs, fixture, CASE-V2, operator-scanner-outputs, smoke-only artifact 중 실제 업무절차와 맞지 않는 항목을 완료 증거 경로에서 분리하거나 quarantine 목록으로 정리
+- [x] archive/runs, fixture, CASE-V2, operator-scanner-outputs, smoke-only artifact 중 실제 업무절차와 맞지 않는 항목을 completion evidence path에서 `completion_evidence_allowed=false`, `report_claim_evidence_allowed=false`로 분류
+- [x] `redteam_ax_development_byproduct_exclusion_review.json/.md`와 sanity test로 개발 부산물이 계약·회귀·안전통제 증거로만 쓰이는지 검증
 - [ ] 실제 업무절차 기반 증거만 사용해 6개 도구 운영 collection, Evidence Card 승인, Finding/Matrix/Report/export/completion gate를 다시 닫음

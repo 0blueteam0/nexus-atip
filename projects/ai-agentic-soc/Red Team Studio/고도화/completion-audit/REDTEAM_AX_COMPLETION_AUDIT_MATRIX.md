@@ -35,8 +35,8 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 48 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
-| `partial` | 2 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
+| `proved` | 49 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
 
@@ -58,6 +58,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `/api/redteam/v2/runtime-readiness`가 `next_action_plan`, `tool_execution_blocked_by`, `tool_execution_ready`로 실제 도구 실행 전 차단 단계와 운영자 다음 조치를 한국어 UI에 표시하는 계약
 - runtime `next_action_plan`이 `frontend_action_key`와 `redteam2_button_ko`로 다음 조치와 RedTeam2 화면 버튼을 연결하고 `다음 실행 준비 단계` 표에 `화면 버튼` 열로 표시하는 계약
 - `/api/redteam/v2/toolchains/execute-governed`가 `require_runtime_preflight=true` runner 요청에서 runtime readiness blocker를 사전 차단하고 RedTeam2가 `실행 전 readiness`로 차단 사유를 표시하는 계약
+- 개발 과정 부산물 exclusion review가 archive/runs, fixture, smoke, sanity, sample, test-like, CASE-V2 evidence ref를 계약·회귀·안전통제 증거로만 허용하고 실제 완료/Report Claim 증거에서는 제외하는 계약
 - toolchain result collection의 Evidence 후보를 actor/reviewer identity binding으로 batch 승인하고 Finding/Claim/Report 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence` API와 한국어 UI
 - 승인된 toolchain result collection Evidence만 `pending_review` Finding 초안으로 승격하고 승인 전 Evidence는 차단하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API와 한국어 UI
 - collection에서 생성된 Finding 초안을 red_team_lead와 business_owner 2인 severity 승인으로 `approved` 상태까지 이동시키되 Matrix/report Claim 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API와 한국어 UI
@@ -120,7 +121,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거. 현재는 endpoint/vault reference 미설정 readiness/import blocker artifact만 존재한다.
 - RedTeam2 runtime readiness panel은 blocker를 보여주는 visibility 증거이며, blocker가 모두 ready로 바뀐 운영 실측 증거는 아직 아니다.
 - RedTeam2 `실행 전 readiness` preflight가 ready인 운영 환경에서 실제 6개 도구 실행/첨부, Evidence 승인, Finding/Matrix/Report/export gate까지 완료한 증거는 아직 아니다.
-- archive/runs, fixture, smoke-only artifact 등 개발 과정 부산물이 실제 업무절차와 맞지 않는 경우 completion evidence path에서 제외되었음을 검토한 증거는 아직 아니다.
+- 개발 과정 부산물 exclusion review는 완료 증거 오염 방지 계약이며, 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
 
 ## 운영 규칙
 
@@ -128,3 +129,4 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 2. `partial`, `gap`, `blocked`, `unverified` 항목은 후속 슬라이스 후보로 남긴다.
 3. 새 기능은 이 매트릭스의 기존 요구사항에 evidence ref를 추가하거나 새 요구사항을 추가한 뒤 sanity test를 통과시킨다.
 4. Report gate의 0-count는 필수 조건이지만, 설치/runtime/credential/UX 요구까지 대신 증명하지는 않는다.
+5. archive/runs, fixture, smoke, sanity, sample, test-like, CASE-V2 산출물은 실제 운영 절차로 재수집·승인·matrix 연결되기 전까지 최종 완료 증거나 Report Claim 근거로 사용하지 않는다.
