@@ -3729,6 +3729,7 @@ export default {
           target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
           runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
           require_runtime_preflight:inputMode !== 'operator_import',
+          allow_safe_local_smoke_when_runtime_partial:inputMode !== 'operator_import',
           tools,
         }),
       });
@@ -6032,6 +6033,7 @@ export default {
       ['진행률', toolchainRun.progress_percent != null ? `${toolchainRun.progress_percent}%` : '대기', toolchainRun.operator_summary_ko || '여러 분석도구 실행 버튼을 누르면 도구별 진행 상태가 표시됩니다'],
       ['다음 행동', toolchainRun.current_stage_ko || '대기', toolchainRun.next_action_ko || '실행 전에는 도구 ID, 실행 모드, 명령 또는 첨부 결과를 확인하세요'],
       ['실행 전 readiness', toolchainRun.runtime_preflight_required ? koValue(toolchainRun.runtime_preflight_status || '대기') : '첨부/계획 모드', (toolchainRun.tool_execution_blocked_by || []).join(', ') || (toolchainRun.tool_execution_ready ? '분석도구 실행 준비 통과' : '실행 전 준비 차단: 설치 확인, wrapper pin, 격리 준비 상태를 먼저 확인하세요')],
+      ['안전 smoke 부분 실행', koBool(toolchainRun.safe_local_smoke_partial_runtime_preflight ?? false), `전체 운영 readiness가 막혀도 version-only 로컬 smoke만 제한적으로 허용하고 임의 스캔 명령은 차단 · allow_safe_local_smoke_when_runtime_partial · ${toolchainRun.runtime_preflight_status || 'partial_safe_local_smoke'}`],
       ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
       ['API 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 ToolActionCard, ExecutionPlan, token, wrapper gate 통과 시에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],

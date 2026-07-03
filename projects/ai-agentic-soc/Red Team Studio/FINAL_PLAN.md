@@ -1898,3 +1898,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2에 `저장 실행 상태 다시 불러오기`, `저장 실행 상태`, `저장 실행 단계` 표를 추가한다.
 - [x] API regression과 frontend runtime sanity가 read-only 상태 조회와 결과 회수 가능 안내를 검증한다.
 - [ ] 이 조회는 저장된 실행 기록만 읽으며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 128. 갱신 목표 - runtime partial 상태의 안전 로컬 smoke 실행
+
+- [x] `/api/redteam/v2/toolchains/execute-governed`에 `allow_safe_local_smoke_when_runtime_partial` 옵션을 추가한다.
+- [x] runtime readiness가 완전 통과되지 않아도 `local_subprocess_shim`의 version-only argv(`--version`, `-version`, `-v`, `version`)만 부분 실행할 수 있게 한다.
+- [x] 임의 스캔 명령, 다중 인자 scan command, import-only 도구, non-local runner backend는 계속 `runtime_preflight_not_ready`와 safe-smoke 차단 사유로 막는다.
+- [x] RedTeam2 복합 실행 payload에 해당 옵션을 넣고 `안전 smoke 부분 실행` 상태를 한국어 표에 표시한다.
+- [x] API regression과 frontend runtime sanity가 부분 허용/차단 경계를 검증한다.
+- [ ] 이 기능은 설치 확인 smoke를 실행 가능하게 하는 진전일 뿐이며 실제 조직 OpenVAS/ZAP endpoint, 6개 도구 운영 산출물, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.

@@ -187,6 +187,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `저장 실행 상태 다시 불러오기`, `저장 실행 상태`, `저장 실행 단계` 표로 도구별 결과 회수 가능 여부를 표시한다.
 - 이 변경은 저장 상태 조회만 수행하며 scanner 재실행, 결과 회수, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - runtime partial 상태의 안전 로컬 smoke 실행
+
+- `/api/redteam/v2/toolchains/execute-governed`는 `allow_safe_local_smoke_when_runtime_partial=true`일 때 `runtime_preflight_status=partial_safe_local_smoke`를 반환할 수 있다.
+- 허용 범위는 `local_subprocess_shim`에서 실행되는 version-only 설치 확인 smoke이며, `--version`, `-version`, `-v`, `version` 외의 임의 scan command는 차단된다.
+- RedTeam2는 복합 실행 payload에 이 옵션을 포함하고 `안전 smoke 부분 실행` row로 부분 preflight 상태를 표시한다.
+- 이 변경은 설치 확인 smoke 실행 진전이며 실제 운영 scanner 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

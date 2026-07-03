@@ -1197,3 +1197,12 @@ Create Case
 - 안전 원칙: 이 API는 저장된 JSON artifact만 읽는다. scanner 명령, Docker, WSL, network, active scan, shell expansion을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true`를 반환한다.
 - 테스트 전략: API regression은 imported-output으로 만든 toolchain run을 다시 조회해 `can_collect_results=true`, `collectable_step_count=2`, collect-results next API를 검증하고, 존재하지 않는 run은 `toolchain_run_not_found`로 검증한다. frontend runtime sanity는 버튼, 표 header, endpoint, read-only copy, `does_not_mark_goal_complete` anchor를 검사한다.
 - 예외 케이스: 상태 조회가 회수 가능하다고 표시해도 실제 결과 회수, Evidence 승인, Finding 승격, 2인 severity 승인, Matrix/Report/export/completion gate는 별도 단계다. 이 조회 자체는 전체 goal 완료 증거가 아니다.
+
+## 75. 갱신 목표 반영 - runtime partial 상태의 안전 로컬 smoke 실행
+
+- 목적: 조직 OpenVAS/ZAP endpoint나 운영 closure가 아직 준비되지 않았다는 전역 blocker 때문에 npm, Trivy, Nuclei 같은 설치 확인용 version-only 로컬 smoke까지 모두 막히는 문제를 줄이고, 프론트엔드 버튼으로 실제 설치 도구를 제한적으로 확인할 수 있게 한다.
+- API 설계: `/api/redteam/v2/toolchains/execute-governed`는 `allow_safe_local_smoke_when_runtime_partial=true`일 때 runtime readiness가 `tool_execution_ready=false`여도 `safe_local_smoke_runner_allowed` 검사를 통과한 step만 실행한다. 응답에는 `runtime_preflight_status=partial_safe_local_smoke`, `safe_local_smoke_partial_runtime_preflight`, `allow_safe_local_smoke_when_runtime_partial`를 포함한다.
+- 안전 조건: 허용 범위는 `local_subprocess_shim`의 단일 version-only argv(`--version`, `-version`, `-v`, `version`)뿐이다. 임의 scan command, 다중 인자 scan command, import-only tool runner, non-local backend, prohibited option은 `부분 실행 차단`으로 남기고 실행하지 않는다.
+- 화면/기능 명세: RedTeam2 복합 실행은 runner 모드에서 `allow_safe_local_smoke_when_runtime_partial=true`를 보내며, `복합 실행 항목` 표에 `안전 smoke 부분 실행` row를 표시한다. 설명 문구는 전체 운영 readiness가 막혀도 version-only 로컬 smoke만 제한적으로 허용하고 임의 스캔 명령은 차단한다고 명시한다.
+- 테스트 전략: API regression은 runtime readiness가 external scanner blocker로 blocked인 상태에서 `npm.cmd --version`은 실행되고 `trivy fs --format json .`는 `safe_local_smoke_allows_version_only`로 차단되는지 검증한다. frontend runtime sanity는 payload flag와 한국어 표시 문구를 검사한다.
+- 예외 케이스: 이 기능은 설치 확인 smoke만 실제 실행하는 경계다. 실제 취약점 스캔, OpenVAS/ZAP endpoint import, 6개 운영 산출물 coverage, Evidence 승인, Finding severity, Report v2 export, completion gate 완료는 여전히 별도로 필요하다.

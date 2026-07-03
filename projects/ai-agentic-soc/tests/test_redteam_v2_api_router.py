@@ -1450,6 +1450,99 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(all(event["stage"] == "runtime_preflight" for event in body["progress_events"]))
         runner.assert_not_called()
 
+    def test_v2_toolchain_runtime_preflight_allows_safe_local_smoke_only_when_partial(self) -> None:
+        case_id = f"CASE-V2-TOOLCHAIN-SAFE-SMOKE-PARTIAL-001-{uuid.uuid4().hex[:8]}"
+        runtime_snapshot = {
+            "kind": "redteam_ax_v2_runtime_readiness_status",
+            "status": "blocked_runtime_or_external_readiness",
+            "tool_execution_ready": False,
+            "tool_execution_blocked_by": ["external_scanner_endpoint_missing", "operating_closure_not_ready"],
+            "next_action_plan": [
+                {
+                    "action_key": "external_scanner.configure_openvas",
+                    "frontend_action_key": "redteam2.external.configure_openvas",
+                    "redteam2_button_ko": "OpenVAS endpoint 설정",
+                    "status": "blocked",
+                    "next_step_ko": "조직 OpenVAS read-only endpoint를 설정합니다.",
+                },
+            ],
+        }
+
+        def trusted_manifest(profile: dict) -> dict:
+            command_name = profile.get("command_name") or profile.get("name")
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": profile["tool_id"],
+                "tool_name": profile["name"],
+                "availability": {
+                    "status": "available",
+                    "command_name": command_name,
+                    "resolved_path": command_name,
+                },
+                "pinning_status": "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+                "runner_preflight": {
+                    "runner_can_use_wrapper": True,
+                    "blocking_controls": [],
+                    "human_review_required": False,
+                },
+                "actual_sha256": "d" * 64,
+                "expected_sha256": "d" * 64,
+                "expected_sha256_source": "test_approved_pin",
+            }
+
+        class Completed:
+            def __init__(self, argv: list[str]) -> None:
+                self.returncode = 0
+                self.stdout = f"{argv[0]} version smoke output"
+                self.stderr = ""
+
+        with patch("runtime.redteam_v2_models.latest_runtime_readiness_status", return_value=runtime_snapshot), \
+             patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=trusted_manifest), \
+             patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)) as runner:
+            response = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-SAFE-SMOKE-PARTIAL-001",
+                "requested_by": "analyst@example.com",
+                "objective": "운영 endpoint blocker가 남아 있어도 안전한 로컬 version smoke만 실행한다.",
+                "require_runtime_preflight": True,
+                "allow_safe_local_smoke_when_runtime_partial": True,
+                "tools": [
+                    {
+                        "tool_id": "TOOL-NPM-AUDIT-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": ["npm.cmd", "--version"],
+                    },
+                    {
+                        "tool_id": "TOOL-TRIVY-001",
+                        "execution_mode": "sandbox_execute",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": ["trivy", "fs", "--format", "json", "."],
+                    },
+                ],
+            })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_governed_toolchain_execution")
+        self.assertEqual(body["status"], "completed_with_blocks")
+        self.assertEqual(body["runtime_preflight_status"], "partial_safe_local_smoke")
+        self.assertTrue(body["safe_local_smoke_partial_runtime_preflight"])
+        self.assertTrue(body["allow_safe_local_smoke_when_runtime_partial"])
+        self.assertEqual(body["executed_count"], 1)
+        self.assertEqual(body["blocked_count"], 1)
+        self.assertTrue(body["commands_executed_by_api"])
+        self.assertEqual(runner.call_count, 1)
+        by_tool = {step["tool_id"]: step for step in body["steps"]}
+        self.assertEqual(by_tool["TOOL-NPM-AUDIT-001"]["status"], "executed")
+        self.assertEqual(by_tool["TOOL-NPM-AUDIT-001"]["partial_runtime_preflight"], "safe_local_smoke_allowed")
+        self.assertEqual(by_tool["TOOL-TRIVY-001"]["status"], "blocked")
+        self.assertIn("safe_local_smoke_allows_version_only", by_tool["TOOL-TRIVY-001"]["errors"])
+        self.assertTrue(any(event["stage"] == "runtime_preflight_partial" and event["status"] == "allowed" for event in body["progress_events"]))
+        self.assertTrue(any(event["stage"] == "runtime_preflight_partial" and event["status"] == "blocked" for event in body["progress_events"]))
+
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-COLLECT-RESULTS-{uuid.uuid4().hex[:8]}"

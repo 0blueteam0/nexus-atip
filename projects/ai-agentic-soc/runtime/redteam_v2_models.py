@@ -4539,6 +4539,33 @@ def runner_command_allowed(profile: dict[str, Any] | None, argv: list[str], plan
     return True, ""
 
 
+def safe_local_smoke_runner_allowed(profile: dict[str, Any] | None, argv: list[str], runner_backend: str | None = None) -> tuple[bool, str]:
+    if not profile:
+        return False, "tool_profile_required_for_safe_local_smoke"
+    if str(runner_backend or "local_subprocess_shim") not in {"", "local_subprocess_shim"}:
+        return False, "safe_local_smoke_requires_local_subprocess_shim"
+    if not argv:
+        return False, "runner_command_required"
+    if len(argv) == 1 and any(char.isspace() for char in argv[0].strip()):
+        return False, "runner_command_must_be_argv_list"
+    command_name = str(profile.get("command_name") or "").strip()
+    command = argv[0]
+    command_basename = Path(command).name if Path(command).name else command
+    if command_name and command.lower() not in {command_name.lower(), Path(command_name).name.lower()} and command_basename.lower() != Path(command_name).name.lower():
+        return False, "runner_command_not_in_child_process_allowlist"
+    normalized_args = [str(item).strip().lower() for item in argv[1:]]
+    allowed_version_args = {"--version", "-version", "-v", "version"}
+    if len(argv) > 2 or not normalized_args or any(arg not in allowed_version_args for arg in normalized_args):
+        return False, "safe_local_smoke_allows_version_only"
+    prohibited_options = set((profile or {}).get("prohibited_options") or [])
+    requested_options = {item for item in argv[1:] if item in prohibited_options}
+    if requested_options:
+        return False, f"prohibited_options_present:{','.join(sorted(requested_options))}"
+    if str(profile.get("default_execution_mode") or "") == "import_only":
+        return False, "import_only_tool_has_no_safe_runner_smoke"
+    return True, ""
+
+
 def write_runner_output_artifact(case_id: str, run_id: str, stream_name: str, content: str) -> dict[str, Any]:
     output_dir = case_dir(case_id) / "runner-output" / safe_name(run_id)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -4994,11 +5021,13 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
     raw_steps = payload.get("tools") or payload.get("steps") or []
     runtime_readiness = latest_runtime_readiness_status()
     runtime_preflight_required = bool(payload.get("require_runtime_preflight"))
+    allow_safe_local_smoke_when_runtime_partial = bool(payload.get("allow_safe_local_smoke_when_runtime_partial"))
     runtime_step_requested = isinstance(raw_steps, list) and any(
         isinstance(step, dict) and normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
         for step in raw_steps
     )
     runtime_preflight_blocked = False
+    runtime_preflight_partial = False
     errors: list[str] = []
     warnings: list[str] = []
     steps: list[dict[str, Any]] = []
@@ -5011,46 +5040,51 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         errors.append("too_many_tool_steps_requested")
 
     if not errors and runtime_preflight_required and runtime_step_requested and not runtime_readiness.get("tool_execution_ready"):
-        runtime_preflight_blocked = True
         warnings.append("runtime_preflight_not_ready")
+        if allow_safe_local_smoke_when_runtime_partial:
+            runtime_preflight_partial = True
+            warnings.append("safe_local_smoke_partial_runtime_preflight")
+        else:
+            runtime_preflight_blocked = True
         blockers = runtime_readiness.get("tool_execution_blocked_by") or []
-        total_steps = len(raw_steps)
-        for index, raw_step in enumerate(raw_steps):
-            step = raw_step if isinstance(raw_step, dict) else {}
-            tool_id = str(step.get("tool_id") or "").strip()
-            profile = analysis_tool_profile(tool_id)
-            display_name = (profile or {}).get("display_name") or (profile or {}).get("name") or tool_id or f"step-{index + 1}"
-            step_record: dict[str, Any] = {
-                "index": index,
-                "step_number": index + 1,
-                "tool_id": tool_id,
-                "tool_name": (profile or {}).get("name"),
-                "display_name_ko": display_name,
-                "action_id": str(step.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id])),
-                "execution_mode": str(step.get("execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip(),
-                "status": "blocked",
-                "status_ko": "실행 전 준비 차단",
-                "progress_percent": int((index + 1) / total_steps * 100),
-                "errors": ["runtime_preflight_not_ready"],
-                "plan": None,
-                "run": None,
-                "operator_message_ko": (
-                    f"{display_name} 실행 전 runtime readiness가 통과되지 않아 명령을 실행하지 않았습니다. "
-                    "화면의 다음 버튼 안내를 먼저 완료하세요."
-                ),
-            }
-            steps.append(step_record)
-            progress_events.append({
-                "step_number": index + 1,
-                "tool_id": tool_id,
-                "tool_name": display_name,
-                "stage": "runtime_preflight",
-                "status": "blocked",
-                "status_ko": "실행 전 준비 차단",
-                "message_ko": step_record["operator_message_ko"],
-                "progress_percent": step_record["progress_percent"],
-                "blocked_by": blockers,
-            })
+        if runtime_preflight_blocked:
+            total_steps = len(raw_steps)
+            for index, raw_step in enumerate(raw_steps):
+                step = raw_step if isinstance(raw_step, dict) else {}
+                tool_id = str(step.get("tool_id") or "").strip()
+                profile = analysis_tool_profile(tool_id)
+                display_name = (profile or {}).get("display_name") or (profile or {}).get("name") or tool_id or f"step-{index + 1}"
+                step_record: dict[str, Any] = {
+                    "index": index,
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": (profile or {}).get("name"),
+                    "display_name_ko": display_name,
+                    "action_id": str(step.get("action_id") or stable_id("TAC", [case_id, chain_id, index, tool_id])),
+                    "execution_mode": str(step.get("execution_mode") or (profile or {}).get("default_execution_mode") or "manual_operator_run").strip(),
+                    "status": "blocked",
+                    "status_ko": "실행 전 준비 차단",
+                    "progress_percent": int((index + 1) / total_steps * 100),
+                    "errors": ["runtime_preflight_not_ready"],
+                    "plan": None,
+                    "run": None,
+                    "operator_message_ko": (
+                        f"{display_name} 실행 전 runtime readiness가 통과되지 않아 명령을 실행하지 않았습니다. "
+                        "화면의 다음 버튼 안내를 먼저 완료하세요."
+                    ),
+                }
+                steps.append(step_record)
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": display_name,
+                    "stage": "runtime_preflight",
+                    "status": "blocked",
+                    "status_ko": "실행 전 준비 차단",
+                    "message_ko": step_record["operator_message_ko"],
+                    "progress_percent": step_record["progress_percent"],
+                    "blocked_by": blockers,
+                })
 
     if not errors:
         total_steps = len(raw_steps)
@@ -5141,6 +5175,44 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                 "progress_percent": int((index + 0.35) / total_steps * 100),
             })
             runner_argv = normalize_runner_argv(step.get("runner_argv") if "runner_argv" in step else step.get("runner_command"))
+            if runtime_preflight_partial and runner_argv:
+                runner_backend = str(step.get("runner_backend") or payload.get("runner_backend") or "local_subprocess_shim").strip()
+                smoke_allowed, smoke_reason = safe_local_smoke_runner_allowed(profile, runner_argv, runner_backend)
+                if not smoke_allowed:
+                    step_record["status"] = "blocked"
+                    step_record["status_ko"] = "부분 실행 차단"
+                    step_record["progress_percent"] = int((index + 1) / total_steps * 100)
+                    step_record["operator_message_ko"] = (
+                        f"{display_name}는 현재 runtime readiness가 완전 통과되지 않았고 안전한 version-only 로컬 smoke 명령이 아니어서 실행하지 않았습니다."
+                    )
+                    step_record["errors"].extend(["runtime_preflight_not_ready", smoke_reason])
+                    step_record["partial_runtime_preflight_reason"] = smoke_reason
+                    steps.append(step_record)
+                    progress_events.append({
+                        "step_number": index + 1,
+                        "tool_id": tool_id,
+                        "tool_name": display_name,
+                        "stage": "runtime_preflight_partial",
+                        "status": "blocked",
+                        "status_ko": "부분 실행 차단",
+                        "message_ko": step_record["operator_message_ko"],
+                        "progress_percent": step_record["progress_percent"],
+                        "blocked_by": runtime_readiness.get("tool_execution_blocked_by") or [],
+                        "safe_local_smoke_reason": smoke_reason,
+                    })
+                    continue
+                step_record["partial_runtime_preflight"] = "safe_local_smoke_allowed"
+                progress_events.append({
+                    "step_number": index + 1,
+                    "tool_id": tool_id,
+                    "tool_name": display_name,
+                    "stage": "runtime_preflight_partial",
+                    "status": "allowed",
+                    "status_ko": "안전 smoke 부분 허용",
+                    "message_ko": f"{display_name}는 version-only 로컬 smoke 명령이므로 남은 운영 readiness blocker와 분리해 실행합니다.",
+                    "progress_percent": int((index + 0.45) / total_steps * 100),
+                    "blocked_by": runtime_readiness.get("tool_execution_blocked_by") or [],
+                })
             import_run_id = str(step.get("run_id") or stable_id("TRUN", [case_id, action_id, tool_id, execution_mode, requested_by, "toolchain-import", index]))
             imported_artifacts = imported_toolchain_step_artifacts(case_id, import_run_id, step)
             if runner_argv and plan.get("status") == "PlanReady":
@@ -5318,7 +5390,9 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         "progress_events": progress_events,
         "commands_executed_by_api": executed_count > 0,
         "runtime_preflight_required": runtime_preflight_required,
-        "runtime_preflight_status": "blocked" if runtime_preflight_blocked else ("ready" if runtime_readiness.get("tool_execution_ready") else "not_ready"),
+        "runtime_preflight_status": "blocked" if runtime_preflight_blocked else ("partial_safe_local_smoke" if runtime_preflight_partial else ("ready" if runtime_readiness.get("tool_execution_ready") else "not_ready")),
+        "allow_safe_local_smoke_when_runtime_partial": allow_safe_local_smoke_when_runtime_partial,
+        "safe_local_smoke_partial_runtime_preflight": runtime_preflight_partial,
         "tool_execution_ready": bool(runtime_readiness.get("tool_execution_ready")),
         "tool_execution_blocked_by": runtime_readiness.get("tool_execution_blocked_by") or [],
         "runtime_next_action_plan": runtime_readiness.get("next_action_plan") or [],
