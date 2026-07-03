@@ -125,6 +125,11 @@ def list_toolchain_launch_readiness() -> dict[str, Any]:
     return redteam_v2_models.list_toolchain_launch_readiness()
 
 
+@router.post("/toolchains/six-tool-work-order")
+def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.build_six_tool_operating_work_order(payload)
+
+
 @router.get("/tool-install-readiness/{tool_id}")
 def get_tool_install_readiness(tool_id: str) -> dict[str, Any]:
     return redteam_v2_models.tool_install_readiness(tool_id)

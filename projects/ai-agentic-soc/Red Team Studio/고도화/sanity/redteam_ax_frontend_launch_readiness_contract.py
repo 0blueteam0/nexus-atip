@@ -21,15 +21,22 @@ def main() -> int:
     source = REPORTS_JS.read_text(encoding="utf-8")
     required_terms = [
         "/api/redteam/v2/toolchains/launch-readiness",
+        "/api/redteam/v2/toolchains/six-tool-work-order",
         "launchReadinessRes",
         "launchReadinessRows",
         "launchButtons",
+        "buildRedTeam2SixToolWorkOrder",
+        "sixToolWorkOrderRows",
+        "redteam2SixToolWorkOrderState",
         "분석도구",
         "버튼",
         "실행 상태",
         "차단 사유",
         "사용자 안내",
         "연결 API",
+        "6개 도구 작업 순서 만들기",
+        "작업 순서",
+        "필요 입력",
         "launch-readiness API 응답 없음",
         "상태 새로고침을 먼저 누르세요",
     ]

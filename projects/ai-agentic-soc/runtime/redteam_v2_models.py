@@ -1424,6 +1424,128 @@ def list_toolchain_launch_readiness() -> dict[str, Any]:
     }
 
 
+def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, Any]:
+    case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip()
+    requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
+    toolchain_id = str(payload.get("toolchain_id") or stable_id("TCHAIN", [case_id, requested_by, "six-tool-work-order"])).strip()
+    report_id = str(payload.get("report_id") or "").strip()
+    source_dir = str(payload.get("source_dir") or payload.get("directory") or "").strip()
+    launch_readiness = list_toolchain_launch_readiness()
+    launch_by_tool = {str(item.get("tool_id") or ""): item for item in launch_readiness.get("buttons") or []}
+    work_order_rows: list[dict[str, Any]] = []
+    for index, profile in enumerate(ANALYSIS_TOOL_PROFILES, start=1):
+        tool_id = str(profile.get("tool_id") or "")
+        display_name = str(profile.get("display_name") or profile.get("name") or tool_id)
+        launch = launch_by_tool.get(tool_id, {})
+        blocked_reasons = [str(item) for item in launch.get("blocked_reasons") or []]
+        import_only = str(launch.get("launch_mode") or "") == "operator_import" or str(profile.get("adapter_type") or "") == "import_only"
+        service_import = tool_id in SERVICE_IMPORT_TOOLS
+        can_execute_now = bool(launch.get("can_execute_now"))
+        if service_import:
+            recommended_button = "읽기 전용 서비스 결과 가져오기"
+            primary_api = f"/api/redteam/v2/scanner-service-imports/{tool_id}"
+            required_input = "승인된 외부 vault ref, authorization_id, read-only report endpoint URL"
+            operator_action = (
+                f"{display_name}는 플랫폼이 능동 스캔을 시작하지 않고 승인된 서비스 보고서 endpoint에서 결과만 가져옵니다."
+            )
+            action_status = "service_import_required"
+            blocks_completion = True
+        elif import_only:
+            recommended_button = "결과 첨부"
+            primary_api = "/api/redteam/v2/toolchains/import-artifact-manifest"
+            required_input = "SBOM, lockfile, SCA export 또는 운영 산출물 manifest"
+            operator_action = f"{display_name} 산출물을 운영자가 첨부하고 SHA-256 manifest로 Evidence 후보를 만듭니다."
+            action_status = "operator_artifact_import_required"
+            blocks_completion = True
+        elif can_execute_now:
+            recommended_button = "승인된 실행 시작"
+            primary_api = "/api/redteam/v2/toolchains/execute-governed"
+            required_input = "ROE, ToolActionCard, 승인 토큰, 대상 scope, 출력 저장 경로"
+            operator_action = f"{display_name}는 runner 경로로 갈 수 있지만 실행 전 사람이 scope와 출력 경로를 확인해야 합니다."
+            action_status = "governed_execution_ready"
+            blocks_completion = True
+        elif "command_missing" in blocked_reasons:
+            recommended_button = "설치 확인"
+            primary_api = "/api/redteam/v2/tool-install-readiness"
+            required_input = "운영자가 실행한 version/path 증거와 wrapper hash pin"
+            operator_action = f"{display_name} 실행 전 설치 증거와 wrapper pin을 먼저 보강합니다."
+            action_status = "install_readiness_required"
+            blocks_completion = True
+        elif "wrapper_sha256_pin_required" in blocked_reasons:
+            recommended_button = "Wrapper pin 승인"
+            primary_api = f"/api/redteam/v2/tool-wrapper-pins/{tool_id}/request"
+            required_input = "wrapper manifest, sha256, red_team_lead 승인"
+            operator_action = f"{display_name} wrapper 해시를 승인받아 runner 신뢰 조건을 통과시킵니다."
+            action_status = "wrapper_pin_required"
+            blocks_completion = True
+        else:
+            recommended_button = str(launch.get("button_label_ko") or "승인 요청")
+            primary_api = str(launch.get("primary_api") or "/api/redteam/v2/tool-actions/plan")
+            required_input = "ROE, HITL 승인자, 대상 scope"
+            operator_action = str(launch.get("operator_message_ko") or f"{display_name} 실행 전 사람 승인과 ROE를 확인합니다.")
+            action_status = "human_approval_required"
+            blocks_completion = True
+        work_order_rows.append({
+            "index": index,
+            "tool_id": tool_id,
+            "tool_name": profile.get("name"),
+            "display_name": display_name,
+            "risk_class": profile.get("risk_class"),
+            "launch_mode": launch.get("launch_mode") or ("operator_import" if import_only else "unknown"),
+            "action_status": action_status,
+            "recommended_button_ko": recommended_button,
+            "required_input_ko": required_input,
+            "operator_action_ko": operator_action,
+            "blocked_reasons": blocked_reasons,
+            "primary_api": primary_api,
+            "blocks_completion": blocks_completion,
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "trusted_as_instruction": False,
+        })
+
+    ready_action_count = sum(1 for item in work_order_rows if item["action_status"] == "governed_execution_ready")
+    blocked_action_count = sum(1 for item in work_order_rows if item.get("blocks_completion"))
+    service_import_count = sum(1 for item in work_order_rows if item["action_status"] == "service_import_required")
+    import_count = sum(1 for item in work_order_rows if item["action_status"] == "operator_artifact_import_required")
+    work_order_id = stable_id("STWO", [case_id, toolchain_id, requested_by, report_id, source_dir, now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_six_tool_operating_work_order",
+        "work_order_id": work_order_id,
+        "case_id": case_id,
+        "toolchain_id": toolchain_id,
+        "report_id": report_id,
+        "source_dir": source_dir,
+        "requested_by": requested_by,
+        "status": "operator_work_order_ready",
+        "tool_count": len(work_order_rows),
+        "required_tool_ids": [str(profile.get("tool_id") or "") for profile in ANALYSIS_TOOL_PROFILES],
+        "ready_action_count": ready_action_count,
+        "blocked_action_count": blocked_action_count,
+        "service_import_action_count": service_import_count,
+        "operator_import_action_count": import_count,
+        "work_order_rows": work_order_rows,
+        "launch_readiness": launch_readiness,
+        "next_api": "/api/redteam/v2/toolchains/launch-readiness",
+        "next_action_ko": "표의 1번부터 설치 확인, read-only 서비스 가져오기, 결과 첨부, 승인된 실행 시작을 순서대로 처리하세요.",
+        "operator_summary_ko": (
+            f"필수 분석도구 {len(work_order_rows)}개 작업 순서를 만들었습니다. "
+            f"{ready_action_count}개는 governed runner 준비, {service_import_count}개는 read-only 서비스 결과 가져오기, "
+            f"{import_count}개는 운영자 결과 첨부가 필요합니다."
+        ),
+        "policy_ko": "이 작업 순서 API는 실행 버튼과 필요 입력을 안내할 뿐 scanner, Docker, WSL, 네트워크 스캔을 실행하지 않습니다.",
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "toolchain-six-tool-work-orders", work_order_id)
+    return result
+
+
 def tool_credential_policy(tool_id: str) -> dict[str, Any]:
     profile = analysis_tool_profile(tool_id)
     resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()

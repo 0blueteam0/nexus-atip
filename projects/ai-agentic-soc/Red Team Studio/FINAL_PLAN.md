@@ -1924,3 +1924,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 `읽기 전용 서비스 결과 가져오기` 버튼은 `toolchain_id={reportId}-TOOLCHAIN-SERVICE-IMPORT`를 함께 보내고 저장 실행 상태 projection을 갱신한다.
 - [x] API regression은 ZAP raw report import 후 run-status와 collect-results가 Evidence 후보 1건을 만드는지 검증한다.
 - [ ] 이 연결은 OpenVAS/ZAP 결과를 Evidence 후보 단계로 넘기는 경로이며 실제 조직 endpoint/vault 실측, 6개 도구 coverage, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 131. 갱신 목표 - 필수 6개 도구 운영 작업 순서 안내
+
+- [x] `/api/redteam/v2/toolchains/six-tool-work-order`를 추가한다.
+- [x] Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP별 다음 버튼, 필요 입력, 차단 사유, 연결 API를 한 row로 반환한다.
+- [x] OpenVAS/ZAP는 `읽기 전용 서비스 결과 가져오기`, SCA는 `결과 첨부`, 실행 준비 도구는 `승인된 실행 시작`, 설치/신뢰 미충족 도구는 `설치 확인` 또는 wrapper pin 승인으로 안내한다.
+- [x] RedTeam2에 `6개 도구 작업 순서 만들기` 버튼과 `작업 순서`, `다음 버튼`, `상태`, `필요 입력`, `차단 사유`, `연결 API` 표를 추가한다.
+- [x] API regression과 frontend launch readiness sanity가 명령 미실행, active scan 미실행, `does_not_mark_goal_complete=true` 계약을 검증한다.
+- [ ] 이 작업 순서는 초급 운영자 안내와 API 라우팅 표이며 실제 조직 endpoint/vault 실측, 6개 도구 운영 산출물, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.

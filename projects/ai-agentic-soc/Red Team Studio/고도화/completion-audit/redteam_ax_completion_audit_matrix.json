@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 63,
+    "proved": 64,
     "partial": 1
   },
   "audit_items": [
@@ -1079,6 +1079,24 @@
       "proof_summary": "The scanner-service-import API now accepts toolchain_id. When a read-only OpenVAS/ZAP service report or passive alert is imported, the backend stores a redteam_ax_v2_toolchain_service_import_projection in toolchain-runs and returns collect/run-status API pointers with can_collect_results=true and does_not_mark_goal_complete=true. Regression imports a ZAP raw report, verifies run-status exposes one collectable step, then collect-results creates one Evidence candidate without scanner command execution. RedTeam2 sends {reportId}-TOOLCHAIN-SERVICE-IMPORT and updates redteam2ToolchainRunStatusState with loaded-from-service-import.",
       "residual_gap": "This proves the read-only service import handoff to collection. It does not prove live organization OpenVAS/ZAP endpoint readiness, six-tool coverage, Evidence approval, Finding severity approval, Matrix/Report/export, or final operating completion gates.",
       "next_action": "Run approved live OpenVAS/ZAP read-only imports or operator-submitted artifacts, then combine them with Nuclei, Trivy, SCA, and npm audit outputs through collect-results and the full approval/report closure workflow."
+    },
+    {
+      "id": "RTA-COMP-065",
+      "requirement": "RedTeam2 must provide a beginner-facing six required-tool operating work order that routes each tool to the correct next safe action without executing scanners.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/toolchains/six-tool-work-order API builds a six-row operator work order from launch readiness. It routes OpenVAS and ZAP to read-only scanner service import, SCA to artifact manifest import, governed-runner-ready tools to execute-governed, missing installs to tool-install-readiness, and missing wrapper trust to wrapper pin approval. The response preserves commands_executed_by_api=false, active_scan_executed=false, trusted_as_instruction=false, and does_not_mark_goal_complete=true. RedTeam2 adds a 6개 도구 작업 순서 만들기 button and renders a Korean 작업 순서 table with next button, status, required input, blocker, and API columns.",
+      "residual_gap": "This is an operator guidance and routing contract only. It does not prove live organization endpoints, real six-tool operating outputs, Evidence approval, Finding severity approval, Matrix/Report/export, or completion gates.",
+      "next_action": "Use the work order on a real approved case to perform or import each required tool output, then run collect-results and the full approval/report/completion closure workflow."
     }
   ],
   "remaining_gaps": [
@@ -1093,5 +1111,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T14:55:00+09:00"
+  "last_updated": "2026-07-03T15:18:00+09:00"
 }

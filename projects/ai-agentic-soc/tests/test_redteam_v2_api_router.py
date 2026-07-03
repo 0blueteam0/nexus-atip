@@ -573,6 +573,67 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("command_missing", by_tool["TOOL-NUCLEI-001"]["blocked_reasons"])
         self.assertEqual(by_tool["TOOL-NUCLEI-001"]["button_label_ko"], "설치 확인")
 
+    def test_v2_six_tool_work_order_guides_operator_without_execution(self) -> None:
+        def manifest(profile: dict) -> dict:
+            tool_id = profile["tool_id"]
+            import_only = tool_id == "TOOL-SCA-001"
+            available = tool_id in {
+                "TOOL-NUCLEI-001",
+                "TOOL-OPENVAS-001",
+                "TOOL-TRIVY-001",
+                "TOOL-SCA-001",
+                "TOOL-NPM-AUDIT-001",
+                "TOOL-ZAP-001",
+            }
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": tool_id,
+                "tool_name": profile["name"],
+                "adapter_type": profile.get("adapter_type"),
+                "command_name": profile.get("command_name") or "",
+                "availability": {
+                    "status": "not_applicable" if import_only else ("available" if available else "missing"),
+                    "command": profile.get("command_name") or "",
+                    "path": None if import_only else f"C:/tools/{profile['name']}.exe",
+                },
+                "pinning_status": "import_only" if import_only else "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+            }
+
+        with patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=manifest):
+            response = self.client.post("/api/redteam/v2/toolchains/six-tool-work-order", json={
+                "case_id": "CASE-V2-SIX-TOOL-WORK-ORDER-001",
+                "report_id": "RTA-2026-SIX-TOOL",
+                "toolchain_id": "TCHAIN-SIX-TOOL-WORK-ORDER-001",
+                "requested_by": "analyst@example.com",
+                "source_dir": "J:/ops/redteam/live-evidence",
+            })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_six_tool_operating_work_order")
+        self.assertEqual(body["tool_count"], 6)
+        self.assertEqual(body["status"], "operator_work_order_ready")
+        self.assertEqual(body["service_import_action_count"], 2)
+        self.assertEqual(body["operator_import_action_count"], 1)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        by_tool = {item["tool_id"]: item for item in body["work_order_rows"]}
+        self.assertEqual(by_tool["TOOL-OPENVAS-001"]["recommended_button_ko"], "읽기 전용 서비스 결과 가져오기")
+        self.assertEqual(by_tool["TOOL-OPENVAS-001"]["primary_api"], "/api/redteam/v2/scanner-service-imports/TOOL-OPENVAS-001")
+        self.assertEqual(by_tool["TOOL-ZAP-001"]["action_status"], "service_import_required")
+        self.assertEqual(by_tool["TOOL-SCA-001"]["recommended_button_ko"], "결과 첨부")
+        self.assertEqual(by_tool["TOOL-SCA-001"]["primary_api"], "/api/redteam/v2/toolchains/import-artifact-manifest")
+        self.assertEqual(by_tool["TOOL-TRIVY-001"]["recommended_button_ko"], "승인된 실행 시작")
+        self.assertEqual(by_tool["TOOL-NPM-AUDIT-001"]["primary_api"], "/api/redteam/v2/toolchains/execute-governed")
+        for row in body["work_order_rows"]:
+            self.assertFalse(row["commands_executed_by_api"])
+            self.assertFalse(row["active_scan_executed"])
+            self.assertFalse(row["trusted_as_instruction"])
+
     def test_v2_tool_install_version_evidence_records_operator_attested_versions(self) -> None:
         case_id = "CASE-V2-TOOL-INSTALL-EVIDENCE-001"
         tool_samples = [

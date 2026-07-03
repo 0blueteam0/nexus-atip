@@ -3644,6 +3644,37 @@ export default {
     }
   }
 ,
+  async buildRedTeam2SixToolWorkOrder() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, draft.target);
+    const toolchainId = `${reportId || 'REPORT-REDTEAM2'}-SIX-TOOL-WORK-ORDER`;
+    this.setState(s => ({ redteam2SixToolWorkOrderState:{ ...(s.redteam2SixToolWorkOrderState || {}), status:'building', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/six-tool-work-order', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          report_id:reportId,
+          toolchain_id:toolchainId,
+          requested_by:'current-analyst',
+          source_dir:String(draft.toolchainArtifactSourceDir || draft.operatingSourceDir || '').trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2SixToolWorkOrderState:{ ...(s.redteam2SixToolWorkOrderState || {}), status:data.status || 'ready', result:data, error:null, checkedAt:new Date().toISOString() },
+      }));
+      this.toast('6개 도구 작업 순서를 만들었습니다', 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 six-tool work order: ${data.work_order_id || toolchainId}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2SixToolWorkOrderState:{ ...(s.redteam2SixToolWorkOrderState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('6개 도구 작업 순서 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async executeRedTeam2GovernedRunner(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -5434,6 +5465,7 @@ export default {
     const goalCompletionReviewState = this.state.redteam2GoalCompletionReviewState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
+    const sixToolWorkOrderState = this.state.redteam2SixToolWorkOrderState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
     const sanitizerPreview = sanitizerState.preview || {};
     const sanitizer = sanitizerPreview.sanitizer || {};
@@ -5463,6 +5495,7 @@ export default {
     const operatingCompletionAudit = operatingCompletionAuditState.result || {};
     const goalCompletionReview = goalCompletionReviewState.result || {};
     const serviceImportResult = serviceImportState.result || {};
+    const sixToolWorkOrder = sixToolWorkOrderState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
     const serviceImportNormalized = serviceImportResult.normalized_result || {};
@@ -5827,6 +5860,14 @@ export default {
       item.can_execute_now ? '바로 실행 가능' : (item.can_click ? '준비 후 진행' : '차단됨'),
       (item.blocked_reasons || []).length ? (item.blocked_reasons || []).join(', ') : '차단 조건 없음',
       item.operator_message_ko || item.next_action_ko || '-',
+      item.primary_api || '-',
+    ]);
+    const sixToolWorkOrderRows = (sixToolWorkOrder.work_order_rows || []).map(item => [
+      `${item.index || '-'} · ${item.display_name || item.tool_id || '-'}`,
+      item.recommended_button_ko || '상태 확인',
+      koValue(item.action_status || '미확인'),
+      item.required_input_ko || '-',
+      (item.blocked_reasons || []).length ? (item.blocked_reasons || []).join(', ') : '차단 조건 없음',
       item.primary_api || '-',
     ]);
     const runtimeNextActionRows = (runtimeReadiness.next_action_plan || []).map(item => [
@@ -6606,6 +6647,7 @@ export default {
             ['Finding/Claim 검토 패키지', koValue(findingClaimReview.status || findingClaimReviewArtifact.status || '미확인'), findingClaimReview.status === 'finding_claim_review_ready' ? C.green : C.amber, `${findingClaimReview.candidate_count ?? 0}개 후보`],
             ['보류된 Finding/Claim 후보', `${findingClaimReview.held_candidate_count ?? 0}개`, findingClaimReview.held_candidate_count ? C.amber : C.green, 'Evidence 승인 전 보류'],
             ['복합 도구 결과 회수 API', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results', C.blue, '저장된 stdout/stderr만 읽어 Sanitizer, 도구별 LLM normalizer, Evidence Card 후보 생성을 순서대로 수행. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다'],
+            ['6개 도구 작업 순서 API', '/api/redteam/v2/toolchains/six-tool-work-order', C.blue, 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 다음 버튼, 필요 입력, read-only 가져오기 경로를 계산하며 명령은 실행하지 않습니다'],
             ['운영 산출물 manifest builder API', '/api/redteam/v2/toolchains/build-artifact-manifest', C.blue, '운영 산출물 폴더에서 scanner 결과 파일을 찾아 SHA-256 manifest를 만들고 명령은 실행하지 않습니다'],
             ['운영 산출물 manifest import API', '/api/redteam/v2/toolchains/import-artifact-manifest', C.blue, 'source_path와 sha256을 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다'],
             ['실제 운영 증거 사전 점검 API', '/api/redteam/v2/toolchains/real-operating-evidence-readiness', C.amber, 'CASE-V2, fixture, operator-scanner-outputs 같은 테스트 경로를 운영 closure 전에 차단합니다'],
@@ -6629,8 +6671,10 @@ export default {
           ].map(card)),
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
+            h('button', { onClick:()=>this.buildRedTeam2SixToolWorkOrder(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.s2, color:C.text, cursor:'pointer', fontWeight:900 } }, '6개 도구 작업 순서 만들기'),
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
           this.renderTable(['분석도구','버튼','실행 상태','차단 사유','사용자 안내','연결 API'], launchReadinessRows.length ? launchReadinessRows : [['대기','상태 확인','대기','launch-readiness API 응답 없음','상태 새로고침을 먼저 누르세요','/api/redteam/v2/toolchains/launch-readiness']]),
+          this.renderTable(['작업 순서','다음 버튼','상태','필요 입력','차단 사유','연결 API'], sixToolWorkOrderRows.length ? sixToolWorkOrderRows : [['대기','6개 도구 작업 순서 만들기','대기','case_id, report_id, toolchain_id','API 호출 전','/api/redteam/v2/toolchains/six-tool-work-order']]),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
           this.renderTable(['다음 실행 준비 단계','상태','화면 버튼','사용자 조치','도구 실행 영향','확인 API/명령'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','런타임 상태 새로고침','runtime-readiness API가 다음 실행 준비 단계를 계산합니다','-','/api/redteam/v2/runtime-readiness']]),
           h('div', { style:{ display:'grid', gap:'6px' } },

@@ -1226,3 +1226,13 @@ Create Case
 - 안전 원칙: service import projection은 이미 승인된 read-only report/passive alert만 연결한다. scanner command, active scan, shell expansion, secret material 저장은 계속 금지하며 raw output은 untrusted data다.
 - 테스트 전략: API regression은 ZAP raw report를 service import로 넣은 뒤 run-status가 collect 가능 1단계를 반환하고, collect-results가 Evidence 후보 1건과 required coverage 미완료 warning을 반환하는지 검증한다. frontend service import contract는 `toolchain_id`, `loaded-from-service-import`, 결과 회수 안내 문구를 검사한다.
 - 예외 케이스: 이 연결은 단일 OpenVAS/ZAP 결과를 collection pipeline으로 넘기는 경로다. 실제 완료에는 조직 endpoint/vault 실측, Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage, Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate가 필요하다.
+
+## 78. 갱신 목표 반영 - 필수 6개 도구 운영 작업 순서 안내
+
+- 목적: launch-readiness, service import, artifact import, governed runner가 각각 따로 보이면 초급 운영자가 “다음에 무엇을 누를지” 판단하기 어렵다. 6개 필수 도구별 작업 순서를 하나의 한국어 work order로 묶는다.
+- API 설계: `/api/redteam/v2/toolchains/six-tool-work-order`는 `case_id`, `report_id`, `toolchain_id`, `requested_by`, 선택 `source_dir`를 받아 `work_order_rows[]`를 반환한다. 각 row는 `tool_id`, `display_name`, `action_status`, `recommended_button_ko`, `required_input_ko`, `operator_action_ko`, `blocked_reasons`, `primary_api`, safe flag를 포함한다.
+- 라우팅 규칙: OpenVAS/ZAP는 `/api/redteam/v2/scanner-service-imports/{tool_id}`의 read-only service import로 안내한다. SCA/import-only는 `/api/redteam/v2/toolchains/import-artifact-manifest`로 안내한다. runner 준비 도구는 `/api/redteam/v2/toolchains/execute-governed`, 설치 누락은 `/api/redteam/v2/tool-install-readiness`, wrapper pin 누락은 `/api/redteam/v2/tool-wrapper-pins/{tool_id}/request`로 안내한다.
+- 화면/기능 명세: RedTeam2 runtime readiness 영역에 `6개 도구 작업 순서 만들기` 버튼과 `작업 순서`, `다음 버튼`, `상태`, `필요 입력`, `차단 사유`, `연결 API` 표를 추가한다.
+- 안전 원칙: work order API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. 응답은 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`, `does_not_mark_goal_complete=true`를 유지한다.
+- 테스트 전략: API regression은 OpenVAS/ZAP가 service import, SCA가 결과 첨부, Trivy/npm audit이 governed runner로 안내되는지와 safe flag를 검증한다. frontend launch readiness sanity는 endpoint, 버튼, state, 표 header를 검사한다.
+- 예외 케이스: 이 API는 초급 운영자용 순서표이며 완료 증거가 아니다. 실제 goal 완료에는 실제 운영 산출물, 승인된 Evidence, Finding severity 2인 승인, Matrix/Report/export/completion gate가 필요하다.

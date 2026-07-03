@@ -208,6 +208,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `읽기 전용 서비스 결과 가져오기` 성공 시 저장 실행 상태를 `loaded-from-service-import`로 갱신한다.
 - 이 변경은 read-only 가져오기 결과 연결이며 실제 조직 endpoint/vault 실측, 6개 도구 coverage, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - 필수 6개 도구 운영 작업 순서 안내
+
+- `/api/redteam/v2/toolchains/six-tool-work-order`는 필수 6개 분석도구별 다음 버튼, 필요 입력, 차단 사유, 연결 API를 반환한다.
+- OpenVAS/ZAP는 `읽기 전용 서비스 결과 가져오기`, SCA는 `결과 첨부`, runner 준비 도구는 `승인된 실행 시작`, 설치/신뢰 미충족 도구는 `설치 확인` 또는 wrapper pin 승인으로 안내한다.
+- RedTeam2는 `6개 도구 작업 순서 만들기` 버튼과 `작업 순서` 표로 이 work order를 표시한다.
+- 이 변경은 초급 운영자 workflow 안내이며 scanner 명령, Docker/WSL, network, active scan을 실행하지 않고 전체 목표를 완료 처리하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.
