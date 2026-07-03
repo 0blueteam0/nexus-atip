@@ -4,7 +4,7 @@
   "task": "RedTeam AX continue tool execution integration from SPEC and Agentic RAG canon",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-150511-Red-Team-Studio-RedTeam-AX-continue-tool-execution-integration-from-SPEC-and-Agentic-RAG-canon",
   "created_at": "2026-07-03T15:05:11+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T15:19:35+09:00"
+  ]
 }

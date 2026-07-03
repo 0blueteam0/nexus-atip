@@ -3843,26 +3843,31 @@ export default {
       .split(/[,\n]/)
       .map(item => item.trim())
       .filter(Boolean);
-    const safeSmokeCommandMap = {
-      'TOOL-NUCLEI-001':['nuclei', '--version'],
-      'TOOL-TRIVY-001':['trivy', '--version'],
-      'TOOL-NPM-AUDIT-001':['npm.cmd', '--version'],
+    const safeSmokeToolCatalog = {
+      'TOOL-NUCLEI-001':{ runner_argv:['nuclei', '--version'], execution_mode:'dry_run', label:'Nuclei' },
+      'TOOL-OPENVAS-001':{ runner_argv:['gvm-cli', '--version'], execution_mode:'dry_run', label:'OpenVAS / Greenbone' },
+      'TOOL-TRIVY-001':{ runner_argv:['trivy', '--version'], execution_mode:'sandbox_execute', label:'Trivy' },
+      'TOOL-SCA-001':{ import_only:true, label:'SCA Dependency Analyzer' },
+      'TOOL-NPM-AUDIT-001':{ runner_argv:['npm.cmd', '--version'], execution_mode:'sandbox_execute', label:'npm audit' },
+      'TOOL-ZAP-001':{ runner_argv:['zap-cli', '--version'], execution_mode:'dry_run', label:'OWASP ZAP' },
     };
-    const selectedIds = requestedToolIds.filter(toolId => safeSmokeCommandMap[toolId]);
-    const smokeToolIds = (selectedIds.length >= 2 ? selectedIds : ['TOOL-NPM-AUDIT-001', 'TOOL-TRIVY-001']).slice(0, 3);
+    const selectedIds = requestedToolIds.filter(toolId => safeSmokeToolCatalog[toolId]?.runner_argv);
+    const smokeToolIds = (selectedIds.length >= 2 ? selectedIds : ['TOOL-NUCLEI-001', 'TOOL-OPENVAS-001', 'TOOL-TRIVY-001', 'TOOL-NPM-AUDIT-001', 'TOOL-ZAP-001']).slice(0, 5);
+    const importOnlyIds = requestedToolIds.filter(toolId => safeSmokeToolCatalog[toolId]?.import_only);
     const tools = smokeToolIds.map((toolId, index) => ({
       tool_id:toolId,
-      execution_mode:'sandbox_execute',
+      execution_mode:safeSmokeToolCatalog[toolId].execution_mode,
       runner_backend:'local_subprocess_shim',
-      runner_argv:safeSmokeCommandMap[toolId],
+      runner_argv:safeSmokeToolCatalog[toolId].runner_argv,
       target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
       objective:`${reportId} 안전 설치 확인 smoke ${index + 1}`,
       output_summary:'프론트엔드 버튼으로 실행한 version-only 설치 확인 smoke 출력입니다.',
     }));
     this.updateRedTeam2AnalysisDraft({
       compositeInputMode:'runner',
-      compositeToolIds:smokeToolIds.join(','),
+      compositeToolIds:[...smokeToolIds, ...importOnlyIds].join(','),
       compositeRunnerCommands:tools.map(step => step.runner_argv.join(' ')).join('\n'),
+      compositeImportedOutputs:importOnlyIds.length ? 'SCA는 import-only 도구입니다. SBOM, lockfile 또는 조직 SCA export를 결과 첨부로 제출하세요.' : draft.compositeImportedOutputs,
     });
     this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'executing-safe-smoke', error:null } }));
     try {
@@ -6828,7 +6833,7 @@ export default {
           h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
             h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행·결과 첨부'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행하거나, 사람이 승인 범위에서 수행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 첨부합니다. 첨부 모드는 도구 명령을 실행하지 않고 저장된 결과만 untrusted artifact로 기록합니다.'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '안전 설치 확인 smoke 버튼은 Nuclei/Trivy/npm audit 중 선택 가능한 도구의 version-only 명령만 자동 구성해 실행합니다. safe_local_smoke_button은 allow_safe_local_smoke_when_runtime_partial=true를 사용하지만 임의 스캔 명령, active scan, Docker/WSL/network 실행은 허용하지 않습니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '안전 설치 확인 smoke 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 version-only 명령만 자동 구성해 실행합니다. SCA는 import-only 도구라 SBOM, lockfile, 조직 SCA export를 결과 첨부로 제출합니다. safe_local_smoke_button은 allow_safe_local_smoke_when_runtime_partial=true를 사용하지만 임의 스캔 명령, active scan, Docker/WSL/network 실행은 허용하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr 또는 운영자 첨부 결과만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence 입니다. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들고, severity 2인 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.'),

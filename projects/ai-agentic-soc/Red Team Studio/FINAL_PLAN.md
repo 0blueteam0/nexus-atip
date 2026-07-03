@@ -1950,3 +1950,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 `6개 도구 제출 양식 만들기` 버튼은 생성된 attachment JSON을 운영 증거 제출 첨부 JSON 입력란에 채운다.
 - [x] API regression은 6개 제출 항목과 경로 누락 차단을 검증한다.
 - [ ] 이 양식은 사용자의 파일 제출을 돕는 템플릿이며, 실제 파일 hash 검증과 사람 승인은 `operator-evidence-submission-manifest-draft` 이후 단계에서 별도로 필요하다.
+
+## 134. 갱신 목표 - 안전 설치 확인 smoke의 필수 도구 확대
+
+- [x] RedTeam2 `안전 설치 확인 smoke` 버튼은 Nuclei, OpenVAS, Trivy, npm audit, OWASP ZAP의 version-only 명령을 자동 구성한다.
+- [x] Nuclei/OpenVAS/ZAP 같은 고위험 스캐너는 `dry_run` + version-only 조건으로만 설치 확인한다.
+- [x] Trivy/npm audit은 기존 `sandbox_execute` version-only smoke를 유지한다.
+- [x] SCA는 import-only 도구로 분리해 SBOM, lockfile, 조직 SCA export 제출을 안내한다.
+- [x] API regression은 runtime readiness가 partial이어도 high-risk scanner version-only dry-run만 허용되고 active scan은 실행되지 않음을 검증한다.
+- [ ] 이 smoke는 설치 확인만 증명하며 실제 취약점 스캔 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.

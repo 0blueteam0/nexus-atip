@@ -1724,6 +1724,95 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(any(event["stage"] == "runtime_preflight_partial" and event["status"] == "allowed" for event in body["progress_events"]))
         self.assertTrue(any(event["stage"] == "runtime_preflight_partial" and event["status"] == "blocked" for event in body["progress_events"]))
 
+    def test_v2_toolchain_safe_local_smoke_allows_high_risk_version_only_dry_run(self) -> None:
+        case_id = f"CASE-V2-TOOLCHAIN-HIGH-RISK-SAFE-SMOKE-001-{uuid.uuid4().hex[:8]}"
+        runtime_snapshot = {
+            "kind": "redteam_ax_v2_runtime_readiness_status",
+            "status": "blocked_runtime_or_external_readiness",
+            "tool_execution_ready": False,
+            "tool_execution_blocked_by": ["external_scanner_endpoint_missing"],
+            "next_action_plan": [],
+        }
+
+        def trusted_manifest(profile: dict) -> dict:
+            command_name = profile.get("command_name") or profile.get("name")
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": profile["tool_id"],
+                "tool_name": profile["name"],
+                "availability": {
+                    "status": "available",
+                    "command_name": command_name,
+                    "resolved_path": command_name,
+                },
+                "pinning_status": "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+                "runner_preflight": {
+                    "runner_can_use_wrapper": True,
+                    "blocking_controls": [],
+                    "human_review_required": False,
+                },
+                "actual_sha256": "e" * 64,
+                "expected_sha256": "e" * 64,
+                "expected_sha256_source": "test_approved_pin",
+            }
+
+        class Completed:
+            def __init__(self, argv: list[str]) -> None:
+                self.returncode = 0
+                self.stdout = f"{argv[0]} version smoke output"
+                self.stderr = ""
+
+        with patch("runtime.redteam_v2_models.latest_runtime_readiness_status", return_value=runtime_snapshot), \
+             patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=trusted_manifest), \
+             patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)) as runner:
+            response = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-HIGH-RISK-SAFE-SMOKE-001",
+                "requested_by": "analyst@example.com",
+                "objective": "고위험 스캐너도 active scan 없이 version-only 설치 확인만 허용한다.",
+                "require_runtime_preflight": True,
+                "allow_safe_local_smoke_when_runtime_partial": True,
+                "tools": [
+                    {
+                        "tool_id": "TOOL-NUCLEI-001",
+                        "execution_mode": "dry_run",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": ["nuclei", "--version"],
+                    },
+                    {
+                        "tool_id": "TOOL-OPENVAS-001",
+                        "execution_mode": "dry_run",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": ["gvm-cli", "--version"],
+                    },
+                    {
+                        "tool_id": "TOOL-ZAP-001",
+                        "execution_mode": "dry_run",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": ["zap-cli", "--version"],
+                    },
+                ],
+            })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_governed_toolchain_execution")
+        self.assertEqual(body["status"], "executed")
+        self.assertEqual(body["runtime_preflight_status"], "partial_safe_local_smoke")
+        self.assertEqual(body["executed_count"], 3)
+        self.assertEqual(body["blocked_count"], 0)
+        self.assertTrue(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertEqual(runner.call_count, 3)
+        by_tool = {step["tool_id"]: step for step in body["steps"]}
+        self.assertEqual(by_tool["TOOL-NUCLEI-001"]["execution_mode"], "dry_run")
+        self.assertEqual(by_tool["TOOL-OPENVAS-001"]["execution_mode"], "dry_run")
+        self.assertEqual(by_tool["TOOL-ZAP-001"]["execution_mode"], "dry_run")
+        self.assertTrue(all(step["partial_runtime_preflight"] == "safe_local_smoke_allowed" for step in body["steps"]))
+        self.assertTrue(all((step["run"] or {}).get("status") == "RunnerExecuted" for step in body["steps"]))
+
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-COLLECT-RESULTS-{uuid.uuid4().hex[:8]}"

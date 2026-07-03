@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 66,
+    "proved": 68,
     "partial": 1
   },
   "audit_items": [
@@ -1131,6 +1131,22 @@
       "proof_summary": "The /api/redteam/v2/toolchains/six-tool-submission-template API converts the six-tool work order into a collection_package, attachment_template, attachment_template_json, and next_payload_hint for /operator-evidence-submission-manifest-draft. The template includes six collection items with expected filename patterns for Nuclei, OpenVAS, Trivy, SCA, npm audit, and OWASP ZAP, and preserves safe no-execution flags plus does_not_mark_goal_complete=true. RedTeam2 adds a 6개 도구 제출 양식 만들기 button that fills the operator evidence attachment JSON field.",
       "residual_gap": "This proves template generation only. It does not prove the referenced files exist, hash/status validation passes, human review approves Evidence Cards, Findings are severity-approved, Report v2 is exported, or completion gates close.",
       "next_action": "Fill the generated attachment_template with real artifact_path values, run operator-evidence-submission-manifest-draft, then continue to Evidence Card import and the approval/report/completion workflow."
+    },
+    {
+      "id": "RTA-COMP-068",
+      "requirement": "RedTeam2 safe installed-tool smoke must cover Nuclei, OpenVAS, Trivy, npm audit, and OWASP ZAP with version-only commands while separating SCA as import-only.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 safe smoke now uses a safeSmokeToolCatalog. It builds version-only commands for Nuclei, OpenVAS/Greenbone gvm-cli, Trivy, npm audit, and OWASP ZAP. Nuclei/OpenVAS/ZAP use dry_run; Trivy/npm audit use sandbox_execute; SCA is marked import_only and the UI tells the operator to submit SBOM, lockfile, or organization SCA export instead. API regression verifies high-risk Nuclei/OpenVAS/ZAP version-only dry_run steps execute under partial runtime preflight while active_scan_executed=false.",
+      "residual_gap": "This proves broader installed-tool version smoke only. It does not prove actual vulnerability scan outputs, organization OpenVAS/ZAP endpoint import, six-tool operating evidence readiness, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
+      "next_action": "Run this smoke on the real analyst workstation to confirm installed tooling, then collect actual approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs through the governed evidence workflow."
     }
   ],
   "remaining_gaps": [
@@ -1145,5 +1161,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:34:00+09:00"
+  "last_updated": "2026-07-03T15:10:00+09:00"
 }

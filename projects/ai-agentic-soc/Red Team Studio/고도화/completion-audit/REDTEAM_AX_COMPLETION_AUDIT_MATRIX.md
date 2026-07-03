@@ -229,6 +229,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 템플릿은 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 예상 파일명 패턴과 artifact_path 입력 위치를 제공한다.
 - 이 변경은 제출 UX를 돕는 템플릿이며 실제 파일 hash/status 검증과 사람 승인은 후속 submission manifest와 Evidence Card import gate에서 필요하다.
 
+## 2026-07-03 갱신 - 안전 설치 확인 smoke의 필수 도구 확대
+
+- RedTeam2 `안전 설치 확인 smoke` 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 version-only 명령을 자동 구성한다.
+- Nuclei/OpenVAS/ZAP는 `dry_run`, Trivy/npm audit은 `sandbox_execute`를 사용하며 SCA는 import-only 제출 안내로 분리한다.
+- API regression은 runtime partial 상태에서도 high-risk scanner version-only dry-run만 허용되고 `active_scan_executed=false`가 유지됨을 검증한다.
+- 이 변경은 설치 확인 smoke를 넓힌 것이며 실제 운영 scanner 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

@@ -1255,3 +1255,12 @@ Create Case
 - 안전 원칙: 이 API는 scanner 명령, Docker/WSL, network, active scan, shell expansion을 실행하지 않는다. 실제 파일 hash와 status 검증은 후속 submission manifest draft API에서 수행한다.
 - 테스트 전략: API regression은 제출 템플릿이 6개 item을 만들고, 같은 `collection_package`로 submission manifest draft를 호출하면 artifact_path 누락이 안전하게 차단되는지 검증한다.
 - 예외 케이스: 제출 양식 생성은 운영자의 파일 경로 입력을 돕는 UX 계층이다. 실제 운영 증거는 파일 존재, SHA-256, expected status, 사람 승인, Evidence Card import, Claim-Evidence Matrix gate를 통과해야 한다.
+
+## 81. 갱신 목표 반영 - 안전 설치 확인 smoke의 필수 도구 확대
+
+- 목적: 프론트엔드 버튼으로 실제 설치된 분석도구를 확인한다는 목표에 맞춰, 기존 Nuclei/Trivy/npm 중심 smoke를 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP까지 확장하되 active scan은 계속 차단한다.
+- 화면/기능 명세: `안전 설치 확인 smoke` 버튼은 선택된 복합 도구 중 version-only 실행이 가능한 도구를 자동 선택한다. 기본값은 Nuclei, OpenVAS, Trivy, npm audit, OWASP ZAP 5개이며 SCA는 import-only 안내로 분리한다.
+- 실행 모드: Nuclei/OpenVAS/OWASP ZAP은 `dry_run`에서 각각 `nuclei --version`, `gvm-cli --version`, `zap-cli --version`만 허용한다. Trivy/npm audit은 `sandbox_execute`에서 `trivy --version`, `npm.cmd --version`만 허용한다.
+- 안전 원칙: `allow_safe_local_smoke_when_runtime_partial=true`가 있어도 임의 scan command, active scan, Docker/WSL/network 실행은 허용하지 않는다. stdout/stderr는 untrusted runner artifact이며 Evidence 승인 전 Claim 근거가 아니다.
+- 테스트 전략: API regression은 runtime partial 상태에서 Nuclei/OpenVAS/ZAP `dry_run` version-only가 실행되고 `active_scan_executed=false`를 유지하는지 검증한다. frontend launch readiness sanity는 새 catalog와 한국어 안내 문구를 검사한다.
+- 예외 케이스: SCA는 실행형 도구가 아니라 SBOM/lockfile/SCA export를 제출하는 import-only 경로로 남긴다. smoke 성공은 실제 운영 scanner 산출물 coverage, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
