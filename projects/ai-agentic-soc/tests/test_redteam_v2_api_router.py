@@ -961,6 +961,18 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(projection["can_collect_results"])
         self.assertEqual(projection["collect_api"], f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results")
         self.assertTrue(projection["does_not_mark_goal_complete"])
+        self.assertIn("analyst_progress_summary", imported_body)
+        self.assertIn("analyst_progress_summary", projection)
+        service_progress = imported_body["analyst_progress_summary"]
+        self.assertEqual(service_progress["audience"], "analyst")
+        self.assertEqual(service_progress["primary_next_button_ko"], "결과 회수·Evidence 후보")
+        self.assertEqual(service_progress["collectable_count"], 1)
+        self.assertEqual(service_progress["evidence_candidate_count"], 0)
+        self.assertTrue(service_progress["does_not_mark_goal_complete"])
+        self.assertTrue(any(
+            row["stage_id"] == "result_collection" and row["status"] == "ready"
+            for row in service_progress["stage_rows"]
+        ))
 
         status = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/run-status", json={
             "case_id": case_id,

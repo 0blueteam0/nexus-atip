@@ -1977,3 +1977,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] API regression은 run-status가 `결과 회수·Evidence 후보`, collect-results가 `Evidence 후보 승인`을 다음 버튼으로 안내하는지 검증한다.
 - [x] frontend launch readiness sanity는 `toolchainAnalystProgress`, `분석가 진행 요약`, `진행 단계` 계약을 검증한다.
 - [ ] 이 요약은 사용자가 결과 진행 상태를 이해하도록 돕는 projection이며 실제 Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 137. 갱신 목표 - OpenVAS/ZAP 서비스 가져오기 진행 요약
+
+- [x] `/api/redteam/v2/scanner-service-imports/{tool_id}`는 toolchain projection을 만들 때 `analyst_progress_summary`를 함께 반환한다.
+- [x] 서비스 가져오기 직후 다음 버튼은 `결과 회수·Evidence 후보`로 안내된다.
+- [x] RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 영역은 `서비스 가져오기 진행`과 `서비스 다음 단계` 표를 표시한다.
+- [x] API regression은 service import projection의 `collectable_count`, `primary_next_button_ko`, stage row를 검증한다.
+- [x] frontend launch readiness sanity는 `serviceImportAnalystProgress`, `서비스 가져오기 진행`, `서비스 다음 단계` 계약을 검증한다.
+- [ ] 이 변경은 읽기 전용 OpenVAS/ZAP 결과를 workflow에 연결하는 안내 계약이며 실제 Evidence 승인, Finding 확정, Report v2 export, completion gate 완료를 대신하지 않는다.

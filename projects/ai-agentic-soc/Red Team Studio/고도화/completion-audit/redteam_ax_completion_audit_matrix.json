@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 70,
+    "proved": 71,
     "partial": 1
   },
   "audit_items": [
@@ -1181,6 +1181,23 @@
       "proof_summary": "The run-status and collect-results APIs now return analyst_progress_summary with primary_next_button_ko, next_action_ko, stage_rows, collectable_count, collected_count, evidence_candidate_count, missing_required_tool_ids, and does_not_mark_goal_complete. Run-status guides the analyst to 결과 회수·Evidence 후보 when stored runs are collectable. Collect-results guides the analyst to Evidence 후보 승인 after Evidence candidates are created. RedTeam2 renders 분석가 진행 요약 and 진행 단계 tables in the composite toolchain area.",
       "residual_gap": "This proves progress projection and Korean next-step UX only. It does not approve Evidence, create approved Findings, complete severity approval, generate/export the final report, or close completion gates on real operating scanner outputs.",
       "next_action": "Use the progress summary on a real approved toolchain run, then proceed through Evidence approval, Finding promotion, severity approval, Matrix, Report v2 export, and completion gate."
+    },
+    {
+      "id": "RTA-COMP-071",
+      "requirement": "OpenVAS/ZAP read-only service import must expose the same beginner analyst progress summary so analysts know to collect results into Evidence candidates next.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/REDTEAM_AX_COMPLETION_AUDIT_MATRIX.md"
+      ],
+      "proof_summary": "The scanner service import API now returns analyst_progress_summary when a toolchain projection is created for approved read-only OpenVAS/ZAP reports. The projection and import response point the analyst to 결과 회수·Evidence 후보, expose collectable_count, stage_rows, and does_not_mark_goal_complete. RedTeam2 renders 서비스 가져오기 진행 and 서비스 다음 단계 tables in the OpenVAS/ZAP service import panel.",
+      "residual_gap": "This proves read-only service import progress projection only. It does not prove real endpoint availability, real organization report import, Evidence approval, Finding severity approval, Report export, or completion gate closure.",
+      "next_action": "Use the service import progress summary against real approved OpenVAS/ZAP endpoints, then collect results, approve Evidence, promote Findings, approve severity, update Matrix, export Report v2, and re-run completion audit."
     }
   ],
   "remaining_gaps": [
@@ -1195,5 +1212,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T15:39:00+09:00"
+  "last_updated": "2026-07-03T15:56:00+09:00"
 }

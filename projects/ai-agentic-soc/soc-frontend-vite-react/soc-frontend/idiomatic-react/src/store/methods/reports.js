@@ -5541,6 +5541,7 @@ export default {
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
     const serviceImportNormalized = serviceImportResult.normalized_result || {};
+    const serviceImportAnalystProgress = serviceImportResult.analyst_progress_summary || serviceImportResult.toolchain_projection?.analyst_progress_summary || {};
     const agenticRagResult = agenticRagState.result || {};
     const agenticSca = agenticRagResult.sca_report || {};
     const agenticVerifier = agenticRagResult.citation_verification || {};
@@ -5896,6 +5897,18 @@ export default {
       ['Evidence', serviceImportEvidence.evidence_id || '-', serviceImportEvidence.approval_status || 'Evidence 후보'],
       ['파서', serviceImportNormalized.parser_report?.parser || '-', serviceImportNormalized.parser_report?.parsed_item_count != null ? `구조화 항목 ${serviceImportNormalized.parser_report.parsed_item_count}건` : '가져오기 후 정규화'],
     ];
+    const serviceImportAnalystProgressRows = [
+      ['현재 단계', koValue(serviceImportAnalystProgress.status || serviceImportResult.status || '대기'), serviceImportAnalystProgress.plain_language_status_ko || '읽기 전용 서비스 결과 가져오기 뒤 표시됩니다'],
+      ['다음 버튼', serviceImportAnalystProgress.primary_next_button_ko || '읽기 전용 서비스 결과 가져오기', serviceImportAnalystProgress.next_action_ko || '승인된 OpenVAS/ZAP 결과를 먼저 가져오세요'],
+      ['회수 가능 결과', `${serviceImportAnalystProgress.collectable_count ?? (serviceImportResult.tool_run?.run_id ? 1 : 0)}개`, '결과 회수·Evidence 후보 단계로 넘길 수 있는 서비스 import 결과'],
+      ['Evidence 후보', `${serviceImportAnalystProgress.evidence_candidate_count ?? 0}개`, '승인 전에는 Finding이나 Report Claim으로 확정하지 않음'],
+    ];
+    const serviceImportAnalystStageRows = (serviceImportAnalystProgress.stage_rows || []).map(item => [
+      item.title_ko || item.stage_id || '-',
+      koValue(item.status || '대기'),
+      item.button_ko || '-',
+      item.summary_ko || item.next_action_ko || '-',
+    ]);
     const openvasReadiness = externalScannerTools.openvas || externalScannerTools['TOOL-OPENVAS-001'] || {};
     const zapReadiness = externalScannerTools.zap || externalScannerTools['TOOL-ZAP-001'] || {};
     const launchReadinessRows = launchButtons.map(item => [
@@ -6721,6 +6734,8 @@ export default {
             ['저장 산출물', serviceImportArtifact.storage_path ? '저장됨' : '미저장', serviceImportArtifact.storage_path ? C.green : C.sec, serviceImportArtifact.sha256 || serviceImportArtifact.content_type || '-'],
           ].map(card)),
           this.renderTable(['서비스 결과','상태','근거'], serviceImportRows),
+          this.renderTable(['서비스 가져오기 진행','상태','설명'], serviceImportAnalystProgressRows),
+          this.renderTable(['서비스 다음 단계','상태','다음 버튼','설명'], serviceImportAnalystStageRows.length ? serviceImportAnalystStageRows : [['도구 실행 또는 결과 첨부','대기','읽기 전용 서비스 결과 가져오기','승인된 OpenVAS/ZAP 결과를 먼저 가져오세요']]),
           serviceImportArtifact.storage_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, `stored: ${serviceImportArtifact.storage_path}`) : null)),
       smallPanel('분석가용 다음 실행 안내',
         h('div', { style:{ display:'grid', gap:'10px' } },

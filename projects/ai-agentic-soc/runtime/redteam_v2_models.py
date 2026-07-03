@@ -2225,6 +2225,13 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
         steps.append(step_record)
         imported_count = sum(1 for step in steps if step.get("status") == "imported")
         blocked_count = sum(1 for step in steps if step.get("errors") or step.get("status") in {"blocked", "invalid"})
+        analyst_progress_summary = toolchain_analyst_progress_summary(
+            toolchain_id=toolchain_id,
+            toolchain_status="completed_with_blocks" if blocked_count else "imported",
+            tool_count=len(steps),
+            collectable_count=imported_count,
+            blocked_count=blocked_count,
+        )
         toolchain_record = {
             "kind": "redteam_ax_v2_toolchain_service_import_projection",
             "toolchain_id": toolchain_id,
@@ -2248,6 +2255,7 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
             "trusted_as_instruction": False,
             "requires_human_validation": True,
             "requires_evidence_approval_before_finding": True,
+            "analyst_progress_summary": analyst_progress_summary,
             "steps": steps,
             "policy": "Scanner service import projection only links approved read-only OpenVAS/ZAP reports to the existing toolchain collection pipeline; it does not execute scans or trust raw output as instructions.",
             "created_at": now_utc(),
@@ -2260,8 +2268,10 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
             "collect_api": f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results",
             "run_status_api": f"/api/redteam/v2/toolchains/{toolchain_id}/run-status",
             "can_collect_results": imported_count > 0,
+            "analyst_progress_summary": analyst_progress_summary,
             "does_not_mark_goal_complete": True,
         }
+        import_record["analyst_progress_summary"] = analyst_progress_summary
     return append_artifact_metadata(import_record, "service-report-imports", import_record["import_id"])
 
 

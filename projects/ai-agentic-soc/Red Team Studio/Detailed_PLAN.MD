@@ -1282,3 +1282,12 @@ Create Case
 - 안전 원칙: 진행 요약은 projection이다. run-status는 저장 기록만 읽고 명령을 실행하지 않는다. collect-results는 저장 artifact를 sanitizer/normalizer/Evidence 후보로 바꾸지만 승인 전 Finding/Report Claim으로 확정하지 않는다.
 - 테스트 전략: API regression은 run-status의 다음 버튼이 `결과 회수·Evidence 후보`, collect-results의 다음 버튼이 `Evidence 후보 승인`인지 검증한다. frontend launch readiness sanity는 관련 state와 한국어 표명을 검사한다.
 - 예외 케이스: 요약은 실제 approval gate를 대신 통과시키지 않는다. Evidence 승인, Finding severity 2인 승인, Matrix/report/export/completion gate는 여전히 별도 API와 사람 승인으로 남는다.
+
+## 84. 갱신 목표 반영 - OpenVAS/ZAP 서비스 가져오기 진행 요약
+
+- 목적: OpenVAS/ZAP read-only service import를 실행한 직후 사용자가 “가져오기는 됐고 이제 결과 회수 버튼을 누르면 된다”는 사실을 같은 분석가 진행 요약 계약으로 보게 한다.
+- API 설계: `/api/redteam/v2/scanner-service-imports/{tool_id}`는 `toolchain_id`가 제공되어 projection을 저장할 때 `analyst_progress_summary`를 import 응답과 `toolchain_projection` 양쪽에 반환한다. 이 요약은 `collectable_count=1`, `primary_next_button_ko=결과 회수·Evidence 후보`, `stage_rows.result_collection.status=ready`를 포함한다.
+- 화면/기능 명세: RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 패널은 기존 `서비스 결과` 표 뒤에 `서비스 가져오기 진행` 표와 `서비스 다음 단계` 표를 표시한다. 분석가가 endpoint/vault 세부 설정을 이해하지 못해도 다음 버튼을 알 수 있게 한다.
+- 안전 원칙: 이 경로는 이미 승인된 read-only report/passive alert 결과만 가져오며 active scan, spider, delete/write/admin scope, secret 값 저장, shell expansion, scanner command execution을 계속 금지한다.
+- 테스트 전략: API regression은 service import projection의 진행 요약을 검증하고 frontend launch readiness sanity는 새 state/table 문자열을 검사한다.
+- 예외 케이스: service import는 Evidence 후보 또는 진행 projection일 뿐이다. Evidence 후보 사람 승인, Finding promotion, severity 2인 승인, Matrix, Report v2 export, completion gate는 여전히 후속 단계다.

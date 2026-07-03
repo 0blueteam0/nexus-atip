@@ -251,6 +251,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - run-status는 회수 가능 단계가 있으면 `결과 회수·Evidence 후보`, collect-results는 Evidence 후보 생성 후 `Evidence 후보 승인`을 다음 버튼으로 안내한다.
 - 이 변경은 상태 projection이며 Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate를 대신하지 않는다.
 
+## 2026-07-03 갱신 - OpenVAS/ZAP 서비스 가져오기 진행 요약
+
+- `/api/redteam/v2/scanner-service-imports/{tool_id}`는 toolchain projection 생성 시 `analyst_progress_summary`를 반환한다.
+- 서비스 가져오기 직후 요약의 다음 버튼은 `결과 회수·Evidence 후보`이며 `result_collection` 단계가 ready 상태가 된다.
+- RedTeam2는 `서비스 가져오기 진행`과 `서비스 다음 단계` 표로 OpenVAS/ZAP read-only import 이후의 다음 행동을 보여준다.
+- 이 변경은 read-only service import projection UX이며 Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.
