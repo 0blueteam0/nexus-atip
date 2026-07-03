@@ -1107,3 +1107,12 @@ Create Case
 - 화면 명세: RedTeam2 운영 closure 제출 패키지 패널은 `개발 부산물 제외` row를 보여주고, fixture/test/operator-scanner-outputs 경로는 `완료/보고서 Claim 증거로 사용하지 않습니다`라고 표시한다. 화면 버튼은 기본적으로 `require_real_completion_evidence=true`를 전송한다.
 - 테스트 전략: API 회귀는 strict mode에서 CASE-V2/operator-scanner-outputs source가 차단되고 command execution safe flag가 false로 유지되는지 검증한다. frontend sanity는 payload key와 Korean copy anchor를 검증한다.
 - 예외 케이스: 개발 부산물은 계약 회귀, 안전 통제, 차단 가시성 증거로만 사용할 수 있다. 실제 완료 증거가 필요하면 승인된 운영 케이스 source에서 다시 수집하거나, approved operator import와 Evidence/Finding/Matrix/Report/export gate를 모두 통과해야 한다.
+
+## 65. 갱신 목표 반영 - 전체 목표 완료 검토
+
+- 목적: 단일 운영 completion audit 후보가 통과하더라도 전체 thread goal 완료 조건을 바로 만족한 것으로 오인하지 않도록, 최종 종료 조건을 별도 API/UI로 재검토한다.
+- API 설계: `/api/redteam/v2/goal-completion-review`는 completion audit matrix, accepted gate manifest, zero-count gate, development byproduct exclusion review를 읽는다. scanner, Docker, WSL, 네트워크, 도구 실행은 하지 않는다.
+- 차단 조건: reviewer 누락, completion audit matrix 누락, `audit_items[].status != proved`, `remaining_gaps` 존재, `goal_status != complete`, accepted gate 실패, unsupported claim/unapproved high-risk/evidence-less Finding 0건 assertion 누락, byproduct completion/report-claim eligible count 0건 실패를 blocker로 반환한다.
+- 데이터 계약: 응답은 `goal_completion_ready`, `status`, `checklist`, `blockers`, `unresolved_items`, `remaining_gaps`, accepted gate count, zero-count gate, byproduct review status, safe flags, `does_not_mark_goal_complete=true`를 포함한다.
+- 화면 명세: RedTeam2는 `전체 목표 완료 검토` 버튼을 제공하고, `전체 목표 완료 checklist`와 `전체 목표 완료 blocker` 표에서 남은 partial/gap과 종료 조건 미충족 이유를 한국어로 보여준다.
+- 테스트 전략: 현재 active_incomplete matrix에서 API가 `goal_completion_blocked`를 반환하고, RTA-COMP-015/remaining gaps를 해소하기 전에는 thread goal 완료로 볼 수 없음을 회귀로 검증한다.

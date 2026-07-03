@@ -1,0 +1,113 @@
+{
+  "kind": "redteam_ax_v2_goal_completion_review",
+  "review_id": "GOALREVIEW-B508A83C9417",
+  "case_id": "CASE-REDTEAM-AX-GOAL",
+  "reviewed_by": "independent-auditor@example.com",
+  "status": "goal_completion_blocked",
+  "goal_completion_ready": false,
+  "goal_status": "active_incomplete",
+  "status_counts": {
+    "proved": 51,
+    "partial": 1
+  },
+  "unresolved_item_count": 1,
+  "unresolved_items": [
+    {
+      "id": "RTA-COMP-015",
+      "status": "partial",
+      "requirement": "Actual CLI/container runtime smoke must prove governed runtime readiness where applicable.",
+      "next_action": "Follow latest_live_readiness_remediation_runbook.md and latest_operator_evidence_collection_package.md to prepare Docker, WSL, OpenVAS/ZAP endpoints, vault refs, and attach reviewed evidence artifacts. Then run redteam_ax_operator_evidence_submission_validator.py --submission-manifest <path> --require-approved, redteam_ax_operator_evidence_card_import_plan.py --require-ready, create/review Evidence Cards from the candidate payloads, run redteam_ax_live_readiness_remediation_runbook.py --require-clear, and run redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion."
+    }
+  ],
+  "remaining_gap_count": 4,
+  "remaining_gaps": [
+    "Docker/container runtime live smoke after environment readiness.",
+    "Organization OpenVAS service report import and OWASP ZAP daemon passive-alert import against real service endpoints after endpoint readiness.",
+    "Actual operating Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP outputs must pass real-operating-evidence-readiness or be submitted through the governed imported-output, artifact manifest builder/import, live service import, operating-closure-submission-package, operating-closure-human-review, execute-reviewed-operating-close, certify-reviewed-operating-close-evidence, review-operating-completion-audit-candidate, close-e2e collection closure path, or close-operating-artifact-manifest-e2e path and preserved as real operating evidence.",
+    "Actual operating scanner collection must be closed through Evidence approval, Finding promotion, two-person severity approval, Matrix/report draft, final export approval/export verification, and completion gate complete=true using real scanner outputs and real approvers."
+  ],
+  "accepted_gate_status": "passed",
+  "accepted_gate_count": 26,
+  "passed_gate_count": 26,
+  "failed_gate_count": 0,
+  "zero_count_gate": {
+    "source": "tests/test_redteam_v2_sample_e2e.py",
+    "asserts_unsupported_claim_count_zero": true,
+    "asserts_unapproved_high_risk_count_zero": true,
+    "asserts_finding_without_evidence_count_zero": true,
+    "covered_by_gate_id": "GATE-SAMPLE-E2E"
+  },
+  "development_byproduct_review_status": "passed",
+  "checklist": [
+    {
+      "field": "reviewer_identity",
+      "title_ko": "완료 검토자",
+      "status": "passed",
+      "evidence": "independent-auditor@example.com"
+    },
+    {
+      "field": "completion_audit_matrix_present",
+      "title_ko": "completion audit matrix 존재",
+      "status": "passed",
+      "evidence": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_completion_audit_matrix.json"
+    },
+    {
+      "field": "all_completion_audit_items_proved",
+      "title_ko": "감사 항목 모두 proved",
+      "status": "blocked",
+      "evidence": "proved=51 unresolved=1"
+    },
+    {
+      "field": "remaining_gaps_zero",
+      "title_ko": "남은 gap 0건",
+      "status": "blocked",
+      "evidence": "remaining_gaps=4"
+    },
+    {
+      "field": "goal_status_complete",
+      "title_ko": "목표 상태 complete",
+      "status": "blocked",
+      "evidence": "active_incomplete"
+    },
+    {
+      "field": "accepted_gate_manifest_passed",
+      "title_ko": "accepted gate 전체 통과",
+      "status": "passed",
+      "evidence": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-accepted-gates/latest_accepted_gate_manifest.json"
+    },
+    {
+      "field": "zero_count_exit_conditions",
+      "title_ko": "unsupported/high-risk/evidence-less 0건",
+      "status": "passed",
+      "evidence": "tests/test_redteam_v2_sample_e2e.py"
+    },
+    {
+      "field": "development_byproduct_exclusion_clean",
+      "title_ko": "개발 부산물 완료 증거 0건",
+      "status": "passed",
+      "evidence": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_development_byproduct_exclusion_review.json"
+    }
+  ],
+  "blockers": [
+    "all_completion_audit_items_proved_required",
+    "goal_status_complete_required",
+    "remaining_completion_gaps_present",
+    "remaining_gaps_zero_required",
+    "unresolved_completion_audit_items_present"
+  ],
+  "blocker_count": 5,
+  "safe_by_default": true,
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "shell_expansion_allowed": false,
+  "trusted_as_instruction": false,
+  "does_not_mark_goal_complete": true,
+  "requires_external_goal_update": true,
+  "next_human_actions_ko": [
+    "goal_completion_blocked이면 unresolved_items와 remaining_gaps를 먼저 해소합니다.",
+    "accepted gate, zero-count 종료 조건, 개발 부산물 제외 검토가 모두 통과해야 합니다.",
+    "이 API는 전체 목표 완료 여부를 검토하지만 스레드 goal을 직접 완료 처리하지 않습니다."
+  ],
+  "created_at": "2026-07-03T02:23:53Z",
+  "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-REDTEAM-AX-GOAL/goal-completion-reviews/GOALREVIEW-B508A83C9417.json"
+}

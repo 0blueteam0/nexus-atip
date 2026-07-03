@@ -4485,6 +4485,35 @@ export default {
     }
   }
 ,
+  async reviewRedTeam2GoalCompletion() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-goal-completion-review');
+    const payload = {
+      case_id:caseId,
+      reviewed_by:String(draft.compositeClosureReviewer || 'independent-auditor@example.com').trim(),
+    };
+    this.setState(s => ({ redteam2GoalCompletionReviewState:{ ...(s.redteam2GoalCompletionReviewState || {}), status:'reviewing', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/goal-completion-review', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2GoalCompletionReviewState:{ ...(s.redteam2GoalCompletionReviewState || {}), status:data.status || 'goal_completion_blocked', result:data, checkedAt:new Date().toISOString(), error:null },
+      }));
+      this.toast(data.goal_completion_ready ? '전체 목표 완료 검토 통과' : '전체 목표 완료 차단 항목 확인 필요', data.goal_completion_ready ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 전체 목표 완료 검토: ${data.review_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2GoalCompletionReviewState:{ ...(s.redteam2GoalCompletionReviewState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('전체 목표 완료 검토 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async previewRedTeam2ToolOutputSanitizer(action = null) {
     const draft = this.redTeam2AnalysisDraft();
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -5223,6 +5252,7 @@ export default {
     const reviewedOperatingCloseState = this.state.redteam2ReviewedOperatingCloseState || {};
     const reviewedCloseCertificationState = this.state.redteam2ReviewedCloseCertificationState || {};
     const operatingCompletionAuditState = this.state.redteam2OperatingCompletionAuditState || {};
+    const goalCompletionReviewState = this.state.redteam2GoalCompletionReviewState || {};
     const credentialVaultState = this.state.redteam2CredentialVaultState || {};
     const serviceImportState = this.state.redteam2ServiceImportState || {};
     const agenticRagState = this.state.redteam2AgenticRagState || {};
@@ -5250,6 +5280,7 @@ export default {
     const reviewedOperatingClose = reviewedOperatingCloseState.result || {};
     const reviewedCloseCertification = reviewedCloseCertificationState.result || {};
     const operatingCompletionAudit = operatingCompletionAuditState.result || {};
+    const goalCompletionReview = goalCompletionReviewState.result || {};
     const serviceImportResult = serviceImportState.result || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
@@ -5993,6 +6024,7 @@ export default {
       ['검토 완료 운영 closure 실행', reviewedOperatingClose.complete ? '완료' : koValue(reviewedOperatingClose.status || reviewedOperatingCloseState.status || '대기'), reviewedOperatingClose.complete ? 'human review payload로 close 완료' : (reviewedOperatingCloseState.error || '사람 검토 완료 뒤 실행')],
       ['운영 closure 증거 인증', reviewedCloseCertification.ready_for_completion_audit_review ? '완료 감사 후보' : koValue(reviewedCloseCertification.status || reviewedCloseCertificationState.status || '대기'), reviewedCloseCertification.ready_for_completion_audit_review ? '실측 attestation 포함' : (reviewedCloseCertificationState.error || 'reviewed close 뒤 증거 인증')],
       ['운영 completion audit 검토', operatingCompletionAudit.goal_complete_candidate ? '완료 후보' : koValue(operatingCompletionAudit.status || operatingCompletionAuditState.status || '대기'), operatingCompletionAudit.goal_complete_candidate ? '독립 감사 checklist 통과' : (operatingCompletionAuditState.error || `${(operatingCompletionAudit.blockers || []).length}개 blocker`)],
+      ['전체 목표 완료 검토', goalCompletionReview.goal_completion_ready ? '완료 가능' : koValue(goalCompletionReview.status || goalCompletionReviewState.status || '대기'), goalCompletionReview.goal_completion_ready ? 'accepted gate와 종료 조건 통과' : (goalCompletionReviewState.error || `${goalCompletionReview.blocker_count ?? 0}개 blocker`)],
       ['전체 닫기', toolchainClosure.complete ? '완료' : koValue(toolchainClosure.status || toolchainClosureState.status || '대기'), toolchainClosure.complete ? 'Evidence 승인부터 export까지 닫힘' : (toolchainClosureState.error || '명시 승인자 입력 후 실행')],
       ['완료 상태', toolchainCompletionGate.complete ? '완료' : koValue(toolchainCompletionGate.status || toolchainCompletionGateState.status || '대기'), toolchainCompletionGate.complete ? 'collection E2E 완료 증거' : (toolchainCompletionGateState.error || '보고서 내보내기 뒤 점검')],
       ['Evidence', `${toolchainCompletionGate.approved_evidence_count ?? 0}/${toolchainCompletionGate.candidate_evidence_count ?? 0}개 승인`, '모든 후보 Evidence 승인 필요'],
@@ -6055,6 +6087,16 @@ export default {
       item,
       item === 'no_controlled_or_test_source_required' ? '실제 조직 scanner 산출물 폴더로 다시 제출 필요' : '해당 blocker를 해소한 뒤 재검토',
       (operatingCompletionAudit.warnings || []).join(', ') || '-',
+    ]);
+    const goalCompletionChecklistRows = (goalCompletionReview.checklist || []).map(item => [
+      item.title_ko || item.field || '-',
+      koValue(item.status || '대기'),
+      item.evidence || '-',
+    ]);
+    const goalCompletionBlockerRows = (goalCompletionReview.blockers || []).map(item => [
+      item,
+      item === 'unresolved_completion_audit_items_present' ? 'partial/gap 감사 항목을 proved로 만들 실제 증거 필요' : (item === 'remaining_completion_gaps_present' ? 'remaining_gaps를 실제 운영 증거로 해소' : '체크리스트 항목 보완'),
+      `${goalCompletionReview.unresolved_item_count ?? 0}개 unresolved / ${goalCompletionReview.remaining_gap_count ?? 0}개 gap`,
     ]);
     const visualColor = visualPreview.status === 'redact' || visualPreview.status === 'needs_review' ? C.amber : visualPreview.status === 'allow' ? C.green : visualPreview.status === 'invalid' ? C.coral : C.sec;
     const visualRows = [
@@ -6334,6 +6376,7 @@ export default {
             ['검토 완료 운영 closure 실행 API', '/api/redteam/v2/toolchains/execute-reviewed-operating-close', C.green, '사람 검토 record의 승인된 close payload만 사용해 별도 HITL close를 실행합니다'],
             ['운영 closure 증거 인증 API', '/api/redteam/v2/toolchains/certify-reviewed-operating-close-evidence', C.amber, '실제 운영 산출물과 실제 승인자 attestation을 completion audit 후보로 검증합니다'],
             ['운영 completion audit 검토 API', '/api/redteam/v2/toolchains/review-operating-completion-audit-candidate', C.amber, '인증 후보를 독립 감사 checklist로 다시 검토하고 controlled/test 산출물은 완료 후보에서 차단합니다'],
+            ['전체 목표 완료 검토 API', '/api/redteam/v2/goal-completion-review', C.coral, 'completion audit matrix, accepted gate, 종료 조건 0건, 개발 부산물 제외를 모두 확인하고 남은 gap이 있으면 완료를 차단합니다'],
             ['복합 Evidence 후보 승인 API', '/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence', C.blue, '레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다'],
             ['Claim-Evidence Matrix 초안 API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft', C.blue, '승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함'],
             ['Matrix 기반 Report v2 draft API', '/api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft', C.blue, 'held row 0건과 report gate pass일 때만 한국어 Report v2 draft 생성'],
@@ -6673,6 +6716,11 @@ export default {
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:operatingCompletionAuditState.status === 'auditing' ? C.raised : C.bg, color:(operatingCompletionAuditState.status === 'auditing' || !reviewedCloseCertification.certification_id) ? C.muted : C.amber, cursor:(operatingCompletionAuditState.status === 'auditing' || !reviewedCloseCertification.certification_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, operatingCompletionAuditState.status === 'auditing' ? '완료 감사 검토 중' : '운영 completion audit 검토'),
               h('button', {
+                onClick:()=>this.reviewRedTeam2GoalCompletion(),
+                disabled:goalCompletionReviewState.status === 'reviewing',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.coral}`, background:goalCompletionReviewState.status === 'reviewing' ? C.raised : C.bg, color:goalCompletionReviewState.status === 'reviewing' ? C.muted : C.coral, cursor:goalCompletionReviewState.status === 'reviewing' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, goalCompletionReviewState.status === 'reviewing' ? '전체 목표 검토 중' : '전체 목표 완료 검토'),
+              h('button', {
                 onClick:()=>this.closeRedTeam2OperatingArtifactManifestE2E(),
                 disabled:toolchainClosureState.status === 'operating-closing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainClosureState.status === 'operating-closing' ? C.raised : C.bg, color:toolchainClosureState.status === 'operating-closing' ? C.muted : C.green, cursor:toolchainClosureState.status === 'operating-closing' ? 'not-allowed' : 'pointer', fontWeight:900 },
@@ -6708,6 +6756,8 @@ export default {
             this.renderTable(['운영 closure 실측 attestation','상태','설명'], reviewedCloseAttestationRows.length ? reviewedCloseAttestationRows : [['대기','-','실제 운영 산출물과 승인자 확인 필요']]),
             this.renderTable(['운영 completion audit checklist','상태','근거'], operatingCompletionAuditChecklistRows.length ? operatingCompletionAuditChecklistRows : [['대기','-','운영 closure 증거 인증 뒤 완료 감사 검토 버튼을 누르세요']]),
             this.renderTable(['운영 completion audit blocker','조치','경고'], operatingCompletionAuditBlockerRows.length ? operatingCompletionAuditBlockerRows : [['없음','현재 표시된 blocker 없음','-']]),
+            this.renderTable(['전체 목표 완료 checklist','상태','근거'], goalCompletionChecklistRows.length ? goalCompletionChecklistRows : [['대기','-','전체 목표 완료 검토 버튼을 누르세요']]),
+            this.renderTable(['전체 목표 완료 blocker','조치','남은 수'], goalCompletionBlockerRows.length ? goalCompletionBlockerRows : [['없음','현재 표시된 blocker 없음','-']]),
             this.renderTable(['E2E 게이트','상태','근거'], toolchainCompletionRows)),
           executionPlanState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, executionPlanState.error) : null,
           runnerState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, runnerState.error) : null)),

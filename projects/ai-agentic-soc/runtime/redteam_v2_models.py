@@ -36,6 +36,27 @@ TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH = (
     / "redteam-ax-v2-tool-result-analysis"
     / "latest_tool_result_finding_claim_review.json"
 )
+COMPLETION_AUDIT_MATRIX_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "completion-audit"
+    / "redteam_ax_completion_audit_matrix.json"
+)
+DEVELOPMENT_BYPRODUCT_EXCLUSION_REVIEW_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "completion-audit"
+    / "redteam_ax_development_byproduct_exclusion_review.json"
+)
+ACCEPTED_GATE_MANIFEST_PATH = (
+    PROJECT_ROOT
+    / "archive"
+    / "runs"
+    / "redteam-ax-v2-accepted-gates"
+    / "latest_accepted_gate_manifest.json"
+)
 TOOL_WRAPPER_PIN_CASE_ID = "CASE-V2-TOOL-TRUST-REGISTRY"
 TOOL_WRAPPER_PIN_APPROVER_ROLES = {"red_team_lead"}
 TOOL_CREDENTIAL_VAULT_APPROVER_ROLES = {"red_team_lead", "control_team"}
@@ -3797,6 +3818,156 @@ def review_operating_completion_audit_candidate(payload: dict[str, Any]) -> dict
         "created_at": now_utc(),
     }
     append_artifact_metadata(result, "toolchain-operating-completion-audit-reviews", audit_id)
+    return result
+
+
+def review_redteam_ax_goal_completion(payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload = payload or {}
+    case_id = str(payload.get("case_id") or "CASE-REDTEAM-AX-GOAL").strip() or "CASE-REDTEAM-AX-GOAL"
+    reviewed_by = str(payload.get("reviewed_by") or payload.get("audited_by") or "").strip()
+    matrix_path = Path(str(payload.get("completion_audit_matrix_path") or COMPLETION_AUDIT_MATRIX_PATH))
+    accepted_gate_path = Path(str(payload.get("accepted_gate_manifest_path") or ACCEPTED_GATE_MANIFEST_PATH))
+    byproduct_review_path = Path(str(payload.get("development_byproduct_review_path") or DEVELOPMENT_BYPRODUCT_EXCLUSION_REVIEW_PATH))
+
+    matrix = read_json_artifact(matrix_path) or {}
+    accepted_gate = read_json_artifact(accepted_gate_path) or {}
+    byproduct_review = read_json_artifact(byproduct_review_path) or {}
+
+    audit_items = matrix.get("audit_items") if isinstance(matrix.get("audit_items"), list) else []
+    unresolved_items = [
+        {
+            "id": item.get("id"),
+            "status": item.get("status"),
+            "requirement": item.get("requirement"),
+            "next_action": item.get("next_action"),
+        }
+        for item in audit_items
+        if item.get("status") != "proved"
+    ]
+    remaining_gaps = [str(item) for item in (matrix.get("remaining_gaps") or []) if str(item).strip()]
+    status_counts = matrix.get("status_counts") if isinstance(matrix.get("status_counts"), dict) else {}
+    zero_count_gate = accepted_gate.get("zero_count_gate") if isinstance(accepted_gate.get("zero_count_gate"), dict) else {}
+    accepted_gate_passed = (
+        bool(accepted_gate)
+        and accepted_gate.get("status") == "passed"
+        and accepted_gate.get("failed_gate_count") == 0
+        and accepted_gate.get("passed_gate_count") == accepted_gate.get("accepted_gate_count")
+    )
+    zero_count_assertions_passed = all(
+        zero_count_gate.get(field) is True
+        for field in (
+            "asserts_unsupported_claim_count_zero",
+            "asserts_unapproved_high_risk_count_zero",
+            "asserts_finding_without_evidence_count_zero",
+        )
+    )
+    byproduct_controls_clean = (
+        bool(byproduct_review)
+        and byproduct_review.get("status") == "passed"
+        and int(byproduct_review.get("completion_eligible_byproduct_ref_count") or 0) == 0
+        and int(byproduct_review.get("report_claim_eligible_byproduct_ref_count") or 0) == 0
+    )
+
+    checklist = [
+        {
+            "field": "reviewer_identity",
+            "title_ko": "완료 검토자",
+            "status": "passed" if reviewed_by else "blocked",
+            "evidence": reviewed_by or "reviewed_by_required",
+        },
+        {
+            "field": "completion_audit_matrix_present",
+            "title_ko": "completion audit matrix 존재",
+            "status": "passed" if bool(matrix) else "blocked",
+            "evidence": matrix_path.as_posix(),
+        },
+        {
+            "field": "all_completion_audit_items_proved",
+            "title_ko": "감사 항목 모두 proved",
+            "status": "passed" if bool(audit_items) and not unresolved_items else "blocked",
+            "evidence": f"proved={status_counts.get('proved', 0)} unresolved={len(unresolved_items)}",
+        },
+        {
+            "field": "remaining_gaps_zero",
+            "title_ko": "남은 gap 0건",
+            "status": "passed" if not remaining_gaps else "blocked",
+            "evidence": f"remaining_gaps={len(remaining_gaps)}",
+        },
+        {
+            "field": "goal_status_complete",
+            "title_ko": "목표 상태 complete",
+            "status": "passed" if matrix.get("goal_status") == "complete" else "blocked",
+            "evidence": matrix.get("goal_status") or "missing",
+        },
+        {
+            "field": "accepted_gate_manifest_passed",
+            "title_ko": "accepted gate 전체 통과",
+            "status": "passed" if accepted_gate_passed else "blocked",
+            "evidence": accepted_gate_path.as_posix() if accepted_gate else "accepted_gate_manifest_missing",
+        },
+        {
+            "field": "zero_count_exit_conditions",
+            "title_ko": "unsupported/high-risk/evidence-less 0건",
+            "status": "passed" if zero_count_assertions_passed else "blocked",
+            "evidence": zero_count_gate.get("source") or "zero_count_gate_missing",
+        },
+        {
+            "field": "development_byproduct_exclusion_clean",
+            "title_ko": "개발 부산물 완료 증거 0건",
+            "status": "passed" if byproduct_controls_clean else "blocked",
+            "evidence": byproduct_review_path.as_posix() if byproduct_review else "byproduct_review_missing",
+        },
+    ]
+
+    blockers: list[str] = []
+    for item in checklist:
+        if item["status"] != "passed":
+            blockers.append(f"{item['field']}_required")
+    if unresolved_items:
+        blockers.append("unresolved_completion_audit_items_present")
+    if remaining_gaps:
+        blockers.append("remaining_completion_gaps_present")
+
+    blockers = sorted(set(blockers))
+    ready = not blockers
+    review_id = stable_id("GOALREVIEW", [case_id, reviewed_by, len(blockers), now_utc()])
+    result = {
+        "kind": "redteam_ax_v2_goal_completion_review",
+        "review_id": review_id,
+        "case_id": case_id,
+        "reviewed_by": reviewed_by or None,
+        "status": "goal_completion_ready" if ready else "goal_completion_blocked",
+        "goal_completion_ready": ready,
+        "goal_status": matrix.get("goal_status") or None,
+        "status_counts": status_counts,
+        "unresolved_item_count": len(unresolved_items),
+        "unresolved_items": unresolved_items,
+        "remaining_gap_count": len(remaining_gaps),
+        "remaining_gaps": remaining_gaps,
+        "accepted_gate_status": accepted_gate.get("status") or None,
+        "accepted_gate_count": accepted_gate.get("accepted_gate_count"),
+        "passed_gate_count": accepted_gate.get("passed_gate_count"),
+        "failed_gate_count": accepted_gate.get("failed_gate_count"),
+        "zero_count_gate": zero_count_gate or None,
+        "development_byproduct_review_status": byproduct_review.get("status") or None,
+        "checklist": checklist,
+        "blockers": blockers,
+        "blocker_count": len(blockers),
+        "safe_by_default": True,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "shell_expansion_allowed": False,
+        "trusted_as_instruction": False,
+        "does_not_mark_goal_complete": True,
+        "requires_external_goal_update": True,
+        "next_human_actions_ko": [
+            "goal_completion_blocked이면 unresolved_items와 remaining_gaps를 먼저 해소합니다.",
+            "accepted gate, zero-count 종료 조건, 개발 부산물 제외 검토가 모두 통과해야 합니다.",
+            "이 API는 전체 목표 완료 여부를 검토하지만 스레드 goal을 직접 완료 처리하지 않습니다.",
+        ],
+        "created_at": now_utc(),
+    }
+    append_artifact_metadata(result, "goal-completion-reviews", review_id)
     return result
 
 

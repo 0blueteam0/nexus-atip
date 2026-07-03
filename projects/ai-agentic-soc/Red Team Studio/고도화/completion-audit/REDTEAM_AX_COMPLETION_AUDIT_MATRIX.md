@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 50 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 51 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -60,6 +60,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `/api/redteam/v2/toolchains/execute-governed`가 `require_runtime_preflight=true` runner 요청에서 runtime readiness blocker를 사전 차단하고 RedTeam2가 `실행 전 readiness`로 차단 사유를 표시하는 계약
 - 개발 과정 부산물 exclusion review가 archive/runs, fixture, smoke, sanity, sample, test-like, CASE-V2 evidence ref를 계약·회귀·안전통제 증거로만 허용하고 실제 완료/Report Claim 증거에서는 제외하는 계약
 - 운영 closure 제출 패키지가 `require_real_completion_evidence=true`일 때 CASE-V2, fixture, smoke, sample, test, operator-scanner-outputs source를 `real_completion_evidence_source_required`로 차단하고 RedTeam2가 `개발 부산물 제외` row로 표시하는 계약
+- `/api/redteam/v2/goal-completion-review`가 completion audit matrix, accepted gate, zero-count 종료 조건, 개발 부산물 제외 review를 읽고 unresolved item 또는 remaining gap이 있으면 전체 목표 완료를 차단하는 계약
 - toolchain result collection의 Evidence 후보를 actor/reviewer identity binding으로 batch 승인하고 Finding/Claim/Report 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence` API와 한국어 UI
 - 승인된 toolchain result collection Evidence만 `pending_review` Finding 초안으로 승격하고 승인 전 Evidence는 차단하는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings` API와 한국어 UI
 - collection에서 생성된 Finding 초안을 red_team_lead와 business_owner 2인 severity 승인으로 `approved` 상태까지 이동시키되 Matrix/report Claim 삽입은 하지 않는 `/api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity` API와 한국어 UI

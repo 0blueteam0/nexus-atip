@@ -3018,6 +3018,32 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(audit_body["trusted_as_instruction"])
         self.assertTrue(Path(audit_body["artifact_path"]).exists())
 
+    def test_v2_goal_completion_review_blocks_while_completion_audit_has_partial_gap(self) -> None:
+        response = self.client.post("/api/redteam/v2/goal-completion-review", json={
+            "case_id": "CASE-REDTEAM-AX-GOAL",
+            "reviewed_by": "independent-auditor@example.com",
+        })
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_goal_completion_review")
+        self.assertEqual(body["status"], "goal_completion_blocked")
+        self.assertFalse(body["goal_completion_ready"])
+        self.assertEqual(body["goal_status"], "active_incomplete")
+        self.assertGreaterEqual(body["unresolved_item_count"], 1)
+        self.assertGreaterEqual(body["remaining_gap_count"], 1)
+        self.assertIn("unresolved_completion_audit_items_present", body["blockers"])
+        self.assertIn("remaining_completion_gaps_present", body["blockers"])
+        self.assertTrue(any(item["field"] == "accepted_gate_manifest_passed" and item["status"] == "passed" for item in body["checklist"]))
+        self.assertTrue(any(item["field"] == "zero_count_exit_conditions" and item["status"] == "passed" for item in body["checklist"]))
+        self.assertTrue(any(item["field"] == "development_byproduct_exclusion_clean" and item["status"] == "passed" for item in body["checklist"]))
+        self.assertTrue(body["does_not_mark_goal_complete"])
+        self.assertTrue(body["requires_external_goal_update"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["shell_expansion_allowed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
     def test_v2_tool_schema_registry_validates_normalized_result_contract(self) -> None:
         schemas = self.client.get("/api/redteam/v2/tool-schemas")
         self.assertEqual(schemas.status_code, 200)

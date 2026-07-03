@@ -1817,3 +1817,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 화면은 “개발 부산물 제외”와 “완료/보고서 Claim 증거로 사용하지 않습니다” 문구로 부산물 source를 실제 운영 완료 증거와 분리한다.
 - [x] API 회귀와 frontend sanity 계약으로 엄격 모드, safe flag, UI copy, payload key를 검증한다.
 - [ ] 실제 업무절차 기반 증거만 사용해 6개 도구 운영 collection, Evidence Card 승인, Finding/Matrix/Report/export/completion gate를 다시 닫음
+
+## 118. 갱신 목표 - 전체 목표 완료 검토 API/UI
+
+- [x] `/api/redteam/v2/goal-completion-review`를 추가해 completion audit matrix, accepted gate manifest, zero-count 종료 조건, 개발 부산물 제외 review를 한 번에 확인한다.
+- [x] completion audit item 중 `proved`가 아닌 항목, `remaining_gaps`, `goal_status != complete`, accepted gate 실패, zero-count assertion 누락, byproduct control 실패, 검토자 누락이 있으면 `goal_completion_blocked`로 차단한다.
+- [x] API는 `does_not_mark_goal_complete=true`, `requires_external_goal_update=true`, `commands_executed_by_api=false`를 반환해 검토와 실제 thread goal 완료 처리를 분리한다.
+- [x] RedTeam2에 `전체 목표 완료 검토` 버튼, `전체 목표 완료 checklist`, `전체 목표 완료 blocker` 표를 추가한다.
+- [x] 현재 상태에서는 RTA-COMP-015와 remaining gaps 때문에 완료가 차단되어야 하며, API 회귀와 frontend sanity가 이를 검증한다.

@@ -1,7 +1,7 @@
 {
   "kind": "redteam_ax_development_byproduct_exclusion_review",
   "schema_version": "0.1",
-  "created_at": "2026-07-03T02:04:01Z",
+  "created_at": "2026-07-03T02:26:08Z",
   "source_matrix": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam_ax_completion_audit_matrix.json",
   "matrix_goal_status": "active_incomplete",
   "policy": {
@@ -31,11 +31,11 @@
     ]
   },
   "summary": {
-    "total_evidence_ref_count": 358,
-    "development_byproduct_ref_count": 181,
+    "total_evidence_ref_count": 367,
+    "development_byproduct_ref_count": 184,
     "completion_eligible_byproduct_ref_count": 0,
     "report_claim_eligible_byproduct_ref_count": 0,
-    "non_byproduct_ref_count": 177
+    "non_byproduct_ref_count": 183
   },
   "review_rows": [
     {
@@ -3610,6 +3610,96 @@
     },
     {
       "audit_item_id": "RTA-COMP-051",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+      "is_development_byproduct": true,
+      "allowed_use": "contract_regression_or_safety_control_evidence_only",
+      "completion_evidence_allowed": false,
+      "report_claim_evidence_allowed": false,
+      "exclusion_reason": "Matches archive/test/sanity/fixture/smoke markers and cannot prove real operating closure."
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+      "is_development_byproduct": true,
+      "allowed_use": "contract_regression_or_safety_control_evidence_only",
+      "completion_evidence_allowed": false,
+      "report_claim_evidence_allowed": false,
+      "exclusion_reason": "Matches archive/test/sanity/fixture/smoke markers and cannot prove real operating closure."
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+      "is_development_byproduct": true,
+      "allowed_use": "contract_regression_or_safety_control_evidence_only",
+      "completion_evidence_allowed": false,
+      "report_claim_evidence_allowed": false,
+      "exclusion_reason": "Matches archive/test/sanity/fixture/smoke markers and cannot prove real operating closure."
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
+      "audit_item_status": "proved",
+      "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+      "is_development_byproduct": false,
+      "allowed_use": "source_plan_or_operating_evidence_candidate",
+      "completion_evidence_allowed": null,
+      "report_claim_evidence_allowed": null,
+      "exclusion_reason": ""
+    },
+    {
+      "audit_item_id": "RTA-COMP-052",
       "audit_item_status": "proved",
       "ref": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md",
       "is_development_byproduct": false,

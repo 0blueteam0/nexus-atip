@@ -347,6 +347,11 @@ def review_operating_completion_audit_candidate(payload: dict[str, Any]) -> dict
     return redteam_v2_models.review_operating_completion_audit_candidate(payload)
 
 
+@router.post("/goal-completion-review")
+def review_redteam_ax_goal_completion(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.review_redteam_ax_goal_completion(payload)
+
+
 @router.post("/toolchains/{toolchain_id}/collect-results")
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     return redteam_v2_models.collect_toolchain_results(toolchain_id, payload)

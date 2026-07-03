@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 50,
+    "proved": 51,
     "partial": 1
   },
   "audit_items": [
@@ -866,6 +866,25 @@
       "proof_summary": "The operating closure submission package now classifies source_dir/case_id markers such as CASE-V2, fixture, smoke, sample, test, and operator-scanner-outputs as development byproducts. When require_real_completion_evidence=true, the API blocks those sources with real_completion_evidence_source_required, adds a development_byproduct_exclusion submission row, and returns completion_evidence_allowed=false and report_claim_evidence_allowed=false without executing commands. RedTeam2 sends the strict flag and renders the Korean exclusion row. API and frontend sanity tests cover the contract.",
       "residual_gap": "This proves strict exclusion of byproduct sources at the submission-package boundary; it does not provide the missing real six-tool operating evidence or final report/export completion.",
       "next_action": "Collect or import real approved operating artifacts from a non-byproduct source, approve Evidence, promote Findings, complete severity, Matrix, Report v2 export, and completion gate."
+    },
+    {
+      "id": "RTA-COMP-052",
+      "requirement": "Final thread-goal completion must have a machine-checkable review that blocks completion while any audit item is unresolved, any gap remains, accepted gates fail, zero-count exit assertions are missing, or byproduct controls are not clean.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The /api/redteam/v2/goal-completion-review API reads the completion audit matrix, accepted gate manifest, zero-count gate assertions, and development byproduct exclusion review. It returns goal_completion_blocked while goal_status is active_incomplete, unresolved audit items or remaining gaps exist, accepted gates are not fully passed, zero-count assertions are missing, byproduct controls are not clean, or reviewer identity is missing. RedTeam2 exposes a Korean 전체 목표 완료 검토 button, checklist, and blocker table. Regression verifies the current active_incomplete matrix blocks completion while preserving no command execution and does_not_mark_goal_complete=true.",
+      "residual_gap": "This proves machine-checkable completion blocking; it does not resolve the remaining real runtime and real operating evidence gaps tracked by RTA-COMP-015.",
+      "next_action": "Resolve RTA-COMP-015 with real Docker/WSL/OpenVAS/ZAP readiness and real six-tool operating evidence, then rerun goal-completion-review after all audit items are proved and remaining_gaps is empty."
     }
   ],
   "remaining_gaps": [
