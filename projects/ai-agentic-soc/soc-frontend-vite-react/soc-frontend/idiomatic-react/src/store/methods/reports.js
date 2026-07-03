@@ -3220,7 +3220,7 @@ export default {
       const credentialAuthUrl = caseId
         ? `http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations?case_id=${encodeURIComponent(caseId)}`
         : 'http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations';
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes, launchReadinessRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3234,6 +3234,7 @@ export default {
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-credential-policies'),
         this.redTeamFetchJson(credentialAuthUrl),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/runtime-readiness'),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/toolchains/launch-readiness'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3252,6 +3253,7 @@ export default {
           credentialPolicies:credentialPoliciesRes.ok ? credentialPoliciesRes.data : { items:[], error:credentialPoliciesRes.error },
           credentialAuthorizations:credentialAuthRes.ok ? credentialAuthRes.data : { items:[], error:credentialAuthRes.error },
           runtimeReadiness:runtimeReadinessRes.ok ? runtimeReadinessRes.data : { status:'unavailable', error:runtimeReadinessRes.error },
+          launchReadiness:launchReadinessRes.ok ? launchReadinessRes.data : { buttons:[], error:launchReadinessRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -5307,6 +5309,7 @@ export default {
     const credentialPolicies = st.credentialPolicies || {};
     const credentialAuthorizations = st.credentialAuthorizations || {};
     const runtimeReadiness = st.runtimeReadiness || {};
+    const launchReadiness = st.launchReadiness || {};
     const containerRuntimeArtifact = runtimeReadiness.container_runtime || {};
     const containerRuntime = containerRuntimeArtifact.data || {};
     const externalScannerArtifact = runtimeReadiness.external_scanner_services || {};
@@ -5333,6 +5336,7 @@ export default {
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
     const installItems = installReadiness.items || [];
+    const launchButtons = launchReadiness.buttons || [];
     const credentialPolicyItems = credentialPolicies.items || [];
     const credentialAuthorizationItems = credentialAuthorizations.items || [];
     const queue = this.state.redteam2ToolActionQueue || [];
@@ -5634,6 +5638,14 @@ export default {
     ];
     const openvasReadiness = externalScannerTools.openvas || externalScannerTools['TOOL-OPENVAS-001'] || {};
     const zapReadiness = externalScannerTools.zap || externalScannerTools['TOOL-ZAP-001'] || {};
+    const launchReadinessRows = launchButtons.map(item => [
+      item.display_name || item.tool_id || '-',
+      item.button_label_ko || '상태 확인',
+      item.can_execute_now ? '바로 실행 가능' : (item.can_click ? '준비 후 진행' : '차단됨'),
+      (item.blocked_reasons || []).length ? (item.blocked_reasons || []).join(', ') : '차단 조건 없음',
+      item.operator_message_ko || item.next_action_ko || '-',
+      item.primary_api || '-',
+    ]);
     const runtimeNextActionRows = (runtimeReadiness.next_action_plan || []).map(item => [
       item.title_ko || item.step_id || '-',
       koValue(item.status || '미확인'),
@@ -6405,6 +6417,7 @@ export default {
           h('div', { style:{ display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.text, cursor:'pointer', fontWeight:900 } }, '런타임 상태 새로고침'),
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
+          this.renderTable(['분석도구','버튼','실행 상태','차단 사유','사용자 안내','연결 API'], launchReadinessRows.length ? launchReadinessRows : [['대기','상태 확인','대기','launch-readiness API 응답 없음','상태 새로고침을 먼저 누르세요','/api/redteam/v2/toolchains/launch-readiness']]),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
           this.renderTable(['다음 실행 준비 단계','상태','화면 버튼','사용자 조치','도구 실행 영향','확인 API/명령'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','런타임 상태 새로고침','runtime-readiness API가 다음 실행 준비 단계를 계산합니다','-','/api/redteam/v2/runtime-readiness']]),
           h('div', { style:{ display:'grid', gap:'6px' } },

@@ -529,6 +529,50 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(sca_body["blocking_controls"], [])
         self.assertIn("normalizer", sca_body["runner_allowed_after"])
 
+    def test_v2_toolchain_launch_readiness_exposes_frontend_button_contract(self) -> None:
+        def manifest(profile: dict) -> dict:
+            tool_id = profile["tool_id"]
+            available = tool_id in {"TOOL-OPENVAS-001", "TOOL-TRIVY-001", "TOOL-SCA-001"}
+            import_only = tool_id == "TOOL-SCA-001"
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": tool_id,
+                "tool_name": profile["name"],
+                "adapter_type": profile.get("adapter_type"),
+                "command_name": profile.get("command_name") or "",
+                "availability": {
+                    "status": "not_applicable" if import_only else ("available" if available else "missing"),
+                    "command": profile.get("command_name") or "",
+                    "path": None if not available or import_only else f"C:/tools/{profile['name']}.exe",
+                },
+                "pinning_status": "import_only" if import_only else ("hash_match" if available else "missing"),
+                "trusted_for_runner": available or import_only,
+                "requires_pin_before_runner": not (available or import_only),
+            }
+
+        with patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=manifest):
+            response = self.client.get("/api/redteam/v2/toolchains/launch-readiness")
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_launch_readiness")
+        self.assertEqual(body["button_count"], 6)
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertIn("버튼 활성화 판단", body["policy_ko"])
+        by_tool = {item["tool_id"]: item for item in body["buttons"]}
+        self.assertTrue(by_tool["TOOL-TRIVY-001"]["can_execute_now"])
+        self.assertEqual(by_tool["TOOL-TRIVY-001"]["button_label_ko"], "승인된 실행 시작")
+        self.assertEqual(by_tool["TOOL-TRIVY-001"]["primary_api"], "/api/redteam/v2/toolchains/execute-governed")
+        self.assertFalse(by_tool["TOOL-OPENVAS-001"]["can_execute_now"])
+        self.assertEqual(by_tool["TOOL-OPENVAS-001"]["button_label_ko"], "승인 요청")
+        self.assertIn("human_approval_required", by_tool["TOOL-OPENVAS-001"]["blocked_reasons"])
+        self.assertEqual(by_tool["TOOL-SCA-001"]["launch_mode"], "operator_import")
+        self.assertEqual(by_tool["TOOL-SCA-001"]["button_label_ko"], "결과 첨부")
+        self.assertIn("command_missing", by_tool["TOOL-NUCLEI-001"]["blocked_reasons"])
+        self.assertEqual(by_tool["TOOL-NUCLEI-001"]["button_label_ko"], "설치 확인")
+
     def test_v2_tool_install_version_evidence_records_operator_attested_versions(self) -> None:
         case_id = "CASE-V2-TOOL-INSTALL-EVIDENCE-001"
         tool_samples = [

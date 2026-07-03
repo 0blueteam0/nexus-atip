@@ -166,6 +166,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 `누락 도구`, `예상 파일명 패턴`, `다음 행동`, `안전` 표로 이 값을 표시한다.
 - 이 변경은 운영자가 누락 파일을 준비하도록 돕는 안내이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - 분석도구 실행 버튼 readiness 계약
+
+- `/api/redteam/v2/toolchains/launch-readiness`는 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP별 실행 버튼 상태를 반환한다.
+- 각 row는 `button_label_ko`, `can_execute_now`, `blocked_reasons`, `primary_api`, `commands_executed_by_api=false`를 포함한다.
+- RedTeam2는 `분석도구`, `버튼`, `실행 상태`, `차단 사유`, `사용자 안내`, `연결 API` 표로 이 값을 표시한다.
+- 이 변경은 버튼 readiness 안내이며 실제 scanner 실행, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

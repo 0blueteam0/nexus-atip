@@ -1317,6 +1317,113 @@ def list_tool_install_readiness() -> dict[str, Any]:
     }
 
 
+def list_toolchain_launch_readiness() -> dict[str, Any]:
+    buttons: list[dict[str, Any]] = []
+    for profile in ANALYSIS_TOOL_PROFILES:
+        manifest = tool_wrapper_manifest_for_profile(profile)
+        install = tool_install_readiness_for_profile(profile, manifest)
+        availability = manifest.get("availability") or {}
+        tool_id = str(profile.get("tool_id") or "")
+        display_name = str(profile.get("display_name") or profile.get("name") or tool_id)
+        adapter_type = str(profile.get("adapter_type") or "")
+        requires_approval = bool(profile.get("requires_human_approval"))
+        command_status = str(availability.get("status") or "unknown")
+        trusted_for_runner = bool(manifest.get("trusted_for_runner"))
+        import_only = adapter_type == "import_only" or not str(profile.get("command_name") or "").strip()
+        installed_or_import_ready = import_only or command_status == "available"
+        blocked_reasons: list[str] = []
+        if not installed_or_import_ready:
+            blocked_reasons.append("command_missing")
+        if not trusted_for_runner:
+            blocked_reasons.append("wrapper_sha256_pin_required")
+        if requires_approval:
+            blocked_reasons.append("human_approval_required")
+        if import_only:
+            launch_mode = "operator_import"
+            button_label = "결과 첨부"
+            primary_api = "/api/redteam/v2/toolchains/import-artifact-manifest"
+        elif requires_approval and installed_or_import_ready and trusted_for_runner:
+            launch_mode = "approval_then_manual_or_lab_run"
+            button_label = "승인 요청"
+            primary_api = "/api/redteam/v2/tool-actions/plan"
+        elif installed_or_import_ready and trusted_for_runner:
+            launch_mode = "governed_runner"
+            button_label = "승인된 실행 시작"
+            primary_api = "/api/redteam/v2/toolchains/execute-governed"
+        else:
+            launch_mode = "readiness_fix_required"
+            button_label = "설치 확인"
+            primary_api = "/api/redteam/v2/tool-install-readiness"
+        can_execute_now = bool(installed_or_import_ready and trusted_for_runner and not requires_approval and not import_only)
+        can_click = bool(import_only or (installed_or_import_ready and trusted_for_runner) or "command_missing" in blocked_reasons)
+        buttons.append({
+            "tool_id": tool_id,
+            "tool_name": profile.get("name"),
+            "display_name": display_name,
+            "risk_class": profile.get("risk_class"),
+            "adapter_type": adapter_type,
+            "command_name": profile.get("command_name") or "",
+            "command_status": command_status,
+            "resolved_path": availability.get("path"),
+            "install_status": install.get("status"),
+            "pinning_status": manifest.get("pinning_status"),
+            "trusted_for_runner": trusted_for_runner,
+            "requires_human_approval": requires_approval,
+            "can_click": can_click,
+            "can_execute_now": can_execute_now,
+            "launch_mode": launch_mode,
+            "button_label_ko": button_label,
+            "blocked_reasons": blocked_reasons,
+            "primary_api": primary_api,
+            "operator_message_ko": (
+                f"{display_name}는 바로 실행할 수 있습니다. 실행 전 대상 범위와 출력 저장 위치를 확인하세요."
+                if can_execute_now
+                else (
+                    f"{display_name}는 결과 파일 첨부 방식으로 진행합니다. SBOM, lockfile, SCA export를 먼저 준비하세요."
+                    if import_only
+                    else (
+                        f"{display_name}는 실행 전 사람 승인과 ROE 확인이 필요합니다."
+                        if requires_approval and installed_or_import_ready and trusted_for_runner
+                        else f"{display_name} 실행 전 설치, wrapper pin, 승인 조건을 먼저 해결하세요."
+                    )
+                )
+            ),
+            "next_action_ko": (
+                "버튼을 누르면 기존 governed runner 경로로 실행 계획과 토큰을 확인한 뒤 실행합니다."
+                if can_execute_now
+                else (
+                    "운영자 산출물 manifest를 만들고 결과 파일을 Evidence 후보로 가져오세요."
+                    if import_only
+                    else "설치 확인, wrapper pin 승인, HITL 승인 순서로 준비 상태를 보강하세요."
+                )
+            ),
+        })
+
+    executable_count = sum(1 for item in buttons if item.get("can_execute_now"))
+    blocked_count = sum(1 for item in buttons if item.get("blocked_reasons"))
+    return {
+        "kind": "redteam_ax_v2_toolchain_launch_readiness",
+        "status": "ready" if executable_count else "blocked_or_import_only",
+        "tool_count": len(buttons),
+        "button_count": len(buttons),
+        "executable_now_count": executable_count,
+        "blocked_count": blocked_count,
+        "buttons": buttons,
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "safe_by_default": True,
+        "primary_execution_api": "/api/redteam/v2/toolchains/execute-governed",
+        "primary_import_api": "/api/redteam/v2/toolchains/import-artifact-manifest",
+        "operator_summary_ko": (
+            f"분석도구 {len(buttons)}개 중 {executable_count}개는 현재 runner 실행 준비가 되었고 "
+            f"{blocked_count}개는 설치, wrapper pin, 사람 승인 또는 결과 첨부가 필요합니다."
+        ),
+        "policy_ko": "이 API는 버튼 활성화 판단만 수행하며 scanner 명령, Docker, WSL, 네트워크 스캔을 실행하지 않습니다.",
+        "created_at": now_utc(),
+    }
+
+
 def tool_credential_policy(tool_id: str) -> dict[str, Any]:
     profile = analysis_tool_profile(tool_id)
     resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()

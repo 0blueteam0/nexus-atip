@@ -41,8 +41,11 @@ def main() -> int:
 
     required_loader_terms = [
         "/api/redteam/v2/runtime-readiness",
+        "/api/redteam/v2/toolchains/launch-readiness",
         "runtimeReadinessRes",
+        "launchReadinessRes",
         "runtimeReadiness:runtimeReadinessRes.ok",
+        "launchReadiness:launchReadinessRes.ok",
     ]
     missing_loader_terms = [term for term in required_loader_terms if term not in loader]
     if missing_loader_terms:

@@ -1874,3 +1874,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 실제 운영 증거 사전 점검 영역에 `누락 도구`, `예상 파일명 패턴`, `다음 행동`, `안전` 표를 추가한다.
 - [x] API 회귀와 frontend sanity가 OpenVAS/ZAP 누락 패턴과 한국어 조치 문구를 검증한다.
 - [ ] 이 안내는 운영자가 실제 파일을 준비하도록 돕는 remediation이며, 실제 산출물 제출·승인·보고서 gate 완료를 대신하지 않는다.
+
+## 125. 갱신 목표 - 분석도구 실행 버튼 readiness 계약
+
+- [x] `/api/redteam/v2/toolchains/launch-readiness`를 추가한다.
+- [x] Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP별 `button_label_ko`, `can_execute_now`, `blocked_reasons`, `primary_api`를 반환한다.
+- [x] RedTeam2 backend load가 launch-readiness를 읽고 `분석도구`, `버튼`, `실행 상태`, `차단 사유`, `사용자 안내`, `연결 API` 표로 표시한다.
+- [x] API regression과 frontend launch readiness sanity를 추가한다.
+- [ ] 이 API는 버튼 readiness만 판단하며 실제 산출물, 승인, 보고서 gate 완료를 대신하지 않는다.

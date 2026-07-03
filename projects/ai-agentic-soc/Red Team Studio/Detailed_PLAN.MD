@@ -1170,3 +1170,12 @@ Create Case
 - 안전 원칙: remediation은 파일 준비 안내일 뿐이며 scanner 명령, Docker/WSL, 네트워크 스캔을 실행하지 않는다. `does_not_execute_tool=true`를 화면에 `명령 실행 없음`으로 표시한다.
 - 테스트 전략: API 회귀는 fixture source에서 OpenVAS/ZAP 누락 시 `*openvas*.xml`, `*zap*.json` 패턴과 한국어 `결과 파일` 안내를 검증한다. frontend sanity는 새 한국어 label과 field anchor를 검증한다.
 - 예외 케이스: 파일명 패턴은 manifest builder 후보 탐지 규칙이다. 실제 운영 완료 증거는 해당 파일을 제출한 뒤 import, collection, Evidence approval, Finding severity, Matrix/Report/export/completion gate를 통과해야 한다.
+
+## 72. 갱신 목표 반영 - 분석도구 실행 버튼 readiness 계약
+
+- 목적: RedTeam2에서 분석도구 버튼을 누르기 전에 어떤 도구가 바로 실행 가능한지, 어떤 도구가 승인·설치·첨부 준비가 필요한지 한국어로 분리한다.
+- API 설계: `/api/redteam/v2/toolchains/launch-readiness`는 Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP별 button row를 반환한다. 각 row는 `tool_id`, `display_name`, `risk_class`, `command_status`, `install_status`, `trusted_for_runner`, `requires_human_approval`, `can_click`, `can_execute_now`, `launch_mode`, `button_label_ko`, `blocked_reasons`, `primary_api`, `operator_message_ko`, `next_action_ko`를 포함한다.
+- 화면/기능 명세: RedTeam2 runtime readiness 영역은 `분석도구`, `버튼`, `실행 상태`, `차단 사유`, `사용자 안내`, `연결 API` 표를 렌더링한다. 버튼 label은 실행 가능 도구는 `승인된 실행 시작`, 고위험 승인 필요 도구는 `승인 요청`, operator import 도구는 `결과 첨부`, 설치/신뢰 보강 필요 도구는 `설치 확인`으로 표시한다.
+- 안전 원칙: launch-readiness API는 side-effect-free 사전 판정이다. scanner 명령, Docker/WSL, network, active scan을 실행하지 않고 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 반환한다.
+- 테스트 전략: API regression은 Trivy ready, OpenVAS approval-required, SCA import-only, Nuclei command-missing row를 검증한다. frontend sanity는 launch-readiness endpoint, state loader, 표 header, fallback copy를 검사한다.
+- 예외 케이스: 이 계약은 버튼 상태와 다음 API 연결을 보여줄 뿐이다. 실제 완료는 ROE/HITL, runtime preflight, tool execution 또는 approved operator import, Evidence approval, Finding severity, Matrix/report/export/completion gate가 모두 통과해야 한다.
