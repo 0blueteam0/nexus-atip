@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 53,
+    "proved": 54,
     "partial": 1
   },
   "audit_items": [
@@ -915,6 +915,20 @@
       "proof_summary": "The WSL readiness checker now builds a probe order from the requested/default/running/stopped distributions, prefers non-internal distros before docker-desktop, records every distro probe, classifies 0x80070570 mount failures as wsl_ext4_vhdx_corrupt_or_unreadable and wsl_mount_disk_failed, and selects the first distro with relevant tool paths. In the current environment Ubuntu-22.04 fails with VHDX mount corruption, while Ubuntu-22.04-AISOC-Rebuild starts and exposes npm/docker paths, so latest_wsl_runtime_readiness.json records status=ready, selected_distro=Ubuntu-22.04-AISOC-Rebuild, failed_probe_count_before_selection=1, and the failed default distro evidence. Unit regression mocks the same fallback path, and accepted gate manifest includes the fallback unit gate.",
       "residual_gap": "This proves WSL runtime fallback readiness only. It does not provide organization OpenVAS/ZAP endpoint/vault readiness or real six-tool operating Evidence/Finding/Matrix/Report/export closure.",
       "next_action": "Proceed to approved organization OpenVAS/ZAP read-only endpoint/vault configuration, then rerun strict live readiness with --allow-container --allow-network --require-promotion."
+    },
+    {
+      "id": "RTA-COMP-055",
+      "requirement": "OpenVAS/ZAP credential authorization must reject unsafe endpoint references before live service import and return operator-readable setup guidance without storing secret material.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md"
+      ],
+      "proof_summary": "Tool credential authorization now computes endpoint_ref_diagnostics for OpenVAS/ZAP before scanner-service-import. It rejects endpoint refs with non-http schemes, embedded credentials, missing host, secret query keys such as api_key/token/password/cookie, or mutating path terms such as start/scan/spider/delete/write. The authorization response includes Korean operator setup guidance explaining that secret values must not be submitted, credential_ref must be an external vault reference, and endpoint_ref must be an approved read-only report/passive-alert URL. Regression verifies a valid OpenVAS endpoint reports safe_read_only_endpoint_ref and an unsafe ZAP ascan URL with embedded credentials and apikey query is invalid while secret_material_stored remains false.",
+      "residual_gap": "This improves pre-live endpoint/vault safety diagnostics only. It does not configure organization OpenVAS/ZAP endpoints, perform live endpoint import, or close real six-tool operating Evidence/Finding/Matrix/Report/export gates.",
+      "next_action": "Use these diagnostics when configuring REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT, REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT, REDTEAM_AX_OPENVAS_VAULT_REF, and REDTEAM_AX_ZAP_VAULT_REF, then rerun external readiness/import live smokes with --allow-network --require-ready."
     }
   ],
   "remaining_gaps": [
@@ -929,5 +943,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T12:05:00+09:00"
+  "last_updated": "2026-07-03T12:48:00+09:00"
 }

@@ -633,6 +633,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(authorized_body["requires_human_validation"])
         self.assertEqual(authorized_body["runner_unlocks"], [])
         self.assertEqual(authorized_body["credential_ref"], "vault://redteam/openvas/lab-readonly")
+        self.assertEqual(authorized_body["endpoint_ref_diagnostics"]["status"], "safe_read_only_endpoint_ref")
+        self.assertEqual(authorized_body["endpoint_ref_diagnostics"]["errors"], [])
+        self.assertTrue(authorized_body["operator_setup_guidance_ko"])
         self.assertNotIn("secret_value", json.dumps(authorized_body))
         self.assertTrue(Path(authorized_body["artifact_path"]).exists())
 
@@ -704,6 +707,30 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(write_scope.json()["status"], "invalid")
         self.assertIn("token_scopes_must_be_read_only_allowlist", write_scope.json()["errors"])
         self.assertIn("prohibited_token_scope_requested", write_scope.json()["errors"])
+
+        unsafe_endpoint = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-ZAP-001",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/zap/readonly",
+                "endpoint_ref": "http://user:pass@zap.lab.example:8080/JSON/ascan/action/scan/?apikey=SECRET",
+                "token_scopes": ["read:alerts"],
+                "read_only": True,
+                "purpose": "Negative test",
+                "target_scope_refs": ["ROE-CRED-001"],
+            },
+        )
+        self.assertEqual(unsafe_endpoint.status_code, 200)
+        unsafe_body = unsafe_endpoint.json()
+        self.assertEqual(unsafe_body["status"], "invalid")
+        self.assertEqual(unsafe_body["endpoint_ref_diagnostics"]["status"], "invalid_endpoint_ref")
+        self.assertIn("endpoint_ref_must_not_embed_credentials", unsafe_body["errors"])
+        self.assertIn("endpoint_ref_query_must_not_contain_secret_material", unsafe_body["errors"])
+        self.assertIn("endpoint_ref_path_looks_mutating_not_read_only_report", unsafe_body["errors"])
+        self.assertFalse(unsafe_body["secret_material_stored"])
+        self.assertIn("scan", unsafe_body["endpoint_ref_diagnostics"]["mutating_path_terms_present"])
+        self.assertIn("apikey", unsafe_body["endpoint_ref_diagnostics"]["secret_query_keys_present"])
 
         unauthorized_role = self.client.post(
             "/api/redteam/v2/tool-credential-authorizations/TOOL-OPENVAS-001",

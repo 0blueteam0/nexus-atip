@@ -1134,3 +1134,12 @@ Create Case
 - 실측 증거: 현재 환경에서는 `Ubuntu-22.04`가 VHDX mount failure로 실패하고, `Ubuntu-22.04-AISOC-Rebuild`가 시작되어 npm/docker path를 반환한다. `latest_wsl_runtime_readiness.json`은 `status=ready`, `selected_distro=Ubuntu-22.04-AISOC-Rebuild`, `failed_probe_count_before_selection=1`을 기록한다.
 - 테스트 전략: `tests/test_redteam_ax_wsl_runtime_readiness.py`는 run_command를 mock해 default distro mount failure 후 alternate distro selection과 blocker preservation을 검증한다. accepted gate manifest에는 `GATE-WSL-RUNTIME-FALLBACK-UNIT`을 추가한다.
 - 예외 케이스: WSL readiness는 runtime blocker 해소 증거일 뿐이다. 실제 조직 OpenVAS/ZAP endpoint/vault와 실제 6개 도구 운영 Evidence/Finding/Matrix/Report/export closure가 남아 있으면 RTA-COMP-015와 전체 goal은 완료가 아니다.
+
+## 68. 갱신 목표 반영 - OpenVAS/ZAP endpoint authorization diagnostics
+
+- 목적: 조직 OpenVAS/ZAP endpoint/vault를 실제로 설정하기 전에 위험한 endpoint reference가 credential authorization을 통과하지 못하게 한다.
+- 구현: `/api/redteam/v2/tool-credential-authorizations/{tool_id}` 응답에 `endpoint_ref_diagnostics`와 `operator_setup_guidance_ko`를 추가한다.
+- 검증 항목: `endpoint_ref`는 http/https scheme, host 존재, credential-in-URL 금지, secret query key 금지, mutating path term 금지를 검사한다.
+- 사용자 안내: 한국어 guidance는 secret 값 직접 제출 금지, external vault reference 사용, read-only report/passive alert endpoint 조건을 설명한다.
+- 테스트 전략: 기존 OpenVAS/ZAP credential vault regression에 정상 OpenVAS endpoint diagnostics와 위험 ZAP ascan endpoint 차단을 추가한다.
+- 예외 케이스: 이 diagnostics는 조직 endpoint가 실제 reachable하다는 증거가 아니다. 실제 service import는 `redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready`와 strict promotion에서 별도로 증명해야 한다.

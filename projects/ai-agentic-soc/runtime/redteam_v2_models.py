@@ -15,7 +15,7 @@ from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 from urllib.request import Request, urlopen
 
 try:
@@ -63,6 +63,30 @@ TOOL_CREDENTIAL_VAULT_APPROVER_ROLES = {"red_team_lead", "control_team"}
 SERVICE_IMPORT_TOOLS = {"TOOL-OPENVAS-001", "TOOL-ZAP-001"}
 SERVICE_IMPORT_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
 MAX_SERVICE_REPORT_BYTES = 2 * 1024 * 1024
+SERVICE_ENDPOINT_SECRET_QUERY_KEYS = {
+    "api_key",
+    "apikey",
+    "token",
+    "access_token",
+    "bearer",
+    "password",
+    "passwd",
+    "secret",
+    "client_secret",
+    "cookie",
+}
+SERVICE_ENDPOINT_MUTATING_PATH_TERMS = {
+    "start",
+    "scan",
+    "spider",
+    "attack",
+    "delete",
+    "remove",
+    "update",
+    "create",
+    "write",
+    "modify",
+}
 PROMPT_INJECTION_PATTERNS = [
     "ignore all previous instructions",
     "ignore previous instructions",
@@ -1360,6 +1384,35 @@ def _payload_contains_secret_material(payload: dict[str, Any]) -> bool:
     return bool(payload.get("secret_material_present"))
 
 
+def _scanner_service_endpoint_ref_diagnostics(endpoint_ref: str) -> dict[str, Any]:
+    parsed = urlparse(endpoint_ref)
+    errors: list[str] = []
+    if not endpoint_ref:
+        errors.append("endpoint_ref_required")
+    if parsed.scheme not in {"http", "https"}:
+        errors.append("endpoint_ref_scheme_must_be_http_or_https")
+    if parsed.username or parsed.password:
+        errors.append("endpoint_ref_must_not_embed_credentials")
+    if not parsed.hostname:
+        errors.append("endpoint_ref_host_required")
+    query_keys = {key.lower() for key in parse_qs(parsed.query).keys()}
+    if query_keys.intersection(SERVICE_ENDPOINT_SECRET_QUERY_KEYS):
+        errors.append("endpoint_ref_query_must_not_contain_secret_material")
+    path_terms = {part.lower() for part in parsed.path.replace("-", "/").replace("_", "/").split("/") if part}
+    if path_terms.intersection(SERVICE_ENDPOINT_MUTATING_PATH_TERMS):
+        errors.append("endpoint_ref_path_looks_mutating_not_read_only_report")
+    return {
+        "status": "safe_read_only_endpoint_ref" if not errors else "invalid_endpoint_ref",
+        "errors": errors,
+        "scheme": parsed.scheme,
+        "host": parsed.hostname or "",
+        "path": parsed.path or "",
+        "loopback": parsed.hostname in SERVICE_IMPORT_LOOPBACK_HOSTS if parsed.hostname else False,
+        "secret_query_keys_present": sorted(query_keys.intersection(SERVICE_ENDPOINT_SECRET_QUERY_KEYS)),
+        "mutating_path_terms_present": sorted(path_terms.intersection(SERVICE_ENDPOINT_MUTATING_PATH_TERMS)),
+    }
+
+
 def authorize_tool_credential_reference(tool_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     profile = analysis_tool_profile(tool_id)
     resolved_tool_id = str((profile or {}).get("tool_id") or tool_id or "").strip()
@@ -1390,6 +1443,8 @@ def authorize_tool_credential_reference(tool_id: str, payload: dict[str, Any]) -
         errors.append("secret_material_must_not_be_submitted")
     if not endpoint_ref:
         errors.append("endpoint_ref_required")
+    endpoint_ref_diagnostics = _scanner_service_endpoint_ref_diagnostics(endpoint_ref)
+    errors.extend(error for error in endpoint_ref_diagnostics["errors"] if error not in errors)
     if not requested_scopes:
         errors.append("token_scopes_required")
     allowed_scopes = set(policy.get("allowed_token_scopes") or [])
@@ -1432,6 +1487,12 @@ def authorize_tool_credential_reference(tool_id: str, payload: dict[str, Any]) -
         "target_scope_refs": target_scope_refs,
         "approved_by": approver,
         "approver_role": approver_role,
+        "endpoint_ref_diagnostics": endpoint_ref_diagnostics,
+        "operator_setup_guidance_ko": [
+            "OpenVAS/ZAP 비밀번호, API key, bearer token 값은 이 화면이나 API payload에 넣지 마세요.",
+            "credential_ref에는 vault://, secret://, external-vault:// 형태의 외부 보관소 참조만 넣으세요.",
+            "endpoint_ref는 이미 승인된 읽기 전용 보고서 또는 passive alert 조회 URL이어야 하며 scan/start/delete 같은 실행 URL은 차단됩니다.",
+        ],
         "approved_at": now_utc() if not errors else None,
         "expires_at": str(payload.get("expires_at") or "").strip() or None,
         "commands_executed_by_api": False,

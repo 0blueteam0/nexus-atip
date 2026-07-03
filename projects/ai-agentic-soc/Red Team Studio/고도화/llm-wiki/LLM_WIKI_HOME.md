@@ -217,6 +217,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 34. `/api/redteam/v2/goal-completion-review`는 전체 thread goal 완료 전 마지막 기계 검토 API다. completion audit matrix, accepted gate manifest, zero-count 종료 조건, development byproduct exclusion review를 읽고 `audit_items`의 unresolved 상태, `remaining_gaps`, `goal_status != complete`, accepted gate 실패, byproduct control 실패가 있으면 `goal_completion_blocked`를 반환한다. 이 API도 `does_not_mark_goal_complete=true`이며, 실제 goal 완료 처리는 모든 blocker가 0건이 된 뒤 별도로 판단한다.
 35. ephemeral container runner는 Docker image ENTRYPOINT를 신뢰하지 않고 `--entrypoint=`로 비운 뒤 allowlist가 승인한 `runner_argv`만 실행한다. `latest_container_runtime_smoke.json`의 `status=passed`는 Docker/container runtime 준비 증거로 사용할 수 있지만, 조직 OpenVAS/ZAP endpoint/vault와 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
 36. WSL runtime readiness는 기본 배포판이 깨졌을 때 대체 non-internal 배포판을 자동 probe한다. `latest_wsl_runtime_readiness.json`의 `status=ready`와 `selected_distro=Ubuntu-22.04-AISOC-Rebuild`는 WSL runtime blocker 해소 증거지만, 기본 Ubuntu-22.04 VHDX 손상은 failed probe로 보존되며 조직 OpenVAS/ZAP endpoint/vault 및 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
+37. OpenVAS/ZAP credential authorization은 live service import 전에 `endpoint_ref_diagnostics`를 확인한다. `endpoint_ref`에 credential-in-URL, secret query key, mutating path term, missing host, non-http scheme이 있으면 `invalid`로 차단하며, `operator_setup_guidance_ko`는 secret 값 금지와 external vault reference 사용을 설명한다. 이 진단은 endpoint/vault 설정 품질을 높이는 사전 통제이며, 조직 endpoint import 성공이나 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
 
 ## 남은 작업
 

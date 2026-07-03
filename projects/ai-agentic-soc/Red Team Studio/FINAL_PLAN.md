@@ -1843,3 +1843,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 단위 회귀가 기본 distro 실패 후 대체 distro 선택과 failed probe 보존을 검증한다.
 - [x] strict live readiness promotion은 Docker와 WSL 2개 gate 통과, 실제 조직 OpenVAS/ZAP endpoint/vault 2개 gate 미통과를 기록한다.
 - [ ] 조직 OpenVAS/ZAP read-only endpoint/vault와 실제 6개 도구 운영 closure를 완료하기 전까지 RTA-COMP-015와 전체 goal은 계속 미완료로 둔다.
+
+## 121. 갱신 목표 - OpenVAS/ZAP endpoint authorization diagnostics
+
+- [x] OpenVAS/ZAP credential authorization 응답에 `endpoint_ref_diagnostics`를 추가한다.
+- [x] endpoint reference의 embedded credential, secret query key, mutating path term, missing host, non-http scheme을 live import 전에 차단한다.
+- [x] 응답에 한국어 `operator_setup_guidance_ko`를 포함해 secret 값 금지, external vault reference 사용, 승인된 read-only URL 조건을 설명한다.
+- [x] regression test가 정상 OpenVAS endpoint는 `safe_read_only_endpoint_ref`, 위험 ZAP ascan URL은 `invalid_endpoint_ref`로 검증한다.
+- [ ] 조직 OpenVAS/ZAP endpoint/vault를 실제로 구성하고 `--allow-network --require-ready` live import를 통과하기 전까지 external scanner gate는 미완료로 유지한다.

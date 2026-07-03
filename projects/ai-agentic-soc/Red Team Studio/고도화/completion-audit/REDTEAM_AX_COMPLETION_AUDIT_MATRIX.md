@@ -138,6 +138,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `latest_strict_live_readiness_promotion.json`은 promotion 4개 중 Docker와 WSL 2개 통과, 실제 조직 OpenVAS/ZAP endpoint/vault 2개 미통과를 기록한다.
 - 따라서 Docker와 WSL runtime blocker는 해소되었지만, RTA-COMP-015는 실제 조직 OpenVAS/ZAP와 실제 6개 도구 운영 closure가 남아 있어 계속 `partial`이다.
 
+## 2026-07-03 갱신 - OpenVAS/ZAP endpoint authorization diagnostics 강화
+
+- `/api/redteam/v2/tool-credential-authorizations/{tool_id}`는 OpenVAS/ZAP authorization 시점에 `endpoint_ref_diagnostics`를 반환한다.
+- endpoint reference에 embedded credential, secret query key, mutating path term, missing host, non-http scheme이 있으면 live import 전에 `invalid`로 차단한다.
+- 응답에는 한국어 `operator_setup_guidance_ko`가 포함되어 secret 값 금지, external vault reference 사용, 승인된 read-only report/passive alert URL 사용을 초급 운영자에게 설명한다.
+- 이 변경은 조직 OpenVAS/ZAP endpoint/vault 준비를 더 안전하게 만드는 사전 검증이며, 실제 조직 endpoint import 성공 또는 6개 도구 운영 closure를 완료 증거로 대체하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.
