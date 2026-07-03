@@ -1916,3 +1916,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실행 후 저장된 toolchain 상태 projection을 갱신해 `결과 회수·Evidence 후보` 버튼으로 이어질 수 있게 한다.
 - [x] frontend runtime sanity와 Korean copy inventory가 버튼, safe smoke copy, active scan/network 금지 문구를 검증한다.
 - [ ] 이 버튼은 설치 확인용 version-only smoke만 자동화하며 실제 취약점 스캔, OpenVAS/ZAP endpoint import, 운영 Evidence closure를 대신하지 않는다.
+
+## 130. 갱신 목표 - OpenVAS/ZAP service import 결과 회수 연결
+
+- [x] `/api/redteam/v2/scanner-service-imports/{tool_id}`는 payload의 `toolchain_id`가 있을 때 read-only service import 결과를 `toolchain-runs` projection으로 저장한다.
+- [x] projection은 `run-status`와 `collect-results` API를 바로 가리키며 `can_collect_results=true`, `does_not_mark_goal_complete=true`를 반환한다.
+- [x] RedTeam2 `읽기 전용 서비스 결과 가져오기` 버튼은 `toolchain_id={reportId}-TOOLCHAIN-SERVICE-IMPORT`를 함께 보내고 저장 실행 상태 projection을 갱신한다.
+- [x] API regression은 ZAP raw report import 후 run-status와 collect-results가 Evidence 후보 1건을 만드는지 검증한다.
+- [ ] 이 연결은 OpenVAS/ZAP 결과를 Evidence 후보 단계로 넘기는 경로이며 실제 조직 endpoint/vault 실측, 6개 도구 coverage, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.

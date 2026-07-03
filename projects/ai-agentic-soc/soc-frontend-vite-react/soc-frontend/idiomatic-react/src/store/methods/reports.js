@@ -3578,6 +3578,7 @@ export default {
   async importRedTeam2ScannerServiceReport() {
     const draft = this.redTeam2AnalysisDraft();
     const caseId = this.redTeamOperationCaseId(draft.reportId, draft.target);
+    const toolchainId = `${draft.reportId || 'REPORT-REDTEAM2'}-TOOLCHAIN-SERVICE-IMPORT`;
     const serviceImportToolId = String(draft.serviceImportToolId || draft.credentialToolId || 'TOOL-ZAP-001').trim();
     const selectedAuthorization = this.state.redteam2CredentialVaultState?.authorization || {};
     const authorizationId = String(draft.serviceImportAuthorizationId || selectedAuthorization.authorization_id || '').trim();
@@ -3598,6 +3599,7 @@ export default {
         headers:{ 'Content-Type':'application/json' },
         body:JSON.stringify({
           case_id:caseId,
+          toolchain_id:toolchainId,
           authorization_id:authorizationId,
           endpoint_url:endpointUrl,
           requested_by:'current-analyst',
@@ -3607,8 +3609,31 @@ export default {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      const projection = data.toolchain_projection || {};
       this.setState(s => ({
         redteam2ServiceImportState:{ ...(s.redteam2ServiceImportState || {}), status:data.status || 'ready', result:data, error:null, checkedAt:new Date().toISOString() },
+        redteam2ToolchainRunStatusState:projection.toolchain_id ? { ...(s.redteam2ToolchainRunStatusState || {}), status:'loaded-from-service-import', result:{
+          kind:'redteam_ax_v2_toolchain_service_import_projection',
+          toolchain_id:projection.toolchain_id,
+          case_id:caseId,
+          status:projection.status || 'imported',
+          can_collect_results:!!projection.can_collect_results,
+          collectable_step_count:projection.step_count || 1,
+          primary_next_api:projection.collect_api,
+          step_rows:[{
+            index:(projection.step_count || 1) - 1,
+            tool_id:serviceImportToolId,
+            tool_name:data.tool_name || serviceImportToolId,
+            status:data.status || 'passed',
+            status_ko:'읽기 전용 서비스 결과 가져오기 완료',
+            run_id:data.tool_run?.run_id || null,
+            raw_artifact_count:1,
+            can_collect_result:!!projection.can_collect_results,
+            operator_message_ko:'가져온 OpenVAS/ZAP 결과를 결과 회수·Evidence 후보 단계로 넘길 수 있습니다.',
+            errors:data.errors || [],
+          }],
+          does_not_mark_goal_complete:true,
+        }, checkedAt:new Date().toISOString(), error:null } : (s.redteam2ToolchainRunStatusState || {}),
         redteam2AnalysisDraft:{ ...this.redTeam2AnalysisDraft(), serviceImportToolId, serviceImportAuthorizationId:authorizationId, serviceImportEndpointUrl:endpointUrl, serviceImportTimeout:String(Number.isFinite(timeout) && timeout > 0 ? timeout : 10) },
       }));
       this.toast(`읽기 전용 서비스 결과 가져오기 완료: ${data.status || 'ready'}`, 'success');

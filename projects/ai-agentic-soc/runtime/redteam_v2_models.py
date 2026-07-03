@@ -1730,6 +1730,7 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
     profile = analysis_tool_profile(resolved_tool_id)
     case_id = str(payload.get("case_id") or "CASE-V2-SERVICE-IMPORT-001").strip()
     action_id = str(payload.get("action_id") or stable_id("TAC", [case_id, resolved_tool_id, "service-report-import"])).strip()
+    toolchain_id = str(payload.get("toolchain_id") or "").strip()
     authorization_id = str(payload.get("authorization_id") or payload.get("credential_authorization_id") or "").strip()
     endpoint_url = str(payload.get("endpoint_url") or "").strip()
     target_scope_refs = [str(item or "").strip() for item in (payload.get("target_scope_refs") or []) if str(item or "").strip()]
@@ -1909,6 +1910,7 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
         "kind": "redteam_ax_v2_scanner_service_report_import",
         "import_id": stable_id("SVCIMP", [case_id, run_id, resolved_tool_id, report_hash]),
         "case_id": case_id,
+        "toolchain_id": toolchain_id or None,
         "tool_id": resolved_tool_id,
         "tool_name": (profile or {}).get("name"),
         "status": "passed" if normalized.get("status") == "Normalized" and evidence.get("status") != "invalid" else "failed",
@@ -1946,6 +1948,82 @@ def import_scanner_service_report(tool_id: str, payload: dict[str, Any]) -> dict
         },
         "created_at": now_utc(),
     }
+    if toolchain_id:
+        existing_toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
+        existing_steps = list((existing_toolchain or {}).get("steps") or [])
+        step_record = {
+            "index": len(existing_steps),
+            "tool_id": resolved_tool_id,
+            "tool_name": (profile or {}).get("name"),
+            "action_id": action_id,
+            "execution_mode": "service_report_import",
+            "status": "imported",
+            "status_ko": "읽기 전용 서비스 결과 가져오기 완료",
+            "progress_percent": 100,
+            "operator_message_ko": "OpenVAS/ZAP 서비스에서 이미 승인된 read-only report/passive alert 결과만 가져왔습니다.",
+            "errors": [],
+            "plan": None,
+            "run": {
+                "run_id": tool_run.get("run_id"),
+                "status": tool_run.get("status"),
+                "policy_decision": "allowed_read_only_service_import",
+                "runner_attempt": None,
+                "raw_artifacts": tool_run.get("raw_artifacts") or [],
+                "artifact_path": tool_run.get("artifact_path"),
+                "analysis_agent_id": tool_run.get("analysis_agent_id"),
+                "normalizer_id": tool_run.get("normalizer_id"),
+            },
+            "import": {
+                "import_id": import_record["import_id"],
+                "status": import_record["status"],
+                "errors": import_record.get("errors") or [],
+                "artifact": raw_artifact,
+                "artifact_path": import_record.get("artifact_path"),
+                "service_fetch": service_fetch,
+            },
+        }
+        steps = [step for step in existing_steps if str(((step or {}).get("run") or {}).get("run_id") or "") != run_id]
+        step_record["index"] = len(steps)
+        steps.append(step_record)
+        imported_count = sum(1 for step in steps if step.get("status") == "imported")
+        blocked_count = sum(1 for step in steps if step.get("errors") or step.get("status") in {"blocked", "invalid"})
+        toolchain_record = {
+            "kind": "redteam_ax_v2_toolchain_service_import_projection",
+            "toolchain_id": toolchain_id,
+            "case_id": case_id,
+            "requested_by": requested_by,
+            "status": "completed_with_blocks" if blocked_count else "imported",
+            "errors": [],
+            "warnings": ["service_import_toolchain_projection_does_not_execute_scanner_commands"],
+            "tool_count": len(steps),
+            "imported_count": imported_count,
+            "blocked_count": blocked_count,
+            "progress_percent": 100 if imported_count else 0,
+            "completed_step_count": imported_count,
+            "current_stage_ko": "읽기 전용 서비스 결과 가져오기 완료",
+            "operator_summary_ko": "OpenVAS/ZAP 서비스 결과를 toolchain run으로 연결했습니다. 결과 회수 버튼으로 Evidence 후보를 만들 수 있습니다.",
+            "next_action_ko": "결과 회수·Evidence 후보 버튼을 눌러 sanitizer, 정규화, Evidence 후보 생성 단계를 진행하세요.",
+            "commands_executed_by_api": False,
+            "active_scan_executed": False,
+            "scanner_commands_executed_by_api": False,
+            "shell_expansion_allowed": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "requires_evidence_approval_before_finding": True,
+            "steps": steps,
+            "policy": "Scanner service import projection only links approved read-only OpenVAS/ZAP reports to the existing toolchain collection pipeline; it does not execute scans or trust raw output as instructions.",
+            "created_at": now_utc(),
+        }
+        append_artifact_metadata(toolchain_record, "toolchain-runs", toolchain_id)
+        import_record["toolchain_projection"] = {
+            "toolchain_id": toolchain_id,
+            "status": toolchain_record["status"],
+            "step_count": len(steps),
+            "collect_api": f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results",
+            "run_status_api": f"/api/redteam/v2/toolchains/{toolchain_id}/run-status",
+            "can_collect_results": imported_count > 0,
+            "does_not_mark_goal_complete": True,
+        }
     return append_artifact_metadata(import_record, "service-report-imports", import_record["import_id"])
 
 

@@ -4,7 +4,7 @@
   "task": "RedTeam AX next runtime tool integration continuation",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-142538-Red-Team-Studio-RedTeam-AX-next-runtime-tool-integration-continuation",
   "created_at": "2026-07-03T14:25:38+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-03T14:37:07+09:00"
+  ]
 }

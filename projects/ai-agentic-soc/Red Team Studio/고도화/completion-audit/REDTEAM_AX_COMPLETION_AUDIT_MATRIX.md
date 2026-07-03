@@ -201,6 +201,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 실행 결과는 저장 실행 상태 projection을 갱신해 `결과 회수·Evidence 후보` 흐름으로 이어질 수 있다.
 - 이 변경은 사용자가 임의 명령을 작성하지 않아도 설치 확인 smoke를 시작하게 하는 UI 계약이며, 실제 취약점 스캔이나 운영 closure gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - OpenVAS/ZAP service import 결과 회수 연결
+
+- `/api/redteam/v2/scanner-service-imports/{tool_id}`가 `toolchain_id`를 받으면 read-only service import 결과를 `toolchain-runs` projection으로 저장한다.
+- projection은 `run-status`와 `collect-results` API를 반환해 가져온 OpenVAS/ZAP report/passive alert를 Evidence 후보 workflow로 넘긴다.
+- RedTeam2는 `읽기 전용 서비스 결과 가져오기` 성공 시 저장 실행 상태를 `loaded-from-service-import`로 갱신한다.
+- 이 변경은 read-only 가져오기 결과 연결이며 실제 조직 endpoint/vault 실측, 6개 도구 coverage, Evidence 승인, Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

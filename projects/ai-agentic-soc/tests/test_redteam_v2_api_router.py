@@ -793,6 +793,77 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(unauthorized_role.json()["status"], "invalid")
         self.assertIn("approver_role_not_authorized_for_credential_vault", unauthorized_role.json()["errors"])
 
+    def test_v2_scanner_service_import_projects_to_toolchain_collection(self) -> None:
+        case_id = f"CASE-V2-SERVICE-IMPORT-TOOLCHAIN-{uuid.uuid4().hex[:8]}"
+        toolchain_id = "TCHAIN-SERVICE-IMPORT-PROJECTION-001"
+        endpoint_ref = "http://127.0.0.1:8080/reports/zap"
+        authorized = self.client.post(
+            "/api/redteam/v2/tool-credential-authorizations/TOOL-ZAP-001",
+            headers=self.actor_headers("lead@example.com", "red_team_lead"),
+            json={
+                "case_id": case_id,
+                "credential_ref": "vault://redteam/zap/passive-readonly",
+                "endpoint_ref": endpoint_ref,
+                "token_scopes": ["read:alerts"],
+                "read_only": True,
+                "purpose": "Read passive ZAP alerts for approved toolchain collection.",
+                "target_scope_refs": ["ROE-SERVICE-IMPORT-001"],
+            },
+        )
+        self.assertEqual(authorized.status_code, 200)
+        authorization = authorized.json()
+        self.assertEqual(authorization["status"], "authorized")
+
+        imported = self.client.post("/api/redteam/v2/scanner-service-imports/TOOL-ZAP-001", json={
+            "case_id": case_id,
+            "toolchain_id": toolchain_id,
+            "authorization_id": authorization["authorization_id"],
+            "endpoint_url": endpoint_ref,
+            "requested_by": "analyst@example.com",
+            "target_scope_refs": ["ROE-SERVICE-IMPORT-001"],
+            "raw_report": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Projection ZAP passive alert","riskdesc":"Low","confidence":"Medium","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        })
+        self.assertEqual(imported.status_code, 200)
+        imported_body = imported.json()
+        self.assertEqual(imported_body["kind"], "redteam_ax_v2_scanner_service_report_import")
+        self.assertEqual(imported_body["status"], "passed")
+        self.assertEqual(imported_body["toolchain_id"], toolchain_id)
+        self.assertFalse(imported_body["policy"]["active_scan_executed"])
+        self.assertFalse(imported_body["policy"]["scanner_commands_executed_by_api"])
+        projection = imported_body["toolchain_projection"]
+        self.assertEqual(projection["toolchain_id"], toolchain_id)
+        self.assertTrue(projection["can_collect_results"])
+        self.assertEqual(projection["collect_api"], f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results")
+        self.assertTrue(projection["does_not_mark_goal_complete"])
+
+        status = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/run-status", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+        })
+        self.assertEqual(status.status_code, 200)
+        status_body = status.json()
+        self.assertEqual(status_body["status"], "toolchain_run_status_loaded")
+        self.assertEqual(status_body["run_status"], "imported")
+        self.assertTrue(status_body["can_collect_results"])
+        self.assertEqual(status_body["collectable_step_count"], 1)
+        self.assertEqual(status_body["step_rows"][0]["tool_id"], "TOOL-ZAP-001")
+        self.assertFalse(status_body["commands_executed_by_api"])
+        self.assertFalse(status_body["active_scan_executed"])
+
+        collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
+            "case_id": case_id,
+            "requested_by": "analyst@example.com",
+            "summary": "읽기 전용 ZAP service import 결과를 Evidence 후보로 회수한다.",
+        })
+        self.assertEqual(collected.status_code, 200)
+        collection = collected.json()
+        self.assertEqual(collection["status"], "collected")
+        self.assertEqual(collection["step_count"], 1)
+        self.assertEqual(collection["evidence_candidate_count"], 1)
+        self.assertFalse(collection["commands_executed_by_api"])
+        self.assertFalse(collection["raw_output_trusted_as_instruction"])
+        self.assertIn("required_analysis_tool_coverage_incomplete", collection["warnings"])
+
     def test_v2_tool_wrapper_manifest_reports_hash_pinning_status(self) -> None:
         response = self.client.get("/api/redteam/v2/tool-wrapper-manifests")
         self.assertEqual(response.status_code, 200)

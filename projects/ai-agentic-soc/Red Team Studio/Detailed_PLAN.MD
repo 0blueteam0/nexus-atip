@@ -1216,3 +1216,13 @@ Create Case
 - 안전 원칙: 버튼 설명에는 `safe_local_smoke_button`, version-only 자동 구성, 임의 스캔 명령, active scan, Docker/WSL/network 실행 금지를 명시한다. OpenVAS/ZAP, SCA, active scan command는 이 버튼이 자동 실행하지 않는다.
 - 테스트 전략: `node --check`, frontend runtime readiness contract, Korean copy inventory가 새 버튼과 안전 문구를 검증한다. API의 실제 허용/차단 로직은 RTA-COMP-062 regression으로 유지한다.
 - 예외 케이스: 이 버튼으로 나온 stdout/stderr도 untrusted runner artifact이며, Evidence 후보 생성과 승인 전에는 Finding 또는 Report Claim 근거가 아니다.
+
+## 77. 갱신 목표 반영 - OpenVAS/ZAP service import 결과 회수 연결
+
+- 목적: OpenVAS/ZAP 읽기 전용 서비스 결과 가져오기가 단독 Evidence 후보 생성에 머무르면 초급 사용자가 다음 `결과 회수·Evidence 후보` workflow로 이어가기 어렵다.
+- API 설계: `/api/redteam/v2/scanner-service-imports/{tool_id}`는 선택 입력 `toolchain_id`를 받는다. 값이 있으면 service import로 만든 ToolRunRecord를 `redteam_ax_v2_toolchain_service_import_projection` 형태의 `toolchain-runs` artifact에 step으로 저장한다.
+- 상태 조회 연결: projection은 `/api/redteam/v2/toolchains/{toolchain_id}/run-status`와 `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`를 `toolchain_projection.run_status_api`, `toolchain_projection.collect_api`로 반환한다.
+- 화면/기능 명세: RedTeam2 `읽기 전용 서비스 결과 가져오기` 버튼은 `toolchain_id={reportId}-TOOLCHAIN-SERVICE-IMPORT`를 payload에 포함하고, 성공 시 `redteam2ToolchainRunStatusState`를 `loaded-from-service-import`로 갱신한다.
+- 안전 원칙: service import projection은 이미 승인된 read-only report/passive alert만 연결한다. scanner command, active scan, shell expansion, secret material 저장은 계속 금지하며 raw output은 untrusted data다.
+- 테스트 전략: API regression은 ZAP raw report를 service import로 넣은 뒤 run-status가 collect 가능 1단계를 반환하고, collect-results가 Evidence 후보 1건과 required coverage 미완료 warning을 반환하는지 검증한다. frontend service import contract는 `toolchain_id`, `loaded-from-service-import`, 결과 회수 안내 문구를 검사한다.
+- 예외 케이스: 이 연결은 단일 OpenVAS/ZAP 결과를 collection pipeline으로 넘기는 경로다. 실제 완료에는 조직 endpoint/vault 실측, Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage, Evidence 승인, Finding severity 승인, Matrix/Report/export/completion gate가 필요하다.

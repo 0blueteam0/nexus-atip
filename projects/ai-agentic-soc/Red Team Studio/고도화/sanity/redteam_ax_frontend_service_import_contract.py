@@ -41,12 +41,16 @@ def main() -> int:
 
     required_method_terms = [
         "/api/redteam/v2/scanner-service-imports/",
+        "toolchain_id:toolchainId",
         "authorization_id:authorizationId",
         "endpoint_url:endpointUrl",
         "requested_by:'current-analyst'",
         "target_scope_refs:",
         "timeout_seconds:",
         "redteam2ServiceImportState",
+        "redteam2ToolchainRunStatusState",
+        "loaded-from-service-import",
+        "가져온 OpenVAS/ZAP 결과를 결과 회수·Evidence 후보 단계로 넘길 수 있습니다",
     ]
     missing_method_terms = [term for term in required_method_terms if term not in method]
     if missing_method_terms:
