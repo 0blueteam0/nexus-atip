@@ -234,10 +234,18 @@ def accepted_gates() -> list[dict]:
         },
         {
             "gate_id": "GATE-WSL-RUNTIME-READINESS",
-            "name": "WSL runtime readiness artifact and blocked-start evidence",
+            "name": "WSL runtime readiness artifact and fallback selection evidence",
             "category": "wsl_runtime_readiness",
             "cwd": REDTEAM_ROOT,
             "command": [py, "고도화/sanity/redteam_ax_wsl_runtime_readiness.py", "--allow-start"],
+            "timeout_seconds": 60,
+        },
+        {
+            "gate_id": "GATE-WSL-RUNTIME-FALLBACK-UNIT",
+            "name": "WSL runtime readiness fallback unit regression",
+            "category": "wsl_runtime_readiness",
+            "cwd": PROJECT_ROOT,
+            "command": [py, "-m", "pytest", "tests/test_redteam_ax_wsl_runtime_readiness.py", "-q"],
             "timeout_seconds": 60,
         },
         {
@@ -327,6 +335,7 @@ def accepted_gates() -> list[dict]:
                 "Red Team Studio/고도화/sanity/redteam_ax_operator_evidence_card_import_plan.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_tool_result_analysis_brief.py",
                 "Red Team Studio/고도화/sanity/redteam_ax_tool_result_finding_claim_review.py",
+                "tests/test_redteam_ax_wsl_runtime_readiness.py",
             ],
             "timeout_seconds": 60,
         },

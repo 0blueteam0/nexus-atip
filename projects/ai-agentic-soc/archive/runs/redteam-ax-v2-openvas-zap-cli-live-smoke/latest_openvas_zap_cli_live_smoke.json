@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_openvas_zap_cli_live_smoke",
-  "created_at": "2026-07-03T02:44:51Z",
+  "created_at": "2026-07-03T03:29:57Z",
   "case_id": "CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001",
   "status": "passed",
   "safe_by_default": true,
@@ -16,18 +16,13 @@
       "exit_code": 0
     },
     "pip_install": {
-      "argv": [
-        "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\Scripts\\python.exe",
-        "-m",
-        "pip",
-        "install",
-        "gvm-tools==26.0.6",
-        "zapcli==0.10.0",
-        "python-owasp-zap-v2.4==0.0.14"
-      ],
+      "status": "already_satisfied",
       "exit_code": 0,
-      "stdout_excerpt": "Requirement already satisfied: gvm-tools==26.0.6 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (26.0.6)\nRequirement already satisfied: zapcli==0.10.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (0.10.0)\nRequirement already satisfied: python-owasp-zap-v2.4==0.0.14 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (0.0.14)\nRequirement already satisfied: python-gvm>=26.0.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from gvm-tools==26.0.6) (27.4.0)\nRequirement already satisfied: click==4.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from zapcli==0.10.0) (4.0)\nRequirement already satisfied: requests==2.20.1 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from zapcli==0.10.0) (2.20.1)\nRequirement already satisfied: tabulate==0.7.5 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from zapcli==0.10.0) (0.7.5)\nRequirement already satisfied: termcolor==1.1.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from zapcli==0.10.0) (1.1.0)\nRequirement already satisfied: six==1.10.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from zapcli==0.10.0) (1.10.0)\nRequirement already satisfied: chardet<3.1.0,>=3.0.2 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from requests==2.20.1->zapcli==0.10.0) (3.0.4)\nRequirement already satisfied: idna<2.8,>=2.5 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from requests==2.20.1->zapcli==0.10.0) (2.7)\nRequirement already satisfied: urllib3<1.25,>=1.21.1 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from requests==2.20.1->zapcli==0.10.0) (1.24.3)\nRequirement already satisfied: certifi>=2017.4.17 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from requests==2.20.1->zapcli==0.10.0) (2026.6.17)\nRequirement already satisfied: httpx<0.29,>=0.28.1 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from httpx[http2]<0.29,>=0.28.1->python-gvm>=26.0.0->gvm-tools==26.0.6) (0.28.1)\nRequirement already satisfied: lxml>=4.5.0 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from python-gvm>=26.0.0->gvm-tools==26.0.6) (6.1.1)\nRequirement already satisfied: paramiko>=2.7.1 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from python-gvm>=26.0.0->gvm-tools==26.0.6) (5.0.0)\nRequirement already satisfied: anyio in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from httpx<0.29,>=0.28.1->httpx[http2]<0.29,>=0.28.1->python-gvm>=26.0.0->gvm-tools==26.0.6) (1.3.1)\nRequirement already satisfied: httpcore==1.* in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from httpx<0.29,>=0.28.1->httpx[http2]<0.29,>=0.28.1->python-gvm>=26.0.0->gvm-tools==26.0.6) (1.0.9)\nRequirement already satisfied: h11>=0.16 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from httpcore==1.*->httpx<0.29,>=0.28.1->httpx[http2]<0.29,>=0.28.1->python-gvm>=26.0.0->gvm-tools==26.0.6) (0.16.0)\nRequirement already satisfied: h2<5,>=3 in j:\\portableapps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\lib\\site-packages (from httpx[http2]<0.29,",
-      "stderr_excerpt": "\n[notice] A new release of pip is available: 24.0 -> 26.1.2\n[notice] To update, run: J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\tools\\redteam-ax\\venvs\\openvas-zap-cli\\Scripts\\python.exe -m pip install --upgrade pip\n"
+      "target_executables": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/venvs/openvas-zap-cli/Scripts/gvm-cli.exe",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tools/redteam-ax/venvs/openvas-zap-cli/Scripts/zap-cli.exe"
+      ],
+      "network_install_skipped": true
     },
     "packages": [
       "gvm-tools==26.0.6",
@@ -57,12 +52,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-45F1A7E811A0",
+        "pin_request_id": "TWPINREQ-FD146488F71F",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-CF653CED73C1",
+        "approval_id": "TWPINAP-B696071643B7",
         "errors": []
       },
       "governed": {
@@ -72,7 +67,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-288623DCDFC0",
+          "execution_plan_id": "TEP-EF2AE0113D73",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -80,10 +75,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-D81CF08040FE",
+          "run_id": "TRUN-97837DE88C32",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D81CF08040FE.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-97837DE88C32.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -93,13 +88,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-1DC593B75815",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-1DC593B75815.json"
+          "result_id": "NR-AA731626113D",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-AA731626113D.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-5BAE77EA5553",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5BAE77EA5553.json"
+          "evidence_id": "EV-82EFB56926DE",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-82EFB56926DE.json"
         }
       }
     },
@@ -124,12 +119,12 @@
       },
       "pin_request": {
         "status": "submitted",
-        "pin_request_id": "TWPINREQ-D41179F9E504",
+        "pin_request_id": "TWPINREQ-91DA6175C59E",
         "errors": []
       },
       "pin_approval": {
         "status": "approved",
-        "approval_id": "TWPINAP-0CF5ECED05B1",
+        "approval_id": "TWPINAP-711341B5D3F6",
         "errors": []
       },
       "governed": {
@@ -139,7 +134,7 @@
         },
         "plan": {
           "status": "PlanReady",
-          "execution_plan_id": "TEP-424CD153E7C0",
+          "execution_plan_id": "TEP-C775C584BF6B",
           "token_status": "issued",
           "pinning_status": "hash_match",
           "errors": [],
@@ -147,10 +142,10 @@
         },
         "run": {
           "status": "RunnerExecuted",
-          "run_id": "TRUN-2B0AB2A30F35",
+          "run_id": "TRUN-40617C556B3C",
           "runner_status": "executed",
           "exit_code": 0,
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B0AB2A30F35.json",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-40617C556B3C.json",
           "raw_artifact_count": 1,
           "errors": []
         },
@@ -160,13 +155,13 @@
         },
         "agent_analyze": {
           "status": "Normalized",
-          "result_id": "NR-C96DE8A900E7",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-C96DE8A900E7.json"
+          "result_id": "NR-19E2D7B1D15B",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-19E2D7B1D15B.json"
         },
         "evidence": {
           "status": null,
-          "evidence_id": "EV-81A52C933401",
-          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-81A52C933401.json"
+          "evidence_id": "EV-A7ED1EF73DD1",
+          "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-A7ED1EF73DD1.json"
         }
       }
     }

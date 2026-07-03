@@ -1,7 +1,7 @@
 # RedTeam AX Live Readiness Remediation Runbook
 
 - status: `ready_for_operator_remediation`
-- created_at: `2026-07-03T02:45:19Z`
+- created_at: `2026-07-03T03:30:56Z`
 - blocked_step_count: `5`
 
 ## Operator Summary
@@ -35,7 +35,7 @@ Evidence required: `latest_container_runtime_smoke.json status=passed`
 
 - owner: `platform_operator`
 - status: `blocked`
-- blockers: `wsl_distribution_start_failed`
+- blockers: `promotion_artifact_missing`
 
 Actions:
 - wsl.exe -l -v로 대상 배포판 이름과 상태를 확인한다.
@@ -93,7 +93,7 @@ Evidence required: `latest_external_scanner_service_import_live_smoke.json statu
 
 - owner: `red_team_lead`
 - status: `blocked`
-- blockers: `PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-WSL-RUNTIME-READY:wsl_distribution_start_failed, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing, PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
+- blockers: `PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing, PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
 
 Actions:
 - 위 네 단계를 모두 통과한 뒤에만 최종 promotion gate를 실행한다.

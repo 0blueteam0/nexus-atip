@@ -215,13 +215,13 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 32. 개발 과정에서 만들어진 fixture, smoke artifact, test-like path, archive run 부산물은 실제 업무 절차와 맞지 않으면 완료 증거에서 제외한다. completion claim은 승인된 운영 케이스, ROE/HITL, 실제 운영 도구 결과 또는 승인된 operator import, Evidence Card 승인, Finding severity 승인, Claim-Evidence Matrix, Report v2 export gate로만 뒷받침한다. 정본 분류 산출물은 `고도화/completion-audit/redteam_ax_development_byproduct_exclusion_review.json`이며, byproduct row는 `completion_evidence_allowed=false`, `report_claim_evidence_allowed=false`여야 한다.
 33. `/api/redteam/v2/toolchains/operating-closure-submission-package`는 `require_real_completion_evidence=true`일 때 `CASE-V2`, `fixture`, `smoke`, `sample`, `test`, `operator-scanner-outputs` source를 완료 증거 후보에서 차단한다. 응답의 `source_completion_review`, `completion_evidence_allowed`, `report_claim_evidence_allowed`, `development_byproduct_exclusion` row가 이 판단의 정본이다. RedTeam2는 이 strict mode를 기본으로 호출하므로, 운영 closure는 실제 운영 source 또는 승인된 operator import에서 다시 만들어야 한다.
 34. `/api/redteam/v2/goal-completion-review`는 전체 thread goal 완료 전 마지막 기계 검토 API다. completion audit matrix, accepted gate manifest, zero-count 종료 조건, development byproduct exclusion review를 읽고 `audit_items`의 unresolved 상태, `remaining_gaps`, `goal_status != complete`, accepted gate 실패, byproduct control 실패가 있으면 `goal_completion_blocked`를 반환한다. 이 API도 `does_not_mark_goal_complete=true`이며, 실제 goal 완료 처리는 모든 blocker가 0건이 된 뒤 별도로 판단한다.
-35. ephemeral container runner는 Docker image ENTRYPOINT를 신뢰하지 않고 `--entrypoint=`로 비운 뒤 allowlist가 승인한 `runner_argv`만 실행한다. `latest_container_runtime_smoke.json`의 `status=passed`는 Docker/container runtime 준비 증거로 사용할 수 있지만, WSL, 조직 OpenVAS/ZAP endpoint/vault, 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
+35. ephemeral container runner는 Docker image ENTRYPOINT를 신뢰하지 않고 `--entrypoint=`로 비운 뒤 allowlist가 승인한 `runner_argv`만 실행한다. `latest_container_runtime_smoke.json`의 `status=passed`는 Docker/container runtime 준비 증거로 사용할 수 있지만, 조직 OpenVAS/ZAP endpoint/vault와 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
+36. WSL runtime readiness는 기본 배포판이 깨졌을 때 대체 non-internal 배포판을 자동 probe한다. `latest_wsl_runtime_readiness.json`의 `status=ready`와 `selected_distro=Ubuntu-22.04-AISOC-Rebuild`는 WSL runtime blocker 해소 증거지만, 기본 Ubuntu-22.04 VHDX 손상은 failed probe로 보존되며 조직 OpenVAS/ZAP endpoint/vault 및 실제 6개 도구 운영 closure 증거를 대신하지 않는다.
 
 ## 남은 작업
 
 - qmd/kdq 검색 인덱스 연결
 - Graph node/edge 후보 자동 생성
-- WSL 배포판 start 및 required scanner tool path 준비 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

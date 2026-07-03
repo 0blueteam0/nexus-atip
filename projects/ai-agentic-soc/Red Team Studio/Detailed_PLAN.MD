@@ -1124,4 +1124,13 @@ Create Case
 - 이유: `aquasec/trivy` 이미지는 ENTRYPOINT가 `trivy`라서 기존 방식은 승인된 `["trivy", "--version"]`이 컨테이너 내부에서 `trivy trivy --version`으로 해석될 수 있었다. ENTRYPOINT를 비우면 child-process allowlist가 승인한 명령만 실제 실행된다.
 - 실측 증거: `.venv` Python으로 `redteam_ax_container_runtime_smoke.py --allow-real --require-real --timeout 90`을 실행했고 `latest_container_runtime_smoke.json`에 Docker Desktop engine, local pinned `aquasec/trivy` digest, ToolActionCard, ExecutionPlan, execution token, network none, read-only rootfs, dropped capabilities, no-new-privileges, runner exit 0, `status=passed`가 남았다.
 - 테스트 전략: API regression은 dry-run launch plan에 `--entrypoint=`, pinned image digest, approved runner argv, isolation controls가 존재하는지 검증한다. 실제 smoke artifact는 accepted gate 및 completion audit의 runtime evidence로 보존한다.
-- 예외 케이스: 이 증거는 Docker/container runtime 부분만 해소한다. WSL 배포판 start/tool path, 조직 OpenVAS/ZAP read-only endpoint/vault, 실제 6개 도구 운영 Evidence/Finding/Matrix/Report/export closure가 남아 있으면 RTA-COMP-015와 전체 goal은 완료가 아니다.
+- 예외 케이스: 이 증거는 Docker/container runtime 부분만 해소한다. 이후 WSL alternate distro readiness도 통과했지만, 조직 OpenVAS/ZAP read-only endpoint/vault와 실제 6개 도구 운영 Evidence/Finding/Matrix/Report/export closure가 남아 있으면 RTA-COMP-015와 전체 goal은 완료가 아니다.
+
+## 67. 갱신 목표 반영 - WSL alternate distro readiness
+
+- 목적: 기본 WSL 배포판이 손상되어도 사용 가능한 대체 배포판이 있는 경우 runtime readiness를 실제 상태에 맞게 좁히고, 손상 증거와 fallback 선택을 모두 보존한다.
+- 구현: `redteam_ax_wsl_runtime_readiness.py`는 requested/default/running/stopped 순서로 probe 후보를 만들고, `docker-desktop` internal distro는 마지막 fallback으로 배치한다. 각 probe의 stdout/stderr, exit_code, available tool paths, blocker classification을 `wsl_tool_probe_results`에 보존한다.
+- 실패 분류: 기본 `Ubuntu-22.04`의 `Wsl/Service/CreateInstance/MountDisk/HCS/0x80070570`은 `wsl_ext4_vhdx_corrupt_or_unreadable`, `wsl_mount_disk_failed`로 분류한다. path missing 계열은 `wsl_ext4_vhdx_path_not_found`로 분류한다.
+- 실측 증거: 현재 환경에서는 `Ubuntu-22.04`가 VHDX mount failure로 실패하고, `Ubuntu-22.04-AISOC-Rebuild`가 시작되어 npm/docker path를 반환한다. `latest_wsl_runtime_readiness.json`은 `status=ready`, `selected_distro=Ubuntu-22.04-AISOC-Rebuild`, `failed_probe_count_before_selection=1`을 기록한다.
+- 테스트 전략: `tests/test_redteam_ax_wsl_runtime_readiness.py`는 run_command를 mock해 default distro mount failure 후 alternate distro selection과 blocker preservation을 검증한다. accepted gate manifest에는 `GATE-WSL-RUNTIME-FALLBACK-UNIT`을 추가한다.
+- 예외 케이스: WSL readiness는 runtime blocker 해소 증거일 뿐이다. 실제 조직 OpenVAS/ZAP endpoint/vault와 실제 6개 도구 운영 Evidence/Finding/Matrix/Report/export closure가 남아 있으면 RTA-COMP-015와 전체 goal은 완료가 아니다.

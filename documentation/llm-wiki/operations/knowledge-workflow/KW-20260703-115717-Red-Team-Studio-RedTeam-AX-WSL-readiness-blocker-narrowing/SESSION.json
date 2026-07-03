@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260703-115717-Red-Team-Studio-RedTeam-AX-WSL-readiness-blocker-narrowing",
+  "project": "Red Team Studio",
+  "task": "RedTeam AX WSL readiness blocker narrowing",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-115717-Red-Team-Studio-RedTeam-AX-WSL-readiness-blocker-narrowing",
+  "created_at": "2026-07-03T11:57:17+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}

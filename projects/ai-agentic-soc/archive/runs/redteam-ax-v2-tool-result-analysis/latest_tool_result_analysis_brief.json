@@ -1,6 +1,6 @@
 {
   "kind": "redteam_ax_tool_result_analysis_brief",
-  "created_at": "2026-07-03T02:45:21Z",
+  "created_at": "2026-07-03T03:30:57Z",
   "status": "tool_result_analysis_ready",
   "safe_by_default": true,
   "commands_executed_by_api": false,
@@ -14,35 +14,35 @@
       "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
       "exists": true,
       "status": "passed",
-      "created_at": "2026-07-03T02:44:20Z"
+      "created_at": "2026-07-03T03:29:34Z"
     },
     {
       "source": "nuclei_trivy",
       "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
       "exists": true,
       "status": "passed",
-      "created_at": "2026-07-03T02:44:26Z"
+      "created_at": "2026-07-03T03:29:37Z"
     },
     {
       "source": "openvas_zap_cli",
       "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
       "exists": true,
       "status": "passed",
-      "created_at": "2026-07-03T02:44:51Z"
+      "created_at": "2026-07-03T03:29:57Z"
     },
     {
       "source": "openvas_zap_service_import",
       "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json",
       "exists": true,
       "status": "passed",
-      "created_at": "2026-07-03T02:45:05Z"
+      "created_at": "2026-07-03T03:30:15Z"
     },
     {
       "source": "external_scanner_service_import_live",
       "path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-external-scanner-service-import-live/latest_external_scanner_service_import_live_smoke.json",
       "exists": true,
       "status": "blocked_external_scanner_import_not_ready",
-      "created_at": "2026-07-03T02:45:18Z"
+      "created_at": "2026-07-03T03:30:55Z"
     }
   ],
   "summary": {
@@ -147,12 +147,12 @@
       "source": "npm_audit",
       "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-installed-tool-live-smoke/latest_installed_tool_live_smoke.json",
       "status": "passed",
-      "run_id": "TRUN-8EE46009AD06",
-      "result_id": "NR-0A8C41E95938",
-      "evidence_id": "EV-0777C7DDA9BC",
-      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-8EE46009AD06.json",
-      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-0A8C41E95938.json",
-      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-0777C7DDA9BC.json",
+      "run_id": "TRUN-1845CBF8E3D7",
+      "result_id": "NR-16DE4527DD01",
+      "evidence_id": "EV-2EEF2FC437CA",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/tool-runs/TRUN-1845CBF8E3D7.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/normalized-results/NR-16DE4527DD01.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-INSTALLED-TOOL-LIVE-SMOKE-001/evidence/EV-2EEF2FC437CA.json",
       "trusted_as_instruction": false,
       "requires_human_validation": true,
       "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
@@ -164,12 +164,12 @@
       "source": "nuclei_trivy",
       "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
       "status": "passed",
-      "run_id": "TRUN-D2270C36AE7E",
-      "result_id": "NR-BFE18D55614B",
-      "evidence_id": "EV-75981E76CEA9",
-      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D2270C36AE7E.json",
-      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-BFE18D55614B.json",
-      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-75981E76CEA9.json",
+      "run_id": "TRUN-716F0F608AE7",
+      "result_id": "NR-5EEBC0EC0D21",
+      "evidence_id": "EV-2E4D8701BFF7",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-716F0F608AE7.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-5EEBC0EC0D21.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-2E4D8701BFF7.json",
       "trusted_as_instruction": false,
       "requires_human_validation": true,
       "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
@@ -181,12 +181,12 @@
       "source": "nuclei_trivy",
       "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-scanner-cli-live-smoke/latest_scanner_cli_live_smoke.json",
       "status": "passed",
-      "run_id": "TRUN-308783F6942F",
-      "result_id": "NR-AF3F508A9B70",
-      "evidence_id": "EV-8AEAED117380",
-      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-308783F6942F.json",
-      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-AF3F508A9B70.json",
-      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-8AEAED117380.json",
+      "run_id": "TRUN-8919403B0F28",
+      "result_id": "NR-FEC9F1ED80CE",
+      "evidence_id": "EV-521B65A87263",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/tool-runs/TRUN-8919403B0F28.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/normalized-results/NR-FEC9F1ED80CE.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-SCANNER-CLI-LIVE-SMOKE-001/evidence/EV-521B65A87263.json",
       "trusted_as_instruction": false,
       "requires_human_validation": true,
       "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
@@ -198,12 +198,12 @@
       "source": "openvas_zap_cli",
       "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
       "status": "passed",
-      "run_id": "TRUN-D81CF08040FE",
-      "result_id": "NR-1DC593B75815",
-      "evidence_id": "EV-5BAE77EA5553",
-      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-D81CF08040FE.json",
-      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-1DC593B75815.json",
-      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-5BAE77EA5553.json",
+      "run_id": "TRUN-97837DE88C32",
+      "result_id": "NR-AA731626113D",
+      "evidence_id": "EV-82EFB56926DE",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-97837DE88C32.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-AA731626113D.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-82EFB56926DE.json",
       "trusted_as_instruction": false,
       "requires_human_validation": true,
       "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
@@ -215,12 +215,12 @@
       "source": "openvas_zap_cli",
       "source_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-cli-live-smoke/latest_openvas_zap_cli_live_smoke.json",
       "status": "passed",
-      "run_id": "TRUN-2B0AB2A30F35",
-      "result_id": "NR-C96DE8A900E7",
-      "evidence_id": "EV-81A52C933401",
-      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-2B0AB2A30F35.json",
-      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-C96DE8A900E7.json",
-      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-81A52C933401.json",
+      "run_id": "TRUN-40617C556B3C",
+      "result_id": "NR-19E2D7B1D15B",
+      "evidence_id": "EV-A7ED1EF73DD1",
+      "run_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/tool-runs/TRUN-40617C556B3C.json",
+      "normalized_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/normalized-results/NR-19E2D7B1D15B.json",
+      "evidence_artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2/CASE-V2-OPENVAS-ZAP-CLI-LIVE-SMOKE-001/evidence/EV-A7ED1EF73DD1.json",
       "trusted_as_instruction": false,
       "requires_human_validation": true,
       "claim_evidence_matrix_hint": "Use only after analyst review and Evidence Card approval."
@@ -323,11 +323,11 @@
       "claim_id": "CLAIM-TOOL-RUN-GOVERNED",
       "statement_ko": "승인된 도구 실행 흐름에서 일부 도구 결과가 정규화되었습니다.",
       "supporting_evidence_ids": [
-        "EV-0777C7DDA9BC",
-        "EV-75981E76CEA9",
-        "EV-8AEAED117380",
-        "EV-5BAE77EA5553",
-        "EV-81A52C933401"
+        "EV-2EEF2FC437CA",
+        "EV-2E4D8701BFF7",
+        "EV-521B65A87263",
+        "EV-82EFB56926DE",
+        "EV-A7ED1EF73DD1"
       ],
       "support_level": "supported",
       "requires_human_approval": true

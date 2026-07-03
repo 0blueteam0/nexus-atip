@@ -99,9 +99,18 @@ def ensure_isolated_venv() -> dict:
     else:
         created = {"status": "already_exists", "exit_code": 0}
     packages = ["gvm-tools==26.0.6", "zapcli==0.10.0", "python-owasp-zap-v2.4==0.0.14"]
-    installed = run([str(python_exe), "-m", "pip", "install", *packages], timeout=240)
-    if installed["exit_code"] != 0:
-        raise AssertionError(f"isolated cli package install failed: {installed}")
+    targets = [ISOLATED_VENV / "Scripts" / tool["target_exe"] for tool in TOOLS]
+    if all(target.exists() for target in targets) and os.environ.get("REDTEAM_AX_FORCE_OPENVAS_ZAP_CLI_INSTALL", "").lower() not in {"1", "true", "yes"}:
+        installed = {
+            "status": "already_satisfied",
+            "exit_code": 0,
+            "target_executables": [target.as_posix() for target in targets],
+            "network_install_skipped": True,
+        }
+    else:
+        installed = run([str(python_exe), "-m", "pip", "install", *packages], timeout=240)
+        if installed["exit_code"] != 0:
+            raise AssertionError(f"isolated cli package install failed: {installed}")
     return {
         "venv_path": ISOLATED_VENV.as_posix(),
         "python": python_exe.as_posix(),

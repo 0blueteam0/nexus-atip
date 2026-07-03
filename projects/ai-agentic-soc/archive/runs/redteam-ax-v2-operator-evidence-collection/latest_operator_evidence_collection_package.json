@@ -1,7 +1,7 @@
 {
   "kind": "redteam_ax_operator_evidence_collection_package",
   "schema_version": "0.1",
-  "created_at": "2026-07-03T02:45:19Z",
+  "created_at": "2026-07-03T03:30:56Z",
   "source_runbook_artifact": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-live-readiness-remediation/latest_live_readiness_remediation_runbook.json",
   "status": "ready_for_operator_evidence_collection",
   "safe_by_default": true,
@@ -49,7 +49,7 @@
       "owner": "platform_operator",
       "current_step_status": "blocked",
       "blockers": [
-        "wsl_distribution_start_failed"
+        "promotion_artifact_missing"
       ],
       "operator_actions": [
         "wsl.exe -l -v로 대상 배포판 이름과 상태를 확인한다.",
@@ -137,7 +137,6 @@
       "current_step_status": "blocked",
       "blockers": [
         "PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real",
-        "PROMOTE-WSL-RUNTIME-READY:wsl_distribution_start_failed",
         "PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing",
         "PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing"
       ],

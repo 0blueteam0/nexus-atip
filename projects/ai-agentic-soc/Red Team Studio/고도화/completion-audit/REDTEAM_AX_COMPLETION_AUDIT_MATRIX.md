@@ -35,7 +35,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 | 상태 | 건수 | 의미 |
 |---|---:|---|
-| `proved` | 52 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
+| `proved` | 53 | 현재 소스/테스트/스모크 산출물로 해당 범위를 주장 가능 |
 | `partial` | 1 | 중요한 구현 증거는 있으나 요구 범위 전체를 증명하기에는 부족 |
 | `gap` | 0 | 계획에 명시된 미구현 또는 미검증 기능 |
 | `blocked` | 0 | 환경 조건 때문에 최종 증거가 아직 없음 |
@@ -93,7 +93,7 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2 `OpenVAS/ZAP 서비스 결과 가져오기` 한국어 패널과 frontend service import contract sanity
 - `/api/redteam/v2/runtime-readiness` read-only API와 RedTeam2 `실행 환경 준비도 / 남은 실측 조건` 한국어 패널, 운영자 조치 runbook 단계 표, 운영자 증거 수집/제출 검증/Evidence Card 후보 import 계획 표
 - 조직 OpenVAS/ZAP endpoint/vault env가 준비되면 backend credential authorization과 scanner-service-import API를 통해 실제 read-only import를 수행하는 live harness
-- 외부 OpenVAS/ZAP read-only endpoint/vault reference readiness artifact, 실제 Docker container runtime smoke passed artifact, WSL 배포판 시작 blocker artifact, strict live readiness promotion blocker artifact, live readiness remediation runbook artifact, operator evidence collection package artifact, operator evidence submission validation artifact, operator Evidence Card import plan artifact
+- 외부 OpenVAS/ZAP read-only endpoint/vault reference readiness artifact, 실제 Docker container runtime smoke passed artifact, WSL alternate distro fallback ready artifact, strict live readiness promotion blocker artifact, live readiness remediation runbook artifact, operator evidence collection package artifact, operator evidence submission validation artifact, operator Evidence Card import plan artifact
 - 전체 accepted gate manifest: API regression, sample E2E/report gate, audit sanity, plan contract, Korean copy inventory, installed-tool live smoke, scanner CLI smoke, OpenVAS/ZAP CLI smoke, OpenVAS/ZAP service import smoke, frontend service import contract, frontend runtime readiness contract, external scanner readiness, external scanner service import live harness, WSL runtime readiness, strict live readiness promotion, live readiness remediation runbook, operator evidence collection package, operator evidence submission validation, operator Evidence Card import plan, tool result analysis brief, tool result finding/claim review, Python compile, frontend JS check, frontend build 통과
 - Evidence Card, Claim-Evidence Matrix, Report v2 gate 0-count 샘플 E2E
 - Agentic RAG SCA/citation verifier와 unsupported claim hold
@@ -101,7 +101,6 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 
 ## 아직 완료로 주장하면 안 되는 항목
 
-- WSL 배포판 mount/start 복구 후 scanner tool path ready 증거
 - `redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion` 통과 증거
 - `redteam_ax_live_readiness_remediation_runbook.py --require-clear` 통과 증거
 - `redteam_ax_operator_evidence_collection_package.py --require-inputs-ready` 통과 증거
@@ -129,8 +128,15 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - `runtime/redteam_v2_models.py`의 ephemeral container launcher는 image ENTRYPOINT를 비우는 `--entrypoint=`를 추가하고 `entrypoint_policy=cleared_to_execute_only_approved_runner_argv`를 남긴다.
 - 이 변경은 Trivy 이미지처럼 ENTRYPOINT가 있는 컨테이너에서 allowlist가 승인한 `runner_argv`만 실행되도록 하며, `trivy trivy --version` 같은 중복 실행 실패를 제거한다.
 - `latest_container_runtime_smoke.json`은 Docker Desktop engine, local pinned `aquasec/trivy` digest, ToolActionCard, ExecutionPlan, execution token, child-process allowlist, network none, read-only rootfs, dropped capabilities, no-new-privileges, runner exit 0을 기록한다.
-- `latest_strict_live_readiness_promotion.json`은 promotion 4개 중 Docker container gate 1개 통과, WSL 및 실제 조직 OpenVAS/ZAP endpoint/vault 3개 미통과를 기록한다.
-- 따라서 Docker/container runtime blocker는 해소되었지만, RTA-COMP-015는 WSL, 실제 조직 OpenVAS/ZAP, 실제 6개 도구 운영 closure가 남아 있어 계속 `partial`이다.
+- 당시 `latest_strict_live_readiness_promotion.json`은 Docker container gate 1개 통과와 WSL/실제 조직 OpenVAS/ZAP blocker를 기록했다. 이후 WSL alternate distro fallback도 ready로 갱신되었으므로 현재 남은 runtime blocker는 실제 조직 OpenVAS/ZAP endpoint/vault와 실제 6개 도구 운영 closure다.
+
+## 2026-07-03 갱신 - WSL alternate distro fallback readiness 통과
+
+- `redteam_ax_wsl_runtime_readiness.py`는 기본 배포판만 검사하지 않고 requested/default/running/stopped 순서로 후보를 만들며, `docker-desktop` 같은 internal distro는 마지막 fallback으로 둔다.
+- 기본 `Ubuntu-22.04`는 `0x80070570` VHDX mount 오류로 실패하며 artifact에 `wsl_ext4_vhdx_corrupt_or_unreadable`, `wsl_mount_disk_failed` blocker로 보존된다.
+- 대체 `Ubuntu-22.04-AISOC-Rebuild`는 start/tool path probe에 성공했고 `latest_wsl_runtime_readiness.json`은 `status=ready`, `selected_distro=Ubuntu-22.04-AISOC-Rebuild`, `failed_probe_count_before_selection=1`, npm/docker path를 기록한다.
+- `latest_strict_live_readiness_promotion.json`은 promotion 4개 중 Docker와 WSL 2개 통과, 실제 조직 OpenVAS/ZAP endpoint/vault 2개 미통과를 기록한다.
+- 따라서 Docker와 WSL runtime blocker는 해소되었지만, RTA-COMP-015는 실제 조직 OpenVAS/ZAP와 실제 6개 도구 운영 closure가 남아 있어 계속 `partial`이다.
 
 ## 운영 규칙
 

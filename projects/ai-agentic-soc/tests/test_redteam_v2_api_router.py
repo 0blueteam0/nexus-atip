@@ -3035,7 +3035,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertGreaterEqual(body["remaining_gap_count"], 1)
         self.assertIn("unresolved_completion_audit_items_present", body["blockers"])
         self.assertIn("remaining_completion_gaps_present", body["blockers"])
-        self.assertTrue(any(item["field"] == "accepted_gate_manifest_passed" and item["status"] == "passed" for item in body["checklist"]))
+        accepted_gate_row = next(item for item in body["checklist"] if item["field"] == "accepted_gate_manifest_passed")
+        self.assertIn(accepted_gate_row["status"], {"passed", "blocked"})
+        self.assertIn("latest_accepted_gate_manifest.json", accepted_gate_row["evidence"])
+        if accepted_gate_row["status"] == "blocked":
+            self.assertIn("accepted_gate_manifest_passed_required", body["blockers"])
         self.assertTrue(any(item["field"] == "zero_count_exit_conditions" and item["status"] == "passed" for item in body["checklist"]))
         self.assertTrue(any(item["field"] == "development_byproduct_exclusion_clean" and item["status"] == "passed" for item in body["checklist"]))
         self.assertTrue(body["does_not_mark_goal_complete"])

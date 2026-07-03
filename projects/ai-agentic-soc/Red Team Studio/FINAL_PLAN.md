@@ -1832,5 +1832,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] launcher metadata에 `entrypoint_policy=cleared_to_execute_only_approved_runner_argv`를 기록한다.
 - [x] regression test가 dry-run container launch plan의 `--entrypoint=`, network none, read-only rootfs, dropped capabilities, pinned image digest, approved runner argv를 검증한다.
 - [x] 실제 Docker Desktop engine과 local pinned `aquasec/trivy` digest로 `redteam_ax_container_runtime_smoke.py --allow-real --require-real`이 `status=passed`를 기록했다.
-- [x] strict live readiness promotion은 Docker gate 1개 통과, WSL 및 조직 OpenVAS/ZAP endpoint/vault gate 3개 미통과를 기록한다.
-- [ ] WSL 배포판 start/tool path 준비, 조직 OpenVAS/ZAP read-only endpoint/vault, 실제 6개 도구 운영 closure를 완료하기 전까지 RTA-COMP-015와 전체 goal은 계속 미완료로 둔다.
+- [x] 이후 WSL alternate distro readiness도 통과했으므로 Docker gate 상태는 WSL 통과와 함께 strict live readiness promotion에 반영된다.
+- [ ] 조직 OpenVAS/ZAP read-only endpoint/vault, 실제 6개 도구 운영 closure를 완료하기 전까지 RTA-COMP-015와 전체 goal은 계속 미완료로 둔다.
+
+## 120. 갱신 목표 - WSL alternate distro readiness 통과
+
+- [x] WSL readiness checker가 requested/default/running/stopped 순서로 distro 후보를 만들고, `docker-desktop` internal distro는 마지막 fallback으로 둔다.
+- [x] 기본 `Ubuntu-22.04`의 `0x80070570` VHDX mount 실패를 `wsl_ext4_vhdx_corrupt_or_unreadable`, `wsl_mount_disk_failed`로 artifact에 보존한다.
+- [x] 대체 `Ubuntu-22.04-AISOC-Rebuild`가 시작되고 npm/docker path를 반환하면 `status=ready`, `selected_distro=Ubuntu-22.04-AISOC-Rebuild`로 통과한다.
+- [x] 단위 회귀가 기본 distro 실패 후 대체 distro 선택과 failed probe 보존을 검증한다.
+- [x] strict live readiness promotion은 Docker와 WSL 2개 gate 통과, 실제 조직 OpenVAS/ZAP endpoint/vault 2개 gate 미통과를 기록한다.
+- [ ] 조직 OpenVAS/ZAP read-only endpoint/vault와 실제 6개 도구 운영 closure를 완료하기 전까지 RTA-COMP-015와 전체 goal은 계속 미완료로 둔다.

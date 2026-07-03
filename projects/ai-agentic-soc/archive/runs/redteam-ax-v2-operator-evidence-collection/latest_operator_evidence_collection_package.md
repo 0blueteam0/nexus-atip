@@ -1,7 +1,7 @@
 # RedTeam AX Operator Evidence Collection Package
 
 - status: `ready_for_operator_evidence_collection`
-- created_at: `2026-07-03T02:45:19Z`
+- created_at: `2026-07-03T03:30:56Z`
 - collection_item_count: `5`
 - blocked_collection_item_count: `5`
 
@@ -35,7 +35,7 @@ Verification command:
 
 - owner: `platform_operator`
 - current_step_status: `blocked`
-- blockers: `wsl_distribution_start_failed`
+- blockers: `promotion_artifact_missing`
 - required_evidence: `latest_wsl_runtime_readiness.json status=ready`
 
 Operator actions:
@@ -90,7 +90,7 @@ Verification command:
 
 - owner: `red_team_lead`
 - current_step_status: `blocked`
-- blockers: `PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-WSL-RUNTIME-READY:wsl_distribution_start_failed, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing, PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
+- blockers: `PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing, PROMOTE-EXTERNAL-SCANNER-IMPORT-LIVE:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing`
 - required_evidence: `latest_strict_live_readiness_promotion.json status=promotion_ready`
 
 Operator actions:

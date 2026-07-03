@@ -73,6 +73,46 @@ def parse_wsl_list(output: str) -> list[dict[str, str]]:
     return distros
 
 
+def distro_probe_order(distros: list[dict[str, str]], requested: str | None) -> list[str]:
+    if requested:
+        return [requested]
+    ordered: list[str] = []
+    default = next((item["name"] for item in distros if item.get("default") == "true"), None)
+    if default:
+        ordered.append(default)
+    running = [
+        item["name"]
+        for item in distros
+        if item.get("state", "").lower() == "running" and item["name"] not in ordered
+    ]
+    stopped = [
+        item["name"]
+        for item in distros
+        if item.get("state", "").lower() != "running" and item["name"] not in ordered
+    ]
+    ordered.extend(running)
+    ordered.extend(stopped)
+    internal = [name for name in ordered if name.lower() == "docker-desktop"]
+    non_internal = [name for name in ordered if name.lower() != "docker-desktop"]
+    return non_internal + internal
+
+
+def classify_wsl_probe_failure(probe: dict[str, Any]) -> list[str]:
+    text = normalize_wsl_text(f"{probe.get('stdout') or ''}\n{probe.get('stderr') or ''}").lower()
+    blockers = ["wsl_distribution_start_failed"]
+    if "0x80070570" in text:
+        blockers.append("wsl_ext4_vhdx_corrupt_or_unreadable")
+    if "error_path_not_found" in text or "path_not_found" in text:
+        blockers.append("wsl_ext4_vhdx_path_not_found")
+    if "mountdisk" in text:
+        blockers.append("wsl_mount_disk_failed")
+    return blockers
+
+
+def parse_available_tool_paths(stdout: str) -> list[str]:
+    return [line.strip() for line in stdout.splitlines()[1:] if line.strip().startswith("/")]
+
+
 def build_readiness(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     wsl_path = shutil.which("wsl.exe") or shutil.which("wsl")
     result: dict[str, Any] = {
@@ -116,7 +156,9 @@ def build_readiness(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         })
         return result, 2 if args.require_ready else 0
 
-    preferred = args.distro or next((item["name"] for item in distros if item.get("default") == "true"), distros[0]["name"])
+    probe_order = distro_probe_order(distros, args.distro)
+    result["probe_order"] = probe_order
+    preferred = probe_order[0]
     result["selected_distro"] = preferred
     if not args.allow_start:
         result.update({
@@ -126,26 +168,46 @@ def build_readiness(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         return result, 2 if args.require_ready else 0
 
     command = "uname -a; command -v node || true; command -v npm || true; command -v trivy || true; command -v nuclei || true; command -v docker || true; command -v podman || true"
-    probe = run_command([wsl_path, "-d", preferred, "--", "sh", "-lc", command], timeout=args.timeout)
+    probe_results: list[dict[str, Any]] = []
     result["wsl_command_executed"] = True
-    result["wsl_tool_probe"] = {
-        **probe,
-        "stdout": normalize_wsl_text(probe.get("stdout") or ""),
-        "stderr": normalize_wsl_text(probe.get("stderr") or ""),
-    }
-    if probe.get("exit_code") != 0:
+    for candidate in probe_order:
+        probe = run_command([wsl_path, "-d", candidate, "--", "sh", "-lc", command], timeout=args.timeout)
+        normalized_probe = {
+            **probe,
+            "distro": candidate,
+            "stdout": normalize_wsl_text(probe.get("stdout") or ""),
+            "stderr": normalize_wsl_text(probe.get("stderr") or ""),
+        }
+        available = parse_available_tool_paths(normalized_probe.get("stdout") or "")
+        normalized_probe["available_tool_paths"] = available
+        normalized_probe["blockers"] = [] if probe.get("exit_code") == 0 else classify_wsl_probe_failure(normalized_probe)
+        probe_results.append(normalized_probe)
+        if probe.get("exit_code") == 0 and available:
+            result["selected_distro"] = candidate
+            result["selected_distro_reason"] = "first_probe_with_relevant_tool_paths"
+            result["wsl_tool_probe"] = normalized_probe
+            result["wsl_tool_probe_results"] = probe_results
+            result["available_tool_paths"] = available
+            result["status"] = "ready"
+            result["blockers"] = []
+            result["failed_probe_count_before_selection"] = len(probe_results) - 1
+            return result, 0
+
+    result["wsl_tool_probe_results"] = probe_results
+    result["wsl_tool_probe"] = probe_results[0] if probe_results else {}
+    failed_blockers = sorted({blocker for item in probe_results for blocker in item.get("blockers", [])})
+    if any(item.get("exit_code") == 0 for item in probe_results):
         result.update({
-            "status": "blocked_wsl_distribution_start_failed",
-            "blockers": ["wsl_distribution_start_failed"],
+            "status": "wsl_ready_tools_missing",
+            "blockers": ["wsl_ready_but_required_tools_not_found"],
         })
         return result, 2 if args.require_ready else 0
 
-    stdout = result["wsl_tool_probe"].get("stdout") or ""
-    available = [line.strip() for line in stdout.splitlines()[1:] if line.strip().startswith("/")]
-    result["available_tool_paths"] = available
-    result["status"] = "ready" if available else "wsl_ready_tools_missing"
-    result["blockers"] = [] if available else ["wsl_ready_but_required_tools_not_found"]
-    return result, 0 if result["status"] == "ready" else (2 if args.require_ready else 0)
+    result.update({
+        "status": "blocked_wsl_distribution_start_failed",
+        "blockers": failed_blockers or ["wsl_distribution_start_failed"],
+    })
+    return result, 2 if args.require_ready else 0
 
 
 def main() -> int:
