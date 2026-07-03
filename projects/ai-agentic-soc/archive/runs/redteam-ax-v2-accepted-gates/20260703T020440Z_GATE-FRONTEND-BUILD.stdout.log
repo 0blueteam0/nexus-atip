@@ -1,0 +1,13 @@
+
+> ai-agentic-soc-idiomatic-react@4.0.0 build
+> vite build
+
+vite v8.1.0 building client environment for production...
+[2Ktransforming...✓ 47 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.43 kB │ gzip:   0.30 kB
+dist/assets/index-DJPCSwkP.css   19.53 kB │ gzip:   2.61 kB
+dist/assets/index-CjVGpExe.js   938.13 kB │ gzip: 249.08 kB
+
+✓ built in 842ms

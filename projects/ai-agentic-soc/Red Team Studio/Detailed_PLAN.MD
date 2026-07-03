@@ -1098,3 +1098,12 @@ Create Case
 - `redteam_ax_development_byproduct_exclusion_review.py`는 completion audit evidence_refs를 전수 분류해 archive/runs, fixture, smoke, sanity, sample, test-like, CASE-V2 산출물을 `contract_regression_or_safety_control_evidence_only`로 제한한다.
 - review 산출물은 모든 개발 부산물 row에 `completion_evidence_allowed=false`, `report_claim_evidence_allowed=false`를 남기며, `test_development_byproduct_exclusion_review.py`가 0건 조건을 검증한다.
 - 이 slice는 완료 증거 오염 방지 계약을 증명하지만, 실제 6개 도구 운영 closure와 Report v2 export 완료 증거를 대신하지 않는다.
+
+## 64. 갱신 목표 반영 - 운영 closure 제출 패키지의 실제 완료 증거 엄격 모드
+
+- 목적: 운영자가 RedTeam2에서 운영 closure 제출 패키지를 만들 때 개발 fixture와 실제 운영 산출물이 섞여 전체 goal 완료 증거로 승격되는 것을 차단한다.
+- API 설계: `/api/redteam/v2/toolchains/operating-closure-submission-package` payload에 `require_real_completion_evidence`를 받는다. 이 값이 true이면 `source_dir` 또는 `case_id`에 `CASE-V2`, `fixture`, `smoke`, `sample`, `test`, `operator-scanner-outputs` marker가 있는 경우 `real_completion_evidence_source_required` error와 `development_byproduct_source_detected` warning으로 `status=blocked`를 반환한다.
+- 데이터 계약: 응답은 `source_completion_review`, `completion_evidence_allowed`, `report_claim_evidence_allowed`, `require_real_completion_evidence`를 포함한다. `development_byproduct_exclusion` 제출 항목은 strict blocker일 때 `status=blocked`, 비엄격 warning일 때 `status=warning`, 실제 운영 후보일 때 `status=ready`가 된다.
+- 화면 명세: RedTeam2 운영 closure 제출 패키지 패널은 `개발 부산물 제외` row를 보여주고, fixture/test/operator-scanner-outputs 경로는 `완료/보고서 Claim 증거로 사용하지 않습니다`라고 표시한다. 화면 버튼은 기본적으로 `require_real_completion_evidence=true`를 전송한다.
+- 테스트 전략: API 회귀는 strict mode에서 CASE-V2/operator-scanner-outputs source가 차단되고 command execution safe flag가 false로 유지되는지 검증한다. frontend sanity는 payload key와 Korean copy anchor를 검증한다.
+- 예외 케이스: 개발 부산물은 계약 회귀, 안전 통제, 차단 가시성 증거로만 사용할 수 있다. 실제 완료 증거가 필요하면 승인된 운영 케이스 source에서 다시 수집하거나, approved operator import와 Evidence/Finding/Matrix/Report/export gate를 모두 통과해야 한다.

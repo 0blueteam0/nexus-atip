@@ -2687,6 +2687,38 @@ def latest_runtime_readiness_status() -> dict[str, Any]:
     }
 
 
+DEVELOPMENT_BYPRODUCT_SOURCE_MARKERS = (
+    "case-v2-",
+    "fixture",
+    "smoke",
+    "sample",
+    "test",
+    "operator-scanner-outputs",
+)
+
+
+def classify_operating_source_for_completion(source_dir: str, case_id: str) -> dict[str, Any]:
+    normalized_source = str(source_dir or "").replace("\\", "/")
+    source_lower = normalized_source.lower()
+    case_lower = str(case_id or "").lower()
+    matched_markers = [
+        marker
+        for marker in DEVELOPMENT_BYPRODUCT_SOURCE_MARKERS
+        if marker in source_lower or marker in case_lower
+    ]
+    is_byproduct = bool(matched_markers)
+    return {
+        "source_dir": normalized_source or None,
+        "case_id": case_id,
+        "is_development_byproduct_source": is_byproduct,
+        "matched_markers": matched_markers,
+        "allowed_use": "contract_regression_or_safety_control_evidence_only" if is_byproduct else "real_operating_completion_evidence_candidate",
+        "completion_evidence_allowed": not is_byproduct,
+        "report_claim_evidence_allowed": not is_byproduct,
+        "policy": "Development byproducts must not prove final completion or support Report v2 claims unless re-collected through the real operating workflow.",
+    }
+
+
 def prepare_operating_toolchain_closure_submission_package(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()
@@ -2698,6 +2730,8 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
     export_approver = str(payload.get("export_approver") or payload.get("executive_sponsor") or "").strip()
     package_id = stable_id("OCSP", [case_id, toolchain_id, source_dir, reviewer, lead_approver, business_owner, export_approver, now_utc()])
     runtime = latest_runtime_readiness_status()
+    source_completion_review = classify_operating_source_for_completion(source_dir, case_id)
+    require_real_completion_evidence = bool(payload.get("require_real_completion_evidence"))
     errors: list[str] = []
     warnings: list[str] = []
     approver_checks: list[dict[str, Any]] = []
@@ -2707,6 +2741,10 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
         errors.append("requested_by_required")
     if not source_dir:
         errors.append("source_dir_required")
+    if source_completion_review["is_development_byproduct_source"]:
+        warnings.append("development_byproduct_source_detected")
+        if require_real_completion_evidence:
+            errors.append("real_completion_evidence_source_required")
 
     for field, value, role in [
         ("reviewed_by", reviewer, "Evidence 검토자"),
@@ -2775,6 +2813,18 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
             "status": "ready" if not runtime_blockers else "blocked",
             "evidence": ", ".join(runtime_blockers[:5]) if runtime_blockers else "runtime_readiness_ready",
         },
+        {
+            "item_id": "development_byproduct_exclusion",
+            "title_ko": "개발 부산물 제외",
+            "status": "ready" if source_completion_review["completion_evidence_allowed"] else ("blocked" if require_real_completion_evidence else "warning"),
+            "evidence": (
+                "실제 운영 완료 증거 후보"
+                if source_completion_review["completion_evidence_allowed"]
+                else ", ".join(source_completion_review["matched_markers"]) or "development_byproduct_source_detected"
+            ),
+            "completion_evidence_allowed": source_completion_review["completion_evidence_allowed"],
+            "report_claim_evidence_allowed": source_completion_review["report_claim_evidence_allowed"],
+        },
     ]
     ready_for_close = not errors
     result = {
@@ -2793,6 +2843,10 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
         "submission_items": submission_items,
         "runtime_readiness_status": runtime.get("status"),
         "runtime_blockers": runtime_blockers,
+        "require_real_completion_evidence": require_real_completion_evidence,
+        "source_completion_review": source_completion_review,
+        "completion_evidence_allowed": bool(source_completion_review["completion_evidence_allowed"] and not errors),
+        "report_claim_evidence_allowed": bool(source_completion_review["report_claim_evidence_allowed"] and not errors),
         "close_api": "/api/redteam/v2/toolchains/close-operating-artifact-manifest-e2e",
         "close_api_payload": close_payload,
         "safe_by_default": True,
@@ -2807,6 +2861,7 @@ def prepare_operating_toolchain_closure_submission_package(payload: dict[str, An
         "next_human_actions_ko": [
             "blocked 항목을 먼저 해결한 뒤 close_api_payload를 검토합니다.",
             "실제 goal 완료 증거로 쓰려면 controlled fixture가 아니라 실제 조직 scanner 산출물 폴더와 실제 승인자 identity를 사용합니다.",
+            "development_byproduct_exclusion이 blocked이면 해당 source_dir은 계약·회귀·안전통제 증거로만 사용하고 완료/보고서 Claim 증거로 사용하지 않습니다.",
             "이 패키지는 scanner, Docker, WSL, 네트워크 스캔 명령을 실행하지 않습니다.",
         ],
         "created_at": now_utc(),

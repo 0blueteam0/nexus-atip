@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 49,
+    "proved": 50,
     "partial": 1
   },
   "audit_items": [
@@ -848,6 +848,24 @@
       "proof_summary": "The updated objective constraint is recorded in FINAL_PLAN, Detailed_PLAN, LLM Wiki, and this completion audit matrix. The development byproduct exclusion review inventories completion audit evidence_refs, classifies archive/runs, fixture, smoke, sanity, sample, test-like, and CASE-V2 artifacts as development byproducts, and sets allowed_use=contract_regression_or_safety_control_evidence_only, completion_evidence_allowed=false, and report_claim_evidence_allowed=false for every such byproduct row. Sanity verifies there are zero completion-eligible and zero report-claim-eligible byproduct refs.",
       "residual_gap": "This proves byproducts are excluded from completion claims in the completion audit evidence path; it does not provide the still-missing real six-tool operating closure evidence.",
       "next_action": "Continue with real operating evidence collection using approved case scope, ROE/HITL, actual tool outputs or approved operator imports, Evidence approval, Finding approval, Matrix, Report v2 export, and completion gate."
+    },
+    {
+      "id": "RTA-COMP-051",
+      "requirement": "Operating closure submission packages must reject development byproduct sources when real completion evidence is required.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/tests/test_redteam_v2_api_router.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "The operating closure submission package now classifies source_dir/case_id markers such as CASE-V2, fixture, smoke, sample, test, and operator-scanner-outputs as development byproducts. When require_real_completion_evidence=true, the API blocks those sources with real_completion_evidence_source_required, adds a development_byproduct_exclusion submission row, and returns completion_evidence_allowed=false and report_claim_evidence_allowed=false without executing commands. RedTeam2 sends the strict flag and renders the Korean exclusion row. API and frontend sanity tests cover the contract.",
+      "residual_gap": "This proves strict exclusion of byproduct sources at the submission-package boundary; it does not provide the missing real six-tool operating evidence or final report/export completion.",
+      "next_action": "Collect or import real approved operating artifacts from a non-byproduct source, approve Evidence, promote Findings, complete severity, Matrix, Report v2 export, and completion gate."
     }
   ],
   "remaining_gaps": [

@@ -1,0 +1,1 @@
+{"status": "passed", "artifact_path": "J:/PortableApps/genai/projects/ai-agentic-soc/archive/runs/redteam-ax-v2-openvas-zap-service-import-smoke/latest_openvas_zap_service_import_smoke.json", "passed_tools": ["openvas", "zap"], "failed_tools": [], "negative_secret_probe": "invalid"}

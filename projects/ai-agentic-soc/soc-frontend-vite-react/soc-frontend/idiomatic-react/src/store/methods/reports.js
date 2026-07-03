@@ -4299,6 +4299,7 @@ export default {
       business_owner_approver:String(draft.compositeClosureBusinessOwner || 'business-owner@example.com').trim(),
       export_approver:String(draft.compositeClosureExportApprover || 'executive-sponsor@example.com').trim(),
       report_title:'운영 scanner 산출물 기반 Korean Red Team Report v2',
+      require_real_completion_evidence:true,
     };
     this.setState(s => ({ redteam2OperatingClosurePackageState:{ ...(s.redteam2OperatingClosurePackageState || {}), status:'preparing', error:null } }));
     try {
@@ -5987,6 +5988,7 @@ export default {
     const toolchainCompletionRows = [
       ['실제 운영 증거 사전 점검', realOperatingEvidenceReadiness.ready_for_operating_closure_submission ? '통과' : koValue(realOperatingEvidenceReadiness.status || realOperatingEvidenceReadinessState.status || '대기'), realOperatingEvidenceReadiness.ready_for_operating_closure_submission ? '운영 closure 제출 가능' : (realOperatingEvidenceReadinessState.error || `${(realOperatingEvidenceReadiness.blockers || []).length}개 blocker`)],
       ['운영 closure 제출 패키지', operatingClosurePackage.ready_for_operating_close ? '준비 완료' : koValue(operatingClosurePackage.status || operatingClosurePackageState.status || '대기'), operatingClosurePackage.ready_for_operating_close ? 'close-operating payload 검토 가능' : (operatingClosurePackageState.error || 'source_dir과 승인자 4명 확인')],
+      ['개발 부산물 제외', operatingClosurePackage.completion_evidence_allowed ? '통과' : koValue(operatingClosurePackage.source_completion_review?.allowed_use || '대기'), operatingClosurePackage.completion_evidence_allowed ? '실제 운영 완료 증거 후보' : 'fixture, smoke, sample, test, CASE-V2, operator-scanner-outputs 경로는 완료/보고서 Claim 증거로 사용하지 않습니다'],
       ['운영 closure 사람 검토', operatingClosureReview.ready_for_human_close_execution ? '검토 기록 완료' : koValue(operatingClosureReview.status || operatingClosureReviewState.status || '대기'), operatingClosureReview.ready_for_human_close_execution ? '승인된 close payload 보관됨' : (operatingClosureReviewState.error || '제출 패키지 확인 뒤 사람 검토 기록')],
       ['검토 완료 운영 closure 실행', reviewedOperatingClose.complete ? '완료' : koValue(reviewedOperatingClose.status || reviewedOperatingCloseState.status || '대기'), reviewedOperatingClose.complete ? 'human review payload로 close 완료' : (reviewedOperatingCloseState.error || '사람 검토 완료 뒤 실행')],
       ['운영 closure 증거 인증', reviewedCloseCertification.ready_for_completion_audit_review ? '완료 감사 후보' : koValue(reviewedCloseCertification.status || reviewedCloseCertificationState.status || '대기'), reviewedCloseCertification.ready_for_completion_audit_review ? '실측 attestation 포함' : (reviewedCloseCertificationState.error || 'reviewed close 뒤 증거 인증')],

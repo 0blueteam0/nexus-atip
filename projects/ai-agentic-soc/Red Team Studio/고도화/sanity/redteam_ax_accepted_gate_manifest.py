@@ -47,6 +47,11 @@ def run_gate(gate: dict) -> dict:
     started_at = now_utc()
     command = gate["command"]
     cwd = Path(gate["cwd"])
+    ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+    safe_gate_id = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in gate["gate_id"])
+    log_prefix = f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{safe_gate_id}"
+    stdout_path = ARTIFACT_DIR / f"{log_prefix}.stdout.log"
+    stderr_path = ARTIFACT_DIR / f"{log_prefix}.stderr.log"
     result = {
         "gate_id": gate["gate_id"],
         "name": gate["name"],
@@ -56,26 +61,32 @@ def run_gate(gate: dict) -> dict:
         "timeout_seconds": gate["timeout_seconds"],
         "started_at": started_at,
         "status": "running",
+        "stdout_path": stdout_path.as_posix(),
+        "stderr_path": stderr_path.as_posix(),
     }
     try:
-        completed = subprocess.run(
-            command,
-            cwd=cwd,
-            shell=False,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            capture_output=True,
-            timeout=gate["timeout_seconds"],
-        )
+        with stdout_path.open("w", encoding="utf-8", errors="replace") as stdout_file, stderr_path.open(
+            "w", encoding="utf-8", errors="replace"
+        ) as stderr_file:
+            completed = subprocess.run(
+                command,
+                cwd=cwd,
+                shell=False,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                stdout=stdout_file,
+                stderr=stderr_file,
+                timeout=gate["timeout_seconds"],
+            )
         result.update(
             {
                 "completed_at": now_utc(),
                 "duration_seconds": round(time.monotonic() - started, 3),
                 "exit_code": completed.returncode,
                 "status": "passed" if completed.returncode == 0 else "failed",
-                "stdout_excerpt": excerpt(completed.stdout),
-                "stderr_excerpt": excerpt(completed.stderr),
+                "stdout_excerpt": excerpt(stdout_path.read_text(encoding="utf-8", errors="replace")),
+                "stderr_excerpt": excerpt(stderr_path.read_text(encoding="utf-8", errors="replace")),
             }
         )
     except subprocess.TimeoutExpired as exc:
@@ -85,8 +96,8 @@ def run_gate(gate: dict) -> dict:
                 "duration_seconds": round(time.monotonic() - started, 3),
                 "exit_code": None,
                 "status": "timeout",
-                "stdout_excerpt": excerpt(exc.stdout or ""),
-                "stderr_excerpt": excerpt(exc.stderr or ""),
+                "stdout_excerpt": excerpt(stdout_path.read_text(encoding="utf-8", errors="replace")),
+                "stderr_excerpt": excerpt(stderr_path.read_text(encoding="utf-8", errors="replace")),
             }
         )
     return result

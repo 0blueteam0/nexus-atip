@@ -1808,3 +1808,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] archive/runs, fixture, CASE-V2, operator-scanner-outputs, smoke-only artifact 중 실제 업무절차와 맞지 않는 항목을 completion evidence path에서 `completion_evidence_allowed=false`, `report_claim_evidence_allowed=false`로 분류
 - [x] `redteam_ax_development_byproduct_exclusion_review.json/.md`와 sanity test로 개발 부산물이 계약·회귀·안전통제 증거로만 쓰이는지 검증
 - [ ] 실제 업무절차 기반 증거만 사용해 6개 도구 운영 collection, Evidence Card 승인, Finding/Matrix/Report/export/completion gate를 다시 닫음
+
+## 117. 갱신 목표 - 운영 closure 제출 패키지의 실제 완료 증거 엄격 모드
+
+- [x] RedTeam2의 운영 closure 제출 패키지 버튼은 `require_real_completion_evidence=true`를 전송한다.
+- [x] API는 `CASE-V2`, `fixture`, `smoke`, `sample`, `test`, `operator-scanner-outputs` 경로를 개발 부산물 source로 분류하고, 엄격 모드에서는 `real_completion_evidence_source_required`로 차단한다.
+- [x] 제출 패키지 항목에 `development_byproduct_exclusion` row를 추가해 완료 증거/보고서 Claim 증거 허용 여부를 사람이 확인할 수 있게 한다.
+- [x] RedTeam2 화면은 “개발 부산물 제외”와 “완료/보고서 Claim 증거로 사용하지 않습니다” 문구로 부산물 source를 실제 운영 완료 증거와 분리한다.
+- [x] API 회귀와 frontend sanity 계약으로 엄격 모드, safe flag, UI copy, payload key를 검증한다.
+- [ ] 실제 업무절차 기반 증거만 사용해 6개 도구 운영 collection, Evidence Card 승인, Finding/Matrix/Report/export/completion gate를 다시 닫음

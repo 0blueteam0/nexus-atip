@@ -49,6 +49,13 @@ def main() -> int:
         raise AssertionError(f"missing runtime readiness loader terms: {missing_loader_terms}")
     if "require_runtime_preflight" not in source:
         raise AssertionError("missing governed execution runtime preflight payload term")
+    for payload_term in (
+        "require_real_completion_evidence",
+        "completion_evidence_allowed",
+        "source_completion_review",
+    ):
+        if payload_term not in source:
+            raise AssertionError(f"missing operating closure strict evidence payload term: {payload_term}")
 
     required_panel_terms = [
         "실행 환경 준비도 / 남은 실측 조건",
@@ -249,6 +256,8 @@ def main() -> int:
         "/api/redteam/v2/toolchains/operator-evidence-card-import",
         "운영 closure 제출 패키지 API",
         "/api/redteam/v2/toolchains/operating-closure-submission-package",
+        "개발 부산물 제외",
+        "operator-scanner-outputs 경로는 완료/보고서 Claim 증거로 사용하지 않습니다",
         "사람 검토 기록으로 체크리스트와 승인자 서명을 남긴 뒤 전체 닫기를 실행",
         "운영 closure 제출 패키지 확인",
         "실제 운영 증거 사전 점검",

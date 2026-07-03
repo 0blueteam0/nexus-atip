@@ -2399,6 +2399,51 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(body["requires_explicit_human_approver_fields"])
         self.assertTrue(Path(body["artifact_path"]).exists())
 
+    def test_v2_operating_closure_submission_package_strict_mode_excludes_development_byproducts(self) -> None:
+        case_id = f"CASE-V2-OPERATING-CLOSURE-BYPRODUCT-001-{uuid.uuid4().hex[:8]}"
+        source_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-scanner-outputs"
+        source_dir.mkdir(parents=True, exist_ok=True)
+        fixtures = {
+            "byproduct-nuclei.jsonl": '{"template-id":"byproduct-panel","info":{"name":"Byproduct panel","severity":"medium"},"matched-at":"https://app.example.test/admin"}',
+            "byproduct-openvas.xml": "<report><results><result><id>byproduct-openvas</id><name>Byproduct OpenVAS finding</name><threat>High</threat><severity>7.5</severity><host>10.0.0.40</host><port>443/tcp</port></result></results></report>",
+            "byproduct-trivy.json": '{"Results":[{"Target":"image","Vulnerabilities":[{"VulnerabilityID":"CVE-BYPRODUCT-TRIVY","PkgName":"openssl","Severity":"HIGH"}]}]}',
+            "byproduct-sbom-cyclonedx.json": '{"bomFormat":"CycloneDX","components":[{"bom-ref":"pkg:pypi/example@1.0.0","name":"example","version":"1.0.0"}]}',
+            "byproduct-npm-audit.json": '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":[{"source":"CVE-BYPRODUCT-NPM"}]}}}',
+            "byproduct-zap-alerts.json": '{"site":[{"@name":"https://app.example.test","alerts":[{"pluginid":"10021","name":"Byproduct ZAP alert","riskdesc":"Low","instances":[{"uri":"https://app.example.test/login"}]}]}]}',
+        }
+        for filename, content in fixtures.items():
+            (source_dir / filename).write_text(content, encoding="utf-8", newline="\n")
+
+        blocked = self.client.post("/api/redteam/v2/toolchains/operating-closure-submission-package", json={
+            "case_id": case_id,
+            "toolchain_id": "TCHAIN-OPERATING-CLOSURE-BYPRODUCT-STRICT",
+            "requested_by": "operator@example.com",
+            "source_dir": source_dir.as_posix(),
+            "reviewed_by": "lead@example.com",
+            "lead_approver": "lead@example.com",
+            "business_owner_approver": "business-owner@example.com",
+            "export_approver": "executive-sponsor@example.com",
+            "require_real_completion_evidence": True,
+        })
+        self.assertEqual(blocked.status_code, 200)
+        body = blocked.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_operating_closure_submission_package")
+        self.assertEqual(body["status"], "blocked")
+        self.assertFalse(body["ready_for_operating_close"])
+        self.assertIn("real_completion_evidence_source_required", body["errors"])
+        self.assertIn("development_byproduct_source_detected", body["warnings"])
+        self.assertTrue(body["require_real_completion_evidence"])
+        self.assertFalse(body["completion_evidence_allowed"])
+        self.assertFalse(body["report_claim_evidence_allowed"])
+        self.assertTrue(body["source_completion_review"]["is_development_byproduct_source"])
+        self.assertEqual(body["source_completion_review"]["allowed_use"], "contract_regression_or_safety_control_evidence_only")
+        self.assertFalse(body["source_completion_review"]["completion_evidence_allowed"])
+        self.assertFalse(body["source_completion_review"]["report_claim_evidence_allowed"])
+        self.assertTrue(any(item["item_id"] == "development_byproduct_exclusion" and item["status"] == "blocked" for item in body["submission_items"]))
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+
     def test_v2_operator_evidence_submission_manifest_draft_hashes_existing_artifacts_without_execution(self) -> None:
         case_id = f"CASE-V2-OPERATOR-EVIDENCE-SUBMISSION-MANIFEST-001-{uuid.uuid4().hex[:8]}"
         artifact_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-evidence-submission"
