@@ -194,6 +194,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - RedTeam2는 복합 실행 payload에 이 옵션을 포함하고 `안전 smoke 부분 실행` row로 부분 preflight 상태를 표시한다.
 - 이 변경은 설치 확인 smoke 실행 진전이며 실제 운영 scanner 산출물, OpenVAS/ZAP endpoint import, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
 
+## 2026-07-03 갱신 - RedTeam2 안전 설치 확인 smoke 버튼
+
+- RedTeam2에 `안전 설치 확인 smoke` 버튼을 추가했다.
+- 버튼은 Nuclei/Trivy/npm audit 중 선택 가능한 도구의 version-only 명령을 자동 구성하고 `require_runtime_preflight=true`, `allow_safe_local_smoke_when_runtime_partial=true`, `runner_backend=local_subprocess_shim`로 `/api/redteam/v2/toolchains/execute-governed`를 호출한다.
+- 실행 결과는 저장 실행 상태 projection을 갱신해 `결과 회수·Evidence 후보` 흐름으로 이어질 수 있다.
+- 이 변경은 사용자가 임의 명령을 작성하지 않아도 설치 확인 smoke를 시작하게 하는 UI 계약이며, 실제 취약점 스캔이나 운영 closure gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

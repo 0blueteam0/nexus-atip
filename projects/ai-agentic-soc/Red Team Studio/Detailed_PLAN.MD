@@ -1206,3 +1206,13 @@ Create Case
 - 화면/기능 명세: RedTeam2 복합 실행은 runner 모드에서 `allow_safe_local_smoke_when_runtime_partial=true`를 보내며, `복합 실행 항목` 표에 `안전 smoke 부분 실행` row를 표시한다. 설명 문구는 전체 운영 readiness가 막혀도 version-only 로컬 smoke만 제한적으로 허용하고 임의 스캔 명령은 차단한다고 명시한다.
 - 테스트 전략: API regression은 runtime readiness가 external scanner blocker로 blocked인 상태에서 `npm.cmd --version`은 실행되고 `trivy fs --format json .`는 `safe_local_smoke_allows_version_only`로 차단되는지 검증한다. frontend runtime sanity는 payload flag와 한국어 표시 문구를 검사한다.
 - 예외 케이스: 이 기능은 설치 확인 smoke만 실제 실행하는 경계다. 실제 취약점 스캔, OpenVAS/ZAP endpoint import, 6개 운영 산출물 coverage, Evidence 승인, Finding severity, Report v2 export, completion gate 완료는 여전히 별도로 필요하다.
+
+## 76. 갱신 목표 반영 - RedTeam2 안전 설치 확인 smoke 버튼
+
+- 목적: 초급 사용자가 runner 명령을 직접 작성하지 않아도 프론트엔드 버튼으로 실제 설치 도구의 version-only smoke를 시작하고, 결과 회수 단계로 이어지게 한다.
+- 화면/기능 명세: `안전 설치 확인 smoke` 버튼은 현재 선택된 복합 도구 ID 중 Nuclei, Trivy, npm audit만 골라 `nuclei --version`, `trivy --version`, `npm.cmd --version` 명령을 자동 구성한다. 선택 도구가 부족하면 npm audit과 Trivy를 기본값으로 사용한다.
+- API 연결: 버튼은 `/api/redteam/v2/toolchains/execute-governed`에 `toolchain_id={reportId}-TOOLCHAIN-SAFE-LOCAL-SMOKE`, `require_runtime_preflight=true`, `allow_safe_local_smoke_when_runtime_partial=true`, `runner_backend=local_subprocess_shim` payload를 보낸다.
+- 상태 갱신: 응답 후 `redteam2ToolchainState.result`와 `redteam2ToolchainRunStatusState.result`를 함께 갱신해 저장 실행 상태 표와 결과 회수 버튼이 같은 toolchain을 바라보게 한다.
+- 안전 원칙: 버튼 설명에는 `safe_local_smoke_button`, version-only 자동 구성, 임의 스캔 명령, active scan, Docker/WSL/network 실행 금지를 명시한다. OpenVAS/ZAP, SCA, active scan command는 이 버튼이 자동 실행하지 않는다.
+- 테스트 전략: `node --check`, frontend runtime readiness contract, Korean copy inventory가 새 버튼과 안전 문구를 검증한다. API의 실제 허용/차단 로직은 RTA-COMP-062 regression으로 유지한다.
+- 예외 케이스: 이 버튼으로 나온 stdout/stderr도 untrusted runner artifact이며, Evidence 후보 생성과 승인 전에는 Finding 또는 Report Claim 근거가 아니다.

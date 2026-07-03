@@ -1907,3 +1907,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 복합 실행 payload에 해당 옵션을 넣고 `안전 smoke 부분 실행` 상태를 한국어 표에 표시한다.
 - [x] API regression과 frontend runtime sanity가 부분 허용/차단 경계를 검증한다.
 - [ ] 이 기능은 설치 확인 smoke를 실행 가능하게 하는 진전일 뿐이며 실제 조직 OpenVAS/ZAP endpoint, 6개 도구 운영 산출물, Evidence/Finding/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 129. 갱신 목표 - RedTeam2 안전 설치 확인 smoke 버튼
+
+- [x] RedTeam2에 `안전 설치 확인 smoke` 버튼을 추가한다.
+- [x] 버튼은 Nuclei, Trivy, npm audit 중 선택 가능한 도구의 version-only 명령을 자동 구성해 `/api/redteam/v2/toolchains/execute-governed`로 보낸다.
+- [x] payload는 `require_runtime_preflight=true`, `allow_safe_local_smoke_when_runtime_partial=true`, `runner_backend=local_subprocess_shim`을 사용한다.
+- [x] 실행 후 저장된 toolchain 상태 projection을 갱신해 `결과 회수·Evidence 후보` 버튼으로 이어질 수 있게 한다.
+- [x] frontend runtime sanity와 Korean copy inventory가 버튼, safe smoke copy, active scan/network 금지 문구를 검증한다.
+- [ ] 이 버튼은 설치 확인용 version-only smoke만 자동화하며 실제 취약점 스캔, OpenVAS/ZAP endpoint import, 운영 Evidence closure를 대신하지 않는다.

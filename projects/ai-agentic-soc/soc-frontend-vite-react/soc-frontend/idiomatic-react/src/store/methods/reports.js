@@ -3744,6 +3744,87 @@ export default {
     }
   }
 ,
+  async executeRedTeam2SafeLocalSmokeToolchain() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-safe-smoke');
+    const requestedToolIds = String(draft.compositeToolIds || '')
+      .split(/[,\n]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+    const safeSmokeCommandMap = {
+      'TOOL-NUCLEI-001':['nuclei', '--version'],
+      'TOOL-TRIVY-001':['trivy', '--version'],
+      'TOOL-NPM-AUDIT-001':['npm.cmd', '--version'],
+    };
+    const selectedIds = requestedToolIds.filter(toolId => safeSmokeCommandMap[toolId]);
+    const smokeToolIds = (selectedIds.length >= 2 ? selectedIds : ['TOOL-NPM-AUDIT-001', 'TOOL-TRIVY-001']).slice(0, 3);
+    const tools = smokeToolIds.map((toolId, index) => ({
+      tool_id:toolId,
+      execution_mode:'sandbox_execute',
+      runner_backend:'local_subprocess_shim',
+      runner_argv:safeSmokeCommandMap[toolId],
+      target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+      objective:`${reportId} 안전 설치 확인 smoke ${index + 1}`,
+      output_summary:'프론트엔드 버튼으로 실행한 version-only 설치 확인 smoke 출력입니다.',
+    }));
+    this.updateRedTeam2AnalysisDraft({
+      compositeInputMode:'runner',
+      compositeToolIds:smokeToolIds.join(','),
+      compositeRunnerCommands:tools.map(step => step.runner_argv.join(' ')).join('\n'),
+    });
+    this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'executing-safe-smoke', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/execute-governed', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          toolchain_id:`${reportId}-TOOLCHAIN-SAFE-LOCAL-SMOKE`,
+          requested_by:'current-analyst',
+          objective:'프론트엔드 버튼으로 설치된 로컬 분석도구의 version-only smoke를 실행하고 결과 회수 가능 상태를 만든다.',
+          target_scope_refs:[String(draft.scopeRef || 'SCOPE-APPROVED').trim()].filter(Boolean),
+          runner_backend:'local_subprocess_shim',
+          require_runtime_preflight:true,
+          allow_safe_local_smoke_when_runtime_partial:true,
+          tools,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({
+        redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:data.status || 'safe-smoke-finished', result:data, error:null, checkedAt:new Date().toISOString() },
+        redteam2ToolchainRunStatusState:{ ...(s.redteam2ToolchainRunStatusState || {}), status:'loaded-from-safe-smoke', result:{
+          kind:'redteam_ax_v2_toolchain_run_status_projection',
+          toolchain_id:data.toolchain_id,
+          status:'toolchain_run_status_loaded',
+          run_status:data.status,
+          step_rows:(data.steps || []).map(step => ({
+            index:step.index,
+            tool_id:step.tool_id,
+            tool_name:step.tool_name,
+            status:step.status,
+            status_ko:step.status_ko,
+            run_id:step.run?.run_id,
+            run_status:step.run?.status,
+            can_collect_result:Boolean(step.run?.run_id),
+          })),
+          collectable_step_count:(data.steps || []).filter(step => step.run?.run_id).length,
+          can_collect_results:(data.steps || []).some(step => step.run?.run_id),
+          primary_next_api:`/api/redteam/v2/toolchains/${data.toolchain_id}/collect-results`,
+          commands_executed_by_api:Boolean(data.commands_executed_by_api),
+          does_not_mark_goal_complete:true,
+        }, checkedAt:new Date().toISOString(), error:null },
+      }));
+      this.toast(`안전 설치 확인 smoke: ${data.executed_count || 0}개 실행 · ${data.blocked_count || 0}개 차단`, data.executed_count ? 'success' : 'warn');
+      this.logAudit('현재 분석가', `레드팀 분석2 안전 설치 확인 smoke: ${data.toolchain_id} · ${data.status}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ToolchainState:{ ...(s.redteam2ToolchainState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('안전 설치 확인 smoke 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async reloadRedTeam2ToolchainRunStatus() {
     const draft = this.redTeam2AnalysisDraft();
     const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
@@ -6615,6 +6696,7 @@ export default {
           h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
             h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행·결과 첨부'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행하거나, 사람이 승인 범위에서 수행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 첨부합니다. 첨부 모드는 도구 명령을 실행하지 않고 저장된 결과만 untrusted artifact로 기록합니다.'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '안전 설치 확인 smoke 버튼은 Nuclei/Trivy/npm audit 중 선택 가능한 도구의 version-only 명령만 자동 구성해 실행합니다. safe_local_smoke_button은 allow_safe_local_smoke_when_runtime_partial=true를 사용하지만 임의 스캔 명령, active scan, Docker/WSL/network 실행은 허용하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수 API는 /api/redteam/v2/toolchains/{toolchain_id}/collect-results 입니다. 저장된 stdout/stderr 또는 운영자 첨부 결과만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-evidence 입니다. 승인 버튼은 후보 Evidence만 승인하며, Finding 생성·severity 승인·보고서 반영은 별도 단계로 남깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들고, severity 2인 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.'),
@@ -6780,6 +6862,11 @@ export default {
                 disabled:operatorEvidenceCardImportState.status === 'importing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:operatorEvidenceCardImportState.status === 'importing' ? C.raised : C.bg, color:operatorEvidenceCardImportState.status === 'importing' ? C.muted : C.violet, cursor:operatorEvidenceCardImportState.status === 'importing' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, operatorEvidenceCardImportState.status === 'importing' ? 'Evidence Card 등록 중' : '운영 Evidence Card 후보 import'),
+              h('button', {
+                onClick:()=>this.executeRedTeam2SafeLocalSmokeToolchain(),
+                disabled:toolchainState.status === 'executing-safe-smoke',
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:toolchainState.status === 'executing-safe-smoke' ? C.raised : C.bg, color:toolchainState.status === 'executing-safe-smoke' ? C.muted : C.amber, cursor:toolchainState.status === 'executing-safe-smoke' ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, toolchainState.status === 'executing-safe-smoke' ? '안전 smoke 실행 중' : '안전 설치 확인 smoke'),
               h('button', {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
                 disabled:toolchainState.status === 'executing',

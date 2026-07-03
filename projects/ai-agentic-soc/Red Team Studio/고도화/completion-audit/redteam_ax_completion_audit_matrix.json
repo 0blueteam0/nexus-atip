@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 61,
+    "proved": 62,
     "partial": 1
   },
   "audit_items": [
@@ -1046,6 +1046,22 @@
       "proof_summary": "The execute-governed API now supports allow_safe_local_smoke_when_runtime_partial. When runtime readiness is not fully ready, it can mark runtime_preflight_status=partial_safe_local_smoke and execute only local_subprocess_shim version-only argv such as --version while blocking multi-argument scan commands with safe_local_smoke_allows_version_only. Regression verifies npm.cmd --version executes once while trivy fs --format json . is blocked. RedTeam2 sends the flag and displays 안전 smoke 부분 실행.",
       "residual_gap": "This proves safe local installation smoke only. It does not execute real vulnerability scans, configure real OpenVAS/ZAP endpoints, collect six operating outputs, approve Evidence, approve Finding severity, export Report v2, or close completion gates.",
       "next_action": "Use the partial smoke path to confirm installed local tools, then run approved real scanner outputs or operator imports through collect-results and the full approval/report closure gates."
+    },
+    {
+      "id": "RTA-COMP-063",
+      "requirement": "RedTeam2 must provide a beginner-facing button that starts safe installed-tool version smoke without requiring manual command entry.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 now includes an 안전 설치 확인 smoke button backed by executeRedTeam2SafeLocalSmokeToolchain. The method builds version-only smoke steps for Nuclei, Trivy, and npm audit where selected, falls back to npm audit and Trivy, sends require_runtime_preflight=true and allow_safe_local_smoke_when_runtime_partial=true to execute-governed, then updates toolchain and saved run-status projections so collect-results can follow. Frontend runtime sanity checks the button, safe_local_smoke_button anchor, version-only copy, and active scan/Docker/WSL/network prohibition text.",
+      "residual_gap": "This is a frontend workflow shortcut for safe version smoke only. It does not run real vulnerability scans, import OpenVAS/ZAP endpoint results, collect six operating outputs, approve Evidence, or close Report/export/completion gates.",
+      "next_action": "Use the button with actual installed local tools, then collect safe smoke outputs as install/runtime evidence while separately obtaining real operating scanner outputs for final closure."
     }
   ],
   "remaining_gaps": [
@@ -1060,5 +1076,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T14:32:00+09:00"
+  "last_updated": "2026-07-03T14:45:00+09:00"
 }
