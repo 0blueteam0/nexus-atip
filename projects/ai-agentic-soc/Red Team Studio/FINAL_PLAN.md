@@ -2039,3 +2039,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 기본 표와 버튼은 `결과 회수·증거 후보`, `안전 정리`, `도구별 결과 정리`, `제출 묶음` 같은 한국어 업무 표현을 사용한다.
 - [x] fresh Vite 브라우저 검증에서 환경/내부 운영 flagged line이 20건에서 1건으로 줄고 `forbidden_default_hits=[]`임을 확인했다.
 - [ ] 남은 전역 내비게이션 `실행 런타임` 라벨과 Report Studio 공통 영문/도메인 용어는 별도 공통 UI 정리 slice에서 다룬다.
+
+## 144. 갱신 목표 - RedTeam2 기본 분석 워크플로우 영문 산출물명 추가 축소
+
+- [x] 기본 분석 워크플로우에서 `coverage`, `smoke`, `runner` 같은 내부 실행 용어를 사용자 노출 문구에서 제거한다.
+- [x] `Evidence/Finding/Matrix/Report draft/export` 중심 설명과 버튼을 `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`로 낮춘다.
+- [x] Korean copy inventory, runtime readiness contract, launch readiness contract를 새 문구 기준으로 갱신하고 통과시킨다.
+- [x] fresh Vite Playwright DOM 검증에서 금지 기본 노출 `forbidden_default_hits=[]` 및 `coverage/smoke/runner` 0건을 확인한다.
+- [ ] 공유 Report Studio 헤더, 전역 내비게이션, RBAC 약어, 표준 ID 라벨의 잔여 영문은 별도 공통 UI 정리 slice에서 다룬다.

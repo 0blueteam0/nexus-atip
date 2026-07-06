@@ -240,6 +240,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 57. RedTeam2 기본 분석가 화면은 `redteam2ShowAdminDetails`가 참일 때만 관리자 세부 패널을 렌더링한다. 기본값은 접힘이며 `관리자 설정 보기` 토글만 보인다. 접힘 상태의 DOM에는 `분석 환경 설정(관리자용)`, wrapper 신뢰 고정, OpenVAS/ZAP 접속권한·service import 설정, 운영 closure/completion audit 상세 표, 통제 실행 명령, 격리 항목, `source_path/artifact_path/storage_path` 같은 원시 키가 노출되지 않아야 한다. 이 규칙은 화면 노출 최소화 계약이며 backend artifact와 Evidence Card 원본 추적을 제거하지 않는다.
 58. RedTeam2 기본 분석가 화면은 내부 구현 식별자를 직접 표시하지 않는다. `TOOL-*` 도구 ID, raw `/api/redteam/v2/...` 경로, `toolchain_id`, `tool_action_card_required`, normalizer/agent id는 `Nuclei`, `결과 회수 연결`, `승인 작업 카드 필요`, `도구별 분석 에이전트`처럼 한국어 요약으로 치환한다. 실제 ID와 API path는 payload, audit log, 관리자/감사용 세부 기록에 보존한다.
 59. RedTeam2 기본 분석가 화면은 Docker/WSL, manifest, Sanitizer, normalizer, 운영 closure 같은 환경·운영 세부어도 기본 DOM에 직접 노출하지 않는다. 기본 표현은 `관리자 준비 항목`, `제출 묶음`, `안전 정리`, `도구별 결과 정리`, `결과 회수·증거 후보`를 사용한다. 운영 증거 제출 묶음 생성, 제출 묶음 만들기/가져오기, closure/completion audit 버튼은 관리자 설정을 펼친 경우에만 보인다.
+60. RedTeam2 기본 분석가 화면의 결과 검토 워크플로우는 `coverage`, `smoke`, `runner`, `Evidence/Finding/Matrix/Report draft/export` 같은 내부 또는 영문 산출물명보다 `결과 확인 상태`, `안전 설치 확인`, `승인된 로컬 실행`, `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`를 우선 사용한다. fresh Vite DOM 검증의 금지 기본 노출은 `forbidden_default_hits=[]`여야 하며, 표준 ID와 관리자/감사 기록의 원본 추적성은 유지한다.
 
 ## 남은 작업
 
@@ -255,6 +256,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 기본 분석가 화면에서 `관리자 설정`이 접힌 상태로 열리고 관리자/경로/closure/격리/원시 키 금지어가 DOM에 나타나지 않는 Playwright 브라우저 회귀 증거
 - RedTeam2 기본 분석가 화면에서 `TOOL-*`, raw API path, `toolchain_id`, `tool_action_card_required`, normalizer agent id가 한국어 요약으로 낮춰진 Playwright 브라우저 회귀 증거
 - RedTeam2 기본 분석가 화면에서 Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API 금지어가 기본 DOM에 나타나지 않는 Playwright 브라우저 회귀 증거
+- RedTeam2 기본 분석가 화면에서 coverage/smoke/runner와 분석 워크플로우의 불필요한 Evidence/Finding/Matrix/Report 영문 산출물명이 한국어 사용자 문구로 낮춰진 Playwright 브라우저 회귀 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

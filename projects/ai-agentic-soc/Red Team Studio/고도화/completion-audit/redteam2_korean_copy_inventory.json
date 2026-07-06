@@ -4,16 +4,16 @@
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
   "literal_count": 2266,
-  "korean_literal_count": 2052,
-  "english_only_literal_count": 210,
-  "english_only_literal_ratio": 0.0927,
+  "korean_literal_count": 2060,
+  "english_only_literal_count": 202,
+  "english_only_literal_ratio": 0.0891,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
     "RedTeam AX": 1,
     "ToolActionCard": 1,
     "HITL": 10,
-    "Evidence Card": 37,
+    "Evidence Card": 36,
     "Claim-Evidence Matrix": 7,
     "Agentic RAG": 5,
     "SCA": 16,
@@ -33,7 +33,7 @@
     "승인": 248,
     "수동": 7,
     "업로드": 21,
-    "증거": 151,
+    "증거": 175,
     "차단": 76,
     "필요": 98,
     "주의": 1
@@ -93,7 +93,6 @@
     "6px 8px",
     "6px 8px",
     "6px 8px",
-    "Collection Report v2 draft",
     "8px 11px",
     "8px 11px",
     "#fff",
@@ -120,7 +119,8 @@
     "repeat(auto-fit, minmax(150px, 1fr))",
     "minmax(150px, .7fr) minmax(220px, 1fr) minmax(220px, 1fr)",
     "OpenVAS / Greenbone",
-    "OWASP ZAP"
+    "OWASP ZAP",
+    "minmax(220px, 1fr) minmax(240px, 1.1fr)"
   ],
   "policy": {
     "max_english_only_literal_ratio": 0.35,

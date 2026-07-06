@@ -1344,3 +1344,9 @@ Create Case
 - 표시 규칙: 기본 DOM에서는 `manifest`를 `제출 묶음`, `Sanitizer`를 `안전 정리`, `normalizer`를 `결과 정리`, `Evidence 후보`를 `증거 후보`로 낮춘다. backend 상태값과 함수명은 유지하되, 사용자가 보는 table cell과 안내 문구는 한국어 업무 표현으로 변환한다.
 - 테스트 전략: `node --check reports.js`, `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM inventory를 실행한다. browser check는 기본 화면에서 Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API 금지어가 0건인지 확인한다.
 - 예외 케이스: 앱 전역 내비게이션의 `실행 런타임`은 RedTeam2 본문이 아니므로 이번 slice에서 제외한다. 관리자 설정을 펼친 상태에서는 운영 세부어가 보일 수 있으며, 이는 감사·운영 조치를 위한 의도된 동작이다.
+## 91. 갱신 목표 반영 - RedTeam2 기본 분석 워크플로우 영문 산출물명 추가 축소
+
+- 기본 분석 워크플로우 설명과 버튼에서 `coverage`, `smoke`, `runner` 같은 내부 실행 용어를 분석가용 한국어 문구로 낮춘다.
+- `Evidence/Finding/Matrix/Report draft/export` 중심 표현은 `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`로 치환한다.
+- 검증 기준은 `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM 캡처다.
+- 감사 증거는 `RTA-COMP-078`과 KW-20260706-134410 브라우저 산출물에 보관한다.

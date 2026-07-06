@@ -302,6 +302,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 남은 1건은 RedTeam2 본문이 아니라 앱 전역 내비게이션의 `실행 런타임` 라벨이다.
 - 이 변경은 기본 분석가 화면의 인지 부하 축소이며 관리자 토글, backend payload, 감사 기록의 운영 세부 추적성은 유지한다.
 
+## 2026-07-06 갱신 - RedTeam2 기본 분석 워크플로우 영문 산출물명 추가 축소
+
+- `RTA-COMP-078`은 RedTeam2 기본 분석가 화면에서 `coverage`, `smoke`, `runner` 같은 내부 실행 용어가 기본 DOM에 남지 않도록 추가 정리한 요구를 증명한다.
+- 기본 분석 워크플로우 설명, 버튼, 표 제목은 `Evidence/Finding/Matrix/Report draft/export` 중심 표현을 줄이고 `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`를 우선 사용한다.
+- fresh Vite 서버 기준 Playwright 검증에서 `coverage/smoke/manifest/toolchain/ToolActionCard/runner/raw API/WSL/container` 기본 DOM 카운트가 모두 0이고 `forbidden_default_hits=[]`임을 확인했다.
+- 같은 검증에서 RedTeam2 기본 화면의 `Evidence/Finding/Matrix/Report` 카운트는 15/17/10/13에서 7/3/2/7로 줄었다.
+- 이 변경은 표시 계층의 한국어화이며 공유 Report Studio 헤더, 전역 내비게이션, RBAC 약어, 표준 증거/보고서 ID의 잔여 영문은 후속 공통 UI 정리 대상이다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

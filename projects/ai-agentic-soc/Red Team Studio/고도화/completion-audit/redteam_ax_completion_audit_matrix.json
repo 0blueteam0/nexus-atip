@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 76,
+    "proved": 77,
     "partial": 1
   },
   "audit_items": [
@@ -1297,6 +1297,21 @@
       ],
       "proof_summary": "Fresh browser DOM verification reduced default flagged environment/internal lines from 20 to 1 and produced forbidden_default_hits=[]; Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API default counts are 0. The remaining flagged line is the global navigation label 실행 런타임 outside the RedTeam2 panel content.",
       "next_action": "Continue reducing remaining English product/report terms only where they are analyst-facing and not required tool or report vocabulary."
+    },
+    {
+      "id": "RTA-COMP-078",
+      "requirement": "RedTeam2 default analyst DOM must remove remaining default exposure of coverage/smoke/runner/internal operation vocabulary and further reduce English report workflow labels in the analysis workflow.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/documentation/llm-wiki/operations/knowledge-workflow/KW-20260706-134410-Red-Team-Studio-Continue-RedTeam-AX-goal-by-further-simplifying-RedTeam2-analysis-UI-and-alignin/browser/redteam2-default-dom-analyst-terms-after-20260706-134410.json"
+      ],
+      "proof_summary": "Fresh browser DOM verification after the copy pass produced forbidden_default_hits=[] with coverage/smoke/manifest/toolchain/ToolActionCard/runner/raw API/WSL/container counts all 0 in the default RedTeam2 analyst view. Evidence/Finding/Matrix/Report term counts were reduced from 15/17/10/13 to 7/3/2/7 by replacing default workflow paragraphs, buttons, and table rows with 증거, 발견사항, 주장-증거표, 보고서 v2 초안, and 최종 내보내기 language.",
+      "residual_gap": "Some shared Report Studio header, global navigation, RBAC labels, and standardized evidence/report IDs still use English or acronyms. This item does not prove actual live six-tool operating outputs or final Evidence/Finding/Matrix/Report/export/completion gates.",
+      "next_action": "Run a separate shared Report Studio header/common-navigation localization pass without weakening standard evidence traceability vocabulary."
     }
   ],
   "remaining_gaps": [
@@ -1311,5 +1326,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-06T13:45:00+09:00"
+  "last_updated": "2026-07-06T13:52:30+09:00"
 }

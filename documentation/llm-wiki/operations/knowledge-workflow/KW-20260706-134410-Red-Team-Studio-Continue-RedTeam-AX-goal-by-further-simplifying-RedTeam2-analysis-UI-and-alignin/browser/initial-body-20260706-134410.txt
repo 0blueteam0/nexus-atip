@@ -1,0 +1,143 @@
+Agentic SOC
+OPERATING SYSTEM
+OPERATE
+■
+현황
+알림 큐
+사건
+대응
+헌트
+UNDERSTAND
+위험 맥락
+증적
+인텔리전스
+탐지
+메모리
+BUILD
+에이전트
+절차
+스킬
+연동
+실행 런타임
+REPORTS
+보고서 스튜디오
+GOVERN
+정책
+평가
+감사
+OUTCOMES
+SOC 성과
+경영 리스크
+“One context graph, many specialized agents, one evidence ledger, one governed action gate.”
+밀도 · 보통
+자율성 모드
+Shadow
+Assisted
+AI-led
+Bounded
+명령
+⌘K
+정
+정관제
+Tier-3 Analyst
+데이터 신선도
+Identity 2m
+Endpoint 12m
+Network 4m
+Cloud 3m
+⚠ EDR FIN-WS-204 12m stale
+리스크 리버 · Risk River
+확정 피해
+불확실
+AI 추론
+인간 통제
+검증됨
+시그널 소스
+비즈니스 서비스
+활성 사건
+에이전트 판정
+대응 상태
+Microsoft Defen…
+Entra ID
+Proofpoint
+CrowdStrike NDR
+AWS CloudTrail
+Finance Service
+Identity Platfo…
+Email Service
+INC-04721
+OAuth+PS
+INC-04718
+이상 로그인
+INC-04709
+대량 메일
+Confirmed Malic…
+Investigating
+Likely Benign
+Awaiting Approv…
+Monitoring
+Containment Ver…
+교대 브리프 · Shift Brief
+3
+판단 필요
+2건의 대응 조치가 승인 대기 중
+INC-04721 — Entra 세션 폐기 및 OAuth 권한 취소가 Tier-3 승인을 기다리고 있습니다.
+대응 스튜디오 열기
+신흥 패턴
+3건의 사건이 동일한 OAuth 애플리케이션 공유
+동일한 동의 애플리케이션 ID가 INC-04721, INC-04718, INC-04702에서 관측되었습니다. 캠페인 가능성.
+헌트 생성
+데이터 품질
+Entra 커넥터가 11분 지연됨
+EDR 센서(FIN-WS-204)도 12분 지연 상태로, 지속성 점검 신뢰도가 낮습니다.
+연동 상태 보기
+진행 중 미션 · Active Missions
+← 스크롤 →
+INC-04721
+Confirmed Malicious
+의심스러운 OAuth 동의 + 인코딩된 PowerShell 실행
+Finance Service
+판정 → 대응
+ID
+EP
+NET
+CL
+FOR
+증거 14/17
+승인 대기
+INC-04718
+Investigating
+Finland 관리자 계정 이상 로그인 시퀀스
+Identity Platform
+조사 중
+ID
+EP
+NET
+CL
+FOR
+증거 6/12
+대기 없음
+INC-04709
+Likely Benign
+재무팀 대상 대량 피싱 메일 캠페인
+Email Service
+검증 완료
+ID
+EP
+NET
+CL
+FOR
+증거 9/9
+종료됨
+INC-04702
+Investigating
+Snowflake 비정상 대량 쿼리 패턴
+Finance Service
+조사 중
+ID
+EP
+NET
+CL
+FOR
+증거 5/11
+데이터 갭
