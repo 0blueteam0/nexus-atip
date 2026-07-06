@@ -1319,3 +1319,12 @@ Create Case
 - 안전 원칙: 이 전환은 UI 의미와 결과 요약 개선이다. 고위험 scanner 실행, active scan, Docker/WSL/network 실행은 여전히 ROE/HITL/runtime preflight가 없으면 차단한다.
 - 테스트 전략: `redteam_ax_toolchain_collection_analyst_summary_contract.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `test_redteam2_korean_copy_inventory.py`가 새 용어와 회귀 금지 문구를 검증한다.
 - 예외 케이스: 승인된 runner 실행 버튼 자체는 남긴다. 다만 기본 분석가 화면에서는 실행 여부 나열이 아니라 결과가 Evidence 후보로 정리되는 상태를 먼저 보여준다.
+
+## 88. 갱신 목표 반영 - RedTeam2 기본 분석가 화면 관리자 세부정보 접힘
+
+- 목적: RedTeam2가 분석가용 화면과 관리자/감사용 세부정보를 분리했더라도 기본 DOM에 runtime, endpoint, wrapper, closure, local path, isolation 세부 항목이 모두 보이면 초급 분석가에게 여전히 과도하다. 기본 화면은 결과 첨부, Evidence 후보, Finding/Claim 검토 중심이어야 한다.
+- 화면/기능 명세: `관리자 설정` 패널과 `관리자 설정 보기/숨기기` 토글을 추가한다. 접힘 상태에서는 숨긴 항목의 범주와 담당자만 표시하고, 실제 세부 패널은 펼친 경우에만 렌더링한다.
+- 기본 접힘 범위: `분석 환경 설정(관리자용)`, `도구 래퍼 신뢰 고정 / 버전 확인`, `OpenVAS/ZAP 읽기 전용 접속권한`, `OpenVAS/ZAP 서비스 결과 가져오기`, tool execution plan의 command/runner/isolation/token 세부정보, operating closure/completion audit 상세 표, 저장 실행 상세 표, 운영 산출물 경로성 입력을 기본 DOM에서 숨긴다.
+- 추적성 원칙: 세부정보를 삭제하지 않는다. 관리자 토글을 펼치면 운영자, 레드팀 리드, 통제팀이 기존 승인·감사·closure 세부 행을 확인할 수 있다. Evidence Card와 Claim-Evidence Matrix 원본 추적은 계속 backend artifact와 감사 기록에 남긴다.
+- 테스트 전략: `node --check reports.js`, frontend runtime readiness contract, Korean copy inventory, Playwright 브라우저 DOM 검증을 실행한다. 브라우저 검증은 기본 RedTeam2 DOM에서 관리자/경로/closure/격리/원시 키 금지어가 0건인지와 `분석가용 다음 실행 안내`, `관리자 설정 보기`, `분석 결과 수집·검토 워크플로우`가 존재하는지 확인한다.
+- 예외 케이스: 관리자가 토글을 펼친 상태에서는 경로성, wrapper, endpoint, closure, audit 세부정보가 다시 보일 수 있다. 이는 감사와 운영 조치를 위한 의도된 동작이며, 기본 분석가 화면의 노출 최소화 계약과 구분한다.

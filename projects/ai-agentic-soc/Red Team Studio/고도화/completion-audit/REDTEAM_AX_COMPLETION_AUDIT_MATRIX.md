@@ -280,6 +280,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 실행/진행 ID 중심 표는 `상세 실행 기록(관리자/감사용)`, `상세 진행 기록(관리자/감사용)`으로 낮춰 분석가 화면에서 실행 나열이 주된 내용처럼 보이지 않게 했다.
 - 이 변경은 UI/API projection 개선이며 실제 운영 6개 도구 산출물, Evidence 승인, Finding severity 승인, Report v2 export, 브라우저 회귀 검증, 최종 completion gate 완료를 대신하지 않는다.
 
+## 2026-07-06 갱신 - RedTeam2 기본 분석가 화면 관리자 세부정보 접힘
+
+- `RTA-COMP-075`는 RedTeam2 기본 분석가 화면이 관리자/runtime/경로/closure 세부정보를 기본 DOM에 노출하지 않아야 한다는 요구를 증명한다.
+- RedTeam2는 `관리자 설정` 토글을 기본 접힘 상태로 두고, 펼친 경우에만 wrapper 신뢰 고정, OpenVAS/ZAP 접속권한·service import, 실행 환경, tool execution plan 세부정보, 운영 closure/completion audit 상세 표를 렌더링한다.
+- Playwright 브라우저 검증은 기본 화면에서 관리자/경로/closure/격리/원시 키 금지어 0건과 `분석가용 다음 실행 안내`, `관리자 설정 보기`, `분석 결과 수집·검토 워크플로우` 존재를 확인했다.
+- 이 변경은 분석가 기본 화면 노출 최소화이며 승인·runtime·Evidence·Finding·Matrix·Report/export/completion gate를 생략하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

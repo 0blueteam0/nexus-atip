@@ -1,0 +1,1058 @@
+Agentic SOC
+OPERATING SYSTEM
+OPERATE
+현황
+알림 큐
+사건
+대응
+헌트
+UNDERSTAND
+위험 맥락
+증적
+인텔리전스
+탐지
+메모리
+BUILD
+에이전트
+절차
+스킬
+연동
+실행 런타임
+REPORTS
+■
+보고서 스튜디오
+GOVERN
+정책
+평가
+감사
+OUTCOMES
+SOC 성과
+경영 리스크
+“One context graph, many specialized agents, one evidence ledger, one governed action gate.”
+밀도 · 보통
+자율성 모드
+Shadow
+Assisted
+AI-led
+Bounded
+명령
+⌘K
+정
+정관제
+Tier-3 Analyst
+데이터 신선도
+Identity 2m
+Endpoint 12m
+Network 4m
+Cloud 3m
+⚠ EDR FIN-WS-204 12m stale
+보고서 스튜디오 · Report Studio
+에이전트 작성 → 인간 검토 → 승인
+보고서 생성
+보고서 스튜디오는 백엔드 분석 런과 증거 그래프를 기준으로 초안을 만듭니다. 레드팀 보고서는 공개 보고서 사례의 절차 구조를 참고하되 실제 근거는 Red Team Studio, safe ASM, 도구 실행/차단 결정, Evidence Matrix, Release Gate에서만 가져오며 화면에는 분석가가 검토할 요약, 증거, 제한사항, 대응 권고, 승인 상태를 노출합니다.
+Reports
+Report catalog
+악성코드 분석
+Workflow, evidence, HITL, report fields
+레드팀 분석
+Objectives, campaigns, evidence
+레드팀 분석2
+AX v2 ToolActionCard, HITL, evidence gates
+레드팀 분석2 · RedTeam AX v2
+기존 레드팀 분석 흐름을 기준으로 ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 게이트를 분리한 워크벤치
+상태 새로고침
+ToolActionCard 계획
+v2 연결
+준비 완료
+tool_action_card_required
+v1 백엔드
+ai-agentic-soc-redteam-backend
+기존 레드팀 분석 회귀 기준
+RAG/Wiki
+준비 완료
+지식 저장소 연결됨
+준비도
+-
+파이프라인 커버리지
+도구 허브
+6
+ToolActionCard + ROE + HITL before active execution
+Case / ROE 입력
+보고서
+RTA-2026-0301 · ID·SaaS 권한 경계 레드팀 평가 보고서
+RTA-2026-0302 · 외부 공격표면 및 초기 접근 평가 보고서
+RTA-2026-0303 · 탐지·대응 타임라인 레드팀 평가 보고서
+RTA-2026-0304 · 증거 캡처·로그 보존·Claim-Evidence Matrix 평가 보고서
+RTA-2026-0305 · 네트워크 세그먼트 및 내부 신뢰 경계 평가 보고서
+RTA-2026-0306 · IR Triage 및 에스컬레이션 기준 평가 보고서
+RTA-2026-0307 · MITRE ATT&CK 기반 레드팀 공격경로 매핑 보고서
+RTA-2026-0308 · 개선 로드맵 및 탐지 엔지니어링 백로그 보고서
+RTA-2026-0309 · 퍼플팀 재검증 및 AX 자동화 연계 보고서
+RTA-2026-0310 · 시각 증거 설명 규칙 및 민감정보 마스킹 평가 보고서
+RTA-2026-0311 · 경영진용 종합 레드팀 평가 및 결론 보고서
+대상 유형
+IP
+URL
+Domain
+CIDR
+대상
+위험 등급
+T0 · 파일/로그 가져오기
+T1 · 읽기 전용 확인
+T2 · 제한된 네트워크 확인
+T3 · 스캔 영향 가능
+T4 · 승인된 실험망 실행
+T5 · 운영 영향 가능
+T6 · 고위험 수동 실행
+T7 · 기본 차단
+승인 범위 ID
+분석도구
+Nuclei
+OpenVAS / Greenbone Community Edition
+Trivy
+SCA Dependency Analyzer
+npm audit
+OWASP ZAP
+실행 방식
+계획만 만들기
+이미 있는 결과 파일 분석
+격리된 샌드박스 실행
+사람이 실행하고 결과 업로드
+승인된 실험망 실행
+운영환경 읽기 전용 점검
+통제된 운영 실행
+실행 환경
+로컬 dry-run shim
+임시 컨테이너
+목적
+분석 도구 허브 / LLM 분석 에이전트
+선택 도구
+Nuclei
+approved_templates_and_scope_required
+LLM 분석 에이전트
+nuclei_result_normalizer_agent
+결과 정규화와 Evidence 후보 생성
+실행 준비
+설치 확인 필요
+설치 확인 필요
+설치 상태
+install_required
+사람이 실행한 증거 필요
+래퍼 신뢰
+없음
+실행 전 SHA-256 고정 필요
+에이전트 수
+6
+tool output is data, never instruction
+도구	위험도	실행 준비	LLM 에이전트
+Nuclei	T3 · 스캔 영향 가능	설치 확인 필요	nuclei_result_normalizer_agent
+OpenVAS / Greenbone Community Edition	T3 · 스캔 영향 가능	설치 확인 필요	openvas_report_normalizer_agent
+Trivy	T0 · 파일/로그 가져오기	설치 확인 필요	trivy_result_normalizer_agent
+SCA Dependency Analyzer	T0 · 파일/로그 가져오기	등록됨	sca_sbom_reasoning_agent
+npm audit	T0 · 파일/로그 가져오기	registered_verified	npm_audit_result_normalizer_agent
+OWASP ZAP	T3 · 스캔 영향 가능	설치 확인 필요	zap_report_normalizer_agent
+분석도구 실행 안내
+이 영역은 버튼을 누르기 전에 확인해야 할 쉬운 설명입니다. 고위험 도구는 웹앱이 바로 실행하지 않고, ToolActionCard 계획, 범위 확인, 사람 승인, 결과 업로드, Evidence 연결 순서로 진행합니다.
+선택한 분석도구
+Nuclei
+승인 후 실행
+현재 실행 방식
+사람이 실행하고 결과 업로드
+실행 전 계획과 승인 확인
+결과 처리
+NORMALIZER-NUCLEI-001
+AGENT-NUCLEI-ANALYST-001
+보고서 연결
+2
+Evidence Card 생성 후 Claim-Evidence Matrix 연결
+확인 항목	상태	사용자 안내
+도구 설명	Nuclei	웹 취약점 템플릿 검사 도구입니다. 실제 대상에 요청을 보내므로 기본적으로 승인 후 실행합니다.
+처음 할 일	승인 필요	먼저 ToolActionCard 계획을 만들고 ROE 범위와 템플릿 목록을 확인한 뒤, 리드 승인을 받아 수동 실행 결과 JSONL을 업로드하세요.
+안전한 실행 모드	manual_operator_run	권장 시작: plan_only 또는 offline_parse. lab_execute는 승인된 실험망에서만 사용합니다.
+금지/주의 옵션	unbounded_target_import, interactsh_unapproved, unsafe_templates	금지 옵션은 버튼 실행과 보고서 주장에 직접 사용하지 않습니다.
+Evidence 연결	scanner_finding_candidate, web_validation_evidence	Nuclei JSONL 결과는 scanner finding 후보 Evidence로 변환되고, LLM 에이전트가 오탐/근거 부족 표현을 보류합니다.
+Agentic RAG 충분성 검증 / 인용 검증기
+검증 질문
+보고서에 넣을 핵심 주장 초안
+Agentic RAG 검증 실행
+대기
+충분성 판단
+-
+점수 -
+인용 검증
+대기 또는 보류
+근거 부족 주장 -건
+Evidence
+-
+승인된 Evidence Card 자동 준비
+Matrix 후보
+-
+아직 없음
+검색 말뭉치
+-
+검증을 실행하세요
+Agentic RAG	상태	근거
+SCA 판단	대기	점수=-
+답변 가능 여부	아니오	부족한 사실 없음
+인용	0	승인된 Evidence Card 필요
+근거 부족 주장	-	보고서 사용 전 0건이어야 함
+Claim-Evidence Matrix 후보	준비 안 됨	SCA를 실행해 후보를 준비하세요
+근거 부족 주장 보류	미확인	근거 부족 핵심 주장은 보고서 생성 전에 보류
+선택 말뭉치	0	증거 저장소 대기
+조회 기능의 명령 실행	아니오	항상 아니오 유지
+명령으로 신뢰 여부	아니오	항상 아니오 유지
+사람 검토	예	분석가 검토 필요
+도구 래퍼 신뢰 고정 / 버전 확인
+래퍼는 웹앱이 도구를 부를 때 사용하는 중간 실행 파일입니다. 실행 전에 위치, 버전, SHA-256 해시를 확인하고 레드팀 리드가 승인해야 합니다. 승인되지 않은 래퍼는 실행 버튼에서 차단됩니다.
+래퍼 목록
+6
+CLI/API wrappers require resolved binary hash pinning before runner trust.
+선택 래퍼
+없음
+nuclei
+SHA-256
+-
+기준 해시 설정됨
+버전 확인
+not_verified
+not_executed_safe_manifest_only
+기준 SHA-256
+운영자가 확인한 버전
+버전 확인 명령
+버전 출력 일부
+래퍼 신뢰 고정 요청
+래퍼 신뢰 승인
+래퍼 신뢰 해제
+대기
+신뢰 고정 항목	상태	근거
+고정 요청	대기	현재 래퍼 해시를 신뢰 기준으로 요청
+승인	승인됨	TWPINAP-D4AAA8C3E02D
+해제	활성 또는 미설정	승인된 고정값은 레드팀 리드가 해제 가능
+기준 해시	approved_pin	2079d913d3d7b8c5e5c77dd93c4cf2bebac3f3bbd8121564bff495c9354e5110
+도구	고정 상태	사용 가능 여부	해시/위치
+nuclei	없음	없음	Install nuclei from the official ProjectDiscovery release and pin template sources.
+openvas	없음	없음	Run Greenbone/OpenVAS as a managed service; import reports or use approved API credentials.
+trivy	없음	없음	Install trivy CLI and use JSON output for offline workspace/container artifact scans.
+sca	import_only	not_applicable	Use SBOM/dependency manifest import first; wire organization SCA backend later.
+npm audit	hash_match	사용 가능	21b46c69ad6e...
+owasp-zap	없음	없음	Run ZAP in daemon/container mode and import JSON reports; active scan requires approval.
+OpenVAS/ZAP 읽기 전용 접속권한
+OpenVAS와 ZAP 접속 비밀값은 이 화면에 넣지 않습니다. 외부 비밀 보관 참조만 승인 기록으로 남기고, 범위는 읽기 전용 허용목록과 비교합니다. 능동 스캔이나 관리자/쓰기 권한은 차단됩니다.
+정책 수
+2
+OpenVAS/ZAP
+승인 수
+0
+현재 케이스 기준
+Secret 저장
+아니오
+값 저장 금지
+조회 기능의 명령 실행
+아니오
+승인 기록만 수행
+도구
+OpenVAS / Greenbone
+OWASP ZAP
+외부 비밀 보관 참조
+읽기 전용 접속 참조
+읽기 전용 범위
+승인 목적
+읽기 전용 접속권한 승인
+대기
+접속 정책	상태	근거
+지원 도구	2	TOOL-OPENVAS-001, TOOL-ZAP-001
+선택 도구	OpenVAS / Greenbone Community Edition	supported
+허용 범위	3개 읽기 전용 범위	읽기 전용 범위만 허용
+금지 범위	6개 금지 범위	능동 스캔, 관리자, 쓰기 계열 차단
+비밀값 저장	아니오	접속 비밀값은 저장하지 않음
+승인 역할	통제팀, 레드팀 리드	레드팀 리드 또는 통제팀
+승인 기록	상태	근거
+승인 상태	대기	읽기 전용 접속권한 승인 전
+외부 비밀 보관 참조	-	비밀값이 아니라 참조만 저장
+읽기 전용 접속 참조	-	승인된 읽기 전용 접속만 사용
+범위	보고서 읽기, 스캔 상태 읽기	허용목록과 비교됨
+명령 실행	아니오	권한 승인 기능은 도구를 실행하지 않음
+LLM 명령 신뢰	아니오	항상 아니오 유지
+OpenVAS/ZAP 서비스 결과 가져오기
+읽기 전용 서비스 결과 가져오기는 이미 승인된 OpenVAS 보고서 또는 ZAP passive alert 결과만 회수합니다. 능동 스캔은 실행하지 않습니다. 비밀값은 입력하지 않고, 승인 기록 ID와 읽기 전용 접속 주소만 사용합니다.
+서비스 도구
+OWASP ZAP passive alert
+OpenVAS / Greenbone report
+승인 기록 ID
+읽기 전용 접속 주소
+timeout 초
+읽기 전용 서비스 결과 가져오기
+대기
+서비스 가져오기
+-
+대기
+도구
+TOOL-ZAP-001
+OpenVAS/ZAP
+Evidence
+-
+Evidence 후보
+저장 산출물
+미저장
+-
+서비스 결과	상태	근거
+가져오기 상태	대기	승인된 OpenVAS/ZAP 서비스 결과를 읽기 전용으로 가져오세요
+도구	TOOL-ZAP-001	OpenVAS report 또는 ZAP passive alert 결과
+승인 ID	-	승인 기록 ID만 전송하고 secret 값은 전송하지 않음
+읽기 전용 접속	-	승인된 읽기 전용 서비스 URL
+능동 스캔 실행	아니오	항상 아니오여야 함
+비밀값 저장	아니오	접속 비밀값 저장 금지
+명령으로 신뢰 여부	아니오	항상 아니오 유지
+Evidence	-	Evidence 후보
+파서	-	가져오기 후 정규화
+서비스 가져오기 진행	상태	설명
+현재 단계	대기	읽기 전용 서비스 결과 가져오기 뒤 표시됩니다
+다음 버튼	읽기 전용 서비스 결과 가져오기	승인된 OpenVAS/ZAP 결과를 먼저 가져오세요
+회수 가능 결과	0개	결과 회수·Evidence 후보 단계로 넘길 수 있는 서비스 import 결과
+Evidence 후보	0개	승인 전에는 Finding이나 Report Claim으로 확정하지 않음
+서비스 다음 단계	상태	다음 버튼	설명
+도구 실행 또는 결과 첨부	대기	읽기 전용 서비스 결과 가져오기	승인된 OpenVAS/ZAP 결과를 먼저 가져오세요
+분석가용 다음 실행 안내
+분석가는 아래 순서대로 버튼을 누르면 됩니다. 컨테이너, 보조 실행 환경, 읽기 전용 접속 주소 같은 분석 환경 설정은 아래 관리자용 영역에서 따로 확인합니다. 고위험 실행은 사람이 승인한 뒤 진행합니다.
+분석가 안내	상태	설명
+현재 안내	tool_execution_waiting_on_environment	분석가는 결과 첨부, Evidence 후보 검토, 보고서 초안 작업을 먼저 진행하세요. Docker, WSL, OpenVAS/ZAP endpoint 같은 환경 준비는 관리자용 항목에서 처리합니다.
+다음 버튼	여러 도구 결과 첨부	결과 회수·Evidence 후보
+결과 첨부	가능	운영자가 실행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 Evidence 후보로 연결
+능동 스캔	허용 안 됨	고위험 실행은 사람이 승인·수행·검토한 뒤 결과만 회수
+다음 버튼	상태	사용자 안내	연결
+운영 증거 제출 manifest 초안	차단됨	운영자가 Docker/WSL/OpenVAS/ZAP/promotion 증거를 제출하고 승인된 submission manifest와 Evidence Card 후보 계획을 만듭니다.	/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft
+결과 회수·Evidence 후보	차단됨	저장된 도구 결과를 collect-results, Evidence 승인, Finding/Claim 검토 패키지까지 연결합니다.	/api/redteam/v2/toolchains/{toolchain_id}/collect-results
+번호	쉬운 설명	진행 방법
+1	실제 도구 실행 환경은 아직 완전히 준비되지 않았습니다.	환경 담당자 조치 또는 결과 첨부로 진행
+2	환경 담당자가 Docker/WSL 또는 OpenVAS/ZAP 읽기 전용 연결을 확인해야 합니다.	환경 담당자 조치 또는 결과 첨부로 진행
+3	분석가는 기존 결과 파일 첨부와 Evidence 검토를 먼저 진행할 수 있습니다.	환경 담당자 조치 또는 결과 첨부로 진행
+분석가 기본 화면에서 숨김	위치	이유
+Docker/WSL 세부 진단	관리자용 영역	분석가 기본 작업 흐름에서는 숨김
+OpenVAS/ZAP endpoint/vault 설정	관리자용 영역	분석가 기본 작업 흐름에서는 숨김
+strict promotion gate 원시 blocker	관리자용 영역	분석가 기본 작업 흐름에서는 숨김
+6개 도구 작업 순서 만들기
+6개 도구 제출 양식 만들기
+운영 증거 제출 manifest 초안
+결과 회수·Evidence 후보
+순서	누를 버튼	무엇을 하는가	연결
+1	6개 도구 작업 순서 만들기	도구마다 다음에 누를 버튼을 확인합니다	/api/redteam/v2/toolchains/six-tool-work-order
+2	6개 도구 제출 양식 만들기	실제 결과 파일 경로를 붙여 넣을 JSON 양식을 만듭니다	/api/redteam/v2/toolchains/six-tool-submission-template
+3	운영 증거 제출 manifest 초안	붙여 넣은 파일 경로의 hash와 상태를 확인합니다	/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft
+4	결과 회수·Evidence 후보	도구 결과를 Evidence 후보와 LLM 분석 브리프로 정리합니다	/api/redteam/v2/toolchains/{toolchain_id}/collect-results
+5	운영 closure 준비 요약	보고서와 completion gate로 넘어가기 전 사람 검토 가능 여부를 확인합니다	/api/redteam/v2/toolchains/operating-closure-readiness-summary
+작업 순서	다음 버튼	상태	필요 입력	차단 사유	연결
+대기	6개 도구 작업 순서 만들기	대기	케이스/보고서/도구 묶음 ID	연결 호출 전	연결 대기
+제출 항목	다음 버튼	예상 파일명	연결	안전
+대기	6개 도구 제출 양식 만들기	Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일	연결 대기	명령 실행 없음
+분석 환경 설정(관리자용)
+이 영역은 분석 환경 담당자가 보는 세부 설정입니다. 분석가가 바로 이해할 필요가 없는 컨테이너, 보조 실행 환경, 조직 OpenVAS/ZAP 읽기 전용 접속, 외부 비밀 보관 참조, 승격 게이트 상태를 분리해 보여줍니다. 분석가는 위의 분석가용 다음 실행 안내를 먼저 사용하세요.
+런타임 준비
+needs_operator_action
+관리자 또는 운영자가 아래 환경 항목을 처리해야 실제 도구 실행 범위가 넓어집니다.
+컨테이너 실행 환경
+준비됨
+preflight_ready_real_smoke_not_requested
+보조 실행 환경
+준비 완료
+배포판 확인됨
+실측 승격 게이트
+실측 승격 게이트 차단
+1/4 통과
+승격 gate 결과
+1/4 통과
+3개 실패
+조치 runbook
+운영자 조치 runbook 준비됨
+5개 단계 남음
+남은 조치 단계
+5개
+5개 단계 중 운영자 조치 필요
+증거 수집 패키지
+운영자 증거 수집 패키지 준비됨
+5개 항목 남음
+수집할 증거 항목
+5개
+5개 항목 중 운영자 증거 필요
+증거 제출 검증
+운영자 증거 제출 대기
+5개 항목 차단
+승인된 제출 증거
+0/5개
+sha256/status/사람 승인 검증
+Evidence Card 후보 계획
+승인된 운영자 증거 대기
+0개 후보
+Evidence Card 후보 수
+0개
+5개 항목 차단
+도구 결과 분석 브리프
+도구 결과 분석 준비 완료
+5개 근거
+분석 가능한 도구 근거
+5개
+9개 차단/보류
+LLM 분석 에이전트
+5개
+도구별 결과 해석 보조
+Finding/Claim 검토 패키지
+Finding/Claim 증거 승인 대기
+5개 후보
+보류된 Finding/Claim 후보
+5개
+Evidence 승인 전 보류
+복합 도구 결과 회수
+연결 준비됨
+저장된 결과만 읽어 정규화와 Evidence Card 후보 생성을 순서대로 수행합니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다
+6개 도구 작업 순서
+연결 준비됨
+Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 다음 버튼, 필요 입력, 읽기 전용 가져오기 경로를 계산하며 명령은 실행하지 않습니다
+6개 도구 제출 양식
+연결 준비됨
+작업 순서를 운영 증거 제출 묶음용 항목과 첨부 양식으로 변환하며 명령은 실행하지 않습니다
+운영 산출물 묶음 만들기
+연결 준비됨
+운영 산출물 폴더에서 분석도구 결과 파일을 찾아 SHA-256 묶음을 만들고 명령은 실행하지 않습니다
+운영 산출물 가져오기
+연결 준비됨
+파일 위치와 해시를 검증해 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 한 collection으로 가져옵니다
+실제 운영 증거 사전 점검
+연결 준비됨
+샘플/테스트/통제 산출물을 운영 closure 전에 차단합니다
+운영 증거 제출 묶음 초안
+연결 준비됨
+운영자가 첨부한 파일의 해시와 상태를 확인해 사람 승인 전까지 완료로 보지 않습니다
+운영 Evidence Card 후보 가져오기
+연결 준비됨
+승인된 운영자 제출 증거 후보를 Evidence Card로 등록하고 명시적 사람 검토가 있을 때만 승인 기록을 남깁니다
+운영 closure 제출 패키지
+연결 준비됨
+운영 산출물 폴더, 승인자 4명, 실행 차단 조건, 닫기 요청을 실행 전 검증합니다
+운영 closure 사람 검토
+연결 준비됨
+제출 패키지 체크리스트, 승인자 서명, 차단 조건 처리 방침을 실행 전 기록합니다
+검토 완료 운영 closure 실행
+연결 준비됨
+사람 검토 기록의 승인된 닫기 요청만 사용해 별도 HITL close를 실행합니다
+운영 closure 증거 인증
+연결 준비됨
+실제 운영 산출물과 실제 승인자 증명을 completion audit 후보로 검증합니다
+운영 completion audit 검토
+연결 준비됨
+인증 후보를 독립 감사 checklist로 다시 검토하고 테스트 산출물은 완료 후보에서 차단합니다
+전체 목표 완료 검토
+연결 준비됨
+completion audit matrix, accepted gate, 종료 조건 0건, 개발 부산물 제외를 모두 확인하고 남은 gap이 있으면 완료를 차단합니다
+복합 Evidence 후보 승인
+연결 준비됨
+레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동합니다
+Claim-Evidence Matrix 초안
+연결 준비됨
+승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함합니다
+Matrix 기반 Report v2 draft
+연결 준비됨
+보류 row 0건과 report gate pass일 때만 한국어 Report v2 draft를 생성합니다
+복합 Collection 최종 내보내기 게이트
+연결 준비됨
+collection Report v2 draft의 보고서 ID를 최종 게이트 패널에 연결하고 Executive Sponsor 승인 뒤에만 내보냅니다
+복합 Collection E2E 완료 게이트
+연결 준비됨
+Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 기존 산출물로만 점검합니다
+운영 산출물 전체 닫기
+연결 준비됨
+운영 분석도구 폴더를 묶음으로 만들고 가져오기, 결과 회수, close-e2e를 이어서 수행하되 분석도구 명령은 실행하지 않습니다
+OpenVAS/ZAP
+외부 스캐너 서비스 차단
+0/2 준비
+실서비스 가져오기
+외부 서비스 가져오기 차단
+아직 조직 읽기 전용 가져오기 미실행
+상태 조회 실행
+조회만 수행
+컨테이너와 분석도구는 이 기능이 직접 실행하지 않음
+관리자 환경 단계	상태	실행 영향	사용자 조치	확인 방법
+실행 환경 준비	차단됨	실제 실행 전 필요	Docker Desktop daemon과 WSL 배포판 상태를 먼저 준비하고 runtime readiness 산출물을 갱신합니다.	Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py
+OpenVAS/ZAP 읽기 전용 연결	차단됨	실제 실행 전 필요	OpenVAS/ZAP endpoint와 외부 vault reference를 설정한 뒤 read-only import smoke를 다시 실행합니다.	Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready
+최종 실측 승격	차단됨	실제 실행 전 필요	조치 runbook의 차단 단계를 해결한 뒤 strict live readiness promotion을 통과시킵니다.	Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion
+런타임 상태 새로고침
+6개 도구 작업 순서 만들기
+6개 도구 제출 양식 만들기
+실측 조건 차단
+분석도구	버튼	실행 상태	차단 사유	사용자 안내	연결
+Nuclei	설치 확인	준비 후 진행	command_missing, wrapper_sha256_pin_required, human_approval_required	Nuclei 실행 전 설치, wrapper pin, 승인 조건을 먼저 해결하세요.	/api/redteam/v2/tool-install-readiness
+OpenVAS / Greenbone Community Edition	설치 확인	준비 후 진행	command_missing, wrapper_sha256_pin_required, human_approval_required	OpenVAS / Greenbone Community Edition 실행 전 설치, wrapper pin, 승인 조건을 먼저 해결하세요.	/api/redteam/v2/tool-install-readiness
+Trivy	설치 확인	준비 후 진행	command_missing, wrapper_sha256_pin_required	Trivy 실행 전 설치, wrapper pin, 승인 조건을 먼저 해결하세요.	/api/redteam/v2/tool-install-readiness
+SCA Dependency Analyzer	결과 첨부	준비 후 진행	차단 조건 없음	SCA Dependency Analyzer는 결과 파일 첨부 방식으로 진행합니다. SBOM, lockfile, SCA export를 먼저 준비하세요.	/api/redteam/v2/toolchains/import-artifact-manifest
+npm audit	승인된 실행 시작	바로 실행 가능	차단 조건 없음	npm audit는 바로 실행할 수 있습니다. 실행 전 대상 범위와 출력 저장 위치를 확인하세요.	/api/redteam/v2/toolchains/execute-governed
+OWASP ZAP	설치 확인	준비 후 진행	command_missing, wrapper_sha256_pin_required, human_approval_required	OWASP ZAP 실행 전 설치, wrapper pin, 승인 조건을 먼저 해결하세요.	/api/redteam/v2/tool-install-readiness
+준비 항목	상태	남은 조건
+전체 상태	needs_operator_action	관리자 또는 운영자가 아래 환경 항목을 처리해야 실제 도구 실행 범위가 넓어집니다.
+도구 실행 가능 여부	차단됨	3개 차단 조건
+남은 실행 준비 단계	5개	아래 다음 실행 준비 단계 표를 순서대로 처리
+컨테이너 실행 환경	준비됨	preflight_ready_real_smoke_not_requested
+컨테이너 점검 산출물	preflight_ready_real_smoke_not_requested	분석 저장소에 보관됨
+보조 실행 환경	준비 완료	배포판 확인됨
+보조 실행 배포판	Ubuntu-22.04-AISOC-Rebuild	4개 항목
+실측 승격 게이트	실측 승격 게이트 차단	3개 차단 조건
+승격 gate 결과	1/4 통과	3개 실패
+조치 안내서	운영자 조치 runbook 준비됨	세부 위치는 관리자/감사 기록에서 확인
+남은 조치 단계	5개	5개 단계 중 운영자 조치 필요
+증거 수집 패키지	운영자 증거 수집 패키지 준비됨	세부 위치는 관리자/감사 기록에서 확인
+수집할 증거 항목	5개	5개 항목 중 운영자 증거 필요
+증거 제출 검증	운영자 증거 제출 대기	세부 위치는 관리자/감사 기록에서 확인
+승인된 제출 증거	0/5개	5개 제출 항목 차단
+Evidence Card 후보 계획	승인된 운영자 증거 대기	세부 위치는 관리자/감사 기록에서 확인
+Evidence Card 후보 수	0개	5개 항목이 아직 차단됨
+도구 결과 LLM 분석 브리프	도구 결과 분석 준비 완료	세부 위치는 관리자/감사 기록에서 확인
+분석 가능한 도구 근거	5개	9개 도구/조건은 차단 또는 보류
+LLM 원시 출력 신뢰	아니오	llm_raw_tool_output_trusted는 항상 아니오 유지
+Finding/Claim 검토 패키지	Finding/Claim 증거 승인 대기	세부 위치는 관리자/감사 기록에서 확인
+보류된 Finding/Claim 후보	5개	5개 후보 중 Evidence 승인 전 보류
+복합 도구 결과 회수	연결 준비됨	저장된 결과만 읽어 정규화와 Evidence Card 후보 생성을 수행합니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다
+운영 산출물 묶음 만들기	연결 준비됨	운영 산출물 폴더에서 결과 파일을 찾아 해시 묶음을 만들고 명령은 실행하지 않습니다
+운영 산출물 가져오기	연결 준비됨	파일 위치와 해시를 검증해 6개 분석도구 결과를 한 collection으로 가져옵니다
+실제 운영 증거 사전 점검	연결 준비됨	테스트 경로나 샘플 산출물을 운영 closure 전에 차단합니다
+운영 증거 제출 묶음 초안	연결 준비됨	운영자가 첨부한 파일 해시와 상태를 확인하고 사람 승인 전까지 완료로 보지 않습니다
+운영 Evidence Card 후보 가져오기	연결 준비됨	승인된 운영자 제출 증거 후보를 Evidence Card로 등록하고 명시적 사람 검토가 있을 때만 승인 기록을 남깁니다
+운영 closure 제출 패키지	연결 준비됨	운영 산출물 폴더, 승인자 4명, 실행 차단 조건, 닫기 요청을 실행 전 검증합니다
+운영 closure 사람 검토	연결 준비됨	제출 패키지 체크리스트, 승인자 서명, 차단 조건 처리 방침을 실행 전 기록합니다
+검토 완료 운영 closure 실행	연결 준비됨	사람 검토 기록의 승인된 닫기 요청만 사용해 별도 HITL close를 실행합니다
+운영 closure 증거 인증	연결 준비됨	실제 운영 산출물과 실제 승인자 attestation을 completion audit 후보로 검증합니다
+운영 completion audit 검토	연결 준비됨	인증 후보를 독립 감사 checklist로 다시 검토하고 테스트 산출물은 완료 후보에서 차단합니다
+복합 Evidence 후보 승인	연결 준비됨	레드팀 리드 또는 통제팀이 후보 Evidence를 승인해야 Finding 승격과 Matrix 준비로 이동합니다
+복합 Finding 초안 생성	연결 준비됨	승인된 Evidence만 pending review Finding 초안으로 만들며 2인 승인 전 보고서 Claim 반영은 보류합니다
+복합 Finding 심각도 2인 승인	연결 준비됨	초안 Finding만 레드팀 리드와 업무 소유자가 함께 승인하며 Matrix와 보고서 검증은 다음 단계로 남깁니다
+복합 Collection Matrix 초안	연결 준비됨	승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며 보류 row는 보고서 입력에서 제외합니다
+복합 Collection Report v2 draft	연결 준비됨	Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다
+복합 Collection E2E 완료 게이트	연결 준비됨	Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 기존 산출물로만 점검합니다
+운영 산출물 전체 닫기	연결 준비됨	운영 결과 폴더를 묶음으로 만들고 가져오기, 결과 회수, close-e2e를 이어서 수행하되 분석도구 명령은 실행하지 않습니다
+Claim-Evidence Matrix 초안	연결 준비됨	승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 입력에 포함합니다
+Matrix 기반 Report v2 draft	연결 준비됨	보류 row 0건과 report gate pass일 때만 한국어 Report v2 draft를 생성합니다
+OpenVAS 읽기 전용 연결	외부 스캐너 서비스 차단	읽기 전용 연결 참조 필요
+ZAP 읽기 전용 연결	외부 스캐너 서비스 차단	읽기 전용 연결 참조 필요
+실서비스 가져오기	외부 서비스 가져오기 차단	기본값은 가져오기 미실행, 승인 후 네트워크 허용 필요
+네트워크 probe	기본 차단	기본값은 외부 서비스 호출 없음
+외부 비밀 보관 참조	설정 필요	비밀값은 저장하지 않고 승인된 외부 보관 참조만 사용
+조회 기능의 명령 실행	아니오	상태 조회 기능은 컨테이너나 분석도구를 실행하지 않음
+패키지 명령 실행	아니오	증거 수집 패키지는 명령을 실행하지 않음
+능동 스캔 실행	아니오	항상 아니오여야 함
+Secret 수집	아니오	secret 값은 수집하지 않음
+명령으로 신뢰 여부	아니오	항상 아니오 유지
+다음 실행 준비 단계	상태	화면 버튼	사용자 조치	도구 실행 영향	확인 방법
+실행 환경 준비	차단됨	런타임 상태 새로고침	Docker Desktop daemon과 WSL 배포판 상태를 먼저 준비하고 runtime readiness 산출물을 갱신합니다.	도구 실행 전 해결 필요	Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py
+OpenVAS/ZAP 읽기 전용 연결	차단됨	OpenVAS/ZAP 서비스 결과 가져오기	OpenVAS/ZAP endpoint와 외부 vault reference를 설정한 뒤 read-only import smoke를 다시 실행합니다.	도구 실행 전 해결 필요	Red Team Studio/고도화/sanity/redteam_ax_external_scanner_service_import_live_smoke.py --allow-network --require-ready
+운영 증거 제출	차단됨	운영 증거 제출 manifest 초안	운영자가 Docker/WSL/OpenVAS/ZAP/promotion 증거를 제출하고 승인된 submission manifest와 Evidence Card 후보 계획을 만듭니다.	진행 상황 확인	/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft
+도구 결과 분석	차단됨	결과 회수·Evidence 후보	저장된 도구 결과를 collect-results, Evidence 승인, Finding/Claim 검토 패키지까지 연결합니다.	진행 상황 확인	/api/redteam/v2/toolchains/{toolchain_id}/collect-results
+최종 실측 승격	차단됨	운영 completion audit 검토	조치 runbook의 차단 단계를 해결한 뒤 strict live readiness promotion을 통과시킵니다.	도구 실행 전 해결 필요	Red Team Studio/고도화/sanity/redteam_ax_strict_live_readiness_promotion.py --allow-container --allow-network --require-promotion
+운영자 조치 runbook 단계
+아래 단계는 사람이 순서대로 수행하고, 각 확인 산출물을 Evidence로 첨부해야 합니다. 상태 조회 기능은 이 작업을 대신 실행하지 않습니다.
+기본 순서: 컨테이너 실행 환경 준비 → 보조 실행 환경 복구 → OpenVAS/ZAP 읽기 전용 연결과 외부 비밀 보관 참조 설정 → 읽기 전용 보고서 가져오기 실측 → 최종 실측 승격
+조치 단계	상태	담당/차단/확인
+Docker Desktop daemon 준비	차단됨	담당: 플랫폼 운영자 · 차단: real_container_smoke_requires_allow_real · 확인 절차: 관리자 감사 기록에서 확인
+WSL 배포판 mount/start 복구	차단됨	담당: 플랫폼 운영자 · 차단: promotion_artifact_missing · 확인 절차: 관리자 감사 기록에서 확인
+OpenVAS/ZAP read-only endpoint와 vault reference 설정	차단됨	담당: 레드팀 리드 · 차단: OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing · 확인 절차: 관리자 감사 기록에서 확인
+OpenVAS/ZAP read-only report import 실측	차단됨	담당: 통제팀 · 차단: OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing · 확인 절차: 관리자 감사 기록에서 확인
+최종 strict live readiness promotion	차단됨	담당: 레드팀 리드 · 차단: PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing · 확인 절차: 관리자 감사 기록에서 확인
+운영자 증거 수집 패키지
+아래 항목은 실행 증거를 Evidence Card 후보로 첨부하기 위한 제출 목록입니다. 이 패키지는 명령을 실행하지 않고 secret 값을 수집하지 않습니다.
+증거 항목	상태	담당/차단/필요 증거
+Docker Desktop daemon 준비	차단됨	담당: 플랫폼 운영자 · 차단: real_container_smoke_requires_allow_real · 증거: latest_container_runtime_smoke.json status=passed
+WSL 배포판 mount/start 복구	차단됨	담당: 플랫폼 운영자 · 차단: promotion_artifact_missing · 증거: latest_wsl_runtime_readiness.json status=ready
+OpenVAS/ZAP read-only endpoint와 vault reference 설정	차단됨	담당: 레드팀 리드 · 차단: OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing · 증거: latest_external_scanner_service_readiness.json status=ready
+OpenVAS/ZAP read-only report import 실측	차단됨	담당: 통제팀 · 차단: OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,REDTEAM_AX_OPENVAS_VAULT_REF_missing, OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing,REDTEAM_AX_ZAP_VAULT_REF_missing · 증거: latest_external_scanner_service_import_live_smoke.json status=passed
+최종 strict live readiness promotion	차단됨	담당: 레드팀 리드 · 차단: PROMOTE-CONTAINER-RUNTIME-REAL:real_container_smoke_requires_allow_real, PROMOTE-EXTERNAL-SCANNER-READINESS:OpenVAS:REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT_missing,OWASP ZAP:REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT_missing · 증거: latest_strict_live_readiness_promotion.json status=promotion_ready
+운영자 제출 증거 검증
+제출 묶음의 보관 위치, 파일 해시, 기대 상태, 사람 승인 상태를 읽기 전용으로 확인합니다. 이 검증은 컨테이너, 보조 실행 환경, 분석도구, 네트워크 명령을 실행하지 않습니다.
+제출 항목	검증 상태	status/hash/승인
+OEC-LRR-DOCKER-001	차단됨	상태: missing / 기대: passed · sha256: 불일치 · 사람 승인: pending_human_review · 오류: artifact_path_missing
+OEC-LRR-WSL-001	차단됨	상태: missing / 기대: ready · sha256: 불일치 · 사람 승인: pending_human_review · 오류: artifact_path_missing
+OEC-LRR-SCANNER-ENDPOINT-001	차단됨	상태: missing / 기대: ready · sha256: 불일치 · 사람 승인: pending_human_review · 오류: artifact_path_missing
+OEC-LRR-SCANNER-IMPORT-001	차단됨	상태: missing / 기대: passed · sha256: 불일치 · 사람 승인: pending_human_review · 오류: artifact_path_missing
+OEC-LRR-PROMOTION-001	차단됨	상태: missing / 기대: promotion_ready · sha256: 불일치 · 사람 승인: pending_human_review · 오류: artifact_path_missing
+Evidence Card 후보 import 계획
+검증이 끝난 운영자 증거만 Evidence Card 후보 payload로 묶습니다. 이 단계는 Evidence Card를 자동 생성하지 않고 Claim-Evidence Matrix 연결 전 사람 검토를 요구합니다.
+Evidence 후보	상태	원본/status/hash
+Evidence Card 후보 없음	대기	승인된 제출 증거가 있어야 Evidence Card 후보 payload를 만들 수 있음
+자동 생성 여부	아니오	이 계획은 Evidence Card를 자동 생성하지 않음
+Claim-Evidence 연결	대기	Evidence Card 승인 후 Claim-Evidence Matrix에 연결
+도구 결과 LLM 분석 브리프
+Nuclei, Trivy, npm audit, OpenVAS, ZAP 결과를 한 묶음으로 정리합니다. LLM 에이전트는 근거 요약과 질문 초안만 만들며, 도구 재실행·능동 스캔·Finding 확정은 사람이 승인해야 합니다.
+도구	Evidence ID	정규화/실행/에이전트
+npm audit 의존성 점검	EV-2EEF2FC437CA	정규화: NR-16DE4527DD01 · 실행: TRUN-1845CBF8E3D7 · 에이전트: AGENT-NPM-AUDIT-ANALYST-001
+Nuclei 웹 취약점 템플릿 점검	EV-2E4D8701BFF7	정규화: NR-5EEBC0EC0D21 · 실행: TRUN-716F0F608AE7 · 에이전트: AGENT-NUCLEI-ANALYST-001
+Trivy 컨테이너/의존성 점검	EV-521B65A87263	정규화: NR-FEC9F1ED80CE · 실행: TRUN-8919403B0F28 · 에이전트: AGENT-TRIVY-ANALYST-001
+OpenVAS 취약점 스캐너	EV-82EFB56926DE	정규화: NR-AA731626113D · 실행: TRUN-97837DE88C32 · 에이전트: AGENT-OPENVAS-ANALYST-001
+OWASP ZAP 웹 보안 점검	EV-A7ED1EF73DD1	정규화: NR-19E2D7B1D15B · 실행: TRUN-40617C556B3C · 에이전트: AGENT-ZAP-ANALYST-001
+Finding/Claim 검토 패키지
+도구 결과를 Finding 초안과 보고서 Claim 후보로 연결하기 전 사람이 검토할 목록입니다. Finding 초안 생성 API는 Evidence 승인 후에만 /api/redteam/v2/tool-result-finding-claim-review/{candidate_id}/promote-finding API로 사용할 수 있고, Finding severity 2인 승인 전에는 보고서에 자동 삽입하지 않습니다.
+복합 Finding 초안 생성 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/promote-findings 입니다. 승인된 Evidence만 pending review Finding 초안으로 만들며, severity 2인 승인과 보고서 Claim 반영은 계속 별도 단계입니다.
+복합 Finding 심각도 2인 승인 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/approve-finding-severity 입니다. collection에서 만든 Finding 초안만 red_team_lead와 business_owner가 함께 승인하며, Matrix와 보고서 검증은 다음 단계로 남깁니다.
+복합 Collection Matrix 초안 API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft 입니다. 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며, held row는 보고서 입력에서 제외합니다.
+복합 Collection Report v2 draft API는 /api/redteam/v2/toolchain-result-collections/{collection_id}/matrix-draft/report-draft 입니다. Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고, 최종 export 승인은 별도로 남깁니다.
+복합 Collection 최종 export 게이트는 /api/redteam/v2/reports/{report_id}/approve-export 승인 뒤 /api/redteam/v2/reports/{report_id}/export 로 내보냅니다. collection Report v2 draft의 report_id가 자동으로 최종 게이트 패널에 연결됩니다.
+Claim-Evidence Matrix 초안 API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft 입니다. 승인된 Evidence와 2인 severity 승인된 Finding만 보고서 검증 payload에 포함하고, held row는 Evidence/Finding 승인 전 보류합니다.
+Matrix 기반 Report v2 draft API는 /api/redteam/v2/tool-result-finding-claim-review/matrix-draft/report-draft 입니다. held row 0건과 report gate pass일 때만 한국어 Report v2 draft를 생성하며, export 전 최종 사람 승인은 별도로 필요합니다.
+후보	검토 상태	Finding/Claim/Evidence
+npm audit 실행 결과 검토 필요	hold_until_evidence_approved	Finding: F-TOOL-REVIEW-001 · Claim: C-TOOL-REVIEW-001 · Evidence: EV-2EEF2FC437CA · 승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/TFR-001/promote-finding
+Nuclei 점검 결과 검토 필요	hold_until_evidence_approved	Finding: F-TOOL-REVIEW-002 · Claim: C-TOOL-REVIEW-002 · Evidence: EV-2E4D8701BFF7 · 승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/TFR-002/promote-finding
+Trivy 점검 결과 검토 필요	hold_until_evidence_approved	Finding: F-TOOL-REVIEW-003 · Claim: C-TOOL-REVIEW-003 · Evidence: EV-521B65A87263 · 승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/TFR-003/promote-finding
+OpenVAS 결과 검토 필요	hold_until_evidence_approved	Finding: F-TOOL-REVIEW-004 · Claim: C-TOOL-REVIEW-004 · Evidence: EV-82EFB56926DE · 승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/TFR-004/promote-finding
+OWASP ZAP 결과 검토 필요	hold_until_evidence_approved	Finding: F-TOOL-REVIEW-005 · Claim: C-TOOL-REVIEW-005 · Evidence: EV-A7ED1EF73DD1 · 승인 후 생성 API: /api/redteam/v2/tool-result-finding-claim-review/TFR-005/promote-finding
+Start Docker Desktop and verify the Docker daemon before container smoke execution.
+Repair or recreate the WSL distribution if the WSL readiness artifact reports a distro start or mount failure.
+Configure REDTEAM_AX_OPENVAS_READONLY_REPORT_ENDPOINT and REDTEAM_AX_ZAP_READONLY_ALERT_ENDPOINT for approved read-only imports.
+Store scanner credentials outside the app and reference them through an approved external vault reference.
+Follow the live readiness remediation runbook before rerunning the strict promotion gate.
+Run the strict live readiness promotion gate with --require-promotion only in controlled validation after Docker, WSL, and organization endpoints are ready.
+Rerun container runtime and external scanner readiness sanity gates after the environment is prepared.
+도구 실행 계획 / 샌드박스 정책
+실행 계획은 실제 실행 전에 위험도, 승인, 네트워크, 파일 쓰기 위치, 래퍼 신뢰, 실행 토큰을 한 번에 확인하는 단계입니다. PlanReady와 실행 토큰이 없으면 실행 버튼은 비활성화됩니다.
+실행 계획 만들기
+대기
+계획
+-
+산출물 대기
+실행기
+-
+manual_operator_run
+네트워크
+-
+기본 차단
+격리
+local_subprocess_shim
+백엔드
+토큰
+-
+승인 또는 계획 필요
+통제 항목	상태	근거
+계획 상태	대기	ToolActionCard 대기열에서 실행 계획 생성
+실행기	-	사람이 실행하고 결과 업로드
+승인	불필요	추가 승인 없음
+네트워크	-	기본=- 허용목록=없음
+파일시스템	-	운영 보관소만 사용
+래퍼	없음	1개 차단 조건
+격리	local_subprocess_shim	격리 차단 조건 없음
+실행 토큰	-	아직 발급되지 않음
+격리 항목	상태	근거
+백엔드	로컬 dry-run shim	계획 전
+조회 기능의 명령 실행	아니오	상태 확인 기능은 컨테이너 명령을 직접 실행하지 않음
+네트워크	deny	기본 차단
+마운트	read_only	읽기 전용
+권한 상승	아니오	항상 아니오 유지
+차단 조건	0	차단 조건 없음
+통제 실행 명령
+승인된 실행 시작
+실행 항목	상태	근거
+실행 상태	대기	실행 계획 준비와 실행 토큰 필요
+시도 결과	-	아직 실행 안 됨
+실행 백엔드	로컬 dry-run shim	통제된 실행 백엔드
+명령	-	shell=false, 백엔드에서 하위 프로세스 허용목록 강제
+컨테이너 시작	-	요청 없음
+출력 산출물	0	출력 산출물 대기
+분석 결과 수집·검토 워크플로우
+이 영역의 목적은 실행 목록을 보여주는 것이 아니라 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 모아 확인 후보, 심각도 분포, Evidence 후보 상태로 정리하는 것입니다. 고위험 실행은 사람이 승인·수행·검토하고, 화면은 승인된 결과를 회수해 분석 흐름으로 넘깁니다.
+안전 설치 확인 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 버전 확인만 자동 구성해 실행합니다. SCA는 결과 첨부 도구라 SBOM, lockfile, 조직 SCA export를 결과 첨부로 제출합니다. 임의 스캔 명령, 능동 스캔, 컨테이너/보조 실행 환경/네트워크 실행은 허용하지 않습니다.
+복합 도구 결과 회수는 저장된 출력 또는 운영자 첨부 결과만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.
+복합 Evidence 후보 승인은 후보 Evidence만 승인하며, Finding 생성·심각도 승인·보고서 반영은 별도 단계로 남깁니다.
+복합 Finding 초안 생성은 승인된 Evidence만 pending review Finding 초안으로 만들고, 2인 심각도 승인 전에는 Matrix와 보고서 Claim에 넣지 않습니다.
+복합 Finding 심각도 2인 승인은 레드팀 리드와 업무 소유자가 같은 심각도를 승인해야 Finding이 승인되며, 보고서 생성은 Matrix gate 이후에만 진행합니다.
+복합 Collection Matrix 초안은 승인된 Evidence와 2인 승인 Finding만 ready row로 구성하며 보류 row는 보고서 입력에서 제외합니다.
+복합 Collection Report v2 draft는 Matrix ready와 report gate pass일 때만 한국어 Report v2 draft를 생성하고 최종 export 승인은 별도로 남깁니다.
+복합 Collection 최종 export 게이트는 Report v2 draft의 report_id를 최종 게이트 패널에 자동 연결한 뒤 Executive Sponsor 승인을 받은 경우에만 내보내기를 허용합니다.
+복합 Collection E2E 완료 게이트는 기존 산출물만 읽어 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix ready, Report gate, export 완료를 한 번에 점검합니다.
+복합 Collection 전체 닫기는 명시된 사람 승인자 정보를 받아 Evidence 승인, Finding 승격, 2인 severity 승인, Matrix, Report v2 draft, export 승인, export, completion gate를 순서대로 수행하지만 분석도구 명령과 능동 스캔은 실행하지 않습니다.
+운영 closure 제출 패키지는 운영 산출물 폴더, 승인자 4명, 실행 차단 조건, 운영 닫기 요청을 먼저 검증하고 분석도구 명령은 실행하지 않습니다. 사람 검토, 검토 완료 실행, 증거 인증은 각각 별도 승인 단계를 유지합니다.
+운영 산출물 전체 닫기는 기존 운영 분석도구 폴더를 묶음으로 만들고 가져오기, 결과 회수, close-e2e까지 이어서 수행하지만 분석도구, 컨테이너, 보조 실행 환경, 네트워크 스캔 명령은 실행하지 않습니다.
+운영 산출물 묶음은 파일 위치와 해시를 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.
+복합 처리 방식
+운영자 결과 첨부 - 명령 실행 없음
+승인된 로컬 runner 실행
+분석도구 ID 목록
+운영자 결과 본문
+구분선 하나가 다음 도구 결과의 시작입니다. 이 입력은 명령으로 신뢰하지 않고 Evidence 후보 전 Sanitizer와 도구별 normalizer를 통과합니다.
+운영 산출물 묶음 만들기·가져오기
+운영 산출물 묶음 만들기는 폴더 안의 분석도구 결과 파일을 찾아 SHA-256을 계산합니다. 운영 산출물 묶음은 파일 위치와 해시를 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.
+운영 산출물 폴더 경로
+운영 산출물 전체 닫기
+이미 사람이 승인 범위에서 실행해 저장한 분석도구 산출물 폴더만 사용합니다. 먼저 운영 closure 제출 패키지를 만들고, 사람 검토 기록으로 체크리스트와 승인자 서명을 남긴 뒤 전체 닫기를 실행합니다. 이 경로는 도구 명령을 실행하지 않습니다.
+전체 닫기용 운영 분석도구 산출물 폴더
+운영 증거 제출자
+ROE 승인 참조
+운영 증거 제출 첨부 JSON
+Evidence Card 검토자
+검토자 역할
+red_team_lead
+control_team
+legal_privacy
+data_owner
+Evidence Card 후보 ID 선택
+사람 검토를 완료했으며 생성된 Evidence Card를 바로 승인 기록으로 남김
+복합 Collection 전체 닫기 승인자
+초보 사용자는 아래 승인자 4명을 채운 뒤 전체 닫기 버튼을 누르면 됩니다. 이 버튼은 기존 collection 산출물만 사용하고, 사람 승인 필드가 비어 있으면 실행하지 않습니다.
+Evidence 검토자
+레드팀 리드
+업무 소유자
+최종 후원자
+실제 운영 증거 사전 점검
+운영 closure 준비 요약
+운영 증거 제출 manifest 초안
+6개 도구 제출 양식 만들기
+운영 Evidence Card 후보 import
+안전 설치 확인 smoke
+도구 결과 첨부
+저장 실행 상태 다시 불러오기
+폴더에서 manifest 만들기
+운영 산출물 manifest 가져오기
+결과 회수·Evidence 후보
+Evidence 후보 승인
+Finding 초안 생성
+Finding 심각도 2인 승인
+Matrix 초안 생성
+Report v2 draft 생성
+전체 닫기: 승인·보고서·Export
+운영 closure 제출 패키지 확인
+운영 closure 사람 검토 기록
+검토 완료 운영 closure 실행
+운영 closure 증거 인증
+운영 completion audit 검토
+전체 목표 완료 검토
+운영 산출물 전체 닫기
+E2E 완료 게이트 점검
+대기
+분석 결과 수집·검토	상태	근거
+결과 수집 상태	대기	분석도구 결과를 첨부하거나 승인된 실행 결과를 회수하세요
+진행률	대기	결과가 준비되면 회수·Evidence 후보 단계와 검토 우선순위가 표시됩니다
+다음 행동	대기	결과 첨부, 결과 회수, Evidence 후보 승인 순서로 진행하세요
+실행 전 준비	첨부/계획 모드	실행 전 준비 차단: 설치 확인, 래퍼 신뢰, 격리 준비 상태를 먼저 확인하세요
+안전 점검 부분 실행	아니오	전체 운영 준비가 막혀도 버전 확인 같은 제한된 로컬 점검만 허용하고 임의 스캔 명령은 차단 · 부분 점검
+도구 결과 수	-	승인 실행 0건 · 운영자 첨부 0건 · 차단 0건
+자동 명령 실행 여부	아니오	승인된 실행 계획, 토큰, 래퍼 게이트를 통과한 경우에만 실행
+명령으로 신뢰 여부	아니오	항상 아니오 유지
+사람 검토	예	결과는 Evidence 후보 전 사람이 검토
+결과 정리 상태	대기	결과 회수 연결 대기
+저장 실행 상태 조회	대기	실행 상태 연결 대기
+Evidence 후보 생성	0개	Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음
+필수 6개 도구 coverage	완료 게이트 미준비	0/6개 수집 · 누락 6개
+누락 필수 도구	없음	Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 coverage를 확인하세요
+LLM 분석 에이전트 요약	0개	도구별 normalizer와 Evidence 사용 제한을 표시
+Evidence 후보 승인	대기	0개 승인 · 0개 오류
+Finding 초안 생성	대기	0개 생성 · 0개 차단
+Finding 심각도 2인 승인	대기	0개 승인 · 0개 대기
+Collection Matrix 초안	대기	0개 ready · 0개 보류
+Collection Report v2 draft	대기	Matrix ready 이후 생성
+운영 증거 제출 묶음 초안	대기	보관 위치 없음
+운영 Evidence Card 후보 import	대기	0개 생성 · 0개 승인
+운영 closure 제출 패키지	대기	제출 패키지 연결 대기
+Collection 전체 닫기	대기	전체 닫기 연결 대기
+Collection E2E 완료 게이트	대기	-개 blocker · export 완료 후 점검
+저장 산출물	미저장	복합 실행 후 생성
+분석가 진행 요약	상태	설명
+현재 단계	대기	저장 실행 상태 다시 불러오기 또는 결과 회수 버튼을 누르세요
+다음 버튼	저장 실행 상태 다시 불러오기	실행/첨부 결과를 먼저 확인하세요
+회수 가능	0개	저장된 실행/첨부 결과 중 Evidence 후보로 회수 가능한 단계
+Evidence 후보	0개	승인 전에는 Finding이나 Report Claim으로 확정하지 않음
+진행 단계	상태	다음 버튼	설명
+결과 준비 또는 첨부	대기	도구 결과 첨부	저장 실행 상태를 먼저 불러오세요
+분석 결과 쉬운 요약	확인 후보	심각도 분포	Evidence 상태
+대기	결과 회수 뒤 도구별 확인 후보가 표시됩니다	-	Evidence 후보 대기
+도구 결과는 승인 전까지 참고 후보입니다. 세부 실행 ID와 저장 위치는 관리자 감사 기록과 Evidence Card에서 추적합니다.
+상세 실행 기록(관리자/감사용)	상태	보관 근거	출력
+대기	-	승인된 분석 실행 또는 도구 결과 첨부 뒤 표시됩니다	-
+상세 진행 기록(관리자/감사용)	상태	사용자 안내	진행률
+대기	-	결과 첨부 또는 승인된 분석 실행 뒤 표시됩니다	-
+저장 실행 상태	상태	근거
+상태	대기	저장 실행 상태 다시 불러오기 버튼을 누르세요
+회수 가능 단계	0개	/api/redteam/v2/toolchains/{toolchain_id}/run-status
+명령 실행	아니오	상태 조회 API는 저장된 실행 기록만 읽고 명령을 실행하지 않음
+저장 실행 단계	상태	보관 근거	결과 회수
+대기	-	저장 실행 상태 다시 불러오기 버튼을 누르세요	-
+회수 단계	상태	정규화/Sanitizer	Evidence 후보
+대기	-	복합 실행 뒤 결과 회수 버튼을 누르세요	-
+필수 6개 분석도구	coverage 상태	분석 결과	Evidence/다음 행동
+대기	-	Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage를 결과 회수 뒤 표시합니다	-
+도구별 분석 요약	검토 우선순위	다음 행동	증거 사용 제한
+대기	-	결과 회수 뒤 표시됩니다	-
+Evidence ID	승인 상태	승인 ID	검토 결과
+대기	-	Evidence 후보 승인 버튼을 누르세요	-
+Evidence ID	Finding 생성 상태	Finding ID	승인/심각도
+대기	-	Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요	-
+Finding ID	심각도 승인 상태	리드/업무 승인	결과
+대기	-	Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요	-
+Finding ID	Matrix 상태	Claim ID	차단/결과
+대기	-	심각도 승인 뒤 Matrix 초안 생성 버튼을 누르세요	-
+Report v2	상태	근거
+draft 상태	대기	-
+report gate	대기	Matrix ready 필요
+최종 export 승인	미확인	draft 생성은 export 승인이 아님
+운영 closure 진행 요약	상태	설명
+현재 단계	대기	운영 closure 준비 요약 또는 실제 운영 증거 사전 점검을 먼저 실행하세요
+다음 버튼	운영 closure 준비 요약	실제 운영 scanner 산출물 closure 단계가 아직 확인되지 않았습니다
+단계 준비	0개 준비	차단 0개 / 누락 도구 없음
+명령 실행	아니오	요약/검토/감사 기능은 분석도구, 컨테이너, 보조 실행 환경, 네트워크 명령을 실행하지 않음
+운영 closure 단계	상태	다음 버튼	설명
+대기	-	운영 closure 준비 요약	실제 운영 증거 사전 점검 또는 운영 closure 준비 요약 버튼을 누르세요
+실제 운영 증거 사전 점검	상태	근거
+대기	-	실제 운영 증거 사전 점검 버튼을 누르세요
+운영 closure 준비 요약	상태	근거
+상태	대기	운영 closure 준비 요약 버튼을 누르세요
+다음 연결	연결 대기	대기
+명령 실행	아니오	분석도구, 컨테이너, 보조 실행 환경, 네트워크 실행 없음
+운영 closure 다음 단계	상태	사용자 조치	연결
+대기	-	운영 closure 준비 요약 버튼을 누르세요	연결 대기
+운영 closure 준비 차단 조건	조치	다음 연결
+없음	현재 표시된 준비 차단 조건 없음	-
+필수 분석도구 산출물	상태	파일	SHA-256/후보
+대기	-	Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 파일을 점검합니다	-
+누락 도구	예상 파일명 패턴	다음 행동	안전
+없음	-	현재 표시된 누락 도구 없음	-
+실제 운영 증거 차단 조건	조치	경고
+없음	현재 표시된 차단 조건 없음	-
+운영 증거 제출 묶음 항목	상태	파일/해시/검토
+대기	-	운영 증거 제출 묶음 초안 버튼을 누르세요
+운영 증거 제출 묶음 누락	항목	조치
+없음	현재 표시된 누락 없음	-
+운영 Evidence Card import	상태	근거
+상태	대기	Evidence Card 후보 import 버튼을 누르세요
+생성된 Evidence Card	0개	0개 승인됨
+사람 검토 확인	아니오	체크한 경우에만 승인 API를 호출
+Evidence Card ID	승인 상태	원본/저장 위치
+대기	-	운영 Evidence Card 후보 import 버튼을 누르세요
+운영 closure 제출 항목	상태	근거
+대기	-	운영 closure 제출 패키지 확인 버튼을 누르세요
+운영 closure 승인자	상태	입력값
+대기	-	승인자 4명 입력 필요
+운영 closure 사람 검토	상태	설명
+대기	-	제출 패키지 확인 뒤 사람 검토 기록 버튼을 누르세요
+운영 closure 서명	상태	서명자
+대기	-	승인자 서명 기록 필요
+운영 closure 증거 검사	상태	근거
+대기	-	검토 완료 운영 closure 실행 뒤 증거 인증 버튼을 누르세요
+운영 closure 실측 attestation	상태	설명
+대기	-	실제 운영 산출물과 승인자 확인 필요
+운영 completion audit checklist	상태	근거
+대기	-	운영 closure 증거 인증 뒤 완료 감사 검토 버튼을 누르세요
+운영 completion audit 차단 조건	조치	경고
+없음	현재 표시된 차단 조건 없음	-
+전체 목표 완료 checklist	상태	근거
+대기	-	전체 목표 완료 검토 버튼을 누르세요
+전체 목표 완료 차단 조건	조치	남은 수
+없음	현재 표시된 차단 조건 없음	-
+E2E 게이트	상태	근거
+실제 운영 증거 사전 점검	대기	0개 blocker
+운영 closure 준비 요약	대기	0개 blocker
+운영 closure 제출 패키지	대기	운영 산출물 폴더와 승인자 4명 확인
+개발 부산물 제외	대기	샘플/테스트/통제 산출물 경로는 완료/보고서 Claim 증거로 사용하지 않습니다
+운영 closure 사람 검토	대기	제출 패키지 확인 뒤 사람 검토 기록
+검토 완료 운영 closure 실행	대기	사람 검토 완료 뒤 실행
+운영 closure 증거 인증	대기	검토된 close 뒤 증거 인증
+운영 completion audit 검토	대기	0개 차단 조건
+전체 목표 완료 검토	대기	0개 차단 조건
+전체 닫기	대기	명시 승인자 입력 후 실행
+완료 상태	대기	보고서 내보내기 뒤 점검
+Evidence	0/0개 승인	모든 후보 Evidence 승인 필요
+Finding	0/0개 2인 승인	red_team_lead와 business_owner 승인 필요
+Matrix/Report	대기 / 대기	Matrix ready와 report gate pass 필요
+내보내기	-	0개 차단 조건
+도구 출력 Sanitizer 미리보기
+도구 결과는 LLM 명령이 아니라 분석 자료입니다. 먼저 프롬프트 인젝션, 비밀값, 마스킹 필요 항목을 확인한 뒤 Evidence 후보로만 연결합니다.
+원본 도구 출력
+Sanitizer 미리보기
+가드레일 예시 불러오기
+대기
+Sanitizer
+-
+미리보기 산출물
+실행
+-
+-
+마스킹
+0
+비밀값/명령형 문구 마스킹 목록
+확인 항목	상태	근거
+판정	미확인	LLM 분석 전에 sanitizer 미리보기를 실행하세요
+프롬프트 인젝션	-	격리 기준 점수 0.85 이상
+비밀값 탐지	-	마스킹 0건
+명령으로 신뢰 여부	아니오	항상 아니오여야 함
+사람 검토	불필요	경고 없음
+시각 증거 OCR 마스킹 미리보기
+스크린샷은 화면에 보이는 사실만 말할 수 있습니다. OCR 텍스트와 이미지 파일을 먼저 마스킹하고, 공격 성공 같은 주장은 로그나 도구 결과 Evidence와 함께 연결해야 합니다.
+OCR 텍스트
+주장 가드레일 메모
+이미지 마스킹 미리보기
+이미지 미선택
+시각 증거 미리보기
+-
+미리보기 산출물
+SHA-256
+-
+API 호출 전에 브라우저에서 계산
+마스킹
+-
+증거 설명자 검토 상태
+OCR 라벨
+-
+없음
+마스킹 PNG
+-
+산출물 해시
+이미지 미리보기
+확인 항목	상태	근거
+미리보기 상태	대기	스크린샷/이미지 증거를 선택하세요
+민감 라벨	-	없음
+마스킹 조치	0	미확인
+원본 산출물	미저장	이미지 자료 필요
+마스킹본 산출물	미저장	마스킹 PNG 대기
+마스킹본 SHA-256	-	시각 증거 묶음 대기
+스크린샷 단독 주장	미확인	주장 전 비시각 증거 연결 필요
+제한 시각 증거 검토	불필요	분류 등급 검토
+명령으로 신뢰 여부	아니오	항상 아니오여야 함
+도구 결과 파일 업로드
+Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 결과 파일을 업로드하면 해시와 스키마를 확인한 뒤 Evidence 후보로 정규화합니다. 업로드 파일도 LLM 명령으로 신뢰하지 않습니다.
+도구 결과 업로드
+파일 미선택
+파일
+-
+콘텐츠 유형
+실행
+-
+-
+가져오기
+-
+ToolArtifactImport
+정규화
+-
+agent-analyze
+확인 항목	상태	근거
+업로드 상태	대기	도구 결과 파일을 선택하세요
+SHA-256	-	multipart 업로드 전에 브라우저에서 계산
+저장 산출물	미저장	보관 위치 없음
+스키마 검증	미확인	ToolArtifactImport
+파서	-	업로드 후 agent-analyze 실행
+명령으로 신뢰 여부	아니오	항상 아니오여야 함
+케이스 RBAC 정책
+케이스별 역할 정책은 누가 승인, 실행, 검토, 내보내기를 할 수 있는지 정합니다. 기본 정책을 적용한 뒤 필요한 담당자만 추가하세요.
+RBAC 사용자
+RBAC 역할
+분석가
+레드팀 리드
+통제팀
+2차 승인자
+법무/개인정보
+데이터 소유자
+업무 소유자
+최종 후원자
+정책 출처
+RBAC 불러오기
+기본 정책 적용
+담당자 추가
+사용자	역할	권한
+business-owner@example.com	업무 소유자	finding:approve_severity, risk:accept
+executive-sponsor@example.com	최종 후원자	report:approve_export, risk:accept
+lead@example.com	레드팀 리드	evidence:approve, finding:approve_severity, tool_action:approve_t3
+평가 맥락
+시나리오
+identity-saas-boundary
+MFA 예외, 장기 세션, SaaS 과도 권한이 결합되어 핵심 데이터 더미 플래그 접근까지 확대되는가?
+주요 목표
+ID·SaaS 권한 경계와 조건부 접근 통제 검증
+Report v2 수행과정 설명과 문서 통제
+안전 원칙
+고위험 직접 실행 금지
+AI는 계획, 증거화, 분석, 보고서 초안, 재시험 계획만 보조
+Report v2 최종 게이트 / 내보내기
+케이스 ID
+Evidence ID
+Claim ID
+Finding ID
+최종 심각도
+정보
+낮음
+보통
+높음
+긴급
+업무 소유자
+최종 후원자
+승인자 역할
+보고서 제목
+Report v2 초안 생성
+내보내기 승인
+보고서 내보내기
+확인 항목	상태	근거
+최종 게이트	아직 생성 안 됨	먼저 Report v2 초안을 생성하세요
+Evidence 승인	미승인	승인된 Evidence Card 필요
+Finding 승인	미승인	승인된 Finding 필요
+최종 심각도	-	레드팀 리드와 업무 소유자 승인 필요
+Agentic RAG 검증	미사용	필요하면 먼저 Agentic RAG 검증 실행
+최종 승인	미승인	최종 후원자 승인 필요
+내보내기	미내보냄	승인 ID 필요
+ToolActionCard 대기열 · 14
+TAC-C9E398BBA600
+RTA-2026-0301-TOOLCHAIN-SAFE-LOCAL-SMOKE · OWASP ZAP
+필수 승인 역할: 레드팀 리드
+ScopeValidated
+T3 · 스캔 영향 가능 / single_lead
+승인 요청
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-EAC35D0290F1
+RTA-2026-0301-TOOLCHAIN-SAFE-LOCAL-SMOKE · npm audit
+결과 가져옴
+T0 · 파일/로그 가져오기 / 승인 불필요
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-0C7EDAD04E4F
+RTA-2026-0301-TOOLCHAIN-SAFE-LOCAL-SMOKE · Trivy
+ScopeValidated
+T0 · 파일/로그 가져오기 / 승인 불필요
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-B8FAC997E3C9
+RTA-2026-0301-TOOLCHAIN-SAFE-LOCAL-SMOKE · OpenVAS / Greenbone Community Edition
+필수 승인 역할: 레드팀 리드
+ScopeValidated
+T3 · 스캔 영향 가능 / single_lead
+승인 요청
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-61048F336A9D
+RTA-2026-0301-TOOLCHAIN-SAFE-LOCAL-SMOKE · Nuclei
+필수 승인 역할: 레드팀 리드
+ScopeValidated
+T3 · 스캔 영향 가능 / single_lead
+승인 요청
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-3B439CA36976
+RTA-2026-0301-TOOLCHAIN-LOCAL-RUNNER · OWASP ZAP
+필수 승인 역할: 레드팀 리드
+결과 가져옴
+T3 · 스캔 영향 가능 / single_lead
+승인 요청
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-9A29DA1890B6
+RTA-2026-0301-TOOLCHAIN-LOCAL-RUNNER · npm audit
+결과 가져옴
+T0 · 파일/로그 가져오기 / 승인 불필요
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-E01146F3B57E
+RTA-2026-0301-TOOLCHAIN-LOCAL-RUNNER · SCA Dependency Analyzer
+결과 가져옴
+T0 · 파일/로그 가져오기 / 승인 불필요
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-C12F778CC709
+RTA-2026-0301-TOOLCHAIN-LOCAL-RUNNER · Trivy
+결과 가져옴
+T0 · 파일/로그 가져오기 / 승인 불필요
+실행 계획
+Plan, Select Tool, Validate Scope
+TAC-FD7C92801A27
+RTA-2026-0301-TOOLCHAIN-LOCAL-RUNNER · OpenVAS / Greenbone Community Edition
+필수 승인 역할: 레드팀 리드
+결과 가져옴
+T3 · 스캔 영향 가능 / single_lead
+승인 요청
+실행 계획
+Plan, Select Tool, Validate Scope
+레드팀 분석2 상태를 불러왔습니다

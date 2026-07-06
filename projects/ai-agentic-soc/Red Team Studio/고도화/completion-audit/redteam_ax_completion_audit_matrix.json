@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 73,
+    "proved": 74,
     "partial": 1
   },
   "audit_items": [
@@ -1249,6 +1249,24 @@
       "proof_summary": "collect-results now returns analyst_finding_review_summary with Korean tool labels, candidate counts, severity distribution, Evidence status, review priority, missing tool rows, raw_paths_hidden_from_analyst=true, and traceability notes. RedTeam2 replaces the confusing 여러 분석도구 순차 실행·결과 첨부 title with 분석 결과 수집·검토 워크플로우, shows 분석 결과 쉬운 요약 and 도구별 분석 요약 before technical details, and demotes execution/progress records to 관리자/감사용 tables. Sanity contracts require the new copy and reject the old execution-list phrase through Korean copy inventory.",
       "residual_gap": "This proves UI/API projection alignment for result review. It does not prove actual live six-tool operating outputs, Evidence approval, Finding severity approval, Report v2 export, browser visual regression, or final completion gates.",
       "next_action": "Run RedTeam2 browser visual regression and then exercise the workflow with real approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP operating outputs through Evidence, Finding, Matrix, Report, export, and completion gates."
+    },
+    {
+      "id": "RTA-COMP-075",
+      "requirement": "RedTeam2 default analyst view must keep administrator runtime, path, wrapper, service-import, and operating-closure details collapsed while preserving them behind an explicit administrator settings toggle.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam2_korean_copy_inventory.json",
+        "J:/PortableApps/genai/documentation/llm-wiki/operations/knowledge-workflow/KW-20260706-122434-Red-Team-Studio-Continue-RedTeam-AX-goal-browser-verify-and-simplify-RedTeam2-analyst-workflow/browser/redteam2-browser-verify-20260706.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 now defaults redteam2ShowAdminDetails to false and renders an explicit 관리자 설정 panel with a 관리자 설정 보기 toggle. The default analyst DOM keeps wrapper pinning, OpenVAS/ZAP credential/service import setup, execution environment selection, command/runner/isolation/token details, operating closure/completion audit details, storage/run detail tables, local path-like inputs, and raw source/artifact/storage keys out of view. A Playwright browser verification against http://127.0.0.1:5177 opened 보고서 스튜디오 -> 레드팀 분석2 and confirmed required analyst phrases were present while administrator/path/closure/isolation/raw-key forbidden terms had zero hits.",
+      "residual_gap": "This proves default browser-visible analyst simplification only. Administrator details intentionally remain available when the toggle is expanded, and backend artifacts still preserve source paths and audit details for traceability.",
+      "next_action": "Keep the default-DOM forbidden-term browser check with future RedTeam2 UI changes and continue simplifying any remaining analyst-facing English/internal tokens."
     }
   ],
   "remaining_gaps": [
@@ -1263,5 +1281,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-06T00:00:00+09:00"
+  "last_updated": "2026-07-06T12:47:03+09:00"
 }

@@ -2015,3 +2015,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실행/진행 raw detail 표는 `상세 실행 기록(관리자/감사용)`, `상세 진행 기록(관리자/감사용)`으로 낮춘다.
 - [x] `redteam_ax_toolchain_collection_analyst_summary_contract.py`, frontend runtime readiness contract, Korean copy inventory가 새 표시 계약을 검증한다.
 - [ ] 이 요약은 결과 해석과 승인 대기 상태를 쉽게 보여주는 projection이며 실제 Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 141. 갱신 목표 - RedTeam2 기본 분석가 화면에서 관리자 세부정보 접기
+
+- [x] RedTeam2 기본 화면에 `관리자 설정` 토글을 추가하고 기본값을 접힘 상태로 둔다.
+- [x] 기본 분석가 화면에서는 실행 환경, 도구 래퍼 신뢰 고정, OpenVAS/ZAP 읽기 전용 접속권한, service import 설정, 운영 closure 세부 표, 로컬 경로성/격리/명령 세부 항목을 숨긴다.
+- [x] 숨긴 세부정보는 삭제하지 않고 `관리자 설정 보기`를 누른 운영자/리드/감사 담당자가 확인하도록 유지한다.
+- [x] Playwright 브라우저 검증은 기본 DOM에서 관리자/경로/closure/격리/원시 키 금지어 0건과 필수 분석가 안내 문구 존재를 확인했다.
+- [ ] 이 변경은 기본 화면의 인지 부하를 낮추는 UX 계층 개선이며 ROE/HITL/runtime/Evidence/Finding/Matrix/Report/export/completion gate를 대신하지 않는다.
