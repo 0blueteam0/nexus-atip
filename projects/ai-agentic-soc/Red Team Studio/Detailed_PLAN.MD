@@ -1328,3 +1328,11 @@ Create Case
 - 추적성 원칙: 세부정보를 삭제하지 않는다. 관리자 토글을 펼치면 운영자, 레드팀 리드, 통제팀이 기존 승인·감사·closure 세부 행을 확인할 수 있다. Evidence Card와 Claim-Evidence Matrix 원본 추적은 계속 backend artifact와 감사 기록에 남긴다.
 - 테스트 전략: `node --check reports.js`, frontend runtime readiness contract, Korean copy inventory, Playwright 브라우저 DOM 검증을 실행한다. 브라우저 검증은 기본 RedTeam2 DOM에서 관리자/경로/closure/격리/원시 키 금지어가 0건인지와 `분석가용 다음 실행 안내`, `관리자 설정 보기`, `분석 결과 수집·검토 워크플로우`가 존재하는지 확인한다.
 - 예외 케이스: 관리자가 토글을 펼친 상태에서는 경로성, wrapper, endpoint, closure, audit 세부정보가 다시 보일 수 있다. 이는 감사와 운영 조치를 위한 의도된 동작이며, 기본 분석가 화면의 노출 최소화 계약과 구분한다.
+
+## 89. 갱신 목표 반영 - RedTeam2 기본 DOM 내부 식별자와 영문 실행 용어 축소
+
+- 목적: 관리자 세부 패널을 접어도 기본 분석가 화면에 `TOOL-*`, raw API path, `toolchain_id`, `tool_action_card_required`, normalizer agent id, ToolActionCard 같은 내부 구현 용어가 남으면 한국어 사용자와 낮은 숙련도 사용자에게 부적합하다.
+- 화면/기능 명세: 기본 화면은 `승인 작업 카드`, `증거 카드`, `주장-증거 연결표`, `근거 검색 검증`, `결과 회수 연결`, `도구별 분석 에이전트` 같은 한국어 요약을 사용한다. 실제 ID/API는 관리자 설정이나 backend artifact에서 확인한다.
+- 데이터 계약: 도구 선택 select의 `value`, API payload, audit log, ToolActionCard object, Evidence artifact에는 기존 ID를 유지한다. 변경 대상은 분석가 기본 DOM에 표시되는 label, card detail, table cell이다.
+- 테스트 전략: `node --check reports.js`, Korean copy inventory, runtime/launch frontend sanity, Playwright fresh Vite DOM inventory를 실행한다. browser check는 `ToolActionCard 계획`, `ToolActionCard 대기열`, raw `/api/redteam/v2/toolchains/six-tool-work-order`, `TOOL-NUCLEI-001`, `tool_action_card_required`, `toolchain_id`가 기본 DOM에 없는지 확인한다.
+- 예외 케이스: `RedTeam AX`, `Nuclei`, `OpenVAS`, `Trivy`, `SCA`, `npm audit`, `OWASP ZAP`, `SHA-256`처럼 제품명/도구명/표준명은 도메인 용어로 유지할 수 있다. Report Studio 공통 헤더와 legacy report template의 영문 카피는 별도 UI 영역이므로 다음 slice에서 다룬다.

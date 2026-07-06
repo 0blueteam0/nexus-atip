@@ -21,7 +21,7 @@ INVENTORY_PATH = ROOT / "고도화" / "completion-audit" / "redteam2_korean_copy
 
 REQUIRED_KOREAN_ANCHORS = [
     "레드팀 분석2",
-    "기존 레드팀 분석 흐름",
+    "승인 작업, 사람 검토",
     "버튼을 누르기 전에 확인해야 할 쉬운 설명",
     "고위험 도구는 웹앱이 바로 실행하지 않고",
     "사람 승인",
@@ -111,9 +111,9 @@ REQUIRED_KOREAN_ANCHORS = [
     "Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage",
     "완료 게이트 미준비",
     "CycloneDX SBOM",
-    "컴포넌트 인벤토리 Evidence",
-    "취약점 후보 Evidence",
-    "affects 연결은 사람이 검토하기 전 Claim으로 확정하지 않습니다",
+    "컴포넌트 인벤토리 증거",
+    "취약점 후보 증거",
+    "영향 범위 연결은 사람이 검토하기 전 주장으로 확정하지 않습니다",
     "복합 Evidence 후보 승인",
     "Evidence 후보 승인",
     "복합 Evidence 후보 승인은 후보 Evidence만 승인하며",

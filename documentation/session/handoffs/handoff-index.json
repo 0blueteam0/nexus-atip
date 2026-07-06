@@ -12,9 +12,9 @@
   "codex->claude": {
     "provider": "codex",
     "target": "claude",
-    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-06T03-54-31-284Z-codex-to-claude.md",
+    "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-06T04-23-15-475Z-codex-to-claude.md",
     "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-from-codex-to-claude.md",
-    "generatedAt": "2026-07-06T03:54:31.484Z",
+    "generatedAt": "2026-07-06T04:23:15.780Z",
     "stage": "queued",
     "statusLine": "6개의 열린 작업이 실행 선택을 기다리고 있습니다",
     "activeTask": null

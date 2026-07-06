@@ -287,6 +287,13 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - Playwright 브라우저 검증은 기본 화면에서 관리자/경로/closure/격리/원시 키 금지어 0건과 `분석가용 다음 실행 안내`, `관리자 설정 보기`, `분석 결과 수집·검토 워크플로우` 존재를 확인했다.
 - 이 변경은 분석가 기본 화면 노출 최소화이며 승인·runtime·Evidence·Finding·Matrix·Report/export/completion gate를 생략하지 않는다.
 
+## 2026-07-06 갱신 - RedTeam2 기본 DOM 내부 식별자/영문 실행 용어 축소
+
+- `RTA-COMP-076`은 RedTeam2 기본 분석가 화면이 `TOOL-*`, raw API path, `toolchain_id`, `tool_action_card_required`, normalizer agent id를 직접 보여주지 않아야 한다는 요구를 증명한다.
+- RedTeam2는 도구 ID를 도구명으로, API path를 한국어 연결명으로, 실행 정책 토큰을 한국어 승인 문구로, agent implementation id를 `도구별 분석 에이전트`로 낮춘다.
+- fresh Vite 서버 기준 Playwright 검증에서 지정한 기본 DOM 내부 토큰 금지어 0건을 확인했고, suspicious English/internal token count는 수집 시작 71건에서 35건으로 줄었다.
+- 이 변경은 표시 계층 개선이며 backend payload, audit log, Evidence artifact의 실제 ID/API 추적성을 제거하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

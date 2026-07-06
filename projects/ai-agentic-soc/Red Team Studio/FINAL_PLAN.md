@@ -2023,3 +2023,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 숨긴 세부정보는 삭제하지 않고 `관리자 설정 보기`를 누른 운영자/리드/감사 담당자가 확인하도록 유지한다.
 - [x] Playwright 브라우저 검증은 기본 DOM에서 관리자/경로/closure/격리/원시 키 금지어 0건과 필수 분석가 안내 문구 존재를 확인했다.
 - [ ] 이 변경은 기본 화면의 인지 부하를 낮추는 UX 계층 개선이며 ROE/HITL/runtime/Evidence/Finding/Matrix/Report/export/completion gate를 대신하지 않는다.
+
+## 142. 갱신 목표 - RedTeam2 기본 DOM의 내부 식별자/영문 실행 용어 축소
+
+- [x] RedTeam2 기본 분석가 화면에서 승인 작업 카드, 증거 카드, 주장-증거 연결표, 근거 검색 검증 등 한국어 표시명을 우선 사용한다.
+- [x] `TOOL-*`, raw `/api/redteam/v2/...`, `toolchain_id`, `tool_action_card_required`, normalizer agent id는 기본 DOM에서 한국어 요약으로 낮춘다.
+- [x] 실제 도구 ID, API path, agent id, 실행 정책은 backend payload와 관리자/감사 기록에 보존한다.
+- [x] fresh Vite 서버 기준 Playwright 검증에서 지정한 기본 DOM 내부 토큰 금지어가 0건임을 확인했다.
+- [ ] 아직 제품명, 승인/증거 도메인 용어, 일부 보고서 템플릿 영문은 남아 있으므로 다음 slice에서 전체 Report Studio 공통 헤더와 legacy copy를 별도로 정리한다.

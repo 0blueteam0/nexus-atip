@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 74,
+    "proved": 75,
     "partial": 1
   },
   "audit_items": [
@@ -1267,6 +1267,23 @@
       "proof_summary": "RedTeam2 now defaults redteam2ShowAdminDetails to false and renders an explicit 관리자 설정 panel with a 관리자 설정 보기 toggle. The default analyst DOM keeps wrapper pinning, OpenVAS/ZAP credential/service import setup, execution environment selection, command/runner/isolation/token details, operating closure/completion audit details, storage/run detail tables, local path-like inputs, and raw source/artifact/storage keys out of view. A Playwright browser verification against http://127.0.0.1:5177 opened 보고서 스튜디오 -> 레드팀 분석2 and confirmed required analyst phrases were present while administrator/path/closure/isolation/raw-key forbidden terms had zero hits.",
       "residual_gap": "This proves default browser-visible analyst simplification only. Administrator details intentionally remain available when the toggle is expanded, and backend artifacts still preserve source paths and audit details for traceability.",
       "next_action": "Keep the default-DOM forbidden-term browser check with future RedTeam2 UI changes and continue simplifying any remaining analyst-facing English/internal tokens."
+    },
+    {
+      "id": "RTA-COMP-076",
+      "requirement": "RedTeam2 default analyst DOM must reduce internal tool IDs, raw API paths, execution policy tokens, and agent implementation IDs into Korean beginner-facing labels.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/completion-audit/redteam2_korean_copy_inventory.json",
+        "J:/PortableApps/genai/documentation/llm-wiki/operations/knowledge-workflow/KW-20260706-125806-Red-Team-Studio-Continue-RedTeam-AX-goal-reduce-remaining-RedTeam2-analyst-facing-English-and-in/browser/redteam2-default-dom-after-copy-reduction-fresh-20260706.json",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "RedTeam2 now maps tool IDs to display names, raw toolchain API paths to Korean connection labels, tool_action_card_required and similar policy tokens to Korean approval text, and normalizer/agent implementation ids to 도구별 분석 에이전트. The Vite dev server was restarted and a fresh Playwright DOM verification confirmed the selected default forbidden internal tokens had zero hits while suspicious English/internal token count dropped from the initial 71 to 35.",
+      "residual_gap": "This proves a targeted default-DOM reduction for the selected internal tokens only. Product names, domain terms, common report template English, and legacy Report Studio header copy remain and should be reviewed in future slices.",
+      "next_action": "Continue with a broader Report Studio Korean copy pass that separates shared header/legacy template terms from RedTeam2-specific analyst workflow terms."
     }
   ],
   "remaining_gaps": [
@@ -1281,5 +1298,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-06T12:47:03+09:00"
+  "last_updated": "2026-07-06T13:08:00+09:00"
 }

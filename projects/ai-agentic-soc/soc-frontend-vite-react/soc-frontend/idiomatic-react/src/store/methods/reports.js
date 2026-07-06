@@ -5737,6 +5737,13 @@ export default {
       external_scanner_services_ready:'외부 스캐너 서비스 준비됨',
       invalid:'무효',
       valid:'유효',
+      install_required:'설치 확인 필요',
+      registered_verified:'등록 확인됨',
+      tool_execution_waiting_on_environment:'환경 준비 대기',
+      tool_action_card_required:'승인 작업 카드 필요',
+      manual_operator_run:'사람이 실행하고 결과 업로드',
+      plan_only:'계획만 만들기',
+      offline_parse:'이미 있는 결과 파일 분석',
       stored:'저장됨',
       redacted:'마스킹 완료',
       needs_review:'검토 필요',
@@ -5820,6 +5827,56 @@ export default {
     const koReadyLink = value => value ? '연결 준비됨' : '연결 대기';
     const koCountSummary = (values, empty = '없음') => Array.isArray(values) && values.length ? `${values.length}개 항목` : empty;
     const koBlockerSummary = (values, empty = '차단 조건 없음') => Array.isArray(values) && values.length ? `${values.length}개 차단 조건` : empty;
+    const koToolName = value => ({
+      'TOOL-NUCLEI-001':'Nuclei',
+      'TOOL-OPENVAS-001':'OpenVAS',
+      'TOOL-TRIVY-001':'Trivy',
+      'TOOL-SCA-001':'SCA',
+      'TOOL-NPM-AUDIT-001':'npm audit',
+      'TOOL-ZAP-001':'OWASP ZAP',
+    }[String(value || '')] || String(value || '-'));
+    const koToolDisplayName = (displayName, toolId) => {
+      const raw = String(displayName || '').trim();
+      if (raw && /^TOOL-[A-Z0-9-]+$/.test(raw)) return koToolName(raw);
+      return raw || koToolName(toolId);
+    };
+    const koApiLink = value => {
+      const raw = String(value || '').trim();
+      if (!raw) return '-';
+      const compact = raw.replace(/^https?:\/\/127\.0\.0\.1:\d+\//, '/').replace(/^\/+/, '');
+      const known = [
+        ['six-tool-work-order', '작업 순서 연결'],
+        ['six-tool-submission-template', '제출 양식 연결'],
+        ['operator-evidence-submission-manifest-draft', '증거 제출 검증 연결'],
+        ['collect-results', '결과 회수 연결'],
+        ['operating-closure-readiness-summary', '운영 검토 준비 연결'],
+        ['run-status', '저장 상태 조회 연결'],
+        ['launch-readiness', '실행 준비 확인 연결'],
+        ['scanner-service-imports', '읽기 전용 결과 가져오기 연결'],
+      ];
+      const label = (known.find(([needle]) => compact.includes(needle)) || [null, '연결 준비됨'])[1];
+      return showAdminDetails ? `${label} · ${raw}` : label;
+    };
+    const koEvidenceTerm = value => String(value || '')
+      .replace(/tool_action_card_required/g, '승인 작업 카드 필요')
+      .replace(/tool_action:approve_t3/g, '고위험 승인 필요')
+      .replace(/evidence:approve/g, '증거 승인')
+      .replace(/finding:approve_severity/g, '심각도 승인')
+      .replace(/report:approve_export/g, '보고서 내보내기 승인')
+      .replace(/collect-results/g, '결과 회수')
+      .replace(/manual_operator_run/g, '사람이 실행하고 결과 업로드')
+      .replace(/ToolActionCard/g, '승인 작업 카드')
+      .replace(/Claim-Evidence Matrix/g, '주장-증거 연결표')
+      .replace(/Evidence Card/g, '증거 카드')
+      .replace(/\bEvidence\b/g, '증거')
+      .replace(/Report v2/g, '한국어 보고서 v2')
+      .replace(/Agentic RAG/g, '근거 검색 검증')
+      .replace(/Matrix/g, '연결표');
+    const koAgentName = value => {
+      const raw = String(value || '').trim();
+      if (!raw) return '-';
+      return /[_-]agent$|normalizer|reasoning/i.test(raw) ? '도구별 분석 에이전트' : raw;
+    };
     const queueCards = queue.map(action => {
       const requiredRoles = action.required_approver_roles || action.approval_policy?.required_approver_roles || [];
       const approvalMode = action.approval_policy?.approval_mode || (requiredRoles.length > 1 ? 'two_person' : requiredRoles.length ? 'single_approval' : 'none');
@@ -5830,8 +5887,8 @@ export default {
       }[item] || item));
       return h('div', { key:action.action_id || action.artifact_path, style:{ display:'grid', gridTemplateColumns:'minmax(170px, 1.4fr) minmax(100px, .7fr) minmax(100px, .6fr) minmax(180px, 1fr)', gap:'8px', alignItems:'center', borderTop:`1px solid ${C.border}`, padding:'8px 0', minWidth:0 } },
       h('div', { style:{ minWidth:0 } },
-        h('div', { style:{ fontSize:'11px', fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.action_id || '-'),
-        h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, action.title || action.objective || '-'),
+        h('div', { style:{ fontSize:'11px', fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, showAdminDetails ? (action.action_id || '-') : `승인 작업 · ${koToolName(action.tool_id)}`),
+        h('div', { style:{ fontSize:'9.5px', color:C.sec, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, koEvidenceTerm(action.title || action.objective || '-')),
         requiredRoles.length ? h('div', { style:{ fontSize:'9px', color:C.amber, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', marginTop:'2px' } }, `필수 승인 역할: ${requiredRoles.map(koRole).join(' + ')}`) : null),
       h('div', { style:{ fontSize:'10.5px', color:action.status === 'Approved' ? C.green : ['ApprovalRequested','PartiallyApproved'].includes(action.status) ? C.amber : C.text, fontWeight:800 } }, koValue(action.status)),
       h('div', { style:{ fontSize:'10.5px', color:action.hitl_required ? C.coral : C.sec } }, `${koRiskClass(action.risk_class)} / ${koApprovalMode(approvalMode)}`),
@@ -5848,7 +5905,7 @@ export default {
     const gateRows = st.lastAction ? [
       ['ROE', st.lastAction.roe_evaluation?.decision || '-', (st.lastAction.roe_evaluation?.failures || []).join(', ') || '위반 없음'],
       ['HITL', st.lastAction.hitl_required ? '필요' : '불필요', st.lastAction.high_risk_mode || '사람이 수행하는 수동 실행 정책'],
-      ['Evidence', '증거 후보 필요', '도구 출력은 명령이 아니라 데이터로만 취급'],
+      ['증거', '증거 후보 필요', '도구 출력은 명령이 아니라 데이터로만 취급'],
       ['보고서 게이트', '증거 연결 전 차단', '근거 없는 주장, 승인 없는 고위험 실행, 증거 없는 Finding은 0건이어야 함'],
     ] : [];
     const rbacRows = (rbac.assignments || []).map(item => [
@@ -5857,10 +5914,10 @@ export default {
       (item.permissions || []).slice(0, 3).join(', ') || '-',
     ]);
     const toolRows = analysisTools.map(tool => [
-      tool.display_name || tool.name || tool.tool_id,
+      koToolDisplayName(tool.display_name || tool.name, tool.tool_id),
       koRiskClass(tool.risk_class),
       koValue(tool.runtime_status),
-      tool.llm_agent?.name || tool.agent_id || '-',
+      koAgentName(tool.llm_agent?.name || tool.agent_id),
     ]);
     const selectedTool = analysisTools.find(tool => tool.tool_id === draft.analysisToolId) || {};
     const selectedWrapper = selectedTool.wrapper_manifest || wrapperManifests.find(item => item.tool_id === draft.analysisToolId) || {};
@@ -5876,15 +5933,15 @@ export default {
     const installRows = installItems.map(item => [
       item.tool_name || item.tool_id || '-',
       koValue(item.status),
-      (item.blocking_controls || []).join(', ') || '준비됨',
-      (item.operator_install_commands || []).slice(0, 2).join(' | ') || 'import-only',
+      koBlockerSummary(item.blocking_controls || [], '준비됨'),
+      (item.operator_install_commands || []).length ? `${item.operator_install_commands.length}개 확인 명령` : '결과 파일 가져오기 중심',
     ]);
     const selectedInstallRows = [
       ['설치 상태', koValue(selectedInstall.status) || '미확인', (selectedInstall.blocking_controls || []).join(', ') || '차단 조건 없음'],
-      ['설치 방식', (selectedInstall.install_modes || []).join(', ') || '-', selectedInstall.official_url || '공식 출처 미등록'],
-      ['사람이 확인할 명령', (selectedInstall.operator_install_commands || []).slice(0, 3).join(' | ') || '-', 'API가 직접 실행하지 않음'],
-      ['검증 방법', (selectedInstall.verification_commands || []).join(' | ') || '-', selectedInstall.commands_executed_by_api === false ? '사람이 실행한 증거 필요' : '미확인'],
-      ['Evidence 연결', selectedInstall.evidence_pipeline?.normalizer_id || '-', selectedInstall.evidence_pipeline?.analysis_agent_id || '-'],
+      ['설치 방식', koCountSummary(selectedInstall.install_modes || [], '설치 방식 미확인'), selectedInstall.official_url ? '공식 출처 등록됨' : '공식 출처 미등록'],
+      ['사람이 확인할 명령', (selectedInstall.operator_install_commands || []).length ? `${selectedInstall.operator_install_commands.length}개 확인 명령` : '-', 'API가 직접 실행하지 않음'],
+      ['검증 방법', (selectedInstall.verification_commands || []).length ? `${selectedInstall.verification_commands.length}개 검증 방법` : '-', selectedInstall.commands_executed_by_api === false ? '사람이 실행한 증거 필요' : '미확인'],
+      ['증거 연결', selectedInstall.evidence_pipeline ? '도구별 분석 연결됨' : '-', selectedInstall.evidence_pipeline?.analysis_agent_id ? 'LLM 분석 에이전트 확인' : '-'],
     ];
     const credentialPolicyRows = [
       ['지원 도구', credentialPolicies.policy_count ?? credentialPolicyItems.length ?? '-', (credentialPolicies.tool_ids || []).join(', ') || 'OpenVAS/ZAP 정책을 불러오세요'],
@@ -5910,64 +5967,64 @@ export default {
       ['능동 스캔 실행', koBool(serviceImportResult.active_scan_executed ?? false), '항상 아니오여야 함'],
       ['비밀값 저장', koBool(serviceImportResult.secret_material_stored ?? false), '접속 비밀값 저장 금지'],
       ['명령으로 신뢰 여부', koBool(serviceImportResult.trusted_as_instruction ?? false), '항상 아니오 유지'],
-      ['Evidence', serviceImportEvidence.evidence_id || '-', serviceImportEvidence.approval_status || 'Evidence 후보'],
+      ['증거', serviceImportEvidence.evidence_id ? '증거 후보 준비됨' : '-', koValue(serviceImportEvidence.approval_status || '증거 후보')],
       ['파서', serviceImportNormalized.parser_report?.parser || '-', serviceImportNormalized.parser_report?.parsed_item_count != null ? `구조화 항목 ${serviceImportNormalized.parser_report.parsed_item_count}건` : '가져오기 후 정규화'],
     ];
     const serviceImportAnalystProgressRows = [
       ['현재 단계', koValue(serviceImportAnalystProgress.status || serviceImportResult.status || '대기'), serviceImportAnalystProgress.plain_language_status_ko || '읽기 전용 서비스 결과 가져오기 뒤 표시됩니다'],
       ['다음 버튼', serviceImportAnalystProgress.primary_next_button_ko || '읽기 전용 서비스 결과 가져오기', serviceImportAnalystProgress.next_action_ko || '승인된 OpenVAS/ZAP 결과를 먼저 가져오세요'],
       ['회수 가능 결과', `${serviceImportAnalystProgress.collectable_count ?? (serviceImportResult.tool_run?.run_id ? 1 : 0)}개`, '결과 회수·Evidence 후보 단계로 넘길 수 있는 서비스 import 결과'],
-      ['Evidence 후보', `${serviceImportAnalystProgress.evidence_candidate_count ?? 0}개`, '승인 전에는 Finding이나 Report Claim으로 확정하지 않음'],
+      ['증거 후보', `${serviceImportAnalystProgress.evidence_candidate_count ?? 0}개`, '승인 전에는 Finding이나 보고서 주장으로 확정하지 않음'],
     ];
     const serviceImportAnalystStageRows = (serviceImportAnalystProgress.stage_rows || []).map(item => [
-      item.title_ko || item.stage_id || '-',
+      item.title_ko || '진행 단계',
       koValue(item.status || '대기'),
       item.button_ko || '-',
-      item.summary_ko || item.next_action_ko || '-',
+      koEvidenceTerm(item.summary_ko || item.next_action_ko || '-'),
     ]);
     const openvasReadiness = externalScannerTools.openvas || externalScannerTools['TOOL-OPENVAS-001'] || {};
     const zapReadiness = externalScannerTools.zap || externalScannerTools['TOOL-ZAP-001'] || {};
     const launchReadinessRows = launchButtons.map(item => [
-      item.display_name || item.tool_id || '-',
+      koToolDisplayName(item.display_name, item.tool_id),
       item.button_label_ko || '상태 확인',
       item.can_execute_now ? '바로 실행 가능' : (item.can_click ? '준비 후 진행' : '차단됨'),
       (item.blocked_reasons || []).length ? (item.blocked_reasons || []).join(', ') : '차단 조건 없음',
       item.operator_message_ko || item.next_action_ko || '-',
-      item.primary_api || '-',
+      koApiLink(item.primary_api),
     ]);
     const sixToolWorkOrderRows = (sixToolWorkOrder.work_order_rows || []).map(item => [
-      `${item.index || '-'} · ${item.display_name || item.tool_id || '-'}`,
+      `${item.index || '-'} · ${koToolDisplayName(item.display_name, item.tool_id)}`,
       item.recommended_button_ko || '상태 확인',
       koValue(item.action_status || '미확인'),
       item.required_input_ko || '-',
       (item.blocked_reasons || []).length ? (item.blocked_reasons || []).join(', ') : '차단 조건 없음',
-      item.primary_api || '-',
+      koApiLink(item.primary_api),
     ]);
     const sixToolSubmissionTemplateRows = (sixToolSubmissionTemplate.collection_package?.collection_items || []).map(item => [
-      item.title_ko || item.tool_id || '-',
+      item.title_ko || koToolName(item.tool_id),
       item.recommended_button_ko || '-',
       (item.expected_attachment?.expected_filename_patterns || []).join(', ') || '-',
-      item.primary_api || '-',
+      koApiLink(item.primary_api),
       item.does_not_execute_tool ? '명령 실행 없음' : '확인 필요',
     ]);
     const analystExecutionGuideRows = [
-      ['1', '6개 도구 작업 순서 만들기', '도구마다 다음에 누를 버튼을 확인합니다', '/api/redteam/v2/toolchains/six-tool-work-order'],
-      ['2', '6개 도구 제출 양식 만들기', '실제 결과 파일 경로를 붙여 넣을 JSON 양식을 만듭니다', '/api/redteam/v2/toolchains/six-tool-submission-template'],
-      ['3', '운영 증거 제출 manifest 초안', '붙여 넣은 파일 경로의 hash와 상태를 확인합니다', '/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft'],
-      ['4', '결과 회수·Evidence 후보', '도구 결과를 Evidence 후보와 LLM 분석 브리프로 정리합니다', '/api/redteam/v2/toolchains/{toolchain_id}/collect-results'],
-      ['5', '운영 closure 준비 요약', '보고서와 completion gate로 넘어가기 전 사람 검토 가능 여부를 확인합니다', '/api/redteam/v2/toolchains/operating-closure-readiness-summary'],
+      ['1', '6개 도구 작업 순서 만들기', '도구마다 다음에 누를 버튼을 확인합니다', koApiLink('/api/redteam/v2/toolchains/six-tool-work-order')],
+      ['2', '6개 도구 제출 양식 만들기', '실제 결과 파일 정보를 채울 양식을 만듭니다', koApiLink('/api/redteam/v2/toolchains/six-tool-submission-template')],
+      ['3', '운영 증거 제출 초안', '붙여 넣은 파일의 해시와 상태를 확인합니다', koApiLink('/api/redteam/v2/toolchains/operator-evidence-submission-manifest-draft')],
+      ['4', '결과 회수·증거 후보', '도구 결과를 증거 후보와 분석 브리프로 정리합니다', koApiLink('/api/redteam/v2/toolchains/{toolchain_id}/collect-results')],
+      ['5', '운영 검토 준비 요약', '보고서와 완료 점검으로 넘어가기 전 사람 검토 가능 여부를 확인합니다', koApiLink('/api/redteam/v2/toolchains/operating-closure-readiness-summary')],
     ];
     const analystReadinessRows = [
       ['현재 안내', koValue(analystReadinessSummary.status || '대기'), analystReadinessSummary.message_ko || '분석가용 안내를 불러오려면 상태 새로고침을 누르세요'],
       ['다음 버튼', analystReadinessSummary.primary_next_button_ko || '여러 도구 결과 첨부', analystReadinessSummary.secondary_next_button_ko || '결과 회수·Evidence 후보'],
-      ['결과 첨부', analystReadinessSummary.can_attach_operator_results === false ? '불가' : '가능', '운영자가 실행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 Evidence 후보로 연결'],
+      ['결과 첨부', analystReadinessSummary.can_attach_operator_results === false ? '불가' : '가능', '운영자가 실행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과 파일을 증거 후보로 연결'],
       ['능동 스캔', analystReadinessSummary.can_run_active_scan ? '허용됨' : '허용 안 됨', '고위험 실행은 사람이 승인·수행·검토한 뒤 결과만 회수'],
     ];
     const analystRoleNextStepRows = (analystReadinessSummary.next_steps || []).map(item => [
       item.button_ko || item.title_ko || '-',
       koValue(item.status || '미확인'),
-      item.message_ko || '-',
-      item.api || '-',
+      koEvidenceTerm(item.message_ko || '-'),
+      koApiLink(item.api),
     ]);
     const analystPlainBlockerRows = (analystReadinessSummary.plain_language_blockers_ko || []).map((item, index) => [
       `${index + 1}`,
@@ -6172,53 +6229,53 @@ export default {
     const toolGuideProfiles = {
       'TOOL-NUCLEI-001': {
         summary:'웹 취약점 템플릿 검사 도구입니다. 실제 대상에 요청을 보내므로 기본적으로 승인 후 실행합니다.',
-        beginnerNext:'먼저 ToolActionCard 계획을 만들고 ROE 범위와 템플릿 목록을 확인한 뒤, 리드 승인을 받아 수동 실행 결과 JSONL을 업로드하세요.',
-        safeMode:'권장 시작: plan_only 또는 offline_parse. lab_execute는 승인된 실험망에서만 사용합니다.',
-        evidence:'Nuclei JSONL 결과는 scanner finding 후보 Evidence로 변환되고, LLM 에이전트가 오탐/근거 부족 표현을 보류합니다.',
+        beginnerNext:'먼저 승인 작업 계획을 만들고 승인 범위와 템플릿 목록을 확인한 뒤, 리드 승인을 받아 수동 실행 결과 파일을 업로드하세요.',
+        safeMode:'권장 시작: 계획만 만들기 또는 이미 있는 결과 파일 분석. 실험망 실행은 승인된 실험망에서만 사용합니다.',
+        evidence:'Nuclei 결과는 취약점 후보 증거로 변환되고, LLM 에이전트가 오탐/근거 부족 표현을 보류합니다.',
       },
       'TOOL-OPENVAS-001': {
         summary:'네트워크 취약점 점검 도구입니다. 스캔 영향이 있을 수 있어 승인된 범위와 계정 권한 확인이 먼저입니다.',
         beginnerNext:'OpenVAS/Greenbone에서 사람이 스캔을 수행하거나 기존 보고서를 내보낸 뒤, XML 결과를 업로드해 Evidence 후보로 만드세요.',
-        safeMode:'권장 시작: report import 또는 manual_operator_run. 운영망 직접 스캔은 기본 차단입니다.',
+        safeMode:'권장 시작: 보고서 가져오기 또는 사람이 실행하고 결과 업로드. 운영망 직접 스캔은 기본 차단입니다.',
         evidence:'OpenVAS XML은 취약점 후보와 영향 범위 근거로 정규화되며, Finding 확정 전 사람 검토가 필요합니다.',
       },
       'TOOL-TRIVY-001': {
         summary:'컨테이너, 파일시스템, SBOM, IaC 취약점 확인 도구입니다. 로컬 산출물 중심이라 T0 오프라인 분석부터 시작합니다.',
         beginnerNext:'승인된 workspace나 이미지/SBOM 파일을 준비하고, JSON 결과를 업로드하거나 sandbox 실행 계획을 만든 뒤 Evidence로 연결하세요.',
-        safeMode:'권장 시작: offline_parse 또는 sandbox_execute. 원격 registry 접근은 별도 승인 전 금지합니다.',
+        safeMode:'권장 시작: 이미 있는 결과 파일 분석 또는 격리된 샌드박스 실행. 원격 저장소 접근은 별도 승인 전 금지합니다.',
         evidence:'Trivy JSON은 SCA 취약점 후보와 패키지/버전 근거로 변환됩니다.',
       },
       'TOOL-SCA-001': {
         summary:'의존성 목록, lockfile, CycloneDX SBOM을 분석해 취약 패키지와 컴포넌트 존재 근거를 분리하는 경로입니다.',
-        beginnerNext:'package-lock, CycloneDX SBOM, dependency manifest 같은 이미 존재하는 파일을 업로드하고 LLM 에이전트가 보고서 표현을 제한하게 하세요.',
-        safeMode:'권장 시작: offline_parse. 패키지 다운로드나 사설 registry 접근은 승인 전 금지합니다.',
-        evidence:'SCA 결과는 컴포넌트 인벤토리 Evidence와 취약점 후보 Evidence로 나뉘며, affects 연결은 사람이 검토하기 전 Claim으로 확정하지 않습니다.',
+        beginnerNext:'잠금 파일, SBOM, 의존성 목록처럼 이미 존재하는 파일을 업로드하고 LLM 에이전트가 보고서 표현을 제한하게 하세요.',
+        safeMode:'권장 시작: 이미 있는 결과 파일 분석. 패키지 다운로드나 사설 저장소 접근은 승인 전 금지합니다.',
+        evidence:'SCA 결과는 컴포넌트 인벤토리 증거와 취약점 후보 증거로 나뉘며, 영향 범위 연결은 사람이 검토하기 전 주장으로 확정하지 않습니다.',
       },
       'TOOL-NPM-AUDIT-001': {
         summary:'Node.js lockfile 기반 의존성 취약점 점검입니다. 자동 수정은 하지 않고 JSON 결과만 증거화합니다.',
-        beginnerNext:'승인된 package-lock.json이 있는 workspace에서 사람이 npm audit --json을 실행하고 결과를 업로드하세요.',
-        safeMode:'권장 시작: offline_parse. npm fix, publish, credentialed registry 접근은 금지합니다.',
-        evidence:'npm audit JSON은 advisory, package, severity, fix 가능 여부를 Evidence 후보로 만듭니다.',
+        beginnerNext:'승인된 잠금 파일이 있는 작업 폴더에서 사람이 npm audit 결과를 만들고 결과를 업로드하세요.',
+        safeMode:'권장 시작: 이미 있는 결과 파일 분석. 자동 수정, 배포, 인증 저장소 접근은 금지합니다.',
+        evidence:'npm audit 결과는 권고, 패키지, 심각도, 수정 가능 여부를 증거 후보로 만듭니다.',
       },
       'TOOL-ZAP-001': {
         summary:'웹 애플리케이션 점검 도구입니다. passive/import는 낮은 위험으로 다루고 active scan은 승인된 lab에서만 수행합니다.',
-        beginnerNext:'먼저 passive scan 또는 기존 ZAP JSON 보고서를 가져오고, active scan이 필요하면 ToolActionCard 승인 후 lab_execute로 제한하세요.',
-        safeMode:'권장 시작: offline_parse 또는 passive report import. attack mode와 unbounded spider는 금지합니다.',
+        beginnerNext:'먼저 수동 점검 결과 또는 기존 ZAP 보고서를 가져오고, 능동 스캔이 필요하면 승인 작업 뒤 실험망 실행으로 제한하세요.',
+        safeMode:'권장 시작: 이미 있는 결과 파일 분석 또는 수동 보고서 가져오기. 공격 모드와 무제한 탐색은 금지합니다.',
         evidence:'ZAP JSON은 alert, risk, confidence, URI, CWE/WASC를 scanner finding 후보로 변환합니다.',
       },
     };
     const selectedToolGuide = toolGuideProfiles[draft.analysisToolId] || {
       summary:'등록된 분석도구입니다. 실행 전에 ToolProfile, 위험도, 승인 조건, 결과 정규화 가능 여부를 확인하세요.',
-      beginnerNext:'ToolActionCard 계획을 만든 뒤 승인 조건과 Evidence 연결 방식을 확인하고 진행하세요.',
-      safeMode:'권장 시작: plan_only 또는 offline_parse.',
-      evidence:'정규화된 결과만 Evidence Card와 Claim-Evidence Matrix에 연결합니다.',
+      beginnerNext:'승인 작업 계획을 만든 뒤 승인 조건과 증거 연결 방식을 확인하고 진행하세요.',
+      safeMode:'권장 시작: 계획만 만들기 또는 이미 있는 결과 파일 분석.',
+      evidence:'정규화된 결과만 증거 카드와 주장-증거 연결표에 연결합니다.',
     };
     const selectedToolGuideRows = [
-      ['도구 설명', selectedTool.display_name || draft.analysisToolId || '-', selectedToolGuide.summary],
+      ['도구 설명', koToolDisplayName(selectedTool.display_name, draft.analysisToolId), selectedToolGuide.summary],
       ['처음 할 일', selectedTool.requires_human_approval ? '승인 필요' : '오프라인 분석 가능', selectedToolGuide.beginnerNext],
       ['안전한 실행 모드', selectedTool.default_execution_mode || selectedTool.default_policy || '-', selectedToolGuide.safeMode],
       ['금지/주의 옵션', (selectedTool.prohibited_options || []).join(', ') || '프로파일 확인 필요', '금지 옵션은 버튼 실행과 보고서 주장에 직접 사용하지 않습니다.'],
-      ['Evidence 연결', (selectedTool.evidence_types || []).join(', ') || '-', selectedToolGuide.evidence],
+      ['증거 연결', koCountSummary(selectedTool.evidence_types || [], '증거 유형 미확인'), selectedToolGuide.evidence],
     ];
     const wrapperPinRows = [
       ['고정 요청', koValue(wrapperPinState.request?.status || wrapperPinState.status || '대기'), wrapperPinState.request?.pin_request_id || wrapperPinState.error || '현재 래퍼 해시를 신뢰 기준으로 요청'],
@@ -6380,13 +6437,13 @@ export default {
       item.evidence_status_ko || item.reviewer_action_ko || '-',
     ]);
     const analystFindingMissingRows = (toolchainAnalystFindingReview.missing_tool_rows || []).map(item => [
-      item.tool_label_ko || item.tool_id || '필수 도구',
+      item.tool_label_ko || koToolName(item.tool_id) || '필수 도구',
       '결과 누락',
       item.next_action_ko || '도구 결과 파일을 첨부하거나 승인된 실행 흐름으로 회수하세요.',
     ]);
     const requiredCoverage = toolchainCollection.required_analysis_tool_coverage || {};
     const requiredCoverageRows = (requiredCoverage.rows || []).map(row => [
-      row.display_name || row.tool_name || row.tool_id || '-',
+      koToolDisplayName(row.display_name || row.tool_name, row.tool_id),
       row.ready_for_completion_gate ? '분석·Evidence 후보 완료' : (row.status === 'present' ? '결과 있음, 후속 검토 필요' : '결과 누락'),
       row.structured_item_count ? `확인 후보 ${row.structured_item_count}건` : '도구별 분석 대기',
       row.evidence_id ? 'Evidence 후보 생성됨' : (row.next_action_ko || '이 도구의 결과를 가져오세요'),
@@ -6476,7 +6533,7 @@ export default {
       item.evidence || '-',
     ]);
     const realOperatingToolCoverageRows = (realOperatingEvidenceReadiness.tool_coverage || []).map(item => [
-      item.display_name || item.tool_id || '-',
+      koToolDisplayName(item.display_name, item.tool_id),
       item.status === 'present' ? '산출물 있음' : koValue(item.status || '누락'),
       item.selected_path ? '파일 확인됨' : 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과가 모두 필요',
       item.sha256 || `${item.candidate_count || 0}개 후보`,
@@ -6487,7 +6544,7 @@ export default {
       (realOperatingEvidenceReadiness.warnings || []).join(', ') || '-',
     ]);
     const realOperatingMissingToolRows = (realOperatingEvidenceReadiness.missing_tool_remediation || []).map(item => [
-      item.display_name || item.tool_id || '-',
+      koToolDisplayName(item.display_name, item.tool_id),
       item.accepted_formats_ko || (item.expected_filename_patterns || []).join(', ') || '등록된 도구 산출물',
       item.operator_action_ko || '누락 도구 결과 파일을 운영 산출물 폴더에 추가한 뒤 다시 점검하세요.',
       item.does_not_execute_tool ? '명령 실행 없음' : '확인 필요',
@@ -6552,9 +6609,9 @@ export default {
     const agenticRagRows = [
       ['SCA 판단', koValue(agenticSca.decision || agenticRagState.status || 'idle'), agenticRagState.error || `점수=${agenticSca.sufficient_context_score ?? '-'}`],
       ['답변 가능 여부', koBool(agenticSca.answerable ?? false), (agenticSca.missing_facts || []).join(', ') || '부족한 사실 없음'],
-      ['인용', (agenticRagResult.citations || []).length, (agenticRagResult.citations || []).map(item => item.citation_id).join(', ') || '승인된 Evidence Card 필요'],
+      ['인용', (agenticRagResult.citations || []).length, (agenticRagResult.citations || []).length ? `${agenticRagResult.citations.length}개 인용 후보` : '승인된 증거 카드 필요'],
       ['근거 부족 주장', agenticVerifier.unsupported_claim_count ?? '-', '보고서 사용 전 0건이어야 함'],
-      ['Claim-Evidence Matrix 후보', koValue(agenticMatrixCandidate.status || 'not_prepared'), agenticMatrixCandidate.claim_id || 'SCA를 실행해 후보를 준비하세요'],
+      ['주장-증거 연결표 후보', koValue(agenticMatrixCandidate.status || 'not_prepared'), agenticMatrixCandidate.claim_id ? '후보 준비됨' : 'SCA를 실행해 후보를 준비하세요'],
       ['근거 부족 주장 보류', agenticMatrixCandidate.status === 'hold_unsupported_claim' ? '차단됨' : agenticMatrixCandidate.status === 'ready_for_report_claim' ? '통과' : '미확인', agenticMatrixCandidate.hold_reason || '근거 부족 핵심 주장은 보고서 생성 전에 보류'],
       ['선택 말뭉치', (agenticRagResult.selected_corpora || []).length, (agenticRagResult.selected_corpora || []).length ? `${agenticRagResult.selected_corpora.length}개 말뭉치 선택` : '증거 저장소 대기'],
       ['조회 기능의 명령 실행', koBool(agenticRagResult.commands_executed_by_api ?? false), '항상 아니오 유지'],
@@ -6565,17 +6622,17 @@ export default {
       h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
         h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
           h('div', {},
-            h('div', { style:{ fontSize:'16px', fontWeight:950 } }, '레드팀 분석2 · RedTeam AX v2'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, marginTop:'4px' } }, '기존 레드팀 분석 흐름을 기준으로 ToolActionCard, HITL, Evidence Card, Claim-Evidence Matrix 게이트를 분리한 워크벤치')),
+            h('div', { style:{ fontSize:'16px', fontWeight:950 } }, '레드팀 분석2 · RedTeam AX'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, marginTop:'4px' } }, '승인 작업, 사람 검토, 증거 카드, 주장-증거 연결표를 분리한 분석 워크벤치')),
           h('div', { style:{ display:'flex', gap:'7px', flexWrap:'wrap' } },
             h('button', { onClick:()=>this.loadRedTeam2AnalysisStatus(), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.s2, color:C.text, cursor:'pointer' } }, '상태 새로고침'),
-            h('button', { onClick:()=>this.submitRedTeam2ToolActionPlan(), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'ToolActionCard 계획'))),
+            h('button', { onClick:()=>this.submitRedTeam2ToolActionPlan(), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, '승인 작업 계획'))),
         h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-          ['v2 연결', koValue(st.v2Health?.status || st.status || 'idle'), st.v2Health?.status === 'ready' ? C.green : C.sec, st.v2Health?.execution_policy || 'ToolActionCard 필수'],
+          ['v2 연결', koValue(st.v2Health?.status || st.status || 'idle'), st.v2Health?.status === 'ready' ? C.green : C.sec, st.v2Health?.execution_policy ? koEvidenceTerm(st.v2Health.execution_policy) : '승인 작업 카드 필수'],
           ['v1 백엔드', koValue(st.v1Health?.status || st.v1Health?.service || 'unknown'), C.sec, '기존 레드팀 분석 회귀 기준'],
-          ['RAG/Wiki', rag.exists === false ? '대기' : '준비 완료', rag.exists === false ? C.sec : C.green, rag.db_path ? '지식 저장소 연결됨' : (rag.error || 'Agentic RAG 상태')],
+          ['근거 검색', rag.exists === false ? '대기' : '준비 완료', rag.exists === false ? C.sec : C.green, rag.db_path ? '지식 저장소 연결됨' : (rag.error || '근거 검색 상태')],
           ['준비도', readiness.summary?.ready_count ?? '-', C.blue, readiness.error || '파이프라인 커버리지'],
-          ['도구 허브', toolRegistry.tool_count ?? analysisTools.length ?? '-', C.blue, toolRegistry.execution_policy || '도구 목록을 불러오지 않음'],
+          ['도구 허브', toolRegistry.tool_count ?? analysisTools.length ?? '-', C.blue, toolRegistry.execution_policy ? koEvidenceTerm(toolRegistry.execution_policy) : '도구 목록을 불러오지 않음'],
         ].map(card))),
       smallPanel('Case / ROE 입력',
         h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(190px, 1fr))', gap:'10px' } },
@@ -6601,7 +6658,7 @@ export default {
                 { tool_id:'TOOL-SCA-001', display_name:'SCA' },
                 { tool_id:'TOOL-NPM-AUDIT-001', display_name:'npm audit' },
                 { tool_id:'TOOL-ZAP-001', display_name:'OWASP ZAP' },
-              ]).map(tool => h('option', { key:tool.tool_id, value:tool.tool_id }, tool.display_name || tool.name || tool.tool_id)))),
+              ]).map(tool => h('option', { key:tool.tool_id, value:tool.tool_id }, koToolDisplayName(tool.display_name || tool.name, tool.tool_id))))),
           h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '실행 방식',
             h('select', { value:draft.executionMode, onChange:e=>this.updateRedTeam2AnalysisDraft({ executionMode:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
               [
@@ -6624,8 +6681,8 @@ export default {
       smallPanel('분석 도구 허브 / LLM 분석 에이전트',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-            ['선택 도구', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.requires_human_approval ? '승인 범위와 템플릿 확인 필요' : '결과 가져오기 가능'],
-            ['LLM 분석 에이전트', selectedTool.llm_agent?.name || selectedTool.agent_id || '-', C.blue, '결과 정규화와 Evidence 후보 생성'],
+            ['선택 도구', koToolDisplayName(selectedTool.display_name, draft.analysisToolId), selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.requires_human_approval ? '승인 범위와 템플릿 확인 필요' : '결과 가져오기 가능'],
+            ['LLM 분석 에이전트', selectedTool.llm_agent?.name || (selectedTool.agent_id ? '도구별 분석 에이전트' : '-'), C.blue, '결과 정규화와 증거 후보 생성'],
             ['실행 준비', koValue(selectedTool.runtime_status || '미확인'), selectedTool.runtime_status === 'registered_install_required' ? C.amber : C.sec, selectedTool.availability?.command ? '설치 확인 필요' : '결과 가져오기 중심'],
             ['설치 상태', koValue(selectedInstall.status || '미확인'), (selectedInstall.blocking_controls || []).length ? C.amber : C.green, selectedInstall.commands_executed_by_api === false ? '사람이 실행한 증거 필요' : '미확인'],
             ['래퍼 신뢰', koValue(selectedWrapper.pinning_status || '미확인'), selectedWrapper.trusted_for_runner ? C.green : C.amber, selectedWrapper.requires_pin_before_runner ? '실행 전 SHA-256 고정 필요' : koValue(selectedWrapper.version_probe?.status) || '결과 가져오기 중심'],
@@ -6636,15 +6693,15 @@ export default {
           this.renderTable(['선택 도구 설치','상태','근거'], selectedInstallRows)),
       smallPanel('분석도구 실행 안내',
         h('div', { style:{ display:'grid', gap:'10px' } },
-          h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } }, '이 영역은 버튼을 누르기 전에 확인해야 할 쉬운 설명입니다. 고위험 도구는 웹앱이 바로 실행하지 않고, ToolActionCard 계획, 범위 확인, 사람 승인, 결과 업로드, Evidence 연결 순서로 진행합니다.'),
+          h('div', { style:{ fontSize:'11px', color:C.sec, lineHeight:1.55 } }, '이 영역은 버튼을 누르기 전에 확인해야 할 쉬운 설명입니다. 고위험 도구는 웹앱이 바로 실행하지 않고, 승인 작업 계획, 범위 확인, 사람 승인, 결과 업로드, 증거 연결 순서로 진행합니다.'),
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
-            ['선택한 분석도구', selectedTool.display_name || draft.analysisToolId || '-', selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.requires_human_approval ? '승인 후 실행' : '오프라인 분석부터 가능'],
+            ['선택한 분석도구', koToolDisplayName(selectedTool.display_name, draft.analysisToolId), selectedTool.requires_human_approval ? C.amber : C.green, selectedTool.requires_human_approval ? '승인 후 실행' : '오프라인 분석부터 가능'],
             ['현재 실행 방식', koExecutionMode(draft.executionMode), draft.executionMode === 'controlled_production_execute' ? C.coral : C.blue, draft.executionMode === 'offline_parse' ? '결과 파일을 먼저 분석' : '실행 전 계획과 승인 확인'],
-            ['결과 처리', selectedTool.normalizer_id || '-', C.teal, selectedTool.agent_id || 'LLM 분석 에이전트 확인'],
-            ['보고서 연결', (selectedTool.evidence_types || []).length || '-', C.green, 'Evidence Card 생성 후 Claim-Evidence Matrix 연결'],
+            ['결과 처리', selectedTool.normalizer_id ? '도구 결과 정규화' : '-', C.teal, selectedTool.agent_id ? 'LLM 분석 에이전트 확인' : 'LLM 분석 에이전트 확인'],
+            ['보고서 연결', (selectedTool.evidence_types || []).length || '-', C.green, '증거 카드 생성 후 주장-증거 연결표 연결'],
           ].map(card)),
           this.renderTable(['확인 항목','상태','사용자 안내'], selectedToolGuideRows))),
-      smallPanel('Agentic RAG 충분성 검증 / 인용 검증기',
+      smallPanel('근거 검색 충분성 검증 / 인용 검증기',
         h('div', { style:{ display:'grid', gap:'10px' } },
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'10px' } },
             h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '검증 질문',
@@ -6666,16 +6723,16 @@ export default {
               onClick:()=>this.runRedTeam2AgenticRagSca(),
               disabled:agenticRagState.status === 'running',
               style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:agenticRagState.status === 'running' ? C.raised : C.bg, color:agenticRagState.status === 'running' ? C.muted : C.blue, cursor:agenticRagState.status === 'running' ? 'not-allowed' : 'pointer', fontWeight:900 },
-            }, agenticRagState.status === 'running' ? '검증 중' : 'Agentic RAG 검증 실행'),
+            }, agenticRagState.status === 'running' ? '검증 중' : '근거 검색 검증 실행'),
             h('span', { style:{ fontSize:'10px', color:agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : agenticRagState.error ? C.coral : C.sec, fontWeight:900 } }, agenticRagState.error || koValue(agenticSca.decision || agenticRagState.status || 'idle'))),
           h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(150px, 1fr))', gap:'8px' } }, [
             ['충분성 판단', koValue(agenticSca.decision), agenticSca.decision === 'sufficient' ? C.green : agenticSca.decision === 'retrieve_again' ? C.amber : C.sec, `점수 ${agenticSca.sufficient_context_score ?? '-'}`],
             ['인용 검증', agenticVerifier.all_material_claims_supported ? '근거 충분' : '대기 또는 보류', agenticVerifier.unsupported_claim_count === 0 ? C.green : C.amber, `근거 부족 주장 ${agenticVerifier.unsupported_claim_count ?? '-'}건`],
-            ['Evidence', agenticRagState.evidence?.evidence_id || '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url ? 'Evidence Card 후보 보관됨' : '승인된 Evidence Card 자동 준비'],
-            ['Matrix 후보', koValue(agenticMatrixCandidate.status), agenticMatrixCandidate.status === 'ready_for_report_claim' ? C.green : agenticMatrixCandidate.status === 'hold_unsupported_claim' ? C.coral : C.sec, agenticMatrixCandidate.claim_id || '아직 없음'],
+            ['증거', agenticRagState.evidence?.evidence_id ? '증거 후보 준비됨' : '-', agenticRagState.evidence?.approval_status === 'approved' ? C.green : C.sec, agenticRagState.evidence?.source_path_or_url ? '증거 카드 후보 보관됨' : '승인된 증거 카드 자동 준비'],
+            ['연결표 후보', koValue(agenticMatrixCandidate.status), agenticMatrixCandidate.status === 'ready_for_report_claim' ? C.green : agenticMatrixCandidate.status === 'hold_unsupported_claim' ? C.coral : C.sec, agenticMatrixCandidate.claim_id ? '후보 준비됨' : '아직 없음'],
             ['검색 말뭉치', (agenticRagResult.selected_corpora || []).length || '-', C.blue, (agenticRagResult.selected_corpora || []).slice(0, 3).join(', ') || '검증을 실행하세요'],
           ].map(card)),
-          this.renderTable(['Agentic RAG','상태','근거'], agenticRagRows),
+          this.renderTable(['근거 검색 검증','상태','근거'], agenticRagRows),
           agenticRagResult.answer_draft_ko ? h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', wordBreak:'break-word', border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px', background:C.bg, color:C.sec, fontSize:'10px', maxHeight:'130px', overflow:'auto' } }, agenticRagResult.answer_draft_ko) : null)),
       smallPanel('분석가용 다음 실행 안내',
         h('div', { style:{ display:'grid', gap:'10px' } },
@@ -7430,7 +7487,7 @@ export default {
           this.renderTable(['확인 항목','상태','근거'], reportGateRows),
           reportResult.report?.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec } }, '보고서 초안은 분석 저장소에 보관됨') : null,
           reportExported.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.green } }, '내보내기 산출물은 분석 저장소에 보관됨') : null)),
-      queueCards.length ? smallPanel(`ToolActionCard 대기열${st.queue?.count ? ` · ${st.queue.count}` : ''}`, h('div', { style:{ display:'grid' } }, queueCards)) : null,
+      queueCards.length ? smallPanel(`승인 작업 대기열${st.queue?.count ? ` · ${st.queue.count}` : ''}`, h('div', { style:{ display:'grid' } }, queueCards)) : null,
       gateRows.length ? smallPanel('가드레일 / Evidence 게이트', this.renderTable(['게이트','상태','이유'], gateRows)) : null,
       st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null,
       reportState.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, reportState.error) : null);
@@ -7832,7 +7889,7 @@ export default {
       ['reports', 'Reports', 'Report catalog'],
       ['malax', '악성코드 분석', 'Workflow, evidence, HITL, report fields'],
       ['redteam', '레드팀 분석', 'Objectives, campaigns, evidence'],
-      ['redteam2', '레드팀 분석2', 'AX v2 ToolActionCard, HITL, evidence gates'],
+      ['redteam2', '레드팀 분석2', '승인 작업, 사람 검토, 증거 게이트'],
     ];
     const visibleActive = this.state.reportStudioTab || 'reports';
     return h('div', { style:{ display:'flex', gap:'7px', marginBottom:'14px', flexWrap:'wrap' } }, visibleTabs.map(([id,label,desc]) =>
