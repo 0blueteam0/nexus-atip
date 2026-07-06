@@ -1309,3 +1309,13 @@ Create Case
 - 데이터 계약: backend payload의 `source_dir`, `source_path`, `artifact_path`, `storage_path`, API endpoint 키는 유지한다. 변경 대상은 RedTeam2의 표시 문구와 placeholder이며 저장·검증·감사 경로는 API와 Evidence artifact에 남긴다.
 - 예외 케이스: 사용자가 운영 산출물 폴더를 직접 입력해야 하는 관리자 입력란은 남기되, 기본값과 placeholder에서 실제 로컬 경로 예시를 제거한다. 첨부 JSON은 버튼으로 자동 생성하거나 관리자가 검증한 JSON을 붙여넣도록 안내한다.
 - 테스트 전략: `node --check reports.js`, `redteam_ax_frontend_launch_readiness_contract.py`, `test_redteam2_korean_copy_inventory.py`가 문법, 금지 노출 문자열, 한국어 copy anchor를 검증한다.
+
+## 87. 갱신 목표 반영 - 실행 나열형 복합 도구 영역을 결과 수집·검토 워크플로우로 전환
+
+- 목적: `여러 분석도구 순차 실행·결과 첨부`는 사용자에게 실행 목록을 보여주는 단계처럼 보이며, RedTeam2 분석 화면의 목적과 맞지 않는다. 분석가 화면은 실행 자체보다 결과 수집, 확인 후보, 심각도 분포, Evidence 후보 검토를 먼저 보여줘야 한다.
+- API 설계: `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`는 `analyst_finding_review_summary`를 반환한다. 이 요약은 `headline_ko`, `plain_language_summary_ko`, `tool_result_candidate_count`, `high_or_critical_candidate_count`, `rows[]`, `missing_tool_rows[]`, `raw_paths_hidden_from_analyst=true`, `traceability_note_ko`를 포함한다.
+- 화면/기능 명세: RedTeam2 섹션 제목은 `분석 결과 수집·검토 워크플로우`로 표시한다. 최상단 표는 `분석 결과 수집·검토`, `분석 결과 쉬운 요약`, `도구별 분석 요약`을 먼저 보여주고, 실행/진행 세부 기록은 `상세 실행 기록(관리자/감사용)`, `상세 진행 기록(관리자/감사용)`으로 낮춘다.
+- 한국어 UX 원칙: 분석가용 본문은 `확인 후보`, `심각도 분포`, `Evidence 상태`, `검토 우선순위`, `다음 행동`을 중심으로 표현한다. raw Run ID, execution plan id, local path, internal API path는 보관 근거 또는 관리자 감사 기록으로만 안내한다.
+- 안전 원칙: 이 전환은 UI 의미와 결과 요약 개선이다. 고위험 scanner 실행, active scan, Docker/WSL/network 실행은 여전히 ROE/HITL/runtime preflight가 없으면 차단한다.
+- 테스트 전략: `redteam_ax_toolchain_collection_analyst_summary_contract.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `test_redteam2_korean_copy_inventory.py`가 새 용어와 회귀 금지 문구를 검증한다.
+- 예외 케이스: 승인된 runner 실행 버튼 자체는 남긴다. 다만 기본 분석가 화면에서는 실행 여부 나열이 아니라 결과가 Evidence 후보로 정리되는 상태를 먼저 보여준다.

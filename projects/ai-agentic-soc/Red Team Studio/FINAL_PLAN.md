@@ -2004,3 +2004,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] frontend launch readiness sanity는 raw path/status 노출 금지 문자열과 새 한국어 상태 문구를 함께 검증한다.
 - [x] Korean copy inventory는 새 초보자 친화 문구를 기준으로 갱신했다.
 - [ ] 이 변경은 화면 노출 계층 정리이며 backend API payload 키와 감사용 원본 저장 위치를 제거하지 않는다.
+
+## 140. 갱신 목표 - 결과 회수 후 분석가용 발견 요약
+
+- [x] `/api/redteam/v2/toolchains/{toolchain_id}/collect-results` 응답에 `analyst_finding_review_summary`를 추가한다.
+- [x] 요약은 도구별 한국어 이름, 확인 후보 수, 심각도 분포, Evidence 후보 상태, 검토 우선순위, 누락 필수 도구 다음 행동을 반환한다.
+- [x] RedTeam2는 `분석 결과 쉬운 요약`과 `도구별 분석 요약` 표를 기존 ID/normalizer 중심 표보다 먼저 표시한다.
+- [x] 저장 실행 단계의 raw Run ID 표시는 `보관된 실행 기록 있음`과 `보관 근거`로 낮추고, 세부 실행 ID와 저장 위치는 관리자 감사 기록과 Evidence Card에서 추적한다고 안내한다.
+- [x] 사용자가 지적한 `여러 분석도구 순차 실행·결과 첨부` 제목을 제거하고 `분석 결과 수집·검토 워크플로우`로 바꿔 실행 나열이 아니라 결과 수집, 후보 정리, Evidence 검토 흐름이 먼저 보이게 한다.
+- [x] 실행/진행 raw detail 표는 `상세 실행 기록(관리자/감사용)`, `상세 진행 기록(관리자/감사용)`으로 낮춘다.
+- [x] `redteam_ax_toolchain_collection_analyst_summary_contract.py`, frontend runtime readiness contract, Korean copy inventory가 새 표시 계약을 검증한다.
+- [ ] 이 요약은 결과 해석과 승인 대기 상태를 쉽게 보여주는 projection이며 실제 Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.

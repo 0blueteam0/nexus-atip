@@ -5525,6 +5525,7 @@ export default {
     const toolchainClosure = toolchainClosureState.result || {};
     const toolchainRunStatus = toolchainRunStatusState.result || {};
     const toolchainAnalystProgress = toolchainCollection.analyst_progress_summary || toolchainRunStatus.analyst_progress_summary || {};
+    const toolchainAnalystFindingReview = toolchainCollection.analyst_finding_review_summary || {};
     const realOperatingEvidenceReadiness = realOperatingEvidenceReadinessState.result || {};
     const operatingClosureReadinessSummary = operatingClosureReadinessSummaryState.result || {};
     const operatorEvidenceSubmissionManifest = operatorEvidenceSubmissionManifestState.result || {};
@@ -6290,16 +6291,16 @@ export default {
       ['출력 산출물', (runnerRun.raw_artifacts || []).length, (runnerRun.raw_artifacts || []).length ? `${runnerRun.raw_artifacts.length}개 출력 보관됨` : '출력 산출물 대기'],
     ];
     const toolchainRows = [
-      ['복합 실행 상태', koValue(toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainRun.toolchain_id || '두 개 이상 분석도구와 명령을 입력하세요'],
-      ['진행률', toolchainRun.progress_percent != null ? `${toolchainRun.progress_percent}%` : '대기', toolchainRun.operator_summary_ko || '여러 분석도구 실행 버튼을 누르면 도구별 진행 상태가 표시됩니다'],
-      ['다음 행동', toolchainRun.current_stage_ko || '대기', toolchainRun.next_action_ko || '실행 전에는 도구 ID, 실행 모드, 명령 또는 첨부 결과를 확인하세요'],
+      ['결과 수집 상태', koValue(toolchainCollection.status || toolchainRun.status || toolchainState.status || '대기'), toolchainState.error || toolchainAnalystFindingReview.headline_ko || '분석도구 결과를 첨부하거나 승인된 실행 결과를 회수하세요'],
+      ['진행률', toolchainRun.progress_percent != null ? `${toolchainRun.progress_percent}%` : '대기', toolchainRun.operator_summary_ko || '결과가 준비되면 회수·Evidence 후보 단계와 검토 우선순위가 표시됩니다'],
+      ['다음 행동', toolchainAnalystFindingReview.next_button_ko || toolchainRun.current_stage_ko || '대기', toolchainAnalystFindingReview.next_action_ko || toolchainRun.next_action_ko || '결과 첨부, 결과 회수, Evidence 후보 승인 순서로 진행하세요'],
       ['실행 전 준비', toolchainRun.runtime_preflight_required ? koValue(toolchainRun.runtime_preflight_status || '대기') : '첨부/계획 모드', koBlockerSummary(toolchainRun.tool_execution_blocked_by, toolchainRun.tool_execution_ready ? '분석도구 실행 준비 통과' : '실행 전 준비 차단: 설치 확인, 래퍼 신뢰, 격리 준비 상태를 먼저 확인하세요')],
       ['안전 점검 부분 실행', koBool(toolchainRun.safe_local_smoke_partial_runtime_preflight ?? false), `전체 운영 준비가 막혀도 버전 확인 같은 제한된 로컬 점검만 허용하고 임의 스캔 명령은 차단 · ${koValue(toolchainRun.runtime_preflight_status || '부분 점검')}`],
-      ['도구 수', toolchainRun.tool_count ?? '-', `실행 ${toolchainRun.executed_count ?? 0}건 · 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
-      ['조회 기능의 명령 실행', koBool(toolchainRun.commands_executed_by_api ?? false), '각 도구별 실행 계획, 토큰, 래퍼 게이트 통과 시에만 실행'],
+      ['도구 결과 수', toolchainRun.tool_count ?? '-', `승인 실행 ${toolchainRun.executed_count ?? 0}건 · 운영자 첨부 ${toolchainRun.imported_count ?? 0}건 · 차단 ${toolchainRun.blocked_count ?? 0}건`],
+      ['자동 명령 실행 여부', koBool(toolchainRun.commands_executed_by_api ?? false), '승인된 실행 계획, 토큰, 래퍼 게이트를 통과한 경우에만 실행'],
       ['명령으로 신뢰 여부', koBool(toolchainRun.trusted_as_instruction ?? false), '항상 아니오 유지'],
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 Evidence 후보 전 사람이 검토'],
-      ['복합 결과 회수', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '결과 회수 연결 대기'],
+      ['결과 정리 상태', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '결과 회수 연결 대기'],
       ['저장 실행 상태 조회', koValue(toolchainRunStatus.status || toolchainRunStatusState.status || '대기'), toolchainRunStatusState.error || (toolchainRunStatus.can_collect_results ? '결과 회수 가능' : '실행 상태 연결 대기')],
       ['Evidence 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, 'Sanitizer와 LLM normalizer 이후 후보만 생성, 승인 전 Finding에는 연결하지 않음'],
       ['필수 6개 도구 coverage', toolchainCollection.completion_gate_ready ? '완료 게이트 준비' : '완료 게이트 미준비', `${toolchainCollection.present_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 수집 · 누락 ${toolchainCollection.missing_required_tool_count ?? 6}개`],
@@ -6349,27 +6350,38 @@ export default {
     const toolchainRunStatusStepRows = (toolchainRunStatus.step_rows || []).map(row => [
       `${Number(row.index ?? 0) + 1}. ${row.tool_name || row.tool_id || '-'}`,
       row.status_ko || koValue(row.status),
-      row.run_id || row.run_status || (row.errors || []).join(', ') || '-',
+      row.run_id ? '보관된 실행 기록 있음' : (row.run_status || (row.errors || []).join(', ') || '-'),
       row.can_collect_result ? '결과 회수 가능' : '회수 불가',
     ]);
     const toolchainCollectionRows = (toolchainCollection.steps || []).map(step => [
       `${Number(step.index ?? 0) + 1}. ${step.tool_id || '-'}`,
       koValue(step.status),
-      step.normalized_result?.result_id || step.sanitize_preview?.preview_id || (step.errors || []).join(', ') || '-',
-      step.evidence_candidate?.evidence_id || 'Evidence 후보 대기',
+      step.normalized_result?.structured_item_count != null ? `확인 후보 ${step.normalized_result.structured_item_count}건 정리` : ((step.errors || []).join(', ') || '-'),
+      step.evidence_candidate?.evidence_id ? 'Evidence 후보 생성됨' : 'Evidence 후보 대기',
     ]);
     const toolchainAgentSummaryRows = (toolchainCollection.analysis_agent_summaries || []).map(item => [
-      item.agent_name || item.agent_id || item.tool_id || '-',
-      item.summary_ko || '-',
+      item.tool_label_ko || item.tool_id || '도구별 분석',
+      item.review_priority_ko || item.summary_ko || '-',
       item.next_action_ko || '결과 회수 뒤 표시됩니다',
       item.evidence_use_limit_ko || '승인된 Evidence Card와 심각도 승인 전에는 보고서 주장에 사용할 수 없습니다.',
+    ]);
+    const analystFindingReviewRows = (toolchainAnalystFindingReview.rows || []).map(item => [
+      item.tool_label_ko || '분석도구',
+      item.result_summary_ko || '-',
+      item.severity_summary_ko || '-',
+      item.evidence_status_ko || item.reviewer_action_ko || '-',
+    ]);
+    const analystFindingMissingRows = (toolchainAnalystFindingReview.missing_tool_rows || []).map(item => [
+      item.tool_label_ko || item.tool_id || '필수 도구',
+      '결과 누락',
+      item.next_action_ko || '도구 결과 파일을 첨부하거나 승인된 실행 흐름으로 회수하세요.',
     ]);
     const requiredCoverage = toolchainCollection.required_analysis_tool_coverage || {};
     const requiredCoverageRows = (requiredCoverage.rows || []).map(row => [
       row.display_name || row.tool_name || row.tool_id || '-',
       row.ready_for_completion_gate ? '분석·Evidence 후보 완료' : (row.status === 'present' ? '결과 있음, 후속 검토 필요' : '결과 누락'),
-      row.agent_id || row.normalizer_id || '도구별 LLM 분석 에이전트 대기',
-      row.evidence_id || row.result_id || row.next_action_ko || '이 도구의 결과를 가져오세요',
+      row.structured_item_count ? `확인 후보 ${row.structured_item_count}건` : '도구별 분석 대기',
+      row.evidence_id ? 'Evidence 후보 생성됨' : (row.next_action_ko || '이 도구의 결과를 가져오세요'),
     ]);
     const toolchainEvidenceApprovalRows = (toolchainEvidenceApproval.approvals || []).map(item => [
       item.evidence_id || '-',
@@ -6921,8 +6933,8 @@ export default {
           executionPlan.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec } }, '실행 계획은 분석 저장소에 보관됨') : null,
           runnerRun.artifact_path ? h('div', { style:{ fontSize:'9.5px', color:C.sec } }, '실행 기록은 분석 저장소에 보관됨') : null,
           h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'10px', display:'grid', gap:'10px' } },
-            h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '여러 분석도구 순차 실행·결과 첨부'),
-            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '설치된 분석도구를 여러 개 묶어 실행하거나, 사람이 승인 범위에서 수행한 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 첨부합니다. 첨부 모드는 도구 명령을 실행하지 않고 저장된 결과만 untrusted artifact로 기록합니다.'),
+            h('div', { style:{ fontSize:'11px', fontWeight:900, color:C.text } }, '분석 결과 수집·검토 워크플로우'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '이 영역의 목적은 실행 목록을 보여주는 것이 아니라 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 결과를 모아 확인 후보, 심각도 분포, Evidence 후보 상태로 정리하는 것입니다. 고위험 실행은 사람이 승인·수행·검토하고, 화면은 승인된 결과를 회수해 분석 흐름으로 넘깁니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '안전 설치 확인 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 버전 확인만 자동 구성해 실행합니다. SCA는 결과 첨부 도구라 SBOM, lockfile, 조직 SCA export를 결과 첨부로 제출합니다. 임의 스캔 명령, 능동 스캔, 컨테이너/보조 실행 환경/네트워크 실행은 허용하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 도구 결과 회수는 저장된 출력 또는 운영자 첨부 결과만 읽고, Sanitizer와 도구별 LLM normalizer를 거친 뒤 Evidence Card 후보를 만듭니다. 승인 전에는 Finding이나 보고서 Claim으로 확정하지 않습니다.'),
             h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '복합 Evidence 후보 승인은 후보 Evidence만 승인하며, Finding 생성·심각도 승인·보고서 반영은 별도 단계로 남깁니다.'),
@@ -7103,7 +7115,7 @@ export default {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
                 disabled:toolchainState.status === 'executing',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:toolchainState.status === 'executing' ? C.raised : C.bg, color:toolchainState.status === 'executing' ? C.muted : C.green, cursor:toolchainState.status === 'executing' ? 'not-allowed' : 'pointer', fontWeight:900 },
-              }, toolchainState.status === 'executing' ? '복합 처리 중' : (draft.compositeInputMode === 'operator_import' ? '여러 도구 결과 첨부' : '여러 분석도구 실행')),
+              }, toolchainState.status === 'executing' ? '결과 처리 중' : (draft.compositeInputMode === 'operator_import' ? '도구 결과 첨부' : '승인된 분석 실행 시작')),
               h('button', {
                 onClick:()=>this.reloadRedTeam2ToolchainRunStatus(),
                 disabled:toolchainRunStatusState.status === 'loading',
@@ -7195,16 +7207,21 @@ export default {
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:toolchainCompletionGateState.status === 'checking' ? C.raised : C.bg, color:(toolchainCompletionGateState.status === 'checking' || !reportExported.export_id) ? C.muted : C.violet, cursor:(toolchainCompletionGateState.status === 'checking' || !reportExported.export_id) ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainCompletionGateState.status === 'checking' ? 'E2E 점검 중' : 'E2E 완료 게이트 점검'),
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
-            this.renderTable(['복합 실행 항목','상태','근거'], toolchainRows),
+            this.renderTable(['분석 결과 수집·검토','상태','근거'], toolchainRows),
             this.renderTable(['분석가 진행 요약','상태','설명'], toolchainAnalystProgressRows),
-            this.renderTable(['진행 단계','상태','다음 버튼','설명'], toolchainAnalystStageRows.length ? toolchainAnalystStageRows : [['도구 실행 또는 결과 첨부','대기','여러 분석도구 실행','저장 실행 상태를 먼저 불러오세요']]),
-            this.renderTable(['단계','상태','계획/실행','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','복합 실행 버튼을 누르세요','-']]),
-            this.renderTable(['도구 진행','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','여러 분석도구 실행 또는 여러 도구 결과 첨부 버튼을 누르세요','-']]),
+            this.renderTable(['진행 단계','상태','다음 버튼','설명'], toolchainAnalystStageRows.length ? toolchainAnalystStageRows : [['결과 준비 또는 첨부','대기','도구 결과 첨부','저장 실행 상태를 먼저 불러오세요']]),
+            this.renderTable(['분석 결과 쉬운 요약','확인 후보','심각도 분포','Evidence 상태'], analystFindingReviewRows.length ? analystFindingReviewRows : [['대기','결과 회수 뒤 도구별 확인 후보가 표시됩니다','-','Evidence 후보 대기']]),
+            analystFindingMissingRows.length ? this.renderTable(['누락된 필수 분석도구','상태','다음 행동'], analystFindingMissingRows) : null,
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5, margin:'4px 0 8px' } },
+              toolchainAnalystFindingReview.plain_language_summary_ko ||
+              '도구 결과는 승인 전까지 참고 후보입니다. 세부 실행 ID와 저장 위치는 관리자 감사 기록과 Evidence Card에서 추적합니다.'),
+            this.renderTable(['상세 실행 기록(관리자/감사용)','상태','보관 근거','출력'], toolchainStepRows.length ? toolchainStepRows : [['대기','-','승인된 분석 실행 또는 도구 결과 첨부 뒤 표시됩니다','-']]),
+            this.renderTable(['상세 진행 기록(관리자/감사용)','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','결과 첨부 또는 승인된 분석 실행 뒤 표시됩니다','-']]),
             this.renderTable(['저장 실행 상태','상태','근거'], toolchainRunStatusRows),
-            this.renderTable(['저장 실행 단계','상태','Run ID/근거','결과 회수'], toolchainRunStatusStepRows.length ? toolchainRunStatusStepRows : [['대기','-','저장 실행 상태 다시 불러오기 버튼을 누르세요','-']]),
+            this.renderTable(['저장 실행 단계','상태','보관 근거','결과 회수'], toolchainRunStatusStepRows.length ? toolchainRunStatusStepRows : [['대기','-','저장 실행 상태 다시 불러오기 버튼을 누르세요','-']]),
             this.renderTable(['회수 단계','상태','정규화/Sanitizer','Evidence 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
-            this.renderTable(['필수 6개 분석도구','coverage 상태','LLM 분석 에이전트','Evidence/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage를 결과 회수 뒤 표시합니다','-']]),
-            this.renderTable(['LLM 분석 에이전트 요약','요약','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),
+            this.renderTable(['필수 6개 분석도구','coverage 상태','분석 결과','Evidence/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 coverage를 결과 회수 뒤 표시합니다','-']]),
+            this.renderTable(['도구별 분석 요약','검토 우선순위','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),
             this.renderTable(['Evidence ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','Evidence 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['Evidence ID','Finding 생성 상태','Finding ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','Evidence 승인 뒤 Finding 초안 생성 버튼을 누르세요','-']]),
             this.renderTable(['Finding ID','심각도 승인 상태','리드/업무 승인','결과'], toolchainFindingSeverityRows.length ? toolchainFindingSeverityRows : [['대기','-','Finding 초안 생성 뒤 심각도 2인 승인 버튼을 누르세요','-']]),

@@ -6703,6 +6703,149 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
     }
 
 
+TOOL_LABEL_KO = {
+    "TOOL-NUCLEI-001": "Nuclei 웹 취약점 점검",
+    "TOOL-OPENVAS-001": "OpenVAS 취약점 점검",
+    "TOOL-TRIVY-001": "Trivy 컨테이너·의존성 점검",
+    "TOOL-SCA-001": "SCA/SBOM 의존성 점검",
+    "TOOL-NPM-AUDIT-001": "npm audit 의존성 점검",
+    "TOOL-ZAP-001": "OWASP ZAP 웹 보안 점검",
+}
+
+
+def _tool_label_ko(tool_id: str) -> str:
+    profile = ANALYSIS_TOOL_PROFILE_BY_ID.get(tool_id, {})
+    return TOOL_LABEL_KO.get(tool_id) or str(profile.get("display_name") or profile.get("name") or tool_id)
+
+
+def _structured_item_severity_counts(items: list[dict[str, Any]]) -> dict[str, int]:
+    counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0, "unknown": 0}
+    for item in items:
+        severity = str(
+            item.get("severity")
+            or item.get("severity_normalized")
+            or item.get("risk")
+            or item.get("level")
+            or "unknown"
+        ).strip().lower()
+        if severity in {"critical", "crit", "blocker"}:
+            counts["critical"] += 1
+        elif severity in {"high", "높음"}:
+            counts["high"] += 1
+        elif severity in {"medium", "moderate", "중간"}:
+            counts["medium"] += 1
+        elif severity in {"low", "낮음"}:
+            counts["low"] += 1
+        elif severity in {"info", "informational", "none", "unknown"}:
+            counts["info"] += 1 if severity != "unknown" else 0
+            counts["unknown"] += 1 if severity == "unknown" else 0
+        else:
+            counts["unknown"] += 1
+    return counts
+
+
+def _severity_summary_ko(counts: dict[str, int]) -> str:
+    parts = []
+    labels = [
+        ("critical", "긴급"),
+        ("high", "높음"),
+        ("medium", "중간"),
+        ("low", "낮음"),
+        ("info", "정보"),
+        ("unknown", "미분류"),
+    ]
+    for key, label in labels:
+        value = int(counts.get(key) or 0)
+        if value:
+            parts.append(f"{label} {value}건")
+    return ", ".join(parts) if parts else "분류된 항목 없음"
+
+
+def _toolchain_analyst_finding_review_summary(
+    *,
+    collected_steps: list[dict[str, Any]],
+    analysis_agent_summaries: list[dict[str, Any]],
+    required_tool_coverage: dict[str, Any],
+    evidence_count: int,
+    blocked_count: int,
+) -> dict[str, Any]:
+    rows: list[dict[str, Any]] = []
+    high_or_critical_total = 0
+    structured_total = 0
+    for summary in analysis_agent_summaries:
+        counts = summary.get("severity_counts") if isinstance(summary.get("severity_counts"), dict) else {}
+        structured_count = int(summary.get("structured_item_count") or 0)
+        high_or_critical_count = int(summary.get("high_or_critical_count") or 0)
+        structured_total += structured_count
+        high_or_critical_total += high_or_critical_count
+        has_evidence = bool(summary.get("evidence_id"))
+        rows.append({
+            "tool_id": summary.get("tool_id"),
+            "tool_label_ko": summary.get("tool_label_ko") or _tool_label_ko(str(summary.get("tool_id") or "")),
+            "result_summary_ko": (
+                f"확인 후보 {structured_count}건을 정리했습니다."
+                if structured_count else "도구 출력은 회수됐지만 확인 후보가 아직 분류되지 않았습니다."
+            ),
+            "severity_summary_ko": _severity_summary_ko({key: int(counts.get(key) or 0) for key in ["critical", "high", "medium", "low", "info", "unknown"]}),
+            "evidence_status_ko": "Evidence 후보 생성됨" if has_evidence else "Evidence 후보 생성 필요",
+            "review_priority_ko": "우선 검토" if high_or_critical_count else ("일반 검토" if structured_count else "입력 보완"),
+            "reviewer_action_ko": (
+                "범위·오탐·업무영향을 확인하고 Evidence 후보를 승인하세요."
+                if has_evidence else "정규화 오류나 sanitizer 차단 여부를 확인한 뒤 다시 회수하세요."
+            ),
+            "caution_ko": "승인 전에는 Finding이나 보고서 주장으로 확정하지 않습니다.",
+            "trace_available_in_audit": True,
+        })
+
+    missing_tool_ids = required_tool_coverage.get("missing_required_tool_ids") or []
+    missing_rows = [
+        {
+            "tool_id": tool_id,
+            "tool_label_ko": _tool_label_ko(str(tool_id)),
+            "next_action_ko": "해당 도구 결과 파일을 첨부하거나 승인된 실행 흐름으로 회수하세요.",
+        }
+        for tool_id in missing_tool_ids
+    ]
+    if blocked_count:
+        status = "needs_review"
+        headline = "일부 도구 결과가 차단되어 사람 검토가 필요합니다."
+    elif missing_tool_ids:
+        status = "missing_required_tools"
+        headline = "필수 분석도구 결과가 아직 모두 모이지 않았습니다."
+    elif evidence_count:
+        status = "ready_for_evidence_review"
+        headline = "도구 결과가 Evidence 후보로 정리되었습니다."
+    else:
+        status = "waiting_for_results"
+        headline = "분석할 도구 결과가 아직 없습니다."
+    return {
+        "kind": "redteam_ax_v2_analyst_finding_review_summary",
+        "audience": "analyst",
+        "status": status,
+        "headline_ko": headline,
+        "plain_language_summary_ko": (
+            f"회수된 도구 결과에서 확인 후보 {structured_total}건을 정리했고, "
+            f"우선 검토 대상은 {high_or_critical_total}건입니다. "
+            f"Evidence 후보는 {evidence_count}개이며 승인 전에는 Finding/Report Claim으로 확정하지 않습니다."
+        ),
+        "tool_result_candidate_count": structured_total,
+        "high_or_critical_candidate_count": high_or_critical_total,
+        "evidence_candidate_count": evidence_count,
+        "blocked_tool_result_count": blocked_count,
+        "missing_required_tool_count": len(missing_tool_ids),
+        "rows": rows,
+        "missing_tool_rows": missing_rows,
+        "next_button_ko": "Evidence 후보 승인" if evidence_count and not blocked_count else "결과 회수·Evidence 후보",
+        "next_action_ko": (
+            "Evidence 후보를 승인하고 Finding 초안 생성으로 이동하세요."
+            if evidence_count and not blocked_count else "누락·차단 항목을 보완한 뒤 결과 회수를 다시 실행하세요."
+        ),
+        "raw_paths_hidden_from_analyst": True,
+        "traceability_note_ko": "세부 실행 ID와 저장 위치는 관리자 감사 기록과 Evidence Card에서 추적합니다.",
+        "does_not_mark_goal_complete": True,
+    }
+
+
 def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED")
     toolchain = load_json_record(toolchain_id, "toolchain-runs", case_id)
@@ -6761,6 +6904,8 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         sanitizer = normalized.get("sanitizer_report") if isinstance(normalized.get("sanitizer_report"), dict) else {}
         parser_report = normalized.get("parser_report") if isinstance(normalized.get("parser_report"), dict) else {}
         structured_item_count = len(normalized.get("structured_items") or [])
+        severity_counts = _structured_item_severity_counts(normalized.get("structured_items") or [])
+        high_or_critical_count = int(severity_counts.get("critical") or 0) + int(severity_counts.get("high") or 0)
         agent_name = str(agent.get("name") or agent.get("agent_id") or "LLM result normalizer agent")
         step_record["normalized_result"] = {
             "result_id": normalized.get("result_id"),
@@ -6792,6 +6937,7 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         evidence_id = (step_record.get("evidence_candidate") or {}).get("evidence_id")
         agent_summary = {
             "tool_id": step_record["tool_id"],
+            "tool_label_ko": _tool_label_ko(str(step_record["tool_id"] or "")),
             "run_id": run_id,
             "result_id": normalized.get("result_id"),
             "agent_id": agent.get("agent_id"),
@@ -6802,6 +6948,8 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
             "sanitizer_status": sanitizer.get("status") or sanitizer.get("decision"),
             "redaction_count": len(sanitizer.get("redactions") or []),
             "structured_item_count": structured_item_count,
+            "severity_counts": severity_counts,
+            "high_or_critical_count": high_or_critical_count,
             "evidence_id": evidence_id,
             "trusted_as_instruction": False,
             "requires_human_validation": True,
@@ -6851,6 +6999,13 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         missing_required_tool_ids=required_tool_coverage["missing_required_tool_ids"],
         collection_id=collection_id,
     )
+    analyst_finding_review_summary = _toolchain_analyst_finding_review_summary(
+        collected_steps=collected_steps,
+        analysis_agent_summaries=analysis_agent_summaries,
+        required_tool_coverage=required_tool_coverage,
+        evidence_count=evidence_count,
+        blocked_count=blocked_count,
+    )
     result = {
         "kind": "redteam_ax_v2_toolchain_result_collection",
         "collection_id": collection_id,
@@ -6878,6 +7033,7 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         "completion_gate_ready": completion_gate_ready,
         "required_analysis_tool_coverage": required_tool_coverage,
         "analyst_progress_summary": analyst_progress_summary,
+        "analyst_finding_review_summary": analyst_finding_review_summary,
         "commands_executed_by_api": False,
         "raw_output_trusted_as_instruction": False,
         "requires_human_validation": True,

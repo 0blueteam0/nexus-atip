@@ -4,7 +4,7 @@
   "task": "Continue RedTeam AX goal: simplify RedTeam2 analyst UI and advance authorized multi-tool execution integration",
   "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260703-163834-Red-Team-Studio-Continue-RedTeam-AX-goal-simplify-RedTeam2-analyst-UI-and-advance-authorized-mul",
   "created_at": "2026-07-03T16:38:34+09:00",
-  "status": "ok",
+  "status": "active",
   "required_files": [
     "SCOPE.md",
     "WORKLOG.md",
@@ -15,6 +15,5 @@
     "HANDOFF.md",
     "ONTOLOGY_EDGES.md",
     "QUALITY_GATE.md"
-  ],
-  "closed_at": "2026-07-06T12:21:20+09:00"
+  ]
 }

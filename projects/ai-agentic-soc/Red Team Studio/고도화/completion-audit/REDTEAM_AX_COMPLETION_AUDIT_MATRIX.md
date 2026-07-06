@@ -272,6 +272,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - manifest/source JSON placeholder와 기본 draft 값에서 로컬 절대 경로 예시를 제거했다.
 - 이 변경은 화면 표시 계층 정리이며 backend API payload와 Evidence artifact 원본 위치 추적은 유지한다.
 
+## 2026-07-06 갱신 - RedTeam2 실행 나열형 복합 도구 영역을 결과 검토형으로 전환
+
+- `RTA-COMP-074`는 RedTeam2 복합 도구 영역이 실행 목록을 보여주는 화면처럼 보이지 않고 결과 수집·검토 워크플로우로 동작해야 한다는 요구를 증명한다.
+- `/api/redteam/v2/toolchains/{toolchain_id}/collect-results`는 `analyst_finding_review_summary`를 반환해 도구별 한국어 이름, 확인 후보 수, 심각도 분포, Evidence 상태, 검토 우선순위, 누락 필수 도구 다음 행동을 제공한다.
+- RedTeam2는 `여러 분석도구 순차 실행·결과 첨부` 제목을 제거하고 `분석 결과 수집·검토 워크플로우`, `분석 결과 쉬운 요약`, `도구별 분석 요약`을 먼저 보여준다.
+- 실행/진행 ID 중심 표는 `상세 실행 기록(관리자/감사용)`, `상세 진행 기록(관리자/감사용)`으로 낮춰 분석가 화면에서 실행 나열이 주된 내용처럼 보이지 않게 했다.
+- 이 변경은 UI/API projection 개선이며 실제 운영 6개 도구 산출물, Evidence 승인, Finding severity 승인, Report v2 export, 브라우저 회귀 검증, 최종 completion gate 완료를 대신하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

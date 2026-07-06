@@ -1231,6 +1231,24 @@
       "proof_summary": "RedTeam2 now renders artifact, storage, execution plan, report, export, source, and service import locations as Korean status summaries such as 분석 저장소에 보관됨 and 세부 위치는 관리자/감사 기록에서 확인. Analyst tables use 연결, 다음 연결, 확인 방법, 읽기 전용 접속, 운영 산출물 폴더, and 보관 위치 instead of raw API/path labels. Default manifest JSON and source folder placeholders no longer expose local absolute paths. Frontend launch readiness sanity also rejects representative raw exposure strings, and Korean copy inventory was updated to the new beginner-facing contract.",
       "residual_gap": "This proves frontend display minimization only. Backend payload keys, audit records, Evidence artifact paths, and administrator workflows still preserve source locations for traceability and are not removed.",
       "next_action": "Run browser visual regression on RedTeam2 after the next UI slice to confirm no raw path or endpoint strings appear in the analyst-first viewport."
+    },
+    {
+      "id": "RTA-COMP-074",
+      "requirement": "RedTeam2 composite analysis area must present collected tool results as a beginner-facing result review workflow instead of an execution-list screen.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/runtime/redteam_v2_models.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_toolchain_collection_analyst_summary_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/FINAL_PLAN.md",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/llm-wiki/LLM_WIKI_HOME.md"
+      ],
+      "proof_summary": "collect-results now returns analyst_finding_review_summary with Korean tool labels, candidate counts, severity distribution, Evidence status, review priority, missing tool rows, raw_paths_hidden_from_analyst=true, and traceability notes. RedTeam2 replaces the confusing 여러 분석도구 순차 실행·결과 첨부 title with 분석 결과 수집·검토 워크플로우, shows 분석 결과 쉬운 요약 and 도구별 분석 요약 before technical details, and demotes execution/progress records to 관리자/감사용 tables. Sanity contracts require the new copy and reject the old execution-list phrase through Korean copy inventory.",
+      "residual_gap": "This proves UI/API projection alignment for result review. It does not prove actual live six-tool operating outputs, Evidence approval, Finding severity approval, Report v2 export, browser visual regression, or final completion gates.",
+      "next_action": "Run RedTeam2 browser visual regression and then exercise the workflow with real approved Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP operating outputs through Evidence, Finding, Matrix, Report, export, and completion gates."
     }
   ],
   "remaining_gaps": [
@@ -1245,5 +1263,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-03T16:38:00+09:00"
+  "last_updated": "2026-07-06T00:00:00+09:00"
 }

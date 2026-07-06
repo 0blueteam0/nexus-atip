@@ -3,17 +3,17 @@
   "schema_version": "0.1",
   "source": "J:\\PortableApps\\genai\\projects\\ai-agentic-soc\\soc-frontend-vite-react\\soc-frontend\\idiomatic-react\\src\\store\\methods\\reports.js",
   "scope": "redTeamAnalysis2Panel plus reportStudioTabs",
-  "literal_count": 2171,
-  "korean_literal_count": 1957,
-  "english_only_literal_count": 210,
-  "english_only_literal_ratio": 0.0967,
+  "literal_count": 2191,
+  "korean_literal_count": 1976,
+  "english_only_literal_count": 211,
+  "english_only_literal_ratio": 0.0963,
   "missing_korean_anchors": [],
   "disallowed_english_only_visible_phrases": [],
   "allowed_technical_terms": {
     "RedTeam AX": 1,
     "ToolActionCard": 9,
     "HITL": 12,
-    "Evidence Card": 42,
+    "Evidence Card": 43,
     "Claim-Evidence Matrix": 11,
     "Agentic RAG": 9,
     "SCA": 16,
@@ -31,7 +31,7 @@
     "쉬운 설명": 2,
     "먼저": 19,
     "사람": 58,
-    "승인": 228,
+    "승인": 236,
     "수동": 5,
     "업로드": 18,
     "증거": 99,
@@ -147,7 +147,8 @@
       "Run in Lab",
       "Execute Governed Runner",
       "Report Gate",
-      "Final Approval"
+      "Final Approval",
+      "여러 분석도구 순차 실행·결과 첨부"
     ]
   },
   "status": "passed"
