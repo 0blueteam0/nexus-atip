@@ -2031,3 +2031,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실제 도구 ID, API path, agent id, 실행 정책은 backend payload와 관리자/감사 기록에 보존한다.
 - [x] fresh Vite 서버 기준 Playwright 검증에서 지정한 기본 DOM 내부 토큰 금지어가 0건임을 확인했다.
 - [ ] 아직 제품명, 승인/증거 도메인 용어, 일부 보고서 템플릿 영문은 남아 있으므로 다음 slice에서 전체 Report Studio 공통 헤더와 legacy copy를 별도로 정리한다.
+
+## 143. 갱신 목표 - RedTeam2 기본 화면 환경/운영 세부어 추가 축소
+
+- [x] 기본 분석가 화면에서 Docker/WSL, manifest, Sanitizer, normalizer, 운영 closure 같은 환경·운영 세부어를 직접 노출하지 않도록 표시 문구를 낮춘다.
+- [x] 운영 증거 제출 묶음 생성은 기본 분석가 버튼에서 제외하고 관리자 흐름에서만 보이게 한다.
+- [x] 기본 표와 버튼은 `결과 회수·증거 후보`, `안전 정리`, `도구별 결과 정리`, `제출 묶음` 같은 한국어 업무 표현을 사용한다.
+- [x] fresh Vite 브라우저 검증에서 환경/내부 운영 flagged line이 20건에서 1건으로 줄고 `forbidden_default_hits=[]`임을 확인했다.
+- [ ] 남은 전역 내비게이션 `실행 런타임` 라벨과 Report Studio 공통 영문/도메인 용어는 별도 공통 UI 정리 slice에서 다룬다.

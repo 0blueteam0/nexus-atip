@@ -294,6 +294,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - fresh Vite 서버 기준 Playwright 검증에서 지정한 기본 DOM 내부 토큰 금지어 0건을 확인했고, suspicious English/internal token count는 수집 시작 71건에서 35건으로 줄었다.
 - 이 변경은 표시 계층 개선이며 backend payload, audit log, Evidence artifact의 실제 ID/API 추적성을 제거하지 않는다.
 
+## 2026-07-06 갱신 - RedTeam2 기본 화면 환경/운영 세부어 추가 축소
+
+- `RTA-COMP-077`은 RedTeam2 기본 분석가 화면에서 Docker/WSL, manifest, Sanitizer, normalizer, 운영 closure 같은 환경·운영 세부어를 더 줄였음을 증명한다.
+- 기본 화면의 운영 증거 제출 묶음 생성 버튼은 관리자 흐름으로 낮추고, 결과 회수·증거 후보, 안전 정리, 도구별 결과 정리처럼 분석가가 바로 이해할 수 있는 표현을 우선한다.
+- fresh Vite 서버 기준 Playwright 검증에서 환경/내부 운영 flagged line은 20건에서 1건으로 줄었고, 지정한 기본 금지어 `forbidden_default_hits=[]`를 확인했다.
+- 남은 1건은 RedTeam2 본문이 아니라 앱 전역 내비게이션의 `실행 런타임` 라벨이다.
+- 이 변경은 기본 분석가 화면의 인지 부하 축소이며 관리자 토글, backend payload, 감사 기록의 운영 세부 추적성은 유지한다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

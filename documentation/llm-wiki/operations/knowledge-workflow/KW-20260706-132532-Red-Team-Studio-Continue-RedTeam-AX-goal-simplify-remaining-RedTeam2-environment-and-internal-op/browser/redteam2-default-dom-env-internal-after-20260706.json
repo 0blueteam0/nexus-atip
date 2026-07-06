@@ -1,0 +1,31 @@
+{
+  "counts": {
+    "실행 환경": 0,
+    "런타임": 1,
+    "컨테이너": 0,
+    "WSL": 0,
+    "OpenVAS/ZAP 읽기 전용 접속": 0,
+    "외부 비밀": 0,
+    "관리자 설정": 3,
+    "운영 closure": 0,
+    "completion audit": 0,
+    "manifest": 0,
+    "API": 1,
+    "/api": 0,
+    "toolchain": 0,
+    "ToolActionCard": 0,
+    "normalizer": 0,
+    "Sanitizer": 0,
+    "Evidence": 23,
+    "Claim": 4,
+    "Finding": 23,
+    "Matrix": 12,
+    "Report": 14
+  },
+  "flagged_count": 1,
+  "forbidden_default_hits": [],
+  "flaggedLines": [
+    "실행 런타임"
+  ],
+  "text_length": 9415
+}

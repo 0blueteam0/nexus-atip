@@ -1336,3 +1336,11 @@ Create Case
 - 데이터 계약: 도구 선택 select의 `value`, API payload, audit log, ToolActionCard object, Evidence artifact에는 기존 ID를 유지한다. 변경 대상은 분석가 기본 DOM에 표시되는 label, card detail, table cell이다.
 - 테스트 전략: `node --check reports.js`, Korean copy inventory, runtime/launch frontend sanity, Playwright fresh Vite DOM inventory를 실행한다. browser check는 `ToolActionCard 계획`, `ToolActionCard 대기열`, raw `/api/redteam/v2/toolchains/six-tool-work-order`, `TOOL-NUCLEI-001`, `tool_action_card_required`, `toolchain_id`가 기본 DOM에 없는지 확인한다.
 - 예외 케이스: `RedTeam AX`, `Nuclei`, `OpenVAS`, `Trivy`, `SCA`, `npm audit`, `OWASP ZAP`, `SHA-256`처럼 제품명/도구명/표준명은 도메인 용어로 유지할 수 있다. Report Studio 공통 헤더와 legacy report template의 영문 카피는 별도 UI 영역이므로 다음 slice에서 다룬다.
+
+## 90. 갱신 목표 반영 - RedTeam2 기본 화면 환경/운영 세부어 추가 축소
+
+- 목적: 관리자 세부정보를 접어도 기본 분석가 DOM에 Docker/WSL, manifest, Sanitizer, normalizer, 운영 closure 같은 운영 세부어가 남으면 사용자는 분석 흐름보다 환경 설정 문제를 먼저 보게 된다. 기본 화면은 결과 첨부, 안전 정리, 증거 후보, 보고서 주장 검토를 우선해야 한다.
+- 화면/기능 명세: 분석가용 다음 실행 안내는 `6개 도구 작업 순서 만들기`, `6개 도구 제출 양식 만들기`, `결과 회수·증거 후보`만 기본 버튼으로 둔다. 운영 증거 제출 묶음 초안, 제출 묶음 만들기/가져오기, closure, completion audit 버튼은 관리자 설정을 펼친 경우에만 보인다.
+- 표시 규칙: 기본 DOM에서는 `manifest`를 `제출 묶음`, `Sanitizer`를 `안전 정리`, `normalizer`를 `결과 정리`, `Evidence 후보`를 `증거 후보`로 낮춘다. backend 상태값과 함수명은 유지하되, 사용자가 보는 table cell과 안내 문구는 한국어 업무 표현으로 변환한다.
+- 테스트 전략: `node --check reports.js`, `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM inventory를 실행한다. browser check는 기본 화면에서 Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API 금지어가 0건인지 확인한다.
+- 예외 케이스: 앱 전역 내비게이션의 `실행 런타임`은 RedTeam2 본문이 아니므로 이번 slice에서 제외한다. 관리자 설정을 펼친 상태에서는 운영 세부어가 보일 수 있으며, 이는 감사·운영 조치를 위한 의도된 동작이다.

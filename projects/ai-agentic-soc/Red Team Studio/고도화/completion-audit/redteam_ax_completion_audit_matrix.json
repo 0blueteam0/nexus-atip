@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 75,
+    "proved": 76,
     "partial": 1
   },
   "audit_items": [
@@ -1284,6 +1284,19 @@
       "proof_summary": "RedTeam2 now maps tool IDs to display names, raw toolchain API paths to Korean connection labels, tool_action_card_required and similar policy tokens to Korean approval text, and normalizer/agent implementation ids to 도구별 분석 에이전트. The Vite dev server was restarted and a fresh Playwright DOM verification confirmed the selected default forbidden internal tokens had zero hits while suspicious English/internal token count dropped from the initial 71 to 35.",
       "residual_gap": "This proves a targeted default-DOM reduction for the selected internal tokens only. Product names, domain terms, common report template English, and legacy Report Studio header copy remain and should be reviewed in future slices.",
       "next_action": "Continue with a broader Report Studio Korean copy pass that separates shared header/legacy template terms from RedTeam2-specific analyst workflow terms."
+    },
+    {
+      "id": "RTA-COMP-077",
+      "requirement": "RedTeam2 default analyst DOM must further hide environment/runtime and internal operation details such as Docker/WSL, manifest, Sanitizer, normalizer, and operating closure terminology from the default analyst view.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/documentation/llm-wiki/operations/knowledge-workflow/KW-20260706-132532-Red-Team-Studio-Continue-RedTeam-AX-goal-simplify-remaining-RedTeam2-environment-and-internal-op/browser/redteam2-default-dom-env-internal-after-20260706.json"
+      ],
+      "proof_summary": "Fresh browser DOM verification reduced default flagged environment/internal lines from 20 to 1 and produced forbidden_default_hits=[]; Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API default counts are 0. The remaining flagged line is the global navigation label 실행 런타임 outside the RedTeam2 panel content.",
+      "next_action": "Continue reducing remaining English product/report terms only where they are analyst-facing and not required tool or report vocabulary."
     }
   ],
   "remaining_gaps": [
@@ -1298,5 +1311,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-06T13:08:00+09:00"
+  "last_updated": "2026-07-06T13:45:00+09:00"
 }
