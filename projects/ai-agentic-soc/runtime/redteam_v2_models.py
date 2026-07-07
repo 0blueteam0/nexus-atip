@@ -2531,6 +2531,96 @@ def attest_safe_smoke_install_version_evidence_candidates(payload: dict[str, Any
     }
 
 
+def record_sca_import_only_install_evidence(payload: dict[str, Any]) -> dict[str, Any]:
+    tool_id = "TOOL-SCA-001"
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID)
+    operator = str(payload.get("operator") or payload.get("recorded_by") or "").strip()
+    operator_role = str(payload.get("operator_role") or "").strip()
+    artifact_path_raw = str(payload.get("artifact_path") or payload.get("sbom_artifact_path") or "").strip()
+    artifact_label = str(payload.get("artifact_label") or payload.get("artifact_type") or "SBOM/SCA export").strip()
+    validation_summary = str(payload.get("validation_summary") or "").strip()
+    schema_name = str(payload.get("schema_name") or payload.get("sbom_format") or "SBOM/SCA export").strip()
+    operator_attests_import = bool(payload.get("operator_attests_import_artifact"))
+    source_path, path_errors = resolve_workspace_source_path(artifact_path_raw)
+    errors: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not operator:
+        errors.append("operator_required")
+    if not operator_role:
+        errors.append("operator_role_required")
+    if not artifact_path_raw:
+        errors.append("artifact_path_required")
+    errors.extend(path_errors if artifact_path_raw else [])
+    if not validation_summary:
+        errors.append("validation_summary_required")
+    if not operator_attests_import:
+        errors.append("operator_import_attestation_required")
+    artifact_hash = sha256_file(source_path) if source_path and source_path.exists() and source_path.is_file() and not path_errors else ""
+    version_output_excerpt = (
+        f"SCA import-only artifact validated. schema={schema_name}; "
+        f"artifact={artifact_label}; sha256={artifact_hash or 'unavailable'}; summary={validation_summary}"
+    ).strip()
+    evidence_id = str(payload.get("evidence_id") or stable_id(
+        "TIE",
+        [case_id, tool_id, operator, artifact_hash, validation_summary, "sca-import-only"],
+    ))
+    record = {
+        "kind": "redteam_ax_v2_tool_install_version_evidence",
+        "status": "invalid" if errors else "recorded",
+        "case_id": case_id,
+        "evidence_id": evidence_id,
+        "tool_id": tool_id,
+        "tool_name": (profile or {}).get("name") or tool_id,
+        "adapter_type": "import_only",
+        "install_mode": "import_only",
+        "official_url": TOOL_INSTALL_READINESS_CATALOG.get(tool_id, {}).get("official_url") or "",
+        "version_command": "validate_uploaded_sbom_schema",
+        "verification_commands": TOOL_INSTALL_READINESS_CATALOG.get(tool_id, {}).get("verification_commands") or [],
+        "version_output_excerpt": version_output_excerpt[:4000],
+        "version_output_sha256": hashlib.sha256(version_output_excerpt.encode("utf-8")).hexdigest(),
+        "version_command_executed_by_operator": False,
+        "commands_executed_by_api": False,
+        "operator_attested_import_artifact": operator_attests_import,
+        "operator": operator,
+        "operator_role": operator_role,
+        "recorded_at": now_utc(),
+        "source_import_artifact": {
+            "artifact_path": source_path.as_posix() if source_path and not path_errors else artifact_path_raw,
+            "artifact_label": artifact_label,
+            "schema_name": schema_name,
+            "sha256": artifact_hash,
+            "source_path_hidden_from_analyst": True,
+        },
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "human_validation_completed": bool(operator_attests_import and operator and validation_summary and not errors),
+        "evidence_pipeline": {
+            "normalizer_id": (profile or {}).get("normalizer_id"),
+            "analysis_agent_id": (profile or {}).get("agent_id"),
+            "trusted_as_instruction": False,
+            "claim_use": "tool_install_or_version_evidence_only",
+        },
+        "runner_unlocks": [],
+        "policy": "SCA import-only evidence records operator-reviewed SBOM/SCA export validation; it does not execute a scanner or approve Findings.",
+        "errors": errors,
+    }
+    if errors:
+        return record
+    record["artifact_path"] = write_json_artifact(case_id, "tool-install-evidence", evidence_id, record)
+    record["audit_log_path"] = write_case_event(case_id, {
+        "event": "sca_import_only_install_evidence_recorded",
+        "evidence_id": evidence_id,
+        "tool_id": tool_id,
+        "artifact_path": record["artifact_path"],
+        "source_import_artifact_sha256": artifact_hash,
+        "commands_executed_by_api": False,
+        "runner_unlocks": [],
+    })
+    return record
+
+
 def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
     records = list_json_artifacts(case_id, "tool-install-evidence")
     normalized_tool_id = str(tool_id or "").strip().upper()
@@ -2571,6 +2661,7 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
             "operator": (latest or {}).get("operator"),
             "evidence_source_commands_executed_by_api": bool((latest or {}).get("commands_executed_by_api")),
             "operator_attested_api_candidate": bool((latest or {}).get("operator_attested_api_candidate")),
+            "operator_attested_import_artifact": bool((latest or {}).get("operator_attested_import_artifact")),
             "commands_executed_by_api": False,
             "trusted_as_instruction": False,
             "requires_human_validation": True,

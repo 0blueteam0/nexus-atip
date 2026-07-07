@@ -1402,3 +1402,12 @@ Create Case
 - 화면/기능 명세: RedTeam2 관리자 버튼은 `후보 N개 검토 후 설치 증거 기록`으로 표시하고, `candidate_ready` 후보가 1개 이상 있을 때 전체 후보를 일괄 전송한다. 성공 후 설치 증거 registry를 새로고침한다.
 - 안전 원칙: 일괄 기록은 여러 설치 확인 증거를 빠르게 채울 뿐이다. scanner 실행 승인, 결과 분석 완료, Evidence 승인, Finding/Claim 승격, Report/export/completion gate는 계속 별도 조건이다.
 - 테스트 전략: batch attestation backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.
+
+## 98. 갱신 목표 반영 - SCA/SBOM import-only 설치 증거 기록
+
+- 목적: SCA는 CLI runner로 실행하는 도구가 아니라 SBOM, lockfile, 조직 SCA export를 첨부해 정규화하는 import-only 흐름이다. 안전 설치 확인 smoke와 별도로 SCA coverage를 채우는 증거 기록 경로가 필요하다.
+- API 설계: `POST /api/redteam/v2/tool-install-version-evidence/sca-import-only`를 추가한다. payload는 `case_id`, `operator`, `operator_role`, `artifact_path`, `artifact_label`, `schema_name`, `validation_summary`, `operator_attests_import_artifact=true`를 요구한다.
+- 데이터 계약: API는 workspace 내부 로컬 파일만 받아 SHA-256을 계산하고 `TOOL-SCA-001` 설치 증거 registry에 `install_mode=import_only`, `version_command=validate_uploaded_sbom_schema`, `operator_attested_import_artifact=true`, `commands_executed_by_api=false`, `runner_unlocks=[]`로 기록한다.
+- 화면/기능 명세: RedTeam2 관리자 운영 산출물 영역에 `SCA/SBOM 첨부 증거` 입력을 추가한다. 운영자는 SCA/SBOM 파일 경로와 사람 검토 요약을 입력하고 `SCA 첨부 증거 기록` 버튼으로 registry를 갱신한다.
+- 안전 원칙: 이 버튼은 도구 명령, npm audit, SCA backend scan, active scan을 실행하지 않는다. 첨부 파일은 명령이 아니라 untrusted data이며 설치/검증 evidence로만 쓰인다.
+- 테스트 전략: SCA import-only install evidence backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.

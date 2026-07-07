@@ -160,6 +160,11 @@ def attest_safe_smoke_install_version_evidence_candidates(payload: dict[str, Any
     return redteam_v2_models.attest_safe_smoke_install_version_evidence_candidates(payload)
 
 
+@router.post("/tool-install-version-evidence/sca-import-only")
+def record_sca_import_only_install_evidence(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.record_sca_import_only_install_evidence(payload)
+
+
 @router.get("/tool-credential-policies")
 def list_tool_credential_policies() -> dict[str, Any]:
     return redteam_v2_models.list_tool_credential_policies()

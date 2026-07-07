@@ -766,6 +766,56 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(invalid.json()["status"], "invalid")
         self.assertIn("tool_profile_not_registered", invalid.json()["errors"])
 
+    def test_v2_sca_import_only_install_evidence_records_operator_reviewed_sbom_without_execution(self) -> None:
+        case_id = f"CASE-V2-SCA-IMPORT-INSTALL-EVIDENCE-001-{uuid.uuid4().hex[:8]}"
+        sbom_dir = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2" / case_id / "operator-sca"
+        sbom_dir.mkdir(parents=True, exist_ok=True)
+        sbom_path = sbom_dir / "operator-sbom-cyclonedx.json"
+        sbom_path.write_text(
+            json.dumps({
+                "bomFormat": "CycloneDX",
+                "specVersion": "1.5",
+                "components": [{"name": "example-lib", "version": "1.0.0"}],
+            }),
+            encoding="utf-8",
+        )
+
+        response = self.client.post("/api/redteam/v2/tool-install-version-evidence/sca-import-only", json={
+            "case_id": case_id,
+            "operator": "operator@example.com",
+            "operator_role": "red_team_operator",
+            "artifact_path": sbom_path.as_posix(),
+            "artifact_label": "CycloneDX SBOM",
+            "schema_name": "CycloneDX 1.5",
+            "validation_summary": "CycloneDX schema and component inventory were reviewed for import-only SCA evidence.",
+            "operator_attests_import_artifact": True,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_tool_install_version_evidence")
+        self.assertEqual(body["status"], "recorded")
+        self.assertEqual(body["tool_id"], "TOOL-SCA-001")
+        self.assertEqual(body["install_mode"], "import_only")
+        self.assertEqual(body["version_command"], "validate_uploaded_sbom_schema")
+        self.assertFalse(body["version_command_executed_by_operator"])
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertTrue(body["operator_attested_import_artifact"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertFalse(body["evidence_pipeline"]["trusted_as_instruction"])
+        self.assertEqual(body["runner_unlocks"], [])
+        self.assertEqual(body["source_import_artifact"]["sha256"], hashlib.sha256(sbom_path.read_bytes()).hexdigest())
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
+        registry = self.client.get(f"/api/redteam/v2/tool-install-version-evidence?case_id={case_id}")
+        self.assertEqual(registry.status_code, 200)
+        registry_body = registry.json()
+        by_tool = {row["tool_id"]: row for row in registry_body["coverage_rows"]}
+        self.assertEqual(by_tool["TOOL-SCA-001"]["status"], "recorded")
+        self.assertTrue(by_tool["TOOL-SCA-001"]["operator_attested_import_artifact"])
+        self.assertFalse(by_tool["TOOL-SCA-001"]["commands_executed_by_api"])
+        self.assertFalse(registry_body["commands_executed_by_api"])
+
     def test_v2_openvas_zap_credential_vault_authorizes_read_only_external_refs_only(self) -> None:
         case_id = "CASE-V2-CREDENTIAL-VAULT-001"
         policies = self.client.get("/api/redteam/v2/tool-credential-policies")

@@ -3170,6 +3170,8 @@ export default {
       compositeClosureBusinessOwner:'business-owner@example.com',
       compositeClosureExportApprover:'executive-sponsor@example.com',
       compositeOperatingCloseSourceDir:'',
+      scaImportArtifactPath:'',
+      scaImportValidationSummary:'CycloneDX SBOM 또는 조직 SCA export의 schema와 component inventory를 사람이 검토했습니다.',
       credentialToolId:'TOOL-OPENVAS-001',
       credentialRef:'',
       credentialEndpointRef:'',
@@ -3970,6 +3972,44 @@ export default {
     } catch (err) {
       this.setState(s => ({ redteam2InstallCandidateAttestationState:{ ...(s.redteam2InstallCandidateAttestationState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
       this.toast('설치 확인 후보 기록 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async recordRedTeam2ScaImportOnlyInstallEvidence() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-sca-import');
+    const artifactPath = String(draft.scaImportArtifactPath || '').trim();
+    if (!artifactPath) {
+      this.toast('SCA/SBOM 파일 경로를 입력하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2ScaImportEvidenceState:{ ...(s.redteam2ScaImportEvidenceState || {}), status:'recording', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence/sca-import-only', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          operator:String(draft.operatorEvidenceSubmissionOperator || draft.compositeClosureReviewer || 'operator@example.com').trim(),
+          operator_role:'red_team_operator',
+          artifact_path:artifactPath,
+          artifact_label:'CycloneDX SBOM 또는 조직 SCA export',
+          schema_name:'SBOM/SCA import-only validation',
+          validation_summary:String(draft.scaImportValidationSummary || '').trim(),
+          operator_attests_import_artifact:true,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2ScaImportEvidenceState:{ ...(s.redteam2ScaImportEvidenceState || {}), status:data.status || 'recorded', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast('SCA 첨부 증거를 설치 증거로 기록했습니다', 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 SCA 첨부 증거 기록: ${data.evidence_id || '-'}`);
+      await this.loadRedTeam2AnalysisStatus();
+    } catch (err) {
+      this.setState(s => ({ redteam2ScaImportEvidenceState:{ ...(s.redteam2ScaImportEvidenceState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('SCA 첨부 증거 기록 실패: ' + (err?.message || String(err)), 'warn');
     }
   }
 ,
@@ -5594,6 +5634,7 @@ export default {
     const sixToolWorkOrder = sixToolWorkOrderState.result || {};
     const sixToolSubmissionTemplate = sixToolSubmissionTemplateState.result || {};
     const installCandidateAttestationState = this.state.redteam2InstallCandidateAttestationState || {};
+    const scaImportEvidenceState = this.state.redteam2ScaImportEvidenceState || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
     const serviceImportNormalized = serviceImportResult.normalized_result || {};
@@ -7144,6 +7185,29 @@ export default {
             showAdminDetails ? h('div', { style:{ borderTop:`1px solid ${C.border}`, paddingTop:'8px', display:'grid', gap:'8px' } },
               h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영 산출물 묶음 만들기·가져오기'),
               h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '운영 산출물 묶음 만들기는 폴더 안의 분석도구 결과 파일을 찾아 SHA-256을 계산합니다. 운영 산출물 묶음은 파일 위치와 해시를 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.'),
+              h('div', { style:{ border:`1px solid ${C.border}`, borderRadius:'8px', padding:'8px', display:'grid', gap:'8px', background:C.s1 } },
+                h('div', { style:{ fontSize:'10.5px', color:C.text, fontWeight:900 } }, 'SCA/SBOM 첨부 증거'),
+                h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, 'SCA는 실행 도구가 아니라 첨부형 점검입니다. SBOM, lockfile 또는 조직 SCA export 파일을 사람이 검토한 뒤 설치 증거 registry에 기록합니다. 이 버튼은 도구 명령을 실행하지 않습니다.'),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, 'SCA/SBOM 파일 경로',
+                  h('input', {
+                    value:draft.scaImportArtifactPath || '',
+                    onChange:e=>this.updateRedTeam2AnalysisDraft({ scaImportArtifactPath:e.target.value }),
+                    style:{ ...inputStyle, marginTop:'5px', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                    placeholder:'예: archive/runs/.../operator-sbom-cyclonedx.json',
+                  })),
+                h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '사람 검토 요약',
+                  h('textarea', {
+                    value:draft.scaImportValidationSummary || '',
+                    onChange:e=>this.updateRedTeam2AnalysisDraft({ scaImportValidationSummary:e.target.value }),
+                    rows:3,
+                    style:{ ...inputStyle, marginTop:'5px', resize:'vertical' },
+                    placeholder:'CycloneDX schema, component inventory, export source를 확인한 내용을 적으세요.',
+                  })),
+                h('button', {
+                  onClick:()=>this.recordRedTeam2ScaImportOnlyInstallEvidence(),
+                  disabled:scaImportEvidenceState.status === 'recording',
+                  style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.violet}`, background:scaImportEvidenceState.status === 'recording' ? C.raised : C.bg, color:scaImportEvidenceState.status === 'recording' ? C.muted : C.violet, cursor:scaImportEvidenceState.status === 'recording' ? 'not-allowed' : 'pointer', fontWeight:900, justifySelf:'start' },
+                }, scaImportEvidenceState.status === 'recording' ? 'SCA 증거 기록 중' : 'SCA 첨부 증거 기록')),
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '운영 산출물 폴더 경로',
                 h('input', {
                   value:draft.compositeArtifactManifestSourceDir || '',

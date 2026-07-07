@@ -2098,3 +2098,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 기존 단일 후보 attestation API는 회귀 호환을 위해 유지한다.
 - [x] batch backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
 - [ ] SCA import-only 증거, 실제 6개 도구 결과 회수, LLM 분석, Evidence 승인, Finding/Claim/Report/export/completion gate는 아직 남아 있다.
+
+## 151. 갱신 목표 - SCA/SBOM import-only 설치 증거 기록
+
+- [x] `POST /api/redteam/v2/tool-install-version-evidence/sca-import-only` API를 추가한다.
+- [x] API는 workspace 내부 SBOM/SCA export 파일을 해시하고 `TOOL-SCA-001` install evidence registry에 import-only 증거로 기록한다.
+- [x] 기록은 `commands_executed_by_api=false`, `operator_attested_import_artifact=true`, `trusted_as_instruction=false`, `runner_unlocks=[]`를 유지한다.
+- [x] RedTeam2 관리자 화면에 `SCA/SBOM 첨부 증거` 입력과 `SCA 첨부 증거 기록` 버튼을 추가한다.
+- [x] backend SCA import-only regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
+- [ ] 이 증거는 SCA 설치/첨부 검증 coverage만 채운다. 실제 SCA 결과 정규화, Evidence 승인, Finding/Claim/Report/export/completion gate는 계속 별도 단계다.
