@@ -632,7 +632,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001"}
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
                 "tool_id": tool_id,
@@ -659,7 +659,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["recommended_composite_input_mode"], "runner")
-        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001"})
+        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001"})
         self.assertEqual(body["safe_smoke_step_count"], 1)
         zap_smoke = next(item for item in body["safe_smoke_steps"] if item["tool_id"] == "TOOL-ZAP-001")
         self.assertEqual(Path(zap_smoke["runner_argv"][0]).name.lower(), "zap.bat")
@@ -669,11 +669,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(any("trivy.exe fs --format json --offline-scan ." in line or line == "trivy fs --format json --offline-scan ." for line in body["runner_command_lines"]))
         self.assertIn("npm.cmd audit --json --package-lock-only", body["runner_command_lines"])
         self.assertTrue(any("sigma.exe check" in line or "sigma check" in line for line in body["runner_command_lines"]))
+        self.assertTrue(any("yara64.exe" in line and "redteam_ax_safe_indicator.yar" in line for line in body["runner_command_lines"]))
         by_tool = {item["tool_id"]: item for item in body["presets"]}
         self.assertTrue(by_tool["TOOL-TRIVY-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NPM-AUDIT-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-SIGMA-CLI-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-GITLEAKS-001"]["can_execute_from_button"])
+        self.assertTrue(by_tool["TOOL-YARA-001"]["can_execute_from_button"])
         self.assertFalse(by_tool["TOOL-NUCLEI-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NUCLEI-001"]["requires_human_approval"])
         self.assertTrue(by_tool["TOOL-SCA-001"]["import_only"])
@@ -695,7 +697,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def trusted_manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001"}
             command_name = profile.get("command_name") or profile.get("name")
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
@@ -734,6 +736,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 elif str(argv[0]).lower().endswith("gitleaks.exe") or argv[0] == "gitleaks":
                     self.returncode = 0
                     self.stdout = '[{"RuleID":"generic-api-key","Description":"Generic API Key","File":"README.md","StartLine":3,"EndLine":3,"Match":"REDACTED","Secret":"REDACTED","Tags":["key"]}]'
+                elif str(argv[0]).lower().endswith("yara64.exe") or argv[0] == "yara64.exe":
+                    self.returncode = 0
+                    self.stdout = "RedTeamAxSafeIndicator input\\benign_marker.txt\n"
                 else:
                     self.returncode = 0
                     self.stdout = '{"Results":[{"Target":".","Vulnerabilities":[{"VulnerabilityID":"CVE-PRESET-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Preset trivy finding"}]}]}'
@@ -744,7 +749,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             presets = self.client.get("/api/redteam/v2/toolchains/execution-presets")
             self.assertEqual(presets.status_code, 200)
             preset_body = presets.json()
-            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001"})
+            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001"})
 
             executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
                 "case_id": case_id,
@@ -754,15 +759,15 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 "tools": preset_body["runner_steps"],
             })
 
-        self.assertEqual(runner.call_count, 4)
+        self.assertEqual(runner.call_count, 5)
         self.assertEqual(executed.status_code, 200)
         executed_body = executed.json()
         self.assertEqual(executed_body["kind"], "redteam_ax_v2_governed_toolchain_execution")
         self.assertEqual(executed_body["status"], "executed")
         self.assertTrue(executed_body["commands_executed_by_api"])
         self.assertFalse(executed_body["trusted_as_instruction"])
-        self.assertEqual(executed_body["executed_count"], 4)
-        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001"})
+        self.assertEqual(executed_body["executed_count"], 5)
+        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001"})
         npm_step = next(step for step in executed_body["steps"] if step["tool_id"] == "TOOL-NPM-AUDIT-001")
         npm_attempt = npm_step["run"]["runner_attempt"]
         self.assertEqual(npm_attempt["exit_code"], 1)
@@ -780,9 +785,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         collected_body = collected.json()
         self.assertEqual(collected_body["kind"], "redteam_ax_v2_toolchain_result_collection")
         self.assertEqual(collected_body["status"], "collected")
-        self.assertEqual(collected_body["collected_count"], 4)
-        self.assertEqual(collected_body["evidence_candidate_count"], 4)
-        self.assertEqual(collected_body["analysis_agent_summary_count"], 4)
+        self.assertEqual(collected_body["collected_count"], 5)
+        self.assertEqual(collected_body["evidence_candidate_count"], 5)
+        self.assertEqual(collected_body["analysis_agent_summary_count"], 5)
         self.assertFalse(collected_body["raw_output_trusted_as_instruction"])
         self.assertTrue(collected_body["requires_evidence_approval_before_finding"])
         self.assertFalse(collected_body["completion_gate_ready"])
@@ -791,6 +796,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(collected_body["analysis_agent_required_tool_count"], 2)
         self.assertIn("TOOL-SIGMA-CLI-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-GITLEAKS-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
+        self.assertIn("TOOL-YARA-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_analysis_agent_tool_ids"])
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_required_tool_ids"])
         for step in collected_body["steps"]:
@@ -4575,6 +4581,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 "gitleaks_json",
                 "rule_id",
                 "generic-api-key",
+            ),
+            (
+                "TOOL-YARA-001",
+                "TAC-PARSER-YARA-001",
+                "RedTeamAxSafeIndicator input\\benign_marker.txt\n",
+                "yara_text",
+                "rule_name",
+                "RedTeamAxSafeIndicator",
             ),
         ]
         for tool_id, action_id, raw_output, parser, key, expected in cases:

@@ -1525,3 +1525,15 @@ Create Case
 - 안전 원칙: `--pipe`, `--diagnostics`, `--log-opts`, `--follow-symlinks`와 임의 경로 스캔은 금지한다. clean workspace에서 finding 0건이면 Finding으로 승격하지 않고 실행 무결성/무결과 증거만 남긴다.
 - 테스트 전략: Gitleaks version/clean sample scan, normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
 - 예외 케이스: Gitleaks 편입은 secret exposure 도구 하나의 optional runner 승격이다. 전체 도구군 설치, 운영 Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 111. 갱신 목표 반영 - YARA 4.5.5 선택형 로컬 지표 분석 도구 편입
+
+- 목적: 레드팀 수행 과정에는 네트워크 스캐너뿐 아니라 로컬 지표 룰 기반 검증이 필요하다. YARA는 승인된 룰과 승인된 파일만 대상으로 실행할 수 있는 T0 로컬 분석 도구이므로, `설치 -> 버튼 실행 -> 결과 회수 -> LLM 분석 agent 정규화` 목표에 맞는 다음 도구다.
+- 설치 증거: VirusTotal 공식 GitHub release `v4.5.5`의 Windows 64-bit zip을 `고도화/tools/yara`에 설치했다. 배포 zip SHA-256은 `352396c8a3d9b31b157a4820abd3b9347fc934a2314cdda8a4f566a5570163e4`, `yara64.exe --version` 출력은 `4.5.5`, `yara64.exe` SHA-256은 `1c45eb279d820aba81fd41c22384428ebe44037cf5793be4b52a9d3b3df62b33`이다.
+- 화면/기능 명세: `레드팀 분석2` 실행 프리셋에 `YARA 로컬 지표 룰 매칭`을 한국어 beginner label로 표시한다. 설명은 승인된 sample rule과 무해한 로컬 파일만 검사하며 재귀 스캔이나 임의 경로 스캔을 하지 않는다고 안내한다.
+- 신입자용 구성: 화면 설명은 `YARA는 파일 안에 정해둔 문자열이나 패턴이 있는지 확인하는 로컬 검사 도구`라고 표현한다. 버튼 동작도 `샘플 rule과 샘플 텍스트 파일만 검사하며 네트워크 공격이나 악성코드 실행이 아님`을 분리해서 보여준다.
+- API 설계: `TOOL-YARA-001`, `PRESET-YARA-LOCAL-RULE-MATCH`, `NORMALIZER-YARA-001`, `AGENT-YARA-ANALYST-001`을 추가한다. runner argv는 portable `yara64.exe`와 `고도화/samples/yara_workspace` 아래 rule/input 파일로 고정한다.
+- Evidence/분석 설계: YARA stdout의 `rule_name matched_path`를 `local_indicator_match` Evidence 후보로 정규화한다. rule과 matched file은 모두 untrusted data이며 `trusted_as_instruction=false`, `requires_human_validation=true`를 유지한다.
+- 안전 원칙: `--scan-list`, `--recursive`, `-r`, `--threads`, 임의 rule path, 임의 input path는 버튼 실행 범위에서 금지한다. 악성 샘플이나 고객 파일은 sample workspace에 넣지 않는다.
+- 테스트 전략: 실제 YARA version/local rule match, normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
+- 예외 케이스: YARA 편입은 로컬 지표 룰 매칭 도구 하나의 optional runner 승격이다. 운영 malware sample 분석, rule pack ingestion, Finding 승격, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

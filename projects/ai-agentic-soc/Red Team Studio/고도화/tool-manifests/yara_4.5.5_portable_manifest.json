@@ -1,0 +1,29 @@
+{
+  "kind": "redteam_ax_tool_install_manifest",
+  "tool_id": "TOOL-YARA-001",
+  "tool_name": "YARA",
+  "version": "4.5.5",
+  "install_mode": "official_release_binary",
+  "official_release_url": "https://github.com/VirusTotal/yara/releases/tag/v4.5.5",
+  "official_download_url": "https://github.com/VirusTotal/yara/releases/download/v4.5.5/yara-4.5.5-2368-win64.zip",
+  "local_archive_path": "Red Team Studio/고도화/tools/yara/yara-4.5.5-2368-win64.zip",
+  "local_archive_sha256": "352396c8a3d9b31b157a4820abd3b9347fc934a2314cdda8a4f566a5570163e4",
+  "local_binary_path": "Red Team Studio/고도화/tools/yara/yara64.exe",
+  "local_binary_sha256": "1c45eb279d820aba81fd41c22384428ebe44037cf5793be4b52a9d3b3df62b33",
+  "local_compiler_path": "Red Team Studio/고도화/tools/yara/yarac64.exe",
+  "local_compiler_sha256": "5b6705b9a8dabf496bccf163a65887574290c97f8b999c8cb73df5417b04bbd7",
+  "version_command": "yara64.exe --version",
+  "version_output": "4.5.5",
+  "runner_policy": "approved_workspace_local_rule_match_only",
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "prohibited_from_button": [
+    "--scan-list",
+    "--recursive",
+    "-r",
+    "--threads",
+    "unapproved_rule_path",
+    "unapproved_input_path"
+  ]
+}

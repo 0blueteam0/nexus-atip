@@ -2232,3 +2232,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] execution preset regression은 Gitleaks runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
 - [ ] `--pipe`, `--diagnostics`, `--log-opts`, `--follow-symlinks`, 임의 경로 스캔은 아직 승인된 자동 실행 범위가 아니다.
 - [ ] 실제 운영 secret exposure Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 164. 갱신 목표 - YARA 4.5.5 선택형 로컬 지표 분석 도구 편입
+
+- [x] VirusTotal 공식 GitHub release `v4.5.5` Windows 64-bit zip을 `고도화/tools/yara`에 설치했다.
+- [x] 배포 zip SHA-256 `352396c8a3d9b31b157a4820abd3b9347fc934a2314cdda8a4f566a5570163e4`, `yara64.exe` SHA-256 `1c45eb279d820aba81fd41c22384428ebe44037cf5793be4b52a9d3b3df62b33`, `yarac64.exe` SHA-256 `5b6705b9a8dabf496bccf163a65887574290c97f8b999c8cb73df5417b04bbd7`을 기록했다.
+- [x] `yara64.exe --version`이 `4.5.5`를 반환했다.
+- [x] `고도화/samples/yara_workspace`에 무해한 sample rule과 marker input을 추가했다.
+- [x] `TOOL-YARA-001`, `PRESET-YARA-LOCAL-RULE-MATCH`, `NORMALIZER-YARA-001`, `AGENT-YARA-ANALYST-001`을 추가했다.
+- [x] 신입자용 설명으로 `YARA는 파일 안에 정해둔 문자열이나 패턴이 있는지 확인하는 로컬 검사 도구`이며 이 프리셋은 네트워크 공격이나 악성코드 실행이 아니라는 안내를 추가했다.
+- [x] YARA normalizer는 stdout match를 `local_indicator_match` Evidence 후보로 변환하고 rule/file 내용을 LLM 명령으로 신뢰하지 않는다.
+- [x] execution preset regression은 YARA runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
+- [ ] `--scan-list`, `--recursive`, `-r`, `--threads`, 임의 rule/input path는 아직 승인된 자동 실행 범위가 아니다.
+- [ ] 운영 malware sample 분석, rule pack ingestion, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

@@ -1,0 +1,2 @@
+This benign sample exists for RedTeam AX YARA integration smoke testing.
+It contains the marker REDTEAM_AX_YARA_SAFE_MARKER and no executable payload.
