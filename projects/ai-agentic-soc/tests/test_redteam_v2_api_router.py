@@ -660,7 +660,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["recommended_composite_input_mode"], "runner")
         self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
-        self.assertIn("trivy fs --format json --offline-scan .", body["runner_command_lines"])
+        self.assertTrue(any("trivy.exe fs --format json --offline-scan ." in line or line == "trivy fs --format json --offline-scan ." for line in body["runner_command_lines"]))
         self.assertIn("npm.cmd audit --json --package-lock-only", body["runner_command_lines"])
         self.assertTrue(any("sigma.exe check" in line or "sigma check" in line for line in body["runner_command_lines"]))
         by_tool = {item["tool_id"]: item for item in body["presets"]}

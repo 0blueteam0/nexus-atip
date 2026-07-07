@@ -2173,3 +2173,17 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] portable discovery regression, wrapper manifest regression, launch readiness regression, Python compile을 통과했다.
 - [ ] Nuclei active scan, template source update, interactsh, unbounded target import는 아직 승인된 실행 범위가 아니다.
 - [ ] 실제 운영 Nuclei 결과를 Evidence/Finding/Claim/Report/export/completion gate까지 연결하는 작업은 남아 있다.
+
+## 159. 갱신 목표 - Trivy 공식 release portable 설치와 실제 로컬 분석 회수
+
+- [x] Aqua Security 공식 GitHub release 최신 `v0.72.0` Windows 64bit binary를 `Red Team Studio/고도화/tools/trivy/trivy.exe`에 설치했다.
+- [x] Trivy `v0.69.4` 공급망 사고 공지를 고려해 known compromised version은 설치하지 않는 조건을 확인했다.
+- [x] `trivy.exe --version`으로 `Version: 0.72.0`을 확인하고 SHA-256 `5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821`을 `TOOL-TRIVY-001` expected pin으로 등록했다.
+- [x] `/toolchains/execution-presets`의 Trivy runner step이 portable `trivy.exe fs --format json --offline-scan .` 경로를 사용하도록 갱신했다.
+- [x] `고도화/samples/trivy_workspace/package-lock.json` 샘플 lockfile을 추가해 로컬 Trivy 분석 smoke 입력을 보존했다.
+- [x] 실제 Trivy CLI가 샘플 lockfile을 분석해 lodash 취약점 후보 JSON을 반환했다.
+- [x] 실제 governed toolchain execution/collect smoke에서 Trivy + Sigma 2개 step이 실행되고 Trivy 결과가 `trivy_json`, `AGENT-TRIVY-ANALYST-001`, Evidence 후보로 회수됐다.
+- [x] subprocess runner stdout/stderr decoding을 UTF-8 replacement로 고정해 Windows 코드페이지 예외를 제거했다.
+- [x] Python compile, focused backend regression, frontend runtime/launch sanity, frontend syntax check, knowledge workflow gate를 통과했다.
+- [ ] Trivy DB update, remote registry scan, secret upload, credentialed registry access는 아직 승인된 실행 범위가 아니다.
+- [ ] 전체 6개 도구 운영 Evidence/Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

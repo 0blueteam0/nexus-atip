@@ -31,6 +31,7 @@ MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
 PORTABLE_TOOL_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "tools"
 NUCLEI_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "nuclei" / "nuclei.exe"
+TRIVY_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "trivy" / "trivy.exe"
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
 SIGMA_CLI_SAMPLE_RULE_PATH = (
     PROJECT_ROOT
@@ -260,6 +261,7 @@ ANALYSIS_TOOL_PROFILES = [
         "evidence_types": ["sca_vulnerability_candidate", "container_scan_evidence"],
         "prohibited_options": ["remote_registry_without_approval", "secret_upload"],
         "installation_hint": "Install trivy CLI and use JSON output for offline workspace/container artifact scans.",
+        "expected_sha256": "5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821",
     },
     {
         "tool_id": "TOOL-SCA-001",
@@ -2025,7 +2027,7 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "preset_id": "PRESET-TRIVY-WORKSPACE-FS-OFFLINE-JSON",
             "tool_id": "TOOL-TRIVY-001",
             "execution_mode": "sandbox_execute",
-            "runner_argv": ["trivy", "fs", "--format", "json", "--offline-scan", "."],
+            "runner_argv": [TRIVY_EXECUTABLE_PATH.as_posix(), "fs", "--format", "json", "--offline-scan", "."],
             "default_enabled": True,
             "risk_note_ko": "승인된 작업공간 파일만 읽는 로컬 분석입니다. 네트워크/원격 registry 대상은 허용하지 않습니다.",
             "beginner_label_ko": "Trivy 로컬 파일 점검",
@@ -6569,6 +6571,8 @@ def governed_container_runner_attempt(
             cwd=case_dir(case_id).as_posix(),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=attempt["timeout_seconds"],
             shell=False,
         )
@@ -6676,6 +6680,8 @@ def governed_runner_attempt(
             cwd=case_dir(case_id).as_posix(),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=attempt["timeout_seconds"],
             shell=False,
         )

@@ -1473,3 +1473,14 @@ Create Case
 - 안전 원칙: portable binary 자체는 git에 커밋하지 않는다. 저장소에는 discovery/pin 계약과 문서/테스트만 남기며, Nuclei template update, interactsh, unbounded target import, active scan은 승인 전 금지한다.
 - 테스트 전략: Python compile, wrapper manifest/readiness regression, portable tool discovery regression, 실제 manifest hash match 확인을 수행한다.
 - 예외 케이스: 이 변경은 Nuclei 설치와 신뢰 고정까지다. 실제 운영 target scan, 결과 회수, Evidence 승인, Finding/Claim/Report/export/completion gate는 별도 승인과 운영 증거가 필요하다.
+
+## 106. 갱신 목표 반영 - Trivy 공식 release portable 설치와 실제 로컬 분석 회수
+
+- 목적: 필수 6개 도구 중 Trivy는 T0 로컬 파일/의존성 분석 도구이므로 프론트 `승인된 실행 시작` 버튼에서 실제 설치된 runner로 실행될 수 있어야 한다. Nuclei와 달리 승인 전 active target scan이 아니라 승인된 workspace 파일을 읽는 sandbox 실행 경로다.
+- 설치 증거: Aqua Security 공식 GitHub release 최신 `v0.72.0`의 Windows 64bit binary를 `Red Team Studio/고도화/tools/trivy/trivy.exe`에 설치했다. `trivy.exe --version`은 `Version: 0.72.0`을 반환했고 SHA-256은 `5c233d1514d6fd91f7a4f834beb92070f8a9793c71801f7f2149a7b30f90b821`이다. 2026년 3월 Trivy `v0.69.4` 공급망 사고 공지를 고려해 known compromised version은 설치 거부 조건으로 확인했다.
+- API 설계: `TRIVY_EXECUTABLE_PATH`를 추가하고 `TOOL-TRIVY-001` expected hash를 등록한다. `/toolchains/execution-presets`의 Trivy runner step은 portable `trivy.exe fs --format json --offline-scan .` 기반으로 생성된다.
+- 화면/기능 명세: RedTeam2 분석 실행 프리셋에서 Trivy는 `승인된 실행 시작` 후보로 남는다. 초급 사용자는 `Trivy 로컬 파일 점검`을 누르면 wrapper pin과 runner gate를 통과한 installed binary가 실행되는 흐름을 본다.
+- Evidence/분석 설계: `고도화/samples/trivy_workspace/package-lock.json` 샘플은 로컬 분석 smoke용 lockfile이다. 실제 governed toolchain smoke는 Trivy + Sigma 2단계 복합 실행으로 수행했고, collect-results는 Trivy 결과를 `trivy_json`, `AGENT-TRIVY-ANALYST-001`, Evidence 후보로 회수했다.
+- 안전 원칙: Trivy DB update, remote registry scan, secret upload, credentialed registry access는 이번 버튼 실행에서 금지한다. 도구 출력은 LLM instruction이 아니라 untrusted data이며 Evidence 승인 전 Finding/Report Claim으로 확정하지 않는다.
+- 테스트 전략: Python compile, focused backend regression, frontend runtime/launch sanity, 실제 Trivy CLI sample scan, 실제 governed execution/collect smoke, knowledge workflow gate를 수행한다.
+- 예외 케이스: 이 변경은 Trivy 설치와 로컬 sample 분석 회수를 증명한다. OpenVAS/ZAP service, SCA 운영 산출물, 전체 6개 도구 Evidence 승인, Finding severity 2인 승인, Claim-Evidence Matrix, Report/export/completion gate는 아직 남아 있다.
