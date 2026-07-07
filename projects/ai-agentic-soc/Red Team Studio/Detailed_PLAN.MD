@@ -1514,3 +1514,14 @@ Create Case
 - 안전 원칙: `zap.bat -version`은 설치 확인 전용이다. daemon 시작, spider, active scan, attack mode, unbounded target import, API key 사용은 여전히 ROE/HITL/외부 vault/read-only import gate 없이는 실행하지 않는다.
 - 테스트 전략: portable ZAP discovery regression, execution preset safe smoke contract, Python compile, ZAP version-only 실제 실행, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
 - 예외 케이스: 이 변경은 ZAP 본체 설치와 version-only 확인 경로를 증명한다. 조직 ZAP endpoint/vault 실측, 실제 ZAP 운영 report import, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 110. 갱신 목표 반영 - Gitleaks 8.30.1 선택형 실행 도구 편입
+
+- 목적: 사용자가 갱신한 priority 1은 레드팀 도구군을 계속 찾아 실제 설치·실행 가능 상태로 승격하는 것이다. Gitleaks는 secret 노출 점검 영역의 T0 로컬 분석 도구이므로 승인된 workspace 안에서 버튼 실행과 결과 회수까지 연결할 수 있다.
+- 설치 증거: Gitleaks 공식 GitHub release 최신 `v8.30.1`의 Windows x64 zip을 `고도화/tools/gitleaks`에 설치했다. 배포 zip checksum은 공식 checksum 파일의 `d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e`와 일치하고, `gitleaks.exe version`은 `8.30.1`을 반환한다. 실행 파일 SHA-256은 `17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c`이다.
+- API 설계: `TOOL-GITLEAKS-001`, `PRESET-GITLEAKS-WORKSPACE-REDACTED-JSON`, `NORMALIZER-GITLEAKS-001`, `AGENT-GITLEAKS-ANALYST-001`을 v2 catalog에 추가한다. runner argv는 `detect --no-git --source . --report-format json --report-path - --redact --no-banner --log-level error --exit-code 0`로 고정한다.
+- 화면/기능 명세: `레드팀 분석2`의 실행 프리셋 목록에 `Gitleaks 로컬 secret 노출 점검`을 한국어 beginner label로 노출한다. 사용자는 고위험 스캔이 아니라 승인된 로컬 폴더의 redacted secret 노출 점검임을 볼 수 있다.
+- Evidence/분석 설계: normalizer는 Gitleaks JSON을 `secret_exposure_candidate`로 변환하고 rule id, file path, line/column, match excerpt, entropy, tags를 Evidence 후보 필드로 보존한다. secret 원문은 저장하지 않고 `secret_redacted=true`, `secret_value_stored=false`, `trusted_as_instruction=false`, `requires_human_validation=true`를 강제한다.
+- 안전 원칙: `--pipe`, `--diagnostics`, `--log-opts`, `--follow-symlinks`와 임의 경로 스캔은 금지한다. clean workspace에서 finding 0건이면 Finding으로 승격하지 않고 실행 무결성/무결과 증거만 남긴다.
+- 테스트 전략: Gitleaks version/clean sample scan, normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
+- 예외 케이스: Gitleaks 편입은 secret exposure 도구 하나의 optional runner 승격이다. 전체 도구군 설치, 운영 Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

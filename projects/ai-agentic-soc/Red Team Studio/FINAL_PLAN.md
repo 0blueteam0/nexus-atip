@@ -2220,3 +2220,15 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 portable ZAP discovery와 safe smoke preset 계약을 검증한다.
 - [ ] ZAP active scan, daemon start, spider, attack mode, API key 사용은 아직 승인된 자동 실행 범위가 아니다.
 - [ ] 조직 ZAP endpoint/vault 실측, 실제 ZAP report import, Evidence/Finding/Claim/Report/export/completion gate는 계속 남아 있다.
+
+## 163. 갱신 목표 - Gitleaks 8.30.1 선택형 실행 도구 편입
+
+- [x] Gitleaks 공식 GitHub release 최신 `v8.30.1` Windows x64 zip을 `고도화/tools/gitleaks`에 설치했다.
+- [x] 공식 checksum 파일의 Windows x64 zip SHA-256 `d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e`와 로컬 zip checksum이 일치함을 확인했다.
+- [x] `gitleaks.exe version`이 `8.30.1`을 반환하고 실행 파일 SHA-256 `17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c`를 확인했다.
+- [x] `TOOL-GITLEAKS-001` optional ToolProfile, `PRESET-GITLEAKS-WORKSPACE-REDACTED-JSON`, `NORMALIZER-GITLEAKS-001`, `AGENT-GITLEAKS-ANALYST-001`을 추가했다.
+- [x] 실행 프리셋은 승인된 sample workspace에서 `detect --no-git --source . --report-format json --report-path - --redact --no-banner --log-level error --exit-code 0`만 실행하도록 고정했다.
+- [x] Gitleaks normalizer는 redacted JSON을 `secret_exposure_candidate` Evidence 후보로 변환하고 secret 원문 저장을 금지한다.
+- [x] execution preset regression은 Gitleaks runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
+- [ ] `--pipe`, `--diagnostics`, `--log-opts`, `--follow-symlinks`, 임의 경로 스캔은 아직 승인된 자동 실행 범위가 아니다.
+- [ ] 실제 운영 secret exposure Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

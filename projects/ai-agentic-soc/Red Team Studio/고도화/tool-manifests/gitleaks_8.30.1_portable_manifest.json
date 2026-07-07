@@ -1,0 +1,26 @@
+{
+  "kind": "redteam_ax_tool_install_manifest",
+  "tool_id": "TOOL-GITLEAKS-001",
+  "tool_name": "Gitleaks",
+  "version": "8.30.1",
+  "install_mode": "official_release_binary",
+  "official_release_url": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+  "official_download_url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_x64.zip",
+  "local_archive_path": "Red Team Studio/고도화/tools/gitleaks/gitleaks_8.30.1_windows_x64.zip",
+  "local_archive_sha256": "d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e",
+  "local_binary_path": "Red Team Studio/고도화/tools/gitleaks/gitleaks.exe",
+  "local_binary_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+  "version_command": "gitleaks version",
+  "version_output": "8.30.1",
+  "runner_policy": "approved_workspace_redacted_json_scan_only",
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "prohibited_from_button": [
+    "--pipe",
+    "--diagnostics",
+    "--log-opts",
+    "--follow-symlinks",
+    "unapproved_source_path"
+  ]
+}

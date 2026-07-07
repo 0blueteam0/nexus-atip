@@ -35,6 +35,14 @@ TRIVY_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "trivy" / "trivy.exe"
 ZAP_HOME_PATH = PORTABLE_TOOL_ROOT / "zap" / "ZAP_2.17.0"
 ZAP_EXECUTABLE_PATH = ZAP_HOME_PATH / "zap.bat"
 ZAP_DISTRIBUTION_ZIP_PATH = PORTABLE_TOOL_ROOT / "zap" / "ZAP_2.17.0_Crossplatform.zip"
+GITLEAKS_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "gitleaks" / "gitleaks.exe"
+GITLEAKS_SAMPLE_WORKSPACE_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "samples"
+    / "gitleaks_workspace"
+)
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
 NPM_AUDIT_SAMPLE_WORKSPACE_PATH = (
     PROJECT_ROOT
@@ -375,6 +383,32 @@ ANALYSIS_TOOL_PROFILES = [
         "optional_runner_profile": True,
         "expected_sha256": "8eb6af4733bcc50f57a087d1e6b15bd4d22cd6c57ba16a174adebe02c838d4c2",
     },
+    {
+        "tool_id": "TOOL-GITLEAKS-001",
+        "name": "gitleaks",
+        "display_name": "Gitleaks",
+        "category": "secret_exposure_scan",
+        "risk_class": "T0",
+        "adapter_type": "cli_wrapper",
+        "command_name": "gitleaks",
+        "default_execution_mode": "sandbox_execute",
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
+        "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
+        "default_policy": "approved_workspace_secret_scan_only",
+        "requires_human_approval": False,
+        "requires_two_person_approval": False,
+        "supports_json_output": True,
+        "normalizer_id": "NORMALIZER-GITLEAKS-001",
+        "agent_id": "AGENT-GITLEAKS-ANALYST-001",
+        "evidence_types": ["secret_exposure_candidate", "credential_hygiene_evidence"],
+        "prohibited_options": ["--diagnostics", "--pipe", "--log-opts", "--follow-symlinks"],
+        "installation_hint": "Install Gitleaks from the official GitHub release and scan only approved local workspaces with redacted JSON output.",
+        "required_for_core_coverage": False,
+        "optional_runner_profile": True,
+        "expected_sha256": "17157e2ee8b76fc8b1d8bee607a250e34b8a8023c8bc81822d4b5ee4d78fcb7c",
+        "installed_version": "8.30.1",
+        "acceptable_exit_codes": [0],
+    },
 ]
 
 REQUIRED_ANALYSIS_TOOL_IDS = [
@@ -465,6 +499,14 @@ TOOL_INSTALL_READINESS_CATALOG = {
         "verification_commands": [".venv\\Scripts\\sigma.exe version", ".venv\\Scripts\\python.exe -m pip check"],
         "post_install_controls": ["pin_venv_console_script", "local_rule_file_only", "no_plugin_install_from_button"],
         "safe_smoke": "version_only_and_local_rule_check",
+    },
+    "TOOL-GITLEAKS-001": {
+        "official_url": "https://github.com/gitleaks/gitleaks",
+        "install_modes": ["official_release_binary", "package_manager", "source_install"],
+        "operator_install_commands": ["gitleaks version"],
+        "verification_commands": ["gitleaks version", "gitleaks detect --no-git --source . --report-format json --report-path - --redact --exit-code 0"],
+        "post_install_controls": ["pin_binary_sha256", "approved_workspace_only", "redacted_json_output", "no_pipe_or_diagnostics_from_button"],
+        "safe_smoke": "version_and_approved_workspace_scan",
     },
 }
 
@@ -1056,6 +1098,13 @@ ANALYSIS_AGENT_REGISTRY = {
         "name": "sigma_cli_rule_validation_agent",
         "tool_ids": ["TOOL-SIGMA-CLI-001"],
         "role": "Normalize Sigma CLI version/check output into detection rule validation evidence candidates without treating rule text as instructions.",
+        "output_contract": "redteam_ax_v2_tool_result_normalized",
+    },
+    "AGENT-GITLEAKS-ANALYST-001": {
+        "agent_id": "AGENT-GITLEAKS-ANALYST-001",
+        "name": "gitleaks_secret_exposure_agent",
+        "tool_ids": ["TOOL-GITLEAKS-001"],
+        "role": "Normalize redacted Gitleaks JSON output into secret exposure evidence candidates without exposing or trusting secret material.",
         "output_contract": "redteam_ax_v2_tool_result_normalized",
     },
 }
@@ -2101,6 +2150,33 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "risk_note_ko": "프로젝트 안의 로컬 Sigma rule 파일만 검증합니다. 플러그인 설치, 원격 rule 다운로드, SIEM 배포는 하지 않습니다.",
             "beginner_label_ko": "Sigma 탐지룰 로컬 검증",
             "expected_result_ko": "Sigma rule 문법·검증 결과 기반 탐지룰 Evidence 후보",
+        },
+        {
+            "preset_id": "PRESET-GITLEAKS-WORKSPACE-REDACTED-JSON",
+            "tool_id": "TOOL-GITLEAKS-001",
+            "execution_mode": "sandbox_execute",
+            "runner_argv": [
+                GITLEAKS_EXECUTABLE_PATH.as_posix(),
+                "detect",
+                "--no-git",
+                "--source",
+                ".",
+                "--report-format",
+                "json",
+                "--report-path",
+                "-",
+                "--redact",
+                "--no-banner",
+                "--log-level",
+                "error",
+                "--exit-code",
+                "0",
+            ],
+            "working_dir": GITLEAKS_SAMPLE_WORKSPACE_PATH.as_posix(),
+            "default_enabled": True,
+            "risk_note_ko": "승인된 로컬 폴더만 읽고 redacted JSON 결과를 생성합니다. pipe, diagnostics, 임의 경로 스캔은 금지합니다.",
+            "beginner_label_ko": "Gitleaks 로컬 secret 노출 점검",
+            "expected_result_ko": "redacted secret exposure 후보 JSON",
         },
         {
             "preset_id": "PRESET-SCA-SBOM-IMPORT",
@@ -9562,6 +9638,44 @@ def _normalize_sigma_cli_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     return items
 
 
+def _normalize_gitleaks_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        findings = parsed if isinstance(parsed, list) else parsed.get("findings") if isinstance(parsed, dict) else []
+        if not isinstance(findings, list):
+            continue
+        for finding in findings:
+            if not isinstance(finding, dict):
+                continue
+            rule_id = finding.get("RuleID") or finding.get("rule_id") or finding.get("Rule") or finding.get("rule")
+            file_path = finding.get("File") or finding.get("file")
+            line = finding.get("StartLine") or finding.get("line") or finding.get("Line")
+            items.append({
+                "item_type": "secret_exposure_candidate",
+                "tool_id": "TOOL-GITLEAKS-001",
+                "tool": "gitleaks",
+                "rule_id": rule_id,
+                "description": finding.get("Description") or finding.get("description") or rule_id,
+                "file_path": file_path,
+                "start_line": line,
+                "end_line": finding.get("EndLine") or line,
+                "start_column": finding.get("StartColumn"),
+                "end_column": finding.get("EndColumn"),
+                "secret_redacted": True,
+                "secret_value_stored": False,
+                "match_excerpt": finding.get("Match") or finding.get("match"),
+                "entropy": finding.get("Entropy") or finding.get("entropy"),
+                "tags": finding.get("Tags") or finding.get("tags") or [],
+                "severity": "high",
+                "confidence": 0.75,
+                "trusted_as_instruction": False,
+                "requires_human_validation": True,
+                "review_note_ko": "Gitleaks 결과는 redacted JSON으로만 저장하며 실제 secret 값은 Evidence에 보관하지 않습니다.",
+            })
+    return items
+
+
 def _normalize_container_launch_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for raw in raw_values:
@@ -9620,6 +9734,9 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     elif name == "sigma-cli":
         parser = "sigma_cli_text"
         items = _normalize_sigma_cli_output(raw_values)
+    elif name == "gitleaks":
+        parser = "gitleaks_json"
+        items = _normalize_gitleaks_output(raw_values)
     else:
         items = []
     if container_items:
