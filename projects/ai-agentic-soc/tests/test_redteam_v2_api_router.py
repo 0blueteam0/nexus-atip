@@ -742,6 +742,16 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(registry_body["commands_executed_by_api"])
         self.assertFalse(registry_body["trusted_as_instruction"])
         self.assertEqual(set(registry_body["tool_ids_with_evidence"]), recorded_ids)
+        self.assertEqual(registry_body["missing_tool_ids"], [])
+        self.assertEqual(registry_body["missing_tool_count"], 0)
+        self.assertTrue(registry_body["evidence_coverage_complete"])
+        self.assertEqual(len(registry_body["coverage_rows"]), 6)
+        self.assertIn("필수 분석도구 6개 중 6개", registry_body["operator_summary_ko"])
+        by_tool = {row["tool_id"]: row for row in registry_body["coverage_rows"]}
+        self.assertEqual(by_tool["TOOL-SCA-001"]["status_ko"], "설치 증거 있음")
+        self.assertFalse(by_tool["TOOL-SCA-001"]["commands_executed_by_api"])
+        self.assertFalse(by_tool["TOOL-SCA-001"]["trusted_as_instruction"])
+        self.assertTrue(by_tool["TOOL-SCA-001"]["requires_human_validation"])
         self.assertGreaterEqual(registry_body["evidence_count"], 6)
 
         invalid = self.client.post("/api/redteam/v2/tool-install-readiness/TOOL-UNKNOWN/version-evidence", json={

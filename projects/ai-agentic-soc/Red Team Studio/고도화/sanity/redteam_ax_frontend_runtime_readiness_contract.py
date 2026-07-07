@@ -42,8 +42,10 @@ def main() -> int:
     required_loader_terms = [
         "/api/redteam/v2/runtime-readiness",
         "/api/redteam/v2/toolchains/launch-readiness",
+        "/api/redteam/v2/tool-install-version-evidence",
         "runtimeReadinessRes",
         "launchReadinessRes",
+        "installVersionEvidenceRes",
         "runtimeReadiness:runtimeReadinessRes.ok",
         "launchReadiness:launchReadinessRes.ok",
     ]
@@ -178,6 +180,9 @@ def main() -> int:
         "결과 첨부 필요 도구",
         "SCA/SBOM 의존성 점검",
         "SBOM, lockfile, CycloneDX 또는 조직 SCA export",
+        "installVersionEvidence",
+        "설치 증거",
+        "version-only 증거 제출 필요",
         "frontend_action_key",
         "redteam2_button_ko",
         "next_action_plan",

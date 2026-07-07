@@ -3220,7 +3220,10 @@ export default {
       const credentialAuthUrl = caseId
         ? `http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations?case_id=${encodeURIComponent(caseId)}`
         : 'http://127.0.0.1:8765/api/redteam/v2/tool-credential-authorizations';
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes, launchReadinessRes] = await Promise.all([
+      const installVersionEvidenceUrl = caseId
+        ? `http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence?case_id=${encodeURIComponent(caseId)}`
+        : 'http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence';
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, installVersionEvidenceRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes, launchReadinessRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3231,6 +3234,7 @@ export default {
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/analysis-agents'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-wrapper-manifests'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-install-readiness'),
+        this.redTeamFetchJson(installVersionEvidenceUrl),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/tool-credential-policies'),
         this.redTeamFetchJson(credentialAuthUrl),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/runtime-readiness'),
@@ -3250,6 +3254,7 @@ export default {
           agentRegistry:agentRegistryRes.ok ? agentRegistryRes.data : { agents:[], error:agentRegistryRes.error },
           wrapperRegistry:wrapperRegistryRes.ok ? wrapperRegistryRes.data : { manifests:[], error:wrapperRegistryRes.error },
           installReadiness:installReadinessRes.ok ? installReadinessRes.data : { items:[], error:installReadinessRes.error },
+          installVersionEvidence:installVersionEvidenceRes.ok ? installVersionEvidenceRes.data : { coverage_rows:[], records:[], error:installVersionEvidenceRes.error },
           credentialPolicies:credentialPoliciesRes.ok ? credentialPoliciesRes.data : { items:[], error:credentialPoliciesRes.error },
           credentialAuthorizations:credentialAuthRes.ok ? credentialAuthRes.data : { items:[], error:credentialAuthRes.error },
           runtimeReadiness:runtimeReadinessRes.ok ? runtimeReadinessRes.data : { status:'unavailable', error:runtimeReadinessRes.error },
@@ -5583,6 +5588,7 @@ export default {
     const agentRegistry = st.agentRegistry || {};
     const wrapperRegistry = st.wrapperRegistry || {};
     const installReadiness = st.installReadiness || {};
+    const installVersionEvidence = st.installVersionEvidence || {};
     const credentialPolicies = st.credentialPolicies || {};
     const credentialAuthorizations = st.credentialAuthorizations || {};
     const runtimeReadiness = st.runtimeReadiness || {};
@@ -5956,6 +5962,12 @@ export default {
       koValue(item.status),
       koBlockerSummary(item.blocking_controls || [], '준비됨'),
       (item.operator_install_commands || []).length ? `${item.operator_install_commands.length}개 확인 명령` : '결과 파일 가져오기 중심',
+    ]);
+    const installVersionEvidenceRows = (installVersionEvidence.coverage_rows || []).map(item => [
+      koToolDisplayName(item.display_name || item.tool_name, item.tool_id),
+      koValue(item.status_ko || item.status || '설치 증거 필요'),
+      item.evidence_id ? '증거 기록됨' : '증거 대기',
+      item.version_output_sha256 ? `${String(item.version_output_sha256).slice(0, 12)}...` : (item.next_action_ko || 'version-only 확인 또는 import-only 검증 증거 필요'),
     ]);
     const selectedInstallRows = [
       ['설치 상태', koValue(selectedInstall.status) || '미확인', (selectedInstall.blocking_controls || []).join(', ') || '차단 조건 없음'],
@@ -6944,6 +6956,7 @@ export default {
             h('span', { style:{ fontSize:'10px', color:runtimeReadiness.status === 'ready' ? C.green : C.amber, fontWeight:900 } }, koValue(runtimeReadiness.status || st.status || 'idle'))),
           this.renderTable(['분석도구','버튼','실행 상태','차단 사유','사용자 안내','연결'], launchReadinessRows.length ? launchReadinessRows : [['대기','상태 확인','대기','실행 준비 응답 없음','상태 새로고침을 먼저 누르세요','연결 대기']]),
           this.renderTable(['준비 항목','상태','남은 조건'], runtimeReadinessRows),
+          this.renderTable(['설치 증거','상태','증거','확인값'], installVersionEvidenceRows.length ? installVersionEvidenceRows : [['대기','설치 증거 필요','증거 대기','안전 설치 확인 또는 운영자 version-only 증거 제출 필요']]),
           this.renderTable(['다음 실행 준비 단계','상태','화면 버튼','사용자 조치','도구 실행 영향','확인 방법'], runtimeNextActionRows.length ? runtimeNextActionRows : [['대기','-','런타임 상태 새로고침','실행 준비 기능이 다음 단계를 계산합니다','-','연결 대기']]),
           h('div', { style:{ display:'grid', gap:'6px' } },
             h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '운영자 조치 runbook 단계'),

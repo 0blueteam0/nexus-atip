@@ -1366,3 +1366,12 @@ Create Case
 - 안전 원칙: SCA import-only 안내는 도구 실행이 아니다. SBOM, lockfile, CycloneDX 또는 조직 SCA export를 운영자가 제출한 뒤 기존 manifest/import/collect-results 경로로 Evidence 후보화한다.
 - 테스트 전략: `node --check reports.js`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, `pytest tests/test_redteam_v2_api_router.py -k "six_tool_work_order or six_named_tools_imported_outputs_complete_collection_e2e"`를 실행한다.
 - 예외 케이스: 이 변경은 안전 설치 확인 UX와 SCA 누락 방지 계약이다. 실제 SCA 운영 산출물 제출, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료는 별도 운영 증거가 필요하다.
+
+## 94. 갱신 목표 반영 - 6개 분석도구 설치 증거 coverage registry 화면 연결
+
+- 목적: `/api/redteam/v2/tool-install-version-evidence`가 기록된 증거 목록만 반환하면 프론트엔드 사용자는 Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 중 어느 도구의 설치 증거가 남았는지 한눈에 보기 어렵다.
+- API 설계: version evidence registry는 `coverage_rows[]`, `missing_tool_ids`, `missing_tool_count`, `evidence_coverage_complete`, `operator_summary_ko`, `next_action_ko`를 반환한다. 각 row는 도구명, 상태, evidence id, install mode, version command, version output hash, operator, safe flags를 포함한다.
+- 화면/기능 명세: RedTeam2 상태 로더는 `/api/redteam/v2/tool-install-version-evidence`를 함께 호출하고 관리자용 분석 환경 설정에 `설치 증거` 표를 표시한다. 표는 낮은 숙련도 사용자를 위해 `설치 증거 있음/필요`, `증거 기록됨/대기`, 해시 축약값 또는 다음 행동을 보여준다.
+- 안전 원칙: 이 registry는 operator-attested version/import 검증 증거를 읽는 기능이다. API와 화면 모두 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true`를 유지하며 runner unlock으로 쓰지 않는다.
+- 테스트 전략: `py_compile redteam_v2_models.py`, `pytest test_redteam_v2_api_router.py -k tool_install_version_evidence_records_operator_attested_versions`, `node --check reports.js`, frontend runtime/launch sanity를 실행한다.
+- 예외 케이스: 설치 증거 coverage가 완료되어도 실제 도구 실행, ROE/HITL 승인, wrapper pin, runtime readiness, 결과 회수, Evidence/Finding/Matrix/Report/export gate 완료를 의미하지 않는다.

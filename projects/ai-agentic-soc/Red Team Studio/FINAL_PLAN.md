@@ -2063,3 +2063,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 기본 분석 화면에 `결과 첨부 필요 도구` 표를 추가해 SCA/SBOM 의존성 점검이 필수 6개 도구 흐름에서 빠지지 않게 했다.
 - [x] `node --check reports.js`, frontend runtime/launch sanity, backend 6개 도구 work-order 및 6개 imported-output collection E2E 회귀를 통과했다.
 - [ ] 이 변경은 안전 설치 확인 UX와 SCA 제출 안내 보강이며 실제 SCA 운영 산출물 제출, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.
+
+## 147. 갱신 목표 - 6개 분석도구 설치 증거 coverage registry 화면 연결
+
+- [x] `/api/redteam/v2/tool-install-version-evidence`가 필수 6개 분석도구별 `coverage_rows`, 누락 도구, coverage 완료 여부, 한국어 요약과 다음 행동을 반환하도록 확장했다.
+- [x] 각 coverage row는 설치 증거 상태, evidence id, install mode, version command, version output hash, operator, safe flags를 포함한다.
+- [x] RedTeam2 상태 로더가 설치 증거 registry를 불러오고 관리자용 분석 환경 설정에 `설치 증거` 표를 표시한다.
+- [x] API regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과했다.
+- [ ] 설치 증거 coverage는 도구가 실제 취약점 분석을 완료했다는 증거가 아니다. 실제 운영 결과 회수, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 계속 별도 조건이다.

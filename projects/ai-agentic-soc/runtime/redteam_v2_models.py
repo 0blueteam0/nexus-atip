@@ -2362,6 +2362,39 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
         for record in records
         if record.get("status") == "recorded" and record.get("tool_id")
     })
+    latest_by_tool: dict[str, dict[str, Any]] = {}
+    for record in sorted(records, key=lambda item: str(item.get("recorded_at") or ""), reverse=True):
+        record_tool_id = str(record.get("tool_id") or "").strip()
+        if record.get("status") == "recorded" and record_tool_id and record_tool_id not in latest_by_tool:
+            latest_by_tool[record_tool_id] = record
+    coverage_rows: list[dict[str, Any]] = []
+    missing_tool_ids: list[str] = []
+    for profile in ANALYSIS_TOOL_PROFILES:
+        profile_tool_id = str(profile["tool_id"])
+        latest = latest_by_tool.get(profile_tool_id)
+        if latest is None:
+            missing_tool_ids.append(profile_tool_id)
+        coverage_rows.append({
+            "tool_id": profile_tool_id,
+            "tool_name": profile.get("name"),
+            "display_name": profile.get("display_name") or profile.get("name") or profile_tool_id,
+            "status": "recorded" if latest else "missing",
+            "status_ko": "설치 증거 있음" if latest else "설치 증거 필요",
+            "evidence_id": (latest or {}).get("evidence_id"),
+            "install_mode": (latest or {}).get("install_mode"),
+            "version_command": (latest or {}).get("version_command"),
+            "version_output_sha256": (latest or {}).get("version_output_sha256"),
+            "recorded_at": (latest or {}).get("recorded_at"),
+            "operator": (latest or {}).get("operator"),
+            "commands_executed_by_api": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "next_action_ko": (
+                "설치 증거는 확인됐습니다. 실행 전 ROE, wrapper pin, HITL 조건을 계속 확인하세요."
+                if latest else "운영자가 version-only 확인 결과 또는 import-only 검증 결과를 제출해야 합니다."
+            ),
+        })
+    coverage_complete = bool(coverage_rows) and not missing_tool_ids
     return {
         "kind": "redteam_ax_v2_tool_install_version_evidence_registry",
         "case_id": case_id or "",
@@ -2369,6 +2402,18 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
         "evidence_count": len(records),
         "tool_ids_with_evidence": tool_ids_with_evidence,
         "required_tool_ids": [profile["tool_id"] for profile in ANALYSIS_TOOL_PROFILES],
+        "missing_tool_ids": missing_tool_ids,
+        "missing_tool_count": len(missing_tool_ids),
+        "coverage_rows": coverage_rows,
+        "evidence_coverage_complete": coverage_complete,
+        "operator_summary_ko": (
+            f"필수 분석도구 {len(coverage_rows)}개 중 {len(tool_ids_with_evidence)}개 설치 증거가 기록되었습니다. "
+            f"누락 도구: {', '.join(missing_tool_ids) if missing_tool_ids else '없음'}."
+        ),
+        "next_action_ko": (
+            "설치 증거가 모두 기록되었습니다. 실제 실행은 ROE, wrapper pin, HITL, runtime readiness를 통과한 뒤 진행하세요."
+            if coverage_complete else "누락된 도구의 version-only 확인 또는 import-only 검증 증거를 먼저 기록하세요."
+        ),
         "commands_executed_by_api": False,
         "trusted_as_instruction": False,
         "records": records,
