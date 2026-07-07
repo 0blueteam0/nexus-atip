@@ -2116,3 +2116,11 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 화면에 `분석 실행 프리셋` 표와 `분석 실행 프리셋 불러오기` 버튼을 추가한다.
 - [x] 프리셋 적용은 `compositeToolIds`와 `compositeRunnerCommands`만 채우며 실제 실행은 기존 governed toolchain execution gate를 사용한다.
 - [ ] 이 변경은 버튼 실행 입력을 안전하게 구성하는 UX/API 조각이다. 실제 6개 도구 전체 결과 수집, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 별도 증거가 필요하다.
+
+## 153. 갱신 목표 - 실행 프리셋 runner_steps 보존과 실행·회수 연결
+
+- [x] RedTeam2 프리셋 적용 시 `runner_steps[]` 원본을 `compositeRunnerStepsJson`에 보존한다.
+- [x] governed runner 실행은 저장된 step 메타의 `runner_backend`, `execution_mode`, `runner_argv`, 출력 제한을 우선 사용하고 수동 명령줄은 fallback으로만 사용한다.
+- [x] backend regression은 execution-presets 응답의 `runner_steps`를 그대로 `execute-governed`에 전달한 뒤 `collect-results`로 Evidence 후보와 도구별 분석 요약이 생성되는지 검증한다.
+- [x] frontend runtime sanity는 `compositeRunnerStepsJson`, `runner_steps`, `프리셋 실행 결과` 계약을 확인한다.
+- [ ] 이 연결은 Trivy/npm audit 저위험 로컬 runner 후보까지의 E2E 계약이다. 6개 도구 전체 실측 실행, 고위험 승인 실행, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

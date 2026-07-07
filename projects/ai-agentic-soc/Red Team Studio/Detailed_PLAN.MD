@@ -1420,3 +1420,11 @@ Create Case
 - 안전 원칙: 프리셋 API는 명령을 실행하지 않는다. `trivy fs --format json --offline-scan .`와 `npm.cmd audit --json --package-lock-only`는 실행 후보로만 제공하며, Nuclei/OpenVAS/ZAP은 사람 승인 또는 서비스/보고서 가져오기, SCA는 SBOM/SCA export 첨부로 안내한다.
 - 테스트 전략: execution presets backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.
 - 예외 케이스: 프리셋 적용은 전체 6개 도구 결과 coverage 완료가 아니다. runner 준비가 안 된 환경에서는 operator import 또는 승인 필요 안내만 보여야 하며, Evidence 승인, Finding 2인 severity 승인, Matrix/Report/export/completion gate는 계속 별도 단계다.
+
+## 100. 갱신 목표 반영 - 실행 프리셋 runner_steps 보존과 실행·회수 연결
+
+- 목적: execution-presets API가 생성한 `runner_steps`를 화면에서 명령줄 문자열로만 축약하면 `runner_backend`, `execution_mode`, `output_summary`, `max_runtime_seconds`, `max_output_bytes` 같은 안전·증거 메타가 사라진다. 프리셋은 조회용 데이터지만 실제 실행 시에는 동일한 구조화 step을 governed runner 입력으로 전달해야 한다.
+- 화면/기능 명세: RedTeam2는 `분석 실행 프리셋 불러오기` 결과의 `runner_steps[]`를 `compositeRunnerStepsJson`에 보존한다. `승인된 분석 실행 시작`은 운영자 첨부 모드가 아닐 때 이 JSON을 우선 읽어 tool id별 step 메타를 사용하고, 수동 command line은 fallback으로만 사용한다.
+- API 설계: `/api/redteam/v2/toolchains/execution-presets` -> `/api/redteam/v2/toolchains/execute-governed` -> `/api/redteam/v2/toolchains/collect-results` 경로를 회귀 계약으로 묶는다. 실행 응답은 `commands_executed_by_api=true`, `trusted_as_instruction=false`를 유지하고, 회수 응답은 원시 산출물을 untrusted data로 정규화해 Evidence 후보와 도구별 분석 요약을 만든다.
+- 테스트 전략: backend regression은 execution presets 응답의 `runner_steps`를 그대로 governed execution payload로 보내고, Trivy/npm audit mock 실행 후 collect-results가 2개 도구 결과를 `collected`, `Normalized`, Evidence 후보 생성 상태로 반환하는지 검증한다. frontend sanity는 `compositeRunnerStepsJson`, `runner_steps`, `프리셋 실행 결과` 문구와 실행 경로 보존을 확인한다.
+- 예외 케이스: 이 연결은 저위험 로컬 runner 후보만 다룬다. Nuclei/OpenVAS/ZAP active scan, SCA/SBOM import, Evidence 승인, Finding 2인 승인, Claim-Evidence Matrix, Report v2/export/completion gate는 여전히 별도 승인·첨부·검증 단계가 필요하다.

@@ -3156,6 +3156,7 @@ export default {
       compositePresetMode:'approved_local_analysis',
       compositeToolIds:'TOOL-NUCLEI-001,TOOL-OPENVAS-001,TOOL-TRIVY-001,TOOL-SCA-001,TOOL-NPM-AUDIT-001,TOOL-ZAP-001',
       compositeRunnerCommands:'npm.cmd --version\ntrivy --version',
+      compositeRunnerStepsJson:'',
       compositeImportedOutputs:[
         '{"template-id":"sample-panel","info":{"name":"승인 범위 웹 패널 후보","severity":"low"},"matched-at":"http://127.0.0.1:30001/#/"}',
         '<report><results><result><id>ov-sample</id><name>OpenVAS 승인 보고서 후보</name><threat>Low</threat><severity>2.0</severity><host>127.0.0.1</host><port>443/tcp</port><description>사람이 내보낸 OpenVAS 보고서 항목입니다.</description></result></results></report>',
@@ -3303,6 +3304,7 @@ export default {
         compositePresetMode:'approved_local_analysis',
         compositeToolIds:runnerToolIds.join(','),
         compositeRunnerCommands:runnerCommandLines.join('\n'),
+        compositeRunnerStepsJson:JSON.stringify(runnerSteps, null, 2),
       });
       this.setState(s => ({
         redteam2ExecutionPresetState:{ ...(s.redteam2ExecutionPresetState || {}), status:'applied', result:presets, checkedAt:new Date().toISOString(), error:null },
@@ -3820,6 +3822,16 @@ export default {
       .map(item => item.trim())
       .filter(Boolean);
     const inputMode = String(draft.compositeInputMode || 'runner').trim();
+    let presetRunnerSteps = [];
+    if (inputMode !== 'operator_import' && String(draft.compositeRunnerStepsJson || '').trim()) {
+      try {
+        const parsed = JSON.parse(String(draft.compositeRunnerStepsJson || '[]'));
+        presetRunnerSteps = Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        this.toast('분석 실행 프리셋 JSON 형식을 확인하세요', 'warn');
+        return;
+      }
+    }
     const importedOutputs = String(draft.compositeImportedOutputs || '')
       .split(/\n---REDTEAM-AX-TOOL---\n/)
       .map(item => item.trim());
@@ -3841,11 +3853,16 @@ export default {
           output_summary:'사람이 승인 범위에서 수행하거나 서비스에서 내보낸 결과를 첨부합니다.',
         };
       }
+      const presetStep = presetRunnerSteps.find(item => item?.tool_id === toolId) || {};
+      const presetArgv = Array.isArray(presetStep.runner_argv) ? presetStep.runner_argv.map(item => String(item).trim()).filter(Boolean) : [];
       return {
         ...base,
-        execution_mode:'sandbox_execute',
-        runner_backend:String(draft.runnerBackend || 'local_subprocess_shim').trim(),
-        runner_argv:(commands[index] || '').split(/\s+/).filter(Boolean),
+        execution_mode:presetStep.execution_mode || 'sandbox_execute',
+        runner_backend:presetStep.runner_backend || String(draft.runnerBackend || 'local_subprocess_shim').trim(),
+        runner_argv:presetArgv.length ? presetArgv : (commands[index] || '').split(/\s+/).filter(Boolean),
+        output_summary:presetStep.output_summary || '승인된 분석 실행 프리셋 결과를 회수합니다.',
+        max_runtime_seconds:presetStep.max_runtime_seconds || undefined,
+        max_output_bytes:presetStep.max_output_bytes || undefined,
       };
     });
     if (inputMode === 'operator_import' && tools.some(step => !String(step.imported_output || '').trim())) {
@@ -7213,6 +7230,15 @@ export default {
                   style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:executionPresetState.status === 'loading' ? C.raised : C.bg, color:executionPresetState.status === 'loading' ? C.muted : C.green, cursor:executionPresetState.status === 'loading' ? 'not-allowed' : 'pointer', fontWeight:900 },
                 }, executionPresetState.status === 'loading' ? '프리셋 확인 중' : '분석 실행 프리셋 불러오기')),
               this.renderTable(['프리셋','처리 방식','명령/흐름','다음 행동'], executionPresetRows.length ? executionPresetRows : [['대기','상태 확인 필요','/api/redteam/v2/toolchains/execution-presets','상태 새로고침 또는 프리셋 불러오기를 누르세요']]),
+              h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, '프리셋 실행 결과는 API가 제공한 runner_steps 구조를 보존한 뒤 승인된 분석 실행 시작 버튼에서 사용합니다. 결과 회수 전까지는 증거 후보나 보고서 주장으로 확정하지 않습니다.'),
+              showAdminDetails ? h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '프리셋 실행 단계 JSON',
+                h('textarea', {
+                  value:draft.compositeRunnerStepsJson || '',
+                  onChange:e=>this.updateRedTeam2AnalysisDraft({ compositeRunnerStepsJson:e.target.value }),
+                  rows:4,
+                  style:{ ...inputStyle, marginTop:'5px', resize:'vertical', fontFamily:'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+                  placeholder:'runner_steps 구조를 보존합니다. 일반 사용자는 수정하지 않습니다.',
+                })) : null,
               showAdminDetails ? this.renderTable(['승인/첨부 항목','예상 결과','운영자 다음 행동'], executionPresetGuidanceRows.length ? executionPresetGuidanceRows : [['대기','프리셋 로드 필요','상태 새로고침 또는 프리셋 불러오기']]) : null),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '복합 처리 방식',
