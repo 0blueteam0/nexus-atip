@@ -709,12 +709,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
 
         class Completed:
             def __init__(self, argv: list[str]) -> None:
-                self.returncode = 0
                 if argv[0] == "npm.cmd":
+                    self.returncode = 1
                     self.stdout = '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":["CVE-PRESET-NPM"],"range":"<5.0.0","fixAvailable":true}}}'
                 elif str(argv[0]).lower().endswith("sigma.exe") or argv[0] == "sigma":
+                    self.returncode = 0
                     self.stdout = "Parsing Sigma rules\nChecking Sigma rules\n\n=== Summary ===\nFound 0 errors, 0 condition errors and 0 issues.\nNo rule errors found.\n"
                 else:
+                    self.returncode = 0
                     self.stdout = '{"Results":[{"Target":".","Vulnerabilities":[{"VulnerabilityID":"CVE-PRESET-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Preset trivy finding"}]}]}'
                 self.stderr = ""
 
@@ -742,6 +744,13 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(executed_body["trusted_as_instruction"])
         self.assertEqual(executed_body["executed_count"], 3)
         self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
+        npm_step = next(step for step in executed_body["steps"] if step["tool_id"] == "TOOL-NPM-AUDIT-001")
+        npm_attempt = npm_step["run"]["runner_attempt"]
+        self.assertEqual(npm_attempt["exit_code"], 1)
+        self.assertEqual(npm_attempt["exit_code_policy"], "accepted")
+        self.assertTrue(npm_attempt["cwd"].endswith("samples/npm_audit_workspace"))
+        npm_runner_call = next(call for call in runner.call_args_list if call.args[0][0] == "npm.cmd")
+        self.assertTrue(str(npm_runner_call.kwargs["cwd"]).endswith("samples/npm_audit_workspace"))
 
         collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
             "case_id": case_id,

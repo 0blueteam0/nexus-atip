@@ -33,6 +33,13 @@ PORTABLE_TOOL_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "tools"
 NUCLEI_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "nuclei" / "nuclei.exe"
 TRIVY_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "trivy" / "trivy.exe"
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
+NPM_AUDIT_SAMPLE_WORKSPACE_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "samples"
+    / "npm_audit_workspace"
+)
 SIGMA_CLI_SAMPLE_RULE_PATH = (
     PROJECT_ROOT
     / "Red Team Studio"
@@ -304,6 +311,7 @@ ANALYSIS_TOOL_PROFILES = [
         "evidence_types": ["sca_vulnerability_candidate", "dependency_advisory_evidence"],
         "prohibited_options": ["npm_fix", "package_publish", "credentialed_registry_access"],
         "installation_hint": "Use npm audit --json against approved workspace lockfiles; never auto-fix without review.",
+        "acceptable_exit_codes": [0, 1],
     },
     {
         "tool_id": "TOOL-ZAP-001",
@@ -1200,6 +1208,27 @@ def resolve_workspace_source_path(value: Any) -> tuple[Path | None, list[str]]:
     return resolved, errors
 
 
+def resolve_workspace_directory_path(value: Any) -> tuple[Path | None, list[str]]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None, []
+    if "://" in raw:
+        return None, ["working_dir_must_be_local_workspace_directory"]
+    candidate = Path(raw)
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    resolved = candidate.resolve()
+    project_root = PROJECT_ROOT.resolve()
+    errors: list[str] = []
+    if not is_relative_to_path(resolved, project_root):
+        errors.append("working_dir_outside_workspace")
+    if not resolved.exists():
+        errors.append("working_dir_not_found")
+    elif not resolved.is_dir():
+        errors.append("working_dir_must_be_directory")
+    return resolved, errors
+
+
 def text_like_artifact(path: Path, content_type: str) -> bool:
     normalized = str(content_type or "").lower()
     if normalized.startswith("text/") or normalized in {"application/json", "application/xml", "application/x-ndjson"}:
@@ -2038,6 +2067,7 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "tool_id": "TOOL-NPM-AUDIT-001",
             "execution_mode": "sandbox_execute",
             "runner_argv": ["npm.cmd", "audit", "--json", "--package-lock-only"],
+            "working_dir": NPM_AUDIT_SAMPLE_WORKSPACE_PATH.as_posix(),
             "default_enabled": True,
             "risk_note_ko": "승인된 package-lock 기반 의존성 점검입니다. npm fix, publish, credentialed registry 접근은 금지합니다.",
             "beginner_label_ko": "npm audit 잠금파일 점검",
@@ -2139,6 +2169,7 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
                 "execution_mode": preset.get("execution_mode"),
                 "runner_backend": "local_subprocess_shim",
                 "runner_argv": runner_argv,
+                "working_dir": preset.get("working_dir"),
                 "objective": f"{row['beginner_label_ko']} 실행 결과를 Evidence 후보로 회수한다.",
                 "output_summary": row["expected_result_ko"],
                 "max_runtime_seconds": 90,
@@ -6515,6 +6546,13 @@ def governed_container_runner_attempt(
 ) -> tuple[dict[str, Any], list[str], list[dict[str, Any]]]:
     errors: list[str] = []
     raw_artifacts: list[dict[str, Any]] = []
+    working_dir, working_dir_errors = resolve_workspace_directory_path(
+        payload.get("working_dir")
+        or payload.get("runner_cwd")
+        or payload.get("cwd")
+    )
+    if working_dir_errors:
+        errors.extend(working_dir_errors)
     isolation = plan.get("environment_constraints", {}).get("isolation_readiness") or {}
     if isolation.get("requested_backend") != "ephemeral_container":
         errors.append("ephemeral_container_backend_not_requested")
@@ -6534,7 +6572,7 @@ def governed_container_runner_attempt(
         "runner_backend": "ephemeral_container",
         "container_launch": launch_plan,
         "container_dry_run": dry_run,
-        "cwd": case_dir(case_id).as_posix(),
+        "cwd": (working_dir or case_dir(case_id)).as_posix(),
     })
     raw_artifacts.append(write_runner_json_artifact(case_id, run_id, "container-launch-plan", {
         "kind": "redteam_ax_v2_container_launch_plan",
@@ -6619,6 +6657,13 @@ def governed_runner_attempt(
     token_id = str(payload.get("execution_token_id") or (payload.get("execution_token") or {}).get("token_id") or "").strip()
     errors: list[str] = []
     raw_artifacts: list[dict[str, Any]] = []
+    working_dir, working_dir_errors = resolve_workspace_directory_path(
+        payload.get("working_dir")
+        or payload.get("runner_cwd")
+        or payload.get("cwd")
+    )
+    if working_dir_errors:
+        errors.extend(working_dir_errors)
     if not plan_id:
         errors.append("execution_plan_id_required_for_runner_execution")
     if plan is None:
@@ -6666,7 +6711,8 @@ def governed_runner_attempt(
         "exit_code": None,
         "timeout_seconds": min(int(payload.get("max_runtime_seconds") or (plan or {}).get("environment_constraints", {}).get("max_runtime_seconds") or 30), 120),
         "max_output_bytes": min(int(payload.get("max_output_bytes") or (plan or {}).get("environment_constraints", {}).get("max_output_bytes") or MAX_RUNNER_OUTPUT_BYTES), MAX_RUNNER_OUTPUT_BYTES),
-        "cwd": case_dir(case_id).as_posix(),
+        "cwd": (working_dir or case_dir(case_id)).as_posix(),
+        "acceptable_exit_codes": payload.get("acceptable_exit_codes") or (profile or {}).get("acceptable_exit_codes") or [0],
     }
     if errors:
         return attempt, errors, raw_artifacts
@@ -6677,7 +6723,7 @@ def governed_runner_attempt(
     try:
         completed = subprocess.run(
             argv,
-            cwd=case_dir(case_id).as_posix(),
+            cwd=attempt["cwd"],
             capture_output=True,
             text=True,
             encoding="utf-8",
@@ -6687,10 +6733,16 @@ def governed_runner_attempt(
         )
         stdout = (completed.stdout or "")[: attempt["max_output_bytes"]]
         stderr = (completed.stderr or "")[: attempt["max_output_bytes"]]
+        acceptable_exit_codes = {
+            int(code)
+            for code in (attempt.get("acceptable_exit_codes") or [0])
+            if str(code).lstrip("-").isdigit()
+        }
         attempt.update({
-            "status": "executed" if completed.returncode == 0 else "failed",
+            "status": "executed" if completed.returncode in acceptable_exit_codes else "failed",
             "completed_at": now_utc(),
             "exit_code": completed.returncode,
+            "exit_code_policy": "accepted" if completed.returncode in acceptable_exit_codes else "unexpected",
             "stdout_bytes": len(stdout.encode("utf-8")),
             "stderr_bytes": len(stderr.encode("utf-8")),
             "output_truncated": len((completed.stdout or "").encode("utf-8")) > attempt["max_output_bytes"] or len((completed.stderr or "").encode("utf-8")) > attempt["max_output_bytes"],
@@ -7058,6 +7110,7 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
                     "runner_argv": runner_argv,
                     "max_runtime_seconds": step.get("max_runtime_seconds") or payload.get("max_runtime_seconds"),
                     "max_output_bytes": step.get("max_output_bytes") or payload.get("max_output_bytes"),
+                    "working_dir": step.get("working_dir") or payload.get("working_dir"),
                     "container_dry_run": step.get("container_dry_run") or payload.get("container_dry_run"),
                     "container_mock_stdout": step.get("container_mock_stdout"),
                     "container_mock_stderr": step.get("container_mock_stderr"),

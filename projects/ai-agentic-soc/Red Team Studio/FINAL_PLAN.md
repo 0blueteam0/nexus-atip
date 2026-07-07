@@ -2187,3 +2187,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Python compile, focused backend regression, frontend runtime/launch sanity, frontend syntax check, knowledge workflow gate를 통과했다.
 - [ ] Trivy DB update, remote registry scan, secret upload, credentialed registry access는 아직 승인된 실행 범위가 아니다.
 - [ ] 전체 6개 도구 운영 Evidence/Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 160. 갱신 목표 - npm audit sample workspace 실행과 exit code 정책 고정
+
+- [x] `고도화/samples/npm_audit_workspace/package.json`과 `package-lock.json`을 추가해 npm audit 로컬 sample 입력을 보존했다.
+- [x] `npm.cmd audit --json --package-lock-only`가 sample workspace에서 lodash advisory JSON을 반환하는 것을 확인했다.
+- [x] npm audit이 취약점 발견 시 exit code 1을 반환하므로 `TOOL-NPM-AUDIT-001`에 `acceptable_exit_codes=[0,1]`을 등록했다.
+- [x] runner step의 `working_dir`를 workspace 내부 디렉터리로 제한하는 `resolve_workspace_directory_path` gate를 추가했다.
+- [x] `/toolchains/execution-presets`의 npm audit runner step이 sample workspace `working_dir`를 보존한다.
+- [x] 실제 governed npm audit + Sigma 실행/회수 smoke에서 npm audit이 sample cwd에서 실행되고 `exit_code_policy=accepted`, Evidence 후보, `AGENT-NPM-AUDIT-ANALYST-001` coverage가 생성됐다.
+- [x] backend regression은 npm audit mocked exit code 1 수용과 sample cwd 전달을 검증한다.
+- [x] Python compile, focused pytest, frontend runtime/launch sanity, frontend syntax check, knowledge workflow gate를 통과했다.
+- [ ] npm fix, package publish, credentialed registry access는 아직 승인된 실행 범위가 아니다.
+- [ ] OpenVAS/ZAP/SCA 및 전체 Evidence/Finding/Matrix/Report/export/completion gate 완료는 계속 남아 있다.

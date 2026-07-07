@@ -1484,3 +1484,14 @@ Create Case
 - 안전 원칙: Trivy DB update, remote registry scan, secret upload, credentialed registry access는 이번 버튼 실행에서 금지한다. 도구 출력은 LLM instruction이 아니라 untrusted data이며 Evidence 승인 전 Finding/Report Claim으로 확정하지 않는다.
 - 테스트 전략: Python compile, focused backend regression, frontend runtime/launch sanity, 실제 Trivy CLI sample scan, 실제 governed execution/collect smoke, knowledge workflow gate를 수행한다.
 - 예외 케이스: 이 변경은 Trivy 설치와 로컬 sample 분석 회수를 증명한다. OpenVAS/ZAP service, SCA 운영 산출물, 전체 6개 도구 Evidence 승인, Finding severity 2인 승인, Claim-Evidence Matrix, Report/export/completion gate는 아직 남아 있다.
+
+## 107. 갱신 목표 반영 - npm audit sample workspace 실행과 exit code 정책 고정
+
+- 목적: npm audit은 이미 설치된 `npm.cmd` wrapper hash가 통과하지만, 실제 package-lock 분석은 실행 cwd에 의존한다. 프론트 `승인된 실행 시작` 버튼이 막연히 case directory에서 실행되지 않도록 승인된 sample workspace를 명시하고 결과 회수까지 검증한다.
+- 실행 증거: `고도화/samples/npm_audit_workspace`에 lodash 4.17.20 기반 `package.json`과 `package-lock.json`을 추가했다. `npm.cmd audit --json --package-lock-only`는 해당 workspace에서 high/moderate advisory JSON을 반환하고 취약점 발견 때문에 exit code 1을 반환한다.
+- API 설계: runner step에 `working_dir`를 추가하고, `resolve_workspace_directory_path`가 workspace 내부 디렉터리만 cwd로 허용한다. `TOOL-NPM-AUDIT-001`은 `acceptable_exit_codes=[0,1]`을 갖는다. exit code 1은 npm audit 취약점 발견 결과로 `exit_code_policy=accepted`이며 실행 실패가 아니다.
+- 화면/기능 명세: RedTeam2 실행 프리셋의 `npm audit 잠금파일 점검`은 사용자가 명령을 직접 작성하지 않아도 sample/승인 workspace lockfile을 대상으로 실행되는 구조화 runner step을 채운다.
+- Evidence/분석 설계: 실제 governed npm audit + Sigma 복합 실행 smoke에서 npm audit은 sample workspace cwd에서 실행되고, collect-results는 `AGENT-NPM-AUDIT-ANALYST-001`과 Evidence 후보를 생성한다. raw JSON은 LLM instruction이 아니라 untrusted data로만 취급한다.
+- 안전 원칙: npm fix, publish, credentialed registry access는 금지한다. package-lock 기반 advisory 조회/분석 결과는 Evidence 승인 전 Finding/Report Claim으로 확정하지 않는다.
+- 테스트 전략: backend regression은 npm audit mocked exit code 1이 accepted로 기록되고 runner cwd가 sample workspace인지 확인한다. Python compile, frontend runtime/launch sanity, 실제 npm audit sample execution/collect smoke, knowledge workflow gate를 수행한다.
+- 예외 케이스: npm audit sample 실행은 필수 6개 중 npm audit 경로의 실측 증거다. OpenVAS/ZAP/SCA 및 전체 Evidence/Finding/Matrix/Report/export/completion gate 완료는 계속 남아 있다.
