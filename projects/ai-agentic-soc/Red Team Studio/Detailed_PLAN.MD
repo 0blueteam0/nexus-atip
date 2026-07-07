@@ -1504,3 +1504,13 @@ Create Case
 - API 설계: `/api/redteam/v2/toolchains/execution-presets`는 SCA preset 및 import guidance에 샘플 경로와 schema명을 포함한다. 실제 import는 기존 `/api/redteam/v2/toolchains/execute-governed`의 `offline_parse/imported_json` 또는 manifest import 경로를 사용한다.
 - 테스트 전략: execution preset regression은 SCA 샘플 파일 존재와 guidance 계약을 검증하고, CycloneDX collect regression은 샘플 SBOM 파일을 직접 읽어 `AGENT-SCA-ANALYST-001`, `sca_json`, component Evidence, vulnerability Evidence, affects linkage를 확인한다.
 - 예외 케이스: 샘플 SBOM은 운영 완료 증거가 아니다. 실제 운영 SBOM/SCA export 제출, Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate는 별도 HITL 운영 증거가 필요하다.
+
+## 109. 갱신 목표 반영 - OWASP ZAP 2.17.0 portable 본체 설치와 version-only safe smoke
+
+- 목적: 기존 ZAP 경로는 `zap-cli` wrapper와 read-only service import 중심이라 실제 ZAP 본체 설치 여부를 프론트 설치 확인 버튼에서 분리해 보여주기 어렵다. OWASP ZAP 본체를 공식 배포물로 설치하고 active scan 없이 버전 확인만 실행 가능한 safe smoke 경로를 제공한다.
+- 설치 증거: OWASP ZAP 공식 GitHub release `v2.17.0`의 `ZAP_2.17.0_Crossplatform.zip`을 `고도화/tools/zap`에 내려받고 SHA-256 `94c8f767b1c2e94f0db66b3ae56514d5e3f5a728ee1b6c798e0c8fe2d61fbff0`을 확인했다. 압축 해제 후 `ZAP_2.17.0/zap.bat -version`은 Java 17에서 `2.17.0`을 반환한다.
+- API 설계: `TOOL-ZAP-001`은 `zap.bat` portable launcher를 wrapper 대상으로 사용하고 launcher SHA-256 `6000967e72206b5ff91b242cf2918303deb3cdfe6cdece525af84a58757fb86d`를 pin한다. `/api/redteam/v2/toolchains/execution-presets`는 기존 `OWASP ZAP 보고서 가져오기` service import 안내와 별도로 `safe_smoke_steps[]`에 `zap.bat -version` dry-run step을 제공한다.
+- 화면/기능 명세: 초급 사용자는 ZAP row에서 active scan 실행이 아니라 `설치 확인` 또는 safe smoke 성격의 버튼으로 버전 확인 결과만 만들고, 실제 취약점 분석은 승인된 ZAP JSON report import 또는 read-only service import 결과를 회수한다.
+- 안전 원칙: `zap.bat -version`은 설치 확인 전용이다. daemon 시작, spider, active scan, attack mode, unbounded target import, API key 사용은 여전히 ROE/HITL/외부 vault/read-only import gate 없이는 실행하지 않는다.
+- 테스트 전략: portable ZAP discovery regression, execution preset safe smoke contract, Python compile, ZAP version-only 실제 실행, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
+- 예외 케이스: 이 변경은 ZAP 본체 설치와 version-only 확인 경로를 증명한다. 조직 ZAP endpoint/vault 실측, 실제 ZAP 운영 report import, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

@@ -660,6 +660,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["recommended_composite_input_mode"], "runner")
         self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
+        self.assertEqual(body["safe_smoke_step_count"], 1)
+        zap_smoke = next(item for item in body["safe_smoke_steps"] if item["tool_id"] == "TOOL-ZAP-001")
+        self.assertEqual(Path(zap_smoke["runner_argv"][0]).name.lower(), "zap.bat")
+        self.assertEqual(zap_smoke["runner_argv"][1], "-version")
+        self.assertTrue(zap_smoke["working_dir"].endswith("ZAP_2.17.0"))
+        self.assertTrue(zap_smoke["safe_smoke_version_only"])
         self.assertTrue(any("trivy.exe fs --format json --offline-scan ." in line or line == "trivy fs --format json --offline-scan ." for line in body["runner_command_lines"]))
         self.assertIn("npm.cmd audit --json --package-lock-only", body["runner_command_lines"])
         self.assertTrue(any("sigma.exe check" in line or "sigma check" in line for line in body["runner_command_lines"]))
@@ -676,6 +682,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         sca_guidance = next(item for item in body["import_guidance"] if item["tool_id"] == "TOOL-SCA-001")
         self.assertEqual(sca_guidance["default_sample_artifact_path"], sca_sample_path.as_posix())
         self.assertEqual(sca_guidance["schema_name"], "CycloneDX 1.5")
+        zap_guidance = next(item for item in body["import_guidance"] if item["tool_id"] == "TOOL-ZAP-001")
+        self.assertTrue(zap_guidance["safe_smoke_version_only"])
+        self.assertEqual(Path(zap_guidance["safe_smoke_runner_argv"][0]).name.lower(), "zap.bat")
         self.assertEqual(len(body["import_guidance"]), 4)
 
     def test_v2_toolchain_execution_presets_runner_steps_execute_and_collect(self) -> None:
@@ -1308,6 +1317,24 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
 
         self.assertEqual(availability["status"], "available")
         self.assertEqual(Path(availability["path"]).name.lower(), "nuclei.exe")
+
+    def test_v2_command_availability_resolves_portable_zap_launcher(self) -> None:
+        from runtime import redteam_v2_models
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            portable_root = Path(tmp_dir)
+            zap_home = portable_root / "zap" / "ZAP_2.17.0"
+            zap_home.mkdir(parents=True)
+            fake_launcher = zap_home / "zap.bat"
+            fake_launcher.write_text("@echo off\r\necho 2.17.0\r\n", encoding="utf-8")
+
+            with patch("runtime.redteam_v2_models.PORTABLE_TOOL_ROOT", portable_root), \
+                 patch("runtime.redteam_v2_models.ZAP_EXECUTABLE_PATH", fake_launcher), \
+                 patch("runtime.redteam_v2_models.shutil.which", return_value=None):
+                availability = redteam_v2_models.command_availability("zap.bat")
+
+        self.assertEqual(availability["status"], "available")
+        self.assertEqual(Path(availability["path"]).name.lower(), "zap.bat")
 
     def test_v2_tool_wrapper_pin_request_approval_rotate_and_revoke_updates_manifest(self) -> None:
         case_id = f"CASE-V2-WRAPPER-PIN-001-{uuid.uuid4().hex[:8]}"
@@ -2101,7 +2128,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                         "tool_id": "TOOL-ZAP-001",
                         "execution_mode": "dry_run",
                         "runner_backend": "local_subprocess_shim",
-                        "runner_argv": ["zap-cli", "--version"],
+                        "runner_argv": ["zap.bat", "-version"],
                     },
                 ],
             })

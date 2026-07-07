@@ -32,6 +32,9 @@ SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas
 PORTABLE_TOOL_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "tools"
 NUCLEI_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "nuclei" / "nuclei.exe"
 TRIVY_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "trivy" / "trivy.exe"
+ZAP_HOME_PATH = PORTABLE_TOOL_ROOT / "zap" / "ZAP_2.17.0"
+ZAP_EXECUTABLE_PATH = ZAP_HOME_PATH / "zap.bat"
+ZAP_DISTRIBUTION_ZIP_PATH = PORTABLE_TOOL_ROOT / "zap" / "ZAP_2.17.0_Crossplatform.zip"
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
 NPM_AUDIT_SAMPLE_WORKSPACE_PATH = (
     PROJECT_ROOT
@@ -328,7 +331,7 @@ ANALYSIS_TOOL_PROFILES = [
         "category": "web_validation",
         "risk_class": "T3",
         "adapter_type": "api_or_cli_wrapper",
-        "command_name": "zap-cli",
+        "command_name": "zap.bat",
         "default_execution_mode": "manual_operator_run",
         "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "manual_operator_run", "lab_execute"],
         "denied_execution_modes": ["controlled_production_execute", "prohibited"],
@@ -340,7 +343,13 @@ ANALYSIS_TOOL_PROFILES = [
         "agent_id": "AGENT-ZAP-ANALYST-001",
         "evidence_types": ["scanner_finding_candidate", "web_validation_evidence"],
         "prohibited_options": ["attack_mode", "active_scan_without_approval", "unbounded_spider"],
-        "installation_hint": "Run ZAP in daemon/container mode and import JSON reports; active scan requires approval.",
+        "installation_hint": "Use the official OWASP ZAP 2.17.0 cross-platform package for version-only checks; import JSON reports or run daemon scans only in approved lab scope.",
+        "expected_sha256": "6000967e72206b5ff91b242cf2918303deb3cdfe6cdece525af84a58757fb86d",
+        "installed_version": "2.17.0",
+        "installed_binary_path": ZAP_EXECUTABLE_PATH.as_posix(),
+        "installed_working_dir": ZAP_HOME_PATH.as_posix(),
+        "distribution_sha256": "94c8f767b1c2e94f0db66b3ae56514d5e3f5a728ee1b6c798e0c8fe2d61fbff0",
+        "distribution_path": ZAP_DISTRIBUTION_ZIP_PATH.as_posix(),
     },
     {
         "tool_id": "TOOL-SIGMA-CLI-001",
@@ -440,9 +449,9 @@ TOOL_INSTALL_READINESS_CATALOG = {
     },
     "TOOL-ZAP-001": {
         "official_url": "https://www.zaproxy.org/docs/",
-        "install_modes": ["zap_daemon_container", "desktop_or_cli", "json_report_import"],
-        "operator_install_commands": ["zap-cli --version", "Run ZAP daemon only in approved lab scope."],
-        "verification_commands": ["zap-cli --version", "import_zap_json_report"],
+        "install_modes": ["official_crossplatform_package", "zap_daemon_container", "desktop_or_cli", "json_report_import"],
+        "operator_install_commands": ["zap.bat -version", "Run ZAP daemon only in approved lab scope."],
+        "verification_commands": ["zap.bat -version", "import_zap_json_report"],
         "post_install_controls": ["pin_wrapper_sha256", "passive_scan_default", "active_scan_requires_approval"],
         "safe_smoke": "version_or_report_import",
     },
@@ -1346,6 +1355,8 @@ def command_availability(command_name: str) -> dict[str, Any]:
             PORTABLE_TOOL_ROOT / command / f"{command}.exe",
             PORTABLE_TOOL_ROOT / command / f"{command}.cmd",
         ]
+        if command.lower() in {"zap", "zap.bat"}:
+            candidates.append(ZAP_EXECUTABLE_PATH)
         resolved = next((path.as_posix() for path in candidates if path.exists() and path.is_file()), None)
     return {
         "status": "available" if resolved else "missing",
@@ -2131,6 +2142,11 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "execution_mode": "manual_operator_run",
             "requires_human_approval": True,
             "service_import": True,
+            "safe_smoke_version_only": True,
+            "safe_smoke_runner_argv": [ZAP_EXECUTABLE_PATH.as_posix(), "-version"],
+            "safe_smoke_working_dir": ZAP_HOME_PATH.as_posix(),
+            "installed_binary_path": ZAP_EXECUTABLE_PATH.as_posix(),
+            "installed_version": "2.17.0",
             "default_enabled": False,
             "risk_note_ko": "ZAP active scan/attack mode는 별도 승인이 필요합니다. 기본은 수동 수행 보고서 또는 passive alert 가져오기입니다.",
             "beginner_label_ko": "OWASP ZAP 보고서 가져오기",
@@ -2139,6 +2155,7 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
     ]
     presets: list[dict[str, Any]] = []
     runner_steps: list[dict[str, Any]] = []
+    safe_smoke_steps: list[dict[str, Any]] = []
     import_guidance: list[dict[str, Any]] = []
     for preset in preset_catalog:
         tool_id = str(preset.get("tool_id") or "")
@@ -2187,6 +2204,23 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
                 "max_output_bytes": 65536,
             })
         else:
+            if preset.get("safe_smoke_version_only"):
+                safe_smoke_argv = [str(item) for item in preset.get("safe_smoke_runner_argv") or [] if str(item).strip()]
+                if safe_smoke_argv:
+                    safe_smoke_steps.append({
+                        "tool_id": tool_id,
+                        "execution_mode": "dry_run",
+                        "runner_backend": "local_subprocess_shim",
+                        "runner_argv": safe_smoke_argv,
+                        "working_dir": preset.get("safe_smoke_working_dir"),
+                        "objective": f"{row['beginner_label_ko']} 설치 버전만 확인한다.",
+                        "output_summary": "설치 버전 확인 stdout만 Evidence 후보로 기록한다.",
+                        "max_runtime_seconds": 120,
+                        "max_output_bytes": 8192,
+                        "safe_smoke_version_only": True,
+                        "commands_executed_by_api": False,
+                        "active_scan_executed": False,
+                    })
             import_guidance.append({
                 "tool_id": tool_id,
                 "beginner_label_ko": row["beginner_label_ko"],
@@ -2194,6 +2228,9 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
                 "default_sample_artifact_path": row.get("default_sample_artifact_path"),
                 "schema_name": row.get("schema_name"),
                 "sample_collect_hint_ko": row.get("sample_collect_hint_ko"),
+                "safe_smoke_runner_argv": row.get("safe_smoke_runner_argv"),
+                "safe_smoke_working_dir": row.get("safe_smoke_working_dir"),
+                "safe_smoke_version_only": bool(row.get("safe_smoke_version_only")),
                 "next_action_ko": row["next_action_ko"],
             })
 
@@ -2206,6 +2243,8 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
         "operator_import_or_approval_count": len(import_guidance),
         "presets": presets,
         "runner_steps": runner_steps,
+        "safe_smoke_steps": safe_smoke_steps,
+        "safe_smoke_step_count": len(safe_smoke_steps),
         "runner_tool_ids": [step["tool_id"] for step in runner_steps],
         "runner_command_lines": runner_command_lines,
         "import_guidance": import_guidance,

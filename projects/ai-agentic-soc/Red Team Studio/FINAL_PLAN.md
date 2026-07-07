@@ -2209,3 +2209,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] regression test가 execution preset의 SCA 샘플 계약과 파일 존재를 검증한다.
 - [x] CycloneDX collect regression이 샘플 SBOM 파일을 직접 읽어 SCA component/vulnerability/affects Evidence 후보화를 검증한다.
 - [ ] 이 변경은 SCA import-only 재현성을 높이는 샘플 계약이다. 실제 운영 SBOM 제출, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 162. 갱신 목표 - OWASP ZAP 2.17.0 portable 본체 설치와 version-only safe smoke
+
+- [x] OWASP ZAP 공식 release `v2.17.0` Crossplatform zip을 `고도화/tools/zap`에 설치했다.
+- [x] 배포 zip SHA-256 `94c8f767b1c2e94f0db66b3ae56514d5e3f5a728ee1b6c798e0c8fe2d61fbff0`과 `zap.bat` launcher SHA-256 `6000967e72206b5ff91b242cf2918303deb3cdfe6cdece525af84a58757fb86d`를 확인했다.
+- [x] `zap.bat -version`이 Java 17 환경에서 `2.17.0`을 반환했다.
+- [x] `TOOL-ZAP-001` profile이 portable `zap.bat` launcher와 expected pin을 사용하도록 갱신됐다.
+- [x] execution preset 응답이 기존 ZAP service import 안내와 별도로 `safe_smoke_steps[]`의 version-only ZAP step을 반환한다.
+- [x] regression test가 portable ZAP discovery와 safe smoke preset 계약을 검증한다.
+- [ ] ZAP active scan, daemon start, spider, attack mode, API key 사용은 아직 승인된 자동 실행 범위가 아니다.
+- [ ] 조직 ZAP endpoint/vault 실측, 실제 ZAP report import, Evidence/Finding/Claim/Report/export/completion gate는 계속 남아 있다.

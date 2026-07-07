@@ -1,0 +1,28 @@
+{
+  "kind": "redteam_ax_tool_install_manifest",
+  "tool_id": "TOOL-ZAP-001",
+  "tool_name": "OWASP ZAP",
+  "version": "2.17.0",
+  "install_mode": "official_crossplatform_package",
+  "official_release_url": "https://github.com/zaproxy/zaproxy/releases/tag/v2.17.0",
+  "official_download_url": "https://github.com/zaproxy/zaproxy/releases/download/v2.17.0/ZAP_2.17.0_Crossplatform.zip",
+  "local_archive_path": "Red Team Studio/고도화/tools/zap/ZAP_2.17.0_Crossplatform.zip",
+  "local_archive_sha256": "94c8f767b1c2e94f0db66b3ae56514d5e3f5a728ee1b6c798e0c8fe2d61fbff0",
+  "local_launcher_path": "Red Team Studio/고도화/tools/zap/ZAP_2.17.0/zap.bat",
+  "local_launcher_sha256": "6000967e72206b5ff91b242cf2918303deb3cdfe6cdece525af84a58757fb86d",
+  "version_command": "zap.bat -version",
+  "version_output": "2.17.0",
+  "java_requirement_verified": "OpenJDK 17.0.19 available",
+  "runner_policy": "version_only_safe_smoke_and_report_import_only",
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "prohibited_until_roe_hitl": [
+    "daemon_start",
+    "spider",
+    "active_scan",
+    "attack_mode",
+    "unbounded_target_import",
+    "api_key_submission"
+  ]
+}
