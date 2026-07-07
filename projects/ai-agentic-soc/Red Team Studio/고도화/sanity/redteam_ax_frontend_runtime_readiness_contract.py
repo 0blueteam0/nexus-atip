@@ -59,6 +59,7 @@ def main() -> int:
         "completion_evidence_allowed",
         "source_completion_review",
         "attest-safe-smoke-candidate",
+        "attest-safe-smoke-candidates",
         "operator_attests_output_matches_artifact",
         "실행 승인이나 Finding 근거로 확정하지 않습니다",
     ):
@@ -191,6 +192,7 @@ def main() -> int:
         "운영자가 출력값을 검토한 뒤 설치 증거로 기록",
         "version-only 출력 후보",
         "검토 후 설치 증거 기록",
+        "후보 ${installEvidenceCandidateReadyCount || 0}개 검토 후 설치 증거 기록",
         "frontend_action_key",
         "redteam2_button_ko",
         "next_action_plan",

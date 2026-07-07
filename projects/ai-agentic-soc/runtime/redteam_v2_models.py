@@ -2462,6 +2462,75 @@ def attest_safe_smoke_install_version_evidence_candidate(payload: dict[str, Any]
     return record
 
 
+def attest_safe_smoke_install_version_evidence_candidates(payload: dict[str, Any]) -> dict[str, Any]:
+    candidates = payload.get("candidates") if isinstance(payload.get("candidates"), list) else []
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID)
+    operator = str(payload.get("operator") or payload.get("reviewed_by") or "").strip()
+    operator_role = str(payload.get("operator_role") or "").strip()
+    review_note = str(payload.get("review_note") or payload.get("attestation_note") or "").strip()
+    batch_id = str(payload.get("batch_id") or stable_id("TIEB", [case_id, operator, len(candidates), now_utc()]))
+    records: list[dict[str, Any]] = []
+    errors: list[str] = []
+    if not candidates:
+        errors.append("candidates_required")
+    for index, candidate in enumerate(candidates):
+        if not isinstance(candidate, dict):
+            records.append({
+                "kind": "redteam_ax_v2_tool_install_version_evidence",
+                "status": "invalid",
+                "case_id": case_id,
+                "evidence_id": stable_id("TIE", [batch_id, index, "invalid-candidate"]),
+                "tool_id": "",
+                "tool_name": "",
+                "errors": ["candidate_object_required"],
+            })
+            continue
+        record = attest_safe_smoke_install_version_evidence_candidate({
+            "case_id": case_id,
+            "operator": operator,
+            "operator_role": operator_role,
+            "review_note": review_note,
+            "operator_attests_output_matches_artifact": bool(payload.get("operator_attests_output_matches_artifact")),
+            "candidate": candidate,
+            "evidence_id": stable_id(
+                "TIE",
+                [
+                    batch_id,
+                    index,
+                    candidate.get("tool_id"),
+                    candidate.get("version_command"),
+                    candidate.get("version_output_sha256"),
+                ],
+            ),
+        })
+        records.append(record)
+    recorded_count = sum(1 for record in records if record.get("status") == "recorded")
+    invalid_count = sum(1 for record in records if record.get("status") == "invalid")
+    if invalid_count:
+        errors.append("one_or_more_candidates_invalid")
+    return {
+        "kind": "redteam_ax_v2_safe_smoke_install_evidence_batch_attestation",
+        "status": "recorded" if records and invalid_count == 0 and not errors else "partial_or_invalid",
+        "case_id": case_id,
+        "batch_id": batch_id,
+        "candidate_count": len(candidates),
+        "recorded_count": recorded_count,
+        "invalid_count": invalid_count,
+        "records": records,
+        "recorded_tool_ids": [record.get("tool_id") for record in records if record.get("status") == "recorded"],
+        "errors": errors,
+        "commands_executed_by_api": True,
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "runner_unlocks": [],
+        "next_action_ko": (
+            "기록된 설치 증거를 확인한 뒤 실제 분석 실행은 ROE, wrapper pin, HITL, runtime readiness를 다시 통과해야 합니다."
+            if recorded_count else "기록된 설치 증거가 없습니다. 후보와 운영자 검토 정보를 다시 확인하세요."
+        ),
+        "policy": "Batch attestation records operator-reviewed safe smoke candidates only; it does not approve scans or Finding/Claim use.",
+    }
+
+
 def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
     records = list_json_artifacts(case_id, "tool-install-evidence")
     normalized_tool_id = str(tool_id or "").strip().upper()

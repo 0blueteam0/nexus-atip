@@ -2089,3 +2089,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 관리자 설정 영역에 `검토 후 설치 증거 기록` 버튼을 추가하고 성공 후 설치 증거 registry를 새로고침한다.
 - [x] backend attestation regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
 - [ ] 이 기록은 설치 확인 증거에 한정된다. scanner 실행 승인, 결과 분석 완료, Finding/Claim 승격, Report v2/export/completion gate는 계속 별도 승인과 증거가 필요하다.
+
+## 150. 갱신 목표 - 안전 설치 확인 후보 일괄 검토 기록
+
+- [x] `POST /api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidates` batch API를 추가한다.
+- [x] batch 응답은 후보 수, 기록 수, 오류 수, 기록된 도구 ID, record 목록, `runner_unlocks=[]`를 반환한다.
+- [x] RedTeam2 버튼은 `후보 N개 검토 후 설치 증거 기록`으로 표시하고 준비된 후보 전체를 한 번에 기록한다.
+- [x] 기존 단일 후보 attestation API는 회귀 호환을 위해 유지한다.
+- [x] batch backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
+- [ ] SCA import-only 증거, 실제 6개 도구 결과 회수, LLM 분석, Evidence 승인, Finding/Claim/Report/export/completion gate는 아직 남아 있다.

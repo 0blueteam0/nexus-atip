@@ -1393,3 +1393,12 @@ Create Case
 - 화면/기능 명세: 관리자 설정 영역에 `검토 후 설치 증거 기록` 버튼을 추가한다. 버튼은 `candidate_ready` 후보가 있을 때만 활성화되고, 성공 후 설치 증거 registry를 새로고침한다.
 - 안전 원칙: 이 기록은 설치 확인 증거일 뿐 실행 승인, scanner unlock, Finding/Claim 승격, completion gate 통과 조건이 아니다. `trusted_as_instruction=false`와 Claim 사용 제한은 계속 유지한다.
 - 테스트 전략: safe smoke 후보 생성 후 attestation API로 registry에 기록하는 backend regression, `py_compile`, `node --check`, frontend runtime/launch sanity를 실행한다.
+
+## 97. 갱신 목표 반영 - 안전 설치 확인 후보 일괄 검토 기록
+
+- 목적: 안전 설치 확인 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP 등 여러 version-only 후보를 한 번에 만들 수 있다. 단일 후보만 설치 증거로 기록하면 운영자가 같은 검토 행위를 반복해야 하고 필수 도구 coverage가 느리게 채워진다.
+- API 설계: `POST /api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidates`를 추가한다. payload는 `case_id`, `operator`, `operator_role`, `review_note`, `operator_attests_output_matches_artifact=true`, `candidates[]`를 받는다.
+- 데이터 계약: batch 응답은 `redteam_ax_v2_safe_smoke_install_evidence_batch_attestation`, `batch_id`, `candidate_count`, `recorded_count`, `invalid_count`, `recorded_tool_ids`, `records[]`, `runner_unlocks=[]`를 반환한다. 각 record는 기존 단일 attestation과 같은 안전 필드를 유지한다.
+- 화면/기능 명세: RedTeam2 관리자 버튼은 `후보 N개 검토 후 설치 증거 기록`으로 표시하고, `candidate_ready` 후보가 1개 이상 있을 때 전체 후보를 일괄 전송한다. 성공 후 설치 증거 registry를 새로고침한다.
+- 안전 원칙: 일괄 기록은 여러 설치 확인 증거를 빠르게 채울 뿐이다. scanner 실행 승인, 결과 분석 완료, Evidence 승인, Finding/Claim 승격, Report/export/completion gate는 계속 별도 조건이다.
+- 테스트 전략: batch attestation backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.

@@ -155,6 +155,11 @@ def attest_safe_smoke_install_version_evidence_candidate(payload: dict[str, Any]
     return redteam_v2_models.attest_safe_smoke_install_version_evidence_candidate(payload)
 
 
+@router.post("/tool-install-version-evidence/attest-safe-smoke-candidates")
+def attest_safe_smoke_install_version_evidence_candidates(payload: dict[str, Any]) -> dict[str, Any]:
+    return redteam_v2_models.attest_safe_smoke_install_version_evidence_candidates(payload)
+
+
 @router.get("/tool-credential-policies")
 def list_tool_credential_policies() -> dict[str, Any]:
     return redteam_v2_models.list_tool_credential_policies()

@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260707-101214-Red-Team-Studio-Continue-RedTeam-AX-batch-attest-safe-smoke-install-evidence-candidates",
+  "project": "Red-Team-Studio",
+  "task": "Continue RedTeam AX batch attest safe smoke install evidence candidates",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260707-101214-Red-Team-Studio-Continue-RedTeam-AX-batch-attest-safe-smoke-install-evidence-candidates",
+  "created_at": "2026-07-07T10:12:14+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
