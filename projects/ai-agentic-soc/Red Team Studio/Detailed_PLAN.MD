@@ -1375,3 +1375,12 @@ Create Case
 - 안전 원칙: 이 registry는 operator-attested version/import 검증 증거를 읽는 기능이다. API와 화면 모두 `commands_executed_by_api=false`, `trusted_as_instruction=false`, `requires_human_validation=true`를 유지하며 runner unlock으로 쓰지 않는다.
 - 테스트 전략: `py_compile redteam_v2_models.py`, `pytest test_redteam_v2_api_router.py -k tool_install_version_evidence_records_operator_attested_versions`, `node --check reports.js`, frontend runtime/launch sanity를 실행한다.
 - 예외 케이스: 설치 증거 coverage가 완료되어도 실제 도구 실행, ROE/HITL 승인, wrapper pin, runtime readiness, 결과 회수, Evidence/Finding/Matrix/Report/export gate 완료를 의미하지 않는다.
+
+## 95. 갱신 목표 반영 - 안전 설치 확인 결과의 설치 증거 후보화
+
+- 목적: `안전 설치 확인` 버튼이 version-only 명령을 실행해도 그 출력이 설치 증거 registry와 분리되어 있으면 사용자는 같은 확인을 다시 해야 한다. 반대로 자동 실행 결과를 즉시 증거로 승격하면 운영자 검토와 HITL 원칙을 위반한다.
+- API 설계: governed toolchain execution 응답에 `install_version_evidence_candidates[]`, `install_version_evidence_candidate_count`, `install_version_evidence_next_action_ko`를 추가한다. 후보는 tool id/name, run id, version command, stdout excerpt, stdout sha256, source artifact id, safe local smoke reason, operator attestation 필요 여부를 포함한다.
+- 화면/기능 명세: RedTeam2 분석 결과 수집·검토 표 바로 아래 `설치 확인 결과 후보` 표를 추가한다. 표는 도구명, 후보 상태, 출력 해시 축약값, 운영자가 검토한 뒤 설치 증거로 기록해야 한다는 다음 행동을 보여준다.
+- 안전 원칙: 후보는 `commands_executed_by_api=true`인 실행 결과를 표시하지만 `trusted_as_instruction=false`, `requires_operator_attestation=true`, `runner_unlocks=[]`를 유지한다. 이 후보만으로 실행 승인, Finding 근거, 보고서 Claim, completion gate를 확정하지 않는다.
+- 테스트 전략: `py_compile redteam_v2_models.py`, safe local smoke backend regression, `node --check reports.js`, frontend runtime/launch sanity를 실행한다.
+- 예외 케이스: stdout artifact가 없으면 후보 상태는 `표준 출력 없음`으로 남긴다. SCA처럼 import-only 도구는 안전 설치 확인 후보가 아니라 기존 `결과 첨부 필요 도구` 안내를 따른다.

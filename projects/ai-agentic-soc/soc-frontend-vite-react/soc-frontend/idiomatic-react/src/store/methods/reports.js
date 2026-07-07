@@ -6414,6 +6414,12 @@ export default {
       'Collection E2E 완료 게이트',
       '저장 산출물',
     ].includes(row[0]));
+    const installEvidenceCandidateRows = (toolchainRun.install_version_evidence_candidates || []).map(item => [
+      koToolDisplayName(item.display_name || item.tool_name, item.tool_id),
+      koValue(item.status_ko || item.status || '설치 확인 결과 후보'),
+      item.version_output_sha256 ? `${String(item.version_output_sha256).slice(0, 12)}...` : '출력 해시 대기',
+      item.next_action_ko || '운영자가 출력값을 검토한 뒤 설치 증거로 기록하세요.',
+    ]);
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
       `${step.index + 1}. ${step.tool_name || step.tool_id}`,
       step.status_ko || koValue(step.status),
@@ -7319,6 +7325,7 @@ export default {
               }, toolchainCompletionGateState.status === 'checking' ? 'E2E 점검 중' : 'E2E 완료 게이트 점검') : null,
               h('span', { style:{ fontSize:'10px', color:toolchainState.error ? C.coral : toolchainRun.executed_count ? C.green : C.sec, fontWeight:900 } }, toolchainState.error || koValue(toolchainRun.status || toolchainState.status || 'idle'))),
             this.renderTable(['분석 결과 수집·검토','상태','근거'], toolchainRows),
+            this.renderTable(['설치 확인 결과 후보','상태','출력 해시','다음 행동'], installEvidenceCandidateRows.length ? installEvidenceCandidateRows : [['대기','설치 확인 결과 후보 없음','-','안전 설치 확인을 실행하면 version-only 출력 후보가 표시됩니다']]),
             this.renderTable(['분석가 진행 요약','상태','설명'], toolchainAnalystProgressRows),
             this.renderTable(['진행 단계','상태','다음 버튼','설명'], toolchainAnalystStageRows.length ? toolchainAnalystStageRows : [['결과 준비 또는 첨부','대기','분석 결과 첨부','저장 실행 상태를 먼저 불러오세요']]),
             this.renderTable(['분석 결과 쉬운 요약','확인 후보','심각도 분포','증거 상태'], analystFindingReviewRows.length ? analystFindingReviewRows : [['대기','결과 회수 뒤 도구별 확인 후보가 표시됩니다','-','증거 후보 대기']]),

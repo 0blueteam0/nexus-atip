@@ -5259,6 +5259,61 @@ def safe_local_smoke_runner_allowed(profile: dict[str, Any] | None, argv: list[s
     return True, ""
 
 
+def safe_smoke_install_version_evidence_candidates(steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    candidates: list[dict[str, Any]] = []
+    for step in steps:
+        if not isinstance(step, dict):
+            continue
+        run = step.get("run") if isinstance(step.get("run"), dict) else {}
+        attempt = run.get("runner_attempt") if isinstance(run.get("runner_attempt"), dict) else {}
+        runner_argv = [str(item) for item in (attempt.get("runner_argv") or []) if str(item).strip()]
+        if attempt.get("status") != "executed" or not runner_argv:
+            continue
+        allowed, reason = safe_local_smoke_runner_allowed(
+            analysis_tool_profile(str(step.get("tool_id") or "")),
+            runner_argv,
+            "local_subprocess_shim",
+        )
+        if not allowed:
+            continue
+        stdout_artifact = next(
+            (
+                artifact for artifact in (run.get("raw_artifacts") or [])
+                if isinstance(artifact, dict)
+                and artifact.get("content_type") == "text/plain"
+                and "stdout" in str(artifact.get("summary") or "").lower()
+            ),
+            None,
+        )
+        stdout_excerpt = ""
+        stdout_hash = ""
+        if stdout_artifact:
+            stdout_path = Path(str(stdout_artifact.get("source_path_or_ref") or ""))
+            if stdout_path.exists() and stdout_path.is_file():
+                stdout_excerpt = stdout_path.read_text(encoding="utf-8", errors="replace")[:1000].strip()
+                stdout_hash = str(stdout_artifact.get("hash") or hashlib.sha256(stdout_excerpt.encode("utf-8")).hexdigest())
+        candidates.append({
+            "tool_id": step.get("tool_id"),
+            "tool_name": step.get("tool_name"),
+            "display_name": step.get("display_name_ko") or step.get("tool_name") or step.get("tool_id"),
+            "run_id": run.get("run_id"),
+            "status": "candidate_ready" if stdout_excerpt else "stdout_missing",
+            "status_ko": "설치 확인 결과 후보" if stdout_excerpt else "표준 출력 없음",
+            "version_command": " ".join(runner_argv),
+            "version_output_excerpt": stdout_excerpt,
+            "version_output_sha256": stdout_hash,
+            "source_artifact_id": (stdout_artifact or {}).get("artifact_id"),
+            "source_path_hidden_from_analyst": True,
+            "commands_executed_by_api": True,
+            "trusted_as_instruction": False,
+            "requires_operator_attestation": True,
+            "runner_unlocks": [],
+            "safe_local_smoke_reason": reason or "safe_local_smoke_version_only",
+            "next_action_ko": "운영자가 출력값을 검토한 뒤 설치 증거로 기록해야 합니다. 이 후보만으로 실행 승인이나 보고서 주장을 확정하지 않습니다.",
+        })
+    return candidates
+
+
 def write_runner_output_artifact(case_id: str, run_id: str, stream_name: str, content: str) -> dict[str, Any]:
     output_dir = case_dir(case_id) / "runner-output" / safe_name(run_id)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -6055,6 +6110,7 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         if blocked_count
         else "도구 ID와 실행 명령 또는 첨부 결과를 입력한 뒤 다시 실행하세요."
     )
+    install_version_evidence_candidates = safe_smoke_install_version_evidence_candidates(steps)
     record = {
         "kind": "redteam_ax_v2_governed_toolchain_execution",
         "toolchain_id": chain_id,
@@ -6094,6 +6150,12 @@ def governed_toolchain_execution(payload: dict[str, Any]) -> dict[str, Any]:
         "trusted_as_instruction": False,
         "does_not_mark_goal_complete": True,
         "requires_human_validation": True,
+        "install_version_evidence_candidate_count": len(install_version_evidence_candidates),
+        "install_version_evidence_candidates": install_version_evidence_candidates,
+        "install_version_evidence_next_action_ko": (
+            "설치 확인 결과 후보를 운영자가 검토한 뒤 설치 증거로 기록하세요. 이 후보는 실행 승인이나 Finding 근거를 자동으로 만들지 않습니다."
+            if install_version_evidence_candidates else "version-only 실행 결과 후보가 아직 없습니다."
+        ),
         "steps": steps,
         "policy": "Composite execution reuses ToolActionCard, ExecutionPlan, execution token, wrapper pinning, and runner allowlist gates per tool.",
         "created_at": now_utc(),

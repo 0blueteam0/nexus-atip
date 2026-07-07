@@ -1850,6 +1850,18 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(by_tool["TOOL-ZAP-001"]["execution_mode"], "dry_run")
         self.assertTrue(all(step["partial_runtime_preflight"] == "safe_local_smoke_allowed" for step in body["steps"]))
         self.assertTrue(all((step["run"] or {}).get("status") == "RunnerExecuted" for step in body["steps"]))
+        self.assertEqual(body["install_version_evidence_candidate_count"], 3)
+        self.assertIn("운영자가", body["install_version_evidence_next_action_ko"])
+        candidates = {item["tool_id"]: item for item in body["install_version_evidence_candidates"]}
+        self.assertEqual(set(candidates), {"TOOL-NUCLEI-001", "TOOL-OPENVAS-001", "TOOL-ZAP-001"})
+        for candidate in candidates.values():
+            self.assertEqual(candidate["status"], "candidate_ready")
+            self.assertTrue(candidate["commands_executed_by_api"])
+            self.assertFalse(candidate["trusted_as_instruction"])
+            self.assertTrue(candidate["requires_operator_attestation"])
+            self.assertEqual(candidate["runner_unlocks"], [])
+            self.assertEqual(len(candidate["version_output_sha256"]), 64)
+            self.assertIn("version smoke output", candidate["version_output_excerpt"])
 
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"

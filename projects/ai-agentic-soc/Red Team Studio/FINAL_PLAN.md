@@ -2071,3 +2071,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 상태 로더가 설치 증거 registry를 불러오고 관리자용 분석 환경 설정에 `설치 증거` 표를 표시한다.
 - [x] API regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과했다.
 - [ ] 설치 증거 coverage는 도구가 실제 취약점 분석을 완료했다는 증거가 아니다. 실제 운영 결과 회수, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate는 계속 별도 조건이다.
+
+## 148. 갱신 목표 - 안전 설치 확인 결과의 설치 증거 후보화
+
+- [x] governed toolchain execution 응답에 `install_version_evidence_candidates`, 후보 수, 한국어 다음 행동을 추가한다.
+- [x] safe local smoke version-only stdout artifact를 읽어 version output excerpt와 SHA-256을 후보로 연결한다.
+- [x] RedTeam2 분석 워크플로우에 `설치 확인 결과 후보` 표를 추가해 안전 설치 확인 버튼 결과가 어디에 쓰이는지 보여준다.
+- [x] 후보는 `trusted_as_instruction=false`, `requires_operator_attestation=true`, `runner_unlocks=[]`로 고정해 운영자 검토 전에는 설치 증거, 실행 승인, Finding/Claim 근거로 확정되지 않게 한다.
+- [x] backend safe smoke regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
+- [ ] 이 변경은 version-only 출력 후보 연결이다. 6개 도구 전체 운영 결과 회수, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료는 아직 별도 작업과 실측 증거가 필요하다.
