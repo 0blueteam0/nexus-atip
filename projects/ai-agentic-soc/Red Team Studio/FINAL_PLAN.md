@@ -2047,3 +2047,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Korean copy inventory, runtime readiness contract, launch readiness contract를 새 문구 기준으로 갱신하고 통과시킨다.
 - [x] fresh Vite Playwright DOM 검증에서 금지 기본 노출 `forbidden_default_hits=[]` 및 `coverage/smoke/runner` 0건을 확인한다.
 - [ ] 공유 Report Studio 헤더, 전역 내비게이션, RBAC 약어, 표준 ID 라벨의 잔여 영문은 별도 공통 UI 정리 slice에서 다룬다.
+
+## 145. 갱신 목표 - 공유 Report Studio 헤더와 RedTeam2 기본 권한/보고서 라벨 한국어화
+
+- [x] Report Studio 공통 헤더에서 `Report Studio` 보조 영문을 제거하고 `보고서 스튜디오`를 단독 표기로 사용한다.
+- [x] 공통 탭의 `Reports`, `Report catalog`, `Workflow, evidence...`, `Objectives, campaigns...`를 한국어 사용자 문구로 낮춘다.
+- [x] RedTeam2 기본 화면의 `RBAC` 라벨과 `Report v2` 버튼/게이트 표기를 `권한 정책`, `보고서 v2` 기준으로 변경한다.
+- [x] `API 호출 전에`, `Evidence 후보로 정규화` 같은 내부/API 중심 문구를 `전송 전에`, `증거 후보로 정리`로 낮춘다.
+- [x] node syntax, Korean copy inventory, runtime/launch frontend sanity, fresh Vite Playwright DOM 캡처를 통과했다.
+- [ ] 전역 내비게이션과 legacy report template 내부 도메인 영문은 후속 공통 UI 정리 slice에서 계속 줄인다.

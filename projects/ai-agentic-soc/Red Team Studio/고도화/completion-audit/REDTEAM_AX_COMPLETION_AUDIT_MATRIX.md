@@ -310,6 +310,14 @@ tags: [redteam-ax, completion-audit, evidence, guardrails, report-v2]
 - 같은 검증에서 RedTeam2 기본 화면의 `Evidence/Finding/Matrix/Report` 카운트는 15/17/10/13에서 7/3/2/7로 줄었다.
 - 이 변경은 표시 계층의 한국어화이며 공유 Report Studio 헤더, 전역 내비게이션, RBAC 약어, 표준 증거/보고서 ID의 잔여 영문은 후속 공통 UI 정리 대상이다.
 
+## 2026-07-07 갱신 - 공유 Report Studio 헤더와 RedTeam2 기본 권한/보고서 라벨 한국어화
+
+- `RTA-COMP-079`는 보고서 스튜디오 공통 헤더/탭과 RedTeam2 기본 권한·보고서 게이트 라벨에서 legacy 영어와 `RBAC` 기본 노출을 줄인 요구를 증명한다.
+- 공통 탭은 `Reports`, `Report catalog`, `Workflow, evidence...`, `Objectives, campaigns...` 대신 `보고서 목록`, `보고서 카탈로그`, `절차, 증거, 사람 승인, 보고서 필드`, `목표, 캠페인, 증거`를 사용한다.
+- RedTeam2 기본 화면은 `케이스 RBAC 정책`, `RBAC 사용자`, `RBAC 역할`, `RBAC 불러오기`, `Report v2 초안 생성` 대신 `케이스 권한 정책`, `권한 사용자`, `권한 역할`, `권한 불러오기`, `보고서 v2 초안 생성`을 사용한다.
+- fresh Vite Playwright 검증에서 `Report Studio`, `Reports`, `Report catalog`, `Workflow, evidence`, `Objectives, campaigns`, `RBAC` 기본 라벨, `API 호출 전에`, `Evidence 후보로 정규화`가 기본 RedTeam2 DOM 0건임을 확인했다.
+- 이 변경은 기본 분석가 UI copy proof이며 관리자 확장 패널, legacy report template, backend payload key, audit artifact, 실제 운영 6개 도구 Evidence/Finding/Matrix/Report/export/completion gate 완료를 증명하지 않는다.
+
 ## 운영 규칙
 
 1. `redteam_ax_completion_audit_matrix.json`의 모든 `audit_items[].status`가 `proved`가 되기 전에는 전체 `/goal`을 완료로 표시하지 않는다.

@@ -11,7 +11,7 @@
     "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/Detailed_PLAN.MD"
   ],
   "status_counts": {
-    "proved": 77,
+    "proved": 78,
     "partial": 1
   },
   "audit_items": [
@@ -1312,6 +1312,22 @@
       "proof_summary": "Fresh browser DOM verification after the copy pass produced forbidden_default_hits=[] with coverage/smoke/manifest/toolchain/ToolActionCard/runner/raw API/WSL/container counts all 0 in the default RedTeam2 analyst view. Evidence/Finding/Matrix/Report term counts were reduced from 15/17/10/13 to 7/3/2/7 by replacing default workflow paragraphs, buttons, and table rows with 증거, 발견사항, 주장-증거표, 보고서 v2 초안, and 최종 내보내기 language.",
       "residual_gap": "Some shared Report Studio header, global navigation, RBAC labels, and standardized evidence/report IDs still use English or acronyms. This item does not prove actual live six-tool operating outputs or final Evidence/Finding/Matrix/Report/export/completion gates.",
       "next_action": "Run a separate shared Report Studio header/common-navigation localization pass without weakening standard evidence traceability vocabulary."
+    },
+    {
+      "id": "RTA-COMP-079",
+      "requirement": "Shared Report Studio header/tabs and RedTeam2 default analyst report-permission labels must use Korean-first wording and hide RBAC/API/Report Studio legacy English labels from the default analyst DOM.",
+      "status": "proved",
+      "evidence_refs": [
+        "J:/PortableApps/genai/projects/ai-agentic-soc/soc-frontend-vite-react/soc-frontend/idiomatic-react/src/store/methods/reports.js",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/test_redteam2_korean_copy_inventory.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_runtime_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_frontend_launch_readiness_contract.py",
+        "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/sanity/redteam_ax_live_browser_parser_smoke.py",
+        "J:/PortableApps/genai/documentation/llm-wiki/operations/knowledge-workflow/KW-20260707-090951-Red-Team-Studio-Continue-RedTeam-AX-goal-by-localizing-shared-Report-Studio-and-RedTeam2-remaini/browser/redteam2-shared-header-korean-after-20260707.json"
+      ],
+      "proof_summary": "Fresh Vite/Playwright verification showed Report Studio, Reports, Report catalog, Workflow/evidence tab copy, Objectives/campaigns tab copy, RBAC default labels, Report v2 legacy button labels, API pre-call copy, and Evidence candidate normalization copy all at 0 in the default RedTeam2 DOM. Korean replacements such as 보고서 스튜디오, 보고서 목록, 케이스 권한 정책, 권한 불러오기, 보고서 v2 초안 생성, 증거 연결표, and 최종 승인 게이트 were present.",
+      "residual_gap": "This proves default analyst UI copy cleanup only. Admin-expanded panels, legacy report templates, backend payload keys, audit artifacts, and final live six-tool Evidence/Finding/Matrix/Report/export/completion gates remain outside this proof.",
+      "next_action": "Continue with global navigation and remaining legacy report-template terminology cleanup while preserving evidence traceability identifiers in data/audit layers."
     }
   ],
   "remaining_gaps": [
@@ -1326,5 +1342,5 @@
     "Repeat close-e2e against real approved toolchain collection Findings and require report export plus completion gate complete=true.",
     "Promote accepted gates only after real operating scanner collection closure evidence exists."
   ],
-  "last_updated": "2026-07-06T13:52:30+09:00"
+  "last_updated": "2026-07-07T09:22:00+09:00"
 }

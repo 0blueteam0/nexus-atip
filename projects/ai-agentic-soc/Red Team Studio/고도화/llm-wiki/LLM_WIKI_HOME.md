@@ -241,6 +241,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 58. RedTeam2 기본 분석가 화면은 내부 구현 식별자를 직접 표시하지 않는다. `TOOL-*` 도구 ID, raw `/api/redteam/v2/...` 경로, `toolchain_id`, `tool_action_card_required`, normalizer/agent id는 `Nuclei`, `결과 회수 연결`, `승인 작업 카드 필요`, `도구별 분석 에이전트`처럼 한국어 요약으로 치환한다. 실제 ID와 API path는 payload, audit log, 관리자/감사용 세부 기록에 보존한다.
 59. RedTeam2 기본 분석가 화면은 Docker/WSL, manifest, Sanitizer, normalizer, 운영 closure 같은 환경·운영 세부어도 기본 DOM에 직접 노출하지 않는다. 기본 표현은 `관리자 준비 항목`, `제출 묶음`, `안전 정리`, `도구별 결과 정리`, `결과 회수·증거 후보`를 사용한다. 운영 증거 제출 묶음 생성, 제출 묶음 만들기/가져오기, closure/completion audit 버튼은 관리자 설정을 펼친 경우에만 보인다.
 60. RedTeam2 기본 분석가 화면의 결과 검토 워크플로우는 `coverage`, `smoke`, `runner`, `Evidence/Finding/Matrix/Report draft/export` 같은 내부 또는 영문 산출물명보다 `결과 확인 상태`, `안전 설치 확인`, `승인된 로컬 실행`, `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`를 우선 사용한다. fresh Vite DOM 검증의 금지 기본 노출은 `forbidden_default_hits=[]`여야 하며, 표준 ID와 관리자/감사 기록의 원본 추적성은 유지한다.
+61. Report Studio 공통 분석가 화면도 한국어-first 표시를 따른다. 기본 헤더와 탭에는 `Report Studio`, `Reports`, `Report catalog`, `Workflow, evidence`, `Objectives, campaigns` 대신 `보고서 스튜디오`, `보고서 목록`, `보고서 카탈로그`, `절차, 증거, 사람 승인, 보고서 필드`, `목표, 캠페인, 증거`를 사용한다. RedTeam2 기본 권한·보고서 영역은 `RBAC` 약어와 legacy `Report v2` 버튼보다 `권한 정책`, `권한 불러오기`, `보고서 v2 초안 생성`, `증거 연결표`, `최종 승인 게이트`를 우선한다. backend payload, 관리자 확장 패널, 감사 artifact의 기술 식별자는 추적성을 위해 보존한다.
 
 ## 남은 작업
 
@@ -257,6 +258,7 @@ LLM 또는 agent는 이 wiki를 사용할 때 다음 순서를 따른다.
 - RedTeam2 기본 분석가 화면에서 `TOOL-*`, raw API path, `toolchain_id`, `tool_action_card_required`, normalizer agent id가 한국어 요약으로 낮춰진 Playwright 브라우저 회귀 증거
 - RedTeam2 기본 분석가 화면에서 Docker/WSL/container/manifest/normalizer/Sanitizer/ToolActionCard/toolchain/raw API 금지어가 기본 DOM에 나타나지 않는 Playwright 브라우저 회귀 증거
 - RedTeam2 기본 분석가 화면에서 coverage/smoke/runner와 분석 워크플로우의 불필요한 Evidence/Finding/Matrix/Report 영문 산출물명이 한국어 사용자 문구로 낮춰진 Playwright 브라우저 회귀 증거
+- Report Studio 전역 내비게이션과 legacy report template 안에 남은 영문 도메인 용어를 사용자 화면과 감사/데이터 계층으로 분리한 브라우저 회귀 증거
 - 조직/실서비스 OpenVAS service report import 및 OWASP ZAP daemon passive-alert import endpoint 성공 증거
 - RedTeam2 runtime readiness panel에서 blocker가 모두 `ready`로 바뀐 운영 환경 증거
 - RedTeam2 `실행 전 readiness`가 `ready`가 된 뒤 실제 6개 도구 실행/첨부와 Evidence/Finding/Matrix/Report/export gate가 이어진 운영 실측 증거

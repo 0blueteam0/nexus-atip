@@ -1,0 +1,33 @@
+{
+  "captured_at": "2026-07-07T00:15:49.073Z",
+  "url": "http://127.0.0.1:5177/reports",
+  "title": "AI Agentic SOC · Report Studio v4 (Idiomatic React)",
+  "counts": {
+    "Report Studio": 0,
+    "Reports": 0,
+    "Report catalog": 0,
+    "Workflow, evidence": 0,
+    "Objectives, campaigns": 0,
+    "Finding 후보": 0,
+    "Evidence Matrix": 1,
+    "Visual Evidence": 0,
+    "Release Gate Blockers": 0,
+    "케이스 RBAC 정책": 0,
+    "RBAC 사용자": 0,
+    "RBAC 역할": 0,
+    "RBAC 불러오기": 0,
+    "Report v2 최종": 0,
+    "Report v2 초안 생성": 0,
+    "API 호출 전에": 0,
+    "Evidence 후보로 정규화": 0,
+    "보고서 스튜디오": 3,
+    "보고서 목록": 1,
+    "케이스 권한 정책": 1,
+    "권한 불러오기": 2,
+    "보고서 v2 초안 생성": 2,
+    "증거 연결표": 4,
+    "최종 승인 게이트": 1
+  },
+  "body_prefix": "Agentic SOC\nOPERATING SYSTEM\nOPERATE\n현황\n알림 큐\n사건\n대응\n헌트\nUNDERSTAND\n위험 맥락\n증적\n인텔리전스\n탐지\n메모리\nBUILD\n에이전트\n절차\n스킬\n연동\n실행 런타임\nREPORTS\n■\n보고서 스튜디오\nGOVERN\n정책\n평가\n감사\nOUTCOMES\nSOC 성과\n경영 리스크\n“One context graph, many specialized agents, one evidence ledger, one governed action gate.”\n밀도 · 보통\n자율성 모드\nShadow\nAssisted\nAI-led\nBounded\n명령\n⌘K\n정\n정관제\nTier-3 Analyst\n데이터 신선도\nIdentity 2m\nEndpoint 12m\nNetwork 4m\nCloud 3m\n⚠ EDR FIN-WS-204 12m stale\n보고서 스튜디오\n에이전트 작성 → 인간 검토 → 승인\n보고서 생성\n보고서 스튜디오는 백엔드 분석 런과 증거 그래프를 기준으로 초안을 만듭니다. 레드팀 보고서는 공개 보고서 사례의 절차 구조를 참고하되 실제 근거는 레드팀 스튜디오, 안전한 표면 점검, 도구 실행·차단 결정, 증거 연결표, 최종 승인 게이트에서만 가져오며 화면에는 분석가가 검토할 요약, 증거, 제한사항, 대응 권고, 승인 상태를 노출합니다.\n보고서 목록\n보고서 카탈로그\n악성코드 분석\n절차, 증거, 사람 승인, 보고서 필드\n레드팀 분석\n목표, 캠페인, 증거\n레드팀 분석2\n승인 작업, 사람 검토, 증거 게이트\n레드팀 분석2 · RedTeam AX\n승인 작업, 사람 검토, 증거 카드, 주장-증거 연결표를 분리한 분석 워크벤치\n상태 새로고침\n승인 작업 계획\nv2 연결\nunavailable\n승인 작업 카드 필수\nv1 백엔드\nunavailable\n기존 레드팀 분석 회귀 기준\n근거 검색\n대기\nFailed to fetch\n준비도\n-\nFailed to fetch\n도구 허브\n0\n도구 목록을 불러오지 않음\nCase / ROE 입력\n보고서\nRTA-2026-0301 · ID·SaaS 권한 경계 레드팀 평가 보고서\nRTA-2026-0302 · 외부 공격표면 및 초기 접근 평가 보고서\nRTA-2026-0303 · 탐지·대응 타임라인 레드팀 평가 보고서\nRTA-2026-0304 · 증거 캡처·로그 보존·Claim-Evidence Matrix 평가 보고서\nRTA-2026-0305 · 네트워크 세그먼트 및 내부 신뢰 경계 평가 보고서\nRTA-2026-0306 · IR Triage 및 에스컬레이션 기준 평가 보고서\nRTA-2026-0307 · MITRE ATT&CK 기반 레드팀 공격경로 매핑 보고서\nRTA-2026-0308 · 개선 로드맵 및 탐지 엔지니어링 백로그 보고서\nRTA-2026-0309 · 퍼플팀 재검증 및 AX 자동화 연계 보고서\nRTA-2026-0310 · 시각 증거 설명 규칙 및 민감정보 마스킹 평가 보고서\nRTA-2026-0311 · 경영진용 종합 레드팀 평가 및 결론 보고서\n대상 유형\nIP\nURL\nDomain\nCIDR\n대상\n위험 등급\nT0 · 파일/로그 가져오기\nT1 · 읽기 전용 확인\nT2 · 제한된 네트워크 확인\nT3 · 스캔 영향 가능\nT4 · 승인된 실험망 실행\nT5 · 운영 영향 가능\nT6 · 고위험 수동 실행\nT7 · 기본 차단\n승인 범위 ID\n분석도구\nNuclei\nOpenVAS\nTrivy\nSCA\nnpm audit\nOWASP ZAP\n실행 방식\n계획만 만들기\n이미 있는 결과 파일 분석\n격리된 샌드박스 실행\n사람이 실행하고 결과 업로드\n승인된 실험망 실행\n운영환경 읽기 전용 점검\n통제된 운영 실행\n목적\n분석 도구 허브 / LLM 분석 에이전트\n선택 도구\nNuclei\n결과 가져오기 가능\nLLM 분석 에이전트\n-\n결과 정리와 증거 후보 생성\n실행 준비\n미확인\n결과 가져오기 중심\n설치 상태\n미확인\n미확인\n에이전트 수\n-\n도구 출력은 명령이 아니라 데이터로만 취급\n도구\t위험도\t실행 준비\tLLM 에이전트\n미로드\t-\t-\t상태 새로고침 필요\n분석도구 실행 안내\n이 영역은 버튼을 누르기 전에 확인해야 할 쉬운 설명입니다. 고위험 도구는 웹",
+  "body_length": 8983
+}

@@ -1350,3 +1350,11 @@ Create Case
 - `Evidence/Finding/Matrix/Report draft/export` 중심 표현은 `증거`, `발견사항`, `주장-증거표`, `보고서 v2 초안`, `최종 내보내기`로 치환한다.
 - 검증 기준은 `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM 캡처다.
 - 감사 증거는 `RTA-COMP-078`과 KW-20260706-134410 브라우저 산출물에 보관한다.
+
+## 92. 갱신 목표 반영 - 공유 Report Studio 헤더와 RedTeam2 기본 권한/보고서 라벨 한국어화
+
+- 목적: RedTeam2 본문이 한국어화되어도 Report Studio 공통 헤더와 탭, 권한 정책, 보고서 게이트에 `Report Studio`, `Reports`, `RBAC`, `Report v2` 같은 기본 노출이 남으면 초급 분석가는 내부 제품/약어를 먼저 보게 된다. 공통 분석가 화면도 한국어-first로 맞춘다.
+- 화면/기능 명세: 공통 헤더는 `보고서 스튜디오`로 표시한다. 탭 설명은 `보고서 목록`, `보고서 카탈로그`, `절차, 증거, 사람 승인, 보고서 필드`, `목표, 캠페인, 증거`를 사용한다. RedTeam2 권한 영역은 `케이스 권한 정책`, `권한 사용자`, `권한 역할`, `권한 불러오기`로 표시한다.
+- 표시 규칙: `API 호출 전에`는 `전송 전에`, `Evidence 후보로 정규화`는 `증거 후보로 정리`, `Report v2 초안 생성`은 `보고서 v2 초안 생성`으로 낮춘다. backend payload key와 audit artifact의 기술 식별자는 유지한다.
+- 테스트 전략: `node --check reports.js`, `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM 캡처를 실행한다. DOM 캡처는 legacy tab/header/RBAC/API 문구가 0건인지 확인한다.
+- 예외 케이스: 이 slice는 기본 분석가 UI copy 정리다. 관리자 확장 패널, legacy report template, 전역 내비게이션, 실제 운영 6개 도구 산출물과 Evidence/Finding/Matrix/Report/export/completion gate 완료는 후속 증거가 필요하다.

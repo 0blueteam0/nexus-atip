@@ -332,7 +332,7 @@ try {
   if (allowAgenticRag) {
     await page.getByRole('button', { name: /Agentic RAG 검증 실행|Run Agentic RAG SCA/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(4000);
-    await page.getByRole('button', { name: /Report v2 초안 생성|Generate Report v2/ }).first().click({ timeout: 10000 });
+    await page.getByRole('button', { name: /보고서 v2 초안 생성|Report v2 초안 생성|Generate Report v2/ }).first().click({ timeout: 10000 });
     await page.waitForTimeout(5000);
   }
   result.title = await page.title();
@@ -370,7 +370,7 @@ try {
     && bodyText.includes('Nuclei, OpenVAS, Trivy, SCA, npm audit, OWASP ZAP 결과 파일')
     && bodyText.includes('도구 결과 업로드')
     && bodyText.includes('업로드 파일도 LLM 명령으로 신뢰하지 않습니다');
-  result.checks.rbacReportMetadataGuidance = bodyText.includes('케이스 RBAC 정책')
+  result.checks.rbacReportMetadataGuidance = bodyText.includes('케이스 권한 정책')
     && bodyText.includes('케이스별 역할 정책은 누가 승인, 실행, 검토, 내보내기를 할 수 있는지 정합니다')
     && bodyText.includes('평가 맥락')
     && bodyText.includes('보고서 제목');

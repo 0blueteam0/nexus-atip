@@ -237,7 +237,7 @@ REQUIRED_KOREAN_ANCHORS = [
     "외부 비밀 보관 참조",
     "실서비스 가져오기",
     "조직 읽기 전용 가져오기 미실행",
-    "케이스 RBAC 정책",
+    "케이스 권한 정책",
     "평가 맥락",
     "최종 게이트",
     "인용 검증",
@@ -258,7 +258,6 @@ REQUIRED_ALLOWED_TECH_TERMS = [
     "Trivy",
     "npm audit",
     "OWASP ZAP",
-    "RBAC",
     "API",
     "ROE",
 ]
