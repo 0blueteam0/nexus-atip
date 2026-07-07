@@ -1411,3 +1411,12 @@ Create Case
 - 화면/기능 명세: RedTeam2 관리자 운영 산출물 영역에 `SCA/SBOM 첨부 증거` 입력을 추가한다. 운영자는 SCA/SBOM 파일 경로와 사람 검토 요약을 입력하고 `SCA 첨부 증거 기록` 버튼으로 registry를 갱신한다.
 - 안전 원칙: 이 버튼은 도구 명령, npm audit, SCA backend scan, active scan을 실행하지 않는다. 첨부 파일은 명령이 아니라 untrusted data이며 설치/검증 evidence로만 쓰인다.
 - 테스트 전략: SCA import-only install evidence backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.
+
+## 99. 갱신 목표 반영 - 저위험 로컬 분석 실행 프리셋과 고위험 승인/첨부 분리
+
+- 목적: 사용자가 `승인된 분석 실행 시작` 버튼을 누르기 전에 어떤 명령을 넣어야 하는지 직접 판단하게 두면 실제 업무 절차와 맞지 않는 임의 명령 실행 위험이 생긴다. RedTeam AX는 Trivy/npm audit처럼 저위험 로컬 분석 가능한 도구만 실행 프리셋으로 채우고, Nuclei/OpenVAS/ZAP/SCA는 승인 또는 결과 첨부 흐름으로 분리한다.
+- API 설계: `GET /api/redteam/v2/toolchains/execution-presets`를 추가한다. API는 `presets[]`, `runner_steps[]`, `runner_tool_ids`, `runner_command_lines`, `import_guidance[]`, `recommended_composite_input_mode`, `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 반환한다.
+- 화면/기능 명세: RedTeam2 분석 결과 수집·검토 워크플로우에 `분석 실행 프리셋` 블록과 `분석 실행 프리셋 불러오기` 버튼을 추가한다. 버튼은 API가 허용한 runner step만 `compositeToolIds`와 `compositeRunnerCommands`에 채우고, 실제 실행은 기존 governed toolchain 실행 버튼과 ROE/HITL/토큰/wrapper pin gate를 그대로 통과해야 한다.
+- 안전 원칙: 프리셋 API는 명령을 실행하지 않는다. `trivy fs --format json --offline-scan .`와 `npm.cmd audit --json --package-lock-only`는 실행 후보로만 제공하며, Nuclei/OpenVAS/ZAP은 사람 승인 또는 서비스/보고서 가져오기, SCA는 SBOM/SCA export 첨부로 안내한다.
+- 테스트 전략: execution presets backend regression, Python compile, `node --check`, frontend runtime/launch sanity를 실행한다.
+- 예외 케이스: 프리셋 적용은 전체 6개 도구 결과 coverage 완료가 아니다. runner 준비가 안 된 환경에서는 operator import 또는 승인 필요 안내만 보여야 하며, Evidence 승인, Finding 2인 severity 승인, Matrix/Report/export/completion gate는 계속 별도 단계다.

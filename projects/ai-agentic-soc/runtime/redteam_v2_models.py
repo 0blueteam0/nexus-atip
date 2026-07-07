@@ -1424,6 +1424,154 @@ def list_toolchain_launch_readiness() -> dict[str, Any]:
     }
 
 
+def list_toolchain_execution_presets() -> dict[str, Any]:
+    launch_readiness = list_toolchain_launch_readiness()
+    launch_by_tool = {str(item.get("tool_id") or ""): item for item in launch_readiness.get("buttons") or []}
+    preset_catalog: list[dict[str, Any]] = [
+        {
+            "preset_id": "PRESET-TRIVY-WORKSPACE-FS-OFFLINE-JSON",
+            "tool_id": "TOOL-TRIVY-001",
+            "execution_mode": "sandbox_execute",
+            "runner_argv": ["trivy", "fs", "--format", "json", "--offline-scan", "."],
+            "default_enabled": True,
+            "risk_note_ko": "승인된 작업공간 파일만 읽는 로컬 분석입니다. 네트워크/원격 registry 대상은 허용하지 않습니다.",
+            "beginner_label_ko": "Trivy 로컬 파일 점검",
+            "expected_result_ko": "컨테이너·IaC·의존성 취약점 후보 JSON",
+        },
+        {
+            "preset_id": "PRESET-NPM-AUDIT-LOCKFILE-JSON",
+            "tool_id": "TOOL-NPM-AUDIT-001",
+            "execution_mode": "sandbox_execute",
+            "runner_argv": ["npm.cmd", "audit", "--json", "--package-lock-only"],
+            "default_enabled": True,
+            "risk_note_ko": "승인된 package-lock 기반 의존성 점검입니다. npm fix, publish, credentialed registry 접근은 금지합니다.",
+            "beginner_label_ko": "npm audit 잠금파일 점검",
+            "expected_result_ko": "npm advisory 기반 의존성 취약점 후보 JSON",
+        },
+        {
+            "preset_id": "PRESET-SCA-SBOM-IMPORT",
+            "tool_id": "TOOL-SCA-001",
+            "execution_mode": "offline_parse",
+            "import_only": True,
+            "default_enabled": False,
+            "risk_note_ko": "SBOM, lockfile, 조직 SCA export를 첨부합니다. 도구 명령은 실행하지 않습니다.",
+            "beginner_label_ko": "SCA/SBOM 결과 첨부",
+            "expected_result_ko": "SBOM 또는 SCA export 기반 의존성 증거 후보",
+        },
+        {
+            "preset_id": "PRESET-NUCLEI-APPROVAL-REQUIRED",
+            "tool_id": "TOOL-NUCLEI-001",
+            "execution_mode": "manual_operator_run",
+            "requires_human_approval": True,
+            "default_enabled": False,
+            "risk_note_ko": "Nuclei 웹 점검은 대상 범위와 template source 승인이 필요합니다. 화면은 승인 요청과 결과 회수만 연결합니다.",
+            "beginner_label_ko": "Nuclei 승인 후 실행/결과 첨부",
+            "expected_result_ko": "승인된 scope의 nuclei JSONL 결과",
+        },
+        {
+            "preset_id": "PRESET-OPENVAS-REPORT-IMPORT",
+            "tool_id": "TOOL-OPENVAS-001",
+            "execution_mode": "manual_operator_run",
+            "requires_human_approval": True,
+            "service_import": True,
+            "default_enabled": False,
+            "risk_note_ko": "OpenVAS 스캔 시작은 사람이 수행합니다. 웹앱은 읽기 전용 보고서 가져오기와 Evidence 후보화를 담당합니다.",
+            "beginner_label_ko": "OpenVAS 보고서 가져오기",
+            "expected_result_ko": "Greenbone/OpenVAS XML 보고서 기반 취약점 후보",
+        },
+        {
+            "preset_id": "PRESET-ZAP-PASSIVE-REPORT-IMPORT",
+            "tool_id": "TOOL-ZAP-001",
+            "execution_mode": "manual_operator_run",
+            "requires_human_approval": True,
+            "service_import": True,
+            "default_enabled": False,
+            "risk_note_ko": "ZAP active scan/attack mode는 별도 승인이 필요합니다. 기본은 수동 수행 보고서 또는 passive alert 가져오기입니다.",
+            "beginner_label_ko": "OWASP ZAP 보고서 가져오기",
+            "expected_result_ko": "ZAP JSON alert 기반 웹 보안 후보",
+        },
+    ]
+    presets: list[dict[str, Any]] = []
+    runner_steps: list[dict[str, Any]] = []
+    import_guidance: list[dict[str, Any]] = []
+    for preset in preset_catalog:
+        tool_id = str(preset.get("tool_id") or "")
+        profile = analysis_tool_profile(tool_id) or {}
+        launch = launch_by_tool.get(tool_id, {})
+        runner_argv = [str(item) for item in preset.get("runner_argv") or [] if str(item).strip()]
+        runner_ready = bool(
+            runner_argv
+            and launch.get("can_execute_now")
+            and not preset.get("requires_human_approval")
+            and not preset.get("import_only")
+        )
+        row = {
+            **preset,
+            "tool_name": profile.get("name") or tool_id,
+            "display_name": profile.get("display_name") or tool_id,
+            "analysis_agent_id": profile.get("agent_id"),
+            "normalizer_id": profile.get("normalizer_id"),
+            "launch_mode": launch.get("launch_mode"),
+            "blocked_reasons": launch.get("blocked_reasons") or [],
+            "can_execute_from_button": runner_ready,
+            "commands_executed_by_api": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "next_action_ko": (
+                "프리셋 적용 후 '승인된 분석 실행 시작'을 누르면 governed runner가 저장 출력까지 생성합니다."
+                if runner_ready
+                else (
+                    "결과 파일을 첨부하거나 서비스 보고서를 읽기 전용으로 가져온 뒤 결과 회수를 진행하세요."
+                    if preset.get("import_only") or preset.get("service_import")
+                    else "ROE와 사람 승인을 먼저 완료한 뒤 수동 실행 결과를 가져오세요."
+                )
+            ),
+        }
+        presets.append(row)
+        if runner_ready:
+            runner_steps.append({
+                "tool_id": tool_id,
+                "execution_mode": preset.get("execution_mode"),
+                "runner_backend": "local_subprocess_shim",
+                "runner_argv": runner_argv,
+                "objective": f"{row['beginner_label_ko']} 실행 결과를 Evidence 후보로 회수한다.",
+                "output_summary": row["expected_result_ko"],
+                "max_runtime_seconds": 90,
+                "max_output_bytes": 65536,
+            })
+        else:
+            import_guidance.append({
+                "tool_id": tool_id,
+                "beginner_label_ko": row["beginner_label_ko"],
+                "expected_result_ko": row["expected_result_ko"],
+                "next_action_ko": row["next_action_ko"],
+            })
+
+    runner_command_lines = [" ".join(step["runner_argv"]) for step in runner_steps]
+    return {
+        "kind": "redteam_ax_v2_toolchain_execution_presets",
+        "status": "ready" if runner_steps else "operator_import_or_approval_required",
+        "preset_count": len(presets),
+        "runner_preset_count": len(runner_steps),
+        "operator_import_or_approval_count": len(import_guidance),
+        "presets": presets,
+        "runner_steps": runner_steps,
+        "runner_tool_ids": [step["tool_id"] for step in runner_steps],
+        "runner_command_lines": runner_command_lines,
+        "import_guidance": import_guidance,
+        "recommended_composite_input_mode": "runner" if runner_steps else "operator_import",
+        "commands_executed_by_api": False,
+        "active_scan_executed": False,
+        "trusted_as_instruction": False,
+        "policy_ko": "이 API는 허용된 실행/첨부 프리셋만 생성하며 scanner 명령을 직접 실행하지 않습니다. 실제 실행은 ToolActionCard, ROE, 실행계획, 토큰, wrapper pin을 통과한 governed runner에서만 수행됩니다.",
+        "operator_summary_ko": (
+            f"현재 버튼 실행 가능한 저위험 프리셋 {len(runner_steps)}개와 "
+            f"사람 승인 또는 결과 첨부가 필요한 항목 {len(import_guidance)}개를 분리했습니다."
+        ),
+        "created_at": now_utc(),
+    }
+
+
 def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, Any]:
     case_id = str(payload.get("case_id") or "CASE-UNSPECIFIED").strip()
     requested_by = str(payload.get("requested_by") or payload.get("operator") or "current-analyst").strip()

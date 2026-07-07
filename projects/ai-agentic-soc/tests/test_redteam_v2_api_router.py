@@ -589,6 +589,48 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("command_missing", by_tool["TOOL-NUCLEI-001"]["blocked_reasons"])
         self.assertEqual(by_tool["TOOL-NUCLEI-001"]["button_label_ko"], "설치 확인")
 
+    def test_v2_toolchain_execution_presets_separate_runner_from_import_and_approval(self) -> None:
+        def manifest(profile: dict) -> dict:
+            tool_id = profile["tool_id"]
+            import_only = tool_id == "TOOL-SCA-001"
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001"}
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": tool_id,
+                "tool_name": profile["name"],
+                "adapter_type": profile.get("adapter_type"),
+                "command_name": profile.get("command_name") or "",
+                "availability": {
+                    "status": "not_applicable" if import_only else ("available" if available else "missing"),
+                    "command": profile.get("command_name") or "",
+                    "path": None if not available or import_only else f"C:/tools/{profile['name']}.exe",
+                },
+                "pinning_status": "import_only" if import_only else ("hash_match" if available else "missing"),
+                "trusted_for_runner": available or import_only,
+                "requires_pin_before_runner": not (available or import_only),
+            }
+
+        with patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=manifest):
+            response = self.client.get("/api/redteam/v2/toolchains/execution-presets")
+
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_execution_presets")
+        self.assertFalse(body["commands_executed_by_api"])
+        self.assertFalse(body["active_scan_executed"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertEqual(body["recommended_composite_input_mode"], "runner")
+        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+        self.assertIn("trivy fs --format json --offline-scan .", body["runner_command_lines"])
+        self.assertIn("npm.cmd audit --json --package-lock-only", body["runner_command_lines"])
+        by_tool = {item["tool_id"]: item for item in body["presets"]}
+        self.assertTrue(by_tool["TOOL-TRIVY-001"]["can_execute_from_button"])
+        self.assertTrue(by_tool["TOOL-NPM-AUDIT-001"]["can_execute_from_button"])
+        self.assertFalse(by_tool["TOOL-NUCLEI-001"]["can_execute_from_button"])
+        self.assertTrue(by_tool["TOOL-NUCLEI-001"]["requires_human_approval"])
+        self.assertTrue(by_tool["TOOL-SCA-001"]["import_only"])
+        self.assertEqual(len(body["import_guidance"]), 4)
+
     def test_v2_six_tool_work_order_guides_operator_without_execution(self) -> None:
         def manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]

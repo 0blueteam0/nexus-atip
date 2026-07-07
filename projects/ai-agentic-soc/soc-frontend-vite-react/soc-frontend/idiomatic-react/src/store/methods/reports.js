@@ -3153,6 +3153,7 @@ export default {
       wrapperVersionOutput:'',
       runnerBackend:'local_subprocess_shim',
       compositeInputMode:'operator_import',
+      compositePresetMode:'approved_local_analysis',
       compositeToolIds:'TOOL-NUCLEI-001,TOOL-OPENVAS-001,TOOL-TRIVY-001,TOOL-SCA-001,TOOL-NPM-AUDIT-001,TOOL-ZAP-001',
       compositeRunnerCommands:'npm.cmd --version\ntrivy --version',
       compositeImportedOutputs:[
@@ -3225,7 +3226,7 @@ export default {
       const installVersionEvidenceUrl = caseId
         ? `http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence?case_id=${encodeURIComponent(caseId)}`
         : 'http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence';
-      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, installVersionEvidenceRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes, launchReadinessRes] = await Promise.all([
+      const [v2HealthRes, v1HealthRes, readinessRes, ragRes, queueRes, rbacRes, toolRegistryRes, agentRegistryRes, wrapperRegistryRes, installReadinessRes, installVersionEvidenceRes, credentialPoliciesRes, credentialAuthRes, runtimeReadinessRes, launchReadinessRes, executionPresetsRes] = await Promise.all([
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/health'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/tools/readiness'),
@@ -3241,6 +3242,7 @@ export default {
         this.redTeamFetchJson(credentialAuthUrl),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/runtime-readiness'),
         this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/toolchains/launch-readiness'),
+        this.redTeamFetchJson('http://127.0.0.1:8765/api/redteam/v2/toolchains/execution-presets'),
       ]);
       this.setState(s => ({
         redteam2AnalysisState:{
@@ -3261,6 +3263,7 @@ export default {
           credentialAuthorizations:credentialAuthRes.ok ? credentialAuthRes.data : { items:[], error:credentialAuthRes.error },
           runtimeReadiness:runtimeReadinessRes.ok ? runtimeReadinessRes.data : { status:'unavailable', error:runtimeReadinessRes.error },
           launchReadiness:launchReadinessRes.ok ? launchReadinessRes.data : { buttons:[], error:launchReadinessRes.error },
+          executionPresets:executionPresetsRes.ok ? executionPresetsRes.data : { presets:[], runner_steps:[], import_guidance:[], error:executionPresetsRes.error },
           checkedAt:new Date().toISOString(),
           error:null,
         },
@@ -3270,6 +3273,46 @@ export default {
     } catch (err) {
       this.setState(s => ({ redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), status:'error', error:err?.message || String(err) } }));
       this.toast('레드팀 분석2 상태 확인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async applyRedTeam2ExecutionPresets() {
+    let presets = this.state.redteam2AnalysisState?.executionPresets || null;
+    this.setState(s => ({ redteam2ExecutionPresetState:{ ...(s.redteam2ExecutionPresetState || {}), status:'loading', error:null } }));
+    try {
+      if (!presets || !Array.isArray(presets.presets)) {
+        const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/toolchains/execution-presets');
+        presets = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(presets.detail || `HTTP ${res.status}`);
+      }
+      const runnerSteps = Array.isArray(presets.runner_steps) ? presets.runner_steps : [];
+      const runnerToolIds = runnerSteps.map(step => step.tool_id).filter(Boolean);
+      const runnerCommandLines = Array.isArray(presets.runner_command_lines)
+        ? presets.runner_command_lines
+        : runnerSteps.map(step => (step.runner_argv || []).join(' ')).filter(Boolean);
+      if (!runnerSteps.length) {
+        this.setState(s => ({
+          redteam2ExecutionPresetState:{ ...(s.redteam2ExecutionPresetState || {}), status:'operator-import-only', result:presets, checkedAt:new Date().toISOString(), error:null },
+          redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), executionPresets:presets },
+        }));
+        this.toast('현재 버튼 실행 가능한 저위험 프리셋이 없습니다. 결과 첨부 흐름을 사용하세요', 'warn');
+        return;
+      }
+      this.updateRedTeam2AnalysisDraft({
+        compositeInputMode:presets.recommended_composite_input_mode || 'runner',
+        compositePresetMode:'approved_local_analysis',
+        compositeToolIds:runnerToolIds.join(','),
+        compositeRunnerCommands:runnerCommandLines.join('\n'),
+      });
+      this.setState(s => ({
+        redteam2ExecutionPresetState:{ ...(s.redteam2ExecutionPresetState || {}), status:'applied', result:presets, checkedAt:new Date().toISOString(), error:null },
+        redteam2AnalysisState:{ ...(s.redteam2AnalysisState || {}), executionPresets:presets },
+      }));
+      this.toast(`분석 실행 프리셋 ${runnerSteps.length}개를 입력했습니다`, 'success');
+      this.logAudit('현재 분석가', `레드팀 분석2 분석 실행 프리셋 적용: ${runnerToolIds.join(', ')}`);
+    } catch (err) {
+      this.setState(s => ({ redteam2ExecutionPresetState:{ ...(s.redteam2ExecutionPresetState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('분석 실행 프리셋 불러오기 실패: ' + (err?.message || String(err)), 'warn');
     }
   }
 ,
@@ -5576,6 +5619,7 @@ export default {
     const executionPlanState = this.state.redteam2ExecutionPlanState || {};
     const runnerState = this.state.redteam2RunnerState || {};
     const toolchainState = this.state.redteam2ToolchainState || {};
+    const executionPresetState = this.state.redteam2ExecutionPresetState || {};
     const toolchainCollectionState = this.state.redteam2ToolchainCollectionState || {};
     const toolchainEvidenceApprovalState = this.state.redteam2ToolchainEvidenceApprovalState || {};
     const toolchainFindingPromotionState = this.state.redteam2ToolchainFindingPromotionState || {};
@@ -5674,6 +5718,7 @@ export default {
     const analystReadinessSummary = runtimeReadiness.analyst_readiness_summary || {};
     const operatorEnvironmentSummary = runtimeReadiness.operator_environment_summary || {};
     const launchReadiness = st.launchReadiness || {};
+    const executionPresets = executionPresetState.result || st.executionPresets || {};
     const containerRuntimeArtifact = runtimeReadiness.container_runtime || {};
     const containerRuntime = containerRuntimeArtifact.data || {};
     const externalScannerArtifact = runtimeReadiness.external_scanner_services || {};
@@ -6470,6 +6515,7 @@ export default {
       ['사람 검토', koBool(toolchainRun.requires_human_validation ?? true), '결과는 증거 후보 전 사람이 검토'],
       ['결과 정리 상태', koValue(toolchainCollection.status || toolchainCollectionState.status || '대기'), toolchainCollectionState.error || toolchainCollection.collection_id || '결과 회수 연결 대기'],
       ['저장 실행 상태 조회', koValue(toolchainRunStatus.status || toolchainRunStatusState.status || '대기'), toolchainRunStatusState.error || (toolchainRunStatus.can_collect_results ? '결과 회수 가능' : '실행 상태 연결 대기')],
+      ['프리셋 실행 명령', `${(executionPresets.runner_command_lines || []).length ?? 0}개`, executionPresetState.error || '분석 실행 프리셋 불러오기 후 승인된 로컬 실행 입력에 반영됩니다'],
       ['증거 후보 생성', `${toolchainCollection.evidence_candidate_count ?? 0}개`, '안전 정리와 도구별 결과 정리 이후 후보만 생성, 승인 전 발견사항에는 연결하지 않음'],
       ['필수 6개 도구 결과 확인', toolchainCollection.completion_gate_ready ? '완료 게이트 준비' : '완료 게이트 미준비', `${toolchainCollection.present_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 수집 · 누락 ${toolchainCollection.missing_required_tool_count ?? 6}개`],
       ['누락 필수 도구', (toolchainCollection.missing_required_tool_ids || []).length ? toolchainCollection.missing_required_tool_ids.join(', ') : '없음', toolchainCollection.next_action_ko || 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 확인 상태를 보세요'],
@@ -6493,6 +6539,17 @@ export default {
       'Collection E2E 완료 게이트',
       '저장 산출물',
     ].includes(row[0]));
+    const executionPresetRows = (executionPresets.presets || []).map(item => [
+      item.beginner_label_ko || koToolDisplayName(item.display_name || item.tool_name, item.tool_id),
+      item.can_execute_from_button ? '버튼 실행 가능' : (item.import_only || item.service_import ? '결과 첨부/가져오기' : '사람 승인 필요'),
+      item.runner_argv?.length ? item.runner_argv.join(' ') : koValue(item.launch_mode || item.execution_mode || '첨부'),
+      item.next_action_ko || item.risk_note_ko || 'ROE와 HITL 조건을 확인하세요.',
+    ]);
+    const executionPresetGuidanceRows = (executionPresets.import_guidance || []).map(item => [
+      item.beginner_label_ko || koToolName(item.tool_id),
+      item.expected_result_ko || '-',
+      item.next_action_ko || '결과 파일을 첨부한 뒤 결과 회수를 진행하세요.',
+    ]);
     const installEvidenceCandidateRows = (toolchainRun.install_version_evidence_candidates || []).map(item => [
       koToolDisplayName(item.display_name || item.tool_name, item.tool_id),
       koValue(item.status_ko || item.status || '설치 확인 결과 후보'),
@@ -7145,6 +7202,18 @@ export default {
             showAdminDetails ? h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 closure 제출 패키지는 운영 산출물 폴더, 승인자 4명, 실행 차단 조건, 운영 닫기 요청을 먼저 검증하고 분석도구 명령은 실행하지 않습니다. 사람 검토, 검토 완료 실행, 증거 인증은 각각 별도 승인 단계를 유지합니다.') : null,
             showAdminDetails ? h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 산출물 전체 닫기는 기존 운영 분석도구 폴더를 묶음으로 만들고 가져오기, 결과 회수, close-e2e까지 이어서 수행하지만 분석도구, 컨테이너, 보조 실행 환경, 네트워크 스캔 명령은 실행하지 않습니다.') : null,
             showAdminDetails ? h('div', { style:{ fontSize:'10.5px', color:C.sec, lineHeight:1.5 } }, '운영 산출물 묶음은 파일 위치와 해시를 확인한 뒤 가져옵니다. 도구 명령·능동 스캔은 실행하지 않고 검증된 파일만 toolchain collection으로 연결합니다.') : null,
+            h('div', { style:{ border:`1px solid ${C.border}`, borderRadius:'8px', padding:'8px', display:'grid', gap:'8px', background:C.s1 } },
+              h('div', { style:{ display:'flex', justifyContent:'space-between', gap:'8px', flexWrap:'wrap', alignItems:'center' } },
+                h('div', { style:{ display:'grid', gap:'3px' } },
+                  h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '분석 실행 프리셋'),
+                  h('div', { style:{ fontSize:'10px', color:C.sec, lineHeight:1.45 } }, 'Trivy와 npm audit처럼 저위험 로컬 분석은 버튼 실행 입력으로 채우고, Nuclei/OpenVAS/ZAP/SCA는 승인 또는 결과 첨부 흐름으로 분리합니다.')),
+                h('button', {
+                  onClick:()=>this.applyRedTeam2ExecutionPresets(),
+                  disabled:executionPresetState.status === 'loading',
+                  style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.green}`, background:executionPresetState.status === 'loading' ? C.raised : C.bg, color:executionPresetState.status === 'loading' ? C.muted : C.green, cursor:executionPresetState.status === 'loading' ? 'not-allowed' : 'pointer', fontWeight:900 },
+                }, executionPresetState.status === 'loading' ? '프리셋 확인 중' : '분석 실행 프리셋 불러오기')),
+              this.renderTable(['프리셋','처리 방식','명령/흐름','다음 행동'], executionPresetRows.length ? executionPresetRows : [['대기','상태 확인 필요','/api/redteam/v2/toolchains/execution-presets','상태 새로고침 또는 프리셋 불러오기를 누르세요']]),
+              showAdminDetails ? this.renderTable(['승인/첨부 항목','예상 결과','운영자 다음 행동'], executionPresetGuidanceRows.length ? executionPresetGuidanceRows : [['대기','프리셋 로드 필요','상태 새로고침 또는 프리셋 불러오기']]) : null),
             h('div', { style:{ display:'grid', gridTemplateColumns:'minmax(180px, .8fr) minmax(240px, 1.2fr)', gap:'8px' } },
               h('label', { style:{ fontSize:'10.5px', color:C.muted, minWidth:0 } }, '복합 처리 방식',
                 h('select', {

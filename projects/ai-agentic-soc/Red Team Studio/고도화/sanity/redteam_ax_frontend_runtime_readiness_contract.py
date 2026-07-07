@@ -42,12 +42,15 @@ def main() -> int:
     required_loader_terms = [
         "/api/redteam/v2/runtime-readiness",
         "/api/redteam/v2/toolchains/launch-readiness",
+        "/api/redteam/v2/toolchains/execution-presets",
         "/api/redteam/v2/tool-install-version-evidence",
         "runtimeReadinessRes",
         "launchReadinessRes",
+        "executionPresetsRes",
         "installVersionEvidenceRes",
         "runtimeReadiness:runtimeReadinessRes.ok",
         "launchReadiness:launchReadinessRes.ok",
+        "executionPresets:executionPresetsRes.ok",
     ]
     missing_loader_terms = [term for term in required_loader_terms if term not in loader]
     if missing_loader_terms:
@@ -144,6 +147,12 @@ def main() -> int:
         "영향 범위 연결은 사람이 검토하기 전 주장으로 확정하지 않습니다",
         "운영자 결과 첨부 - 명령 실행 없음",
         "승인된 로컬 실행",
+        "분석 실행 프리셋",
+        "분석 실행 프리셋 불러오기",
+        "버튼 실행 가능",
+        "Trivy와 npm audit처럼 저위험 로컬 분석",
+        "executionPresets",
+        "runner_command_lines",
         "운영자 결과 본문",
         "---REDTEAM-AX-TOOL---",
         "여러 도구 결과 첨부",

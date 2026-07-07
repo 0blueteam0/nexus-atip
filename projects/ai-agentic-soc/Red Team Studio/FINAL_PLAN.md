@@ -2107,3 +2107,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 관리자 화면에 `SCA/SBOM 첨부 증거` 입력과 `SCA 첨부 증거 기록` 버튼을 추가한다.
 - [x] backend SCA import-only regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
 - [ ] 이 증거는 SCA 설치/첨부 검증 coverage만 채운다. 실제 SCA 결과 정규화, Evidence 승인, Finding/Claim/Report/export/completion gate는 계속 별도 단계다.
+
+## 152. 갱신 목표 - 저위험 로컬 분석 실행 프리셋과 고위험 승인/첨부 분리
+
+- [x] `GET /api/redteam/v2/toolchains/execution-presets` API를 추가해 허용된 실행/첨부 프리셋을 카탈로그 기반으로 반환한다.
+- [x] Trivy 로컬 파일 점검과 npm audit 잠금파일 점검은 runner step 후보로 분리하고, Nuclei/OpenVAS/ZAP/SCA는 승인 또는 결과 첨부 안내로 분리한다.
+- [x] API는 `commands_executed_by_api=false`, `active_scan_executed=false`, `trusted_as_instruction=false`를 유지하며 프리셋 조회만 수행한다.
+- [x] RedTeam2 화면에 `분석 실행 프리셋` 표와 `분석 실행 프리셋 불러오기` 버튼을 추가한다.
+- [x] 프리셋 적용은 `compositeToolIds`와 `compositeRunnerCommands`만 채우며 실제 실행은 기존 governed toolchain execution gate를 사용한다.
+- [ ] 이 변경은 버튼 실행 입력을 안전하게 구성하는 UX/API 조각이다. 실제 6개 도구 전체 결과 수집, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 별도 증거가 필요하다.

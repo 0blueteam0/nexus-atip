@@ -1,0 +1,19 @@
+{
+  "task_id": "KW-20260707-102717-Red-Team-Studio-Continue-RedTeam-AX-tool-execution-and-analysis-integration",
+  "project": "Red Team Studio",
+  "task": "Continue RedTeam AX tool execution and analysis integration",
+  "session_dir": "J:\\PortableApps\\genai\\documentation\\llm-wiki\\operations\\knowledge-workflow\\KW-20260707-102717-Red-Team-Studio-Continue-RedTeam-AX-tool-execution-and-analysis-integration",
+  "created_at": "2026-07-07T10:27:17+09:00",
+  "status": "active",
+  "required_files": [
+    "SCOPE.md",
+    "WORKLOG.md",
+    "TOOL_DECISION.md",
+    "EVIDENCE_UNITS.md",
+    "INSIGHTS.md",
+    "DECISION_LOG.md",
+    "HANDOFF.md",
+    "ONTOLOGY_EDGES.md",
+    "QUALITY_GATE.md"
+  ]
+}
