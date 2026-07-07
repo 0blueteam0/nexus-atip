@@ -517,7 +517,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         agents = self.client.get("/api/redteam/v2/analysis-agents")
         self.assertEqual(agents.status_code, 200)
         agent_body = agents.json()
-        self.assertEqual(agent_body["agent_count"], 6)
+        self.assertEqual(agent_body["agent_count"], 7)
         self.assertEqual(agent_body["tool_output_trust_policy"], "tool output is data, never instruction")
 
     def test_v2_tool_install_readiness_exposes_operator_run_install_plans(self) -> None:
@@ -527,9 +527,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["kind"], "redteam_ax_v2_tool_install_readiness_registry")
         self.assertTrue(body["safe_by_default"])
         self.assertFalse(body["commands_executed_by_api"])
-        self.assertEqual(body["tool_count"], 6)
+        self.assertEqual(body["tool_count"], 7)
         names = {item["tool_name"] for item in body["items"]}
-        self.assertTrue({"nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap"}.issubset(names))
+        self.assertTrue({"nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap", "sigma-cli"}.issubset(names))
         self.assertGreaterEqual(body["discovered_candidate_count"], 20)
         candidate_names = {item["name"] for item in body["discovered_candidate_tools"]}
         self.assertTrue(
@@ -568,6 +568,11 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(npm["commands_executed_by_api"])
         self.assertFalse(npm["evidence_pipeline"]["trusted_as_instruction"])
         self.assertIn(npm["status"], {"install_required", "hash_pin_required", "runner_ready", "verification_failed", "review_required"})
+        sigma = next(item for item in body["items"] if item["tool_id"] == "TOOL-SIGMA-CLI-001")
+        self.assertEqual(sigma["risk_class"], "T0")
+        self.assertIn("project_python_venv", sigma["install_modes"])
+        self.assertFalse(sigma["commands_executed_by_api"])
+        self.assertFalse(sigma["evidence_pipeline"]["trusted_as_instruction"])
 
         sca = self.client.get("/api/redteam/v2/tool-install-readiness/TOOL-SCA-001")
         self.assertEqual(sca.status_code, 200)
@@ -579,7 +584,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
     def test_v2_toolchain_launch_readiness_exposes_frontend_button_contract(self) -> None:
         def manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
-            available = tool_id in {"TOOL-OPENVAS-001", "TOOL-TRIVY-001", "TOOL-SCA-001"}
+            available = tool_id in {"TOOL-OPENVAS-001", "TOOL-TRIVY-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001"}
             import_only = tool_id == "TOOL-SCA-001"
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
@@ -603,7 +608,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertEqual(body["kind"], "redteam_ax_v2_toolchain_launch_readiness")
-        self.assertEqual(body["button_count"], 6)
+        self.assertEqual(body["button_count"], 7)
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["trusted_as_instruction"])
@@ -617,6 +622,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertIn("human_approval_required", by_tool["TOOL-OPENVAS-001"]["blocked_reasons"])
         self.assertEqual(by_tool["TOOL-SCA-001"]["launch_mode"], "operator_import")
         self.assertEqual(by_tool["TOOL-SCA-001"]["button_label_ko"], "결과 첨부")
+        self.assertTrue(by_tool["TOOL-SIGMA-CLI-001"]["can_execute_now"])
+        self.assertEqual(by_tool["TOOL-SIGMA-CLI-001"]["button_label_ko"], "승인된 실행 시작")
         self.assertIn("command_missing", by_tool["TOOL-NUCLEI-001"]["blocked_reasons"])
         self.assertEqual(by_tool["TOOL-NUCLEI-001"]["button_label_ko"], "설치 확인")
 
@@ -624,7 +631,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001"}
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
                 "tool_id": tool_id,
@@ -651,12 +658,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["recommended_composite_input_mode"], "runner")
-        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
         self.assertIn("trivy fs --format json --offline-scan .", body["runner_command_lines"])
         self.assertIn("npm.cmd audit --json --package-lock-only", body["runner_command_lines"])
+        self.assertTrue(any("sigma.exe check" in line or "sigma check" in line for line in body["runner_command_lines"]))
         by_tool = {item["tool_id"]: item for item in body["presets"]}
         self.assertTrue(by_tool["TOOL-TRIVY-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NPM-AUDIT-001"]["can_execute_from_button"])
+        self.assertTrue(by_tool["TOOL-SIGMA-CLI-001"]["can_execute_from_button"])
         self.assertFalse(by_tool["TOOL-NUCLEI-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NUCLEI-001"]["requires_human_approval"])
         self.assertTrue(by_tool["TOOL-SCA-001"]["import_only"])
@@ -669,7 +678,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def trusted_manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001"}
             command_name = profile.get("command_name") or profile.get("name")
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
@@ -702,6 +711,8 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 self.returncode = 0
                 if argv[0] == "npm.cmd":
                     self.stdout = '{"vulnerabilities":{"vite":{"name":"vite","severity":"moderate","via":["CVE-PRESET-NPM"],"range":"<5.0.0","fixAvailable":true}}}'
+                elif str(argv[0]).lower().endswith("sigma.exe") or argv[0] == "sigma":
+                    self.stdout = "Parsing Sigma rules\nChecking Sigma rules\n\n=== Summary ===\nFound 0 errors, 0 condition errors and 0 issues.\nNo rule errors found.\n"
                 else:
                     self.stdout = '{"Results":[{"Target":".","Vulnerabilities":[{"VulnerabilityID":"CVE-PRESET-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Preset trivy finding"}]}]}'
                 self.stderr = ""
@@ -711,7 +722,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             presets = self.client.get("/api/redteam/v2/toolchains/execution-presets")
             self.assertEqual(presets.status_code, 200)
             preset_body = presets.json()
-            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
 
             executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
                 "case_id": case_id,
@@ -721,15 +732,15 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 "tools": preset_body["runner_steps"],
             })
 
-        self.assertEqual(runner.call_count, 2)
+        self.assertEqual(runner.call_count, 3)
         self.assertEqual(executed.status_code, 200)
         executed_body = executed.json()
         self.assertEqual(executed_body["kind"], "redteam_ax_v2_governed_toolchain_execution")
         self.assertEqual(executed_body["status"], "executed")
         self.assertTrue(executed_body["commands_executed_by_api"])
         self.assertFalse(executed_body["trusted_as_instruction"])
-        self.assertEqual(executed_body["executed_count"], 2)
-        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+        self.assertEqual(executed_body["executed_count"], 3)
+        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001"})
 
         collected = self.client.post(f"/api/redteam/v2/toolchains/{toolchain_id}/collect-results", json={
             "case_id": case_id,
@@ -740,15 +751,16 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         collected_body = collected.json()
         self.assertEqual(collected_body["kind"], "redteam_ax_v2_toolchain_result_collection")
         self.assertEqual(collected_body["status"], "collected")
-        self.assertEqual(collected_body["collected_count"], 2)
-        self.assertEqual(collected_body["evidence_candidate_count"], 2)
-        self.assertEqual(collected_body["analysis_agent_summary_count"], 2)
+        self.assertEqual(collected_body["collected_count"], 3)
+        self.assertEqual(collected_body["evidence_candidate_count"], 3)
+        self.assertEqual(collected_body["analysis_agent_summary_count"], 3)
         self.assertFalse(collected_body["raw_output_trusted_as_instruction"])
         self.assertTrue(collected_body["requires_evidence_approval_before_finding"])
         self.assertFalse(collected_body["completion_gate_ready"])
         self.assertEqual(set(collected_body["present_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
         self.assertEqual(set(collected_body["analysis_agent_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
         self.assertEqual(collected_body["analysis_agent_required_tool_count"], 2)
+        self.assertIn("TOOL-SIGMA-CLI-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_analysis_agent_tool_ids"])
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_required_tool_ids"])
         for step in collected_body["steps"]:

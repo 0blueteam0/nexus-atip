@@ -2151,3 +2151,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 기존 RedTeam2 `추가 설치 후보` 화면이 확장 후보를 그대로 표시하도록 backend contract를 강화한다.
 - [x] readiness regression은 후보 수 20개 이상과 대표 후보 포함, 공식 출처 기반, 비실행 정책을 확인한다.
 - [ ] 실제 설치 수행, 운영자 설치 증거 기록, wrapper pin, normalizer, Evidence mapping, 버튼 실행 연결, 결과 회수는 후보별 후속 slice가 필요하다.
+
+## 157. 갱신 목표 - Sigma CLI optional ToolProfile 승격과 실제 로컬 rule 검증 실행
+
+- [x] `sigma-cli 3.0.3`을 프로젝트 `.venv`에 설치하고 `.venv\Scripts\sigma.exe version`으로 설치를 확인한다.
+- [x] `.venv\Scripts\sigma.exe` SHA-256을 optional ToolProfile expected pin으로 등록해 readiness가 `runner_ready/hash_match`로 판단되게 한다.
+- [x] `TOOL-SIGMA-CLI-001`은 `required_for_core_coverage=false`라서 필수 6개 completion coverage를 오염시키지 않는다.
+- [x] `PRESET-SIGMA-CLI-LOCAL-RULE-CHECK`를 추가해 RedTeam2 분석 실행 프리셋에서 로컬 Sigma rule 검증을 버튼 실행 후보로 제공한다.
+- [x] `NORMALIZER-SIGMA-CLI-001`과 `AGENT-SIGMA-CLI-ANALYST-001`을 추가해 `sigma check` 출력이 Evidence 후보로 구조화된다.
+- [x] 실제 governed toolchain execution/collect smoke에서 Sigma CLI가 실행되고 `sigma_cli_text` parser, agent coverage, required optional coverage가 통과했다.
+- [ ] `pip check` 기준 기존 `.venv`에는 `python-fx`/`flare-floss` 의존성 충돌이 남아 있어 운영용 lock/isolation 정리가 필요하다.
+- [ ] Sigma plugin install, SIEM backend conversion, 원격 rule 다운로드, 운영 배포는 아직 승인된 실행 범위가 아니다.

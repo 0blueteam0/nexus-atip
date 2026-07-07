@@ -1453,3 +1453,13 @@ Create Case
 - 안전 원칙: 모든 신규 후보는 `commands_executed_by_api=false`, `trusted_as_instruction=false`이다. Caldera, Atomic Red Team, OpenBAS, Stratus, Velociraptor, Certipy 같은 고위험 계열은 plan/import/catalog 중심으로 두고 실제 실행은 별도 ROE/HITL/2인 승인/owner approval이 생기기 전까지 금지한다.
 - 테스트 전략: readiness regression은 후보 수가 20개 이상이고 대표 후보가 포함되며 공식 출처 기반과 비실행 정책을 유지하는지 검증한다. Python compile, frontend syntax/sanity, diff check를 함께 실행한다.
 - 예외 케이스: 이 확장은 설치 완료, 실제 배포, 버튼 실행, 결과 수집, LLM 분석 완료를 의미하지 않는다. 다음 slice는 후보별로 실제 설치 검증, wrapper pin, normalizer, Evidence Card/Claim-Evidence Matrix 매핑, 프론트 버튼 실행 계약을 하나씩 승격해야 한다.
+
+## 104. 갱신 목표 반영 - Sigma CLI 후보의 optional ToolProfile 승격과 실제 로컬 rule 검증 실행
+
+- 목적: 확장 후보를 계속 쌓는 것만으로는 사용자의 priority 2인 프론트 버튼 실행으로 이어지지 않는다. 낮은 위험도의 탐지룰 검증 도구인 Sigma CLI를 먼저 optional ToolProfile로 승격해 실제 설치 확인, wrapper hash match, execution preset, governed runner, 결과 회수, LLM 분석 에이전트 연결을 증명한다.
+- 설치 증거: 프로젝트 `.venv`에 `sigma-cli 3.0.3`을 설치했고 `.venv\Scripts\sigma.exe version`이 `3.0.3`을 반환한다. `pip check`는 기존 환경의 `flare-floss/networkx`, `python-fx/pillow`, `python-fx/wcwidth` 충돌을 보고하므로 운영 배포 전 별도 dependency isolation 또는 lock 정리가 필요하다.
+- API 설계: `TOOL-SIGMA-CLI-001`은 `required_for_core_coverage=false`, `optional_runner_profile=true`인 optional 분석 도구다. 필수 6개 completion coverage는 유지하고, `/toolchains/execution-presets`는 `PRESET-SIGMA-CLI-LOCAL-RULE-CHECK` runner step을 추가한다.
+- 화면/기능 명세: 기존 RedTeam2 분석 실행 프리셋 표에 `Sigma 탐지룰 로컬 검증`이 표시된다. 사용자는 고위험 스캔이 아니라 로컬 sample rule 검증이라는 설명과 함께 버튼 실행 후보로 볼 수 있다.
+- Evidence/분석 설계: `NORMALIZER-SIGMA-CLI-001`과 `AGENT-SIGMA-CLI-ANALYST-001`은 `sigma check` 텍스트 출력에서 error/condition error/issue count를 구조화하고, rule text를 LLM instruction이 아닌 untrusted data로 처리한다.
+- 테스트 전략: `sigma check` 실제 실행, governed toolchain execution/collect smoke, backend regression, Python compile, Node/frontend sanity, diff check를 실행한다.
+- 예외 케이스: Sigma optional profile 승격은 필수 6개 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 완료를 대체하지 않는다. 또한 SIEM backend 변환, plugin install, 원격 rule 다운로드, 운영 rule 배포는 이번 범위에서 금지한다.

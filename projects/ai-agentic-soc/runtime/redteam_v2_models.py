@@ -29,6 +29,15 @@ DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
+SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
+SIGMA_CLI_SAMPLE_RULE_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "samples"
+    / "sigma_rules"
+    / "redteam_ax_local_process_creation_check.yml"
+)
 TOOL_RESULT_FINDING_CLAIM_REVIEW_PATH = (
     PROJECT_ROOT
     / "archive"
@@ -312,10 +321,54 @@ ANALYSIS_TOOL_PROFILES = [
         "prohibited_options": ["attack_mode", "active_scan_without_approval", "unbounded_spider"],
         "installation_hint": "Run ZAP in daemon/container mode and import JSON reports; active scan requires approval.",
     },
+    {
+        "tool_id": "TOOL-SIGMA-CLI-001",
+        "name": "sigma-cli",
+        "display_name": "Sigma CLI / pySigma",
+        "category": "rule_authoring",
+        "risk_class": "T0",
+        "adapter_type": "cli_wrapper",
+        "command_name": "sigma",
+        "default_execution_mode": "sandbox_execute",
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
+        "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
+        "default_policy": "local_sigma_rule_validation_only",
+        "requires_human_approval": False,
+        "requires_two_person_approval": False,
+        "supports_json_output": False,
+        "normalizer_id": "NORMALIZER-SIGMA-CLI-001",
+        "agent_id": "AGENT-SIGMA-CLI-ANALYST-001",
+        "evidence_types": ["detection_rule_validation_evidence", "rule_authoring_evidence"],
+        "prohibited_options": ["plugin", "plugin install", "update", "--target", "-t"],
+        "installation_hint": "Install sigma-cli in the project Python virtual environment and use local rule validation/version commands only.",
+        "required_for_core_coverage": False,
+        "optional_runner_profile": True,
+        "expected_sha256": "8eb6af4733bcc50f57a087d1e6b15bd4d22cd6c57ba16a174adebe02c838d4c2",
+    },
 ]
 
-REQUIRED_ANALYSIS_TOOL_IDS = [profile["tool_id"] for profile in ANALYSIS_TOOL_PROFILES]
+REQUIRED_ANALYSIS_TOOL_IDS = [
+    profile["tool_id"]
+    for profile in ANALYSIS_TOOL_PROFILES
+    if profile.get("required_for_core_coverage", True)
+]
 ANALYSIS_TOOL_PROFILE_BY_ID = {profile["tool_id"]: profile for profile in ANALYSIS_TOOL_PROFILES}
+
+
+def core_analysis_tool_profiles() -> list[dict[str, Any]]:
+    return [
+        profile
+        for profile in ANALYSIS_TOOL_PROFILES
+        if profile.get("required_for_core_coverage", True)
+    ]
+
+
+def optional_analysis_tool_profiles() -> list[dict[str, Any]]:
+    return [
+        profile
+        for profile in ANALYSIS_TOOL_PROFILES
+        if not profile.get("required_for_core_coverage", True)
+    ]
 
 TOOL_INSTALL_READINESS_CATALOG = {
     "TOOL-NUCLEI-001": {
@@ -371,6 +424,17 @@ TOOL_INSTALL_READINESS_CATALOG = {
         "verification_commands": ["zap-cli --version", "import_zap_json_report"],
         "post_install_controls": ["pin_wrapper_sha256", "passive_scan_default", "active_scan_requires_approval"],
         "safe_smoke": "version_or_report_import",
+    },
+    "TOOL-SIGMA-CLI-001": {
+        "official_url": "https://github.com/SigmaHQ/sigma-cli",
+        "install_modes": ["project_python_venv", "pipx", "source_install"],
+        "operator_install_commands": [
+            ".venv\\Scripts\\python.exe -m pip install sigma-cli",
+            ".venv\\Scripts\\sigma.exe version",
+        ],
+        "verification_commands": [".venv\\Scripts\\sigma.exe version", ".venv\\Scripts\\python.exe -m pip check"],
+        "post_install_controls": ["pin_venv_console_script", "local_rule_file_only", "no_plugin_install_from_button"],
+        "safe_smoke": "version_only_and_local_rule_check",
     },
 }
 
@@ -791,6 +855,8 @@ DISCOVERED_TOOL_INSTALL_CANDIDATES = [
         "evidence_pipeline_hint": "Generate detection recommendations and backend queries as report annex evidence.",
         "commands_executed_by_api": False,
         "trusted_as_instruction": False,
+        "candidate_status": "promoted_to_optional_tool_profile",
+        "promoted_tool_profile_id": "TOOL-SIGMA-CLI-001",
         "next_action_ko": "백엔드 허용목록과 Sigma rule validator를 만든 뒤 탐지룰 추천 버튼으로 승격하세요.",
     },
     {
@@ -953,6 +1019,13 @@ ANALYSIS_AGENT_REGISTRY = {
         "name": "zap_report_normalizer_agent",
         "tool_ids": ["TOOL-ZAP-001"],
         "role": "Normalize ZAP alerts and separate passive observations from approved active validation.",
+        "output_contract": "redteam_ax_v2_tool_result_normalized",
+    },
+    "AGENT-SIGMA-CLI-ANALYST-001": {
+        "agent_id": "AGENT-SIGMA-CLI-ANALYST-001",
+        "name": "sigma_cli_rule_validation_agent",
+        "tool_ids": ["TOOL-SIGMA-CLI-001"],
+        "role": "Normalize Sigma CLI version/check output into detection rule validation evidence candidates without treating rule text as instructions.",
         "output_contract": "redteam_ax_v2_tool_result_normalized",
     },
 }
@@ -1222,6 +1295,13 @@ def command_availability(command_name: str) -> dict[str, Any]:
             "checked_at": now_utc(),
         }
     resolved = shutil.which(command)
+    if not resolved:
+        candidates = [
+            PROJECT_ROOT / ".venv" / "Scripts" / command,
+            PROJECT_ROOT / ".venv" / "Scripts" / f"{command}.exe",
+            PROJECT_ROOT / ".venv" / "Scripts" / f"{command}.cmd",
+        ]
+        resolved = next((path.as_posix() for path in candidates if path.exists() and path.is_file()), None)
     return {
         "status": "available" if resolved else "missing",
         "command": command,
@@ -1788,8 +1868,11 @@ def list_analysis_tools() -> dict[str, Any]:
     return {
         "kind": "redteam_ax_v2_analysis_tool_registry",
         "tool_count": len(tools),
+        "required_tool_count": len(core_analysis_tool_profiles()),
+        "optional_tool_count": len(optional_analysis_tool_profiles()),
         "tools": tools,
         "required_tools": ["nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap"],
+        "optional_tools": [profile["name"] for profile in optional_analysis_tool_profiles()],
         "safe_by_default": True,
         "execution_policy": "ToolActionCard + ROE + HITL before active execution",
     }
@@ -1953,6 +2036,16 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "expected_result_ko": "npm advisory 기반 의존성 취약점 후보 JSON",
         },
         {
+            "preset_id": "PRESET-SIGMA-CLI-LOCAL-RULE-CHECK",
+            "tool_id": "TOOL-SIGMA-CLI-001",
+            "execution_mode": "sandbox_execute",
+            "runner_argv": [SIGMA_CLI_EXECUTABLE_PATH.as_posix(), "check", SIGMA_CLI_SAMPLE_RULE_PATH.as_posix()],
+            "default_enabled": True,
+            "risk_note_ko": "프로젝트 안의 로컬 Sigma rule 파일만 검증합니다. 플러그인 설치, 원격 rule 다운로드, SIEM 배포는 하지 않습니다.",
+            "beginner_label_ko": "Sigma 탐지룰 로컬 검증",
+            "expected_result_ko": "Sigma rule 문법·검증 결과 기반 탐지룰 Evidence 후보",
+        },
+        {
             "preset_id": "PRESET-SCA-SBOM-IMPORT",
             "tool_id": "TOOL-SCA-001",
             "execution_mode": "offline_parse",
@@ -2085,7 +2178,7 @@ def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, An
     launch_readiness = list_toolchain_launch_readiness()
     launch_by_tool = {str(item.get("tool_id") or ""): item for item in launch_readiness.get("buttons") or []}
     work_order_rows: list[dict[str, Any]] = []
-    for index, profile in enumerate(ANALYSIS_TOOL_PROFILES, start=1):
+    for index, profile in enumerate(core_analysis_tool_profiles(), start=1):
         tool_id = str(profile.get("tool_id") or "")
         display_name = str(profile.get("display_name") or profile.get("name") or tool_id)
         launch = launch_by_tool.get(tool_id, {})
@@ -2171,7 +2264,7 @@ def build_six_tool_operating_work_order(payload: dict[str, Any]) -> dict[str, An
         "requested_by": requested_by,
         "status": "operator_work_order_ready",
         "tool_count": len(work_order_rows),
-        "required_tool_ids": [str(profile.get("tool_id") or "") for profile in ANALYSIS_TOOL_PROFILES],
+        "required_tool_ids": [str(profile.get("tool_id") or "") for profile in core_analysis_tool_profiles()],
         "ready_action_count": ready_action_count,
         "blocked_action_count": blocked_action_count,
         "service_import_action_count": service_import_count,
@@ -3294,7 +3387,8 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
             latest_by_tool[record_tool_id] = record
     coverage_rows: list[dict[str, Any]] = []
     missing_tool_ids: list[str] = []
-    for profile in ANALYSIS_TOOL_PROFILES:
+    optional_coverage_rows: list[dict[str, Any]] = []
+    for profile in core_analysis_tool_profiles():
         profile_tool_id = str(profile["tool_id"])
         latest = latest_by_tool.get(profile_tool_id)
         if latest is None:
@@ -3322,6 +3416,30 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
                 if latest else "운영자가 version-only 확인 결과 또는 import-only 검증 결과를 제출해야 합니다."
             ),
         })
+    for profile in optional_analysis_tool_profiles():
+        profile_tool_id = str(profile["tool_id"])
+        latest = latest_by_tool.get(profile_tool_id)
+        optional_coverage_rows.append({
+            "tool_id": profile_tool_id,
+            "tool_name": profile.get("name"),
+            "display_name": profile.get("display_name") or profile.get("name") or profile_tool_id,
+            "required_for_core_coverage": False,
+            "status": "recorded" if latest else "optional_missing",
+            "status_ko": "추가 도구 설치 증거 있음" if latest else "추가 도구 설치 증거 필요",
+            "evidence_id": (latest or {}).get("evidence_id"),
+            "install_mode": (latest or {}).get("install_mode"),
+            "version_command": (latest or {}).get("version_command"),
+            "version_output_sha256": (latest or {}).get("version_output_sha256"),
+            "recorded_at": (latest or {}).get("recorded_at"),
+            "operator": (latest or {}).get("operator"),
+            "commands_executed_by_api": False,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "next_action_ko": (
+                "추가 도구 설치 증거는 기록됐습니다. 버튼 실행 전 wrapper pin과 실행 범위를 계속 확인하세요."
+                if latest else "추가 도구는 선택 항목입니다. 실제 버튼 실행 전 설치 증거와 wrapper pin을 기록하세요."
+            ),
+        })
     coverage_complete = bool(coverage_rows) and not missing_tool_ids
     return {
         "kind": "redteam_ax_v2_tool_install_version_evidence_registry",
@@ -3329,10 +3447,13 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
         "tool_id": tool_id or "",
         "evidence_count": len(records),
         "tool_ids_with_evidence": tool_ids_with_evidence,
-        "required_tool_ids": [profile["tool_id"] for profile in ANALYSIS_TOOL_PROFILES],
+        "required_tool_ids": [profile["tool_id"] for profile in core_analysis_tool_profiles()],
         "missing_tool_ids": missing_tool_ids,
         "missing_tool_count": len(missing_tool_ids),
         "coverage_rows": coverage_rows,
+        "optional_coverage_rows": optional_coverage_rows,
+        "optional_tool_ids": [profile["tool_id"] for profile in optional_analysis_tool_profiles()],
+        "optional_tool_count": len(optional_coverage_rows),
         "evidence_coverage_complete": coverage_complete,
         "operator_summary_ko": (
             f"필수 분석도구 {len(coverage_rows)}개 중 {len(tool_ids_with_evidence)}개 설치 증거가 기록되었습니다. "
@@ -6143,6 +6264,7 @@ def runner_command_allowed(profile: dict[str, Any] | None, argv: list[str], plan
     command = argv[0]
     command_path = Path(command)
     command_basename = command_path.name if command_path.name else command
+    command_stem = Path(command_basename).stem if command_basename else command
     allowed_names = {command_name, Path(command_name).name}
     manifest = (plan or {}).get("wrapper_manifest") or (tool_wrapper_manifest_for_profile(profile) if profile else {})
     availability = (manifest or {}).get("availability", {}) or {}
@@ -6151,7 +6273,11 @@ def runner_command_allowed(profile: dict[str, Any] | None, argv: list[str], plan
         allowed_names.add(Path(resolved_path).name)
     allowed_names_lower = {name.lower() for name in allowed_names if name}
     allowed_commands_lower = {name.lower() for name in {command_name, resolved_path} if name}
-    if command.lower() not in allowed_commands_lower and command_basename.lower() not in allowed_names_lower:
+    if (
+        command.lower() not in allowed_commands_lower
+        and command_basename.lower() not in allowed_names_lower
+        and command_stem.lower() not in allowed_names_lower
+    ):
         return False, "runner_command_not_in_child_process_allowlist"
     prohibited_options = set((profile or {}).get("prohibited_options") or [])
     requested_options = {item for item in argv[1:] if item in prohibited_options}
@@ -6172,7 +6298,13 @@ def safe_local_smoke_runner_allowed(profile: dict[str, Any] | None, argv: list[s
     command_name = str(profile.get("command_name") or "").strip()
     command = argv[0]
     command_basename = Path(command).name if Path(command).name else command
-    if command_name and command.lower() not in {command_name.lower(), Path(command_name).name.lower()} and command_basename.lower() != Path(command_name).name.lower():
+    command_stem = Path(command_basename).stem if command_basename else command
+    if (
+        command_name
+        and command.lower() not in {command_name.lower(), Path(command_name).name.lower()}
+        and command_basename.lower() != Path(command_name).name.lower()
+        and command_stem.lower() != Path(command_name).name.lower()
+    ):
         return False, "runner_command_not_in_child_process_allowlist"
     normalized_args = [str(item).strip().lower() for item in argv[1:]]
     allowed_version_args = {"--version", "-version", "-v", "version"}
@@ -9269,6 +9401,49 @@ def _normalize_sca_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     return items
 
 
+def _normalize_sigma_cli_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for index, raw in enumerate(raw_values, start=1):
+        text = str(raw or "")
+        error_count = None
+        condition_error_count = None
+        issue_count = None
+        match = re.search(
+            r"Found\s+(\d+)\s+errors?,\s+(\d+)\s+condition errors?\s+and\s+(\d+)\s+issues?",
+            text,
+            re.IGNORECASE,
+        )
+        if match:
+            error_count = int(match.group(1))
+            condition_error_count = int(match.group(2))
+            issue_count = int(match.group(3))
+        validation_status = (
+            "passed"
+            if error_count == 0 and condition_error_count == 0 and issue_count == 0
+            else "review_required"
+        )
+        items.append({
+            "item_type": "sigma_rule_validation_observation",
+            "tool_id": "TOOL-SIGMA-CLI-001",
+            "validation_status": validation_status,
+            "sigma_error_count": error_count,
+            "sigma_condition_error_count": condition_error_count,
+            "sigma_issue_count": issue_count,
+            "summary": (
+                "Sigma CLI local rule check completed without reported errors."
+                if validation_status == "passed"
+                else "Sigma CLI local rule check requires analyst review."
+            ),
+            "raw_excerpt": text[:500],
+            "severity": "info",
+            "confidence": 0.8 if validation_status == "passed" else 0.6,
+            "trusted_as_instruction": False,
+            "requires_human_validation": True,
+            "source_index": index,
+        })
+    return items
+
+
 def _normalize_container_launch_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for raw in raw_values:
@@ -9324,6 +9499,9 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     elif name == "sca":
         parser = "sca_json"
         items = _normalize_sca_output(raw_values)
+    elif name == "sigma-cli":
+        parser = "sigma_cli_text"
+        items = _normalize_sigma_cli_output(raw_values)
     else:
         items = []
     if container_items:
