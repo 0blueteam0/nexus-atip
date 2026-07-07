@@ -2080,3 +2080,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 후보는 `trusted_as_instruction=false`, `requires_operator_attestation=true`, `runner_unlocks=[]`로 고정해 운영자 검토 전에는 설치 증거, 실행 승인, Finding/Claim 근거로 확정되지 않게 한다.
 - [x] backend safe smoke regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
 - [ ] 이 변경은 version-only 출력 후보 연결이다. 6개 도구 전체 운영 결과 회수, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료는 아직 별도 작업과 실측 증거가 필요하다.
+
+## 149. 갱신 목표 - 안전 설치 확인 후보 운영자 검토 기록
+
+- [x] `POST /api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidate`를 추가한다.
+- [x] API 실행 후보를 설치 증거로 기록할 때 `version_command_executed_by_operator=false`, `commands_executed_by_api=true`, `operator_attested_api_candidate=true`를 보존한다.
+- [x] registry coverage row에 API 실행 출처와 운영자 attestation 여부를 표시할 수 있는 필드를 추가한다.
+- [x] RedTeam2 관리자 설정 영역에 `검토 후 설치 증거 기록` 버튼을 추가하고 성공 후 설치 증거 registry를 새로고침한다.
+- [x] backend attestation regression, Python compile, `node --check`, frontend runtime/launch sanity를 통과시킨다.
+- [ ] 이 기록은 설치 확인 증거에 한정된다. scanner 실행 승인, 결과 분석 완료, Finding/Claim 승격, Report v2/export/completion gate는 계속 별도 승인과 증거가 필요하다.

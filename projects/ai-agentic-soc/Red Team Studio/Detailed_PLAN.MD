@@ -1384,3 +1384,12 @@ Create Case
 - 안전 원칙: 후보는 `commands_executed_by_api=true`인 실행 결과를 표시하지만 `trusted_as_instruction=false`, `requires_operator_attestation=true`, `runner_unlocks=[]`를 유지한다. 이 후보만으로 실행 승인, Finding 근거, 보고서 Claim, completion gate를 확정하지 않는다.
 - 테스트 전략: `py_compile redteam_v2_models.py`, safe local smoke backend regression, `node --check reports.js`, frontend runtime/launch sanity를 실행한다.
 - 예외 케이스: stdout artifact가 없으면 후보 상태는 `표준 출력 없음`으로 남긴다. SCA처럼 import-only 도구는 안전 설치 확인 후보가 아니라 기존 `결과 첨부 필요 도구` 안내를 따른다.
+
+## 96. 갱신 목표 반영 - 안전 설치 확인 후보 운영자 검토 기록 API
+
+- 목적: version-only 안전 설치 확인 후보를 수동으로 다시 입력하지 않고 설치 증거 registry에 연결하되, API가 실행한 출력이라는 사실과 운영자 검토 책임을 분리해 보존한다.
+- API 설계: `POST /api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidate`를 추가한다. payload는 `case_id`, `operator`, `operator_role`, `review_note`, `operator_attests_output_matches_artifact=true`, `candidate`를 요구한다.
+- 데이터 계약: 기록된 증거는 기존 `redteam_ax_v2_tool_install_version_evidence` kind를 사용하지만 `version_command_executed_by_operator=false`, `commands_executed_by_api=true`, `operator_attested_api_candidate=true`, `runner_unlocks=[]`를 명시한다. registry coverage row에는 `evidence_source_commands_executed_by_api`와 `operator_attested_api_candidate`를 추가한다.
+- 화면/기능 명세: 관리자 설정 영역에 `검토 후 설치 증거 기록` 버튼을 추가한다. 버튼은 `candidate_ready` 후보가 있을 때만 활성화되고, 성공 후 설치 증거 registry를 새로고침한다.
+- 안전 원칙: 이 기록은 설치 확인 증거일 뿐 실행 승인, scanner unlock, Finding/Claim 승격, completion gate 통과 조건이 아니다. `trusted_as_instruction=false`와 Claim 사용 제한은 계속 유지한다.
+- 테스트 전략: safe smoke 후보 생성 후 attestation API로 registry에 기록하는 backend regression, `py_compile`, `node --check`, frontend runtime/launch sanity를 실행한다.

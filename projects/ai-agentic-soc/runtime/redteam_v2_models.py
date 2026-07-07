@@ -2348,6 +2348,120 @@ def record_tool_install_version_evidence(tool_id: str, payload: dict[str, Any]) 
     return record
 
 
+def attest_safe_smoke_install_version_evidence_candidate(payload: dict[str, Any]) -> dict[str, Any]:
+    candidate = payload.get("candidate") if isinstance(payload.get("candidate"), dict) else {}
+    tool_id = str(payload.get("tool_id") or candidate.get("tool_id") or "").strip()
+    profile = analysis_tool_profile(tool_id)
+    case_id = str(payload.get("case_id") or TOOL_WRAPPER_PIN_CASE_ID)
+    operator = str(payload.get("operator") or payload.get("reviewed_by") or "").strip()
+    operator_role = str(payload.get("operator_role") or "").strip()
+    review_note = str(payload.get("review_note") or payload.get("attestation_note") or "").strip()
+    install_mode = str(payload.get("install_mode") or "safe_local_smoke_candidate").strip()
+    version_command = str(payload.get("version_command") or candidate.get("version_command") or "").strip()
+    version_output_excerpt = str(
+        payload.get("version_output_excerpt")
+        or candidate.get("version_output_excerpt")
+        or ""
+    ).strip()
+    operator_attests_output = bool(payload.get("operator_attests_output_matches_artifact"))
+    candidate_commands_executed_by_api = bool(candidate.get("commands_executed_by_api"))
+    candidate_trusted_as_instruction = bool(candidate.get("trusted_as_instruction"))
+    candidate_requires_attestation = bool(candidate.get("requires_operator_attestation"))
+    candidate_runner_unlocks = candidate.get("runner_unlocks") if isinstance(candidate.get("runner_unlocks"), list) else []
+    evidence_id = str(payload.get("evidence_id") or stable_id(
+        "TIE",
+        [case_id, tool_id, operator, install_mode, version_command, version_output_excerpt, "safe-smoke-attested"],
+    ))
+    errors: list[str] = []
+    if profile is None:
+        errors.append("tool_profile_not_registered")
+    if not tool_id:
+        errors.append("tool_id_required")
+    if not operator:
+        errors.append("operator_required")
+    if not operator_role:
+        errors.append("operator_role_required")
+    if not review_note:
+        errors.append("review_note_required")
+    if not version_command:
+        errors.append("version_command_required")
+    if not version_output_excerpt:
+        errors.append("version_output_excerpt_required")
+    if not operator_attests_output:
+        errors.append("operator_attestation_required")
+    if not candidate_commands_executed_by_api:
+        errors.append("candidate_must_be_api_executed_safe_smoke")
+    if candidate_trusted_as_instruction:
+        errors.append("candidate_must_not_be_trusted_as_instruction")
+    if not candidate_requires_attestation:
+        errors.append("candidate_must_require_operator_attestation")
+    if candidate_runner_unlocks:
+        errors.append("candidate_must_not_unlock_runner")
+
+    output_sha256 = hashlib.sha256(version_output_excerpt.encode("utf-8")).hexdigest() if version_output_excerpt else ""
+    catalog = TOOL_INSTALL_READINESS_CATALOG.get(str((profile or {}).get("tool_id") or tool_id), {})
+    record = {
+        "kind": "redteam_ax_v2_tool_install_version_evidence",
+        "status": "invalid" if errors else "recorded",
+        "case_id": case_id,
+        "evidence_id": evidence_id,
+        "tool_id": (profile or {}).get("tool_id") or tool_id,
+        "tool_name": (profile or {}).get("name") or str(tool_id),
+        "adapter_type": (profile or {}).get("adapter_type") or "",
+        "install_mode": install_mode,
+        "official_url": catalog.get("official_url") or "",
+        "version_command": version_command,
+        "verification_commands": catalog.get("verification_commands") or [],
+        "version_output_excerpt": version_output_excerpt[:4000],
+        "version_output_sha256": output_sha256,
+        "source_candidate_output_sha256": str(candidate.get("version_output_sha256") or ""),
+        "version_command_executed_by_operator": False,
+        "commands_executed_by_api": True,
+        "operator_attested_api_candidate": True,
+        "operator_attests_output_matches_artifact": operator_attests_output,
+        "operator": operator,
+        "operator_role": operator_role,
+        "operator_review_note": review_note,
+        "source_candidate": {
+            "run_id": candidate.get("run_id"),
+            "source_artifact_id": candidate.get("source_artifact_id"),
+            "source_path_hidden_from_analyst": True,
+            "safe_local_smoke_reason": candidate.get("safe_local_smoke_reason"),
+            "trusted_as_instruction": False,
+            "runner_unlocks": [],
+        },
+        "recorded_at": now_utc(),
+        "trusted_as_instruction": False,
+        "requires_human_validation": True,
+        "human_validation_completed": bool(operator_attests_output and operator and review_note),
+        "evidence_pipeline": {
+            "normalizer_id": (profile or {}).get("normalizer_id"),
+            "analysis_agent_id": (profile or {}).get("agent_id"),
+            "trusted_as_instruction": False,
+            "claim_use": "tool_install_or_version_evidence_only",
+        },
+        "runner_unlocks": [],
+        "policy": (
+            "Safe smoke candidate attestation records an operator-reviewed API-executed version-only output. "
+            "It does not approve scans, unlock runners, or support Finding/Claim promotion."
+        ),
+        "errors": errors,
+    }
+    if errors:
+        return record
+    record["artifact_path"] = write_json_artifact(case_id, "tool-install-evidence", evidence_id, record)
+    record["audit_log_path"] = write_case_event(case_id, {
+        "event": "safe_smoke_install_version_evidence_candidate_attested",
+        "evidence_id": evidence_id,
+        "tool_id": record["tool_id"],
+        "artifact_path": record["artifact_path"],
+        "commands_executed_by_api": True,
+        "operator_attested_api_candidate": True,
+        "runner_unlocks": [],
+    })
+    return record
+
+
 def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str | None = None) -> dict[str, Any]:
     records = list_json_artifacts(case_id, "tool-install-evidence")
     normalized_tool_id = str(tool_id or "").strip().upper()
@@ -2386,6 +2500,8 @@ def list_tool_install_version_evidence(case_id: str | None = None, tool_id: str 
             "version_output_sha256": (latest or {}).get("version_output_sha256"),
             "recorded_at": (latest or {}).get("recorded_at"),
             "operator": (latest or {}).get("operator"),
+            "evidence_source_commands_executed_by_api": bool((latest or {}).get("commands_executed_by_api")),
+            "operator_attested_api_candidate": bool((latest or {}).get("operator_attested_api_candidate")),
             "commands_executed_by_api": False,
             "trusted_as_instruction": False,
             "requires_human_validation": True,

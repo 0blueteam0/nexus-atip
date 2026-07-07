@@ -1863,6 +1863,113 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             self.assertEqual(len(candidate["version_output_sha256"]), 64)
             self.assertIn("version smoke output", candidate["version_output_excerpt"])
 
+    def test_v2_safe_smoke_candidate_attestation_records_install_evidence_without_runner_unlock(self) -> None:
+        case_id = f"CASE-V2-SAFE-SMOKE-ATTEST-EVIDENCE-001-{uuid.uuid4().hex[:8]}"
+        runtime_snapshot = {
+            "kind": "redteam_ax_v2_runtime_readiness_status",
+            "status": "blocked_runtime_or_external_readiness",
+            "tool_execution_ready": False,
+            "tool_execution_blocked_by": ["external_scanner_endpoint_missing"],
+            "next_action_plan": [],
+        }
+
+        def trusted_manifest(profile: dict) -> dict:
+            command_name = profile.get("command_name") or profile.get("name")
+            return {
+                "kind": "redteam_ax_v2_tool_wrapper_manifest",
+                "tool_id": profile["tool_id"],
+                "tool_name": profile["name"],
+                "availability": {
+                    "status": "available",
+                    "command_name": command_name,
+                    "resolved_path": command_name,
+                },
+                "pinning_status": "hash_match",
+                "trusted_for_runner": True,
+                "requires_pin_before_runner": False,
+                "runner_preflight": {
+                    "runner_can_use_wrapper": True,
+                    "blocking_controls": [],
+                    "human_review_required": False,
+                },
+                "actual_sha256": "e" * 64,
+                "expected_sha256": "e" * 64,
+                "expected_sha256_source": "test_approved_pin",
+            }
+
+        class Completed:
+            def __init__(self, argv: list[str]) -> None:
+                self.returncode = 0
+                self.stdout = f"{argv[0]} version smoke output"
+                self.stderr = ""
+
+        with patch("runtime.redteam_v2_models.latest_runtime_readiness_status", return_value=runtime_snapshot), \
+             patch("runtime.redteam_v2_models.tool_wrapper_manifest_for_profile", side_effect=trusted_manifest), \
+             patch("runtime.redteam_v2_models.subprocess.run", side_effect=lambda argv, **kwargs: Completed(argv)):
+            execute_response = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
+                "case_id": case_id,
+                "toolchain_id": "TCHAIN-SAFE-SMOKE-ATTEST-001",
+                "requested_by": "analyst@example.com",
+                "objective": "version-only 설치 확인 후보를 운영자 검토 증거로 기록한다.",
+                "require_runtime_preflight": True,
+                "allow_safe_local_smoke_when_runtime_partial": True,
+                "tools": [{
+                    "tool_id": "TOOL-NUCLEI-001",
+                    "execution_mode": "dry_run",
+                    "runner_backend": "local_subprocess_shim",
+                    "runner_argv": ["nuclei", "--version"],
+                }, {
+                    "tool_id": "TOOL-TRIVY-001",
+                    "execution_mode": "sandbox_execute",
+                    "runner_backend": "local_subprocess_shim",
+                    "runner_argv": ["trivy", "--version"],
+                }],
+            })
+
+        self.assertEqual(execute_response.status_code, 200)
+        candidates = {
+            item["tool_id"]: item
+            for item in execute_response.json()["install_version_evidence_candidates"]
+        }
+        candidate = candidates["TOOL-NUCLEI-001"]
+        attestation_response = self.client.post(
+            "/api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidate",
+            json={
+                "case_id": case_id,
+                "operator": "lead@example.com",
+                "operator_role": "red_team_lead",
+                "review_note": "version-only 출력과 산출물 해시를 확인했고 설치 증거로만 기록한다.",
+                "operator_attests_output_matches_artifact": True,
+                "candidate": candidate,
+            },
+        )
+
+        self.assertEqual(attestation_response.status_code, 200)
+        body = attestation_response.json()
+        self.assertEqual(body["kind"], "redteam_ax_v2_tool_install_version_evidence")
+        self.assertEqual(body["status"], "recorded")
+        self.assertEqual(body["tool_id"], "TOOL-NUCLEI-001")
+        self.assertFalse(body["version_command_executed_by_operator"])
+        self.assertTrue(body["commands_executed_by_api"])
+        self.assertTrue(body["operator_attested_api_candidate"])
+        self.assertTrue(body["operator_attests_output_matches_artifact"])
+        self.assertFalse(body["trusted_as_instruction"])
+        self.assertFalse(body["evidence_pipeline"]["trusted_as_instruction"])
+        self.assertEqual(body["runner_unlocks"], [])
+        self.assertIn("does not approve scans", body["policy"])
+        self.assertTrue(Path(body["artifact_path"]).exists())
+
+        registry = self.client.get(f"/api/redteam/v2/tool-install-version-evidence?case_id={case_id}")
+        self.assertEqual(registry.status_code, 200)
+        registry_body = registry.json()
+        by_tool = {row["tool_id"]: row for row in registry_body["coverage_rows"]}
+        self.assertEqual(by_tool["TOOL-NUCLEI-001"]["status"], "recorded")
+        self.assertTrue(by_tool["TOOL-NUCLEI-001"]["evidence_source_commands_executed_by_api"])
+        self.assertTrue(by_tool["TOOL-NUCLEI-001"]["operator_attested_api_candidate"])
+        self.assertFalse(by_tool["TOOL-NUCLEI-001"]["commands_executed_by_api"])
+        self.assertFalse(registry_body["commands_executed_by_api"])
+        self.assertFalse(registry_body["trusted_as_instruction"])
+
     def test_v2_toolchain_collect_results_normalizes_all_runs_and_creates_evidence_candidates(self) -> None:
         case_id = f"CASE-V2-TOOLCHAIN-COLLECT-RESULTS-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-COLLECT-RESULTS-{uuid.uuid4().hex[:8]}"

@@ -3936,6 +3936,43 @@ export default {
     }
   }
 ,
+  async attestRedTeam2SafeSmokeInstallCandidate() {
+    const draft = this.redTeam2AnalysisDraft();
+    const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
+    const target = String(draft.target || '').trim();
+    const caseId = this.redTeamOperationCaseId(reportId, target || 'redteam2-safe-smoke');
+    const toolchainRun = this.state.redteam2ToolchainState?.result || {};
+    const candidate = (toolchainRun.install_version_evidence_candidates || []).find(item => item.status === 'candidate_ready') || {};
+    if (!candidate.tool_id) {
+      this.toast('설치 증거로 기록할 안전 설치 확인 후보가 없습니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ redteam2InstallCandidateAttestationState:{ ...(s.redteam2InstallCandidateAttestationState || {}), status:'recording', error:null } }));
+    try {
+      const res = await fetch('http://127.0.0.1:8765/api/redteam/v2/tool-install-version-evidence/attest-safe-smoke-candidate', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          case_id:caseId,
+          operator:String(draft.operatorEvidenceSubmissionOperator || draft.compositeClosureReviewer || 'lead@example.com').trim(),
+          operator_role:'red_team_lead',
+          review_note:'version-only 출력과 산출물 해시를 확인했고 설치 증거로만 기록합니다. 실행 승인이나 Finding 근거로 확정하지 않습니다.',
+          operator_attests_output_matches_artifact:true,
+          candidate,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.status === 'invalid') throw new Error((data.errors || []).join(', ') || data.detail || `HTTP ${res.status}`);
+      this.setState(s => ({ redteam2InstallCandidateAttestationState:{ ...(s.redteam2InstallCandidateAttestationState || {}), status:data.status || 'recorded', result:data, error:null, checkedAt:new Date().toISOString() } }));
+      this.toast('설치 확인 후보를 운영자 검토 증거로 기록했습니다', 'success');
+      this.logAudit('레드팀 리드', `레드팀 분석2 설치 확인 후보 증거 기록: ${data.tool_id} · ${data.evidence_id}`);
+      await this.loadRedTeam2AnalysisStatus();
+    } catch (err) {
+      this.setState(s => ({ redteam2InstallCandidateAttestationState:{ ...(s.redteam2InstallCandidateAttestationState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('설치 확인 후보 기록 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
   async reloadRedTeam2ToolchainRunStatus() {
     const draft = this.redTeam2AnalysisDraft();
     const reportId = String(draft.reportId || 'RTA-2026-0301').trim();
@@ -5556,6 +5593,7 @@ export default {
     const serviceImportResult = serviceImportState.result || {};
     const sixToolWorkOrder = sixToolWorkOrderState.result || {};
     const sixToolSubmissionTemplate = sixToolSubmissionTemplateState.result || {};
+    const installCandidateAttestationState = this.state.redteam2InstallCandidateAttestationState || {};
     const serviceImportEvidence = serviceImportResult.evidence || {};
     const serviceImportArtifact = serviceImportResult.artifact || {};
     const serviceImportNormalized = serviceImportResult.normalized_result || {};
@@ -6420,6 +6458,7 @@ export default {
       item.version_output_sha256 ? `${String(item.version_output_sha256).slice(0, 12)}...` : '출력 해시 대기',
       item.next_action_ko || '운영자가 출력값을 검토한 뒤 설치 증거로 기록하세요.',
     ]);
+    const installEvidenceCandidateReady = (toolchainRun.install_version_evidence_candidates || []).some(item => item.status === 'candidate_ready');
     const toolchainStepRows = (toolchainRun.steps || []).map(step => [
       `${step.index + 1}. ${step.tool_name || step.tool_id}`,
       step.status_ko || koValue(step.status),
@@ -7228,6 +7267,11 @@ export default {
                 disabled:toolchainState.status === 'executing-safe-smoke',
                 style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:toolchainState.status === 'executing-safe-smoke' ? C.raised : C.bg, color:toolchainState.status === 'executing-safe-smoke' ? C.muted : C.amber, cursor:toolchainState.status === 'executing-safe-smoke' ? 'not-allowed' : 'pointer', fontWeight:900 },
               }, toolchainState.status === 'executing-safe-smoke' ? '설치 확인 중' : '안전 설치 확인') : null,
+              showAdminDetails ? h('button', {
+                onClick:()=>this.attestRedTeam2SafeSmokeInstallCandidate(),
+                disabled:installCandidateAttestationState.status === 'recording' || !installEvidenceCandidateReady,
+                style:{ padding:'8px 10px', borderRadius:'8px', border:`1px solid ${C.amber}`, background:(installCandidateAttestationState.status === 'recording' || !installEvidenceCandidateReady) ? C.raised : C.bg, color:(installCandidateAttestationState.status === 'recording' || !installEvidenceCandidateReady) ? C.muted : C.amber, cursor:(installCandidateAttestationState.status === 'recording' || !installEvidenceCandidateReady) ? 'not-allowed' : 'pointer', fontWeight:900 },
+              }, installCandidateAttestationState.status === 'recording' ? '설치 증거 기록 중' : '검토 후 설치 증거 기록') : null,
               h('button', {
                 onClick:()=>this.executeRedTeam2CompositeToolchain(),
                 disabled:toolchainState.status === 'executing',

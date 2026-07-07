@@ -58,6 +58,9 @@ def main() -> int:
         "require_real_completion_evidence",
         "completion_evidence_allowed",
         "source_completion_review",
+        "attest-safe-smoke-candidate",
+        "operator_attests_output_matches_artifact",
+        "실행 승인이나 Finding 근거로 확정하지 않습니다",
     ):
         if payload_term not in source:
             raise AssertionError(f"missing operating closure strict evidence payload term: {payload_term}")
@@ -187,6 +190,7 @@ def main() -> int:
         "설치 확인 결과 후보",
         "운영자가 출력값을 검토한 뒤 설치 증거로 기록",
         "version-only 출력 후보",
+        "검토 후 설치 증거 기록",
         "frontend_action_key",
         "redteam2_button_ko",
         "next_action_plan",
