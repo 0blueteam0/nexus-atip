@@ -3854,6 +3854,15 @@ export default {
     const selectedIds = requestedToolIds.filter(toolId => safeSmokeToolCatalog[toolId]?.runner_argv);
     const smokeToolIds = (selectedIds.length >= 2 ? selectedIds : ['TOOL-NUCLEI-001', 'TOOL-OPENVAS-001', 'TOOL-TRIVY-001', 'TOOL-NPM-AUDIT-001', 'TOOL-ZAP-001']).slice(0, 5);
     const importOnlyIds = requestedToolIds.filter(toolId => safeSmokeToolCatalog[toolId]?.import_only);
+    const importOnlyGuidanceRows = importOnlyIds.map(toolId => ({
+      tool_id:toolId,
+      tool_name:safeSmokeToolCatalog[toolId]?.label || toolId,
+      status:'operator_import_required',
+      status_ko:'결과 첨부 필요',
+      can_collect_result:false,
+      evidence_path:'SBOM, lockfile, CycloneDX 또는 조직 SCA export를 운영 산출물 묶음으로 제출',
+      next_action_ko:'6개 도구 제출 양식 만들기 또는 운영 산출물 제출 묶음 가져오기로 SCA 결과를 Evidence 후보에 포함하세요.',
+    }));
     const tools = smokeToolIds.map((toolId, index) => ({
       tool_id:toolId,
       execution_mode:safeSmokeToolCatalog[toolId].execution_mode,
@@ -3905,6 +3914,8 @@ export default {
             run_status:step.run?.status,
             can_collect_result:Boolean(step.run?.run_id),
           })),
+          import_only_guidance_rows:importOnlyGuidanceRows,
+          import_only_guidance_count:importOnlyGuidanceRows.length,
           collectable_step_count:(data.steps || []).filter(step => step.run?.run_id).length,
           can_collect_results:(data.steps || []).some(step => step.run?.run_id),
           primary_next_api:`/api/redteam/v2/toolchains/${data.toolchain_id}/collect-results`,
@@ -6426,6 +6437,12 @@ export default {
       row.run_id ? '보관된 실행 기록 있음' : (row.run_status || (row.errors || []).join(', ') || '-'),
       row.can_collect_result ? '결과 회수 가능' : '회수 불가',
     ]);
+    const importOnlyGuidanceRows = (toolchainRunStatus.import_only_guidance_rows || []).map(row => [
+      koToolDisplayName(row.tool_name || row.tool_id, row.tool_id),
+      koValue(row.status_ko || row.status || '결과 첨부 필요'),
+      row.evidence_path || 'SBOM, lockfile, CycloneDX 또는 조직 SCA export 필요',
+      row.next_action_ko || '운영 산출물 제출 묶음 가져오기로 Evidence 후보에 포함하세요.',
+    ]);
     const toolchainCollectionRows = (toolchainCollection.steps || []).map(step => [
       `${Number(step.index ?? 0) + 1}. ${koToolName(step.tool_id)}`,
       koValue(step.status),
@@ -7300,6 +7317,7 @@ export default {
             showAdminDetails ? this.renderTable(['상세 진행 기록(관리자/감사용)','상태','사용자 안내','진행률'], toolchainProgressRows.length ? toolchainProgressRows : [['대기','-','결과 첨부 또는 승인된 분석 실행 뒤 표시됩니다','-']]) : null,
             showAdminDetails ? this.renderTable(['저장 실행 상태','상태','근거'], toolchainRunStatusRows) : null,
             showAdminDetails ? this.renderTable(['저장 실행 단계','상태','보관 근거','결과 회수'], toolchainRunStatusStepRows.length ? toolchainRunStatusStepRows : [['대기','-','저장 실행 상태 다시 불러오기 버튼을 누르세요','-']]) : null,
+            this.renderTable(['결과 첨부 필요 도구','상태','필요 산출물','다음 행동'], importOnlyGuidanceRows.length ? importOnlyGuidanceRows : [['SCA/SBOM 의존성 점검','결과 첨부 대기','SBOM, lockfile, CycloneDX 또는 조직 SCA export','6개 도구 제출 양식 만들기 또는 운영 산출물 제출 묶음 가져오기']]),
             this.renderTable(['회수 단계','상태','결과 정리/안전 정리','증거 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['필수 6개 분석도구','확인 상태','분석 결과','증거/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 확인 상태를 결과 회수 뒤 표시합니다','-']]),
             this.renderTable(['도구별 분석 요약','검토 우선순위','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),

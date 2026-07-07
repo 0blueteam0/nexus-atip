@@ -2056,3 +2056,10 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] `API 호출 전에`, `Evidence 후보로 정규화` 같은 내부/API 중심 문구를 `전송 전에`, `증거 후보로 정리`로 낮춘다.
 - [x] node syntax, Korean copy inventory, runtime/launch frontend sanity, fresh Vite Playwright DOM 캡처를 통과했다.
 - [ ] 전역 내비게이션과 legacy report template 내부 도메인 영문은 후속 공통 UI 정리 slice에서 계속 줄인다.
+## 146. 갱신 목표 - 안전 설치 확인 후 SCA 결과 첨부 상태 보존
+
+- [x] RedTeam2 안전 설치 확인 projection에 `import_only_guidance_rows`와 `import_only_guidance_count`를 추가했다.
+- [x] SCA는 실행하지 않고 `결과 첨부 필요` 상태로 보존하며, 필요한 산출물을 `SBOM, lockfile, CycloneDX 또는 조직 SCA export`로 안내한다.
+- [x] 기본 분석 화면에 `결과 첨부 필요 도구` 표를 추가해 SCA/SBOM 의존성 점검이 필수 6개 도구 흐름에서 빠지지 않게 했다.
+- [x] `node --check reports.js`, frontend runtime/launch sanity, backend 6개 도구 work-order 및 6개 imported-output collection E2E 회귀를 통과했다.
+- [ ] 이 변경은 안전 설치 확인 UX와 SCA 제출 안내 보강이며 실제 SCA 운영 산출물 제출, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료를 대신하지 않는다.

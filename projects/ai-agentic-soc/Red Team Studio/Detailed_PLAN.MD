@@ -1358,3 +1358,11 @@ Create Case
 - 표시 규칙: `API 호출 전에`는 `전송 전에`, `Evidence 후보로 정규화`는 `증거 후보로 정리`, `Report v2 초안 생성`은 `보고서 v2 초안 생성`으로 낮춘다. backend payload key와 audit artifact의 기술 식별자는 유지한다.
 - 테스트 전략: `node --check reports.js`, `test_redteam2_korean_copy_inventory.py`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, fresh Vite Playwright DOM 캡처를 실행한다. DOM 캡처는 legacy tab/header/RBAC/API 문구가 0건인지 확인한다.
 - 예외 케이스: 이 slice는 기본 분석가 UI copy 정리다. 관리자 확장 패널, legacy report template, 전역 내비게이션, 실제 운영 6개 도구 산출물과 Evidence/Finding/Matrix/Report/export/completion gate 완료는 후속 증거가 필요하다.
+## 93. 갱신 목표 반영 - 안전 설치 확인 후 SCA 결과 첨부 상태 보존
+
+- 목적: RedTeam2 `안전 설치 확인` 버튼은 Nuclei/OpenVAS/Trivy/npm audit/OWASP ZAP의 version-only 확인만 실행하고 SCA는 import-only로 분리한다. 이때 SCA가 결과 상태에서 사라지면 초급 분석가는 필수 6개 도구 중 1개가 남았다는 사실을 놓칠 수 있다.
+- 화면/기능 명세: 안전 설치 확인 응답 projection에 `import_only_guidance_rows`와 `import_only_guidance_count`를 저장한다. 기본 분석 화면은 `결과 첨부 필요 도구` 표를 항상 표시하고, SCA/SBOM 의존성 점검에 필요한 산출물과 다음 행동을 한국어로 안내한다.
+- 데이터 계약: `import_only_guidance_rows[]`는 `tool_id`, `tool_name`, `status`, `status_ko`, `can_collect_result=false`, `evidence_path`, `next_action_ko`를 포함한다. 이 값은 프론트 projection이며 백엔드 toolchain run schema와 Evidence schema를 바꾸지 않는다.
+- 안전 원칙: SCA import-only 안내는 도구 실행이 아니다. SBOM, lockfile, CycloneDX 또는 조직 SCA export를 운영자가 제출한 뒤 기존 manifest/import/collect-results 경로로 Evidence 후보화한다.
+- 테스트 전략: `node --check reports.js`, `redteam_ax_frontend_runtime_readiness_contract.py`, `redteam_ax_frontend_launch_readiness_contract.py`, `pytest tests/test_redteam_v2_api_router.py -k "six_tool_work_order or six_named_tools_imported_outputs_complete_collection_e2e"`를 실행한다.
+- 예외 케이스: 이 변경은 안전 설치 확인 UX와 SCA 누락 방지 계약이다. 실제 SCA 운영 산출물 제출, Evidence 승인, Finding severity 2인 승인, Matrix/Report/export/completion gate 완료는 별도 운영 증거가 필요하다.
