@@ -374,6 +374,85 @@ TOOL_INSTALL_READINESS_CATALOG = {
     },
 }
 
+DISCOVERED_TOOL_INSTALL_CANDIDATES = [
+    {
+        "candidate_id": "TOOL-CAND-AMASS-001",
+        "name": "amass",
+        "display_name": "OWASP Amass",
+        "category": "attack_surface_recon",
+        "risk_class": "T1/T3",
+        "official_url": "https://github.com/owasp-amass/amass",
+        "official_docs_url": "https://owasp-amass.github.io/docs/",
+        "source_basis": "OWASP Amass official project and GitHub repository",
+        "install_modes": ["go_install", "docker_image", "github_release"],
+        "operator_install_commands": ["go install github.com/owasp-amass/amass/v5/...@master", "amass -version"],
+        "verification_commands": ["amass -version"],
+        "default_policy": "scope_limited_osint_or_approved_active_recon",
+        "runner_policy": "register_tool_profile_after_scope_validator_and_output_normalizer",
+        "evidence_pipeline_hint": "Normalize discovered domains/assets to Evidence candidates; active enumeration requires ROE.",
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "next_action_ko": "공식 저장소 기준으로 설치 후보를 검토하고, 범위 제한·출력 정규화·Evidence 매핑을 만든 뒤 ToolProfile로 승격하세요.",
+    },
+    {
+        "candidate_id": "TOOL-CAND-FFUF-001",
+        "name": "ffuf",
+        "display_name": "ffuf",
+        "category": "web_content_discovery",
+        "risk_class": "T3",
+        "official_url": "https://github.com/ffuf/ffuf",
+        "official_docs_url": "https://github.com/ffuf/ffuf/wiki",
+        "source_basis": "ffuf official GitHub repository",
+        "install_modes": ["official_release_binary", "go_install", "package_manager"],
+        "operator_install_commands": ["go install github.com/ffuf/ffuf/v2@latest", "ffuf -V"],
+        "verification_commands": ["ffuf -V"],
+        "default_policy": "approved_scope_only_rate_limited",
+        "runner_policy": "disabled_until_wordlist_scope_and_rate_limit_controls_exist",
+        "evidence_pipeline_hint": "Normalize discovered paths/virtual hosts as candidates only; do not report exposure without validation.",
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "next_action_ko": "승인 범위, wordlist, rate limit, 출력 parser를 먼저 만든 뒤 실행 후보로 검토하세요.",
+    },
+    {
+        "candidate_id": "TOOL-CAND-NMAP-001",
+        "name": "nmap",
+        "display_name": "Nmap",
+        "category": "network_discovery",
+        "risk_class": "T3/T4",
+        "official_url": "https://nmap.org/download",
+        "official_docs_url": "https://nmap.org/book/inst-windows.html",
+        "source_basis": "Nmap official download and install guide",
+        "install_modes": ["official_windows_installer", "package_manager", "source_build"],
+        "operator_install_commands": ["nmap --version"],
+        "verification_commands": ["nmap --version"],
+        "default_policy": "approved_scope_only_no_unbounded_scan",
+        "runner_policy": "plan_only_until_network_scope_and_timing_policy_are_approved",
+        "evidence_pipeline_hint": "Import XML output as host/service inventory candidate; scanning requires explicit ROE.",
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "next_action_ko": "Npcap/설치 증거와 네트워크 범위·타이밍 정책을 먼저 검토한 뒤 ToolProfile 등록을 검토하세요.",
+    },
+    {
+        "candidate_id": "TOOL-CAND-GITLEAKS-001",
+        "name": "gitleaks",
+        "display_name": "Gitleaks",
+        "category": "secret_scanning",
+        "risk_class": "T0/T4",
+        "official_url": "https://github.com/gitleaks/gitleaks",
+        "official_docs_url": "https://gitleaks.io/",
+        "source_basis": "Gitleaks official website and GitHub repository",
+        "install_modes": ["official_release_binary", "go_install", "docker_image", "package_manager"],
+        "operator_install_commands": ["gitleaks version"],
+        "verification_commands": ["gitleaks version"],
+        "default_policy": "approved_repository_or_artifact_only",
+        "runner_policy": "local_artifact_scan_after_secret_redaction_policy",
+        "evidence_pipeline_hint": "Normalize secret findings as sensitive Evidence candidates; redact values before LLM/report use.",
+        "commands_executed_by_api": False,
+        "trusted_as_instruction": False,
+        "next_action_ko": "비밀값 마스킹 정책과 승인된 저장소 범위를 먼저 만든 뒤 로컬 분석 후보로 검토하세요.",
+    },
+]
+
 TOOL_CREDENTIAL_POLICY_CATALOG = {
     "TOOL-OPENVAS-001": {
         "tool_id": "TOOL-OPENVAS-001",
@@ -1305,11 +1384,18 @@ def list_tool_install_readiness() -> dict[str, Any]:
     ]
     ready_count = sum(1 for item in items if item["status"] in {"runner_ready", "import_only_ready"})
     blocked_count = sum(1 for item in items if item["blocking_controls"])
+    discovered_candidates = [dict(candidate) for candidate in DISCOVERED_TOOL_INSTALL_CANDIDATES]
     return {
         "kind": "redteam_ax_v2_tool_install_readiness_registry",
         "tool_count": len(items),
         "ready_count": ready_count,
         "blocked_count": blocked_count,
+        "discovered_candidate_count": len(discovered_candidates),
+        "discovered_candidate_tools": discovered_candidates,
+        "discovered_candidate_policy": (
+            "Discovered tools are install/onboarding candidates only. They do not become executable until ToolProfile, "
+            "risk class, ROE/HITL policy, wrapper trust, normalizer, and Evidence mapping are registered."
+        ),
         "safe_by_default": True,
         "commands_executed_by_api": False,
         "policy": "Install and verification commands are operator-run plans; API never installs tools automatically.",

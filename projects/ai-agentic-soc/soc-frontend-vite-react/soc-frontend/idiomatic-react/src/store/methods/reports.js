@@ -5762,6 +5762,7 @@ export default {
     const analysisTools = toolRegistry.tools || [];
     const wrapperManifests = wrapperRegistry.manifests || [];
     const installItems = installReadiness.items || [];
+    const discoveredInstallCandidates = installReadiness.discovered_candidate_tools || [];
     const launchButtons = launchReadiness.buttons || [];
     const credentialPolicyItems = credentialPolicies.items || [];
     const credentialAuthorizationItems = credentialAuthorizations.items || [];
@@ -6103,6 +6104,12 @@ export default {
       koValue(item.status),
       koBlockerSummary(item.blocking_controls || [], '준비됨'),
       (item.operator_install_commands || []).length ? `${item.operator_install_commands.length}개 확인 명령` : '결과 파일 가져오기 중심',
+    ]);
+    const discoveredInstallCandidateRows = discoveredInstallCandidates.map(item => [
+      item.display_name || item.name || '-',
+      koValue(item.risk_class || '미분류'),
+      (item.install_modes || []).join(', ') || '설치 방식 검토 필요',
+      item.next_action_ko || 'ToolProfile, 위험도, 승인 정책, 정규화기를 만든 뒤 설치 후보로 검토하세요.',
     ]);
     const installVersionEvidenceRows = (installVersionEvidence.coverage_rows || []).map(item => [
       koToolDisplayName(item.display_name || item.tool_name, item.tool_id),
@@ -6895,6 +6902,7 @@ export default {
           ].filter(row => showAdminDetails || row[0] !== '래퍼 신뢰').map(card)),
           this.renderTable(['도구','위험도','실행 준비','LLM 에이전트'], toolRows.length ? toolRows : [['미로드','-','-','상태 새로고침 필요']])),
           this.renderTable(['설치 확인','상태','차단 조건','운영자 실행 계획'], installRows.length ? installRows : [['미로드','-','-','상태 새로고침 필요']]),
+          this.renderTable(['추가 설치 후보','위험도','설치 방식','다음 온보딩'], discoveredInstallCandidateRows.length ? discoveredInstallCandidateRows : [['대기','-','공식 출처 검색 뒤 표시','ToolProfile과 승인 정책을 먼저 만듭니다']]),
           this.renderTable(['선택 도구 설치','상태','근거'], selectedInstallRows)),
       smallPanel('분석도구 실행 안내',
         h('div', { style:{ display:'grid', gap:'10px' } },

@@ -530,6 +530,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["tool_count"], 6)
         names = {item["tool_name"] for item in body["items"]}
         self.assertTrue({"nuclei", "openvas", "trivy", "sca", "npm audit", "owasp-zap"}.issubset(names))
+        self.assertGreaterEqual(body["discovered_candidate_count"], 4)
+        candidate_names = {item["name"] for item in body["discovered_candidate_tools"]}
+        self.assertTrue({"amass", "ffuf", "nmap", "gitleaks"}.issubset(candidate_names))
+        self.assertIn("onboarding candidates only", body["discovered_candidate_policy"])
+        for candidate in body["discovered_candidate_tools"]:
+            self.assertFalse(candidate["commands_executed_by_api"])
+            self.assertFalse(candidate["trusted_as_instruction"])
+            self.assertIn("official", candidate["source_basis"].lower())
 
         npm = next(item for item in body["items"] if item["tool_id"] == "TOOL-NPM-AUDIT-001")
         self.assertIn("npm.cmd --version", npm["operator_install_commands"])

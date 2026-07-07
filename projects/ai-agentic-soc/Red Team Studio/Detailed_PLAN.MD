@@ -1436,3 +1436,11 @@ Create Case
 - 화면/기능 명세: RedTeam2 분석 결과 수집·검토 표에 `필수 6개 에이전트 분석` 요약을 추가하고, 별도 `필수 6개 LLM 분석 에이전트` 표에서 도구명, 에이전트 상태, 에이전트 ID, 분석 연결 상태를 한국어로 표시한다.
 - 테스트 전략: partial preset runner 회귀는 Trivy/npm audit만 agent coverage에 포함되고 Nuclei 등은 `missing_analysis_agent_tool_ids`에 남는지 확인한다. 6개 도구 imported-output E2E는 6개 agent coverage complete, missing 0건, row별 `도구별 LLM 분석 에이전트 연결됨`을 확인한다. frontend runtime sanity는 새 한국어 표시 계약과 API 필드를 확인한다.
 - 예외 케이스: 에이전트 coverage 완료는 Evidence/Finding/Matrix/Report/export 완료가 아니다. 원시 도구 출력은 계속 untrusted data이고, Evidence 승인과 Finding severity 2인 승인 전에는 보고서 Claim으로 사용할 수 없다.
+
+## 102. 갱신 목표 반영 - 공식 출처 기반 확장 레드팀 도구 설치 후보 카탈로그
+
+- 목적: 필수 6개 도구만으로 끝내지 않고 SPEC 24의 오픈소스 도구 카탈로그를 계속 확장해야 한다. 우선 공식 출처가 확인된 OWASP Amass, ffuf, Nmap, Gitleaks를 설치 후보로 등록하되, 실행 가능한 ToolProfile로 즉시 승격하지 않는다.
+- API 설계: `/api/redteam/v2/tool-install-readiness` 응답에 `discovered_candidate_count`, `discovered_candidate_tools[]`, `discovered_candidate_policy`를 추가한다. 각 후보는 공식 URL, 문서 URL, 설치 방식, 사람이 확인할 명령, 위험도, 기본 정책, Evidence pipeline hint, `commands_executed_by_api=false`, `trusted_as_instruction=false`를 포함한다.
+- 화면/기능 명세: RedTeam2 `분석 도구 허브 / LLM 분석 에이전트`에 `추가 설치 후보` 표를 추가한다. 초급 사용자는 필수 6개 도구 설치 상태와 별도로, 추가 후보의 위험도·설치 방식·다음 온보딩을 한국어로 본다.
+- 테스트 전략: backend readiness regression은 후보 수와 Amass/ffuf/Nmap/Gitleaks 포함, 공식 출처 기반, API가 설치·실행하지 않음을 확인한다. frontend runtime sanity는 `추가 설치 후보`, `discovered_candidate_tools`, `다음 온보딩` 표시를 확인한다.
+- 예외 케이스: 후보 등록은 설치 완료나 실행 허용이 아니다. ToolProfile, risk class, ROE/HITL 정책, wrapper trust, normalizer, Evidence mapping이 등록되기 전에는 버튼 실행 후보로 쓰지 않는다.

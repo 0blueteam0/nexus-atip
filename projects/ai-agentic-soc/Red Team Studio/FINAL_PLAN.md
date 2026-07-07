@@ -2133,3 +2133,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] backend partial preset runner 회귀와 6개 도구 imported-output E2E가 agent coverage를 검증한다.
 - [x] frontend runtime sanity가 새 한국어 표시와 API 필드 계약을 확인한다.
 - [ ] 이 변경은 도구별 LLM 분석 에이전트 coverage 표시와 검증이다. 실제 운영 6개 도구 설치·실행 실측, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 155. 갱신 목표 - 공식 출처 기반 확장 레드팀 도구 설치 후보 카탈로그
+
+- [x] 공식 출처 확인 기반으로 OWASP Amass, ffuf, Nmap, Gitleaks를 추가 설치 후보로 등록한다.
+- [x] `/api/redteam/v2/tool-install-readiness`가 `discovered_candidate_tools`와 후보 정책을 반환한다.
+- [x] 후보는 `commands_executed_by_api=false`, `trusted_as_instruction=false`이며 ToolProfile 승격 전에는 실행 후보가 아니다.
+- [x] RedTeam2 화면에 `추가 설치 후보` 표를 추가해 위험도, 설치 방식, 다음 온보딩을 한국어로 표시한다.
+- [x] backend readiness regression과 frontend runtime sanity가 후보 카탈로그를 확인한다.
+- [ ] 이 변경은 검색·설치 후보 확장이다. 실제 설치 수행, wrapper pin, normalizer 구현, Evidence mapping, 버튼 실행 연결은 후보별 후속 slice가 필요하다.
