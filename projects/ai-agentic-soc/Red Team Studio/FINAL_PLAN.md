@@ -2162,3 +2162,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] 실제 governed toolchain execution/collect smoke에서 Sigma CLI가 실행되고 `sigma_cli_text` parser, agent coverage, required optional coverage가 통과했다.
 - [ ] `pip check` 기준 기존 `.venv`에는 `python-fx`/`flare-floss` 의존성 충돌이 남아 있어 운영용 lock/isolation 정리가 필요하다.
 - [ ] Sigma plugin install, SIEM backend conversion, 원격 rule 다운로드, 운영 배포는 아직 승인된 실행 범위가 아니다.
+
+## 158. 갱신 목표 - Nuclei 공식 release portable 설치와 wrapper hash pin
+
+- [x] ProjectDiscovery 공식 GitHub release에서 Nuclei `v3.11.0` Windows AMD64 binary를 내려받아 `Red Team Studio/고도화/tools/nuclei/nuclei.exe`에 설치했다.
+- [x] `nuclei.exe -version`으로 설치를 확인하고 SHA-256 `5315e0938ed80f60d78d90433d919bce5485eb94c61a1f36e3cb376e1285b7d5`를 `TOOL-NUCLEI-001` expected pin으로 등록했다.
+- [x] wrapper discovery가 `Red Team Studio/고도화/tools/<tool>/<tool>.exe` portable 경로를 찾도록 확장했다.
+- [x] 실제 런타임 manifest에서 Nuclei가 `hash_match`, `trusted_for_runner=true`로 확인된다.
+- [x] Nuclei는 T3 도구라 설치와 pin이 통과해도 프론트 버튼은 `승인 요청`으로 남기고 `human_approval_required`를 유지한다.
+- [x] portable discovery regression, wrapper manifest regression, launch readiness regression, Python compile을 통과했다.
+- [ ] Nuclei active scan, template source update, interactsh, unbounded target import는 아직 승인된 실행 범위가 아니다.
+- [ ] 실제 운영 Nuclei 결과를 Evidence/Finding/Claim/Report/export/completion gate까지 연결하는 작업은 남아 있다.

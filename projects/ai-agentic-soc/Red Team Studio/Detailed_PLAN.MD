@@ -1463,3 +1463,13 @@ Create Case
 - Evidence/분석 설계: `NORMALIZER-SIGMA-CLI-001`과 `AGENT-SIGMA-CLI-ANALYST-001`은 `sigma check` 텍스트 출력에서 error/condition error/issue count를 구조화하고, rule text를 LLM instruction이 아닌 untrusted data로 처리한다.
 - 테스트 전략: `sigma check` 실제 실행, governed toolchain execution/collect smoke, backend regression, Python compile, Node/frontend sanity, diff check를 실행한다.
 - 예외 케이스: Sigma optional profile 승격은 필수 6개 Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 완료를 대체하지 않는다. 또한 SIEM backend 변환, plugin install, 원격 rule 다운로드, 운영 rule 배포는 이번 범위에서 금지한다.
+
+## 105. 갱신 목표 반영 - Nuclei 공식 release portable 설치와 wrapper hash pin
+
+- 목적: 필수 6개 도구 중 Nuclei를 단순 계획 상태가 아니라 실제 설치된 도구로 끌어올린다. 단, Nuclei는 T3 웹 검증 도구이므로 설치와 wrapper trust가 통과해도 active scan 버튼 실행은 ROE/HITL 승인 없이는 열지 않는다.
+- 설치 증거: ProjectDiscovery 공식 GitHub release `v3.11.0`의 Windows AMD64 binary를 `Red Team Studio/고도화/tools/nuclei/nuclei.exe`에 설치했다. `nuclei.exe -version`은 Nuclei Engine `v3.11.0`을 반환했고 SHA-256은 `5315e0938ed80f60d78d90433d919bce5485eb94c61a1f36e3cb376e1285b7d5`로 확인했다.
+- API 설계: `PORTABLE_TOOL_ROOT = Red Team Studio/고도화/tools`를 wrapper discovery 경로에 추가한다. `command_availability("nuclei")`는 PATH, `.venv/Scripts`, portable tool root 순서로 실행 파일을 찾고, `TOOL-NUCLEI-001`은 현재 portable binary hash를 `expected_sha256`으로 가진다.
+- 화면/기능 명세: `/api/redteam/v2/toolchains/launch-readiness`에서 Nuclei는 `command_missing`과 `wrapper_sha256_pin_required`가 해소되지만 `human_approval_required`가 남아 `승인 요청`으로 표시된다. 초급 사용자는 설치 완료와 실행 승인 필요를 분리해서 본다.
+- 안전 원칙: portable binary 자체는 git에 커밋하지 않는다. 저장소에는 discovery/pin 계약과 문서/테스트만 남기며, Nuclei template update, interactsh, unbounded target import, active scan은 승인 전 금지한다.
+- 테스트 전략: Python compile, wrapper manifest/readiness regression, portable tool discovery regression, 실제 manifest hash match 확인을 수행한다.
+- 예외 케이스: 이 변경은 Nuclei 설치와 신뢰 고정까지다. 실제 운영 target scan, 결과 회수, Evidence 승인, Finding/Claim/Report/export/completion gate는 별도 승인과 운영 증거가 필요하다.

@@ -7,6 +7,7 @@ import io
 import json
 import os
 import sys
+import tempfile
 import unittest
 import uuid
 from pathlib import Path
@@ -1248,9 +1249,19 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
 
         self.assertEqual(body["kind"], "redteam_ax_v2_tool_wrapper_manifest_registry")
         self.assertTrue(body["safe_by_default"])
-        self.assertEqual(body["manifest_count"], 6)
+        self.assertEqual(body["manifest_count"], 7)
         tool_ids = {item["tool_id"] for item in body["manifests"]}
-        self.assertTrue({"TOOL-NUCLEI-001", "TOOL-OPENVAS-001", "TOOL-TRIVY-001", "TOOL-SCA-001", "TOOL-NPM-AUDIT-001", "TOOL-ZAP-001"}.issubset(tool_ids))
+        self.assertTrue(
+            {
+                "TOOL-NUCLEI-001",
+                "TOOL-OPENVAS-001",
+                "TOOL-TRIVY-001",
+                "TOOL-SCA-001",
+                "TOOL-NPM-AUDIT-001",
+                "TOOL-ZAP-001",
+                "TOOL-SIGMA-CLI-001",
+            }.issubset(tool_ids)
+        )
 
         sca = next(item for item in body["manifests"] if item["tool_id"] == "TOOL-SCA-001")
         self.assertEqual(sca["pinning_status"], "import_only")
@@ -1265,6 +1276,23 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         one = self.client.get("/api/redteam/v2/tool-wrapper-manifests/TOOL-SCA-001")
         self.assertEqual(one.status_code, 200)
         self.assertEqual(one.json()["pinning_status"], "import_only")
+
+    def test_v2_command_availability_resolves_portable_tool_binary(self) -> None:
+        from runtime import redteam_v2_models
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            portable_root = Path(tmp_dir)
+            tool_dir = portable_root / "nuclei"
+            tool_dir.mkdir(parents=True)
+            fake_binary = tool_dir / "nuclei.exe"
+            fake_binary.write_bytes(b"fake nuclei binary")
+
+            with patch("runtime.redteam_v2_models.PORTABLE_TOOL_ROOT", portable_root), \
+                 patch("runtime.redteam_v2_models.shutil.which", return_value=None):
+                availability = redteam_v2_models.command_availability("nuclei")
+
+        self.assertEqual(availability["status"], "available")
+        self.assertEqual(Path(availability["path"]).name.lower(), "nuclei.exe")
 
     def test_v2_tool_wrapper_pin_request_approval_rotate_and_revoke_updates_manifest(self) -> None:
         case_id = f"CASE-V2-WRAPPER-PIN-001-{uuid.uuid4().hex[:8]}"

@@ -29,6 +29,8 @@ DEFAULT_V2_ROOT = PROJECT_ROOT / "archive" / "runs" / "redteam-ax-v2"
 MAX_TOOL_ARTIFACT_BYTES = 5 * 1024 * 1024
 MAX_RUNNER_OUTPUT_BYTES = 256 * 1024
 SCHEMA_ARTIFACT_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "schemas" / "json"
+PORTABLE_TOOL_ROOT = PROJECT_ROOT / "Red Team Studio" / "고도화" / "tools"
+NUCLEI_EXECUTABLE_PATH = PORTABLE_TOOL_ROOT / "nuclei" / "nuclei.exe"
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
 SIGMA_CLI_SAMPLE_RULE_PATH = (
     PROJECT_ROOT
@@ -215,6 +217,7 @@ ANALYSIS_TOOL_PROFILES = [
         "evidence_types": ["scanner_finding_candidate", "web_validation_evidence"],
         "prohibited_options": ["unbounded_target_import", "interactsh_unapproved", "unsafe_templates"],
         "installation_hint": "Install nuclei from the official ProjectDiscovery release and pin template sources.",
+        "expected_sha256": "5315e0938ed80f60d78d90433d919bce5485eb94c61a1f36e3cb376e1285b7d5",
     },
     {
         "tool_id": "TOOL-OPENVAS-001",
@@ -1300,6 +1303,9 @@ def command_availability(command_name: str) -> dict[str, Any]:
             PROJECT_ROOT / ".venv" / "Scripts" / command,
             PROJECT_ROOT / ".venv" / "Scripts" / f"{command}.exe",
             PROJECT_ROOT / ".venv" / "Scripts" / f"{command}.cmd",
+            PORTABLE_TOOL_ROOT / command / command,
+            PORTABLE_TOOL_ROOT / command / f"{command}.exe",
+            PORTABLE_TOOL_ROOT / command / f"{command}.cmd",
         ]
         resolved = next((path.as_posix() for path in candidates if path.exists() and path.is_file()), None)
     return {
