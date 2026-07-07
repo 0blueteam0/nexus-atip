@@ -1444,3 +1444,12 @@ Create Case
 - 화면/기능 명세: RedTeam2 `분석 도구 허브 / LLM 분석 에이전트`에 `추가 설치 후보` 표를 추가한다. 초급 사용자는 필수 6개 도구 설치 상태와 별도로, 추가 후보의 위험도·설치 방식·다음 온보딩을 한국어로 본다.
 - 테스트 전략: backend readiness regression은 후보 수와 Amass/ffuf/Nmap/Gitleaks 포함, 공식 출처 기반, API가 설치·실행하지 않음을 확인한다. frontend runtime sanity는 `추가 설치 후보`, `discovered_candidate_tools`, `다음 온보딩` 표시를 확인한다.
 - 예외 케이스: 후보 등록은 설치 완료나 실행 허용이 아니다. ToolProfile, risk class, ROE/HITL 정책, wrapper trust, normalizer, Evidence mapping이 등록되기 전에는 버튼 실행 후보로 쓰지 않는다.
+
+## 103. 갱신 목표 반영 - SPEC 24 기반 다계층 레드팀 도구 설치 후보 확장
+
+- 목적: 사용자가 명시한 priority 1은 레드팀 도구 탐색과 설치 관련 진행이며, SPEC 24도 OSINT, recon, visual recon, AD, cloud/adversary emulation, BAS, DFIR, 탐지룰, AI red team 도구군을 요구한다. 따라서 설치 후보 카탈로그를 scanner 중심에서 실제 레드팀 캠페인 전 과정의 도구군으로 넓힌다.
+- API 설계: `DISCOVERED_TOOL_INSTALL_CANDIDATES`에 SpiderFoot, subfinder, httpx, GoWitness, EyeWitness, OWASP Nettacker, BloodHound CE, PingCastle, Certipy, Stratus Red Team, Caldera, Atomic Red Team, OpenBAS/OpenAEV, VECTR, MITRE Attack Flow, Timesketch, Velociraptor, Sigma CLI/pySigma, PyRIT, garak, Inspect AI, AgentDojo를 공식 출처 기반 후보로 추가한다. 각 후보는 category, risk class, official URL/docs, install modes, operator install/verification command, runner policy, Evidence pipeline hint, Korean next action을 포함한다.
+- 화면/기능 명세: 기존 `추가 설치 후보` 표가 후보 목록 전체를 표시하므로 별도 UI 구조 변경 없이 초급 사용자에게 위험도, 설치 방식, 다음 온보딩을 한국어로 제공한다.
+- 안전 원칙: 모든 신규 후보는 `commands_executed_by_api=false`, `trusted_as_instruction=false`이다. Caldera, Atomic Red Team, OpenBAS, Stratus, Velociraptor, Certipy 같은 고위험 계열은 plan/import/catalog 중심으로 두고 실제 실행은 별도 ROE/HITL/2인 승인/owner approval이 생기기 전까지 금지한다.
+- 테스트 전략: readiness regression은 후보 수가 20개 이상이고 대표 후보가 포함되며 공식 출처 기반과 비실행 정책을 유지하는지 검증한다. Python compile, frontend syntax/sanity, diff check를 함께 실행한다.
+- 예외 케이스: 이 확장은 설치 완료, 실제 배포, 버튼 실행, 결과 수집, LLM 분석 완료를 의미하지 않는다. 다음 slice는 후보별로 실제 설치 검증, wrapper pin, normalizer, Evidence Card/Claim-Evidence Matrix 매핑, 프론트 버튼 실행 계약을 하나씩 승격해야 한다.

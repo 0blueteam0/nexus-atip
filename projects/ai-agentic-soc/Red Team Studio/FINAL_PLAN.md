@@ -2142,3 +2142,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] RedTeam2 화면에 `추가 설치 후보` 표를 추가해 위험도, 설치 방식, 다음 온보딩을 한국어로 표시한다.
 - [x] backend readiness regression과 frontend runtime sanity가 후보 카탈로그를 확인한다.
 - [ ] 이 변경은 검색·설치 후보 확장이다. 실제 설치 수행, wrapper pin, normalizer 구현, Evidence mapping, 버튼 실행 연결은 후보별 후속 slice가 필요하다.
+
+## 156. 갱신 목표 - SPEC 24 기반 다계층 레드팀 도구 설치 후보 확장
+
+- [x] SPEC 24의 OSINT, recon, visual recon, AD, cloud/adversary emulation, BAS, DFIR, rule authoring, AI red team 범주를 설치 후보 카탈로그에 반영한다.
+- [x] SpiderFoot, subfinder, httpx, GoWitness, EyeWitness, OWASP Nettacker, BloodHound CE, PingCastle, Certipy, Stratus Red Team, Caldera, Atomic Red Team, OpenBAS/OpenAEV, VECTR, MITRE Attack Flow, Timesketch, Velociraptor, Sigma CLI/pySigma, PyRIT, garak, Inspect AI, AgentDojo를 공식 출처 기반 후보로 추가한다.
+- [x] 모든 신규 후보는 API가 설치·실행하지 않으며 `commands_executed_by_api=false`, `trusted_as_instruction=false`를 유지한다.
+- [x] 기존 RedTeam2 `추가 설치 후보` 화면이 확장 후보를 그대로 표시하도록 backend contract를 강화한다.
+- [x] readiness regression은 후보 수 20개 이상과 대표 후보 포함, 공식 출처 기반, 비실행 정책을 확인한다.
+- [ ] 실제 설치 수행, 운영자 설치 증거 기록, wrapper pin, normalizer, Evidence mapping, 버튼 실행 연결, 결과 회수는 후보별 후속 slice가 필요하다.
