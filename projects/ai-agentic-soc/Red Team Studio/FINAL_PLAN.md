@@ -2200,3 +2200,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] Python compile, focused pytest, frontend runtime/launch sanity, frontend syntax check, knowledge workflow gate를 통과했다.
 - [ ] npm fix, package publish, credentialed registry access는 아직 승인된 실행 범위가 아니다.
 - [ ] OpenVAS/ZAP/SCA 및 전체 Evidence/Finding/Matrix/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 161. 갱신 목표 - SCA CycloneDX sample import-only Evidence 경로 고정
+
+- [x] `고도화/samples/sca_cyclonedx/redteam_ax_sample_sbom.cdx.json` 샘플 SBOM을 추가했다.
+- [x] `PRESET-SCA-SBOM-IMPORT`에 `default_sample_artifact_path`와 `schema_name=CycloneDX 1.5`를 노출했다.
+- [x] import guidance가 SCA 샘플 경로와 샘플 회수 안내를 반환한다.
+- [x] regression test가 execution preset의 SCA 샘플 계약과 파일 존재를 검증한다.
+- [x] CycloneDX collect regression이 샘플 SBOM 파일을 직접 읽어 SCA component/vulnerability/affects Evidence 후보화를 검증한다.
+- [ ] 이 변경은 SCA import-only 재현성을 높이는 샘플 계약이다. 실제 운영 SBOM 제출, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

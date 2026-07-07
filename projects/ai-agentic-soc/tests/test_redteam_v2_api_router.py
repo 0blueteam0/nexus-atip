@@ -670,6 +670,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(by_tool["TOOL-NUCLEI-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NUCLEI-001"]["requires_human_approval"])
         self.assertTrue(by_tool["TOOL-SCA-001"]["import_only"])
+        self.assertEqual(by_tool["TOOL-SCA-001"]["schema_name"], "CycloneDX 1.5")
+        sca_sample_path = Path(by_tool["TOOL-SCA-001"]["default_sample_artifact_path"])
+        self.assertTrue(sca_sample_path.exists())
+        sca_guidance = next(item for item in body["import_guidance"] if item["tool_id"] == "TOOL-SCA-001")
+        self.assertEqual(sca_guidance["default_sample_artifact_path"], sca_sample_path.as_posix())
+        self.assertEqual(sca_guidance["schema_name"], "CycloneDX 1.5")
         self.assertEqual(len(body["import_guidance"]), 4)
 
     def test_v2_toolchain_execution_presets_runner_steps_execute_and_collect(self) -> None:
@@ -2674,29 +2680,15 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
     def test_v2_toolchain_collect_results_normalizes_sca_cyclonedx_components_and_affects(self) -> None:
         case_id = f"CASE-V2-SCA-CYCLONEDX-COLLECT-001-{uuid.uuid4().hex[:8]}"
         toolchain_id = f"TCHAIN-SCA-CYCLONEDX-{uuid.uuid4().hex[:8]}"
-        sbom = {
-            "bomFormat": "CycloneDX",
-            "specVersion": "1.5",
-            "components": [
-                {
-                    "bom-ref": "pkg:pypi/example-lib@1.0.0",
-                    "type": "library",
-                    "name": "example-lib",
-                    "version": "1.0.0",
-                    "purl": "pkg:pypi/example-lib@1.0.0",
-                    "licenses": [{"license": {"id": "MIT"}}],
-                    "supplier": {"name": "Example Supplier"},
-                }
-            ],
-            "vulnerabilities": [
-                {
-                    "id": "CVE-2099-0001",
-                    "source": {"name": "test-advisory-db"},
-                    "ratings": [{"severity": "high"}],
-                    "affects": [{"ref": "pkg:pypi/example-lib@1.0.0"}],
-                }
-            ],
-        }
+        sample_sbom_path = (
+            PROJECT_ROOT
+            / "Red Team Studio"
+            / "고도화"
+            / "samples"
+            / "sca_cyclonedx"
+            / "redteam_ax_sample_sbom.cdx.json"
+        )
+        sbom = json.loads(sample_sbom_path.read_text(encoding="utf-8"))
 
         executed = self.client.post("/api/redteam/v2/toolchains/execute-governed", json={
             "case_id": case_id,
@@ -2754,12 +2746,12 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         structured_items = analyzed.json()["structured_items"]
         component = next(item for item in structured_items if item["item_type"] == "sca_component_inventory_evidence")
         vulnerability = next(item for item in structured_items if item["item_type"] == "sca_vulnerability_candidate")
-        self.assertEqual(component["package_name"], "example-lib")
+        self.assertEqual(component["package_name"], "lodash")
         self.assertEqual(component["licenses"], ["MIT"])
-        self.assertEqual(component["supplier"], "Example Supplier")
-        self.assertEqual(vulnerability["vulnerability_id"], "CVE-2099-0001")
-        self.assertEqual(vulnerability["affected_component_refs"], ["pkg:pypi/example-lib@1.0.0"])
-        self.assertEqual(vulnerability["affected_components"][0]["package_name"], "example-lib")
+        self.assertEqual(component["supplier"], "Sample Package Supplier")
+        self.assertEqual(vulnerability["vulnerability_id"], "CVE-2021-23337")
+        self.assertEqual(vulnerability["affected_component_refs"], ["pkg:npm/lodash@4.17.20"])
+        self.assertEqual(vulnerability["affected_components"][0]["package_name"], "lodash")
         self.assertTrue(vulnerability["requires_component_match_review"])
         self.assertFalse(vulnerability["trusted_as_instruction"])
 

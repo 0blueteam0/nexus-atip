@@ -40,6 +40,14 @@ NPM_AUDIT_SAMPLE_WORKSPACE_PATH = (
     / "samples"
     / "npm_audit_workspace"
 )
+SCA_SAMPLE_SBOM_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "samples"
+    / "sca_cyclonedx"
+    / "redteam_ax_sample_sbom.cdx.json"
+)
 SIGMA_CLI_SAMPLE_RULE_PATH = (
     PROJECT_ROOT
     / "Red Team Studio"
@@ -2088,10 +2096,13 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "tool_id": "TOOL-SCA-001",
             "execution_mode": "offline_parse",
             "import_only": True,
+            "default_sample_artifact_path": SCA_SAMPLE_SBOM_PATH.as_posix(),
+            "schema_name": "CycloneDX 1.5",
             "default_enabled": False,
             "risk_note_ko": "SBOM, lockfile, 조직 SCA export를 첨부합니다. 도구 명령은 실행하지 않습니다.",
             "beginner_label_ko": "SCA/SBOM 결과 첨부",
             "expected_result_ko": "SBOM 또는 SCA export 기반 의존성 증거 후보",
+            "sample_collect_hint_ko": "샘플 SBOM을 첨부하면 컴포넌트 인벤토리와 취약점 후보가 Evidence Card 후보로 분리됩니다.",
         },
         {
             "preset_id": "PRESET-NUCLEI-APPROVAL-REQUIRED",
@@ -2180,6 +2191,9 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
                 "tool_id": tool_id,
                 "beginner_label_ko": row["beginner_label_ko"],
                 "expected_result_ko": row["expected_result_ko"],
+                "default_sample_artifact_path": row.get("default_sample_artifact_path"),
+                "schema_name": row.get("schema_name"),
+                "sample_collect_hint_ko": row.get("sample_collect_hint_ko"),
                 "next_action_ko": row["next_action_ko"],
             })
 

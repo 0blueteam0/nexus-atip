@@ -1495,3 +1495,12 @@ Create Case
 - 안전 원칙: npm fix, publish, credentialed registry access는 금지한다. package-lock 기반 advisory 조회/분석 결과는 Evidence 승인 전 Finding/Report Claim으로 확정하지 않는다.
 - 테스트 전략: backend regression은 npm audit mocked exit code 1이 accepted로 기록되고 runner cwd가 sample workspace인지 확인한다. Python compile, frontend runtime/launch sanity, 실제 npm audit sample execution/collect smoke, knowledge workflow gate를 수행한다.
 - 예외 케이스: npm audit sample 실행은 필수 6개 중 npm audit 경로의 실측 증거다. OpenVAS/ZAP/SCA 및 전체 Evidence/Finding/Matrix/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 108. 갱신 목표 반영 - SCA CycloneDX sample import-only Evidence 경로 고정
+
+- 목적: SCA는 runner 실행 도구가 아니므로 초급 운영자가 `결과 첨부` 버튼에서 어떤 파일을 넣어야 하는지 재현 가능한 샘플과 API 계약이 필요하다.
+- 구현: `고도화/samples/sca_cyclonedx/redteam_ax_sample_sbom.cdx.json`를 추가하고, `PRESET-SCA-SBOM-IMPORT`에 `default_sample_artifact_path`, `schema_name=CycloneDX 1.5`, 샘플 회수 안내를 노출한다. import guidance도 같은 필드를 내려 UI와 자동화가 동일 샘플을 호출할 수 있게 한다.
+- 화면/기능 명세: RedTeam2의 SCA row는 계속 `결과 첨부`로 남기며, 샘플 SBOM은 컴포넌트 인벤토리 Evidence 후보와 취약점 후보 Evidence를 분리해서 보여주는 교육/검증용 입력으로 사용한다.
+- API 설계: `/api/redteam/v2/toolchains/execution-presets`는 SCA preset 및 import guidance에 샘플 경로와 schema명을 포함한다. 실제 import는 기존 `/api/redteam/v2/toolchains/execute-governed`의 `offline_parse/imported_json` 또는 manifest import 경로를 사용한다.
+- 테스트 전략: execution preset regression은 SCA 샘플 파일 존재와 guidance 계약을 검증하고, CycloneDX collect regression은 샘플 SBOM 파일을 직접 읽어 `AGENT-SCA-ANALYST-001`, `sca_json`, component Evidence, vulnerability Evidence, affects linkage를 확인한다.
+- 예외 케이스: 샘플 SBOM은 운영 완료 증거가 아니다. 실제 운영 SBOM/SCA export 제출, Evidence 승인, Finding 승격, 2인 severity, Matrix/report/export/completion gate는 별도 HITL 운영 증거가 필요하다.
