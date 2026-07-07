@@ -716,6 +716,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(collected_body["requires_evidence_approval_before_finding"])
         self.assertFalse(collected_body["completion_gate_ready"])
         self.assertEqual(set(collected_body["present_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+        self.assertEqual(set(collected_body["analysis_agent_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
+        self.assertEqual(collected_body["analysis_agent_required_tool_count"], 2)
+        self.assertIn("TOOL-NUCLEI-001", collected_body["missing_analysis_agent_tool_ids"])
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_required_tool_ids"])
         for step in collected_body["steps"]:
             self.assertEqual(step["status"], "collected")
@@ -2776,10 +2779,23 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(body["missing_required_tool_ids"], [])
         self.assertTrue(body["required_tool_coverage_complete"])
         self.assertTrue(body["analysis_agent_coverage_complete"])
+        self.assertEqual(body["analysis_agent_required_tool_count"], 6)
+        self.assertEqual(body["missing_analysis_agent_tool_count"], 0)
+        self.assertEqual(body["missing_analysis_agent_tool_ids"], [])
+        self.assertEqual(set(body["analysis_agent_required_tool_ids"]), {
+            "TOOL-NUCLEI-001",
+            "TOOL-OPENVAS-001",
+            "TOOL-TRIVY-001",
+            "TOOL-SCA-001",
+            "TOOL-NPM-AUDIT-001",
+            "TOOL-ZAP-001",
+        })
         self.assertTrue(body["evidence_candidate_coverage_complete"])
         self.assertTrue(body["completion_gate_ready"])
         self.assertIn("필수 분석도구 6개 중 6개", body["operator_summary_ko"])
         self.assertEqual(len(body["required_analysis_tool_coverage"]["rows"]), 6)
+        self.assertTrue(all(row["agent_status"] == "analysis_agent_ready" for row in body["required_analysis_tool_coverage"]["rows"]))
+        self.assertTrue(all(row["agent_status_ko"] == "도구별 LLM 분석 에이전트 연결됨" for row in body["required_analysis_tool_coverage"]["rows"]))
         self.assertFalse(body["commands_executed_by_api"])
         self.assertFalse(body["raw_output_trusted_as_instruction"])
         for step in body["steps"]:

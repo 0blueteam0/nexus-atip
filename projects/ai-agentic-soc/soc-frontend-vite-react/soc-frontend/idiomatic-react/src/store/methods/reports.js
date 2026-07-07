@@ -6537,6 +6537,8 @@ export default {
       ['필수 6개 도구 결과 확인', toolchainCollection.completion_gate_ready ? '완료 게이트 준비' : '완료 게이트 미준비', `${toolchainCollection.present_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 수집 · 누락 ${toolchainCollection.missing_required_tool_count ?? 6}개`],
       ['누락 필수 도구', (toolchainCollection.missing_required_tool_ids || []).length ? toolchainCollection.missing_required_tool_ids.join(', ') : '없음', toolchainCollection.next_action_ko || 'Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 확인 상태를 보세요'],
       ['LLM 분석 에이전트 요약', `${toolchainCollection.analysis_agent_summary_count ?? 0}개`, '도구별 결과 정리와 증거 사용 제한을 표시'],
+      ['필수 6개 에이전트 분석', toolchainCollection.analysis_agent_coverage_complete ? '6개 모두 연결됨' : '누락 있음', `${toolchainCollection.analysis_agent_required_tool_count ?? 0}/${toolchainCollection.required_tool_count ?? 6}개 연결 · 누락 ${toolchainCollection.missing_analysis_agent_tool_count ?? ((toolchainCollection.missing_analysis_agent_tool_ids || []).length || 6)}개`],
+      ['에이전트 분석 도구 ID', (toolchainCollection.analysis_agent_required_tool_ids || []).length ? toolchainCollection.analysis_agent_required_tool_ids.join(', ') : 'analysis_agent_required_tool_ids 대기', '도구별 LLM 분석 에이전트 연결됨 상태를 6개 도구별로 분리 확인'],
       ['증거 후보 승인', koValue(toolchainEvidenceApproval.status || toolchainEvidenceApprovalState.status || '대기'), toolchainEvidenceApprovalState.error || `${toolchainEvidenceApproval.approved_count ?? 0}개 승인 · ${toolchainEvidenceApproval.invalid_count ?? 0}개 오류`],
       ['발견사항 초안 생성', koValue(toolchainFindingPromotion.status || toolchainFindingPromotionState.status || '대기'), toolchainFindingPromotionState.error || `${toolchainFindingPromotion.created_count ?? 0}개 생성 · ${toolchainFindingPromotion.blocked_count ?? 0}개 차단`],
       ['발견사항 심각도 2인 승인', koValue(toolchainFindingSeverity.status || toolchainFindingSeverityState.status || '대기'), toolchainFindingSeverityState.error || `${toolchainFindingSeverity.approved_count ?? 0}개 승인 · ${toolchainFindingSeverity.pending_count ?? 0}개 대기`],
@@ -6644,6 +6646,12 @@ export default {
       row.ready_for_completion_gate ? '분석·증거 후보 완료' : (row.status === 'present' ? '결과 있음, 후속 검토 필요' : '결과 누락'),
       row.structured_item_count ? `확인 후보 ${row.structured_item_count}건` : '도구별 분석 대기',
       row.evidence_id ? '증거 후보 생성됨' : koEvidenceTerm(row.next_action_ko || '이 도구의 결과를 가져오세요'),
+    ]);
+    const requiredAgentCoverageRows = (requiredCoverage.rows || []).map(row => [
+      koToolDisplayName(row.display_name || row.tool_name, row.tool_id),
+      row.agent_status_ko || (row.agent_id ? '도구별 LLM 분석 에이전트 대기' : '분석 에이전트 미지정'),
+      row.agent_id || row.expected_agent_id || '-',
+      row.result_id ? '정규화 결과 연결됨' : '결과 회수 뒤 에이전트 분석',
     ]);
     const toolchainEvidenceApprovalRows = (toolchainEvidenceApproval.approvals || []).map(item => [
       item.evidence_id || '-',
@@ -7543,6 +7551,7 @@ export default {
             this.renderTable(['결과 첨부 필요 도구','상태','필요 산출물','다음 행동'], importOnlyGuidanceRows.length ? importOnlyGuidanceRows : [['SCA/SBOM 의존성 점검','결과 첨부 대기','SBOM, lockfile, CycloneDX 또는 조직 SCA export','6개 도구 제출 양식 만들기 또는 운영 산출물 제출 묶음 가져오기']]),
             this.renderTable(['회수 단계','상태','결과 정리/안전 정리','증거 후보'], toolchainCollectionRows.length ? toolchainCollectionRows : [['대기','-','복합 실행 뒤 결과 회수 버튼을 누르세요','-']]),
             this.renderTable(['필수 6개 분석도구','확인 상태','분석 결과','증거/다음 행동'], requiredCoverageRows.length ? requiredCoverageRows : [['대기','-','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP 6개 결과 확인 상태를 결과 회수 뒤 표시합니다','-']]),
+            this.renderTable(['필수 6개 LLM 분석 에이전트','에이전트 상태','에이전트 ID','분석 연결'], requiredAgentCoverageRows.length ? requiredAgentCoverageRows : [['대기','도구 결과 회수 뒤 표시','AGENT-*','Nuclei/OpenVAS/Trivy/SCA/npm audit/ZAP별 에이전트 배치 상태를 표시합니다']]),
             this.renderTable(['도구별 분석 요약','검토 우선순위','다음 행동','증거 사용 제한'], toolchainAgentSummaryRows.length ? toolchainAgentSummaryRows : [['대기','-','결과 회수 뒤 표시됩니다','-']]),
             this.renderTable(['증거 카드 ID','승인 상태','승인 ID','검토 결과'], toolchainEvidenceApprovalRows.length ? toolchainEvidenceApprovalRows : [['대기','-','증거 후보 승인 버튼을 누르세요','-']]),
             this.renderTable(['증거 카드 ID','발견사항 생성 상태','발견사항 ID','승인/심각도'], toolchainFindingPromotionRows.length ? toolchainFindingPromotionRows : [['대기','-','증거 승인 뒤 발견사항 초안 생성 버튼을 누르세요','-']]),

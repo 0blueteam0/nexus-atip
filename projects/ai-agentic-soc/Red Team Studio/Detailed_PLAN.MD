@@ -1428,3 +1428,11 @@ Create Case
 - API 설계: `/api/redteam/v2/toolchains/execution-presets` -> `/api/redteam/v2/toolchains/execute-governed` -> `/api/redteam/v2/toolchains/collect-results` 경로를 회귀 계약으로 묶는다. 실행 응답은 `commands_executed_by_api=true`, `trusted_as_instruction=false`를 유지하고, 회수 응답은 원시 산출물을 untrusted data로 정규화해 Evidence 후보와 도구별 분석 요약을 만든다.
 - 테스트 전략: backend regression은 execution presets 응답의 `runner_steps`를 그대로 governed execution payload로 보내고, Trivy/npm audit mock 실행 후 collect-results가 2개 도구 결과를 `collected`, `Normalized`, Evidence 후보 생성 상태로 반환하는지 검증한다. frontend sanity는 `compositeRunnerStepsJson`, `runner_steps`, `프리셋 실행 결과` 문구와 실행 경로 보존을 확인한다.
 - 예외 케이스: 이 연결은 저위험 로컬 runner 후보만 다룬다. Nuclei/OpenVAS/ZAP active scan, SCA/SBOM import, Evidence 승인, Finding 2인 승인, Claim-Evidence Matrix, Report v2/export/completion gate는 여전히 별도 승인·첨부·검증 단계가 필요하다.
+
+## 101. 갱신 목표 반영 - 필수 6개 도구별 LLM 분석 에이전트 coverage 분리 표시
+
+- 목적: 필수 6개 도구 결과가 회수되었는지와 각 도구별 LLM 분석 에이전트가 정규화 결과에 연결되었는지를 분리해 보여야 한다. 단순 `result_id`만으로 분석 완료를 보지 않고, Nuclei/OpenVAS/Trivy/SCA/npm audit/OWASP ZAP 각각의 agent id 연결을 completion gate 전 조건으로 추적한다.
+- API 설계: toolchain result collection 응답과 `required_analysis_tool_coverage`에 `analysis_agent_required_tool_ids`, `missing_analysis_agent_tool_ids`, `analysis_agent_required_tool_count`, `missing_analysis_agent_tool_count`, row별 `expected_agent_id`, `agent_status`, `agent_status_ko`를 추가한다. `analysis_agent_coverage_complete`는 필수 도구별 정규화 결과와 agent id가 모두 있을 때만 true다.
+- 화면/기능 명세: RedTeam2 분석 결과 수집·검토 표에 `필수 6개 에이전트 분석` 요약을 추가하고, 별도 `필수 6개 LLM 분석 에이전트` 표에서 도구명, 에이전트 상태, 에이전트 ID, 분석 연결 상태를 한국어로 표시한다.
+- 테스트 전략: partial preset runner 회귀는 Trivy/npm audit만 agent coverage에 포함되고 Nuclei 등은 `missing_analysis_agent_tool_ids`에 남는지 확인한다. 6개 도구 imported-output E2E는 6개 agent coverage complete, missing 0건, row별 `도구별 LLM 분석 에이전트 연결됨`을 확인한다. frontend runtime sanity는 새 한국어 표시 계약과 API 필드를 확인한다.
+- 예외 케이스: 에이전트 coverage 완료는 Evidence/Finding/Matrix/Report/export 완료가 아니다. 원시 도구 출력은 계속 untrusted data이고, Evidence 승인과 Finding severity 2인 승인 전에는 보고서 Claim으로 사용할 수 없다.

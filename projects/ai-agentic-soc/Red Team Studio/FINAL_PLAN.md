@@ -2124,3 +2124,12 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] backend regression은 execution-presets 응답의 `runner_steps`를 그대로 `execute-governed`에 전달한 뒤 `collect-results`로 Evidence 후보와 도구별 분석 요약이 생성되는지 검증한다.
 - [x] frontend runtime sanity는 `compositeRunnerStepsJson`, `runner_steps`, `프리셋 실행 결과` 계약을 확인한다.
 - [ ] 이 연결은 Trivy/npm audit 저위험 로컬 runner 후보까지의 E2E 계약이다. 6개 도구 전체 실측 실행, 고위험 승인 실행, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.
+
+## 154. 갱신 목표 - 필수 6개 도구별 LLM 분석 에이전트 coverage 분리 표시
+
+- [x] collection coverage가 `analysis_agent_required_tool_ids`, `missing_analysis_agent_tool_ids`, agent count, row별 agent status를 반환한다.
+- [x] `analysis_agent_coverage_complete`는 필수 도구별 정규화 결과와 agent id가 모두 있을 때만 true로 계산한다.
+- [x] RedTeam2 화면에 `필수 6개 에이전트 분석` 요약과 `필수 6개 LLM 분석 에이전트` 표를 추가한다.
+- [x] backend partial preset runner 회귀와 6개 도구 imported-output E2E가 agent coverage를 검증한다.
+- [x] frontend runtime sanity가 새 한국어 표시와 API 필드 계약을 확인한다.
+- [ ] 이 변경은 도구별 LLM 분석 에이전트 coverage 표시와 검증이다. 실제 운영 6개 도구 설치·실행 실측, Evidence 승인, Finding/Claim/Report/export/completion gate 완료는 계속 남아 있다.

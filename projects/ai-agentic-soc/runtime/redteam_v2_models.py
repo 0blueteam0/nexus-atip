@@ -7156,9 +7156,11 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
     missing_tool_ids: list[str] = []
     present_tool_ids: list[str] = []
     analyzed_tool_ids: list[str] = []
+    analysis_agent_tool_ids: list[str] = []
     evidence_tool_ids: list[str] = []
     for tool_id in requested_tool_ids:
         profile = ANALYSIS_TOOL_PROFILE_BY_ID.get(tool_id, {})
+        expected_agent_id = profile.get("agent_id")
         row = {
             "tool_id": tool_id,
             "tool_name": profile.get("name") or tool_id,
@@ -7168,7 +7170,10 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
             "run_id": None,
             "result_id": None,
             "evidence_id": None,
-            "agent_id": profile.get("agent_id"),
+            "agent_id": expected_agent_id,
+            "expected_agent_id": expected_agent_id,
+            "agent_status": "waiting_for_tool_result",
+            "agent_status_ko": "도구 결과 대기",
             "normalizer_id": profile.get("normalizer_id"),
             "structured_item_count": 0,
             "ready_for_completion_gate": False,
@@ -7176,16 +7181,21 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
         }
         present = present_by_tool.get(tool_id)
         if present:
+            observed_agent_id = present.get("agent_id") or expected_agent_id
+            agent_ready = bool(present.get("result_id") and observed_agent_id)
             row.update({
                 "status": "present",
                 "run_id": present.get("run_id"),
                 "result_id": present.get("result_id"),
                 "evidence_id": present.get("evidence_id"),
-                "agent_id": present.get("agent_id") or row["agent_id"],
+                "agent_id": observed_agent_id,
+                "agent_status": "analysis_agent_ready" if agent_ready else "analysis_agent_missing",
+                "agent_status_ko": "도구별 LLM 분석 에이전트 연결됨" if agent_ready else "분석 에이전트 연결 필요",
                 "structured_item_count": present.get("structured_item_count", 0),
                 "ready_for_completion_gate": bool(
                     present.get("result_id")
                     and present.get("evidence_id")
+                    and observed_agent_id
                     and present.get("normalized_status") == "Normalized"
                     and present.get("evidence_status") == "created"
                 ),
@@ -7194,6 +7204,8 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
             present_tool_ids.append(tool_id)
             if present.get("result_id"):
                 analyzed_tool_ids.append(tool_id)
+            if agent_ready:
+                analysis_agent_tool_ids.append(tool_id)
             if present.get("evidence_id"):
                 evidence_tool_ids.append(tool_id)
         else:
@@ -7203,8 +7215,11 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
     required_count = len(requested_tool_ids)
     present_count = len(present_tool_ids)
     coverage_complete = required_count > 0 and present_count == required_count
-    analysis_complete = required_count > 0 and len(set(analyzed_tool_ids)) == required_count
+    analysis_complete = required_count > 0 and len(set(analysis_agent_tool_ids)) == required_count
     evidence_complete = required_count > 0 and len(set(evidence_tool_ids)) == required_count
+    missing_analysis_agent_tool_ids = [
+        tool_id for tool_id in requested_tool_ids if tool_id not in set(analysis_agent_tool_ids)
+    ]
     return {
         "kind": "redteam_ax_v2_required_analysis_tool_coverage",
         "required_tool_ids": requested_tool_ids,
@@ -7212,10 +7227,14 @@ def _toolchain_required_analysis_tool_coverage(collected_steps: list[dict[str, A
         "present_required_tool_ids": present_tool_ids,
         "missing_required_tool_ids": missing_tool_ids,
         "analyzed_required_tool_ids": analyzed_tool_ids,
+        "analysis_agent_required_tool_ids": analysis_agent_tool_ids,
+        "missing_analysis_agent_tool_ids": missing_analysis_agent_tool_ids,
         "evidence_candidate_required_tool_ids": evidence_tool_ids,
         "present_required_tool_count": present_count,
         "missing_required_tool_count": len(missing_tool_ids),
         "analysis_required_tool_count": len(set(analyzed_tool_ids)),
+        "analysis_agent_required_tool_count": len(set(analysis_agent_tool_ids)),
+        "missing_analysis_agent_tool_count": len(missing_analysis_agent_tool_ids),
         "evidence_candidate_required_tool_count": len(set(evidence_tool_ids)),
         "tool_coverage_complete": coverage_complete,
         "analysis_agent_coverage_complete": analysis_complete,
@@ -7560,6 +7579,10 @@ def collect_toolchain_results(toolchain_id: str, payload: dict[str, Any]) -> dic
         "missing_required_tool_ids": required_tool_coverage["missing_required_tool_ids"],
         "required_tool_coverage_complete": required_tool_coverage["tool_coverage_complete"],
         "analysis_agent_coverage_complete": required_tool_coverage["analysis_agent_coverage_complete"],
+        "analysis_agent_required_tool_count": required_tool_coverage["analysis_agent_required_tool_count"],
+        "missing_analysis_agent_tool_count": required_tool_coverage["missing_analysis_agent_tool_count"],
+        "analysis_agent_required_tool_ids": required_tool_coverage["analysis_agent_required_tool_ids"],
+        "missing_analysis_agent_tool_ids": required_tool_coverage["missing_analysis_agent_tool_ids"],
         "evidence_candidate_coverage_complete": required_tool_coverage["evidence_candidate_coverage_complete"],
         "completion_gate_ready": completion_gate_ready,
         "required_analysis_tool_coverage": required_tool_coverage,
