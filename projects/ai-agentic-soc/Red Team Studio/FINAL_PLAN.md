@@ -2245,3 +2245,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] execution preset regression은 YARA runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
 - [ ] `--scan-list`, `--recursive`, `-r`, `--threads`, 임의 rule/input path는 아직 승인된 자동 실행 범위가 아니다.
 - [ ] 운영 malware sample 분석, rule pack ingestion, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 165. 갱신 목표 - detect-secrets 1.5.0 선택형 코드 secret 후보 점검 도구 편입
+
+- [x] SPEC 23의 `Secret scan | detect-secrets, gitleaks` 요구에 맞춰 detect-secrets를 Gitleaks 보완 도구로 선정했다.
+- [x] 프로젝트 `.venv`에 `detect-secrets==1.5.0`을 설치했다.
+- [x] `detect-secrets --version`이 `1.5.0`을 반환했고 `.venv/Scripts/detect-secrets.exe` SHA-256 `c0e60ad13a23b9d57d8add12eee269e74966789604ea5f09e90cda859fc617cf`를 기록했다.
+- [x] `고도화/samples/detect_secrets_workspace`에 실제 secret-like 값이 없는 clean sample workspace를 추가했다.
+- [x] `TOOL-DETECT-SECRETS-001`, `PRESET-DETECT-SECRETS-CLEAN-WORKSPACE`, `NORMALIZER-DETECT-SECRETS-001`, `AGENT-DETECT-SECRETS-ANALYST-001`을 추가했다.
+- [x] 신입자용 설명으로 `코드에 비밀번호, 토큰, API 키처럼 보이는 값이 들어갔는지 찾는 로컬 점검 도구`이며 실제 secret 값은 만들거나 저장하지 않는다고 안내했다.
+- [x] detect-secrets normalizer는 baseline JSON을 `secret_exposure_candidate` Evidence 후보로 변환하고 secret 원문 저장을 금지한다.
+- [x] execution preset regression은 detect-secrets runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
+- [ ] `audit`, `--baseline`, 임의 source path, 실제 credential fixture는 아직 승인된 자동 실행 범위가 아니다.
+- [ ] 운영 repository scan, secret rotation, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

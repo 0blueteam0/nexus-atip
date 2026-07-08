@@ -1537,3 +1537,14 @@ Create Case
 - 안전 원칙: `--scan-list`, `--recursive`, `-r`, `--threads`, 임의 rule path, 임의 input path는 버튼 실행 범위에서 금지한다. 악성 샘플이나 고객 파일은 sample workspace에 넣지 않는다.
 - 테스트 전략: 실제 YARA version/local rule match, normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
 - 예외 케이스: YARA 편입은 로컬 지표 룰 매칭 도구 하나의 optional runner 승격이다. 운영 malware sample 분석, rule pack ingestion, Finding 승격, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 112. 갱신 목표 반영 - detect-secrets 1.5.0 선택형 코드 secret 후보 점검 도구 편입
+
+- 목적: SPEC 23은 custom script factory의 secret scan 도구로 `detect-secrets, gitleaks`를 명시한다. Gitleaks에 이어 detect-secrets를 설치하고 버튼 실행/LLM 분석 agent 회수 경로로 연결해 코드·스크립트 안전 점검 도구군을 확장한다.
+- 설치 증거: 프로젝트 `.venv`에 `detect-secrets==1.5.0`을 설치했다. `detect-secrets --version`은 `1.5.0`을 반환했고 `.venv/Scripts/detect-secrets.exe` SHA-256은 `c0e60ad13a23b9d57d8add12eee269e74966789604ea5f09e90cda859fc617cf`이다.
+- 화면/기능 명세: `레드팀 분석2` 실행 프리셋에 `detect-secrets 코드 secret 후보 점검`을 표시한다. 신입자용 설명은 `코드에 비밀번호, 토큰, API 키처럼 보이는 값이 들어갔는지 찾는 로컬 점검 도구`로 제공한다.
+- API 설계: `TOOL-DETECT-SECRETS-001`, `PRESET-DETECT-SECRETS-CLEAN-WORKSPACE`, `NORMALIZER-DETECT-SECRETS-001`, `AGENT-DETECT-SECRETS-ANALYST-001`을 추가한다. runner argv는 `.venv/Scripts/detect-secrets.exe scan --all-files .`이고 working dir은 `고도화/samples/detect_secrets_workspace`로 고정한다.
+- Evidence/분석 설계: baseline JSON의 `results`를 `secret_exposure_candidate` Evidence 후보로 변환한다. 저장 필드는 detector type, file path, line number, hashed secret 존재 여부이며 실제 secret 값은 저장하지 않는다.
+- 안전 원칙: 실제 secret-like fixture를 커밋하지 않는다. `audit`, `--baseline`, 임의 source path, 실제 credential 샘플은 버튼 실행 범위에서 금지한다. 도구 출력은 LLM/MCP 명령이 아니라 untrusted data다.
+- 테스트 전략: 실제 detect-secrets version/clean sample scan, redacted baseline normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
+- 예외 케이스: detect-secrets 편입은 코드 secret 후보 점검 도구 하나의 optional runner 승격이다. 실제 운영 repository scan, secret rotation, Finding 승격, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

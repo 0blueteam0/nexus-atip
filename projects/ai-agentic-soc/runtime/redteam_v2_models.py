@@ -62,6 +62,14 @@ YARA_SAMPLE_INPUT_PATH = (
     / "input"
     / "benign_marker.txt"
 )
+DETECT_SECRETS_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "detect-secrets.exe"
+DETECT_SECRETS_SAMPLE_WORKSPACE_PATH = (
+    PROJECT_ROOT
+    / "Red Team Studio"
+    / "고도화"
+    / "samples"
+    / "detect_secrets_workspace"
+)
 SIGMA_CLI_EXECUTABLE_PATH = PROJECT_ROOT / ".venv" / "Scripts" / "sigma.exe"
 NPM_AUDIT_SAMPLE_WORKSPACE_PATH = (
     PROJECT_ROOT
@@ -454,6 +462,32 @@ ANALYSIS_TOOL_PROFILES = [
         "installed_version": "4.5.5",
         "acceptable_exit_codes": [0, 1],
     },
+    {
+        "tool_id": "TOOL-DETECT-SECRETS-001",
+        "name": "detect-secrets",
+        "display_name": "detect-secrets",
+        "category": "secret_exposure_scan",
+        "risk_class": "T0",
+        "adapter_type": "cli_wrapper",
+        "command_name": "detect-secrets",
+        "default_execution_mode": "sandbox_execute",
+        "allowed_execution_modes": ["plan_only", "dry_run", "offline_parse", "sandbox_execute"],
+        "denied_execution_modes": ["lab_execute", "controlled_production_execute", "prohibited"],
+        "default_policy": "approved_workspace_secret_candidate_scan_only",
+        "requires_human_approval": False,
+        "requires_two_person_approval": False,
+        "supports_json_output": True,
+        "normalizer_id": "NORMALIZER-DETECT-SECRETS-001",
+        "agent_id": "AGENT-DETECT-SECRETS-ANALYST-001",
+        "evidence_types": ["secret_exposure_candidate", "credential_hygiene_evidence"],
+        "prohibited_options": ["audit", "--baseline", "unapproved_source_path", "real_secret_fixture"],
+        "installation_hint": "Install detect-secrets in the project Python virtual environment and scan only approved local workspaces.",
+        "required_for_core_coverage": False,
+        "optional_runner_profile": True,
+        "expected_sha256": "c0e60ad13a23b9d57d8add12eee269e74966789604ea5f09e90cda859fc617cf",
+        "installed_version": "1.5.0",
+        "acceptable_exit_codes": [0],
+    },
 ]
 
 REQUIRED_ANALYSIS_TOOL_IDS = [
@@ -560,6 +594,14 @@ TOOL_INSTALL_READINESS_CATALOG = {
         "verification_commands": ["yara64.exe --version", "yara64.exe rules\\redteam_ax_safe_indicator.yar input\\benign_marker.txt"],
         "post_install_controls": ["pin_binary_sha256", "approved_workspace_only", "local_rule_and_file_only", "no_recursive_scan_from_button"],
         "safe_smoke": "version_and_local_rule_match",
+    },
+    "TOOL-DETECT-SECRETS-001": {
+        "official_url": "https://github.com/Yelp/detect-secrets",
+        "install_modes": ["project_python_venv", "pipx", "source_install"],
+        "operator_install_commands": [".venv\\Scripts\\python.exe -m pip install detect-secrets==1.5.0"],
+        "verification_commands": ["detect-secrets --version", "detect-secrets scan --all-files ."],
+        "post_install_controls": ["pin_venv_console_script", "approved_workspace_only", "no_audit_or_baseline_mutation_from_button"],
+        "safe_smoke": "version_and_clean_workspace_scan",
     },
 }
 
@@ -1165,6 +1207,13 @@ ANALYSIS_AGENT_REGISTRY = {
         "name": "yara_local_indicator_agent",
         "tool_ids": ["TOOL-YARA-001"],
         "role": "Normalize local YARA rule matches into indicator evidence candidates while treating rules and matched files as untrusted data.",
+        "output_contract": "redteam_ax_v2_tool_result_normalized",
+    },
+    "AGENT-DETECT-SECRETS-ANALYST-001": {
+        "agent_id": "AGENT-DETECT-SECRETS-ANALYST-001",
+        "name": "detect_secrets_candidate_agent",
+        "tool_ids": ["TOOL-DETECT-SECRETS-001"],
+        "role": "Normalize detect-secrets baseline JSON into redacted secret exposure evidence candidates without storing secret values.",
         "output_contract": "redteam_ax_v2_tool_result_normalized",
     },
 }
@@ -2254,6 +2303,23 @@ def list_toolchain_execution_presets() -> dict[str, Any]:
             "beginner_label_ko": "YARA 로컬 지표 룰 매칭",
             "new_hire_guidance_ko": "YARA는 파일 안에 정해둔 문자열이나 패턴이 있는지 확인하는 로컬 검사 도구입니다. 이 버튼은 샘플 rule과 샘플 텍스트 파일만 검사하므로 네트워크 공격이나 악성코드 실행이 아닙니다.",
             "expected_result_ko": "YARA rule match 기반 로컬 지표 Evidence 후보",
+        },
+        {
+            "preset_id": "PRESET-DETECT-SECRETS-CLEAN-WORKSPACE",
+            "tool_id": "TOOL-DETECT-SECRETS-001",
+            "execution_mode": "sandbox_execute",
+            "runner_argv": [
+                DETECT_SECRETS_EXECUTABLE_PATH.as_posix(),
+                "scan",
+                "--all-files",
+                ".",
+            ],
+            "working_dir": DETECT_SECRETS_SAMPLE_WORKSPACE_PATH.as_posix(),
+            "default_enabled": True,
+            "risk_note_ko": "승인된 로컬 샘플 폴더에서만 secret 후보를 찾습니다. 실제 비밀번호나 API 키 샘플은 저장하지 않습니다.",
+            "beginner_label_ko": "detect-secrets 코드 secret 후보 점검",
+            "new_hire_guidance_ko": "detect-secrets는 코드에 비밀번호, 토큰, API 키처럼 보이는 값이 들어갔는지 찾는 로컬 점검 도구입니다. 이 버튼은 깨끗한 샘플 폴더만 검사하고 실제 secret 값은 만들거나 저장하지 않습니다.",
+            "expected_result_ko": "secret 후보 baseline JSON과 Evidence 후보",
         },
         {
             "preset_id": "PRESET-SCA-SBOM-IMPORT",
@@ -9780,6 +9846,40 @@ def _normalize_yara_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     return items
 
 
+def _normalize_detect_secrets_output(raw_values: list[Any]) -> list[dict[str, Any]]:
+    items: list[dict[str, Any]] = []
+    for raw in raw_values:
+        parsed = _coerce_json(raw)
+        results = parsed.get("results") if isinstance(parsed, dict) else {}
+        if not isinstance(results, dict):
+            continue
+        for file_path, findings in results.items():
+            if not isinstance(findings, list):
+                continue
+            for finding in findings:
+                if not isinstance(finding, dict):
+                    continue
+                detector_type = finding.get("type") or finding.get("type_name") or "secret_candidate"
+                items.append({
+                    "item_type": "secret_exposure_candidate",
+                    "tool_id": "TOOL-DETECT-SECRETS-001",
+                    "tool": "detect-secrets",
+                    "detector_type": detector_type,
+                    "file_path": file_path,
+                    "line_number": finding.get("line_number"),
+                    "is_verified": finding.get("is_verified"),
+                    "hashed_secret_present": bool(finding.get("hashed_secret")),
+                    "secret_value_stored": False,
+                    "secret_redacted": True,
+                    "severity": "medium",
+                    "confidence": 0.7,
+                    "trusted_as_instruction": False,
+                    "requires_human_validation": True,
+                    "review_note_ko": "detect-secrets 결과는 후보 위치와 detector 종류만 저장하며 실제 secret 값은 Evidence에 보관하지 않습니다.",
+                })
+    return items
+
+
 def _normalize_container_launch_output(raw_values: list[Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     for raw in raw_values:
@@ -9844,6 +9944,9 @@ def tool_specific_structured_items(tool_id: str, payload: dict[str, Any]) -> tup
     elif name == "yara":
         parser = "yara_text"
         items = _normalize_yara_output(raw_values)
+    elif name == "detect-secrets":
+        parser = "detect_secrets_json"
+        items = _normalize_detect_secrets_output(raw_values)
     else:
         items = []
     if container_items:
