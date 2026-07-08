@@ -1,0 +1,22 @@
+{
+  "tool_id": "TOOL-SEMGREP-001",
+  "tool_name": "Semgrep",
+  "installed_version": "1.168.0",
+  "install_scope": "isolated_tool_venv",
+  "install_root": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/tool-runtimes/semgrep_1.168.0_venv",
+  "executable_path": "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/고도화/tool-runtimes/semgrep_1.168.0_venv/Scripts/semgrep.exe",
+  "official_source": "https://pypi.org/project/semgrep/1.168.0/",
+  "official_project": "https://semgrep.dev/products/community-edition",
+  "install_command": "python -m venv <tool_venv>; <tool_venv>/Scripts/python.exe -m pip install semgrep==1.168.0",
+  "verification_commands": [
+    "semgrep --version",
+    "semgrep scan --config rules/redteam_ax_print_observation.yml --json input/sample_helper.py"
+  ],
+  "commands_executed_by_api": true,
+  "network_required_for_preset": false,
+  "risk_class": "T0",
+  "sha256": "e491cc3b210a71e650140da5b5d2661183cbc44b9e6b20bc31624dd5dc975ab4",
+  "trusted_as_instruction": false,
+  "requires_human_validation": true,
+  "recorded_at": "2026-07-08T09:45:51+09:00"
+}

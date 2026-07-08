@@ -2271,3 +2271,14 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] execution preset regression은 Bandit runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
 - [ ] `-r`, `--recursive`, 임의 config, 임의 source path, exploit script 샘플은 아직 승인된 자동 실행 범위가 아니다.
 - [ ] 운영 script factory 전체 승인, Semgrep 승격, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 167. 갱신 목표 - Semgrep 1.168.0 격리형 정적 코드 분석 도구 편입
+
+- [x] SPEC 23의 `Python 정적 보안 검사 | Bandit, Semgrep` 요구에 맞춰 Semgrep을 Bandit 다음 승격 대상으로 선정했다.
+- [x] Semgrep은 프로젝트 `.venv`와 `click/mcp/opentelemetry/jsonschema` 충돌이 있어 `고도화/tool-runtimes/semgrep_1.168.0_venv` 전용 venv에 격리 설치했다.
+- [x] 설치 증거는 `고도화/tool-manifests/semgrep_1.168.0_tool_venv_manifest.json`에 version, hash, install root, verification command로 기록했다.
+- [x] `TOOL-SEMGREP-001`, `PRESET-SEMGREP-LOCAL-RULE-SAMPLE`, `NORMALIZER-SEMGREP-001`, `AGENT-SEMGREP-ANALYST-001`을 추가했다.
+- [x] 버튼 실행 preset은 `semgrep scan --quiet --config <local rule> --json <single approved file>`만 사용하며 registry/auto/pro 경로를 기본 금지한다.
+- [x] Semgrep normalizer는 JSON finding을 `static_code_rule_observation` Evidence 후보로 변환하고 rule/source/matched line을 LLM 명령으로 신뢰하지 않는다.
+- [x] regression은 Semgrep runner step이 preset과 governed execution/collect path, tool-specific parser에 포함되는지 검증한다.
+- [ ] 조직 운영 rule set 승인, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

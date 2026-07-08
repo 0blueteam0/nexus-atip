@@ -1559,3 +1559,13 @@ Create Case
 - 안전 원칙: 재귀 스캔 `-r/--recursive`, 임의 config, 임의 source path, exploit script 샘플은 버튼 실행 범위에서 금지한다. 이 프리셋은 단일 benign helper 파일의 정적 검사만 수행한다.
 - 테스트 전략: 실제 Bandit version/safe helper JSON scan, Bandit JSON normalizer regression, execution preset runner/collect regression, Python compile, frontend runtime/launch sanity, knowledge workflow gate를 수행한다.
 - 예외 케이스: Bandit 편입은 Python 정적 보안 점검 도구 하나의 optional runner 승격이다. 운영 script factory 전체 승인, Semgrep 승격, Finding 승격, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 114. 갱신 목표 반영 - Semgrep 1.168.0 격리형 정적 코드 분석 도구 편입
+
+- 목적: SPEC 23의 `Python 정적 보안 검사 | Bandit, Semgrep` 요구를 이어받아 Semgrep을 다언어 정적 코드 룰 검사 도구로 승격한다. 기존 프로젝트 `.venv`와 의존성 충돌이 있어 `고도화/tool-runtimes/semgrep_1.168.0_venv` 전용 venv에 격리 설치한다.
+- 화면/기능 명세: `레드팀 분석2` 실행 프리셋에 `Semgrep 로컬 룰 코드 점검`을 표시한다. 신입자용 설명은 `코드를 실행하지 않고 정해둔 규칙과 코드 모양을 비교해 관찰점을 찾는 정적 분석 도구`로 제공한다.
+- API 설계: `TOOL-SEMGREP-001`, `PRESET-SEMGREP-LOCAL-RULE-SAMPLE`, `NORMALIZER-SEMGREP-001`, `AGENT-SEMGREP-ANALYST-001`을 추가한다. runner argv는 `semgrep.exe scan --quiet --config <approved local rule> --json <approved sample file>`로 고정한다.
+- Evidence/분석 설계: Semgrep JSON `results[]`를 `static_code_rule_observation` 또는 rule metadata의 `redteam_ax_evidence_type` Evidence 후보로 변환한다. rule message, source path, matched lines는 LLM/MCP 명령이 아니라 untrusted data로 취급한다.
+- 안전 통제: `--config=auto`, registry shorthand, Pro/metrics 옵션, 임의 source path를 금지한다. 기본 preset은 registry rule 다운로드 없이 로컬 교육용 rule과 단일 샘플 Python 파일만 사용한다.
+- 테스트 전략: Semgrep version/hash/local rule JSON scan, Semgrep JSON normalizer regression, execution preset runner/collect regression, Python compile, frontend sanity, knowledge workflow gate를 수행한다.
+- 예외 케이스: Semgrep 편입은 로컬 룰 샘플 실행까지의 optional runner 승격이다. 조직 registry rule set, CI 정책화, Finding 승격, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.

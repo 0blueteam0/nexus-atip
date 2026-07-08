@@ -1,0 +1,12 @@
+rules:
+  - id: redteam-ax.python.print-observation
+    message: print() was found in a sample helper. Review whether structured logging is required.
+    severity: INFO
+    languages:
+      - python
+    pattern: print(...)
+    metadata:
+      category: best-practice
+      technology:
+        - python
+      redteam_ax_evidence_type: python_static_security_observation

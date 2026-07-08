@@ -632,7 +632,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001", "TOOL-SEMGREP-001"}
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
                 "tool_id": tool_id,
@@ -659,7 +659,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertFalse(body["active_scan_executed"])
         self.assertFalse(body["trusted_as_instruction"])
         self.assertEqual(body["recommended_composite_input_mode"], "runner")
-        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001"})
+        self.assertEqual(set(body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001", "TOOL-SEMGREP-001"})
         self.assertEqual(body["safe_smoke_step_count"], 1)
         zap_smoke = next(item for item in body["safe_smoke_steps"] if item["tool_id"] == "TOOL-ZAP-001")
         self.assertEqual(Path(zap_smoke["runner_argv"][0]).name.lower(), "zap.bat")
@@ -672,6 +672,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(any("yara64.exe" in line and "redteam_ax_safe_indicator.yar" in line for line in body["runner_command_lines"]))
         self.assertTrue(any("detect-secrets.exe scan --all-files ." in line or "detect-secrets scan --all-files ." in line for line in body["runner_command_lines"]))
         self.assertTrue(any("bandit.exe -q -f json" in line or "bandit -q -f json" in line for line in body["runner_command_lines"]))
+        self.assertTrue(any("semgrep.exe scan --quiet --config" in line or "semgrep scan --quiet --config" in line for line in body["runner_command_lines"]))
         by_tool = {item["tool_id"]: item for item in body["presets"]}
         self.assertTrue(by_tool["TOOL-TRIVY-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NPM-AUDIT-001"]["can_execute_from_button"])
@@ -680,6 +681,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(by_tool["TOOL-YARA-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-DETECT-SECRETS-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-BANDIT-001"]["can_execute_from_button"])
+        self.assertTrue(by_tool["TOOL-SEMGREP-001"]["can_execute_from_button"])
         self.assertFalse(by_tool["TOOL-NUCLEI-001"]["can_execute_from_button"])
         self.assertTrue(by_tool["TOOL-NUCLEI-001"]["requires_human_approval"])
         self.assertTrue(by_tool["TOOL-SCA-001"]["import_only"])
@@ -701,7 +703,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         def trusted_manifest(profile: dict) -> dict:
             tool_id = profile["tool_id"]
             import_only = tool_id == "TOOL-SCA-001"
-            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001"}
+            available = tool_id in {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SCA-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001", "TOOL-SEMGREP-001"}
             command_name = profile.get("command_name") or profile.get("name")
             return {
                 "kind": "redteam_ax_v2_tool_wrapper_manifest",
@@ -749,6 +751,9 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 elif str(argv[0]).lower().endswith("bandit.exe") or argv[0] == "bandit":
                     self.returncode = 1
                     self.stdout = '{"errors":[],"metrics":{"_totals":{"SEVERITY.HIGH":0,"SEVERITY.MEDIUM":1,"SEVERITY.LOW":0,"loc":6}},"results":[{"filename":"safe_helper.py","issue_confidence":"HIGH","issue_severity":"MEDIUM","issue_text":"Sample static issue","line_number":4,"line_range":[4],"test_id":"B101","test_name":"assert_used"}]}'
+                elif str(argv[0]).lower().endswith("semgrep.exe") or argv[0] == "semgrep":
+                    self.returncode = 0
+                    self.stdout = '{"version":"1.168.0","results":[{"check_id":"rules.redteam-ax.python.print-observation","path":"input\\\\sample_helper.py","start":{"line":10,"col":5},"end":{"line":10,"col":40},"extra":{"message":"print() was found in a sample helper.","metadata":{"category":"best-practice","technology":["python"],"redteam_ax_evidence_type":"python_static_security_observation"},"severity":"INFO","validation_state":"NO_VALIDATOR","engine_kind":"OSS"}}],"errors":[],"paths":{"scanned":["input\\\\sample_helper.py"]}}'
                 else:
                     self.returncode = 0
                     self.stdout = '{"Results":[{"Target":".","Vulnerabilities":[{"VulnerabilityID":"CVE-PRESET-TRIVY","PkgName":"openssl","InstalledVersion":"1.0","FixedVersion":"1.1","Severity":"HIGH","Title":"Preset trivy finding"}]}]}'
@@ -759,14 +764,14 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
             presets = self.client.get("/api/redteam/v2/toolchains/execution-presets")
             self.assertEqual(presets.status_code, 200)
             preset_body = presets.json()
-            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001"})
+            self.assertEqual(set(preset_body["runner_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-YARA-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001", "TOOL-SEMGREP-001"})
             execution_tool_ids = {
                 "TOOL-TRIVY-001",
                 "TOOL-NPM-AUDIT-001",
-                "TOOL-SIGMA-CLI-001",
                 "TOOL-GITLEAKS-001",
                 "TOOL-DETECT-SECRETS-001",
                 "TOOL-BANDIT-001",
+                "TOOL-SEMGREP-001",
             }
             execution_steps = [step for step in preset_body["runner_steps"] if step["tool_id"] in execution_tool_ids]
 
@@ -786,7 +791,7 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertTrue(executed_body["commands_executed_by_api"])
         self.assertFalse(executed_body["trusted_as_instruction"])
         self.assertEqual(executed_body["executed_count"], 6)
-        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-SIGMA-CLI-001", "TOOL-GITLEAKS-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001"})
+        self.assertEqual({step["tool_id"] for step in executed_body["steps"]}, {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001", "TOOL-GITLEAKS-001", "TOOL-DETECT-SECRETS-001", "TOOL-BANDIT-001", "TOOL-SEMGREP-001"})
         npm_step = next(step for step in executed_body["steps"] if step["tool_id"] == "TOOL-NPM-AUDIT-001")
         npm_attempt = npm_step["run"]["runner_attempt"]
         self.assertEqual(npm_attempt["exit_code"], 1)
@@ -813,10 +818,10 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
         self.assertEqual(set(collected_body["present_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
         self.assertEqual(set(collected_body["analysis_agent_required_tool_ids"]), {"TOOL-TRIVY-001", "TOOL-NPM-AUDIT-001"})
         self.assertEqual(collected_body["analysis_agent_required_tool_count"], 2)
-        self.assertIn("TOOL-SIGMA-CLI-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-GITLEAKS-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-DETECT-SECRETS-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-BANDIT-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
+        self.assertIn("TOOL-SEMGREP-001", {item["tool_id"] for item in collected_body["analysis_agent_summaries"]})
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_analysis_agent_tool_ids"])
         self.assertIn("TOOL-NUCLEI-001", collected_body["missing_required_tool_ids"])
         for step in collected_body["steps"]:
@@ -4649,6 +4654,35 @@ class RedTeamV2ApiRouterTests(unittest.TestCase):
                 "bandit_json",
                 "test_id",
                 "B101",
+            ),
+            (
+                "TOOL-SEMGREP-001",
+                "TAC-PARSER-SEMGREP-001",
+                {
+                    "version": "1.168.0",
+                    "results": [{
+                        "check_id": "rules.redteam-ax.python.print-observation",
+                        "path": "input\\sample_helper.py",
+                        "start": {"line": 10, "col": 5},
+                        "end": {"line": 10, "col": 40},
+                        "extra": {
+                            "message": "print() was found in a sample helper.",
+                            "metadata": {
+                                "category": "best-practice",
+                                "technology": ["python"],
+                                "redteam_ax_evidence_type": "python_static_security_observation",
+                            },
+                            "severity": "INFO",
+                            "validation_state": "NO_VALIDATOR",
+                            "engine_kind": "OSS",
+                        },
+                    }],
+                    "errors": [],
+                    "paths": {"scanned": ["input\\sample_helper.py"]},
+                },
+                "semgrep_json",
+                "check_id",
+                "rules.redteam-ax.python.print-observation",
             ),
         ]
         for tool_id, action_id, raw_output, parser, key, expected in cases:
