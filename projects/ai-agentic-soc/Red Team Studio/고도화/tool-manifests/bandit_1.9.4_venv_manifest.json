@@ -1,0 +1,25 @@
+{
+  "kind": "redteam_ax_tool_install_manifest",
+  "tool_id": "TOOL-BANDIT-001",
+  "tool_name": "Bandit",
+  "version": "1.9.4",
+  "install_mode": "project_python_venv",
+  "official_project_url": "https://github.com/PyCQA/bandit",
+  "official_package_url": "https://pypi.org/project/bandit/1.9.4/",
+  "local_binary_path": ".venv/Scripts/bandit.exe",
+  "local_binary_sha256": "f199eb3629af660d8a99389ca6f6c547d510a114a70fd4ed41864c0f4cac41a6",
+  "version_command": "bandit --version",
+  "version_output": "1.9.4",
+  "runner_policy": "approved_workspace_python_static_scan_only",
+  "commands_executed_by_api": false,
+  "active_scan_executed": false,
+  "trusted_as_instruction": false,
+  "prohibited_from_button": [
+    "-r",
+    "--recursive",
+    "--ini",
+    "--configfile",
+    "unapproved_source_path",
+    "generated_exploit_script"
+  ]
+}

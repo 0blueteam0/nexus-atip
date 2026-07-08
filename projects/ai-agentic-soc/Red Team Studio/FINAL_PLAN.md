@@ -2258,3 +2258,16 @@ cd "J:/PortableApps/genai/projects/ai-agentic-soc/Red Team Studio/v1.2/redteam_a
 - [x] execution preset regression은 detect-secrets runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
 - [ ] `audit`, `--baseline`, 임의 source path, 실제 credential fixture는 아직 승인된 자동 실행 범위가 아니다.
 - [ ] 운영 repository scan, secret rotation, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
+
+## 166. 갱신 목표 - Bandit 1.9.4 선택형 Python 정적 보안 점검 도구 편입
+
+- [x] SPEC 23의 `Python 정적 보안 검사 | Bandit, Semgrep` 요구에 맞춰 Bandit을 우선 설치 대상으로 선정했다.
+- [x] 프로젝트 `.venv`에 `bandit==1.9.4`를 설치했다.
+- [x] `bandit --version`이 `bandit 1.9.4`를 반환했고 `.venv/Scripts/bandit.exe` SHA-256 `f199eb3629af660d8a99389ca6f6c547d510a114a70fd4ed41864c0f4cac41a6`를 기록했다.
+- [x] `고도화/samples/bandit_workspace`에 안전한 Python helper sample을 추가했다.
+- [x] `TOOL-BANDIT-001`, `PRESET-BANDIT-PYTHON-SAFE-HELPER`, `NORMALIZER-BANDIT-001`, `AGENT-BANDIT-ANALYST-001`을 추가했다.
+- [x] 신입자용 설명으로 `Python 코드를 실행하지 않고 읽어서 위험한 함수 사용이나 보안 실수를 찾는 정적 검사 도구`라고 안내했다.
+- [x] Bandit normalizer는 JSON finding을 `python_static_security_observation` Evidence 후보로 변환하고 코드/finding 설명을 LLM 명령으로 신뢰하지 않는다.
+- [x] execution preset regression은 Bandit runner step이 composite execution과 collect-results 경로에 포함되는지 검증한다.
+- [ ] `-r`, `--recursive`, 임의 config, 임의 source path, exploit script 샘플은 아직 승인된 자동 실행 범위가 아니다.
+- [ ] 운영 script factory 전체 승인, Semgrep 승격, Finding 승격, Evidence 승인, Claim-Evidence Matrix, Report/export/completion gate는 별도 HITL 검토가 필요하다.
