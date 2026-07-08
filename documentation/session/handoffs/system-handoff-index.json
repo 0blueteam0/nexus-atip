@@ -1,21 +1,33 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-08T01:06:50.098Z",
+  "updatedAt": "2026-07-08T01:37:27.601Z",
   "latest": {
     "codex->claude": {
-      "id": "2026-07-08T01-06-49-755Z-codex-to-claude-system-redteam-ax",
+      "id": "2026-07-08T01-37-27-006Z-codex-to-claude-system-ai-agentic-soc-malax2-report-studio-workflow",
       "from": "codex",
       "to": "claude",
-      "title": "redteam-ax",
+      "title": "ai-agentic-soc MALAX2 Report Studio workflow",
       "status": "completed",
-      "path": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-08T01-06-49-755Z-codex-to-claude-system-redteam-ax.md",
-      "latestPath": "J:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
-      "createdAt": "2026-07-08T01:06:49.755Z",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-08T01-37-27-006Z-codex-to-claude-system-ai-agentic-soc-malax2-report-studio-workflow.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-07-08T01:37:27.006Z",
       "paths": [],
       "docs": []
     }
   },
   "entries": [
+    {
+      "id": "2026-07-08T01-37-27-006Z-codex-to-claude-system-ai-agentic-soc-malax2-report-studio-workflow",
+      "from": "codex",
+      "to": "claude",
+      "title": "ai-agentic-soc MALAX2 Report Studio workflow",
+      "status": "completed",
+      "path": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\2026-07-08T01-37-27-006Z-codex-to-claude-system-ai-agentic-soc-malax2-report-studio-workflow.md",
+      "latestPath": "K:\\PortableApps\\genai\\documentation\\session\\handoffs\\latest-system-from-codex-to-claude.md",
+      "createdAt": "2026-07-08T01:37:27.006Z",
+      "paths": [],
+      "docs": []
+    },
     {
       "id": "2026-07-08T01-06-49-755Z-codex-to-claude-system-redteam-ax",
       "from": "codex",

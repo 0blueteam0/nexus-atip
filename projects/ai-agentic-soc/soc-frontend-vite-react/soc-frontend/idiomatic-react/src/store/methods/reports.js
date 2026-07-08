@@ -2593,7 +2593,7 @@ export default {
             h('div', { style:{ fontSize:'11px', color:C.text, fontWeight:900 } }, '목차별 근거·도구 실행'),
             h('div', { style:{ fontSize:'9.5px', color:C.teal, fontWeight:900 } }, `근거 ${sectionTrace?.counts?.evidence || 0}건 · 도구 실행 ${sectionTrace?.counts?.tool_runs || 0}건`)),
           h('div', { style:{ display:'grid', gap:'6px' } },
-            traceRows.slice(0, 12).map(item => {
+            traceRows.slice(0, 12).map((item, traceIndex) => {
               const counts = item.counts || {};
               const representativeEvidence = Array.isArray(item.evidence) ? item.evidence.filter(ev => ev && ev.record_id).slice(-1)[0] : null;
               const analystBody = traceAnalystBody(item);
@@ -2602,7 +2602,7 @@ export default {
               const verdictColor = supportsVerdict ? traceAnalystVerdictColor(verdict) : C.teal;
               const traceSummaryText = supportsVerdict ? traceAnalystSummary(item) : '파일을 격리 작업공간에 복사하고 해시·보관 위치·감사 이벤트를 고정했습니다.';
               const traceFindingText = supportsVerdict ? traceAnalystFinding(item) : '이 단계는 악성/정상 또는 정탐/오탐 판단을 수행하지 않습니다.';
-              return h('div', { key:`trace-${item.section_id}`, style:{ border:`1px solid ${C.border}`, background:C.bg, borderRadius:'8px', padding:'8px', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))', gap:'9px', alignItems:'center' } },
+              return h('div', { key:`trace-${item.section_id || 'section'}-${traceIndex}-${representativeEvidence?.record_id || 'noev'}`, style:{ border:`1px solid ${C.border}`, background:C.bg, borderRadius:'8px', padding:'8px', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))', gap:'9px', alignItems:'center' } },
                 h('div', { style:{ minWidth:0 } },
                   h('div', { style:{ fontSize:'10.5px', color:C.text, fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, sectionTitle(item.section_id)),
                   h('div', { style:{ fontSize:'9px', color:C.muted, marginTop:'2px' } }, `필드 ${counts.report_fields || 0} · 근거 ${counts.evidence || 0} · 주장 ${counts.claims || 0} · 보완 ${counts.coverage_gaps || 0}`),
@@ -2672,6 +2672,289 @@ export default {
             h('div', { style:{ fontSize:'9.5px', color:C.sec, marginTop:'4px', lineHeight:1.45 } }, fieldSummary(f))),
           h('div', { style:{ fontSize:'10px', color:reviewStatus(f.review_status).color, fontWeight:800, whiteSpace:'nowrap' } }, reviewStatus(f.review_status).label)))) :
           h('div', { style:{ fontSize:'11px', color:C.muted, lineHeight:1.5 } }, '파일을 업로드하고 첫 분석 단계를 실행하면 증거가 연결된 보고서 필드가 생성됩니다.')),
+      st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null);
+  }
+,
+  malax2WorkflowDraft() {
+    const saved = this.state.malax2WorkflowDraft || {};
+    const reportId = saved.reportId || this.currentMalwareReportId() || this.malwareReports()[0]?.id || 'MAR-REPORT-ONLY';
+    const report = reportId ? this.reportById(reportId) : null;
+    const backendCaseId = this.malaxBackendCaseId(this.state.malwareUploadState || {}, this.state.malaxBridgeState || {});
+    return {
+      reportId,
+      caseId:backendCaseId || reportId,
+      objective:report?.objective || '악성코드 분석2: 분석가 버튼 기반 workflow job, agent 단계 추적, HITL 승인 지점 검증',
+      executeExistingSection:false,
+      approvedBy:'lead@example.com',
+      ...saved,
+      reportId,
+      caseId:saved.caseId || backendCaseId || reportId,
+    };
+  }
+,
+  updateMalax2WorkflowDraft(patch) {
+    const next = { ...this.malax2WorkflowDraft(), ...patch };
+    this.setState({
+      malax2WorkflowDraft:next,
+      ...(next.reportId ? { activeMalwareReportId:next.reportId, reportDoc:next.reportId } : {}),
+    });
+  }
+,
+  malax2SelectedJob() {
+    const jobs = this.state.malax2WorkflowJobs || [];
+    const selectedId = this.state.malax2SelectedJobId || jobs[0]?.job_id;
+    return jobs.find(job => job.job_id === selectedId) || jobs[0] || null;
+  }
+,
+  setMalax2WorkflowJob(job, patchState = {}) {
+    if (!job || !job.job_id) return;
+    this.setState(s => ({
+      malax2SelectedJobId:job.job_id,
+      malax2WorkflowJobs:[
+        job,
+        ...((s.malax2WorkflowJobs || []).filter(item => item.job_id !== job.job_id)),
+      ].slice(0, 12),
+      malax2WorkflowState:{
+        ...(s.malax2WorkflowState || {}),
+        status:'ready',
+        error:null,
+        checkedAt:new Date().toISOString(),
+        ...patchState,
+      },
+    }));
+  }
+,
+  async loadMalax2WorkflowStatus() {
+    this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'loading', error:null } }));
+    try {
+      const base = this.malaxApiBase();
+      const selectedJob = this.malax2SelectedJob();
+      const [health, malaxStatus, job] = await Promise.all([
+        this.malaxFetchJson(`${base}/api/reports/malax/v2/health`, { required:true, timeoutMs:7000 }),
+        this.malaxFetchJson(`${base}/api/malax/status`, { fallback:{ ok:false }, timeoutMs:7000 }),
+        selectedJob?.job_id
+          ? this.malaxFetchJson(`${base}/api/reports/malax/v2/jobs/${encodeURIComponent(selectedJob.job_id)}`, { fallback:null, timeoutMs:7000 })
+          : Promise.resolve(null),
+      ]);
+      this.setState(s => {
+        const jobs = job && job.ok !== false && job.job_id
+          ? [job, ...((s.malax2WorkflowJobs || []).filter(item => item.job_id !== job.job_id))].slice(0, 12)
+          : (s.malax2WorkflowJobs || []);
+        return {
+          malax2WorkflowJobs:jobs,
+          malax2WorkflowState:{
+            ...(s.malax2WorkflowState || {}),
+            status:'ready',
+            health,
+            malaxStatus,
+            checkedAt:new Date().toISOString(),
+            error:null,
+          },
+        };
+      });
+      this.toast('악성코드 분석2 workflow 상태를 확인했습니다', 'success');
+    } catch (err) {
+      this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('악성코드 분석2 상태 확인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async planMalax2WorkflowJob() {
+    const draft = this.malax2WorkflowDraft();
+    if (!draft.reportId) {
+      this.toast('연결할 MAR 보고서를 선택하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'planning', error:null } }));
+    try {
+      const job = await this.malaxPostJson('/api/reports/malax/v2/jobs/plan', {
+        case_id:String(draft.caseId || draft.reportId).trim(),
+        report_id:String(draft.reportId).trim(),
+        objective:String(draft.objective || '').trim(),
+        requested_by:'report-studio-analyst',
+      }, { timeoutMs:15000 });
+      this.setMalax2WorkflowJob(job, { lastAction:'plan_job' });
+      this.logAudit('악성코드 분석2', `workflow job 생성: ${job.job_id}`);
+      this.toast(`악성코드 분석2 job 생성: ${job.job_id}`, 'success');
+    } catch (err) {
+      this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('악성코드 분석2 job 생성 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async advanceMalax2WorkflowJob(jobId = null) {
+    const draft = this.malax2WorkflowDraft();
+    const job = jobId ? (this.state.malax2WorkflowJobs || []).find(item => item.job_id === jobId) : this.malax2SelectedJob();
+    if (!job?.job_id) {
+      this.toast('먼저 workflow job을 생성하세요', 'warn');
+      return;
+    }
+    this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'advancing', error:null } }));
+    try {
+      const result = await this.malaxPostJson(`/api/reports/malax/v2/jobs/${encodeURIComponent(job.job_id)}/advance`, {
+        execute_existing_malax_section:draft.executeExistingSection !== false,
+        operator:'report-studio-agent',
+      }, { timeoutMs:120000 });
+      const updated = result.job || job;
+      this.setMalax2WorkflowJob(updated, { lastAction:'advance_agent_step', lastAdvance:result });
+      const severity = result.status === 'awaiting_human_approval' ? 'warn' : result.ok === false ? 'warn' : 'success';
+      this.toast(result.status === 'awaiting_human_approval'
+        ? '에이전트가 HITL 승인 지점에서 멈췄습니다'
+        : `에이전트 단계 수행: ${result.step?.step_id || result.status}`, severity);
+    } catch (err) {
+      this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('악성코드 분석2 agent advance 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  async approveMalax2WorkflowStep(jobId, stepId) {
+    const draft = this.malax2WorkflowDraft();
+    if (!jobId || !stepId) {
+      this.toast('승인할 job과 step이 필요합니다', 'warn');
+      return;
+    }
+    this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'approving', error:null } }));
+    try {
+      const result = await this.malaxPostJson(`/api/reports/malax/v2/jobs/${encodeURIComponent(jobId)}/approval`, {
+        step_id:stepId,
+        approved_by:String(draft.approvedBy || 'lead@example.com').trim(),
+        role:'lead_analyst',
+        conditions:['stay_within_malax2_safety_boundary', 'no_dynamic_execution_without_separate_control'],
+      }, { timeoutMs:15000 });
+      if (result.ok === false) throw new Error((result.errors || []).join(', ') || 'approval failed');
+      this.setMalax2WorkflowJob(result.job, { lastAction:'approve_hitl_step', lastApproval:result.approval });
+      this.logAudit('악성코드 분석2', `HITL 승인: ${stepId} · ${jobId}`);
+      this.toast(`HITL 승인 기록 완료: ${stepId}`, 'success');
+    } catch (err) {
+      this.setState(s => ({ malax2WorkflowState:{ ...(s.malax2WorkflowState || {}), status:'error', error:err?.message || String(err), checkedAt:new Date().toISOString() } }));
+      this.toast('HITL 승인 실패: ' + (err?.message || String(err)), 'warn');
+    }
+  }
+,
+  malax2WorkflowPanel() {
+    const C = this.C, h = this.h;
+    const draft = this.malax2WorkflowDraft();
+    const st = this.state.malax2WorkflowState || { status:'idle' };
+    const jobs = this.state.malax2WorkflowJobs || [];
+    const job = this.malax2SelectedJob();
+    const reports = this.malwareReports();
+    const steps = job?.steps || [];
+    const trace = job?.agent_step_trace || [];
+    const approvals = job?.human_approval_events || [];
+    const summary = job?.summary || {};
+    const currentStep = steps.find(step => step.step_id === job?.current_step_id) || steps.find(step => !['completed','skipped'].includes(step.status)) || null;
+    const inputStyle = {
+      width:'100%',
+      minWidth:0,
+      boxSizing:'border-box',
+      border:`1px solid ${C.border}`,
+      background:C.bg,
+      color:C.text,
+      borderRadius:'7px',
+      padding:'8px 9px',
+      fontSize:'11.5px',
+      outline:'none',
+    };
+    const card = ([k,v,color,sub]) => h('div', { key:k, style:{ border:`1px solid ${C.border}`, background:C.bg, borderRadius:'8px', padding:'9px', minWidth:0 } },
+      h('div', { style:{ fontSize:'9.5px', color:C.muted, marginBottom:'4px' } }, k),
+      h('div', { style:{ fontSize:'12px', color:color || C.text, fontWeight:900, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, String(v ?? '-')),
+      sub ? h('div', { style:{ fontSize:'9px', color:C.sec, marginTop:'4px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, sub) : null);
+    const smallPanel = (title, content, extraStyle = {}) => h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px', minWidth:0, ...extraStyle } },
+      h('div', { style:{ fontSize:'12.5px', fontWeight:900, marginBottom:'9px' } }, title),
+      content);
+    const statusColor = (value) => {
+      if (['completed','approved','ready','planned','running'].includes(String(value))) return C.green;
+      if (['awaiting_human_approval','blocked_by_dependency'].includes(String(value))) return C.amber;
+      if (['blocked','invalid','error'].includes(String(value))) return C.coral;
+      return C.sec;
+    };
+    const stepRows = steps.map(step => [
+      `${step.order}. ${step.title}`,
+      step.agent,
+      h('span', { style:{ color:statusColor(step.status), fontWeight:900 } }, step.status || '-'),
+      step.requires_human_approval
+        ? h('button', {
+            onClick:()=>this.approveMalax2WorkflowStep(job.job_id, step.step_id),
+            disabled:step.approval_status === 'approved' || !['awaiting_human_approval','ready','approved'].includes(step.status),
+            style:{ padding:'5px 7px', borderRadius:'7px', border:`1px solid ${step.approval_status === 'approved' ? C.green : C.amber}`, background:C.bg, color:step.approval_status === 'approved' ? C.green : C.amber, cursor:step.approval_status === 'approved' ? 'default' : 'pointer', fontSize:'9.5px', fontWeight:900 },
+          }, step.approval_status === 'approved' ? '승인됨' : 'HITL 승인')
+        : '불필요',
+      step.section_id || '-',
+      step.output_summary || (step.boundary || '-'),
+    ]);
+    const traceRows = trace.slice(-12).reverse().map(item => [
+      item.at || '-',
+      item.step_id || '-',
+      item.actor || item.agent || '-',
+      h('span', { style:{ color:statusColor(item.status || item.event), fontWeight:900 } }, item.status || item.event || '-'),
+      item.sample_executed ? '위반' : '없음',
+    ]);
+    const jobRows = jobs.map(item => [
+      h('button', { onClick:()=>this.setState({ malax2SelectedJobId:item.job_id }), style:{ border:`1px solid ${item.job_id === job?.job_id ? C.blue : C.border}`, background:item.job_id === job?.job_id ? `${C.blue}16` : C.bg, color:item.job_id === job?.job_id ? C.blue : C.sec, borderRadius:'7px', padding:'5px 7px', fontSize:'9.5px', fontWeight:900, cursor:'pointer', maxWidth:'180px', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' } }, item.job_id),
+      item.report_id || '-',
+      h('span', { style:{ color:statusColor(item.workflow_status), fontWeight:900 } }, item.workflow_status || '-'),
+      item.current_step_id || '-',
+      `${item.summary?.completed_count || 0}/${item.summary?.step_count || 0}`,
+    ]);
+    const approvalRows = (summary.approval_queue || []).map(item => [
+      item.step_id || '-',
+      item.approval_gate_id || '-',
+      item.status || '-',
+      item.reason || '-',
+    ]);
+    const verificationItems = [
+      ['버튼이 workflow job을 생성하는가', !!job?.job_id, job?.job_id || 'job 없음'],
+      ['job이 LangGraph형 graph nodes/edges를 갖는가', !!(job?.graph?.nodes?.length && job?.graph?.edges?.length), `${job?.graph?.nodes?.length || 0} nodes / ${job?.graph?.edges?.length || 0} edges`],
+      ['에이전트 단계 추적이 화면에 남는가', trace.length > 0, `${trace.length} trace events`],
+      ['HITL 지점이 자동 실행을 멈추는가', steps.some(step => step.status === 'awaiting_human_approval') || approvals.length > 0, approvals.length ? `${approvals.length} approvals` : '승인 대기 이벤트 필요'],
+      ['경계 안에서 실행되는가', job?.safety_boundary?.sample_execution_default === false, 'sample_execution_default=false'],
+      ['분석가가 다음 조치를 알 수 있는가', !!currentStep || job?.workflow_status === 'completed', currentStep ? currentStep.title : (job?.workflow_status || '대기')],
+    ];
+    const verificationRows = verificationItems.map(([question, pass, evidence]) => [
+      question,
+      h('span', { style:{ color:pass ? C.green : C.amber, fontWeight:900 } }, pass ? 'PASS' : 'CHECK'),
+      evidence,
+    ]);
+    return h('div', { style:{ display:'grid', gap:'14px' } },
+      h('div', { style:{ background:C.s1, border:`1px solid ${C.border}`, borderRadius:'12px', padding:'14px' } },
+        h('div', { style:{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'12px', flexWrap:'wrap', marginBottom:'10px' } },
+          h('div', { style:{ minWidth:0 } },
+            h('div', { style:{ fontSize:'16px', fontWeight:950 } }, '악성코드 분석2 · Agentic Workflow Job'),
+            h('div', { style:{ fontSize:'10.5px', color:C.sec, marginTop:'4px', lineHeight:1.45 } },
+              '분석가는 버튼으로 workflow job을 만들고, 에이전트는 정해진 graph 단계만 수행하며, 동적/발행 지점은 HITL 승인 전 멈춥니다.')) ,
+          h('div', { style:{ display:'flex', gap:'7px', flexWrap:'wrap', justifyContent:'flex-end' } },
+            h('button', { onClick:()=>this.loadMalax2WorkflowStatus(), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${C.border}`, background:C.bg, color:C.sec, cursor:'pointer', fontWeight:800 } }, '상태 새로고침'),
+            h('button', { onClick:()=>this.planMalax2WorkflowJob(), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${C.blue}`, background:C.blue, color:'#fff', cursor:'pointer', fontWeight:900 } }, 'Workflow Job 생성'),
+            h('button', { onClick:()=>this.advanceMalax2WorkflowJob(), disabled:!job?.job_id || ['advancing','approving','planning'].includes(st.status), style:{ padding:'8px 11px', borderRadius:'8px', border:`1px solid ${job?.job_id ? C.green : C.border}`, background:job?.job_id ? `${C.green}16` : C.bg, color:job?.job_id ? C.green : C.muted, cursor:job?.job_id ? 'pointer' : 'not-allowed', fontWeight:900 } }, '에이전트 다음 단계 수행'))),
+        h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:'8px' } }, [
+          ['v2 API', st.health?.status || st.status || 'idle', st.health?.status === 'ready' ? C.green : C.sec, st.health?.api_namespace || '/api/reports/malax/v2'],
+          ['현재 Job', job?.job_id || '없음', job?.job_id ? C.blue : C.sec, job?.workflow_status || 'plan 필요'],
+          ['현재 단계', currentStep?.step_id || '-', currentStep ? statusColor(currentStep.status) : C.sec, currentStep?.title || 'job 생성 후 표시'],
+          ['HITL Queue', summary.awaiting_approval_count || 0, (summary.awaiting_approval_count || 0) ? C.amber : C.green, `${approvals.length} approvals recorded`],
+        ].map(card))),
+      smallPanel('Job 입력',
+        h('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:'10px' } },
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'MAR 보고서',
+            h('select', { value:draft.reportId, onChange:e=>this.updateMalax2WorkflowDraft({ reportId:e.target.value, caseId:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } },
+              reports.map(r => h('option', { key:r.id, value:r.id }, `${r.id} · ${r.title}`)))),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, 'Case ID',
+            h('input', { value:draft.caseId, onChange:e=>this.updateMalax2WorkflowDraft({ caseId:e.target.value }), style:{ ...inputStyle, marginTop:'5px', fontFamily:C.mono } })),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '승인자',
+            h('input', { value:draft.approvedBy, onChange:e=>this.updateMalax2WorkflowDraft({ approvedBy:e.target.value }), style:{ ...inputStyle, marginTop:'5px' } })),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted } }, '기존 MALAX safe section 위임',
+            h('select', { value:draft.executeExistingSection === false ? 'false' : 'true', onChange:e=>this.updateMalax2WorkflowDraft({ executeExistingSection:e.target.value === 'true' }), style:{ ...inputStyle, marginTop:'5px' } },
+              h('option', { value:'false' }, '기본: job trace만 진행'),
+              h('option', { value:'true' }, '선택: 안전 단계는 기존 섹션 실행'))),
+          h('label', { style:{ fontSize:'10.5px', color:C.muted, gridColumn:'1 / -1' } }, '목적',
+            h('textarea', { value:draft.objective, onChange:e=>this.updateMalax2WorkflowDraft({ objective:e.target.value }), rows:3, style:{ ...inputStyle, marginTop:'5px', resize:'vertical' } })))),
+      jobRows.length ? smallPanel('Workflow Job Queue', this.renderTable(['Job','Report','Status','Current Step','Done'], jobRows)) : null,
+      job ? smallPanel('Agent Workflow Steps', this.renderTable(['Step','Agent','Status','Approval','Section','Output / Boundary'], stepRows)) : null,
+      approvalRows.length ? smallPanel('HITL Approval Queue', this.renderTable(['Step','Gate','Status','Reason'], approvalRows), { borderColor:C.amber }) : null,
+      job ? smallPanel('적대적 검증 체크', this.renderTable(['질문','판정','근거'], verificationRows)) : null,
+      traceRows.length ? smallPanel('Agent Step Trace', this.renderTable(['At','Step','Actor','Status','Sample Execution'], traceRows)) : null,
+      st.lastAdvance?.executor_result ? smallPanel('최근 Agent 결과',
+        h('pre', { style:{ margin:0, whiteSpace:'pre-wrap', overflow:'auto', maxHeight:'220px', fontSize:'10px', color:C.sec, background:C.bg, border:`1px solid ${C.border}`, borderRadius:'8px', padding:'9px' } },
+          JSON.stringify(st.lastAdvance.executor_result, null, 2))) : null,
       st.error ? h('div', { style:{ fontSize:'10.5px', color:C.coral } }, st.error) : null);
   }
 ,
@@ -8150,12 +8433,13 @@ export default {
     const visibleTabs = [
       ['reports', '보고서 목록', '보고서 카탈로그'],
       ['malax', '악성코드 분석', '절차, 증거, 사람 승인, 보고서 필드'],
+      ['malax2', '악성코드 분석2', 'Workflow job, agent trace, HITL gates'],
       ['redteam', '레드팀 분석', '목표, 캠페인, 증거'],
       ['redteam2', '레드팀 분석2', '승인 작업, 사람 검토, 증거 게이트'],
     ];
     const visibleActive = this.state.reportStudioTab || 'reports';
     return h('div', { style:{ display:'flex', gap:'7px', marginBottom:'14px', flexWrap:'wrap' } }, visibleTabs.map(([id,label,desc]) =>
-      h('button', { key:id, onClick:()=>{ this.setState({ reportStudioTab:id }, () => { if (id === 'redteam') this.loadRedTeamAnalysisStatus(); if (id === 'redteam2') this.loadRedTeam2AnalysisStatus(); }); }, style:{ textAlign:'left', minWidth:'150px', padding:'9px 11px', borderRadius:'9px', border:`1px solid ${visibleActive===id?C.blue:C.border}`, background:visibleActive===id?C.s2:C.s1, color:C.text, cursor:'pointer' } },
+      h('button', { key:id, onClick:()=>{ this.setState({ reportStudioTab:id }, () => { if (id === 'malax') this.loadMalaxBridgeStatus(); if (id === 'malax2') this.loadMalax2WorkflowStatus(); if (id === 'redteam') this.loadRedTeamAnalysisStatus(); if (id === 'redteam2') this.loadRedTeam2AnalysisStatus(); }); }, style:{ textAlign:'left', minWidth:'150px', padding:'9px 11px', borderRadius:'9px', border:`1px solid ${visibleActive===id?C.blue:C.border}`, background:visibleActive===id?C.s2:C.s1, color:C.text, cursor:'pointer' } },
         h('div', { style:{ fontSize:'11.5px', fontWeight:800, color:visibleActive===id?C.blue:C.text } }, label),
         h('div', { style:{ fontSize:'9px', color:C.muted, marginTop:'3px', lineHeight:1.3 } }, desc))));
     const tabs = [
@@ -8175,6 +8459,7 @@ export default {
     const h = this.h;
     const active = this.state.reportStudioTab || 'reports';
     if (active === 'malax') return h(React.Fragment, {}, this.malaxBridgePanel());
+    if (active === 'malax2') return h(React.Fragment, {}, this.malax2WorkflowPanel());
     if (active === 'redteam') return h(React.Fragment, {}, this.redTeamAnalysisPanel());
     if (active === 'redteam2') return h(React.Fragment, {}, this.redTeamAnalysis2Panel());
     return this.reportCatalogPanel();
